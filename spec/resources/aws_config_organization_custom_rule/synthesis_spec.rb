@@ -14,17 +14,17 @@
 
 require 'spec_helper'
 require 'terraform-synthesizer'
-require 'pangea/resources/aws/config'
+require 'pangea-aws'
 
 RSpec.describe "aws_config_organization_custom_rule synthesis" do
-  include Pangea::Resources::AWS::Config
+  include Pangea::Resources::AWS
 
   let(:synthesizer) { TerraformSynthesizer.new }
 
   describe "terraform generation" do
     it "generates valid terraform JSON" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_organization_custom_rule(:test, {
           name: "organization-custom-rule",
           lambda_function_arn: "arn:aws:lambda:us-east-1:123456789012:function:config-rule",
@@ -45,7 +45,7 @@ RSpec.describe "aws_config_organization_custom_rule synthesis" do
 
     it "includes description when provided" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_organization_custom_rule(:test, {
           name: "organization-custom-rule",
           lambda_function_arn: "arn:aws:lambda:us-east-1:123456789012:function:config-rule",
@@ -62,7 +62,7 @@ RSpec.describe "aws_config_organization_custom_rule synthesis" do
 
     it "includes excluded_accounts configuration" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_organization_custom_rule(:test, {
           name: "organization-custom-rule",
           lambda_function_arn: "arn:aws:lambda:us-east-1:123456789012:function:config-rule",
@@ -79,7 +79,7 @@ RSpec.describe "aws_config_organization_custom_rule synthesis" do
 
     it "includes input_parameters when provided" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_organization_custom_rule(:test, {
           name: "organization-custom-rule",
           lambda_function_arn: "arn:aws:lambda:us-east-1:123456789012:function:config-rule",
@@ -96,7 +96,7 @@ RSpec.describe "aws_config_organization_custom_rule synthesis" do
 
     it "includes resource_types_scope" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_organization_custom_rule(:test, {
           name: "organization-custom-rule",
           lambda_function_arn: "arn:aws:lambda:us-east-1:123456789012:function:config-rule",
@@ -113,7 +113,7 @@ RSpec.describe "aws_config_organization_custom_rule synthesis" do
 
     it "includes maximum_execution_frequency" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_organization_custom_rule(:test, {
           name: "organization-custom-rule",
           lambda_function_arn: "arn:aws:lambda:us-east-1:123456789012:function:config-rule",
@@ -132,7 +132,7 @@ RSpec.describe "aws_config_organization_custom_rule synthesis" do
   describe "terraform validation" do
     it "produces valid terraform structure" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_organization_custom_rule(:test, {
           name: "organization-custom-rule",
           lambda_function_arn: "arn:aws:lambda:us-east-1:123456789012:function:config-rule",
@@ -159,7 +159,7 @@ RSpec.describe "aws_config_organization_custom_rule synthesis" do
     it "returns a resource reference with outputs" do
       ref = nil
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         ref = aws_config_organization_custom_rule(:test, {
           name: "organization-custom-rule",
           lambda_function_arn: "arn:aws:lambda:us-east-1:123456789012:function:config-rule",

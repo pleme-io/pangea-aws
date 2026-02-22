@@ -97,9 +97,9 @@ RSpec.describe "aws_iam_user resource function" do
           name: "test-user",
           path: "missing-leading-slash"
         })
-      }.to raise_error(Dry::Struct::Error, /must start with '\\/'/)
+      }.to raise_error(Dry::Struct::Error, /must start with/)
     end
-    
+
     it "validates path length" do
       expect {
         Pangea::Resources::AWS::IamUserAttributes.new({

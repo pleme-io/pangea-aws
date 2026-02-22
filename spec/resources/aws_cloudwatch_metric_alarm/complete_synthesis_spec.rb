@@ -19,7 +19,7 @@ require 'json'
 
 # Load aws_cloudwatch_metric_alarm resource and terraform-synthesizer for testing
 require 'pangea/resources/aws_cloudwatch_metric_alarm/resource'
-require 'terraform_synthesizer'
+require 'terraform-synthesizer'
 
 RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
   let(:synthesizer) { TerraformSynthesizer.new }

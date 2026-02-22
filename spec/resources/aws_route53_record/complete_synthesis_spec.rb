@@ -19,7 +19,7 @@ require 'json'
 
 # Load aws_route53_record resource and terraform-synthesizer for testing
 require 'pangea/resources/aws_route53_record/resource'
-require 'terraform_synthesizer'
+require 'terraform-synthesizer'
 
 RSpec.describe "aws_route53_record terraform synthesis" do
   let(:synthesizer) { TerraformSynthesizer.new }

@@ -14,17 +14,17 @@
 
 require 'spec_helper'
 require 'terraform-synthesizer'
-require 'pangea/resources/aws/config'
+require 'pangea-aws'
 
 RSpec.describe "aws_config_remediation_configuration synthesis" do
-  include Pangea::Resources::AWS::Config
+  include Pangea::Resources::AWS
 
   let(:synthesizer) { TerraformSynthesizer.new }
 
   describe "terraform generation" do
     it "generates valid terraform JSON" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_remediation_configuration(:test, {
           config_rule_name: "s3-bucket-public-read-prohibited",
           target_type: "SSM_DOCUMENT",
@@ -46,7 +46,7 @@ RSpec.describe "aws_config_remediation_configuration synthesis" do
 
     it "includes automatic execution" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_remediation_configuration(:test, {
           config_rule_name: "s3-bucket-public-read-prohibited",
           target_type: "SSM_DOCUMENT",
@@ -63,7 +63,7 @@ RSpec.describe "aws_config_remediation_configuration synthesis" do
 
     it "includes maximum_automatic_attempts" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_remediation_configuration(:test, {
           config_rule_name: "s3-bucket-public-read-prohibited",
           target_type: "SSM_DOCUMENT",
@@ -81,7 +81,7 @@ RSpec.describe "aws_config_remediation_configuration synthesis" do
 
     it "includes retry_attempt_seconds" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_remediation_configuration(:test, {
           config_rule_name: "s3-bucket-public-read-prohibited",
           target_type: "SSM_DOCUMENT",
@@ -99,7 +99,7 @@ RSpec.describe "aws_config_remediation_configuration synthesis" do
 
     it "includes resource_type" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_remediation_configuration(:test, {
           config_rule_name: "s3-bucket-public-read-prohibited",
           target_type: "SSM_DOCUMENT",
@@ -116,7 +116,7 @@ RSpec.describe "aws_config_remediation_configuration synthesis" do
 
     it "includes target_version" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_remediation_configuration(:test, {
           config_rule_name: "s3-bucket-public-read-prohibited",
           target_type: "SSM_DOCUMENT",
@@ -135,7 +135,7 @@ RSpec.describe "aws_config_remediation_configuration synthesis" do
   describe "terraform validation" do
     it "produces valid terraform structure" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_remediation_configuration(:test, {
           config_rule_name: "s3-bucket-public-read-prohibited",
           target_type: "SSM_DOCUMENT",
@@ -163,7 +163,7 @@ RSpec.describe "aws_config_remediation_configuration synthesis" do
     it "returns a resource reference with outputs" do
       ref = nil
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         ref = aws_config_remediation_configuration(:test, {
           config_rule_name: "s3-bucket-public-read-prohibited",
           target_type: "SSM_DOCUMENT",

@@ -19,7 +19,7 @@ require 'json'
 
 # Load aws_cloudwatch_log_group resource and terraform-synthesizer for testing
 require 'pangea/resources/aws_cloudwatch_log_group/resource'
-require 'terraform_synthesizer'
+require 'terraform-synthesizer'
 
 RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   let(:synthesizer) { TerraformSynthesizer.new }

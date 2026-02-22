@@ -20,8 +20,8 @@ module SynthesisTestHelpers
   def synthesize_and_validate(entity_type = :resource, &block)
     synthesizer = create_synthesizer
     synthesizer.instance_eval(&block)
-    result = synthesizer.synthesis
-    
+    result = normalize_synthesis(synthesizer.synthesis)
+
     validate_terraform_structure(result, entity_type)
     result
   end
@@ -34,6 +34,11 @@ module SynthesisTestHelpers
       # Fallback synthesizer for testing
       MockTerraformSynthesizer.new
     end
+  end
+
+  # Normalize synthesis result to string keys (TerraformSynthesizer returns symbol keys)
+  def normalize_synthesis(result)
+    JSON.parse(result.to_json)
   end
 
   # Validate basic Terraform JSON structure

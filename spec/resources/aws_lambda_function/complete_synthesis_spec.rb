@@ -19,7 +19,7 @@ require 'json'
 
 # Load aws_lambda_function resource and terraform-synthesizer for testing
 require 'pangea/resources/aws_lambda_function/resource'
-require 'terraform_synthesizer'
+require 'terraform-synthesizer'
 
 RSpec.describe "aws_lambda_function terraform synthesis" do
   let(:synthesizer) { TerraformSynthesizer.new }

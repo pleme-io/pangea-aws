@@ -14,17 +14,17 @@
 
 require 'spec_helper'
 require 'terraform-synthesizer'
-require 'pangea/resources/aws/config'
+require 'pangea-aws'
 
 RSpec.describe "aws_config_stored_query synthesis" do
-  include Pangea::Resources::AWS::Config
+  include Pangea::Resources::AWS
 
   let(:synthesizer) { TerraformSynthesizer.new }
 
   describe "terraform generation" do
     it "generates valid terraform JSON" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_stored_query(:test, {
           name: "public-s3-buckets",
           expression: "SELECT resourceId, resourceType WHERE resourceType = 'AWS::S3::Bucket'"
@@ -44,7 +44,7 @@ RSpec.describe "aws_config_stored_query synthesis" do
 
     it "includes description when provided" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_stored_query(:test, {
           name: "public-s3-buckets",
           expression: "SELECT resourceId WHERE resourceType = 'AWS::S3::Bucket'",
@@ -60,7 +60,7 @@ RSpec.describe "aws_config_stored_query synthesis" do
 
     it "includes tags when provided" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_stored_query(:test, {
           name: "public-s3-buckets",
           expression: "SELECT resourceId WHERE resourceType = 'AWS::S3::Bucket'",
@@ -88,7 +88,7 @@ RSpec.describe "aws_config_stored_query synthesis" do
       SQL
 
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_stored_query(:test, {
           name: "t2-instances",
           expression: query
@@ -104,7 +104,7 @@ RSpec.describe "aws_config_stored_query synthesis" do
 
     it "supports aggregation queries" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_stored_query(:test, {
           name: "resource-count-by-type",
           expression: "SELECT COUNT(*), resourceType GROUP BY resourceType"
@@ -122,7 +122,7 @@ RSpec.describe "aws_config_stored_query synthesis" do
   describe "terraform validation" do
     it "produces valid terraform structure" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_stored_query(:test, {
           name: "public-s3-buckets",
           expression: "SELECT resourceId WHERE resourceType = 'AWS::S3::Bucket'"
@@ -150,7 +150,7 @@ RSpec.describe "aws_config_stored_query synthesis" do
     it "returns a resource reference with outputs" do
       ref = nil
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         ref = aws_config_stored_query(:test, {
           name: "public-s3-buckets",
           expression: "SELECT resourceId WHERE resourceType = 'AWS::S3::Bucket'"

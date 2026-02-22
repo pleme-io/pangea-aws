@@ -27,6 +27,18 @@ rescue LoadError => e
   puts "Warning: Could not load pangea-aws: #{e.message}"
 end
 
+# TerraformSynthesizer#synthesis returns symbol keys but tests expect string keys.
+# Normalize via JSON roundtrip so all test assertions use string keys consistently.
+if defined?(TerraformSynthesizer)
+  class TerraformSynthesizer
+    alias_method :_original_synthesis, :synthesis
+
+    def synthesis
+      JSON.parse(_original_synthesis.to_json)
+    end
+  end
+end
+
 Dir[File.join(__dir__, 'support', '**', '*.rb')].each { |f| require f }
 
 RSpec.configure do |config|

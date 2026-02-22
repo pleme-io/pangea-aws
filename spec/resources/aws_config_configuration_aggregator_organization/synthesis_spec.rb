@@ -14,17 +14,17 @@
 
 require 'spec_helper'
 require 'terraform-synthesizer'
-require 'pangea/resources/aws/config'
+require 'pangea-aws'
 
 RSpec.describe "aws_config_configuration_aggregator_organization synthesis" do
-  include Pangea::Resources::AWS::Config
+  include Pangea::Resources::AWS
 
   let(:synthesizer) { TerraformSynthesizer.new }
 
   describe "terraform generation" do
     it "generates valid terraform JSON" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_configuration_aggregator_organization(:test, {
           name: "organization-aggregator",
           role_arn: "arn:aws:iam::123456789012:role/config-aggregator-role"
@@ -44,7 +44,7 @@ RSpec.describe "aws_config_configuration_aggregator_organization synthesis" do
 
     it "includes all_regions configuration" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_configuration_aggregator_organization(:test, {
           name: "organization-aggregator",
           role_arn: "arn:aws:iam::123456789012:role/config-aggregator-role",
@@ -60,7 +60,7 @@ RSpec.describe "aws_config_configuration_aggregator_organization synthesis" do
 
     it "includes tags when provided" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_configuration_aggregator_organization(:test, {
           name: "organization-aggregator",
           role_arn: "arn:aws:iam::123456789012:role/config-aggregator-role",
@@ -79,7 +79,7 @@ RSpec.describe "aws_config_configuration_aggregator_organization synthesis" do
   describe "terraform validation" do
     it "produces valid terraform structure" do
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         aws_config_configuration_aggregator_organization(:test, {
           name: "organization-aggregator",
           role_arn: "arn:aws:iam::123456789012:role/config-aggregator-role"
@@ -105,7 +105,7 @@ RSpec.describe "aws_config_configuration_aggregator_organization synthesis" do
     it "returns a resource reference with outputs" do
       ref = nil
       synthesizer.instance_eval do
-        extend Pangea::Resources::AWS::Config
+        extend Pangea::Resources::AWS
         ref = aws_config_configuration_aggregator_organization(:test, {
           name: "organization-aggregator",
           role_arn: "arn:aws:iam::123456789012:role/config-aggregator-role"
