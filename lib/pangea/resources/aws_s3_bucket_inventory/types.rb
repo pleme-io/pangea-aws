@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 require_relative 'types/helpers'
@@ -37,13 +36,13 @@ module Pangea
         attribute :enabled, Resources::Types::Bool.default(true)
 
         # Inventory output format
-        attribute :format, Resources::Types::String.enum('CSV', 'ORC', 'Parquet').default('CSV')
+        attribute :format, Resources::Types::String.constrained(included_in: ['CSV', 'ORC', 'Parquet']).default('CSV')
 
         # How frequently inventory reports are generated
-        attribute :frequency, Resources::Types::String.enum('Daily', 'Weekly').default('Weekly')
+        attribute :frequency, Resources::Types::String.constrained(included_in: ['Daily', 'Weekly']).default('Weekly')
 
         # Object versions to include in inventory
-        attribute :included_object_versions, Resources::Types::String.enum('All', 'Current').default('All')
+        attribute :included_object_versions, Resources::Types::String.constrained(included_in: ['All', 'Current']).default('All')
 
         # Optional object prefix filter
         attribute? :prefix, Resources::Types::String.optional
@@ -53,7 +52,7 @@ module Pangea
           bucket: Resources::Types::String,
           prefix?: Resources::Types::String.optional,
           account_id?: Resources::Types::String.optional,
-          format: Resources::Types::String.enum('CSV', 'ORC', 'Parquet').default('CSV'),
+          format: Resources::Types::String.constrained(included_in: ['CSV', 'ORC', 'Parquet']).default('CSV'),
           encryption?: Resources::Types::Hash.schema(
             sse_s3?: Resources::Types::Hash.schema(
               enabled: Resources::Types::Bool.default(true)
@@ -66,8 +65,7 @@ module Pangea
 
         # Optional fields to include in inventory reports
         attribute :optional_fields, Resources::Types::Array.of(
-          Resources::Types::String.enum(
-            'Size',
+          Resources::Types::String.constrained(included_in: ['Size',
             'LastModifiedDate', 
             'StorageClass',
             'ETag',
@@ -79,17 +77,14 @@ module Pangea
             'ObjectLockLegalHoldStatus',
             'IntelligentTieringAccessTier',
             'BucketKeyStatus',
-            'ChecksumAlgorithm'
-          )
+            'ChecksumAlgorithm'])
         ).default([].freeze)
 
         # Schedule configuration for inventory generation
         attribute :schedule, Resources::Types::Hash.schema(
-          frequency: Resources::Types::String.enum('Daily', 'Weekly').default('Weekly'),
-          day_of_week?: Resources::Types::String.enum(
-            'Sunday', 'Monday', 'Tuesday', 'Wednesday', 
-            'Thursday', 'Friday', 'Saturday'
-          ).optional
+          frequency: Resources::Types::String.constrained(included_in: ['Daily', 'Weekly']).default('Weekly'),
+          day_of_week?: Resources::Types::String.constrained(included_in: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 
+            'Thursday', 'Friday', 'Saturday']).optional
         ).default({ frequency: 'Weekly' })
 
         # Custom validation

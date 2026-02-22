@@ -35,8 +35,7 @@ module Pangea
           # Node configuration (required)
           attribute :node_configuration, Resources::Types::Hash.schema(
             availability_zone: Resources::Types::String,
-            instance_type: Resources::Types::String.enum(
-              'bc.t3.small',
+            instance_type: Resources::Types::String.constrained(included_in: ['bc.t3.small',
               'bc.t3.medium',
               'bc.t3.large',
               'bc.t3.xlarge',
@@ -47,8 +46,7 @@ module Pangea
               'bc.c5.large',
               'bc.c5.xlarge',
               'bc.c5.2xlarge',
-              'bc.c5.4xlarge'
-            ),
+              'bc.c5.4xlarge']),
             log_publishing_configuration?: Resources::Types::Hash.schema(
               fabric?: Resources::Types::Hash.schema(
                 chaincode_logs?: Resources::Types::Hash.schema(
@@ -63,7 +61,7 @@ module Pangea
                 ).optional
               ).optional
             ).optional,
-            state_db?: Resources::Types::String.enum('LevelDB', 'CouchDB').optional
+            state_db?: Resources::Types::String.constrained(included_in: ['LevelDB', 'CouchDB']).optional
           )
 
           # Tags (optional)

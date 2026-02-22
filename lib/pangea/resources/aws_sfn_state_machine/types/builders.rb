@@ -8,8 +8,7 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class SfnStateMachineAttributes
-          # Common state machine pattern builders
+        class SfnStateMachineAttributes < Dry::Struct          # Common state machine pattern builders
           module Builders
             extend self
 

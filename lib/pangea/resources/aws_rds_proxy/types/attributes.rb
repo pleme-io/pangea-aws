@@ -10,7 +10,7 @@ module Pangea
       module Types
         class RdsProxyAttributes < Dry::Struct
           attribute :db_proxy_name, Resources::Types::String
-          attribute :engine_family, Resources::Types::String.enum('MYSQL', 'POSTGRESQL')
+          attribute :engine_family, Resources::Types::String.constrained(included_in: ['MYSQL', 'POSTGRESQL'])
           attribute :auth, Resources::Types::Array.of(ProxyAuth).constrained(min_size: 1)
           attribute :role_arn, Resources::Types::String
           attribute :vpc_subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)

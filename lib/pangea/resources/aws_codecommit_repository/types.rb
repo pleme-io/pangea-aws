@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -48,7 +47,7 @@ module Pangea
             custom_data?: Resources::Types::String.optional,
             branches?: Resources::Types::Array.of(Resources::Types::String).optional,
             events: Resources::Types::Array.of(
-              Resources::Types::String.enum('all', 'updateReference', 'createReference', 'deleteReference')
+              Resources::Types::String.constrained(included_in: ['all', 'updateReference', 'createReference', 'deleteReference'])
             )
           )
         ).default([].freeze)
@@ -119,4 +118,3 @@ module Pangea
       end
     end
   end
-end

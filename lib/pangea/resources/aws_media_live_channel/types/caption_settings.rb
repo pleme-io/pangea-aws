@@ -8,16 +8,19 @@ module Pangea
     module AWS
       module Types
         module MediaLiveChannel
+            T = Resources::Types
+
           # Caption type definitions
+
           module CaptionSettings
             T = Resources::Types
             EC = EncoderConfig
 
             # Font settings (shared for burn-in and DVB-sub)
-            FontColorEnum = T::String.enum('BLACK', 'BLUE', 'GREEN', 'RED', 'WHITE', 'YELLOW')
-            BackgroundColorEnum = T::String.enum('BLACK', 'NONE', 'WHITE')
-            ShadowColorEnum = T::String.enum('BLACK', 'NONE', 'WHITE')
-            AlignmentEnum = T::String.enum('CENTERED', 'LEFT', 'SMART')
+            FontColorEnum = T::String.constrained(included_in: ['BLACK', 'BLUE', 'GREEN', 'RED', 'WHITE', 'YELLOW'])
+            BackgroundColorEnum = T::String.constrained(included_in: ['BLACK', 'NONE', 'WHITE'])
+            ShadowColorEnum = T::String.constrained(included_in: ['BLACK', 'NONE', 'WHITE'])
+            AlignmentEnum = T::String.constrained(included_in: ['CENTERED', 'LEFT', 'SMART'])
 
             # Burn-in destination settings
             BurnInDestinationSettings = T::Hash.schema(
@@ -35,7 +38,7 @@ module Pangea
               shadow_opacity?: T::Integer.optional,
               shadow_x_offset?: T::Integer.optional,
               shadow_y_offset?: T::Integer.optional,
-              teletext_grid_control?: T::String.enum('FIXED', 'SCALED').optional,
+              teletext_grid_control?: T::String.constrained(included_in: ['FIXED', 'SCALED']).optional,
               x_position?: T::Integer.optional,
               y_position?: T::Integer.optional
             )
@@ -56,7 +59,7 @@ module Pangea
               shadow_opacity?: T::Integer.optional,
               shadow_x_offset?: T::Integer.optional,
               shadow_y_offset?: T::Integer.optional,
-              teletext_grid_control?: T::String.enum('FIXED', 'SCALED').optional,
+              teletext_grid_control?: T::String.constrained(included_in: ['FIXED', 'SCALED']).optional,
               x_position?: T::Integer.optional,
               y_position?: T::Integer.optional
             )
@@ -64,19 +67,19 @@ module Pangea
             # EBU TT-D destination settings
             EbuTtDDestinationSettings = T::Hash.schema(
               copyright_holder?: T::String.optional,
-              fill_line_gap?: T::String.enum('DISABLED', 'ENABLED').optional,
+              fill_line_gap?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional,
               font_family?: T::String.optional,
-              style_control?: T::String.enum('EXCLUDE', 'INCLUDE').optional
+              style_control?: T::String.constrained(included_in: ['EXCLUDE', 'INCLUDE']).optional
             )
 
             # TTML destination settings
             TtmlDestinationSettings = T::Hash.schema(
-              style_control?: T::String.enum('PASSTHROUGH', 'USE_CONFIGURED').optional
+              style_control?: T::String.constrained(included_in: ['PASSTHROUGH', 'USE_CONFIGURED']).optional
             )
 
             # WebVTT destination settings
             WebvttDestinationSettings = T::Hash.schema(
-              style_control?: T::String.enum('NO_STYLE_DATA', 'PASSTHROUGH').optional
+              style_control?: T::String.constrained(included_in: ['NO_STYLE_DATA', 'PASSTHROUGH']).optional
             )
 
             # Caption destination settings container
@@ -104,6 +107,8 @@ module Pangea
               language_description?: T::String.optional,
               name: T::String
             )
+
+
           end
         end
       end

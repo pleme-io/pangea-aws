@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 
 module Pangea
@@ -21,50 +20,48 @@ module Pangea
     module AWS
       module S3MultiRegionAccessPoint
         # Common types for S3 Multi-Region Access Point configurations
-        class Types < Dry::Types::Module
-          include Dry.Types()
-
+        module Types
           # S3 Multi-Region Access Point Name constraint  
-          MultiRegionAccessPointName = String.constrained(
+          MultiRegionAccessPointName = Resources::Types::String.constrained(
             min_size: 3, 
             max_size: 50,
             format: /\A[a-z0-9\-]+\z/
           )
           
           # AWS Region constraint
-          AwsRegion = String.constrained(
+          AwsRegion = Resources::Types::String.constrained(
             format: /\A[a-z]{2}-[a-z]+-\d\z/
           )
           
           # Region Configuration for Multi-Region Access Point
-          RegionConfiguration = Hash.schema({
-            bucket: String,
-            region: AwsRegion,
-            bucket_account_id?: String.constrained(format: /\A\d{12}\z/)
+          RegionConfiguration = Resources::Types::Hash.schema({
+            bucket: Resources::Types::String,
+            region: Resources::Types::AwsRegion,
+            bucket_account_id?: Resources::Types::String.constrained(format: /\A\d{12}\z/)
           })
           
           # Public Access Block Configuration
-          PublicAccessBlockConfiguration = Hash.schema({
-            block_public_acls?: Bool,
-            block_public_policy?: Bool,
-            ignore_public_acls?: Bool,
-            restrict_public_buckets?: Bool
+          unless const_defined?(:PublicAccessBlockConfiguration)
+          PublicAccessBlockConfiguration = Resources::Types::Hash.schema({
+            block_public_acls?: Resources::Types::Bool,
+            block_public_policy?: Resources::Types::Bool,
+            ignore_public_acls?: Resources::Types::Bool,
+            restrict_public_buckets?: Resources::Types::Bool
           })
+          end
         end
 
         # S3 Multi-Region Access Point attributes with comprehensive validation
         class S3MultiRegionAccessPointAttributes < Dry::Struct
-          include Types[self]
-          
           # Required attributes
-          attribute :details, Hash.schema({
-            name: MultiRegionAccessPointName,
-            public_access_block_configuration?: PublicAccessBlockConfiguration.default({}.freeze),
-            region: Array.of(RegionConfiguration).constrained(min_size: 1, max_size: 20)
+          attribute :details, Resources::Types::Hash.schema({
+            name: Types::MultiRegionAccessPointName,
+            public_access_block_configuration?: Types::PublicAccessBlockConfiguration.default({}.freeze),
+            region: Resources::Types::Array.of(Types::RegionConfiguration).constrained(min_size: 1, max_size: 20)
           })
           
           # Optional attributes
-          attribute? :account_id, String.constrained(format: /\A\d{12}\z/).optional
+          attribute? :account_id, Resources::Types::String.constrained(format: /\A\d{12}\z/).optional
           
           # Computed properties
           def access_point_name

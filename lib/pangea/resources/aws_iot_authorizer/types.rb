@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -34,35 +33,9 @@ module Pangea
       end
 
       # Main attributes for IoT authorizer resource
-      class Attributes < Dry::Struct
-        schema schema.strict
-
-        # Name of the custom authorizer
-        attribute :name, Resources::Types::String
-
-        # ARN of Lambda function that implements authorization logic
-        attribute :authorizer_function_arn, Resources::Types::String
-
-        # Signing disabled flag (if true, signature validation is skipped)
-        attribute :signing_disabled, Resources::Types::Bool.optional
-
-        # Status of the authorizer (ACTIVE or INACTIVE)
-        attribute :status, Resources::Types::String.enum('ACTIVE', 'INACTIVE').optional
-
-        # Token key name for extracting tokens from requests
-        attribute :token_key_name, Resources::Types::String.optional
-
-        # Token signing public keys for signature validation
-        attribute :token_signing_public_keys, Resources::Types::Hash.map(Types::String, Types::String).optional
-
-        # Whether to enable caching for authorizer results
-        attribute :enable_caching_for_http, Resources::Types::Bool.optional
-
-        # Resource tags for organization and billing
-        attribute :tags, Resources::Types::Hash.map(Types::String, Types::String).optional
-      end
 
       # Output attributes from authorizer resource
+      unless const_defined?(:Outputs)
       class Outputs < Dry::Struct
         schema schema.strict
 
@@ -76,5 +49,6 @@ module Pangea
         attribute :id, Resources::Types::String
       end
     end
+      end
   end
 end

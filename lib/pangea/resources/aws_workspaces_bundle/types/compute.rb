@@ -24,9 +24,7 @@ module Pangea
         class ComputeTypeConfigurationType < Dry::Struct
           transform_keys(&:to_sym)
 
-          attribute :name, Resources::Types::String.enum(
-            'VALUE', 'STANDARD', 'PERFORMANCE', 'POWER', 'POWERPRO', 'GRAPHICS', 'GRAPHICSPRO'
-          )
+          attribute :name, Resources::Types::String.constrained(included_in: ['VALUE', 'STANDARD', 'PERFORMANCE', 'POWER', 'POWERPRO', 'GRAPHICS', 'GRAPHICSPRO'])
 
           def vcpus
             case name

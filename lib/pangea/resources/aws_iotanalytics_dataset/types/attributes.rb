@@ -21,6 +21,7 @@ module Pangea
   module Resources
     module AwsIotanalyticsDatasetTypes
       # Main attributes for IoT Analytics dataset resource
+      unless const_defined?(:Attributes)
       class Attributes < Dry::Struct
         schema schema.strict
 
@@ -65,8 +66,10 @@ module Pangea
         # Resource tags
         attribute :tags, Resources::Types::Hash.map(Types::String, Types::String).optional
       end
+      end
 
       # Output attributes from dataset resource
+      unless const_defined?(:Outputs)
       class Outputs < Dry::Struct
         schema schema.strict
 
@@ -75,6 +78,7 @@ module Pangea
 
         # The dataset name
         attribute :name, Resources::Types::String
+      end
       end
     end
   end

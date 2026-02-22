@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -34,13 +33,13 @@ module Pangea
       
       # Accepter configuration block
       attribute :accepter, Resources::Types::Hash.schema(
-        allow_remote_vpc_dns_resolution?: Types::Bool.optional.default(false)
-      ).default({}.freeze)
+        allow_remote_vpc_dns_resolution?: Resources::Types::Bool.optional.default(false)
+      ).optional
       
       # Requester configuration block
       attribute :requester, Resources::Types::Hash.schema(
-        allow_remote_vpc_dns_resolution?: Types::Bool.optional.default(false)
-      ).default({}.freeze)
+        allow_remote_vpc_dns_resolution?: Resources::Types::Bool.optional.default(false)
+      ).optional
       
       # Tags to apply to the resource
       attribute :tags, Resources::Types::AwsTags.default({}.freeze)

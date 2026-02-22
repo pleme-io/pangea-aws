@@ -37,10 +37,8 @@ module Pangea
           attribute? :description, Resources::Types::String.optional
 
           # Framework (required)
-          attribute :framework, Resources::Types::String.enum(
-            'HYPERLEDGER_FABRIC',
-            'ETHEREUM'
-          )
+          attribute :framework, Resources::Types::String.constrained(included_in: ['HYPERLEDGER_FABRIC',
+            'ETHEREUM'])
 
           # Framework version (required)
           attribute :framework_version, Resources::Types::String
@@ -48,7 +46,7 @@ module Pangea
           # Framework configuration (required for Hyperledger Fabric)
           attribute? :framework_configuration, Resources::Types::Hash.schema(
             network_fabric_configuration?: Resources::Types::Hash.schema(
-              edition: Resources::Types::String.enum('STARTER', 'STANDARD')
+              edition: Resources::Types::String.constrained(included_in: ['STARTER', 'STANDARD'])
             ).optional,
             network_ethereum_configuration?: Resources::Types::Hash.schema(
               chain_id: Resources::Types::String
@@ -60,7 +58,7 @@ module Pangea
             approval_threshold_policy?: Resources::Types::Hash.schema(
               threshold_percentage?: Resources::Types::Integer.constrained(gteq: 0, lteq: 100).optional,
               proposal_duration_in_hours?: Resources::Types::Integer.constrained(gteq: 1, lteq: 168).optional,
-              threshold_comparator?: Resources::Types::String.enum('GREATER_THAN', 'GREATER_THAN_OR_EQUAL_TO').optional
+              threshold_comparator?: Resources::Types::String.constrained(included_in: ['GREATER_THAN', 'GREATER_THAN_OR_EQUAL_TO']).optional
             ).optional
           ).optional
 

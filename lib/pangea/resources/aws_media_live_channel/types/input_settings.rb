@@ -14,7 +14,7 @@ module Pangea
             # Audio selector settings
             AudioLanguageSelection = T::Hash.schema(
               language_code: T::String,
-              language_selection_policy?: T::String.enum('LOOSE', 'STRICT').optional
+              language_selection_policy?: T::String.constrained(included_in: ['LOOSE', 'STRICT']).optional
             )
 
             AudioPidSelection = T::Hash.schema(
@@ -60,8 +60,8 @@ module Pangea
             )
 
             VideoSelector = T::Hash.schema(
-              color_space?: T::String.enum('FOLLOW', 'HDR10', 'HLG_2020', 'REC_601', 'REC_709').optional,
-              color_space_usage?: T::String.enum('FALLBACK', 'FORCE').optional,
+              color_space?: T::String.constrained(included_in: ['FOLLOW', 'HDR10', 'HLG_2020', 'REC_601', 'REC_709']).optional,
+              color_space_usage?: T::String.constrained(included_in: ['FALLBACK', 'FORCE']).optional,
               selector_settings?: VideoSelectorSettings.optional
             )
 
@@ -75,20 +75,20 @@ module Pangea
 
             NetworkInputSettings = T::Hash.schema(
               hls_input_settings?: HlsInputSettings.optional,
-              server_validation?: T::String.enum('CHECK_CRYPTOGRAPHY_AND_VALIDATE_NAME', 'CHECK_CRYPTOGRAPHY_ONLY').optional
+              server_validation?: T::String.constrained(included_in: ['CHECK_CRYPTOGRAPHY_AND_VALIDATE_NAME', 'CHECK_CRYPTOGRAPHY_ONLY']).optional
             )
 
             # Complete input settings
             InputSettingsSchema = T::Hash.schema(
               audio_selectors?: T::Array.of(AudioSelector).optional,
               caption_selectors?: T::Array.of(CaptionSelector).optional,
-              deblock_filter?: T::String.enum('DISABLED', 'ENABLED').optional,
-              denoise_filter?: T::String.enum('DISABLED', 'ENABLED').optional,
+              deblock_filter?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional,
+              denoise_filter?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional,
               filter_strength?: T::Integer.optional,
-              input_filter?: T::String.enum('AUTO', 'DISABLED', 'FORCED').optional,
+              input_filter?: T::String.constrained(included_in: ['AUTO', 'DISABLED', 'FORCED']).optional,
               network_input_settings?: NetworkInputSettings.optional,
-              smpte2038_data_preference?: T::String.enum('IGNORE', 'PREFER').optional,
-              source_end_behavior?: T::String.enum('CONTINUE', 'LOOP').optional,
+              smpte2038_data_preference?: T::String.constrained(included_in: ['IGNORE', 'PREFER']).optional,
+              source_end_behavior?: T::String.constrained(included_in: ['CONTINUE', 'LOOP']).optional,
               video_selector?: VideoSelector.optional
             )
 

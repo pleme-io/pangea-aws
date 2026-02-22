@@ -12,9 +12,10 @@ module Pangea
         end
 
         # S3 lifecycle rule
+        unless const_defined?(:LifecycleRule)
         class LifecycleRule < Dry::Struct
           attribute :id, Resources::Types::String
-          attribute :status, Resources::Types::String.enum("Enabled", "Disabled")
+          attribute :status, Resources::Types::String.constrained(included_in: ["Enabled", "Disabled"])
           attribute? :abort_incomplete_multipart_upload, LifecycleAbortIncompleteMultipartUpload.optional
           attribute? :expiration, LifecycleExpiration.optional
           attribute? :filter, LifecycleFilter.optional
@@ -42,6 +43,7 @@ module Pangea
           def has_filter?
             !filter.nil?
           end
+        end
         end
       end
     end

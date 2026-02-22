@@ -9,11 +9,11 @@ module Pangea
         # Type-safe attributes for AWS Cognito Identity Provider resources
         class CognitoIdentityProviderAttributes < Dry::Struct
           attribute :provider_name, Resources::Types::String
-          attribute :provider_type, Resources::Types::String.enum('SAML', 'OIDC', 'Facebook', 'Google', 'LoginWithAmazon', 'Apple', 'Twitter')
+          attribute :provider_type, Resources::Types::String.constrained(included_in: ['SAML', 'OIDC', 'Facebook', 'Google', 'LoginWithAmazon', 'Apple', 'Twitter'])
           attribute :user_pool_id, Resources::Types::String
           attribute :provider_details, Resources::Types::Hash.optional
           attribute :attribute_mapping, Resources::Types::Hash.optional
-          attribute :idp_identifiers, Resources::Types::Array.of(Types::String).optional
+          attribute :idp_identifiers, Resources::Types::Array.of(Resources::Types::String).optional
 
           def self.new(attributes = {})
             attrs = super(attributes)

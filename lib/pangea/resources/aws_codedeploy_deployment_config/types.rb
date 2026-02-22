@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -33,17 +32,17 @@ module Pangea
         )
 
         # Compute platform
-        attribute :compute_platform, Resources::Types::String.enum('Server', 'Lambda', 'ECS').default('Server')
+        attribute :compute_platform, Resources::Types::String.constrained(included_in: ['Server', 'Lambda', 'ECS']).default('Server')
 
         # Minimum healthy hosts (for Server platform)
         attribute :minimum_healthy_hosts, Resources::Types::Hash.schema(
-          type: Resources::Types::String.enum('HOST_COUNT', 'FLEET_PERCENT'),
+          type: Resources::Types::String.constrained(included_in: ['HOST_COUNT', 'FLEET_PERCENT']),
           value: Resources::Types::Integer.constrained(gteq: 0)
         ).default({ type: 'FLEET_PERCENT', value: 75 })
 
         # Traffic routing config (for Lambda/ECS platforms)
         attribute :traffic_routing_config, Resources::Types::Hash.schema(
-          type?: Resources::Types::String.enum('TimeBasedCanary', 'TimeBasedLinear', 'AllAtOnceTrafficShift').optional,
+          type?: Resources::Types::String.constrained(included_in: ['TimeBasedCanary', 'TimeBasedLinear', 'AllAtOnceTrafficShift']).optional,
           time_based_canary?: Resources::Types::Hash.schema(
             canary_percentage: Resources::Types::Integer.constrained(gteq: 0, lteq: 100),
             canary_interval: Resources::Types::Integer.constrained(gteq: 0)
@@ -140,4 +139,3 @@ module Pangea
       end
     end
   end
-end

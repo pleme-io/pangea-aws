@@ -35,8 +35,8 @@ module Pangea
       }
 
       IotAnalyticsRetentionPeriod = Integer.constrained(gteq: 1, lteq: 2147483647)
-      IotAnalyticsFileFormatType = String.enum('JSON', 'PARQUET')
-      IotAnalyticsDatasetContentType = String.enum('CSV', 'JSON')
+      IotAnalyticsFileFormatType = Resources::Types::String.constrained(included_in: ['JSON', 'PARQUET'])
+      IotAnalyticsDatasetContentType = Resources::Types::String.constrained(included_in: ['CSV', 'JSON'])
 
       IotAnalyticsS3Configuration = Hash.schema(
         bucket: S3BucketName,

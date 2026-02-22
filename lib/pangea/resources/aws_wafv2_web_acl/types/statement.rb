@@ -32,131 +32,131 @@ module Pangea
 
           transform_keys(&:to_sym)
 
-          attribute :byte_match_statement, Hash.schema(
-            field_to_match: Hash.schema(
-              all_query_arguments?: Hash.schema({}).optional,
-              body?: Hash.schema(oversize_handling?: String.enum('CONTINUE', 'MATCH', 'NO_MATCH').optional).optional,
-              method?: Hash.schema({}).optional,
-              query_string?: Hash.schema({}).optional,
-              single_header?: Hash.schema(name: String).optional,
-              single_query_argument?: Hash.schema(name: String).optional,
-              uri_path?: Hash.schema({}).optional,
-              json_body?: Hash.schema(
+          attribute :byte_match_statement, Resources::Types::Hash.schema(
+            field_to_match: Resources::Types::Hash.schema(
+              all_query_arguments?: Resources::Types::Hash.schema({}).optional,
+              body?: Resources::Types::Hash.schema(oversize_handling?: Resources::Types::String.constrained(included_in: ['CONTINUE', 'MATCH', 'NO_MATCH']).optional).optional,
+              method?: Resources::Types::Hash.schema({}).optional,
+              query_string?: Resources::Types::Hash.schema({}).optional,
+              single_header?: Resources::Types::Hash.schema(name: Resources::Types::String).optional,
+              single_query_argument?: Resources::Types::Hash.schema(name: Resources::Types::String).optional,
+              uri_path?: Resources::Types::Hash.schema({}).optional,
+              json_body?: Resources::Types::Hash.schema(
                 match_pattern: Resources::Types::WafV2JsonBodyMatchPattern,
-                match_scope: String.enum('ALL', 'KEY', 'VALUE'),
-                invalid_fallback_behavior?: String.enum('MATCH', 'NO_MATCH', 'EVALUATE_AS_STRING').optional,
-                oversize_handling?: String.enum('CONTINUE', 'MATCH', 'NO_MATCH').optional
+                match_scope: Resources::Types::String.constrained(included_in: ['ALL', 'KEY', 'VALUE']),
+                invalid_fallback_behavior?: Resources::Types::String.constrained(included_in: ['MATCH', 'NO_MATCH', 'EVALUATE_AS_STRING']).optional,
+                oversize_handling?: Resources::Types::String.constrained(included_in: ['CONTINUE', 'MATCH', 'NO_MATCH']).optional
               ).optional
             ),
             positional_constraint: Resources::Types::WafV2PositionalConstraint,
-            search_string: String,
-            text_transformations: Array.of(Hash.schema(
-                                             priority: Integer.constrained(gteq: 0),
+            search_string: Resources::Types::String,
+            text_transformations: Resources::Types::Array.of(Resources::Types::Hash.schema(
+                                             priority: Resources::Types::Integer.constrained(gteq: 0),
                                              type: Resources::Types::WafV2TextTransformation
                                            )).constrained(min_size: 1)
           ).optional
 
-          attribute :sqli_match_statement, Hash.schema(
-            field_to_match: Hash.schema(
-              all_query_arguments?: Hash.schema({}).optional,
-              body?: Hash.schema(oversize_handling?: String.enum('CONTINUE', 'MATCH', 'NO_MATCH').optional).optional,
-              method?: Hash.schema({}).optional,
-              query_string?: Hash.schema({}).optional,
-              single_header?: Hash.schema(name: String).optional,
-              single_query_argument?: Hash.schema(name: String).optional,
-              uri_path?: Hash.schema({}).optional
+          attribute :sqli_match_statement, Resources::Types::Hash.schema(
+            field_to_match: Resources::Types::Hash.schema(
+              all_query_arguments?: Resources::Types::Hash.schema({}).optional,
+              body?: Resources::Types::Hash.schema(oversize_handling?: Resources::Types::String.constrained(included_in: ['CONTINUE', 'MATCH', 'NO_MATCH']).optional).optional,
+              method?: Resources::Types::Hash.schema({}).optional,
+              query_string?: Resources::Types::Hash.schema({}).optional,
+              single_header?: Resources::Types::Hash.schema(name: Resources::Types::String).optional,
+              single_query_argument?: Resources::Types::Hash.schema(name: Resources::Types::String).optional,
+              uri_path?: Resources::Types::Hash.schema({}).optional
             ),
-            text_transformations: Array.of(Hash.schema(
-                                             priority: Integer.constrained(gteq: 0),
+            text_transformations: Resources::Types::Array.of(Resources::Types::Hash.schema(
+                                             priority: Resources::Types::Integer.constrained(gteq: 0),
                                              type: Resources::Types::WafV2TextTransformation
                                            )).constrained(min_size: 1)
           ).optional
 
-          attribute :xss_match_statement, Hash.schema(
-            field_to_match: Hash.schema(
-              all_query_arguments?: Hash.schema({}).optional,
-              body?: Hash.schema(oversize_handling?: String.enum('CONTINUE', 'MATCH', 'NO_MATCH').optional).optional,
-              method?: Hash.schema({}).optional,
-              query_string?: Hash.schema({}).optional,
-              single_header?: Hash.schema(name: String).optional,
-              single_query_argument?: Hash.schema(name: String).optional,
-              uri_path?: Hash.schema({}).optional
+          attribute :xss_match_statement, Resources::Types::Hash.schema(
+            field_to_match: Resources::Types::Hash.schema(
+              all_query_arguments?: Resources::Types::Hash.schema({}).optional,
+              body?: Resources::Types::Hash.schema(oversize_handling?: Resources::Types::String.constrained(included_in: ['CONTINUE', 'MATCH', 'NO_MATCH']).optional).optional,
+              method?: Resources::Types::Hash.schema({}).optional,
+              query_string?: Resources::Types::Hash.schema({}).optional,
+              single_header?: Resources::Types::Hash.schema(name: Resources::Types::String).optional,
+              single_query_argument?: Resources::Types::Hash.schema(name: Resources::Types::String).optional,
+              uri_path?: Resources::Types::Hash.schema({}).optional
             ),
-            text_transformations: Array.of(Hash.schema(
-                                             priority: Integer.constrained(gteq: 0),
+            text_transformations: Resources::Types::Array.of(Resources::Types::Hash.schema(
+                                             priority: Resources::Types::Integer.constrained(gteq: 0),
                                              type: Resources::Types::WafV2TextTransformation
                                            )).constrained(min_size: 1)
           ).optional
 
-          attribute :size_constraint_statement, Hash.schema(
-            field_to_match: Hash.schema(
-              all_query_arguments?: Hash.schema({}).optional,
-              body?: Hash.schema(oversize_handling?: String.enum('CONTINUE', 'MATCH', 'NO_MATCH').optional).optional,
-              method?: Hash.schema({}).optional,
-              query_string?: Hash.schema({}).optional,
-              single_header?: Hash.schema(name: String).optional,
-              single_query_argument?: Hash.schema(name: String).optional,
-              uri_path?: Hash.schema({}).optional
+          attribute :size_constraint_statement, Resources::Types::Hash.schema(
+            field_to_match: Resources::Types::Hash.schema(
+              all_query_arguments?: Resources::Types::Hash.schema({}).optional,
+              body?: Resources::Types::Hash.schema(oversize_handling?: Resources::Types::String.constrained(included_in: ['CONTINUE', 'MATCH', 'NO_MATCH']).optional).optional,
+              method?: Resources::Types::Hash.schema({}).optional,
+              query_string?: Resources::Types::Hash.schema({}).optional,
+              single_header?: Resources::Types::Hash.schema(name: Resources::Types::String).optional,
+              single_query_argument?: Resources::Types::Hash.schema(name: Resources::Types::String).optional,
+              uri_path?: Resources::Types::Hash.schema({}).optional
             ),
             comparison_operator: Resources::Types::WafV2ComparisonOperator,
-            size: Integer.constrained(gteq: 0, lteq: 21_474_836_480),
-            text_transformations: Array.of(Hash.schema(
-                                             priority: Integer.constrained(gteq: 0),
+            size: Resources::Types::Integer.constrained(gteq: 0, lteq: 21_474_836_480),
+            text_transformations: Resources::Types::Array.of(Resources::Types::Hash.schema(
+                                             priority: Resources::Types::Integer.constrained(gteq: 0),
                                              type: Resources::Types::WafV2TextTransformation
                                            )).constrained(min_size: 1)
           ).optional
 
-          attribute :geo_match_statement, Hash.schema(
-            country_codes: Array.of(String.constrained(format: /\A[A-Z]{2}\z/)).constrained(min_size: 1),
-            forwarded_ip_config?: Hash.schema(
-              header_name: String,
-              fallback_behavior: String.enum('MATCH', 'NO_MATCH')
+          attribute :geo_match_statement, Resources::Types::Hash.schema(
+            country_codes: Resources::Types::Array.of(Resources::Types::String.constrained(format: /\A[A-Z]{2}\z/)).constrained(min_size: 1),
+            forwarded_ip_config?: Resources::Types::Hash.schema(
+              header_name: Resources::Types::String,
+              fallback_behavior: Resources::Types::String.constrained(included_in: ['MATCH', 'NO_MATCH'])
             ).optional
           ).optional
 
-          attribute :ip_set_reference_statement, Hash.schema(
-            arn: String.constrained(format: /\Aarn:aws:wafv2:/),
-            ip_set_forwarded_ip_config?: Hash.schema(
-              header_name: String,
-              fallback_behavior: String.enum('MATCH', 'NO_MATCH'),
-              position: String.enum('FIRST', 'LAST', 'ANY')
+          attribute :ip_set_reference_statement, Resources::Types::Hash.schema(
+            arn: Resources::Types::String.constrained(format: /\Aarn:aws:wafv2:/),
+            ip_set_forwarded_ip_config?: Resources::Types::Hash.schema(
+              header_name: Resources::Types::String,
+              fallback_behavior: Resources::Types::String.constrained(included_in: ['MATCH', 'NO_MATCH']),
+              position: Resources::Types::String.constrained(included_in: ['FIRST', 'LAST', 'ANY'])
             ).optional
           ).optional
 
-          attribute :rule_group_reference_statement, Hash.schema(
-            arn: String.constrained(format: /\Aarn:aws:wafv2:/),
-            excluded_rules?: Array.of(Hash.schema(name: String)).optional
+          attribute :rule_group_reference_statement, Resources::Types::Hash.schema(
+            arn: Resources::Types::String.constrained(format: /\Aarn:aws:wafv2:/),
+            excluded_rules?: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String)).optional
           ).optional
 
-          attribute :managed_rule_group_statement, Hash.schema(
-            vendor_name: String,
-            name: String,
-            version?: String.optional,
-            excluded_rules?: Array.of(Hash.schema(name: String)).optional,
-            scope_down_statement?: Hash.optional,
-            managed_rule_group_configs?: Array.of(Hash).optional
+          attribute :managed_rule_group_statement, Resources::Types::Hash.schema(
+            vendor_name: Resources::Types::String,
+            name: Resources::Types::String,
+            version?: Resources::Types::String.optional,
+            excluded_rules?: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String)).optional,
+            scope_down_statement?: Resources::Types::Hash.optional,
+            managed_rule_group_configs?: Resources::Types::Array.of(Resources::Types::Hash).optional
           ).optional
 
-          attribute :rate_based_statement, Hash.schema(
+          attribute :rate_based_statement, Resources::Types::Hash.schema(
             limit: Resources::Types::WafV2RateLimit,
-            aggregate_key_type: String.enum('IP', 'FORWARDED_IP'),
-            forwarded_ip_config?: Hash.schema(
-              header_name: String,
-              fallback_behavior: String.enum('MATCH', 'NO_MATCH')
+            aggregate_key_type: Resources::Types::String.constrained(included_in: ['IP', 'FORWARDED_IP']),
+            forwarded_ip_config?: Resources::Types::Hash.schema(
+              header_name: Resources::Types::String,
+              fallback_behavior: Resources::Types::String.constrained(included_in: ['MATCH', 'NO_MATCH'])
             ).optional,
-            scope_down_statement?: Hash.optional
+            scope_down_statement?: Resources::Types::Hash.optional
           ).optional
 
-          attribute :and_statement, Hash.schema(
-            statements: Array.of(Hash).constrained(min_size: 2)
+          attribute :and_statement, Resources::Types::Hash.schema(
+            statements: Resources::Types::Array.of(Resources::Types::Hash).constrained(min_size: 2)
           ).optional
 
-          attribute :or_statement, Hash.schema(
-            statements: Array.of(Hash).constrained(min_size: 2)
+          attribute :or_statement, Resources::Types::Hash.schema(
+            statements: Resources::Types::Array.of(Resources::Types::Hash).constrained(min_size: 2)
           ).optional
 
-          attribute :not_statement, Hash.schema(
-            statement: Hash
+          attribute :not_statement, Resources::Types::Hash.schema(
+            statement: Resources::Types::Hash
           ).optional
 
           def self.new(attributes)

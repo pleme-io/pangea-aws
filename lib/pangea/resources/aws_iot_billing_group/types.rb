@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -33,45 +32,8 @@ module Pangea
       end
 
       # Main attributes for IoT billing group resource
-      class Attributes < Dry::Struct
-        schema schema.strict
-
-        # Name of the billing group
-        attribute :billing_group_name, Resources::Types::String
-
-        # Properties for billing group configuration
-        attribute? :billing_group_properties, BillingGroupProperties.optional
-
-        # Resource tags
-        attribute :tags, Resources::Types::Hash.map(Types::String, Types::String).optional
-      end
 
       # Output attributes from billing group resource
-      class Outputs < Dry::Struct
-        schema schema.strict
-
-        # The billing group ARN
-        attribute :arn, Resources::Types::String
-
-        # The billing group ID
-        attribute :id, Resources::Types::String
-
-        # The billing group name
-        attribute :billing_group_name, Resources::Types::String
-
-        # The billing group version
-        attribute :version, Resources::Types::Integer
-
-        # Metadata about the billing group
-        class Metadata < Dry::Struct
-          schema schema.strict
-
-          # Creation date of billing group
-          attribute :creation_date, Resources::Types::String
-        end
-
-        attribute :metadata, Metadata
-      end
     end
   end
 end

@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -30,44 +29,44 @@ module Pangea
 
         # Network configuration
         attribute :subnet_id, Resources::Types::String.optional
-        attribute :vpc_security_group_ids, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :vpc_security_group_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         attribute :availability_zone, Resources::Types::String.optional
         attribute :associate_public_ip_address, Resources::Types::Bool.optional
 
         # Instance configuration
         attribute :key_name, Resources::Types::String.optional
         attribute :user_data, Resources::Types::String.optional
-        attributeuser_data_base64 :, Resources::Types::String.optional
+        attribute :user_data_base64, Resources::Types::String.optional
         attribute :iam_instance_profile, Resources::Types::String.optional
 
         # Storage configuration
         attribute :root_block_device, Resources::Types::Hash.schema(
-          volume_type?: Types::String.enum("standard", "gp2", "gp3", "io1", "io2").optional,
-          volume_size?: Types::Integer.optional,
-          iops?: Types::Integer.optional,
-          throughput?: Types::Integer.optional,
-          delete_on_termination?: Types::Bool.optional,
-          encrypted?: Types::Bool.optional,
-          kms_key_id?: Types::String.optional
+          volume_type?: Resources::Types::String.constrained(included_in: ["standard", "gp2", "gp3", "io1", "io2"]).optional,
+          volume_size?: Resources::Types::Integer.optional,
+          iops?: Resources::Types::Integer.optional,
+          throughput?: Resources::Types::Integer.optional,
+          delete_on_termination?: Resources::Types::Bool.optional,
+          encrypted?: Resources::Types::Bool.optional,
+          kms_key_id?: Resources::Types::String.optional
         ).optional
 
         # Additional block devices
         attribute :ebs_block_device, Resources::Types::Array.of(
-          Types::Hash.schema(
-            device_name: Types::String,
-            volume_type?: Types::String.enum("standard", "gp2", "gp3", "io1", "io2").optional,
-            volume_size?: Types::Integer.optional,
-            iops?: Types::Integer.optional,
-            throughput?: Types::Integer.optional,
-            delete_on_termination?: Types::Bool.optional,
-            encrypted?: Types::Bool.optional,
-            kms_key_id?: Types::String.optional,
-            snapshot_id?: Types::String.optional
+          Resources::Types::Hash.schema(
+            device_name: Resources::Types::String,
+            volume_type?: Resources::Types::String.constrained(included_in: ["standard", "gp2", "gp3", "io1", "io2"]).optional,
+            volume_size?: Resources::Types::Integer.optional,
+            iops?: Resources::Types::Integer.optional,
+            throughput?: Resources::Types::Integer.optional,
+            delete_on_termination?: Resources::Types::Bool.optional,
+            encrypted?: Resources::Types::Bool.optional,
+            kms_key_id?: Resources::Types::String.optional,
+            snapshot_id?: Resources::Types::String.optional
           )
         ).default([].freeze)
 
         # Instance behavior
-        attribute :instance_initiated_shutdown_behavior, Resources::Types::String.enum("stop", "terminate").optional
+        attribute :instance_initiated_shutdown_behavior, Resources::Types::String.constrained(included_in: ["stop", "terminate"]).optional
         attribute :monitoring, Resources::Types::Bool.default(false)
         attribute :ebs_optimized, Resources::Types::Bool.default(false)
         attribute :source_dest_check, Resources::Types::Bool.optional
@@ -142,8 +141,7 @@ module Pangea
           
           base_costs[instance_type] || 0.10  # Default estimate
         end
-      end
-    end
+        end
       end
     end
   end

@@ -13,7 +13,7 @@ module Pangea
           attribute :read_write_type, Resources::Types::String.optional.constrained(included_in: %w[ReadOnly WriteOnly All])
           attribute :include_management_events, Resources::Types::Bool.default(true)
           attribute :data_resource, Resources::Types::Array.of(
-            Types::Hash.schema(type: Types::String, values: Types::Array.of(Types::String))
+            Resources::Types::Hash.schema(type: Resources::Types::String, values: Resources::Types::Array.of(Resources::Types::String))
           ).default([].freeze)
 
           def includes_s3_data_events?

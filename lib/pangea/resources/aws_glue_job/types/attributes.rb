@@ -34,30 +34,30 @@ module Pangea
           attribute :description, Resources::Types::String.optional
 
           # Glue version
-          attribute :glue_version, Resources::Types::String.enum('0.9', '1.0', '2.0', '3.0', '4.0').optional
+          attribute :glue_version, Resources::Types::String.constrained(included_in: ['0.9', '1.0', '2.0', '3.0', '4.0']).optional
 
           # Job command
           attribute :command, Resources::Types::Hash.schema(
-            script_location: Types::String,
-            name?: Types::String.enum('glueetl', 'gluestreaming', 'pythonshell').optional,
-            python_version?: Types::String.enum('2', '3', '3.6', '3.9').optional,
-            runtime?: Types::String.optional
+            script_location: Resources::Types::String,
+            name?: Resources::Types::String.constrained(included_in: ['glueetl', 'gluestreaming', 'pythonshell']).optional,
+            python_version?: Resources::Types::String.constrained(included_in: ['2', '3', '3.6', '3.9']).optional,
+            runtime?: Resources::Types::String.optional
           )
 
           # Default job arguments
-          attribute :default_arguments, Resources::Types::Hash.map(Types::String, Types::String).default({}.freeze)
+          attribute :default_arguments, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
 
           # Non-overridable arguments
-          attribute :non_overridable_arguments, Resources::Types::Hash.map(Types::String, Types::String).default({}.freeze)
+          attribute :non_overridable_arguments, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
 
           # Job connections
-          attribute :connections, Resources::Types::Array.of(Types::String).default([].freeze)
+          attribute :connections, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
           # Maximum capacity (DPUs)
           attribute :max_capacity, Resources::Types::Float.optional
 
           # Worker configuration for Glue 2.0+
-          attribute :worker_type, Resources::Types::String.enum('Standard', 'G.1X', 'G.2X', 'G.025X', 'G.4X', 'G.8X', 'Z.2X').optional
+          attribute :worker_type, Resources::Types::String.constrained(included_in: ['Standard', 'G.1X', 'G.2X', 'G.025X', 'G.4X', 'G.8X', 'Z.2X']).optional
           attribute :number_of_workers, Resources::Types::Integer.optional
 
           # Job timeout in minutes
@@ -71,13 +71,13 @@ module Pangea
 
           # Notification properties
           attribute :notification_property, Resources::Types::Hash.schema(
-            notify_delay_after?: Types::Integer.optional
+            notify_delay_after?: Resources::Types::Integer.optional
           ).optional
 
           # Execution properties
           attribute :execution_property, Resources::Types::Hash.schema(
-            max_concurrent_runs?: Types::Integer.constrained(gteq: 1, lteq: 1000).optional
-          ).default({}.freeze)
+            max_concurrent_runs?: Resources::Types::Integer.constrained(gteq: 1, lteq: 1000).optional
+          ).optional
 
           # Tags
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

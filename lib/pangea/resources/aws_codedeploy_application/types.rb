@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -33,7 +32,7 @@ module Pangea
         )
 
         # Compute platform (EC2/Server, Lambda, or ECS)
-        attribute :compute_platform, Resources::Types::String.enum('Server', 'Lambda', 'ECS').default('Server')
+        attribute :compute_platform, Resources::Types::String.constrained(included_in: ['Server', 'Lambda', 'ECS']).default('Server')
 
         # Tags
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -95,4 +94,3 @@ module Pangea
       end
     end
   end
-end

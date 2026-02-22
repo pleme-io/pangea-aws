@@ -17,15 +17,15 @@
 require 'dry-struct'
 require 'pangea/resources/types'
 
-require_relative 'types/validation'
-require_relative 'types/instance_methods'
-
 module Pangea
   module Resources
     module AWS
       module Types
         # Type-safe attributes for AWS S3 Bucket Object Lock Configuration resources
         class S3BucketObjectLockConfigurationAttributes < Dry::Struct
+          require_relative 'types/validation'
+          require_relative 'types/instance_methods'
+
           include InstanceMethods
 
           transform_keys(&:to_sym)
@@ -37,23 +37,23 @@ module Pangea
           attribute? :expected_bucket_owner, Resources::Types::String.optional
 
           # Object lock configuration status (Enabled is the only valid value)
-          attribute :object_lock_enabled, Resources::Types::String.enum('Enabled').default('Enabled')
+          attribute :object_lock_enabled, Resources::Types::String.default('Enabled').enum('Enabled')
 
           # Token for making updates (prevents concurrent modification issues)
           attribute? :token, Resources::Types::String.optional
 
           # Default retention rule configuration
-          attribute :rule, Resources::Types::Hash.schema(
+          attribute? :rule, Resources::Types::Hash.schema(
             default_retention: Resources::Types::Hash.schema(
               # Retention mode: GOVERNANCE allows privileged users to modify/delete
               # COMPLIANCE prevents any modifications until retention period expires
-              mode: Resources::Types::String.enum('GOVERNANCE', 'COMPLIANCE'),
+              mode: Resources::Types::String.constrained(included_in: ['GOVERNANCE', 'COMPLIANCE']),
 
               # Retention period - must specify either days OR years, not both
               days?: Resources::Types::Integer.constrained(gteq: 1, lteq: 36_500).optional,
               years?: Resources::Types::Integer.constrained(gteq: 1, lteq: 100).optional
             )
-          ).default({}.freeze)
+          ).optional
 
           # Custom validation
           def self.new(attributes = {})
@@ -65,8 +65,8 @@ module Pangea
               Validation.validate_aws_account_id(attrs.expected_bucket_owner)
             end
 
-            if attrs.rule[:default_retention]
-              Validation.validate_default_retention(attrs.rule[:default_retention])
+            if attrs.rule&.dig(:default_retention)
+              Validation.validate_default_retention(attrs.rule&.dig(:default_retention))
             end
 
             attrs

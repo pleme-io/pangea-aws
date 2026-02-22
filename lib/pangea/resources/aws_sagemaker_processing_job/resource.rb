@@ -22,7 +22,8 @@ module Pangea
   module Resources
     module AWS
       # SageMaker Processing Job resource for data preprocessing and feature engineering
-      class SageMakerProcessingJob < Base
+      SageMakerProcessingJob = Struct.new(:name, :attributes, keyword_init: true)
+      class SageMakerProcessingJob
         def self.resource_type
           'aws_sagemaker_processing_job'
         end
@@ -56,6 +57,3 @@ module Pangea
     end
   end
 end
-
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

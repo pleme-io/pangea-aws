@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -27,14 +26,14 @@ module Pangea
         attribute :acceptance_required, Resources::Types::Bool
         
         # ARNs of one or more Network Load Balancers for the endpoint service (optional)
-        attribute :network_load_balancer_arns, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :network_load_balancer_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         
         # ARNs of one or more Gateway Load Balancers for the endpoint service (optional)
-        attribute :gateway_load_balancer_arns, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :gateway_load_balancer_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         
         # The supported IP address types (optional)
         attribute :supported_ip_address_types, Resources::Types::Array.of(
-          Types::String.enum('ipv4', 'ipv6')
+          Resources::Types::String.constrained(included_in: ['ipv4', 'ipv6'])
         ).default([].freeze)
         
         # The private DNS name for the service (optional)
@@ -44,7 +43,7 @@ module Pangea
         attribute :private_dns_name_configuration, Resources::Types::Hash.default({}.freeze)
         
         # List of principal ARNs allowed to discover the service (optional)
-        attribute :allowed_principals, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :allowed_principals, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -141,4 +140,3 @@ module Pangea
       end
     end
   end
-end

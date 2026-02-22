@@ -39,15 +39,13 @@ module Pangea
           # Capability filters (optional)
           attribute? :capability_filters, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
-              name: Resources::Types::String.enum(
-                'device-type',
+              name: Resources::Types::String.constrained(included_in: ['device-type',
                 'provider-name',
                 'device-status',
                 'qubit-count',
                 'gate-set',
                 'connectivity',
-                'execution-windows'
-              ),
+                'execution-windows']),
               values: Resources::Types::Array.of(Resources::Types::String)
             )
           ).optional

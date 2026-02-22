@@ -17,17 +17,17 @@
 require 'dry-struct'
 require 'pangea/resources/types'
 
-require_relative 'types/validation'
-require_relative 'types/computed'
-require_relative 'types/templates'
-require_relative 'types/configurations'
-
 module Pangea
   module Resources
     module AWS
       module Types
         # AWS Batch Job Definition attributes with validation
         class BatchJobDefinitionAttributes < Dry::Struct
+          require_relative 'types/validation'
+          require_relative 'types/computed'
+          require_relative 'types/templates'
+          require_relative 'types/configurations'
+
           include Computed
           extend Templates
           extend Configurations

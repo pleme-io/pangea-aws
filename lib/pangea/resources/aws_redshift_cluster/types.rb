@@ -44,10 +44,8 @@ module Pangea
           attribute :master_password, Resources::Types::String.optional
 
           # Node type (required)
-          attribute :node_type, Resources::Types::String.enum(
-            'dc2.large', 'dc2.8xlarge',
-            'ra3.xlplus', 'ra3.4xlarge', 'ra3.16xlarge'
-          )
+          attribute :node_type, Resources::Types::String.constrained(included_in: ['dc2.large', 'dc2.8xlarge',
+            'ra3.xlplus', 'ra3.4xlarge', 'ra3.16xlarge'])
 
           # Cluster type
           attribute :cluster_type, Resources::Types::String.default('single-node').enum('single-node', 'multi-node')

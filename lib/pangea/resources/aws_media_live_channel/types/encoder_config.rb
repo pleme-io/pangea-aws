@@ -20,27 +20,27 @@ module Pangea
 
             # Timecode config
             TimecodeConfig = T::Hash.schema(
-              source: T::String.enum('EMBEDDED', 'SYSTEMCLOCK', 'ZEROBASED'),
+              source: T::String.constrained(included_in: ['EMBEDDED', 'SYSTEMCLOCK', 'ZEROBASED']),
               sync_threshold?: T::Integer.optional
             )
 
             # Avail blanking
             AvailBlanking = T::Hash.schema(
               avail_blanking_image?: ImageInput.optional,
-              state?: T::String.enum('DISABLED', 'ENABLED').optional
+              state?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional
             )
 
             # SCTE35 avail settings
             Scte35SpliceInsert = T::Hash.schema(
               ad_avail_offset?: T::Integer.optional,
-              no_regional_blackout_flag?: T::String.enum('FOLLOW', 'IGNORE').optional,
-              web_delivery_allowed_flag?: T::String.enum('FOLLOW', 'IGNORE').optional
+              no_regional_blackout_flag?: T::String.constrained(included_in: ['FOLLOW', 'IGNORE']).optional,
+              web_delivery_allowed_flag?: T::String.constrained(included_in: ['FOLLOW', 'IGNORE']).optional
             )
 
             Scte35TimeSignalApos = T::Hash.schema(
               ad_avail_offset?: T::Integer.optional,
-              no_regional_blackout_flag?: T::String.enum('FOLLOW', 'IGNORE').optional,
-              web_delivery_allowed_flag?: T::String.enum('FOLLOW', 'IGNORE').optional
+              no_regional_blackout_flag?: T::String.constrained(included_in: ['FOLLOW', 'IGNORE']).optional,
+              web_delivery_allowed_flag?: T::String.constrained(included_in: ['FOLLOW', 'IGNORE']).optional
             )
 
             AvailSettings = T::Hash.schema(
@@ -55,15 +55,15 @@ module Pangea
             # Blackout slate
             BlackoutSlate = T::Hash.schema(
               blackout_slate_image?: ImageInput.optional,
-              network_end_blackout?: T::String.enum('DISABLED', 'ENABLED').optional,
+              network_end_blackout?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional,
               network_end_blackout_image?: ImageInput.optional,
               network_id?: T::String.optional,
-              state?: T::String.enum('DISABLED', 'ENABLED').optional
+              state?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional
             )
 
             # Feature activations
             FeatureActivations = T::Hash.schema(
-              input_prepare_schedule_actions?: T::String.enum('DISABLED', 'ENABLED').optional
+              input_prepare_schedule_actions?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional
             )
 
             # Input loss behavior
@@ -71,18 +71,18 @@ module Pangea
               black_frame_msec?: T::Integer.optional,
               input_loss_image_color?: T::String.optional,
               input_loss_image_slate?: ImageInput.optional,
-              input_loss_image_type?: T::String.enum('COLOR', 'SLATE').optional,
+              input_loss_image_type?: T::String.constrained(included_in: ['COLOR', 'SLATE']).optional,
               repeat_frame_msec?: T::Integer.optional
             )
 
             # Global configuration
             GlobalConfiguration = T::Hash.schema(
               initial_audio_gain?: T::Integer.optional,
-              input_end_action?: T::String.enum('NONE', 'SWITCH_AND_LOOP_INPUTS').optional,
+              input_end_action?: T::String.constrained(included_in: ['NONE', 'SWITCH_AND_LOOP_INPUTS']).optional,
               input_loss_behavior?: InputLossBehavior.optional,
-              output_locking_mode?: T::String.enum('EPOCH_LOCKING', 'PIPELINE_LOCKING').optional,
-              output_timing_source?: T::String.enum('INPUT_CLOCK', 'SYSTEM_CLOCK').optional,
-              support_low_framerate_inputs?: T::String.enum('DISABLED', 'ENABLED').optional
+              output_locking_mode?: T::String.constrained(included_in: ['EPOCH_LOCKING', 'PIPELINE_LOCKING']).optional,
+              output_timing_source?: T::String.constrained(included_in: ['INPUT_CLOCK', 'SYSTEM_CLOCK']).optional,
+              support_low_framerate_inputs?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional
             )
 
             # Motion graphics configuration
@@ -91,14 +91,14 @@ module Pangea
             )
 
             MotionGraphicsConfiguration = T::Hash.schema(
-              motion_graphics_insertion?: T::String.enum('DISABLED', 'ENABLED').optional,
+              motion_graphics_insertion?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional,
               motion_graphics_settings?: MotionGraphicsSettings.optional
             )
 
             # Nielsen configuration
             NielsenConfiguration = T::Hash.schema(
               distributor_id?: T::String.optional,
-              nielsen_pcm_to_id3_tagging?: T::String.enum('DISABLED', 'ENABLED').optional
+              nielsen_pcm_to_id3_tagging?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional
             )
           end
         end

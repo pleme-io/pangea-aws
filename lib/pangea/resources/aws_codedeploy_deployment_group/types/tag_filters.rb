@@ -22,7 +22,7 @@ module Pangea
       module Types
         # Shared tag filter schema for EC2 and on-premises instances
         TagFilterSchema = Resources::Types::Hash.schema(
-          type?: Resources::Types::String.enum('KEY_ONLY', 'VALUE_ONLY', 'KEY_AND_VALUE').optional,
+          type?: Resources::Types::String.constrained(included_in: ['KEY_ONLY', 'VALUE_ONLY', 'KEY_AND_VALUE']).optional,
           key?: Resources::Types::String.optional,
           value?: Resources::Types::String.optional
         )

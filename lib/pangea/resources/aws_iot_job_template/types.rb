@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -49,10 +48,10 @@ module Pangea
           schema schema.strict
 
           # Failure type that triggers abort
-          attribute :failure_type, Resources::Types::String.enum('FAILED', 'REJECTED', 'TIMED_OUT', 'ALL')
+          attribute :failure_type, Resources::Types::String.constrained(included_in: ['FAILED', 'REJECTED', 'TIMED_OUT', 'ALL'])
 
           # Action to take when criteria is met
-          attribute :action, Resources::Types::String.enum('CANCEL')
+          attribute :action, Resources::Types::String.constrained(included_in: ['CANCEL'])
 
           # Threshold percentage for triggering abort
           attribute :threshold_percentage, Resources::Types::Float.constrained(gteq: 0.0, lteq: 100.0)
@@ -66,57 +65,8 @@ module Pangea
       end
 
       # Main attributes for IoT job template resource
-      class Attributes < Dry::Struct
-        schema schema.strict
-
-        # ID/name of the job template
-        attribute :job_template_id, Resources::Types::String
-
-        # Human readable description
-        attribute :description, Resources::Types::String
-
-        # Job document (JSON string defining the job)
-        attribute :job_document, Resources::Types::String.optional
-
-        # S3 URL for job document (alternative to job_document)
-        attribute :document_source, Resources::Types::String.optional
-
-        # Presigned URL configuration
-        class PresignedUrlConfig < Dry::Struct
-          schema schema.strict
-
-          # IAM role ARN for presigned URL generation
-          attribute :role_arn, Resources::Types::String.optional
-
-          # Expiration time in seconds
-          attribute :expires_in_sec, Resources::Types::Integer.optional
-        end
-
-        attribute? :presigned_url_config, PresignedUrlConfig.optional
-
-        # Job execution rollout configuration
-        attribute? :job_executions_rollout_config, JobExecutionsRolloutConfig.optional
-
-        # Abort configuration for failed jobs
-        attribute? :abort_config, AbortConfig.optional
-
-        # Timeout configuration
-        attribute? :timeout_config, TimeoutConfig.optional
-
-        # Resource tags
-        attribute :tags, Resources::Types::Hash.map(Types::String, Types::String).optional
-      end
 
       # Output attributes from job template resource
-      class Outputs < Dry::Struct
-        schema schema.strict
-
-        # The job template ARN
-        attribute :arn, Resources::Types::String
-
-        # The job template ID
-        attribute :job_template_id, Resources::Types::String
-      end
     end
   end
 end

@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 
 module Pangea
@@ -21,16 +20,14 @@ module Pangea
     module AWS
       module DynamoDBKinesisStreamingDestination
         # Common types for DynamoDB Kinesis Streaming Destination configurations
-        class Types < Dry::Types::Module
-          include Dry.Types()
-
+        module Types
           # Kinesis Stream ARN constraint
-          StreamArn = String.constrained(
+          StreamArn = Resources::Types::String.constrained(
             format: /\Aarn:aws:kinesis:[a-z0-9\-]*:[0-9]{12}:stream\/[a-zA-Z0-9_.-]+\z/
           )
           
           # DynamoDB Table name constraint
-          TableName = String.constrained(
+          TableName = Resources::Types::String.constrained(
             min_size: 3,
             max_size: 255,
             format: /\A[a-zA-Z0-9_.-]+\z/
@@ -39,11 +36,9 @@ module Pangea
 
         # DynamoDB Kinesis Streaming Destination attributes with comprehensive validation
         class DynamoDBKinesisStreamingDestinationAttributes < Dry::Struct
-          include Types[self]
-          
           # Required attributes
-          attribute :stream_arn, StreamArn
-          attribute :table_name, TableName
+          attribute :stream_arn, Types::StreamArn
+          attribute :table_name, Types::TableName
           
           # Computed properties
           def stream_name

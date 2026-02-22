@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -42,41 +41,41 @@ module Pangea
             format: /\A[a-zA-Z_][a-zA-Z0-9_]*\z/
           )
           attribute :feature_definitions, Resources::Types::Array.of(
-            Hash.schema(
-              feature_name: String.constrained(
+            Resources::Types::Hash.schema(
+              feature_name: Resources::Types::String.constrained(
                 min_size: 1,
                 max_size: 64,
                 format: /\A[a-zA-Z_][a-zA-Z0-9_]*\z/
               ),
-              feature_type: String.enum('Integral', 'Fractional', 'String')
+              feature_type: Resources::Types::String.constrained(included_in: ['Integral', 'Fractional', 'String'])
             )
           ).constrained(min_size: 1, max_size: 2500)
           
           # Optional attributes
           attribute :description, Resources::Types::String.optional
           attribute :online_store_config, Resources::Types::Hash.schema(
-            enable_online_store?: Bool.default(true),
-            security_config?: Hash.schema(
-              kms_key_id?: String.optional
+            enable_online_store?: Resources::Types::Bool.default(true),
+            security_config?: Resources::Types::Hash.schema(
+              kms_key_id?: Resources::Types::String.optional
             ).optional,
-            ttl_duration?: Hash.schema(
-              unit: String.enum('Seconds', 'Minutes', 'Hours', 'Days', 'Weeks'),
-              value: Integer.constrained(gteq: 1)
+            ttl_duration?: Resources::Types::Hash.schema(
+              unit: Resources::Types::String.constrained(included_in: ['Seconds', 'Minutes', 'Hours', 'Days', 'Weeks']),
+              value: Resources::Types::Integer.constrained(gteq: 1)
             ).optional
           ).optional
           attribute :offline_store_config, Resources::Types::Hash.schema(
-            s3_storage_config: Hash.schema(
-              s3_uri: String.constrained(format: /\As3:\/\//),
-              kms_key_id?: String.optional,
-              resolved_output_s3_uri?: String.optional
+            s3_storage_config: Resources::Types::Hash.schema(
+              s3_uri: Resources::Types::String.constrained(format: /\As3:\/\//),
+              kms_key_id?: Resources::Types::String.optional,
+              resolved_output_s3_uri?: Resources::Types::String.optional
             ),
-            disable_glue_table_creation?: Bool.default(false),
-            data_catalog_config?: Hash.schema(
-              table_name?: String.optional,
-              catalog?: String.default('AwsDataCatalog'),
-              database?: String.default('sagemaker_featurestore')
+            disable_glue_table_creation?: Resources::Types::Bool.default(false),
+            data_catalog_config?: Resources::Types::Hash.schema(
+              table_name?: Resources::Types::String.optional,
+              catalog?: Resources::Types::String.default('AwsDataCatalog'),
+              database?: Resources::Types::String.default('sagemaker_featurestore')
             ).optional,
-            table_format?: String.enum('Glue', 'Iceberg').default('Glue')
+            table_format?: Resources::Types::String.constrained(included_in: ['Glue', 'Iceberg']).default('Glue')
           ).optional
           attribute :role_arn, Resources::Types::String.constrained(
             format: /\Aarn:aws:iam::\d{12}:role\/[a-zA-Z0-9_+=,.@-]+\z/

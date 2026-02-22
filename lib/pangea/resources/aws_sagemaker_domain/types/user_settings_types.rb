@@ -24,7 +24,7 @@ module Pangea
           execution_role: SageMakerDomainExecutionRole,
           security_groups?: Resources::Types::Array.of(Resources::Types::String).optional,
           sharing_settings?: Resources::Types::Hash.schema(
-            notebook_output_option?: Resources::Types::String.enum('Allowed', 'Disabled').optional,
+            notebook_output_option?: Resources::Types::String.constrained(included_in: ['Allowed', 'Disabled']).optional,
             s3_output_path?: Resources::Types::String.optional,
             s3_kms_key_id?: Resources::Types::String.optional
           ).optional,

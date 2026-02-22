@@ -25,17 +25,17 @@ module Pangea
         class WafV2DefaultAction < Dry::Struct
           transform_keys(&:to_sym)
 
-          attribute :allow, Hash.schema(
-            custom_request_handling?: Hash.schema(
-              insert_headers: Array.of(Hash.schema(name: String, value: String))
+          attribute :allow, Resources::Types::Hash.schema(
+            custom_request_handling?: Resources::Types::Hash.schema(
+              insert_headers: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String))
             ).optional
           ).optional
 
-          attribute :block, Hash.schema(
-            custom_response?: Hash.schema(
-              response_code: Integer.constrained(gteq: 200, lteq: 599),
-              custom_response_body_key?: String.optional,
-              response_headers?: Array.of(Hash.schema(name: String, value: String)).optional
+          attribute :block, Resources::Types::Hash.schema(
+            custom_response?: Resources::Types::Hash.schema(
+              response_code: Resources::Types::Integer.constrained(gteq: 200, lteq: 599),
+              custom_response_body_key?: Resources::Types::String.optional,
+              response_headers?: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String)).optional
             ).optional
           ).optional
 

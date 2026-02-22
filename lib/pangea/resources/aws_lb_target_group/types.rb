@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -100,7 +99,7 @@ module Pangea
           
           # Required attributes
           attribute :port, Resources::Types::Port
-          attribute :protocol, Resources::Types::String.enum('HTTP', 'HTTPS', 'TCP', 'TLS', 'UDP', 'TCP_UDP', 'GENEVE')
+          attribute :protocol, Resources::Types::String.constrained(included_in: ['HTTP', 'HTTPS', 'TCP', 'TLS', 'UDP', 'TCP_UDP', 'GENEVE'])
           attribute :vpc_id, Resources::Types::String
           
           # Optional attributes

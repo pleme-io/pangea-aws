@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -26,7 +25,7 @@ module Pangea
         attribute :name, Resources::Types::String
 
         # List of public key IDs in this group
-        attribute :items, Resources::Types::Array.of(Types::String)
+        attribute :items, Resources::Types::Array.of(Resources::Types::String)
 
         # Comment/description for the key group
         attribute :comment, Resources::Types::String.optional
@@ -188,4 +187,3 @@ module Pangea
       end
     end
   end
-end

@@ -68,6 +68,3 @@ module Pangea
     end
   end
 end
-
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

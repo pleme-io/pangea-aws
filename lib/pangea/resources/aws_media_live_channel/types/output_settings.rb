@@ -7,8 +7,12 @@ module Pangea
   module Resources
     module AWS
       module Types
+
         module MediaLiveChannel
+            T = Resources::Types
+
           # Output settings type definitions
+
           module OutputSettings
             T = Resources::Types
             OGS = OutputGroupSettings
@@ -40,31 +44,31 @@ module Pangea
             AudioOnlyHlsSettings = T::Hash.schema(
               audio_group_id?: T::String.optional,
               audio_only_image?: AudioOnlyImage.optional,
-              audio_track_type?: T::String.enum('ALTERNATE_AUDIO_AUTO_SELECT', 'ALTERNATE_AUDIO_AUTO_SELECT_DEFAULT', 'ALTERNATE_AUDIO_NOT_AUTO_SELECT', 'AUDIO_ONLY_VARIANT_STREAM').optional,
-              segment_type?: T::String.enum('AAC', 'FMP4').optional
+              audio_track_type?: T::String.constrained(included_in: ['ALTERNATE_AUDIO_AUTO_SELECT', 'ALTERNATE_AUDIO_AUTO_SELECT_DEFAULT', 'ALTERNATE_AUDIO_NOT_AUTO_SELECT', 'AUDIO_ONLY_VARIANT_STREAM']).optional,
+              segment_type?: T::String.constrained(included_in: ['AAC', 'FMP4']).optional
             )
 
             Fmp4HlsSettings = T::Hash.schema(
               audio_rendition_sets?: T::String.optional,
-              nielsen_id3_behavior?: T::String.enum('NO_PASSTHROUGH', 'PASSTHROUGH').optional,
-              timed_metadata_behavior?: T::String.enum('NO_PASSTHROUGH', 'PASSTHROUGH').optional
+              nielsen_id3_behavior?: T::String.constrained(included_in: ['NO_PASSTHROUGH', 'PASSTHROUGH']).optional,
+              timed_metadata_behavior?: T::String.constrained(included_in: ['NO_PASSTHROUGH', 'PASSTHROUGH']).optional
             )
 
             M3u8Settings = T::Hash.schema(
               audio_frames_per_pes?: T::Integer.optional,
               audio_pids?: T::String.optional,
               ecm_pid?: T::String.optional,
-              nielsen_id3_behavior?: T::String.enum('NO_PASSTHROUGH', 'PASSTHROUGH').optional,
+              nielsen_id3_behavior?: T::String.constrained(included_in: ['NO_PASSTHROUGH', 'PASSTHROUGH']).optional,
               pat_interval?: T::Integer.optional,
-              pcr_control?: T::String.enum('CONFIGURED_PCR_PERIOD', 'PCR_EVERY_PES_PACKET').optional,
+              pcr_control?: T::String.constrained(included_in: ['CONFIGURED_PCR_PERIOD', 'PCR_EVERY_PES_PACKET']).optional,
               pcr_period?: T::Integer.optional,
               pcr_pid?: T::String.optional,
               pmt_interval?: T::Integer.optional,
               pmt_pid?: T::String.optional,
               program_num?: T::Integer.optional,
-              scte35_behavior?: T::String.enum('NO_PASSTHROUGH', 'PASSTHROUGH').optional,
+              scte35_behavior?: T::String.constrained(included_in: ['NO_PASSTHROUGH', 'PASSTHROUGH']).optional,
               scte35_pid?: T::String.optional,
-              timed_metadata_behavior?: T::String.enum('NO_PASSTHROUGH', 'PASSTHROUGH').optional,
+              timed_metadata_behavior?: T::String.constrained(included_in: ['NO_PASSTHROUGH', 'PASSTHROUGH']).optional,
               timed_metadata_pid?: T::String.optional,
               transport_stream_id?: T::Integer.optional,
               video_pid?: T::String.optional
@@ -82,7 +86,7 @@ module Pangea
             )
 
             HlsOutputSettings = T::Hash.schema(
-              h265_packaging_type?: T::String.enum('HEV1', 'HVC1').optional,
+              h265_packaging_type?: T::String.constrained(included_in: ['HEV1', 'HVC1']).optional,
               hls_settings: HlsSettingsContainer,
               name_modifier?: T::String.optional,
               segment_modifier?: T::String.optional
@@ -90,7 +94,7 @@ module Pangea
 
             # MS Smooth output settings
             MsSmoothOutputSettings = T::Hash.schema(
-              h265_packaging_type?: T::String.enum('HEV1', 'HVC1').optional,
+              h265_packaging_type?: T::String.constrained(included_in: ['HEV1', 'HVC1']).optional,
               name_modifier?: T::String.optional
             )
 
@@ -101,7 +105,7 @@ module Pangea
 
             # RTMP output settings
             RtmpOutputSettings = T::Hash.schema(
-              certificate_mode?: T::String.enum('SELF_SIGNED', 'VERIFY_AUTHENTICITY').optional,
+              certificate_mode?: T::String.constrained(included_in: ['SELF_SIGNED', 'VERIFY_AUTHENTICITY']).optional,
               connection_retry_interval?: T::Integer.optional,
               destination: OGS::DestinationRef,
               num_retries?: T::Integer.optional
@@ -110,7 +114,7 @@ module Pangea
             # UDP FEC output settings
             FecOutputSettings = T::Hash.schema(
               column_depth?: T::Integer.optional,
-              include_fec?: T::String.enum('COLUMN', 'COLUMN_AND_ROW').optional,
+              include_fec?: T::String.constrained(included_in: ['COLUMN', 'COLUMN_AND_ROW']).optional,
               row_length?: T::Integer.optional
             )
 
@@ -124,7 +128,6 @@ module Pangea
               destination: OGS::DestinationRef,
               fec_output_settings?: FecOutputSettings.optional
             )
-
             # Output settings container
             Settings = T::Hash.schema(
               archive_output_settings?: ArchiveOutputSettings.optional,
@@ -145,6 +148,8 @@ module Pangea
               output_settings: Settings,
               video_description_name?: T::String.optional
             )
+
+
           end
         end
       end

@@ -20,9 +20,9 @@ module Pangea
 
         # MFA configuration for user pool
         class CognitoUserPoolMfaConfiguration < Dry::Struct
-          attribute :mfa, Resources::Types::String.enum('ON', 'OFF', 'OPTIONAL').default('OFF')
-          attribute :sms_configuration, Resources::Types::Hash.schema(external_id?: Types::String.optional, sns_caller_arn: Types::String).optional
-          attribute :software_token_mfa_configuration, Resources::Types::Hash.schema(enabled: Types::Bool).optional
+          attribute :mfa, Resources::Types::String.constrained(included_in: ['ON', 'OFF', 'OPTIONAL']).default('OFF')
+          attribute :sms_configuration, Resources::Types::Hash.schema(external_id?: Resources::Types::String.optional, sns_caller_arn: Resources::Types::String).optional
+          attribute :software_token_mfa_configuration, Resources::Types::Hash.schema(enabled: Resources::Types::Bool).optional
         end
 
         # User pool device configuration
@@ -34,7 +34,7 @@ module Pangea
         # Email configuration for user pool
         class CognitoUserPoolEmailConfiguration < Dry::Struct
           attribute :configuration_set, Resources::Types::String.optional
-          attribute :email_sending_account, Resources::Types::String.enum('COGNITO_DEFAULT', 'DEVELOPER').default('COGNITO_DEFAULT')
+          attribute :email_sending_account, Resources::Types::String.constrained(included_in: ['COGNITO_DEFAULT', 'DEVELOPER']).default('COGNITO_DEFAULT')
           attribute :from_email_address, Resources::Types::String.optional
           attribute :reply_to_email_address, Resources::Types::String.optional
           attribute :source_arn, Resources::Types::String.optional
@@ -64,23 +64,23 @@ module Pangea
 
         # User pool schema attribute
         class CognitoUserPoolSchemaAttribute < Dry::Struct
-          attribute :attribute_data_type, Resources::Types::String.enum('String', 'Number', 'DateTime', 'Boolean')
+          attribute :attribute_data_type, Resources::Types::String.constrained(included_in: ['String', 'Number', 'DateTime', 'Boolean'])
           attribute :name, Resources::Types::String
           attribute :developer_only_attribute, Resources::Types::Bool.optional
           attribute :mutable, Resources::Types::Bool.optional
           attribute :required, Resources::Types::Bool.optional
-          attribute :number_attribute_constraints, Resources::Types::Hash.schema(max_value?: Types::String.optional, min_value?: Types::String.optional).optional
-          attribute :string_attribute_constraints, Resources::Types::Hash.schema(max_length?: Types::String.optional, min_length?: Types::String.optional).optional
+          attribute :number_attribute_constraints, Resources::Types::Hash.schema(max_value?: Resources::Types::String.optional, min_value?: Resources::Types::String.optional).optional
+          attribute :string_attribute_constraints, Resources::Types::Hash.schema(max_length?: Resources::Types::String.optional, min_length?: Resources::Types::String.optional).optional
         end
 
         # User attribute update settings
         class CognitoUserPoolUserAttributeUpdateSettings < Dry::Struct
-          attribute :attributes_require_verification_before_update, Resources::Types::Array.of(Types::String.enum('phone_number', 'email'))
+          attribute :attributes_require_verification_before_update, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['phone_number', 'email']))
         end
 
         # User pool verification message template
         class CognitoUserPoolVerificationMessageTemplate < Dry::Struct
-          attribute :default_email_option, Resources::Types::String.enum('CONFIRM_WITH_LINK', 'CONFIRM_WITH_CODE').optional
+          attribute :default_email_option, Resources::Types::String.constrained(included_in: ['CONFIRM_WITH_LINK', 'CONFIRM_WITH_CODE']).optional
           attribute :email_message, Resources::Types::String.optional
           attribute :email_message_by_link, Resources::Types::String.optional
           attribute :email_subject, Resources::Types::String.optional
@@ -91,20 +91,20 @@ module Pangea
         # Account recovery setting
         class CognitoUserPoolAccountRecoverySetting < Dry::Struct
           attribute :recovery_mechanisms, Resources::Types::Array.of(
-            Types::Hash.schema(name: Types::String.enum('verified_email', 'verified_phone_number', 'admin_only'), priority: Types::Integer.constrained(gteq: 1, lteq: 2))
+            Resources::Types::Hash.schema(name: Resources::Types::String.constrained(included_in: ['verified_email', 'verified_phone_number', 'admin_only']), priority: Resources::Types::Integer.constrained(gteq: 1, lteq: 2))
           ).constrained(min_size: 1, max_size: 2)
         end
 
         # Admin create user config
         class CognitoUserPoolAdminCreateUserConfig < Dry::Struct
           attribute :allow_admin_create_user_only, Resources::Types::Bool.optional
-          attribute :invite_message_template, Resources::Types::Hash.schema(email_message?: Types::String.optional, email_subject?: Types::String.optional, sms_message?: Types::String.optional).optional
+          attribute :invite_message_template, Resources::Types::Hash.schema(email_message?: Resources::Types::String.optional, email_subject?: Resources::Types::String.optional, sms_message?: Resources::Types::String.optional).optional
           attribute :unused_account_validity_days, Resources::Types::Integer.optional.constrained(gteq: 0, lteq: 365)
         end
 
         # User pool add-ons configuration
         class CognitoUserPoolUserPoolAddOns < Dry::Struct
-          attribute :advanced_security_mode, Resources::Types::String.enum('OFF', 'AUDIT', 'ENFORCED')
+          attribute :advanced_security_mode, Resources::Types::String.constrained(included_in: ['OFF', 'AUDIT', 'ENFORCED'])
         end
       end
     end

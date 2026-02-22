@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -32,12 +31,12 @@ module Pangea
         attribute :comment, Resources::Types::String.optional
         
         # Database properties
-        attribute :properties, Resources::Types::Hash.map(Types::String, Types::String).default({}.freeze)
+        attribute :properties, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
         
         # Encryption configuration
         attribute :encryption_configuration, Resources::Types::Hash.schema(
-          encryption_option: Types::String.enum("SSE_S3", "SSE_KMS", "CSE_KMS"),
-          kms_key?: Types::String.optional
+          encryption_option: Resources::Types::String.constrained(included_in: ["SSE_S3", "SSE_KMS", "CSE_KMS"]),
+          kms_key?: Resources::Types::String.optional
         ).optional
         
         # Expected bucket owner for S3 access
@@ -48,7 +47,7 @@ module Pangea
         
         # ACL configuration for database
         attribute :acl_configuration, Resources::Types::Hash.schema(
-          s3_acl_option: Types::String.enum("BUCKET_OWNER_FULL_CONTROL")
+          s3_acl_option: Resources::Types::String.constrained(included_in: ["BUCKET_OWNER_FULL_CONTROL"])
         ).optional
         
         # Tags
@@ -189,4 +188,3 @@ module Pangea
       end
     end
   end
-end

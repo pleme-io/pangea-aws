@@ -99,7 +99,8 @@ module Pangea
       #       CostCenter: "ml-ops"
       #     }
       #   })
-      class SageMakerDomain < Base
+      SageMakerDomain = Struct.new(:name, :attributes, keyword_init: true)
+      class SageMakerDomain
         def self.resource_type
           'aws_sagemaker_domain'
         end
@@ -155,6 +156,3 @@ module Pangea
     end
   end
 end
-
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

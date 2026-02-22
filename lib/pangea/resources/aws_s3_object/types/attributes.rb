@@ -56,19 +56,15 @@ module Pangea
           attribute? :expires, Resources::Types::String.optional
 
           # Storage class (optional)
-          attribute? :storage_class, Resources::Types::String.enum(
-            'STANDARD', 'REDUCED_REDUNDANCY', 'STANDARD_IA', 'ONEZONE_IA',
-            'INTELLIGENT_TIERING', 'GLACIER', 'DEEP_ARCHIVE', 'GLACIER_IR'
-          ).optional
+          attribute? :storage_class, Resources::Types::String.constrained(included_in: ['STANDARD', 'REDUCED_REDUNDANCY', 'STANDARD_IA', 'ONEZONE_IA',
+            'INTELLIGENT_TIERING', 'GLACIER', 'DEEP_ARCHIVE', 'GLACIER_IR']).optional
 
           # Object ACL (optional)
-          attribute? :acl, Resources::Types::String.enum(
-            'private', 'public-read', 'public-read-write', 'authenticated-read',
-            'aws-exec-read', 'bucket-owner-read', 'bucket-owner-full-control'
-          ).optional
+          attribute? :acl, Resources::Types::String.constrained(included_in: ['private', 'public-read', 'public-read-write', 'authenticated-read',
+            'aws-exec-read', 'bucket-owner-read', 'bucket-owner-full-control']).optional
 
           # Server-side encryption (optional)
-          attribute? :server_side_encryption, Resources::Types::String.enum('AES256', 'aws:kms').optional
+          attribute? :server_side_encryption, Resources::Types::String.constrained(included_in: ['AES256', 'aws:kms']).optional
 
           # KMS key ID for encryption (optional)
           attribute? :kms_key_id, Resources::Types::String.optional
@@ -86,13 +82,13 @@ module Pangea
           attribute? :website_redirect, Resources::Types::String.optional
 
           # Object lock mode (optional)
-          attribute? :object_lock_mode, Resources::Types::String.enum('GOVERNANCE', 'COMPLIANCE').optional
+          attribute? :object_lock_mode, Resources::Types::String.constrained(included_in: ['GOVERNANCE', 'COMPLIANCE']).optional
 
           # Object lock retain until date (optional)
           attribute? :object_lock_retain_until_date, Resources::Types::String.optional
 
           # Object lock legal hold status (optional)
-          attribute? :object_lock_legal_hold_status, Resources::Types::String.enum('ON', 'OFF').optional
+          attribute? :object_lock_legal_hold_status, Resources::Types::String.constrained(included_in: ['ON', 'OFF']).optional
 
           # Expected bucket owner for multi-account scenarios
           attribute? :expected_bucket_owner, Resources::Types::String.optional

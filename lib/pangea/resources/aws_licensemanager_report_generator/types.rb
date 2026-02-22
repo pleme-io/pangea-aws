@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -24,10 +23,10 @@ module Pangea
       # Provides a License Manager report generator resource.
       class LicensemanagerReportGeneratorAttributes < Dry::Struct
         attribute :license_manager_report_generator_name, Resources::Types::String
-        attribute :type, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :type, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         attribute :report_context, Resources::Types::Hash.default({}.freeze)
         attribute :report_frequency, Resources::Types::String
-        attributes3_bucket_name :, Resources::Types::String
+        attribute :s3_bucket_name, Resources::Types::String
         attribute :description, Resources::Types::String.optional
         
         # Tags to apply to the resource
@@ -45,8 +44,7 @@ module Pangea
         
         # TODO: Add computed properties specific to aws_licensemanager_report_generator
 
-      end
-    end
+        end
       end
     end
   end

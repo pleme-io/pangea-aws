@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -32,19 +31,19 @@ module Pangea
           enable_accept_encoding_brotli: Resources::Types::Bool.default(false),
           enable_accept_encoding_gzip: Resources::Types::Bool.default(false),
           headers_config: Resources::Types::Hash.schema(
-            header_behavior: Resources::Types::String.enum('none', 'whitelist').default('none'),
+            header_behavior: Resources::Types::String.constrained(included_in: ['none', 'whitelist']).default('none'),
             headers?: Resources::Types::Hash.schema(
               items?: Resources::Types::Array.of(Resources::Types::String).optional
             ).optional
           ).default({ header_behavior: 'none' }),
           query_strings_config: Resources::Types::Hash.schema(
-            query_string_behavior: Resources::Types::String.enum('none', 'whitelist', 'allExcept', 'all').default('none'),
+            query_string_behavior: Resources::Types::String.constrained(included_in: ['none', 'whitelist', 'allExcept', 'all']).default('none'),
             query_strings?: Resources::Types::Hash.schema(
               items?: Resources::Types::Array.of(Resources::Types::String).optional
             ).optional
           ).default({ query_string_behavior: 'none' }),
           cookies_config: Resources::Types::Hash.schema(
-            cookie_behavior: Resources::Types::String.enum('none', 'whitelist', 'allExcept', 'all').default('none'),
+            cookie_behavior: Resources::Types::String.constrained(included_in: ['none', 'whitelist', 'allExcept', 'all']).default('none'),
             cookies?: Resources::Types::Hash.schema(
               items?: Resources::Types::Array.of(Resources::Types::String).optional
             ).optional

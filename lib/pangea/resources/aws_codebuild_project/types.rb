@@ -16,10 +16,7 @@
 
 require 'dry-struct'
 require 'pangea/resources/types'
-
-require_relative 'types/schemas'
-require_relative 'types/validation'
-require_relative 'types/instance_methods'
+require_relative '../types/aws/core'
 
 module Pangea
   module Resources
@@ -27,6 +24,10 @@ module Pangea
       module Types
         # Type-safe attributes for AWS CodeBuild Project resources
         class CodeBuildProjectAttributes < Dry::Struct
+          require_relative 'types/schemas'
+          require_relative 'types/validation'
+          require_relative 'types/instance_methods'
+
           include InstanceMethods
 
           transform_keys(&:to_sym)

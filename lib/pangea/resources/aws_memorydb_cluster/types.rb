@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -28,7 +27,7 @@ module Pangea
         attribute :num_shards, Resources::Types::Integer.optional
         attribute :num_replicas_per_shard, Resources::Types::Integer.optional
         attribute :subnet_group_name, Resources::Types::String.optional
-        attribute :security_group_ids, Resources::Types::Array.of(Types::String).default([].freeze).optional
+        attribute :security_group_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         attribute :maintenance_window, Resources::Types::String.optional
         attribute :port, Resources::Types::Integer.optional
         attribute :parameter_group_name, Resources::Types::String.optional
@@ -38,7 +37,7 @@ module Pangea
         attribute :engine_version, Resources::Types::String.optional
         attribute :tls_enabled, Resources::Types::Bool.optional
         attribute :kms_key_id, Resources::Types::String.optional
-        attribute :snapshot_arns, Resources::Types::Array.of(Types::String).default([].freeze).optional
+        attribute :snapshot_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         attribute :snapshot_name, Resources::Types::String.optional
         attribute :final_snapshot_name, Resources::Types::String.optional
         attribute :description, Resources::Types::String.optional
@@ -66,4 +65,3 @@ module Pangea
       end
     end
   end
-end

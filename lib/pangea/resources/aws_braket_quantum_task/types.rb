@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -22,7 +21,7 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS Braket Quantum Task resources
-      class BraketQuantumTaskAttributes < Dry::Struct
+        class BraketQuantumTaskAttributes < Dry::Struct
         transform_keys(&:to_sym)
 
         # Device ARN (required)
@@ -47,9 +46,7 @@ module Pangea
         attribute? :job_token, Resources::Types::String.optional
 
         # Tags (optional)
-        attribute? :tags, Resources::Types::Hash.schema(
-          Resources::Types::String => Resources::Types::String
-        ).optional
+        attribute? :tags, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
 
         # Custom validation
         def self.new(attributes = {})
@@ -163,8 +160,7 @@ module Pangea
         rescue
           { type: 'unknown', version: 'unknown', qubit_count: 0 }
         end
-      end
-    end
+        end
       end
     end
   end

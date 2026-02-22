@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -35,24 +34,22 @@ module Pangea
         attribute :location_uri, Resources::Types::String.optional
         
         # Parameters for the database
-        attribute :parameters, Resources::Types::Hash.map(Types::String, Types::String).default({}.freeze)
+        attribute :parameters, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
         
         # Database type
         attribute :database_input, Resources::Types::Hash.schema(
-          description?: Types::String.optional,
-          location_uri?: Types::String.optional,
-          parameters?: Types::Hash.map(Types::String, Types::String).optional
+          description?: Resources::Types::String.optional,
+          location_uri?: Resources::Types::String.optional,
+          parameters?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
         ).optional
         
         # Permissions and access control
         attribute :create_table_default_permission, Resources::Types::Array.of(
-          Types::Hash.schema(
-            permissions: Types::Array.of(Types::String.enum(
-              "ALL", "SELECT", "INSERT", "DELETE", "UPDATE", "CREATE_TABLE", "DROP_TABLE", "ALTER"
-            )),
-            principal: Types::Hash.schema(
-              data_lake_principal_identifier?: Types::String.optional,
-              data_lake_principal?: Types::String.optional
+          Resources::Types::Hash.schema(
+            permissions: Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ["ALL", "SELECT", "INSERT", "DELETE", "UPDATE", "CREATE_TABLE", "DROP_TABLE", "ALTER"])),
+            principal: Resources::Types::Hash.schema(
+              data_lake_principal_identifier?: Resources::Types::String.optional,
+              data_lake_principal?: Resources::Types::String.optional
             )
           )
         ).default([].freeze)
@@ -151,4 +148,3 @@ module Pangea
       end
     end
   end
-end

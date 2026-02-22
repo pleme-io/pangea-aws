@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -25,7 +24,7 @@ module Pangea
       class RamResourceShareAttributes < Dry::Struct
         attribute :name, Resources::Types::String
         attribute :allow_external_principals, Resources::Types::Bool.optional
-        attribute :permission_arns, Resources::Types::Array.of(Types::String).default([].freeze).optional
+        attribute :permission_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -47,4 +46,3 @@ module Pangea
       end
     end
   end
-end

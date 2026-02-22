@@ -19,7 +19,7 @@ module Pangea
   module Resources
     module Types
       # S3 bucket versioning
-      S3Versioning = String.enum('Enabled', 'Suspended', 'Disabled')
+      S3Versioning = Resources::Types::String.constrained(included_in: ['Enabled', 'Suspended', 'Disabled'])
 
       # EFS-specific types
       EfsPerformanceMode = String.constrained(included_in: ['generalPurpose', 'maxIO'])

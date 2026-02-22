@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 
 module Pangea
@@ -21,41 +20,37 @@ module Pangea
     module AWS
       module EksAccessEntry
         # Common types for EKS Access Entry configurations
-        class Types < Dry::Types::Module
-          include Dry.Types()
-
+        module Types
           # EKS Cluster Name constraint
-          ClusterName = String.constrained(
+          ClusterName = Resources::Types::String.constrained(
             min_size: 1,
             max_size: 100,
             format: /\A[a-zA-Z0-9\-_]+\z/
           )
           
           # IAM Principal ARN constraint
-          PrincipalArn = String.constrained(
+          PrincipalArn = Resources::Types::String.constrained(
             format: /\Aarn:aws:iam::[0-9]{12}:(user|role)\/[a-zA-Z0-9+=,.@\-_\/]+\z/
           )
           
           # Access entry type
-          AccessEntryType = String.enum('STANDARD', 'FARGATE_LINUX', 'EC2_LINUX', 'EC2_WINDOWS')
+          AccessEntryType = Resources::Types::String.constrained(included_in: ['STANDARD', 'FARGATE_LINUX', 'EC2_LINUX', 'EC2_WINDOWS'])
           
           # Kubernetes groups
-          KubernetesGroup = String.constrained(min_size: 1, max_size: 63)
+          KubernetesGroup = Resources::Types::String.constrained(min_size: 1, max_size: 63)
         end
 
         # EKS Access Entry attributes with comprehensive validation
         class EksAccessEntryAttributes < Dry::Struct
-          include Types[self]
-          
           # Required attributes
-          attribute :cluster_name, ClusterName
-          attribute :principal_arn, PrincipalArn
+          attribute :cluster_name, Types::ClusterName
+          attribute :principal_arn, Types::PrincipalArn
           
           # Optional attributes
-          attribute? :kubernetes_groups, Array.of(KubernetesGroup).optional
-          attribute? :type, AccessEntryType.optional
-          attribute? :user_name, String.optional
-          attribute? :tags, Hash.map(String, String).default({}.freeze)
+          attribute? :kubernetes_groups, Resources::Types::Array.of(Types::KubernetesGroup).optional
+          attribute? :type, Types::AccessEntryType.optional
+          attribute? :user_name, Resources::Types::String.optional
+          attribute? :tags, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
           
           # Computed properties
           def principal_name

@@ -24,6 +24,7 @@ module Pangea
         CORS_METHODS = %w[GET PUT POST DELETE HEAD].freeze
 
         # CORS rule type for S3 buckets
+        unless const_defined?(:CorsRule)
         CorsRule = Resources::Types::Hash.schema(
           allowed_headers?: Resources::Types::Array.of(Resources::Types::String).optional,
           allowed_methods: Resources::Types::Array.of(Resources::Types::String.enum(*CORS_METHODS)),
@@ -31,6 +32,7 @@ module Pangea
           expose_headers?: Resources::Types::Array.of(Resources::Types::String).optional,
           max_age_seconds?: Resources::Types::Integer.optional
         )
+        end
       end
     end
   end

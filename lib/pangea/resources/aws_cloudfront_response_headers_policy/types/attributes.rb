@@ -14,33 +14,33 @@ module Pangea
           attribute :comment, Resources::Types::String.optional
 
           attribute :cors_config, Resources::Types::Hash.schema(
-            access_control_allow_credentials: Types::Bool.default(false),
-            access_control_allow_headers?: Types::Hash.schema(items: Types::Array.of(Types::String)).optional,
-            access_control_allow_methods: Types::Hash.schema(items: Types::Array.of(Types::String.enum('GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH'))),
-            access_control_allow_origins: Types::Hash.schema(items: Types::Array.of(Types::String)),
-            access_control_expose_headers?: Types::Hash.schema(items: Types::Array.of(Types::String)).optional,
-            access_control_max_age_sec?: Types::Integer.optional,
-            origin_override: Types::Bool.default(true)
+            access_control_allow_credentials: Resources::Types::Bool.default(false),
+            access_control_allow_headers?: Resources::Types::Hash.schema(items: Resources::Types::Array.of(Resources::Types::String)).optional,
+            access_control_allow_methods: Resources::Types::Hash.schema(items: Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH']))),
+            access_control_allow_origins: Resources::Types::Hash.schema(items: Resources::Types::Array.of(Resources::Types::String)),
+            access_control_expose_headers?: Resources::Types::Hash.schema(items: Resources::Types::Array.of(Resources::Types::String)).optional,
+            access_control_max_age_sec?: Resources::Types::Integer.optional,
+            origin_override: Resources::Types::Bool.default(true)
           ).optional
 
           attribute :custom_headers_config, Resources::Types::Hash.schema(
-            items?: Types::Array.of(Types::Hash.schema(header: Types::String, value: Types::String, override: Types::Bool.default(true))).optional
+            items?: Resources::Types::Array.of(Resources::Types::Hash.schema(header: Resources::Types::String, value: Resources::Types::String, override: Resources::Types::Bool.default(true))).optional
           ).optional
 
           attribute :remove_headers_config, Resources::Types::Hash.schema(
-            items: Types::Array.of(Types::Hash.schema(header: Types::String))
+            items: Resources::Types::Array.of(Resources::Types::Hash.schema(header: Resources::Types::String))
           ).optional
 
           attribute :security_headers_config, Resources::Types::Hash.schema(
-            content_type_options?: Types::Hash.schema(override: Types::Bool.default(true)).optional,
-            frame_options?: Types::Hash.schema(frame_option: Types::String.enum('DENY', 'SAMEORIGIN'), override: Types::Bool.default(true)).optional,
-            referrer_policy?: Types::Hash.schema(referrer_policy: Types::String.enum('no-referrer', 'no-referrer-when-downgrade', 'origin', 'origin-when-cross-origin', 'same-origin', 'strict-origin', 'strict-origin-when-cross-origin', 'unsafe-url'), override: Types::Bool.default(true)).optional,
-            strict_transport_security?: Types::Hash.schema(access_control_max_age_sec: Types::Integer, include_subdomains?: Types::Bool.default(false).optional, override: Types::Bool.default(true), preload?: Types::Bool.default(false).optional).optional
+            content_type_options?: Resources::Types::Hash.schema(override: Resources::Types::Bool.default(true)).optional,
+            frame_options?: Resources::Types::Hash.schema(frame_option: Resources::Types::String.constrained(included_in: ['DENY', 'SAMEORIGIN']), override: Resources::Types::Bool.default(true)).optional,
+            referrer_policy?: Resources::Types::Hash.schema(referrer_policy: Resources::Types::String.constrained(included_in: ['no-referrer', 'no-referrer-when-downgrade', 'origin', 'origin-when-cross-origin', 'same-origin', 'strict-origin', 'strict-origin-when-cross-origin', 'unsafe-url']), override: Resources::Types::Bool.default(true)).optional,
+            strict_transport_security?: Resources::Types::Hash.schema(access_control_max_age_sec: Resources::Types::Integer, include_subdomains?: Resources::Types::Bool.default(false).optional, override: Resources::Types::Bool.default(true), preload?: Resources::Types::Bool.default(false).optional).optional
           ).optional
 
           attribute :server_timing_headers_config, Resources::Types::Hash.schema(
-            enabled: Types::Bool.default(false),
-            sampling_rate?: Types::Coercible::Float.constrained(gteq: 0.0, lteq: 1.0).optional
+            enabled: Resources::Types::Bool.default(false),
+            sampling_rate?: Resources::Types::Coercible::Float.constrained(gteq: 0.0, lteq: 1.0).optional
           ).optional
 
           def self.new(attributes = {})

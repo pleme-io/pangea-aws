@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -24,7 +23,7 @@ module Pangea
       # Provides a MemoryDB ACL resource.
       class MemorydbAclAttributes < Dry::Struct
         attribute :name, Resources::Types::String
-        attribute :user_names, Resources::Types::Array.of(Types::String).default([].freeze).optional
+        attribute :user_names, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -46,4 +45,3 @@ module Pangea
       end
     end
   end
-end

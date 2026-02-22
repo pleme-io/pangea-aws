@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -22,10 +21,10 @@ module Pangea
     module AWS
       module Types
         # SES TLS policy
-        SesTlsPolicy = String.enum('Require', 'Optional')
+        SesTlsPolicy = Resources::Types::String.constrained(included_in: ['Require', 'Optional'])
 
         # SES delivery options
-        SesDeliveryOptions = Hash.schema(
+        SesDeliveryOptions = Resources::Types::Hash.schema(
           tls_policy?: SesTlsPolicy.optional
         )
 

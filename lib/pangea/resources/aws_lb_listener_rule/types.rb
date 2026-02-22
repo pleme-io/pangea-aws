@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -30,29 +29,29 @@ module Pangea
         
         # Actions to take when the rule conditions are met
         attribute :action, Resources::Types::Array.of(
-          Types::Hash.schema(
-            type: Types::ListenerActionType,
-            target_group_arn?: Types::String.optional,
-            forward?: Types::ListenerForwardAction.optional,
-            redirect?: Types::ListenerRedirectAction.optional,
-            fixed_response?: Types::ListenerFixedResponseAction.optional,
-            authenticate_cognito?: Types::ListenerAuthenticateCognitoAction.optional,
-            authenticate_oidc?: Types::ListenerAuthenticateOidcAction.optional,
-            order?: Types::Integer.constrained(gteq: 1, lteq: 50000).optional
+          Resources::Types::Hash.schema(
+            type: Resources::Types::ListenerActionType,
+            target_group_arn?: Resources::Types::String.optional,
+            forward?: Resources::Types::ListenerForwardAction.optional,
+            redirect?: Resources::Types::ListenerRedirectAction.optional,
+            fixed_response?: Resources::Types::ListenerFixedResponseAction.optional,
+            authenticate_cognito?: Resources::Types::ListenerAuthenticateCognitoAction.optional,
+            authenticate_oidc?: Resources::Types::ListenerAuthenticateOidcAction.optional,
+            order?: Resources::Types::Integer.constrained(gteq: 1, lteq: 50000).optional
           )
         ).constrained(min_size: 1)
         
         # Conditions that must be met for the rule to apply
         attribute :condition, Resources::Types::Array.of(
-          Types::Hash.schema(
-            field?: Types::String.optional, # Legacy field name
-            values?: Types::Array.of(Types::String).optional, # Legacy values
-            host_header?: Types::ListenerConditionHostHeader.optional,
-            path_pattern?: Types::ListenerConditionPathPattern.optional,
-            http_method?: Types::ListenerConditionHttpMethod.optional,
-            query_string?: Types::ListenerConditionQueryString.optional,
-            http_header?: Types::ListenerConditionHttpHeader.optional,
-            source_ip?: Types::ListenerConditionSourceIp.optional
+          Resources::Types::Hash.schema(
+            field?: Resources::Types::String.optional, # Legacy field name
+            values?: Resources::Types::Array.of(Resources::Types::String).optional, # Legacy values
+            host_header?: Resources::Types::ListenerConditionHostHeader.optional,
+            path_pattern?: Resources::Types::ListenerConditionPathPattern.optional,
+            http_method?: Resources::Types::ListenerConditionHttpMethod.optional,
+            query_string?: Resources::Types::ListenerConditionQueryString.optional,
+            http_header?: Resources::Types::ListenerConditionHttpHeader.optional,
+            source_ip?: Resources::Types::ListenerConditionSourceIp.optional
           )
         ).constrained(min_size: 1)
         
@@ -120,4 +119,3 @@ module Pangea
       end
     end
   end
-end

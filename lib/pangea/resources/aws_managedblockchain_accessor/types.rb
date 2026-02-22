@@ -49,9 +49,7 @@ module Pangea
           attribute? :billing_token, Resources::Types::String.optional
 
           # Tags (optional)
-          attribute? :tags, Resources::Types::Hash.schema(
-            Resources::Types::String => Resources::Types::String
-          ).optional
+          attribute? :tags, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
 
           # Custom validation
           def self.new(attributes = {})

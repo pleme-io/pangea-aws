@@ -69,7 +69,7 @@ module Pangea
           end
 
           def validate_nodejs_handler(handler)
-            return if handler =~ /\A[a-zA-Z0-9_./-]+\.[a-zA-Z_][a-zA-Z0-9_]*\z/
+            return if handler =~ %r{\A[a-zA-Z0-9_./-]+\.[a-zA-Z_][a-zA-Z0-9_]*\z}
             raise Dry::Struct::Error, "Node.js handler must be in format 'filename.export'"
           end
 
@@ -89,7 +89,7 @@ module Pangea
           end
 
           def validate_ruby_handler(handler)
-            return if handler =~ /\A[a-zA-Z_][a-zA-Z0-9_/]*\.[a-zA-Z_][a-zA-Z0-9_]*\z/
+            return if handler =~ %r{\A[a-zA-Z_][a-zA-Z0-9_/]*\.[a-zA-Z_][a-zA-Z0-9_]*\z}
             raise Dry::Struct::Error, "Ruby handler must be in format 'filename.method_name'"
           end
         end

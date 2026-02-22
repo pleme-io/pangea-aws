@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -27,12 +26,10 @@ module Pangea
           
           # Required attributes
           attribute :name, Resources::Types::String
-          attribute :provider_type, Resources::Types::String.enum(
-            'Bitbucket', 
+          attribute :provider_type, Resources::Types::String.constrained(included_in: ['Bitbucket', 
             'GitHub', 
             'GitHubEnterpriseServer',
-            'GitLab'
-          )
+            'GitLab'])
           
           # Optional attributes
           attribute :host_arn, Resources::Types::String.optional.default(nil)

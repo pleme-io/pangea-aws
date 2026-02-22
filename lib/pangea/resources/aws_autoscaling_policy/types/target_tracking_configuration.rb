@@ -31,12 +31,10 @@ module Pangea
 
           # Predefined metric specification
           attribute :predefined_metric_specification, Resources::Types::Hash.schema(
-            predefined_metric_type: Resources::Types::String.enum(
-              'ASGAverageCPUUtilization',
+            predefined_metric_type: Resources::Types::String.constrained(included_in: ['ASGAverageCPUUtilization',
               'ASGAverageNetworkIn',
               'ASGAverageNetworkOut',
-              'ALBRequestCountPerTarget'
-            ),
+              'ALBRequestCountPerTarget']),
             resource_label: Resources::Types::String.optional
           ).optional.default(nil)
 
@@ -44,7 +42,7 @@ module Pangea
           attribute :customized_metric_specification, Resources::Types::Hash.schema(
             metric_name: Resources::Types::String,
             namespace: Resources::Types::String,
-            statistic: Resources::Types::String.enum('Average', 'Minimum', 'Maximum', 'SampleCount', 'Sum'),
+            statistic: Resources::Types::String.constrained(included_in: ['Average', 'Minimum', 'Maximum', 'SampleCount', 'Sum']),
             unit: Resources::Types::String.optional,
             dimensions: Resources::Types::Hash.optional
           ).optional.default(nil)

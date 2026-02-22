@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -28,7 +27,7 @@ module Pangea
         attribute :description, Resources::Types::String.optional
         attribute :license_count, Resources::Types::Integer.optional
         attribute :license_count_hard_limit, Resources::Types::Bool.optional
-        attribute :license_rules, Resources::Types::Array.of(Types::String).default([].freeze).optional
+        attribute :license_rules, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -50,4 +49,3 @@ module Pangea
       end
     end
   end
-end

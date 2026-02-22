@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -22,6 +21,11 @@ module Pangea
     module AWS
       module Types
         # ACM Certificate resource attributes with validation
+
+        AcmCertificateLifecycle = Resources::Types::Hash.schema(
+          create_before_destroy?: Resources::Types::Bool.default(true),
+          prevent_destroy?: Resources::Types::Bool.default(false)
+        )
         class AcmCertificateAttributes < Dry::Struct
           transform_keys(&:to_sym)
           
@@ -143,10 +147,6 @@ module Pangea
         end
         
         # ACM Certificate lifecycle configuration
-        AcmCertificateLifecycle = Resources::Types::Hash.schema(
-          create_before_destroy?: Resources::Types::Bool.default(true),
-          prevent_destroy?: Resources::Types::Bool.default(false)
-        )
       end
     end
   end

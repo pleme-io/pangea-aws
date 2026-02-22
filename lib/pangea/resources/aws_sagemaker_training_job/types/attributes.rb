@@ -2,6 +2,10 @@
 
 # Copyright 2025 The Pangea Authors. Licensed under Apache 2.0.
 
+require_relative 'enums'
+require_relative 'configs'
+require_relative 'validation'
+
 module Pangea
   module Resources
     module AWS
@@ -16,20 +20,20 @@ module Pangea
           attribute :output_data_config, SageMakerTrainingOutputDataConfig
           attribute :resource_config, SageMakerTrainingResourceConfig
           attribute :stopping_condition, SageMakerTrainingStoppingCondition
-          attribute :hyper_parameters, Resources::Types::Hash.map(String, String).optional
+          attribute :hyper_parameters, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
           attribute :vpc_config, SageMakerTrainingVpcConfig.optional
           attribute :checkpoint_config, SageMakerTrainingCheckpointConfig.optional
           attribute :debug_hook_config, SageMakerTrainingDebugHookConfig.optional
-          attribute :debug_rule_configurations, Resources::Types::Array.of(Hash).optional
+          attribute :debug_rule_configurations, Resources::Types::Array.of(Resources::Types::Hash).optional
           attribute :profiler_config, SageMakerTrainingProfilerConfig.optional
-          attribute :profiler_rule_configurations, Resources::Types::Array.of(Hash).optional
+          attribute :profiler_rule_configurations, Resources::Types::Array.of(Resources::Types::Hash).optional
           attribute :experiment_config, Resources::Types::Hash.optional
           attribute :tensor_board_output_config, Resources::Types::Hash.optional
           attribute :enable_network_isolation, Resources::Types::Bool.default(false)
           attribute :enable_inter_container_traffic_encryption, Resources::Types::Bool.default(false)
           attribute :enable_managed_spot_training, Resources::Types::Bool.default(false)
           attribute :retry_strategy, Resources::Types::Hash.optional
-          attribute :environment, Resources::Types::Hash.map(String, String).optional
+          attribute :environment, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
           attribute :tags, Resources::Types::AwsTags
 
           def self.new(attributes)

@@ -29,14 +29,12 @@ module Pangea
           attribute :query_name, Resources::Types::String
 
           # Blockchain network (required)
-          attribute :blockchain_network, Resources::Types::String.enum(
-            'ETHEREUM_MAINNET',
+          attribute :blockchain_network, Resources::Types::String.constrained(included_in: ['ETHEREUM_MAINNET',
             'ETHEREUM_GOERLI_TESTNET',
             'BITCOIN_MAINNET',
             'BITCOIN_TESTNET',
             'POLYGON_MAINNET',
-            'POLYGON_MUMBAI_TESTNET'
-          )
+            'POLYGON_MUMBAI_TESTNET'])
 
           # Query string (required)
           attribute :query_string, Resources::Types::String
@@ -47,16 +45,14 @@ module Pangea
               bucket_name: Resources::Types::String,
               key_prefix: Resources::Types::String,
               encryption_configuration?: Resources::Types::Hash.schema(
-                encryption_option: Resources::Types::String.enum('SSE_S3', 'SSE_KMS'),
+                encryption_option: Resources::Types::String.constrained(included_in: ['SSE_S3', 'SSE_KMS']),
                 kms_key?: Resources::Types::String.optional
               ).optional
             )
           )
 
           # Query parameters (optional)
-          attribute? :parameters, Resources::Types::Hash.schema(
-            Resources::Types::String => Resources::Types::String
-          ).optional
+          attribute? :parameters, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
 
           # Schedule configuration (optional)
           attribute? :schedule_configuration, Resources::Types::Hash.schema(
@@ -65,9 +61,7 @@ module Pangea
           ).optional
 
           # Tags (optional)
-          attribute? :tags, Resources::Types::Hash.schema(
-            Resources::Types::String => Resources::Types::String
-          ).optional
+          attribute? :tags, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
         end
       end
     end

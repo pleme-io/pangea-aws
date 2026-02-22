@@ -31,7 +31,7 @@ module Pangea
           attribute :description, Resources::Types::String.optional
 
           # State of the workgroup
-          attribute :state, Resources::Types::String.enum('ENABLED', 'DISABLED').default('ENABLED')
+          attribute :state, Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED']).default('ENABLED')
 
           # Force destroy workgroup and contents
           attribute :force_destroy, Resources::Types::Bool.default(false)
@@ -39,47 +39,47 @@ module Pangea
           # Workgroup configuration
           attribute :configuration, Resources::Types::Hash.schema(
             # Query result configuration
-            result_configuration?: Types::Hash.schema(
-              output_location?: Types::String.optional,
-              encryption_configuration?: Types::Hash.schema(
-                encryption_option: Types::String.enum('SSE_S3', 'SSE_KMS', 'CSE_KMS'),
-                kms_key_id?: Types::String.optional
+            result_configuration?: Resources::Types::Hash.schema(
+              output_location?: Resources::Types::String.optional,
+              encryption_configuration?: Resources::Types::Hash.schema(
+                encryption_option: Resources::Types::String.constrained(included_in: ['SSE_S3', 'SSE_KMS', 'CSE_KMS']),
+                kms_key_id?: Resources::Types::String.optional
               ).optional,
-              expected_bucket_owner?: Types::String.optional,
-              acl_configuration?: Types::Hash.schema(
-                s3_acl_option: Types::String.enum('BUCKET_OWNER_FULL_CONTROL')
+              expected_bucket_owner?: Resources::Types::String.optional,
+              acl_configuration?: Resources::Types::Hash.schema(
+                s3_acl_option: Resources::Types::String.constrained(included_in: ['BUCKET_OWNER_FULL_CONTROL'])
               ).optional
             ).optional,
 
             # Execution configuration
-            enforce_workgroup_configuration?: Types::Bool.optional,
-            publish_cloudwatch_metrics_enabled?: Types::Bool.optional,
-            bytes_scanned_cutoff_per_query?: Types::Integer.optional,
-            requester_pays_enabled?: Types::Bool.optional,
+            enforce_workgroup_configuration?: Resources::Types::Bool.optional,
+            publish_cloudwatch_metrics_enabled?: Resources::Types::Bool.optional,
+            bytes_scanned_cutoff_per_query?: Resources::Types::Integer.optional,
+            requester_pays_enabled?: Resources::Types::Bool.optional,
 
             # Engine version
-            engine_version?: Types::Hash.schema(
-              selected_engine_version?: Types::String.optional,
-              effective_engine_version?: Types::String.optional
+            engine_version?: Resources::Types::Hash.schema(
+              selected_engine_version?: Resources::Types::String.optional,
+              effective_engine_version?: Resources::Types::String.optional
             ).optional,
 
             # Result configuration override
-            result_configuration_updates?: Types::Hash.schema(
-              output_location?: Types::String.optional,
-              remove_output_location?: Types::Bool.optional,
-              encryption_configuration?: Types::Hash.schema(
-                encryption_option: Types::String.enum('SSE_S3', 'SSE_KMS', 'CSE_KMS'),
-                kms_key_id?: Types::String.optional
+            result_configuration_updates?: Resources::Types::Hash.schema(
+              output_location?: Resources::Types::String.optional,
+              remove_output_location?: Resources::Types::Bool.optional,
+              encryption_configuration?: Resources::Types::Hash.schema(
+                encryption_option: Resources::Types::String.constrained(included_in: ['SSE_S3', 'SSE_KMS', 'CSE_KMS']),
+                kms_key_id?: Resources::Types::String.optional
               ).optional,
-              remove_encryption_configuration?: Types::Bool.optional
+              remove_encryption_configuration?: Resources::Types::Bool.optional
             ).optional,
 
             # Execution role
-            execution_role?: Types::String.optional,
+            execution_role?: Resources::Types::String.optional,
 
             # Customer content encryption
-            customer_content_encryption_configuration?: Types::Hash.schema(
-              kms_key_id: Types::String
+            customer_content_encryption_configuration?: Resources::Types::Hash.schema(
+              kms_key_id: Resources::Types::String
             ).optional
           ).optional
 

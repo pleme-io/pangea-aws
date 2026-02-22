@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -26,8 +25,8 @@ module Pangea
         attribute :cluster_endpoint_identifier, Resources::Types::String
         attribute :cluster_identifier, Resources::Types::String
         attribute :endpoint_type, Resources::Types::String
-        attribute :static_members, Resources::Types::Array.of(Types::String).default([].freeze).optional
-        attribute :excluded_members, Resources::Types::Array.of(Types::String).default([].freeze).optional
+        attribute :static_members, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
+        attribute :excluded_members, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -49,4 +48,3 @@ module Pangea
       end
     end
   end
-end

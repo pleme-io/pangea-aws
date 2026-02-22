@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 
 module Pangea
@@ -21,41 +20,39 @@ module Pangea
     module AWS
       module S3ObjectLambdaAccessPoint
         # Common types for S3 Object Lambda Access Point configurations
-        class Types < Dry::Types::Module
-          include Dry.Types()
-
+        module Types
           # S3 Object Lambda Access Point Name constraint  
-          ObjectLambdaAccessPointName = String.constrained(
+          ObjectLambdaAccessPointName = Resources::Types::String.constrained(
             min_size: 3,
             max_size: 45,
             format: /\A[a-z0-9\-]+\z/
           )
           
           # Lambda Function ARN constraint
-          LambdaFunctionArn = String.constrained(
+          LambdaFunctionArn = Resources::Types::String.constrained(
             format: /\Aarn:aws:lambda:[a-z0-9\-]*:[0-9]{12}:function:[a-zA-Z0-9\-_]+\z/
           )
           
           # S3 Access Point ARN constraint
-          AccessPointArn = String.constrained(
+          unless const_defined?(:AccessPointArn)
+          AccessPointArn = Resources::Types::String.constrained(
             format: /\Aarn:aws:s3:[a-z0-9\-]*:[0-9]{12}:accesspoint\/[a-z0-9\-]+\z/
           )
+          end
           
           # Object Lambda supported actions
-          SupportedAction = String.enum(
-            'GetObject', 
+          SupportedAction = Resources::Types::String.constrained(included_in: ['GetObject', 
             'HeadObject', 
             'ListObjects', 
-            'ListObjectsV2'
-          )
+            'ListObjectsV2'])
           
           # Transformation Configuration
-          TransformationConfiguration = Hash.schema({
-            actions: Array.of(SupportedAction),
-            content_transformation: Hash.schema({
-              aws_lambda: Hash.schema({
+          TransformationConfiguration = Resources::Types::Hash.schema({
+            actions: Resources::Types::Array.of(SupportedAction),
+            content_transformation: Resources::Types::Hash.schema({
+              aws_lambda: Resources::Types::Hash.schema({
                 function_arn: LambdaFunctionArn,
-                function_payload?: String.optional
+                function_payload?: Resources::Types::String.optional
               })
             })
           })
@@ -63,17 +60,15 @@ module Pangea
 
         # S3 Object Lambda Access Point attributes with comprehensive validation
         class S3ObjectLambdaAccessPointAttributes < Dry::Struct
-          include Types[self]
-          
           # Required attributes
-          attribute :configuration, Hash.schema({
-            supporting_access_point: AccessPointArn,
-            transformation_configuration: Array.of(TransformationConfiguration).constrained(min_size: 1)
+          attribute :configuration, Resources::Types::Hash.schema({
+            supporting_access_point: Types::AccessPointArn,
+            transformation_configuration: Resources::Types::Array.of(Types::TransformationConfiguration).constrained(min_size: 1)
           })
-          attribute :name, ObjectLambdaAccessPointName
+          attribute :name, Types::ObjectLambdaAccessPointName
           
           # Optional attributes
-          attribute? :account_id, String.constrained(format: /\A\d{12}\z/).optional
+          attribute? :account_id, Resources::Types::String.constrained(format: /\A\d{12}\z/).optional
           
           # Computed properties
           def supporting_access_point

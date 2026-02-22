@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -30,8 +29,8 @@ module Pangea
         
         # Attribute payload (optional key-value pairs)
         attribute :attribute_payload, Resources::Types::Hash.schema(
-          attributes?: Types::IotThingAttributes.optional,
-          merge?: Types::Bool.optional
+          attributes?: Resources::Types::IotThingAttributes.optional,
+          merge?: Resources::Types::Bool.optional
         ).default({ attributes: {}, merge: false }.freeze)
         
         # Custom validation
@@ -131,8 +130,7 @@ module Pangea
           
           permissions
         end
-      end
-    end
+        end
       end
     end
   end

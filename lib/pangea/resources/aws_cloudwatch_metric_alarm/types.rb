@@ -16,10 +16,7 @@
 
 require 'dry-struct'
 require 'pangea/resources/types'
-
-require_relative 'types/metric_query'
-require_relative 'types/validation'
-require_relative 'types/instance_methods'
+require_relative '../types/aws/core'
 
 module Pangea
   module Resources
@@ -27,6 +24,10 @@ module Pangea
       module Types
         # CloudWatch Metric Alarm resource attributes with validation
         class CloudWatchMetricAlarmAttributes < Dry::Struct
+          require_relative 'types/metric_query'
+          require_relative 'types/validation'
+          require_relative 'types/instance_methods'
+
           include InstanceMethods
 
           transform_keys(&:to_sym)

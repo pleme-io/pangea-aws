@@ -15,6 +15,7 @@
 
 require 'dry-struct'
 require 'pangea/resources/types'
+require_relative '../types/aws/core'
 require_relative 'types/user_settings_types'
 
 module Pangea
@@ -52,9 +53,7 @@ module Pangea
                 sage_maker_image_version_arn?: Resources::Types::String.optional
               ).optional
             ).optional,
-            execution_role_identity_config?: Resources::Types::String.enum(
-              'USER_PROFILE_NAME', 'DISABLED'
-            ).optional
+            execution_role_identity_config?: Resources::Types::String.constrained(included_in: ['USER_PROFILE_NAME', 'DISABLED']).optional
           ).optional
           attribute :kms_key_id, Resources::Types::String.optional
           attribute :tags, Resources::Types::AwsTags

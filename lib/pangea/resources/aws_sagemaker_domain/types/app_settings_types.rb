@@ -66,18 +66,18 @@ module Pangea
 
         # SageMaker Domain RStudio Server Pro app settings
         SageMakerDomainRStudioServerProAppSettings = Resources::Types::Hash.schema(
-          access_status?: Resources::Types::String.enum('ENABLED', 'DISABLED').optional,
-          user_group?: Resources::Types::String.enum('R_STUDIO_ADMIN', 'R_STUDIO_USER').optional
+          access_status?: Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED']).optional,
+          user_group?: Resources::Types::String.constrained(included_in: ['R_STUDIO_ADMIN', 'R_STUDIO_USER']).optional
         )
 
         # SageMaker Domain Canvas app settings
         SageMakerDomainCanvasAppSettings = Resources::Types::Hash.schema(
           time_series_forecasting_settings?: Resources::Types::Hash.schema(
-            status?: Resources::Types::String.enum('ENABLED', 'DISABLED').optional,
+            status?: Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED']).optional,
             amazon_forecast_role_arn?: Resources::Types::String.optional
           ).optional,
           model_register_settings?: Resources::Types::Hash.schema(
-            status?: Resources::Types::String.enum('ENABLED', 'DISABLED').optional,
+            status?: Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED']).optional,
             cross_account_model_register_role_arn?: Resources::Types::String.optional
           ).optional,
           workspace_settings?: Resources::Types::Hash.schema(

@@ -8,29 +8,33 @@ module Pangea
   module Resources
     module AWS
       module Types
-        # Database parameter configuration
-        class DbParameter < Dry::Struct
-          attribute :name, Resources::Types::String
-          attribute :value, Resources::Types::String | Types::Integer | Types::Float | Types::Bool
-          attribute :apply_method, Resources::Types::String.enum('immediate', 'pending-reboot').default('pending-reboot')
+        # Database parameter configuration — skip if already defined by aws_db_parameter_group
+        unless const_defined?(:DbParameter)
+          unless const_defined?(:DbParameter)
+          class DbParameter < Dry::Struct
+            attribute :name, Resources::Types::String
+            attribute :value, Resources::Types::String | Resources::Types::Integer | Resources::Types::Float | Resources::Types::Bool
+            attribute :apply_method, Resources::Types::String.constrained(included_in: ['immediate', 'pending-reboot']).default('pending-reboot')
 
-          def self.new(attributes = {})
-            attrs = super(attributes)
+            def self.new(attributes = {})
+              attrs = super(attributes)
 
-            if attrs.value.is_a?(TrueClass) || attrs.value.is_a?(FalseClass)
-              attrs = attrs.copy(value: attrs.value ? '1' : '0')
-            elsif attrs.value.is_a?(Numeric)
-              attrs = attrs.copy(value: attrs.value.to_s)
+              if attrs.value.is_a?(TrueClass) || attrs.value.is_a?(FalseClass)
+                attrs = attrs.copy(value: attrs.value ? '1' : '0')
+              elsif attrs.value.is_a?(Numeric)
+                attrs = attrs.copy(value: attrs.value.to_s)
+              end
+
+              attrs
             end
 
-            attrs
+            def terraform_value = value.to_s
+            def requires_immediate_application? = apply_method == 'immediate'
+            def requires_reboot? = apply_method == 'pending-reboot'
           end
-
-          def terraform_value = value.to_s
-          def requires_immediate_application? = apply_method == 'immediate'
-          def requires_reboot? = apply_method == 'pending-reboot'
         end
       end
     end
   end
 end
+          end

@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -24,7 +23,7 @@ module Pangea
       # Provides a License Manager token resource.
       class LicensemanagerTokenAttributes < Dry::Struct
         attribute :license_arn, Resources::Types::String
-        attribute :role_arns, Resources::Types::Array.of(Types::String).default([].freeze).optional
+        attribute :role_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         attribute :token_properties, Resources::Types::Hash.default({}.freeze).optional
         
         # Tags to apply to the resource
@@ -47,4 +46,3 @@ module Pangea
       end
     end
   end
-end

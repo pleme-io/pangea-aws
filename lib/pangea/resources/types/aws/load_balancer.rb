@@ -20,25 +20,23 @@ module Pangea
     module Types
       # Load balancer types
       LoadBalancerType = String.default('application').enum('application', 'network', 'gateway')
-      AlbTargetType = String.enum('instance', 'ip', 'lambda', 'alb')
-      HealthCheckProtocol = String.enum('HTTP', 'HTTPS', 'TCP', 'TLS', 'UDP', 'TCP_UDP', 'GENEVE')
-      ListenerProtocol = String.enum('HTTP', 'HTTPS', 'TCP', 'TLS', 'UDP', 'TCP_UDP', 'GENEVE')
+      AlbTargetType = Resources::Types::String.constrained(included_in: ['instance', 'ip', 'lambda', 'alb'])
+      HealthCheckProtocol = Resources::Types::String.constrained(included_in: ['HTTP', 'HTTPS', 'TCP', 'TLS', 'UDP', 'TCP_UDP', 'GENEVE'])
+      ListenerProtocol = Resources::Types::String.constrained(included_in: ['HTTP', 'HTTPS', 'TCP', 'TLS', 'UDP', 'TCP_UDP', 'GENEVE'])
       ListenerPort = Integer.constrained(gteq: 1, lteq: 65535)
-      TargetAttachmentType = String.enum('instance', 'ip', 'lambda', 'alb')
+      TargetAttachmentType = Resources::Types::String.constrained(included_in: ['instance', 'ip', 'lambda', 'alb'])
       TargetAvailabilityZone = AwsAvailabilityZone.optional
 
       # SSL policies
-      SslPolicy = String.enum(
-        'ELBSecurityPolicy-TLS-1-0-2015-04', 'ELBSecurityPolicy-TLS-1-1-2017-01',
+      SslPolicy = Resources::Types::String.constrained(included_in: ['ELBSecurityPolicy-TLS-1-0-2015-04', 'ELBSecurityPolicy-TLS-1-1-2017-01',
         'ELBSecurityPolicy-TLS-1-2-2017-01', 'ELBSecurityPolicy-TLS-1-2-Ext-2018-06',
         'ELBSecurityPolicy-FS-2018-06', 'ELBSecurityPolicy-FS-1-1-2019-08',
         'ELBSecurityPolicy-FS-1-2-2019-08', 'ELBSecurityPolicy-FS-1-2-Res-2019-08',
-        'ELBSecurityPolicy-FS-1-2-Res-2020-10', 'ELBSecurityPolicy-2016-08'
-      )
+        'ELBSecurityPolicy-FS-1-2-Res-2020-10', 'ELBSecurityPolicy-2016-08'])
 
-      ListenerActionType = String.enum('forward', 'redirect', 'fixed-response', 'authenticate-cognito', 'authenticate-oidc')
-      ListenerConditionType = String.enum('host-header', 'path-pattern', 'http-method', 'query-string', 'http-header', 'source-ip')
-      HttpMethod = String.enum('GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH')
+      ListenerActionType = Resources::Types::String.constrained(included_in: ['forward', 'redirect', 'fixed-response', 'authenticate-cognito', 'authenticate-oidc'])
+      ListenerConditionType = Resources::Types::String.constrained(included_in: ['host-header', 'path-pattern', 'http-method', 'query-string', 'http-header', 'source-ip'])
+      HttpMethod = Resources::Types::String.constrained(included_in: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH'])
 
       ListenerForwardAction = Hash.schema(
         target_groups: Array.of(Hash.schema(
@@ -49,16 +47,16 @@ module Pangea
       )
 
       ListenerRedirectAction = Hash.schema(
-        protocol?: String.enum('HTTP', 'HTTPS', '#{protocol}').optional,
+        protocol?: Resources::Types::String.constrained(included_in: ['HTTP', 'HTTPS', '#{protocol}']).optional,
         port?: String.optional,
         host?: String.optional,
         path?: String.optional,
         query?: String.optional,
-        status_code: String.enum('HTTP_301', 'HTTP_302')
+        status_code: Resources::Types::String.constrained(included_in: ['HTTP_301', 'HTTP_302'])
       )
 
       ListenerFixedResponseAction = Hash.schema(
-        content_type?: String.enum('text/plain', 'text/css', 'text/html', 'application/javascript', 'application/json').optional,
+        content_type?: Resources::Types::String.constrained(included_in: ['text/plain', 'text/css', 'text/html', 'application/javascript', 'application/json']).optional,
         message_body?: String.optional,
         status_code: String.constrained(format: /\A[1-5][0-9]{2}\z/)
       )
@@ -68,7 +66,7 @@ module Pangea
         user_pool_client_id: String,
         user_pool_domain: String,
         authentication_request_extra_params?: Hash.map(String, String).optional,
-        on_unauthenticated_request?: String.enum('deny', 'allow', 'authenticate').optional,
+        on_unauthenticated_request?: Resources::Types::String.constrained(included_in: ['deny', 'allow', 'authenticate']).optional,
         scope?: String.optional,
         session_cookie_name?: String.optional,
         session_timeout?: Integer.constrained(gteq: 1, lteq: 604800).optional
@@ -82,7 +80,7 @@ module Pangea
         token_endpoint: String,
         user_info_endpoint: String,
         authentication_request_extra_params?: Hash.map(String, String).optional,
-        on_unauthenticated_request?: String.enum('deny', 'allow', 'authenticate').optional,
+        on_unauthenticated_request?: Resources::Types::String.constrained(included_in: ['deny', 'allow', 'authenticate']).optional,
         scope?: String.optional,
         session_cookie_name?: String.optional,
         session_timeout?: Integer.constrained(gteq: 1, lteq: 604800).optional

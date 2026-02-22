@@ -9,7 +9,7 @@ module Pangea
   module Resources
     module AWS
       module Types
-        SageMakerUserProfileName = String.constrained(
+        SageMakerUserProfileName = Resources::Types::String.constrained(
           min_size: 1, max_size: 63, format: /\A[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]\z/
         )
 
@@ -21,33 +21,33 @@ module Pangea
           attribute :single_sign_on_user_identifier, Resources::Types::String.optional
           attribute :single_sign_on_user_value, Resources::Types::String.optional
           attribute :user_settings, Resources::Types::Hash.schema(
-            execution_role?: String.optional,
-            security_groups?: Array.of(String).optional,
-            sharing_settings?: Hash.schema(
-              notebook_output_option?: String.enum('Allowed', 'Disabled').optional,
-              s3_output_path?: String.optional, s3_kms_key_id?: String.optional
+            execution_role?: Resources::Types::String.optional,
+            security_groups?: Resources::Types::Array.of(Resources::Types::String).optional,
+            sharing_settings?: Resources::Types::Hash.schema(
+              notebook_output_option?: Resources::Types::String.constrained(included_in: ['Allowed', 'Disabled']).optional,
+              s3_output_path?: Resources::Types::String.optional, s3_kms_key_id?: Resources::Types::String.optional
             ).optional,
-            jupyter_server_app_settings?: Hash.optional,
-            kernel_gateway_app_settings?: Hash.optional,
-            tensor_board_app_settings?: Hash.optional,
-            r_studio_server_pro_app_settings?: Hash.schema(
-              access_status?: String.enum('ENABLED', 'DISABLED').optional,
-              user_group?: String.enum('R_STUDIO_ADMIN', 'R_STUDIO_USER').optional
+            jupyter_server_app_settings?: Resources::Types::Hash.optional,
+            kernel_gateway_app_settings?: Resources::Types::Hash.optional,
+            tensor_board_app_settings?: Resources::Types::Hash.optional,
+            r_studio_server_pro_app_settings?: Resources::Types::Hash.schema(
+              access_status?: Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED']).optional,
+              user_group?: Resources::Types::String.constrained(included_in: ['R_STUDIO_ADMIN', 'R_STUDIO_USER']).optional
             ).optional,
-            canvas_app_settings?: Hash.optional,
-            space_storage_settings?: Hash.schema(
-              default_ebs_storage_settings?: Hash.schema(
-                default_ebs_volume_size_in_gb: Integer.constrained(gteq: 5, lteq: 16384),
-                maximum_ebs_volume_size_in_gb: Integer.constrained(gteq: 5, lteq: 16384)
+            canvas_app_settings?: Resources::Types::Hash.optional,
+            space_storage_settings?: Resources::Types::Hash.schema(
+              default_ebs_storage_settings?: Resources::Types::Hash.schema(
+                default_ebs_volume_size_in_gb: Resources::Types::Integer.constrained(gteq: 5, lteq: 16384),
+                maximum_ebs_volume_size_in_gb: Resources::Types::Integer.constrained(gteq: 5, lteq: 16384)
               ).optional
             ).optional,
-            default_landing_uri?: String.optional,
-            studio_web_portal?: String.enum('ENABLED', 'DISABLED').optional,
-            custom_posix_user_config?: Hash.schema(
-              uid: Integer.constrained(gteq: 1001, lteq: 4000000),
-              gid: Integer.constrained(gteq: 1001, lteq: 4000000)
+            default_landing_uri?: Resources::Types::String.optional,
+            studio_web_portal?: Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED']).optional,
+            custom_posix_user_config?: Resources::Types::Hash.schema(
+              uid: Resources::Types::Integer.constrained(gteq: 1001, lteq: 4000000),
+              gid: Resources::Types::Integer.constrained(gteq: 1001, lteq: 4000000)
             ).optional,
-            custom_file_system_configs?: Array.optional
+            custom_file_system_configs?: Resources::Types::Array.optional
           ).optional
           attribute :tags, Resources::Types::AwsTags
 

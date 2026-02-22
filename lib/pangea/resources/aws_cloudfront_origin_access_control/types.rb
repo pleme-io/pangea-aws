@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -32,13 +31,13 @@ module Pangea
         attribute :description, Resources::Types::String.default('')
 
         # Origin type (s3 is the only supported type currently)
-        attribute :origin_access_control_origin_type, Resources::Types::String.enum('s3').default('s3')
+        attribute :origin_access_control_origin_type, Resources::Types::String.constrained(included_in: ['s3']).default('s3')
 
         # Signing behavior for the origin access control
-        attribute :signing_behavior, Resources::Types::String.enum('always', 'never', 'no-override').default('always')
+        attribute :signing_behavior, Resources::Types::String.constrained(included_in: ['always', 'never', 'no-override']).default('always')
 
         # Signing protocol for the origin access control
-        attribute :signing_protocol, Resources::Types::String.enum('sigv4').default('sigv4')
+        attribute :signing_protocol, Resources::Types::String.constrained(included_in: ['sigv4']).default('sigv4')
 
         # Custom validation
         def self.new(attributes = {})
@@ -97,4 +96,3 @@ module Pangea
       end
     end
   end
-end

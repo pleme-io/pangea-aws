@@ -172,4 +172,3 @@ module Pangea
   end
 end
 
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

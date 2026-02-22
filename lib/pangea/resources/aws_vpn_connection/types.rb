@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -27,20 +26,20 @@ module Pangea
         
         attribute :tunnel_inside_cidr, Resources::Types::CidrBlock.optional
         attribute :preshared_key, Resources::Types::String.optional
-        attributephase1_dh_group_numbers :, Resources::Types::Array.of(Types::Integer).optional
-        attributephase2_dh_group_numbers :, Resources::Types::Array.of(Types::Integer).optional
-        attributephase1_encryption_algorithms :, Resources::Types::Array.of(Types::String).optional
-        attributephase2_encryption_algorithms :, Resources::Types::Array.of(Types::String).optional
-        attributephase1_integrity_algorithms :, Resources::Types::Array.of(Types::String).optional
-        attributephase2_integrity_algorithms :, Resources::Types::Array.of(Types::String).optional
-        attributephase1_lifetime_seconds :, Resources::Types::Integer.constrained(gteq: 900, lteq: 28800).optional
-        attributephase2_lifetime_seconds :, Resources::Types::Integer.constrained(gteq: 900, lteq: 3600).optional
+        attribute :phase1_dh_group_numbers, Resources::Types::Array.of(Resources::Types::Integer).optional
+        attribute :phase2_dh_group_numbers, Resources::Types::Array.of(Resources::Types::Integer).optional
+        attribute :phase1_encryption_algorithms, Resources::Types::Array.of(Resources::Types::String).optional
+        attribute :phase2_encryption_algorithms, Resources::Types::Array.of(Resources::Types::String).optional
+        attribute :phase1_integrity_algorithms, Resources::Types::Array.of(Resources::Types::String).optional
+        attribute :phase2_integrity_algorithms, Resources::Types::Array.of(Resources::Types::String).optional
+        attribute :phase1_lifetime_seconds, Resources::Types::Integer.constrained(gteq: 900, lteq: 28800).optional
+        attribute :phase2_lifetime_seconds, Resources::Types::Integer.constrained(gteq: 900, lteq: 3600).optional
         attribute :rekey_margin_time_seconds, Resources::Types::Integer.constrained(gteq: 60, lteq: 1800).optional
         attribute :rekey_fuzz_percentage, Resources::Types::Integer.constrained(gteq: 0, lteq: 100).optional
         attribute :replay_window_size, Resources::Types::Integer.constrained(gteq: 64, lteq: 2048).optional
         attribute :dpd_timeout_seconds, Resources::Types::Integer.constrained(gteq: 0, lteq: 3600).optional
-        attribute :dpd_timeout_action, Resources::Types::String.enum('clear', 'none', 'restart').optional
-        attribute :startup_action, Resources::Types::String.enum('add', 'start').optional
+        attribute :dpd_timeout_action, Resources::Types::String.constrained(included_in: ['clear', 'none', 'restart']).optional
+        attribute :startup_action, Resources::Types::String.constrained(included_in: ['add', 'start']).optional
       end
       
       # Type-safe attributes for AwsVpnConnection resources
@@ -55,12 +54,12 @@ module Pangea
         attribute :vpn_gateway_id, Resources::Types::String.optional
         attribute :transit_gateway_id, Resources::Types::String.optional
         attribute :static_routes_only, Resources::Types::Bool.default(false)
-        attributelocal_ipv4_network_cidr :, Resources::Types::CidrBlock.optional
-        attributeremote_ipv4_network_cidr :, Resources::Types::CidrBlock.optional
-        attributetunnel1_inside_cidr :, Resources::Types::CidrBlock.optional
-        attributetunnel2_inside_cidr :, Resources::Types::CidrBlock.optional
-        attributetunnel1_preshared_key :, Resources::Types::String.optional
-        attributetunnel2_preshared_key :, Resources::Types::String.optional
+        attribute :local_ipv4_network_cidr, Resources::Types::CidrBlock.optional
+        attribute :remote_ipv4_network_cidr, Resources::Types::CidrBlock.optional
+        attribute :tunnel1_inside_cidr, Resources::Types::CidrBlock.optional
+        attribute :tunnel2_inside_cidr, Resources::Types::CidrBlock.optional
+        attribute :tunnel1_preshared_key, Resources::Types::String.optional
+        attribute :tunnel2_preshared_key, Resources::Types::String.optional
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
@@ -119,8 +118,7 @@ module Pangea
           return 'vpn_gateway' if vpn_gateway_id
           'none'
         end
-      end
-    end
+        end
       end
     end
   end

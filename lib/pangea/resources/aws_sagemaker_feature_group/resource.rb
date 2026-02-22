@@ -22,7 +22,8 @@ module Pangea
   module Resources
     module AWS
       # SageMaker Feature Group resource for ML feature management
-      class SageMakerFeatureGroup < Base
+      SageMakerFeatureGroup = Struct.new(:name, :attributes, keyword_init: true)
+      class SageMakerFeatureGroup
         def self.resource_type
           'aws_sagemaker_feature_group'
         end
@@ -59,6 +60,3 @@ module Pangea
     end
   end
 end
-
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

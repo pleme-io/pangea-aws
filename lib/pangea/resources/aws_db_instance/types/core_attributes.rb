@@ -30,11 +30,9 @@ module Pangea
           attribute :identifier_prefix, Resources::Types::String.optional
 
           # Database engine
-          attribute :engine, Resources::Types::String.enum(
-            "mysql", "postgres", "mariadb", "oracle-se", "oracle-se1", "oracle-se2",
+          attribute :engine, Resources::Types::String.constrained(included_in: ["mysql", "postgres", "mariadb", "oracle-se", "oracle-se1", "oracle-se2",
             "oracle-ee", "sqlserver-ee", "sqlserver-se", "sqlserver-ex", "sqlserver-web",
-            "aurora", "aurora-mysql", "aurora-postgresql"
-          )
+            "aurora", "aurora-mysql", "aurora-postgresql"])
 
           # Engine version (optional, uses default for engine if not specified)
           attribute :engine_version, Resources::Types::String.optional

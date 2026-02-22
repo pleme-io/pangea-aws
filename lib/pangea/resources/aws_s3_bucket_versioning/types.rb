@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -30,8 +29,8 @@ module Pangea
 
         # Versioning configuration (required)
         attribute :versioning_configuration, Resources::Types::Hash.schema(
-          status: Resources::Types::String.enum('Enabled', 'Suspended'),
-          mfa_delete?: Resources::Types::String.enum('Enabled', 'Disabled').optional
+          status: Resources::Types::String.constrained(included_in: ['Enabled', 'Suspended']),
+          mfa_delete?: Resources::Types::String.constrained(included_in: ['Enabled', 'Disabled']).optional
         )
 
         # Expected bucket owner for multi-account scenarios
@@ -74,4 +73,3 @@ module Pangea
       end
     end
   end
-end

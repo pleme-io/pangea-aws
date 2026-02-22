@@ -56,7 +56,7 @@ module Pangea
                 filter do
                   if rule_config[:filter][:and]
                     # Complex filter with multiple conditions
-                    and do
+                    send(:and) do
                       prefix rule_config[:filter][:and][:prefix] if rule_config[:filter][:and][:prefix]
                       
                       if rule_config[:filter][:and][:tags]
@@ -196,5 +196,3 @@ module Pangea
   end
 end
 
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

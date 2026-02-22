@@ -19,23 +19,23 @@ module Pangea
   module Resources
     module Types
       # ACM Certificate types
-      AcmValidationMethod = String.enum('DNS', 'EMAIL')
-      AcmCertificateStatus = String.enum('PENDING_VALIDATION', 'ISSUED', 'INACTIVE', 'EXPIRED', 'VALIDATION_TIMED_OUT', 'REVOKED', 'FAILED')
-      AcmKeyAlgorithm = String.enum('RSA-2048', 'RSA-1024', 'RSA-4096', 'EC-prime256v1', 'EC-secp384r1', 'EC-secp521r1')
+      AcmValidationMethod = Resources::Types::String.constrained(included_in: ['DNS', 'EMAIL'])
+      AcmCertificateStatus = Resources::Types::String.constrained(included_in: ['PENDING_VALIDATION', 'ISSUED', 'INACTIVE', 'EXPIRED', 'VALIDATION_TIMED_OUT', 'REVOKED', 'FAILED'])
+      AcmKeyAlgorithm = Resources::Types::String.constrained(included_in: ['RSA-2048', 'RSA-1024', 'RSA-4096', 'EC-prime256v1', 'EC-secp384r1', 'EC-secp521r1'])
       CertificateTransparencyLogging = String.default('ENABLED').enum('ENABLED', 'DISABLED')
 
       AcmValidationOption = Hash.schema(domain_name: DomainName, validation_domain?: DomainName.optional)
       AcmDomainValidationOption = Hash.schema(
         domain_name: DomainName,
         resource_record_name?: String.optional,
-        resource_record_type?: String.enum('CNAME', 'A', 'AAAA', 'TXT').optional,
+        resource_record_type?: Resources::Types::String.constrained(included_in: ['CNAME', 'A', 'AAAA', 'TXT']).optional,
         resource_record_value?: String.optional
       )
 
       # KMS key types
-      KmsKeyUsage = String.enum('SIGN_VERIFY', 'ENCRYPT_DECRYPT')
-      KmsKeySpec = String.enum('SYMMETRIC_DEFAULT', 'RSA_2048', 'RSA_3072', 'RSA_4096', 'ECC_NIST_P256', 'ECC_NIST_P384', 'ECC_NIST_P521', 'ECC_SECG_P256K1')
-      KmsOrigin = String.enum('AWS_KMS', 'EXTERNAL', 'AWS_CLOUDHSM')
+      KmsKeyUsage = Resources::Types::String.constrained(included_in: ['SIGN_VERIFY', 'ENCRYPT_DECRYPT'])
+      KmsKeySpec = Resources::Types::String.constrained(included_in: ['SYMMETRIC_DEFAULT', 'RSA_2048', 'RSA_3072', 'RSA_4096', 'ECC_NIST_P256', 'ECC_NIST_P384', 'ECC_NIST_P521', 'ECC_SECG_P256K1'])
+      KmsOrigin = Resources::Types::String.constrained(included_in: ['AWS_KMS', 'EXTERNAL', 'AWS_CLOUDHSM'])
       KmsMultiRegion = Bool.default(false)
       KmsEnableKeyRotation = Bool.constructor { |value, _attrs| value }
 
@@ -49,7 +49,7 @@ module Pangea
       }
 
       # Secrets Manager types
-      SecretsManagerSecretType = String.enum('SecureString', 'String', 'StringList')
+      SecretsManagerSecretType = Resources::Types::String.constrained(included_in: ['SecureString', 'String', 'StringList'])
       SecretsManagerRecoveryWindowInDays = Integer.constrained(gteq: 7, lteq: 30).default(30)
 
       SecretName = String.constrained(format: /\A[a-zA-Z0-9\/_+=.@-]{1,512}\z/).constructor { |value|
@@ -63,7 +63,7 @@ module Pangea
       }
 
       SecretArn = String.constrained(format: /\Aarn:aws:secretsmanager:[a-z0-9-]+:\d{12}:secret:[a-zA-Z0-9\/_+=.@-]+-[a-zA-Z0-9]{6}\z/)
-      SecretVersionStage = String.enum('AWSCURRENT', 'AWSPENDING').constructor { |value|
+      SecretVersionStage = Resources::Types::String.constrained(included_in: ['AWSCURRENT', 'AWSPENDING']).constructor { |value|
         if !['AWSCURRENT', 'AWSPENDING'].include?(value)
           unless value.match?(/\A[a-zA-Z0-9_]{1,256}\z/)
             raise Dry::Types::ConstraintError, "Custom version stage must be alphanumeric with underscores, max 256 characters"
@@ -87,35 +87,29 @@ module Pangea
       }
 
       # WAF v2 types
-      WafV2Scope = String.enum('REGIONAL', 'CLOUDFRONT')
-      WafV2IpAddressVersion = String.enum('IPV4', 'IPV6')
-      WafV2DefaultAction = String.enum('ALLOW', 'BLOCK')
-      WafV2RuleActionType = String.enum('ALLOW', 'BLOCK', 'COUNT', 'CAPTCHA', 'CHALLENGE')
-      WafV2ComparisonOperator = String.enum('EQ', 'NE', 'LE', 'LT', 'GE', 'GT')
-      WafV2PositionalConstraint = String.enum('EXACTLY', 'STARTS_WITH', 'ENDS_WITH', 'CONTAINS', 'CONTAINS_WORD')
+      WafV2Scope = Resources::Types::String.constrained(included_in: ['REGIONAL', 'CLOUDFRONT'])
+      WafV2IpAddressVersion = Resources::Types::String.constrained(included_in: ['IPV4', 'IPV6'])
+      WafV2DefaultAction = Resources::Types::String.constrained(included_in: ['ALLOW', 'BLOCK'])
+      WafV2RuleActionType = Resources::Types::String.constrained(included_in: ['ALLOW', 'BLOCK', 'COUNT', 'CAPTCHA', 'CHALLENGE'])
+      WafV2ComparisonOperator = Resources::Types::String.constrained(included_in: ['EQ', 'NE', 'LE', 'LT', 'GE', 'GT'])
+      WafV2PositionalConstraint = Resources::Types::String.constrained(included_in: ['EXACTLY', 'STARTS_WITH', 'ENDS_WITH', 'CONTAINS', 'CONTAINS_WORD'])
       WafV2CapacityUnits = Integer.constrained(gteq: 1, lteq: 1500)
       WafV2RateLimit = Integer.constrained(gteq: 100, lteq: 2000000000)
 
-      WafV2StatementType = String.enum(
-        'ByteMatchStatement', 'SqliMatchStatement', 'XssMatchStatement', 'SizeConstraintStatement',
+      WafV2StatementType = Resources::Types::String.constrained(included_in: ['ByteMatchStatement', 'SqliMatchStatement', 'XssMatchStatement', 'SizeConstraintStatement',
         'GeoMatchStatement', 'RuleGroupReferenceStatement', 'IPSetReferenceStatement',
         'RegexPatternSetReferenceStatement', 'RateBasedStatement', 'AndStatement', 'OrStatement',
-        'NotStatement', 'ManagedRuleGroupStatement', 'LabelMatchStatement'
-      )
+        'NotStatement', 'ManagedRuleGroupStatement', 'LabelMatchStatement'])
 
-      WafV2TextTransformation = String.enum(
-        'NONE', 'COMPRESS_WHITE_SPACE', 'HTML_ENTITY_DECODE', 'LOWERCASE', 'CMD_LINE',
+      WafV2TextTransformation = Resources::Types::String.constrained(included_in: ['NONE', 'COMPRESS_WHITE_SPACE', 'HTML_ENTITY_DECODE', 'LOWERCASE', 'CMD_LINE',
         'URL_DECODE', 'BASE64_DECODE', 'HEX_DECODE', 'MD5', 'REPLACE_COMMENTS',
         'ESCAPE_SEQ_DECODE', 'SQL_HEX_DECODE', 'CSS_DECODE', 'JS_DECODE', 'NORMALIZE_PATH',
         'NORMALIZE_PATH_WIN', 'REMOVE_NULLS', 'REPLACE_NULLS', 'BASE64_DECODE_EXT',
-        'URL_DECODE_UNI', 'UTF8_TO_UNICODE'
-      )
+        'URL_DECODE_UNI', 'UTF8_TO_UNICODE'])
 
-      WafV2FieldToMatch = String.enum(
-        'URI', 'QUERY_STRING', 'HEADER', 'METHOD', 'BODY', 'SINGLE_HEADER',
+      WafV2FieldToMatch = Resources::Types::String.constrained(included_in: ['URI', 'QUERY_STRING', 'HEADER', 'METHOD', 'BODY', 'SINGLE_HEADER',
         'SINGLE_QUERY_ARGUMENT', 'ALL_QUERY_ARGUMENTS', 'URI_PATH', 'JSON_BODY',
-        'HEADERS', 'COOKIES'
-      )
+        'HEADERS', 'COOKIES'])
 
       WafV2JsonBodyMatchPattern = Hash.schema(
         all?: Hash.schema({}).optional,

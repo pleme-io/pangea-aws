@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -41,9 +40,7 @@ module Pangea
         attribute? :kms_key, Resources::Types::String.optional
 
         # Tags (optional)
-        attribute? :tags, Resources::Types::Hash.schema(
-          Resources::Types::String => Resources::Types::String
-        ).optional
+        attribute? :tags, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
 
         # Custom validation
         def self.new(attributes = {})
@@ -170,4 +167,3 @@ module Pangea
       end
     end
   end
-end

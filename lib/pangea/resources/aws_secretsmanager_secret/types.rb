@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -22,6 +21,19 @@ module Pangea
     module AWS
       module Types
         # Secrets Manager Secret resource attributes with validation
+
+        SecretResourcePolicy = Resources::Types::String.constructor { |value|
+          # Validate it's proper JSON
+          begin
+            parsed = JSON.parse(value)
+            unless parsed.is_a?(Hash)
+              raise Dry::Types::ConstraintError, "Secret policy must be a JSON object"
+            end
+            value
+          rescue JSON::ParserError => e
+            raise Dry::Types::ConstraintError, "Invalid JSON in secret policy: #{e.message}"
+          end
+        }
         class SecretsManagerSecretAttributes < Dry::Struct
           transform_keys(&:to_sym)
           
@@ -90,8 +102,8 @@ module Pangea
             valid_formats = [
               /\A[a-f0-9-]{36}\z/,  # Key ID
               /\Aarn:aws:kms:[a-z0-9-]+:\d{12}:key\/[a-f0-9-]{36}\z/,  # Key ARN
-              /\Aalias\/[a-zA-Z0-9:/_-]+\z/,  # Alias name
-              /\Aarn:aws:kms:[a-z0-9-]+:\d{12}:alias\/[a-zA-Z0-9:/_-]+\z/  # Alias ARN
+              %r{\Aalias/[a-zA-Z0-9:/_-]+\z},  # Alias name
+              %r{\Aarn:aws:kms:[a-z0-9-]+:\d{12}:alias/[a-zA-Z0-9:/_-]+\z}  # Alias ARN
             ]
             
             unless valid_formats.any? { |format| key_id.match?(format) }
@@ -180,18 +192,6 @@ module Pangea
         end
         
         # Secret resource policy validation type
-        SecretResourcePolicy = Resources::Types::String.constructor { |value|
-          # Validate it's proper JSON
-          begin
-            parsed = JSON.parse(value)
-            unless parsed.is_a?(Hash)
-              raise Dry::Types::ConstraintError, "Secret policy must be a JSON object"
-            end
-            value
-          rescue JSON::ParserError => e
-            raise Dry::Types::ConstraintError, "Invalid JSON in secret policy: #{e.message}"
-          end
-        }
       end
     end
   end

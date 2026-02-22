@@ -37,11 +37,11 @@ module Pangea
 
           # Artifact store configuration
           attribute :artifact_store, Resources::Types::Hash.schema(
-            type: Resources::Types::String.enum('S3').default('S3'),
+            type: Resources::Types::String.constrained(included_in: ['S3']).default('S3'),
             location: Resources::Types::String,
             encryption_key?: Resources::Types::Hash.schema(
               id: Resources::Types::String,
-              type: Resources::Types::String.enum('KMS').default('KMS')
+              type: Resources::Types::String.constrained(included_in: ['KMS']).default('KMS')
             ).optional
           )
 
@@ -53,8 +53,8 @@ module Pangea
                 Resources::Types::Hash.schema(
                   name: Resources::Types::String.constrained(max_size: 100),
                   action_type_id: Resources::Types::Hash.schema(
-                    category: Resources::Types::String.enum('Source', 'Build', 'Test', 'Deploy', 'Invoke', 'Approval'),
-                    owner: Resources::Types::String.enum('AWS', 'ThirdParty', 'Custom'),
+                    category: Resources::Types::String.constrained(included_in: ['Source', 'Build', 'Test', 'Deploy', 'Invoke', 'Approval']),
+                    owner: Resources::Types::String.constrained(included_in: ['AWS', 'ThirdParty', 'Custom']),
                     provider: Resources::Types::String,
                     version: Resources::Types::String
                   ),

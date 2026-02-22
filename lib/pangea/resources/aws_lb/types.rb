@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -32,10 +31,10 @@ module Pangea
         attribute :internal, Resources::Types::Bool.default(false)
 
         # Subnet IDs where the load balancer will be provisioned
-        attribute :subnet_ids, Resources::Types::Array.of(Types::String).constrained(min_size: 2)
+        attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 2)
 
         # Security groups (ALB only) - array of security group IDs
-        attribute :security_groups, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :security_groups, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
         # IP address type: "ipv4" or "dualstack"
         attribute :ip_address_type, Resources::Types::String.optional.enum("ipv4", "dualstack")
@@ -48,9 +47,9 @@ module Pangea
 
         # Access logs configuration
         attribute :access_logs, Resources::Types::Hash.schema(
-          enabled: Types::Bool,
-          bucket: Types::String,
-          prefix?: Types::String.optional
+          enabled: Resources::Types::Bool,
+          bucket: Resources::Types::String,
+          prefix?: Resources::Types::String.optional
         ).optional
 
         # Tags to apply to the load balancer
@@ -77,4 +76,3 @@ module Pangea
       end
     end
   end
-end

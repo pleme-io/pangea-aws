@@ -28,10 +28,10 @@ module Pangea
           # Custom validation
           def self.new(attributes)
             attrs = attributes.is_a?(Hash) ? attributes : {}
-            Validators.validate_type(attrs)
-            Validators.validate_definition(attrs)
-            Validators.validate_logging(attrs)
-            Validators.validate_tracing(attrs)
+            SfnValidators.validate_type(attrs)
+            SfnValidators.validate_definition(attrs)
+            SfnValidators.validate_logging(attrs)
+            SfnValidators.validate_tracing(attrs)
             super(attrs)
           end
 

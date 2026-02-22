@@ -7,6 +7,7 @@ module Pangea
     module AWS
       module Types
         # S3 lifecycle rule expiration
+        unless const_defined?(:LifecycleExpiration)
         class LifecycleExpiration < Dry::Struct
           attribute :date, Resources::Types::String.optional
           attribute :days, Resources::Types::Integer.optional
@@ -26,6 +27,7 @@ module Pangea
 
             attrs
           end
+        end
         end
 
         # S3 lifecycle rule noncurrent version expiration

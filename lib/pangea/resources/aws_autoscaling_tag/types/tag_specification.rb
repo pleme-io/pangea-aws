@@ -21,6 +21,7 @@ module Pangea
     module AWS
       module Types
         # Tag specification for Auto Scaling Groups
+        unless const_defined?(:TagSpecification)
         class TagSpecification < Dry::Struct
           transform_keys(&:to_sym)
 
@@ -35,6 +36,7 @@ module Pangea
               propagate_at_launch: propagate_at_launch
             }
           end
+        end
         end
       end
     end

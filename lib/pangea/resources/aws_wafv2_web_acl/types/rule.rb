@@ -25,22 +25,22 @@ module Pangea
         class WafV2Rule < Dry::Struct
           transform_keys(&:to_sym)
 
-          attribute :name, String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
-          attribute :priority, Integer.constrained(gteq: 0)
+          attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
+          attribute :priority, Resources::Types::Integer.constrained(gteq: 0)
           attribute :action, WafV2RuleAction
           attribute :statement, WafV2Statement
           attribute :visibility_config, WafV2VisibilityConfig
-          attribute :rule_labels, Array.of(Hash.schema(
-                                             name: String.constrained(format: /\A[a-zA-Z0-9_:-]{1,1024}\z/)
+          attribute :rule_labels, Resources::Types::Array.of(Resources::Types::Hash.schema(
+                                             name: Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_:-]{1,1024}\z/)
                                            )).default([].freeze)
-          attribute :captcha_config, Hash.schema(
-            immunity_time_property: Hash.schema(
-              immunity_time: Integer.constrained(gteq: 60, lteq: 259_200)
+          attribute :captcha_config, Resources::Types::Hash.schema(
+            immunity_time_property: Resources::Types::Hash.schema(
+              immunity_time: Resources::Types::Integer.constrained(gteq: 60, lteq: 259_200)
             )
           ).optional
-          attribute :challenge_config, Hash.schema(
-            immunity_time_property: Hash.schema(
-              immunity_time: Integer.constrained(gteq: 60, lteq: 259_200)
+          attribute :challenge_config, Resources::Types::Hash.schema(
+            immunity_time_property: Resources::Types::Hash.schema(
+              immunity_time: Resources::Types::Integer.constrained(gteq: 60, lteq: 259_200)
             )
           ).optional
 

@@ -58,7 +58,7 @@ module Pangea
             error_document?: Resources::Types::String.optional,
             redirect_all_requests_to?: Resources::Types::Hash.schema(
               host_name: Resources::Types::String,
-              protocol?: Resources::Types::String.enum('http', 'https').optional
+              protocol?: Resources::Types::String.constrained(included_in: ['http', 'https']).optional
             ).optional,
             routing_rules?: Resources::Types::String.optional
           ).default({}.freeze)
@@ -67,14 +67,14 @@ module Pangea
           attribute :logging, Resources::Types::Hash.schema(
             target_bucket?: Resources::Types::String.optional,
             target_prefix?: Resources::Types::String.optional
-          ).default({}.freeze)
+          ).optional
 
           # Object lock configuration
           attribute :object_lock_configuration, Resources::Types::Hash.schema(
-            object_lock_enabled?: Resources::Types::String.enum('Enabled').optional,
+            object_lock_enabled?: Resources::Types::String.constrained(included_in: ['Enabled']).optional,
             rule?: Resources::Types::Hash.schema(
               default_retention: Resources::Types::Hash.schema(
-                mode: Resources::Types::String.enum('COMPLIANCE', 'GOVERNANCE'),
+                mode: Resources::Types::String.constrained(included_in: ['COMPLIANCE', 'GOVERNANCE']),
                 days?: Resources::Types::Integer.optional,
                 years?: Resources::Types::Integer.optional
               )
@@ -87,7 +87,7 @@ module Pangea
             block_public_policy?: Resources::Types::Bool.optional,
             ignore_public_acls?: Resources::Types::Bool.optional,
             restrict_public_buckets?: Resources::Types::Bool.optional
-          ).default({}.freeze)
+          ).optional
 
           # Bucket policy (as JSON string)
           attribute? :policy, Resources::Types::String.optional

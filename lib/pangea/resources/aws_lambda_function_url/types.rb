@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 
 module Pangea
@@ -21,48 +20,44 @@ module Pangea
     module AWS
       module LambdaFunctionUrl
         # Common types for Lambda Function URL configurations
-        class Types < Dry::Types::Module
-          include Dry.Types()
-
+        module Types
           # Lambda Function Name constraint
-          FunctionName = String.constrained(
+          FunctionName = Resources::Types::String.constrained(
             min_size: 1,
             max_size: 64,
             format: /\A[a-zA-Z0-9\-_]+\z/
           )
           
           # Authorization type for function URL
-          AuthorizationType = String.enum('AWS_IAM', 'NONE')
+          AuthorizationType = Resources::Types::String.constrained(included_in: ['AWS_IAM', 'NONE'])
           
           # HTTP method
-          HttpMethod = String.enum('*', 'GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH')
+          HttpMethod = Resources::Types::String.constrained(included_in: ['*', 'GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH'])
           
           # Origin for CORS
-          Origin = String.constrained(format: /\A\*|https?:\/\/.+\z/)
+          Origin = Resources::Types::String.constrained(format: /\A\*|https?:\/\/.+\z/)
           
           # CORS Configuration
-          CorsConfiguration = Hash.schema({
-            allow_credentials?: Bool.optional,
-            allow_headers?: Array.of(String).optional,
-            allow_methods?: Array.of(HttpMethod).optional,
-            allow_origins?: Array.of(Origin).optional,
-            expose_headers?: Array.of(String).optional,
-            max_age?: Integer.constrained(gteq: 0, lteq: 86400).optional
+          CorsConfiguration = Resources::Types::Hash.schema({
+            allow_credentials?: Resources::Types::Bool.optional,
+            allow_headers?: Resources::Types::Array.of(Resources::Types::String).optional,
+            allow_methods?: Resources::Types::Array.of(Resources::Types::HttpMethod).optional,
+            allow_origins?: Resources::Types::Array.of(Origin).optional,
+            expose_headers?: Resources::Types::Array.of(Resources::Types::String).optional,
+            max_age?: Resources::Types::Integer.constrained(gteq: 0, lteq: 86400).optional
           })
         end
 
         # Lambda Function URL attributes with comprehensive validation
         class LambdaFunctionUrlAttributes < Dry::Struct
-          include Types[self]
-          
           # Required attributes
-          attribute :authorization_type, AuthorizationType
-          attribute :function_name, FunctionName
+          attribute :authorization_type, Types::AuthorizationType
+          attribute :function_name, Types::FunctionName
           
           # Optional attributes
-          attribute? :cors, CorsConfiguration.optional
-          attribute? :qualifier, String.optional
-          attribute? :invoke_mode, String.enum('BUFFERED', 'RESPONSE_STREAM').optional
+          attribute? :cors, Types::CorsConfiguration.optional
+          attribute? :qualifier, Resources::Types::String.optional
+          attribute? :invoke_mode, Resources::Types::String.constrained(included_in: ['BUFFERED', 'RESPONSE_STREAM']).optional
           
           # Computed properties
           def has_cors_configuration?

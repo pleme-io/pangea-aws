@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -25,11 +24,11 @@ module Pangea
         class WafV2IpSetAttributes < Dry::Struct
           transform_keys(&:to_sym)
           
-          attribute :name, String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
+          attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
           attribute :scope, Resources::Types::WafV2Scope
           attribute :ip_address_version, Resources::Types::WafV2IpAddressVersion
-          attribute :description, String.constrained(max_size: 256).optional
-          attribute :addresses, Array.of(String).constrained(min_size: 1, max_size: 10000)
+          attribute :description, Resources::Types::String.constrained(max_size: 256).optional
+          attribute :addresses, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 10000)
           attribute :tags, Resources::Types::AwsTags
           
           # Custom validation

@@ -40,14 +40,14 @@ module Pangea
 
             # Input specification
             InputSpecification = T::Hash.schema(
-              codec: T::String.enum('MPEG2', 'AVC', 'HEVC'),
-              maximum_bitrate: T::String.enum('MAX_10_MBPS', 'MAX_20_MBPS', 'MAX_50_MBPS'),
-              resolution: T::String.enum('SD', 'HD', 'UHD')
+              codec: T::String.constrained(included_in: ['MPEG2', 'AVC', 'HEVC']),
+              maximum_bitrate: T::String.constrained(included_in: ['MAX_10_MBPS', 'MAX_20_MBPS', 'MAX_50_MBPS']),
+              resolution: T::String.constrained(included_in: ['SD', 'HD', 'UHD'])
             )
 
             # Maintenance window
             MaintenanceWindow = T::Hash.schema(
-              maintenance_day: T::String.enum('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'),
+              maintenance_day: T::String.constrained(included_in: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']),
               maintenance_start_time: T::String
             )
 
@@ -65,10 +65,10 @@ module Pangea
             )
 
             # Log level enum
-            LogLevel = T::String.enum('ERROR', 'WARNING', 'INFO', 'DEBUG', 'DISABLED')
+            LogLevel = T::String.constrained(included_in: ['ERROR', 'WARNING', 'INFO', 'DEBUG', 'DISABLED'])
 
             # Channel class enum
-            ChannelClass = T::String.enum('STANDARD', 'SINGLE_PIPELINE')
+            ChannelClass = T::String.constrained(included_in: ['STANDARD', 'SINGLE_PIPELINE'])
           end
         end
       end

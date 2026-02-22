@@ -23,27 +23,28 @@ module Pangea
     module AWS
       module Types
         # WAF v2 rule schema definition
+
+          RuleSchema = Resources::Types::Hash.schema(
+            name: Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/),
+            priority: Resources::Types::Integer.constrained(gteq: 0),
+            action: WafV2Actions::ActionSchema,
+            statement: Resources::Types::Hash,
+            visibility_config: WafV2Schemas::VisibilityConfigSchema,
+            rule_labels?: Resources::Types::Array.of(WafV2Schemas::RuleLabelSchema).optional,
+            captcha_config?: WafV2Schemas::ImmunityTimeSchema,
+            challenge_config?: WafV2Schemas::ImmunityTimeSchema
+          )
         module WafV2RuleSchema
           include Dry.Types()
 
           # Complete rule schema
-          RuleSchema = Hash.schema(
-            name: String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/),
-            priority: Integer.constrained(gteq: 0),
-            action: WafV2Actions::ActionSchema,
-            statement: Hash,
-            visibility_config: WafV2Schemas::VisibilityConfigSchema,
-            rule_labels?: Array.of(WafV2Schemas::RuleLabelSchema).optional,
-            captcha_config?: WafV2Schemas::ImmunityTimeSchema,
-            challenge_config?: WafV2Schemas::ImmunityTimeSchema
-          )
 
           # Array of rules with empty default
-          RulesArray = Array.of(RuleSchema).default([].freeze)
+          RulesArray = Resources::Types::Array.of(RuleSchema).default([].freeze)
 
           # Custom response bodies map
-          CustomResponseBodiesMap = Hash.map(
-            String.constrained(format: /\A[a-zA-Z0-9_-]{1,64}\z/),
+          CustomResponseBodiesMap = Resources::Types::Hash.map(
+            Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,64}\z/),
             WafV2Schemas::CustomResponseBodySchema
           ).default({}.freeze)
         end

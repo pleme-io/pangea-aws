@@ -21,37 +21,37 @@ module Pangea
         module GlueCatalogTableStorageDescriptor
           # Column schema type
           ColumnSchema = Resources::Types::Hash.schema(
-            name: Types::String,
-            type: Types::String,
-            comment?: Types::String.optional,
-            parameters?: Types::Hash.map(Types::String, Types::String).optional
+            name: Resources::Types::String,
+            type: Resources::Types::String,
+            comment?: Resources::Types::String.optional,
+            parameters?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
           )
 
           # SerDe info schema type
           SerdeInfoSchema = Resources::Types::Hash.schema(
-            name?: Types::String.optional,
-            serialization_library?: Types::String.optional,
-            parameters?: Types::Hash.map(Types::String, Types::String).optional
+            name?: Resources::Types::String.optional,
+            serialization_library?: Resources::Types::String.optional,
+            parameters?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
           )
 
           # Sort column schema type
           SortColumnSchema = Resources::Types::Hash.schema(
-            column: Types::String,
-            sort_order: Types::Integer.constrained(included_in: [0, 1])
+            column: Resources::Types::String,
+            sort_order: Resources::Types::Integer.constrained(included_in: [0, 1])
           )
 
           # Full storage descriptor schema
           StorageDescriptorSchema = Resources::Types::Hash.schema(
-            columns?: Types::Array.of(ColumnSchema).optional,
-            location?: Types::String.optional,
-            input_format?: Types::String.optional,
-            output_format?: Types::String.optional,
-            compressed?: Types::Bool.optional,
-            number_of_buckets?: Types::Integer.optional,
+            columns?: Resources::Types::Array.of(ColumnSchema).optional,
+            location?: Resources::Types::String.optional,
+            input_format?: Resources::Types::String.optional,
+            output_format?: Resources::Types::String.optional,
+            compressed?: Resources::Types::Bool.optional,
+            number_of_buckets?: Resources::Types::Integer.optional,
             serde_info?: SerdeInfoSchema.optional,
-            bucket_columns?: Types::Array.of(Types::String).optional,
-            sort_columns?: Types::Array.of(SortColumnSchema).optional,
-            stored_as_sub_directories?: Types::Bool.optional
+            bucket_columns?: Resources::Types::Array.of(Resources::Types::String).optional,
+            sort_columns?: Resources::Types::Array.of(SortColumnSchema).optional,
+            stored_as_sub_directories?: Resources::Types::Bool.optional
           )
         end
       end

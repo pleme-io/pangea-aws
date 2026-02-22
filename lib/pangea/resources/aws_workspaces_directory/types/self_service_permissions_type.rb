@@ -24,7 +24,7 @@ module Pangea
         class SelfServicePermissionsType < Dry::Struct
           transform_keys(&:to_sym)
 
-          EnabledDisabled = Resources::Types::String.enum('ENABLED', 'DISABLED')
+          EnabledDisabled = Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED'])
 
           attribute :restart_workspace, EnabledDisabled.default('ENABLED')
           attribute :increase_volume_size, EnabledDisabled.default('DISABLED')

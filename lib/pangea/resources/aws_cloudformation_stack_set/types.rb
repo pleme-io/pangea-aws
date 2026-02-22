@@ -39,29 +39,25 @@ module Pangea
 
           # Stack set parameters
           attribute :parameters, Resources::Types::Hash.map(
-            Types::String,
-            Types::String
+            Resources::Types::String,
+            Resources::Types::String
           ).default({}.freeze)
 
           # Stack set capabilities (for IAM resources)
           attribute :capabilities, Resources::Types::Array.of(
-            Types::String.enum(
-              'CAPABILITY_IAM',
+            Resources::Types::String.constrained(included_in: ['CAPABILITY_IAM',
               'CAPABILITY_NAMED_IAM',
-              'CAPABILITY_AUTO_EXPAND'
-            )
+              'CAPABILITY_AUTO_EXPAND'])
           ).default([].freeze)
 
           # Permission model
-          attribute :permission_model, Resources::Types::String.enum(
-            'SERVICE_MANAGED',
-            'SELF_MANAGED'
-          )
+          attribute :permission_model, Resources::Types::String.constrained(included_in: ['SERVICE_MANAGED',
+            'SELF_MANAGED'])
 
           # Auto deployment configuration (for SERVICE_MANAGED)
           attribute :auto_deployment, Resources::Types::Hash.schema(
-            enabled?: Types::Bool.default(false),
-            retain_stacks_on_account_removal?: Types::Bool.default(false)
+            enabled?: Resources::Types::Bool.default(false),
+            retain_stacks_on_account_removal?: Resources::Types::Bool.default(false)
           ).optional
 
           # Administration role ARN (for SELF_MANAGED)
@@ -72,18 +68,16 @@ module Pangea
 
           # Operation preferences
           attribute :operation_preferences, Resources::Types::Hash.schema(
-            region_concurrency_type?: Types::String.enum('SEQUENTIAL', 'PARALLEL').optional,
-            max_concurrent_percentage?: Types::Integer.optional.constrained(gteq: 1, lteq: 100),
-            max_concurrent_count?: Types::Integer.optional.constrained(gteq: 1),
-            failure_tolerance_percentage?: Types::Integer.optional.constrained(gteq: 0, lteq: 100),
-            failure_tolerance_count?: Types::Integer.optional.constrained(gteq: 0)
+            region_concurrency_type?: Resources::Types::String.constrained(included_in: ['SEQUENTIAL', 'PARALLEL']).optional,
+            max_concurrent_percentage?: Resources::Types::Integer.optional.constrained(gteq: 1, lteq: 100),
+            max_concurrent_count?: Resources::Types::Integer.optional.constrained(gteq: 1),
+            failure_tolerance_percentage?: Resources::Types::Integer.optional.constrained(gteq: 0, lteq: 100),
+            failure_tolerance_count?: Resources::Types::Integer.optional.constrained(gteq: 0)
           ).optional
 
           # Call as operation (immediate deployment)
-          attribute :call_as, Resources::Types::String.enum(
-            'SELF',
-            'DELEGATED_ADMIN'
-          ).default('SELF')
+          attribute :call_as, Resources::Types::String.constrained(included_in: ['SELF',
+            'DELEGATED_ADMIN']).default('SELF')
 
           # Stack set tags
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

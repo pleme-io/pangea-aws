@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -25,7 +24,7 @@ module Pangea
       class VpcEndpointConnectionNotificationAttributes < Dry::Struct
         attribute :vpc_endpoint_service_id, Resources::Types::String
         attribute :connection_notification_arn, Resources::Types::String
-        attribute :connection_events, Resources::Types::Array.of(Types::String.enum('Accept', 'Connect', 'Delete', 'Reject'))
+        attribute :connection_events, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['Accept', 'Connect', 'Delete', 'Reject']))
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -47,4 +46,3 @@ module Pangea
       end
     end
   end
-end

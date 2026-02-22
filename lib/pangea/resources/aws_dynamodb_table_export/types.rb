@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 
 module Pangea
@@ -21,47 +20,43 @@ module Pangea
     module AWS
       module DynamoDBTableExport
         # Common types for DynamoDB Table Export configurations
-        class Types < Dry::Types::Module
-          include Dry.Types()
-
+        module Types
           # DynamoDB Table ARN constraint
-          TableArn = String.constrained(
+          TableArn = Resources::Types::String.constrained(
             format: /\Aarn:aws:dynamodb:[a-z0-9\-]*:[0-9]{12}:table\/[a-zA-Z0-9_.-]+\z/
           )
           
           # S3 Bucket ARN constraint
-          S3BucketArn = String.constrained(
+          S3BucketArn = Resources::Types::String.constrained(
             format: /\Aarn:aws:s3:::[a-zA-Z0-9.\-_]+\z/
           )
           
           # KMS Key ARN constraint
-          KmsKeyArn = String.constrained(
+          KmsKeyArn = Resources::Types::String.constrained(
             format: /\Aarn:aws:kms:[a-z0-9\-]*:[0-9]{12}:key\/[a-f0-9\-]+\z/
           )
           
           # Export format
-          ExportFormat = String.enum('DYNAMODB_JSON', 'ION')
+          ExportFormat = Resources::Types::String.constrained(included_in: ['DYNAMODB_JSON', 'ION'])
           
           # Export type
-          ExportType = String.enum('FULL_EXPORT', 'INCREMENTAL_EXPORT')
+          ExportType = Resources::Types::String.constrained(included_in: ['FULL_EXPORT', 'INCREMENTAL_EXPORT'])
         end
 
         # DynamoDB Table Export attributes with comprehensive validation
         class DynamoDBTableExportAttributes < Dry::Struct
-          include Types[self]
-          
           # Required attributes
-          attribute :s3_bucket, S3BucketArn
-          attribute :table_arn, TableArn
+          attribute :s3_bucket, Types::S3BucketArn
+          attribute :table_arn, Types::TableArn
           
           # Optional attributes
-          attribute? :export_format, ExportFormat.default('DYNAMODB_JSON')
-          attribute? :export_type, ExportType.default('FULL_EXPORT')
-          attribute? :export_time, Time.optional
-          attribute? :s3_bucket_owner, String.constrained(format: /\A\d{12}\z/).optional
-          attribute? :s3_prefix, String.optional
-          attribute? :s3_sse_algorithm, String.enum('AES256', 'KMS').optional
-          attribute? :s3_sse_kms_key_id, KmsKeyArn.optional
+          attribute? :export_format, Types::ExportFormat.default('DYNAMODB_JSON')
+          attribute? :export_type, Types::ExportType.default('FULL_EXPORT')
+          attribute? :export_time, Resources::Types::Time.optional
+          attribute? :s3_bucket_owner, Resources::Types::String.constrained(format: /\A\d{12}\z/).optional
+          attribute? :s3_prefix, Resources::Types::String.optional
+          attribute? :s3_sse_algorithm, Resources::Types::String.constrained(included_in: ['AES256', 'KMS']).optional
+          attribute? :s3_sse_kms_key_id, Types::KmsKeyArn.optional
           
           # Computed properties
           def table_name

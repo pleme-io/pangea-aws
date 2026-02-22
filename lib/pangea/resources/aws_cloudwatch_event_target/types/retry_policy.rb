@@ -21,6 +21,7 @@ module Pangea
     module AWS
       module Types
         # Retry policy configuration for CloudWatch Event targets
+        unless const_defined?(:RetryPolicy)
         class RetryPolicy < Dry::Struct
           transform_keys(&:to_sym)
 
@@ -36,5 +37,6 @@ module Pangea
         end
       end
     end
+        end
   end
 end

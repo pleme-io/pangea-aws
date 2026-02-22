@@ -4,6 +4,7 @@
 
 require 'dry-struct'
 require 'pangea/resources/types'
+require_relative 'types/expressions'
 require_relative 'types/attributes'
 
 module Pangea

@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_iot_thing(name, attributes = {})
         # Validate attributes using dry-struct
-        thing_attrs = Types::IotThingAttributes.new(attributes)
+        thing_attrs = Resources::Types::IotThingAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_iot_thing, name) do
@@ -82,6 +82,3 @@ module Pangea
     end
   end
 end
-
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

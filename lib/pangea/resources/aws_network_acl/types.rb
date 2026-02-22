@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -24,9 +23,9 @@ module Pangea
       class NetworkAclRule < Dry::Struct
         attribute :rule_number, Resources::Types::Integer
         attribute :protocol, Resources::Types::String  # "-1" for all
-        attribute :action, Resources::Types::String.enum("allow", "deny")
+        attribute :action, Resources::Types::String.constrained(included_in: ["allow", "deny"])
         attribute :cidr_block, Resources::Types::String.optional
-        attributeipv6_cidr_block :, Resources::Types::String.optional
+        attribute :ipv6_cidr_block, Resources::Types::String.optional
         attribute :from_port, Resources::Types::Integer.optional
         attribute :to_port, Resources::Types::Integer.optional
         attribute :icmp_type, Resources::Types::Integer.optional
@@ -67,7 +66,7 @@ module Pangea
       # Provides an network ACL resource. You might set up network ACLs with rules similar to your security groups in order to add an additional layer of security to your VPC.
       class NetworkAclAttributes < Dry::Struct
         attribute :vpc_id, Resources::Types::String
-        attribute :subnet_ids, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         attribute :ingress, Resources::Types::Array.of(NetworkAclRule).default([].freeze)
         attribute :egress, Resources::Types::Array.of(NetworkAclRule).default([].freeze)
         
@@ -139,8 +138,7 @@ module Pangea
             (rule.cidr_block == "0.0.0.0/0" || rule.ipv6_cidr_block == "::/0")
           end
         end
-      end
-    end
+        end
       end
     end
   end

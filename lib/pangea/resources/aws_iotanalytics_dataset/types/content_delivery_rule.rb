@@ -28,6 +28,7 @@ module Pangea
         attribute :entry_name, Resources::Types::String
 
         # S3 destination configuration
+        unless const_defined?(:Destination)
         class Destination < Dry::Struct
           schema schema.strict
 
@@ -58,6 +59,7 @@ module Pangea
           end
 
           attribute? :s3_destination_configuration, S3DestinationConfiguration.optional
+        end
         end
 
         attribute :destination, Destination

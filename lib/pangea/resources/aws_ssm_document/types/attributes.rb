@@ -12,7 +12,7 @@ module Pangea
           attribute :name, Resources::Types::String
           attribute :document_type, Resources::Types::String.enum(*DOCUMENT_TYPES)
           attribute :content, Resources::Types::String
-          attribute :document_format, Resources::Types::String.enum('YAML', 'JSON').default('JSON')
+          attribute :document_format, Resources::Types::String.constrained(included_in: ['YAML', 'JSON']).default('JSON')
           attribute :target_type, Resources::Types::String.optional
           attribute :schema_version, Resources::Types::String.optional
           attribute :version_name, Resources::Types::String.optional

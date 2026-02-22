@@ -9,31 +9,31 @@ module Pangea
   module Resources
     module AWS
       module Types
-        SageMakerModelImage = String.constrained(
+        SageMakerModelImage = Resources::Types::String.constrained(
           format: /\A(\d{12}\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com\/|763104351884\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com\/|public\.ecr\.aws\/)/
         )
 
-        SageMakerModelExecutionRole = String.constrained(
+        SageMakerModelExecutionRole = Resources::Types::String.constrained(
           format: /\Aarn:aws:iam::\d{12}:role\/[a-zA-Z0-9_+=,.@-]+\z/
         )
 
-        SageMakerModelContainer = Hash.schema(
+        SageMakerModelContainer = Resources::Types::Hash.schema(
           image: SageMakerModelImage,
-          model_data_url?: String.optional,
-          container_hostname?: String.optional,
-          environment?: Hash.map(String, String).optional,
-          model_package_name?: String.optional,
-          inference_specification_name?: String.optional,
-          image_config?: Hash.optional,
-          multi_model_config?: Hash.schema(model_cache_setting?: String.enum('Enabled', 'Disabled').optional).optional
+          model_data_url?: Resources::Types::String.optional,
+          container_hostname?: Resources::Types::String.optional,
+          environment?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional,
+          model_package_name?: Resources::Types::String.optional,
+          inference_specification_name?: Resources::Types::String.optional,
+          image_config?: Resources::Types::Hash.optional,
+          multi_model_config?: Resources::Types::Hash.schema(model_cache_setting?: Resources::Types::String.constrained(included_in: ['Enabled', 'Disabled']).optional).optional
         )
 
-        SageMakerModelVpcConfig = Hash.schema(
-          security_group_ids: Array.of(String).constrained(min_size: 1, max_size: 5),
-          subnets: Array.of(String).constrained(min_size: 1, max_size: 16)
+        SageMakerModelVpcConfig = Resources::Types::Hash.schema(
+          security_group_ids: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 5),
+          subnets: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 16)
         )
 
-        SageMakerModelInferenceExecutionConfig = Hash.schema(mode: String.enum('Serial', 'Direct'))
+        SageMakerModelInferenceExecutionConfig = Resources::Types::Hash.schema(mode: Resources::Types::String.constrained(included_in: ['Serial', 'Direct']))
 
         class SageMakerModelAttributes < Dry::Struct
           transform_keys(&:to_sym)

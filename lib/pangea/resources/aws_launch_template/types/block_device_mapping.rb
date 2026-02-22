@@ -37,7 +37,7 @@ module Pangea
             snapshot_id: Resources::Types::String.optional,
             throughput: Resources::Types::Integer.optional,
             volume_size: Resources::Types::Integer.optional,
-            volume_type: Resources::Types::String.default('gp3').enum('gp2', 'gp3', 'io1', 'io2', 'st1', 'sc1', 'standard')
+            volume_type: Resources::Types::String.default('gp3').constrained(included_in: ['gp2', 'gp3', 'io1', 'io2', 'st1', 'sc1', 'standard'])
           ).optional.default(nil)
 
           def to_h

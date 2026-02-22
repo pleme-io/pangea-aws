@@ -18,8 +18,7 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class S3BucketObjectLockConfigurationAttributes
-          # Helper instance methods for S3 bucket object lock configuration
+        class S3BucketObjectLockConfigurationAttributes < Dry::Struct          # Helper instance methods for S3 bucket object lock configuration
           module InstanceMethods
             def has_default_retention?
               rule[:default_retention].present?

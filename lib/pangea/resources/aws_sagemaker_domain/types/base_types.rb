@@ -25,7 +25,7 @@ module Pangea
         )
 
         # SageMaker Domain auth modes
-        SageMakerDomainAuthMode = Resources::Types::String.enum('SSO', 'IAM')
+        SageMakerDomainAuthMode = Resources::Types::String.constrained(included_in: ['SSO', 'IAM'])
 
         # SageMaker Domain VPC-only mode
         SageMakerDomainVpcOnly = Resources::Types::String.default('Disabled').enum('Enabled', 'Disabled')

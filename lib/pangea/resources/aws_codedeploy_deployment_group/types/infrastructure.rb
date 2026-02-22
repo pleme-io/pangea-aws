@@ -54,7 +54,7 @@ module Pangea
           attribute :ecs_service, Resources::Types::Hash.schema(
             cluster_name?: Resources::Types::String.optional,
             service_name?: Resources::Types::String.optional
-          ).default({}.freeze)
+          ).optional
 
           # Trigger configurations
           attribute :trigger_configurations, Resources::Types::Array.of(
@@ -62,12 +62,10 @@ module Pangea
               trigger_name: Resources::Types::String,
               trigger_target_arn: Resources::Types::String,
               trigger_events: Resources::Types::Array.of(
-                Resources::Types::String.enum(
-                  'DeploymentStart', 'DeploymentSuccess', 'DeploymentFailure',
+                Resources::Types::String.constrained(included_in: ['DeploymentStart', 'DeploymentSuccess', 'DeploymentFailure',
                   'DeploymentStop', 'DeploymentRollback', 'DeploymentReady',
                   'InstanceStart', 'InstanceSuccess', 'InstanceFailure',
-                  'InstanceReady'
-                )
+                  'InstanceReady'])
               )
             )
           ).default([].freeze)

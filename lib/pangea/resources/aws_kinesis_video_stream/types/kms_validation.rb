@@ -33,10 +33,10 @@ module Pangea
             return true if key_id.match?(/\Aarn:aws:kms:[a-z0-9-]+:\d{12}:key\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i)
 
             # Alias name
-            return true if key_id.match?(/\Aalias\/[a-zA-Z0-9:/_-]+\z/)
+            return true if key_id.match?(%r{\Aalias/[a-zA-Z0-9:/_-]+\z})
 
             # Alias ARN
-            return true if key_id.match?(/\Aarn:aws:kms:[a-z0-9-]+:\d{12}:alias\/[a-zA-Z0-9:/_-]+\z/)
+            return true if key_id.match?(%r{\Aarn:aws:kms:[a-z0-9-]+:\d{12}:alias/[a-zA-Z0-9:/_-]+\z})
 
             false
           end

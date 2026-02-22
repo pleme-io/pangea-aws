@@ -21,13 +21,11 @@ module Pangea
     module AWS
       module Types
         # Tag specification for launch template
+        unless const_defined?(:TagSpecification)
         class TagSpecification < Dry::Struct
           transform_keys(&:to_sym)
 
-          attribute :resource_type, Resources::Types::String.enum(
-            'instance', 'volume', 'elastic-gpu', 'spot-instances-request',
-            'network-interface'
-          )
+          attribute :resource_type, Resources::Types::String.constrained(included_in: ['instance', 'volume', 'elastic-gpu', 'spot-instances-request', 'network-interface'])
           attribute :tags, Resources::Types::AwsTags
 
           def to_h
@@ -38,6 +36,7 @@ module Pangea
           end
         end
       end
+        end
     end
   end
 end

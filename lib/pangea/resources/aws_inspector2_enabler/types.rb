@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -25,8 +24,8 @@ module Pangea
         class Inspector2EnablerAttributes < Dry::Struct
           transform_keys(&:to_sym)
           
-          attribute :account_ids, Array.of(Resources::Types::AwsAccountId).constrained(min_size: 1)
-          attribute :resource_types, Array.of(Resources::Types::InspectorV2ResourceType).constrained(min_size: 1)
+          attribute :account_ids, Resources::Types::Array.of(Resources::Types::AwsAccountId).constrained(min_size: 1)
+          attribute :resource_types, Resources::Types::Array.of(Resources::Types::InspectorV2ResourceType).constrained(min_size: 1)
           
           # Custom validation
           def self.new(attributes)

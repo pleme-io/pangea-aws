@@ -52,11 +52,9 @@ module Pangea
 
           # Termination policies
           attribute :termination_policies, Resources::Types::Array.of(
-            Resources::Types::String.enum(
-              'OldestInstance', 'NewestInstance', 'OldestLaunchConfiguration',
+            Resources::Types::String.constrained(included_in: ['OldestInstance', 'NewestInstance', 'OldestLaunchConfiguration',
               'OldestLaunchTemplate', 'ClosestToNextInstanceHour', 'Default',
-              'AllocationStrategy'
-            )
+              'AllocationStrategy'])
           ).default([].freeze)
 
           # Other options

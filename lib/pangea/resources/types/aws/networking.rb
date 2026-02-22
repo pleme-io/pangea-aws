@@ -19,9 +19,9 @@ module Pangea
   module Resources
     module Types
       # VPN-related types
-      VpnConnectionType = String.enum('ipsec.1')
-      VpnGatewayType = String.enum('ipsec.1')
-      VpnTunnelProtocol = String.enum('ikev1', 'ikev2')
+      VpnConnectionType = Resources::Types::String.constrained(included_in: ['ipsec.1'])
+      VpnGatewayType = Resources::Types::String.constrained(included_in: ['ipsec.1'])
+      VpnTunnelProtocol = Resources::Types::String.constrained(included_in: ['ikev1', 'ikev2'])
 
       # Transit Gateway ASN validation
       TransitGatewayAsn = Integer.constructor { |value|
@@ -44,9 +44,9 @@ module Pangea
       TransitGatewayMulticastSupport = String.default('disable').enum('enable', 'disable')
       TransitGatewayVpnEcmpSupport = String.default('enable').enum('enable', 'disable')
 
-      TransitGatewayAttachmentResourceType = String.enum('vpc', 'vpn', 'direct-connect-gateway', 'peering', 'tgw-peering')
-      TransitGatewayRouteType = String.enum('static', 'propagated')
-      TransitGatewayRouteState = String.enum('active', 'blackhole')
+      TransitGatewayAttachmentResourceType = Resources::Types::String.constrained(included_in: ['vpc', 'vpn', 'direct-connect-gateway', 'peering', 'tgw-peering'])
+      TransitGatewayRouteType = Resources::Types::String.constrained(included_in: ['static', 'propagated'])
+      TransitGatewayRouteState = Resources::Types::String.constrained(included_in: ['active', 'blackhole'])
 
       TransitGatewayVpcAttachmentDnsSupport = String.default('enable').enum('enable', 'disable')
       TransitGatewayVpcAttachmentIpv6Support = String.default('disable').enum('enable', 'disable')

@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -25,8 +24,8 @@ module Pangea
         class BillingServiceAccountAttributes < Dry::Struct
           transform_keys(&:to_sym)
           
-          attribute :account_id?, String.constrained(format: /\A\d{12}\z/).optional
-          attribute :tags?, AwsTags.optional
+          attribute :account_id?, Resources::Types::String.constrained(format: /\A\d{12}\z/).optional
+          attribute :tags?, Resources::Types::AwsTags.optional
           
           def has_account_id?
             !account_id.nil?

@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -33,7 +32,7 @@ module Pangea
           rule: Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               apply_server_side_encryption_by_default: Resources::Types::Hash.schema(
-                sse_algorithm: Resources::Types::String.enum('AES256', 'aws:kms', 'aws:kms:dsse'),
+                sse_algorithm: Resources::Types::String.constrained(included_in: ['AES256', 'aws:kms', 'aws:kms:dsse']),
                 kms_master_key_id?: Resources::Types::String.optional
               ),
               bucket_key_enabled?: Resources::Types::Bool.optional
@@ -111,4 +110,3 @@ module Pangea
       end
     end
   end
-end

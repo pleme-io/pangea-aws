@@ -16,15 +16,15 @@
 
 require 'pangea/resources/types'
 
-require_relative 'types/query_analysis'
-require_relative 'types/query_templates'
-
 module Pangea
   module Resources
     module AWS
       module Types
         # Type-safe attributes for AWS Athena Named Query resources
         class AthenaNamedQueryAttributes < Dry::Struct
+          require_relative 'types/query_analysis'
+          require_relative 'types/query_templates'
+
           include QueryAnalysis
           extend QueryTemplates
 

@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 
 module Pangea
@@ -21,36 +20,34 @@ module Pangea
     module AWS
       module EcsCapacityProvider
         # Common types for ECS Capacity Provider configurations
-        class Types < Dry::Types::Module
-          include Dry.Types()
-
+        module Types
           # Capacity Provider Name constraint
-          CapacityProviderName = String.constrained(
+          CapacityProviderName = Resources::Types::String.constrained(
             min_size: 1,
             max_size: 255,
             format: /\A[a-zA-Z0-9\-_]+\z/
           )
           
           # Auto Scaling Group ARN constraint
-          AutoScalingGroupArn = String.constrained(
+          AutoScalingGroupArn = Resources::Types::String.constrained(
             format: /\Aarn:aws:autoscaling:[a-z0-9\-]*:[0-9]{12}:autoScalingGroup:[a-f0-9\-]+:autoScalingGroupName\/[a-zA-Z0-9\-_.]+\z/
           )
           
           # Managed scaling status
-          ManagedScalingStatus = String.enum('ENABLED', 'DISABLED')
+          ManagedScalingStatus = Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED'])
           
           # Managed termination protection
-          ManagedTerminationProtection = String.enum('ENABLED', 'DISABLED')
+          ManagedTerminationProtection = Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED'])
           
           # Auto Scaling Group Provider configuration
-          AutoScalingGroupProvider = Hash.schema({
+          AutoScalingGroupProvider = Resources::Types::Hash.schema({
             auto_scaling_group_arn: AutoScalingGroupArn,
-            managed_scaling?: Hash.schema({
-              instance_warmup_period?: Integer.constrained(gteq: 1, lteq: 10000).optional,
-              maximum_scaling_step_size?: Integer.constrained(gteq: 1, lteq: 10000).optional,
-              minimum_scaling_step_size?: Integer.constrained(gteq: 1, lteq: 10000).optional,
+            managed_scaling?: Resources::Types::Hash.schema({
+              instance_warmup_period?: Resources::Types::Integer.constrained(gteq: 1, lteq: 10000).optional,
+              maximum_scaling_step_size?: Resources::Types::Integer.constrained(gteq: 1, lteq: 10000).optional,
+              minimum_scaling_step_size?: Resources::Types::Integer.constrained(gteq: 1, lteq: 10000).optional,
               status?: ManagedScalingStatus.optional,
-              target_capacity?: Integer.constrained(gteq: 1, lteq: 100).optional
+              target_capacity?: Resources::Types::Integer.constrained(gteq: 1, lteq: 100).optional
             }).optional,
             managed_termination_protection?: ManagedTerminationProtection.optional
           })
@@ -58,14 +55,12 @@ module Pangea
 
         # ECS Capacity Provider attributes with comprehensive validation
         class EcsCapacityProviderAttributes < Dry::Struct
-          include Types[self]
-          
           # Required attributes
-          attribute :name, CapacityProviderName
+          attribute :name, Types::CapacityProviderName
           
           # Optional attributes
-          attribute? :auto_scaling_group_provider, AutoScalingGroupProvider.optional
-          attribute? :tags, Hash.map(String, String).default({}.freeze)
+          attribute? :auto_scaling_group_provider, Types::AutoScalingGroupProvider.optional
+          attribute? :tags, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
           
           # Computed properties
           def has_auto_scaling_group?

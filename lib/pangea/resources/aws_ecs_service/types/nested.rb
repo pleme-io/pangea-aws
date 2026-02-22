@@ -63,10 +63,12 @@ module Pangea
           end
         end
 
+        unless const_defined?(:EcsCapacityProviderStrategy)
         class EcsCapacityProviderStrategy < Dry::Struct
           attribute :capacity_provider, Pangea::Resources::Types::String
           attribute :weight, Pangea::Resources::Types::Integer.constrained(gteq: 0, lteq: 1000).default(1)
           attribute :base, Pangea::Resources::Types::Integer.constrained(gteq: 0, lteq: 100000).default(0)
+        end
         end
       end
     end

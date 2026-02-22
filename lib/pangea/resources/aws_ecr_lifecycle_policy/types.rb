@@ -18,15 +18,15 @@ require 'dry-struct'
 require 'pangea/resources/types'
 require 'json'
 
-require_relative 'types/validation'
-require_relative 'types/computed'
-
 module Pangea
   module Resources
     module AWS
       module Types
         # ECR Lifecycle Policy resource attributes with validation
         class ECRLifecyclePolicyAttributes < Dry::Struct
+          require_relative 'types/validation'
+          require_relative 'types/computed'
+
           include Computed
 
           transform_keys(&:to_sym)

@@ -22,9 +22,7 @@ module Pangea
           attribute :name, Pangea::Resources::Types::String
 
           # DNS record type
-          attribute :type, Pangea::Resources::Types::String.enum(
-            "A", "AAAA", "CNAME", "MX", "NS", "PTR", "SOA", "SPF", "SRV", "TXT"
-          )
+          attribute :type, Pangea::Resources::Types::String.constrained(included_in: ["A", "AAAA", "CNAME", "MX", "NS", "PTR", "SOA", "SPF", "SRV", "TXT"])
 
           # Time To Live (TTL) in seconds (required for simple records)
           attribute :ttl?, Pangea::Resources::Types::Integer.optional.constrained(gteq: 0, lteq: 2147483647)
@@ -56,7 +54,7 @@ module Pangea
 
           # Failover routing policy
           attribute :failover_routing_policy?, Pangea::Resources::Types::Hash.schema(
-            type: Pangea::Resources::Types::String.enum("PRIMARY", "SECONDARY")
+            type: Pangea::Resources::Types::String.constrained(included_in: ["PRIMARY", "SECONDARY"])
           ).optional
 
           # Geolocation routing policy

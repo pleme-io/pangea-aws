@@ -22,7 +22,8 @@ module Pangea
   module Resources
     module AWS
       # SageMaker Training Job resource for ML model training
-      class SageMakerTrainingJob < Base
+      SageMakerTrainingJob = Struct.new(:name, :attributes, keyword_init: true)
+      class SageMakerTrainingJob
         def self.resource_type
           'aws_sagemaker_training_job'
         end
@@ -64,6 +65,3 @@ module Pangea
     end
   end
 end
-
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

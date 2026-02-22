@@ -35,6 +35,7 @@ module Pangea
           attribute :sql_query, Resources::Types::String
 
           # Filter configuration for query results
+          unless const_defined?(:Filter)
           class Filter < Dry::Struct
             schema schema.strict
 
@@ -50,6 +51,7 @@ module Pangea
             end
 
             attribute? :delta_time, DeltaTime.optional
+          end
           end
 
           attribute :filters, Resources::Types::Array.of(Filter).optional
@@ -72,7 +74,7 @@ module Pangea
             schema schema.strict
 
             # Compute type for processing
-            attribute :compute_type, Resources::Types::String.enum('ACU_1', 'ACU_2')
+            attribute :compute_type, Resources::Types::String.constrained(included_in: ['ACU_1', 'ACU_2'])
 
             # Volume size in GB
             attribute :volume_size_in_gb, Resources::Types::Integer.constrained(gteq: 1, lteq: 50)

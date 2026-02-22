@@ -17,18 +17,18 @@ module Pangea
           attribute :path, Resources::Types::String.default('/')
           attribute :description, Resources::Types::String.optional
           attribute :policy, Resources::Types::Hash.schema(
-            Version: Types::String.default('2012-10-17'),
-            Statement: Types::Array.of(
-              Types::Hash.schema(
-                Sid?: Types::String.optional,
-                Effect: Types::String.enum('Allow', 'Deny'),
-                Action: Types::String | Types::Array.of(Types::String),
-                Resource: Types::String | Types::Array.of(Types::String),
-                Condition?: Types::Hash.optional,
-                Principal?: Types::Hash.optional,
-                NotAction?: Types::String | Types::Array.of(Types::String),
-                NotResource?: Types::String | Types::Array.of(Types::String),
-                NotPrincipal?: Types::Hash.optional
+            Version: Resources::Types::String.default('2012-10-17'),
+            Statement: Resources::Types::Array.of(
+              Resources::Types::Hash.schema(
+                Sid?: Resources::Types::String.optional,
+                Effect: Resources::Types::String.constrained(included_in: ['Allow', 'Deny']),
+                Action: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String),
+                Resource: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String),
+                Condition?: Resources::Types::Hash.optional,
+                Principal?: Resources::Types::Hash.optional,
+                NotAction?: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String),
+                NotResource?: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String),
+                NotPrincipal?: Resources::Types::Hash.optional
               )
             )
           )
@@ -108,7 +108,7 @@ module Pangea
         class IamPolicyDocument < Dry::Struct
           attribute :Version, Resources::Types::String.default('2012-10-17')
           attribute :Statement, Resources::Types::Array.of(
-            Types::Hash.schema(Sid?: Types::String.optional, Effect: Types::String.enum('Allow', 'Deny'), Action: Types::String | Types::Array.of(Types::String), Resource: Types::String | Types::Array.of(Types::String), Condition?: Types::Hash.optional)
+            Resources::Types::Hash.schema(Sid?: Resources::Types::String.optional, Effect: Resources::Types::String.constrained(included_in: ['Allow', 'Deny']), Action: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String), Resource: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String), Condition?: Resources::Types::Hash.optional)
           )
         end
       end

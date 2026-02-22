@@ -7,10 +7,10 @@ module Pangea
     module AWS
       module Types
         class ProxyAuth < Dry::Struct
-          attribute :auth_scheme, Resources::Types::String.enum('SECRETS')
-          attribute :client_password_auth_type, Resources::Types::String.enum('MYSQL_NATIVE_PASSWORD', 'POSTGRES_SCRAM_SHA_256', 'POSTGRES_MD5', 'SQL_SERVER_AUTHENTICATION').optional
+          attribute :auth_scheme, Resources::Types::String.constrained(included_in: ['SECRETS'])
+          attribute :client_password_auth_type, Resources::Types::String.constrained(included_in: ['MYSQL_NATIVE_PASSWORD', 'POSTGRES_SCRAM_SHA_256', 'POSTGRES_MD5', 'SQL_SERVER_AUTHENTICATION']).optional
           attribute :description, Resources::Types::String.optional
-          attribute :iam_auth, Resources::Types::String.enum('DISABLED', 'REQUIRED').default('DISABLED')
+          attribute :iam_auth, Resources::Types::String.constrained(included_in: ['DISABLED', 'REQUIRED']).default('DISABLED')
           attribute :secret_arn, Resources::Types::String
           attribute :username, Resources::Types::String.optional
 
@@ -35,7 +35,7 @@ module Pangea
         class ProxyConnectionPoolConfig < Dry::Struct
           attribute :max_connections_percent, Resources::Types::Integer.default(100).constrained(gteq: 0, lteq: 100)
           attribute :max_idle_connections_percent, Resources::Types::Integer.default(50).constrained(gteq: 0, lteq: 100)
-          attribute :session_pinning_filters, Resources::Types::Array.of(Resources::Types::String.enum('EXCLUDE_VARIABLE_SETS')).default([].freeze)
+          attribute :session_pinning_filters, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['EXCLUDE_VARIABLE_SETS'])).default([].freeze)
           attribute :init_query, Resources::Types::String.optional
 
           def self.new(attributes = {})

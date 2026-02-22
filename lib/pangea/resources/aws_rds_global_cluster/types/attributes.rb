@@ -10,7 +10,7 @@ module Pangea
       module Types
         class RdsGlobalClusterAttributes < Dry::Struct
           attribute :global_cluster_identifier, Resources::Types::String.optional
-          attribute :engine, Resources::Types::String.enum('aurora', 'aurora-mysql', 'aurora-postgresql')
+          attribute :engine, Resources::Types::String.constrained(included_in: ['aurora', 'aurora-mysql', 'aurora-postgresql'])
           attribute :engine_version, Resources::Types::String.optional
           attribute :database_name, Resources::Types::String.optional
           attribute :master_username, Resources::Types::String.optional
@@ -21,7 +21,7 @@ module Pangea
           attribute :kms_key_id, Resources::Types::String.optional
           attribute :force_destroy, Resources::Types::Bool.default(false)
           attribute :source_db_cluster_identifier, Resources::Types::String.optional
-          attribute :engine_lifecycle_support, Resources::Types::String.enum('open-source-rds-extended-support', 'open-source-rds-extended-support-disabled').optional
+          attribute :engine_lifecycle_support, Resources::Types::String.constrained(included_in: ['open-source-rds-extended-support', 'open-source-rds-extended-support-disabled']).optional
           attribute? :backup_configuration, GlobalClusterBackupConfiguration.optional
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 

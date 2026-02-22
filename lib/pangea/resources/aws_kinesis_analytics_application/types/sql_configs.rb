@@ -21,6 +21,7 @@ module Pangea
         class KinesisAnalyticsApplicationAttributes
           # SQL Application Configuration types for Kinesis Analytics
           module SqlConfigs
+            include Pangea::Resources::Types
             SQL_TYPES = %w[BOOLEAN INTEGER BIGINT DOUBLE DECIMAL VARCHAR CHAR TIMESTAMP DATE TIME].freeze
 
             RecordColumn = Hash.schema(
@@ -44,14 +45,14 @@ module Pangea
             )
 
             RecordFormat = Hash.schema(
-              record_format_type: String.enum('JSON', 'CSV'),
+              record_format_type: String.constrained(included_in: ['JSON', 'CSV']),
               mapping_parameters?: MappingParameters.optional
             )
 
             InputSchema = Hash.schema(
               record_columns: Array.of(RecordColumn).constrained(min_size: 1, max_size: 1000),
               record_format: RecordFormat,
-              record_encoding?: String.enum('UTF-8').optional
+              record_encoding?: String.constrained(included_in: ['UTF-8']).optional
             )
 
             KinesisStreamsInput = Hash.schema(resource_arn: String)
@@ -66,7 +67,7 @@ module Pangea
             )
 
             DestinationSchema = Hash.schema(
-              record_format_type: String.enum('JSON', 'CSV')
+              record_format_type: String.constrained(included_in: ['JSON', 'CSV'])
             )
 
             OutputConfig = Hash.schema(
@@ -84,14 +85,14 @@ module Pangea
             )
 
             ReferenceRecordFormat = Hash.schema(
-              record_format_type: String.enum('JSON', 'CSV'),
+              record_format_type: String.constrained(included_in: ['JSON', 'CSV']),
               mapping_parameters?: Hash.optional
             )
 
             ReferenceSchema = Hash.schema(
               record_columns: Array.of(ReferenceRecordColumn),
               record_format: ReferenceRecordFormat,
-              record_encoding?: String.enum('UTF-8').optional
+              record_encoding?: String.constrained(included_in: ['UTF-8']).optional
             )
 
             ReferenceDataSource = Hash.schema(

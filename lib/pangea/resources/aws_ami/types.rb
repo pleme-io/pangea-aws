@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -66,24 +65,24 @@ module Pangea
 
         # EBS block device mappings
         attribute :ebs_block_device, Resources::Types::Array.of(
-          Types::Hash.schema(
-            device_name: Types::String,
-            delete_on_termination?: Types::Bool.optional,
-            encrypted?: Types::Bool.optional,
-            iops?: Types::Integer.optional,
-            snapshot_id?: Types::String.optional,
-            throughput?: Types::Integer.optional,
-            volume_size?: Types::Integer.optional,
-            volume_type?: Types::String.optional.constrained(included_in: ["gp2", "gp3", "io1", "io2", "st1", "sc1", "standard"]),
-            kms_key_id?: Types::String.optional
+          Resources::Types::Hash.schema(
+            device_name: Resources::Types::String,
+            delete_on_termination?: Resources::Types::Bool.optional,
+            encrypted?: Resources::Types::Bool.optional,
+            iops?: Resources::Types::Integer.optional,
+            snapshot_id?: Resources::Types::String.optional,
+            throughput?: Resources::Types::Integer.optional,
+            volume_size?: Resources::Types::Integer.optional,
+            volume_type?: Resources::Types::String.optional.constrained(included_in: ["gp2", "gp3", "io1", "io2", "st1", "sc1", "standard"]),
+            kms_key_id?: Resources::Types::String.optional
           )
         ).default([].freeze)
 
         # Instance store block device mappings
         attribute :ephemeral_block_device, Resources::Types::Array.of(
-          Types::Hash.schema(
-            device_name: Types::String,
-            virtual_name: Types::String
+          Resources::Types::Hash.schema(
+            device_name: Resources::Types::String,
+            virtual_name: Resources::Types::String
           )
         ).default([].freeze)
 
@@ -193,4 +192,3 @@ module Pangea
       end
     end
   end
-end

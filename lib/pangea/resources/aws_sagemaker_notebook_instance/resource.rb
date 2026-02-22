@@ -73,7 +73,8 @@ module Pangea
       #       GPU: "enabled"
       #     }
       #   })
-      class SageMakerNotebookInstance < Base
+      SageMakerNotebookInstance = Struct.new(:name, :attributes, keyword_init: true)
+      class SageMakerNotebookInstance
         def self.resource_type
           'aws_sagemaker_notebook_instance'
         end
@@ -134,6 +135,3 @@ module Pangea
     end
   end
 end
-
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

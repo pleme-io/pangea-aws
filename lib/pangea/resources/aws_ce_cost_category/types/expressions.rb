@@ -5,57 +5,54 @@
 module Pangea
   module Resources
     module AWS
+
       module Types
         # Cost category rule types
-        CostCategoryRuleType = String.enum('REGULAR', 'INHERITED')
+        CostCategoryRuleType = Resources::Types::String.constrained(included_in: ['REGULAR', 'INHERITED'])
 
         # Cost category split charge rule methods
-        SplitChargeMethod = String.enum('FIXED', 'PROPORTIONAL', 'EVEN')
+        SplitChargeMethod = Resources::Types::String.constrained(included_in: ['FIXED', 'PROPORTIONAL', 'EVEN'])
 
         # Cost category dimension key types
-        CostCategoryDimensionKey = String.enum(
-          'AZ', 'INSTANCE_TYPE', 'LINKED_ACCOUNT', 'LINKED_ACCOUNT_NAME', 'OPERATION',
+        CostCategoryDimensionKey = Resources::Types::String.constrained(included_in: ['AZ', 'INSTANCE_TYPE', 'LINKED_ACCOUNT', 'LINKED_ACCOUNT_NAME', 'OPERATION',
           'PURCHASE_TYPE', 'REGION', 'SERVICE', 'SERVICE_CODE', 'USAGE_TYPE',
           'USAGE_TYPE_GROUP', 'RECORD_TYPE', 'OPERATING_SYSTEM', 'TENANCY',
           'SCOPE', 'PLATFORM', 'SUBSCRIPTION_ID', 'LEGAL_ENTITY_NAME',
           'DEPLOYMENT_OPTION', 'DATABASE_ENGINE', 'CACHE_ENGINE',
           'INSTANCE_TYPE_FAMILY', 'BILLING_ENTITY', 'RESERVATION_ID',
           'RESOURCE_ID', 'RIGHTSIZING_TYPE', 'SAVINGS_PLANS_TYPE',
-          'SAVINGS_PLAN_ARN', 'PAYMENT_OPTION'
-        )
+          'SAVINGS_PLAN_ARN', 'PAYMENT_OPTION'])
 
         # Match options for cost category filters
-        CostCategoryMatchOptions = String.enum(
-          'EQUALS', 'ABSENT', 'STARTS_WITH', 'ENDS_WITH', 'CONTAINS',
-          'CASE_SENSITIVE', 'CASE_INSENSITIVE'
-        )
+        CostCategoryMatchOptions = Resources::Types::String.constrained(included_in: ['EQUALS', 'ABSENT', 'STARTS_WITH', 'ENDS_WITH', 'CONTAINS',
+          'CASE_SENSITIVE', 'CASE_INSENSITIVE'])
 
         # Cost category dimension filter
-        CostCategoryDimensionFilter = Hash.schema(
+        CostCategoryDimensionFilter = Resources::Types::Hash.schema(
           key: CostCategoryDimensionKey,
-          values: Array.of(String).constrained(min_size: 1, max_size: 10000),
-          match_options?: Array.of(CostCategoryMatchOptions).constrained(max_size: 1).optional
+          values: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 10000),
+          match_options?: Resources::Types::Array.of(CostCategoryMatchOptions).constrained(max_size: 1).optional
         )
 
         # Cost category tag filter
-        CostCategoryTagFilter = Hash.schema(
-          key: String.constrained(min_size: 1, max_size: 128),
-          values?: Array.of(String).constrained(max_size: 1000).optional,
-          match_options?: Array.of(CostCategoryMatchOptions).constrained(max_size: 1).optional
+        CostCategoryTagFilter = Resources::Types::Hash.schema(
+          key: Resources::Types::String.constrained(min_size: 1, max_size: 128),
+          values?: Resources::Types::Array.of(Resources::Types::String).constrained(max_size: 1000).optional,
+          match_options?: Resources::Types::Array.of(CostCategoryMatchOptions).constrained(max_size: 1).optional
         )
 
         # Cost category cost category filter (for nested categories)
-        CostCategoryCostCategoryFilter = Hash.schema(
-          key: String.constrained(min_size: 1, max_size: 50),
-          values: Array.of(String).constrained(min_size: 1, max_size: 20),
-          match_options?: Array.of(CostCategoryMatchOptions).constrained(max_size: 1).optional
+        CostCategoryCostCategoryFilter = Resources::Types::Hash.schema(
+          key: Resources::Types::String.constrained(min_size: 1, max_size: 50),
+          values: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 20),
+          match_options?: Resources::Types::Array.of(CostCategoryMatchOptions).constrained(max_size: 1).optional
         )
 
         # Cost category expression for complex filtering
-        CostCategoryExpression = Hash.schema(
-          and?: Array.of(Hash).optional,
-          or?: Array.of(Hash).optional,
-          not?: Hash.optional,
+        CostCategoryExpression = Resources::Types::Hash.schema(
+          and?: Resources::Types::Array.of(Resources::Types::Hash).optional,
+          or?: Resources::Types::Array.of(Resources::Types::Hash).optional,
+          not?: Resources::Types::Hash.optional,
           dimension?: CostCategoryDimensionFilter.optional,
           tags?: CostCategoryTagFilter.optional,
           cost_category?: CostCategoryCostCategoryFilter.optional
@@ -79,40 +76,16 @@ module Pangea
         }
 
         # Cost category rule definition
-        CostCategoryRule = Hash.schema(
-          value: String.constrained(min_size: 1, max_size: 50).constructor { |value|
-            unless value.match?(/\A[a-zA-Z0-9\s\-_\.]+\z/)
-              raise Dry::Types::ConstraintError, "Cost category value must contain only alphanumeric characters, spaces, hyphens, underscores, and periods"
-            end
-            value.strip
-          },
-          rule: CostCategoryExpression,
-          type?: CostCategoryRuleType.default('REGULAR').optional,
-          inherited_value?: Hash.schema(
-            dimension_key?: CostCategoryDimensionKey.optional,
-            dimension_name?: String.optional
-          ).optional
-        ).constructor { |value|
-          if value[:type] == 'INHERITED' && !value[:inherited_value]
-            raise Dry::Types::ConstraintError, "INHERITED rule type requires inherited_value configuration"
-          end
-
-          if value[:type] == 'REGULAR' && value[:inherited_value]
-            raise Dry::Types::ConstraintError, "REGULAR rule type cannot have inherited_value configuration"
-          end
-
-          value
-        }
 
         # Cost category split charge rule
-        CostCategorySplitChargeRule = Hash.schema(
-          source: String.constrained(min_size: 1, max_size: 50),
-          targets: Array.of(String.constrained(min_size: 1, max_size: 50)).constrained(min_size: 1, max_size: 500),
+        CostCategorySplitChargeRule = Resources::Types::Hash.schema(
+          source: Resources::Types::String.constrained(min_size: 1, max_size: 50),
+          targets: Resources::Types::Array.of(Resources::Types::String.constrained(min_size: 1, max_size: 50)).constrained(min_size: 1, max_size: 500),
           method: SplitChargeMethod,
-          parameters?: Array.of(
-            Hash.schema(
-              type: String.enum('ALLOCATION_PERCENTAGES'),
-              values: Array.of(String).constrained(min_size: 1)
+          parameters?: Resources::Types::Array.of(
+            Resources::Types::Hash.schema(
+              type: Resources::Types::String.constrained(included_in: ['ALLOCATION_PERCENTAGES']),
+              values: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
             )
           ).constrained(max_size: 10).optional
         ).constructor { |value|
@@ -151,6 +124,33 @@ module Pangea
 
           value
         }
+
+        # Cost category rule definition
+        CostCategoryRule = Resources::Types::Hash.schema(
+          value: Resources::Types::String.constrained(min_size: 1, max_size: 50).constructor { |value|
+            unless value.match?(/\A[a-zA-Z0-9\s\-_\.]+\z/)
+              raise Dry::Types::ConstraintError, "Cost category value must contain only alphanumeric characters, spaces, hyphens, underscores, and periods"
+            end
+            value.strip
+          },
+          rule: CostCategoryExpression,
+          type?: CostCategoryRuleType.default('REGULAR').optional,
+          inherited_value?: Resources::Types::Hash.schema(
+            dimension_key?: CostCategoryDimensionKey.optional,
+            dimension_name?: Resources::Types::String.optional
+          ).optional
+        ).constructor { |value|
+          if value[:type] == 'INHERITED' && !value[:inherited_value]
+            raise Dry::Types::ConstraintError, "INHERITED rule type requires inherited_value configuration"
+          end
+
+          if value[:type] == 'REGULAR' && value[:inherited_value]
+            raise Dry::Types::ConstraintError, "REGULAR rule type cannot have inherited_value configuration"
+          end
+
+          value
+        }
+
       end
     end
   end

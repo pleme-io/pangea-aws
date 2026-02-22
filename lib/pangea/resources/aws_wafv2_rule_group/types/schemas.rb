@@ -26,46 +26,46 @@ module Pangea
           include Dry.Types()
 
           # Header name/value pair schema
-          HeaderSchema = Hash.schema(
-            name: String,
-            value: String
+          HeaderSchema = Resources::Types::Hash.schema(
+            name: Resources::Types::String,
+            value: Resources::Types::String
           )
 
           # Custom request handling with header insertion
-          CustomRequestHandlingSchema = Hash.schema(
-            insert_headers: Array.of(HeaderSchema)
+          CustomRequestHandlingSchema = Resources::Types::Hash.schema(
+            insert_headers: Resources::Types::Array.of(HeaderSchema)
           ).optional
 
           # Custom response configuration for block actions
-          CustomResponseSchema = Hash.schema(
-            response_code: Integer.constrained(gteq: 200, lteq: 599),
-            custom_response_body_key?: String.optional,
-            response_headers?: Array.of(HeaderSchema).optional
+          CustomResponseSchema = Resources::Types::Hash.schema(
+            response_code: Resources::Types::Integer.constrained(gteq: 200, lteq: 599),
+            custom_response_body_key?: Resources::Types::String.optional,
+            response_headers?: Resources::Types::Array.of(HeaderSchema).optional
           ).optional
 
           # Visibility config for CloudWatch metrics
-          VisibilityConfigSchema = Hash.schema(
+          VisibilityConfigSchema = Resources::Types::Hash.schema(
             cloudwatch_metrics_enabled: Resources::Types::Bool,
-            metric_name: String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/),
+            metric_name: Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/),
             sampled_requests_enabled: Resources::Types::Bool
           )
 
           # Immunity time configuration for captcha/challenge
-          ImmunityTimeSchema = Hash.schema(
-            immunity_time_property: Hash.schema(
-              immunity_time: Integer.constrained(gteq: 60, lteq: 259_200)
+          ImmunityTimeSchema = Resources::Types::Hash.schema(
+            immunity_time_property: Resources::Types::Hash.schema(
+              immunity_time: Resources::Types::Integer.constrained(gteq: 60, lteq: 259_200)
             )
           ).optional
 
           # Rule label schema
-          RuleLabelSchema = Hash.schema(
-            name: String.constrained(format: /\A[a-zA-Z0-9_:-]{1,1024}\z/)
+          RuleLabelSchema = Resources::Types::Hash.schema(
+            name: Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_:-]{1,1024}\z/)
           )
 
           # Custom response body definition
-          CustomResponseBodySchema = Hash.schema(
-            content: String.constrained(max_size: 10_240),
-            content_type: String.enum('TEXT_PLAIN', 'TEXT_HTML', 'APPLICATION_JSON')
+          CustomResponseBodySchema = Resources::Types::Hash.schema(
+            content: Resources::Types::String.constrained(max_size: 10_240),
+            content_type: Resources::Types::String.constrained(included_in: ['TEXT_PLAIN', 'TEXT_HTML', 'APPLICATION_JSON'])
           )
         end
       end

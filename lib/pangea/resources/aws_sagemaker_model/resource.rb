@@ -115,7 +115,8 @@ module Pangea
       #       }
       #     }
       #   })
-      class SageMakerModel < Base
+      SageMakerModel = Struct.new(:name, :attributes, keyword_init: true)
+      class SageMakerModel
         def self.resource_type
           'aws_sagemaker_model'
         end
@@ -184,6 +185,3 @@ module Pangea
     end
   end
 end
-
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

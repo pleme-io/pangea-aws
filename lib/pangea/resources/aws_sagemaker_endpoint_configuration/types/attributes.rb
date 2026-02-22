@@ -18,12 +18,12 @@ module Pangea
           attribute :data_capture_config, SageMakerDataCaptureConfig.optional
           attribute :kms_key_id, Resources::Types::String.optional
           attribute :async_inference_config, Resources::Types::Hash.schema(
-            output_config: Hash.schema(
-              s3_output_path: String.constrained(format: /\As3:\/\//),
-              notification_config?: Hash.schema(success_topic?: String.optional, error_topic?: String.optional, include_inference_response_in?: Array.of(String.enum('SUCCESS_NOTIFICATION_TOPIC', 'ERROR_NOTIFICATION_TOPIC')).optional).optional,
-              s3_failure_path?: String.optional, kms_key_id?: String.optional
+            output_config: Resources::Types::Hash.schema(
+              s3_output_path: Resources::Types::String.constrained(format: /\As3:\/\//),
+              notification_config?: Resources::Types::Hash.schema(success_topic?: Resources::Types::String.optional, error_topic?: Resources::Types::String.optional, include_inference_response_in?: Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['SUCCESS_NOTIFICATION_TOPIC', 'ERROR_NOTIFICATION_TOPIC'])).optional).optional,
+              s3_failure_path?: Resources::Types::String.optional, kms_key_id?: Resources::Types::String.optional
             ),
-            client_config?: Hash.schema(max_concurrent_invocations_per_instance?: Integer.constrained(gteq: 1, lteq: 1000).optional).optional
+            client_config?: Resources::Types::Hash.schema(max_concurrent_invocations_per_instance?: Resources::Types::Integer.constrained(gteq: 1, lteq: 1000).optional).optional
           ).optional
           attribute :tags, Resources::Types::AwsTags
 

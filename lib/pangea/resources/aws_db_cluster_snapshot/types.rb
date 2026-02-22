@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 require_relative 'types/configs'
 
@@ -148,4 +147,3 @@ module Pangea
       end
     end
   end
-end

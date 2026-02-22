@@ -8,7 +8,10 @@ module Pangea
     module AWS
       module Types
         module MediaLiveChannel
+            T = Resources::Types
+
           # Schedule action type definitions
+
           module ScheduleSettings
             T = Resources::Types
             EC = EncoderConfig
@@ -19,12 +22,12 @@ module Pangea
             )
 
             StopTimecode = T::Hash.schema(
-              last_frame_clipping_behavior?: T::String.enum('EXCLUDE_LAST_FRAME', 'INCLUDE_LAST_FRAME').optional,
+              last_frame_clipping_behavior?: T::String.constrained(included_in: ['EXCLUDE_LAST_FRAME', 'INCLUDE_LAST_FRAME']).optional,
               timecode: T::String
             )
 
             InputClippingSettings = T::Hash.schema(
-              input_timecode_source: T::String.enum('EMBEDDED', 'ZEROBASED'),
+              input_timecode_source: T::String.constrained(included_in: ['EMBEDDED', 'ZEROBASED']),
               start_timecode?: StartTimecode.optional,
               stop_timecode?: StopTimecode.optional
             )
@@ -52,7 +55,7 @@ module Pangea
 
             # Pause state settings
             PipelineState = T::Hash.schema(
-              pipeline_id: T::String.enum('PIPELINE_0', 'PIPELINE_1')
+              pipeline_id: T::String.constrained(included_in: ['PIPELINE_0', 'PIPELINE_1'])
             )
 
             PauseStateSettings = T::Hash.schema(
@@ -80,7 +83,7 @@ module Pangea
             # SCTE35 time signal settings
             DeliveryRestrictions = T::Hash.schema(
               archive_allowed_flag: T::Bool,
-              device_restrictions: T::String.enum('NONE', 'RESTRICT_GROUP0', 'RESTRICT_GROUP1', 'RESTRICT_GROUP2'),
+              device_restrictions: T::String.constrained(included_in: ['NONE', 'RESTRICT_GROUP0', 'RESTRICT_GROUP1', 'RESTRICT_GROUP2']),
               no_regional_blackout_flag: T::Bool,
               web_delivery_allowed_flag: T::Bool
             )
@@ -167,7 +170,7 @@ module Pangea
             )
 
             FollowModeStartSettings = T::Hash.schema(
-              follow_point: T::String.enum('END', 'START'),
+              follow_point: T::String.constrained(included_in: ['END', 'START']),
               reference_action_name: T::String
             )
 

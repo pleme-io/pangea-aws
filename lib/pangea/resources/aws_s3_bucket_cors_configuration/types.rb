@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -21,23 +20,24 @@ module Pangea
     module AWS
       module Types
       # S3 CORS rule configuration
+      unless const_defined?(:CorsRule)
       class CorsRule < Dry::Struct
         # Unique identifier for the rule (optional)
         attribute :id, Resources::Types::String.optional
         
         # HTTP methods allowed for CORS requests
         attribute :allowed_methods, Resources::Types::Array.of(
-          Types::String.enum("GET", "PUT", "POST", "DELETE", "HEAD")
+          Resources::Types::String.constrained(included_in: ["GET", "PUT", "POST", "DELETE", "HEAD"])
         ).constrained(min_size: 1)
         
         # Origins allowed to make CORS requests
-        attribute :allowed_origins, Resources::Types::Array.of(Types::String).constrained(min_size: 1)
+        attribute :allowed_origins, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
         
         # Headers allowed in CORS requests (optional)
-        attribute :allowed_headers, Resources::Types::Array.of(Types::String).optional
+        attribute :allowed_headers, Resources::Types::Array.of(Resources::Types::String).optional
         
         # Headers exposed to client in CORS response (optional)
-        attribute :expose_headers, Resources::Types::Array.of(Types::String).optional
+        attribute :expose_headers, Resources::Types::Array.of(Resources::Types::String).optional
         
         # Maximum time in seconds for browser to cache preflight response (optional)
         attribute :max_age_seconds, Resources::Types::Integer.constrained(gteq: 0, lteq: 2147483647).optional
@@ -162,6 +162,6 @@ module Pangea
       end
     end
       end
+      end
     end
   end
-end

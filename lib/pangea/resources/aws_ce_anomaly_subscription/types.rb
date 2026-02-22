@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -22,20 +21,20 @@ module Pangea
     module AWS
       module Types
         # Anomaly subscription frequency
-        AnomalySubscriptionFrequency = String.enum('DAILY', 'IMMEDIATE', 'WEEKLY')
+        AnomalySubscriptionFrequency = Resources::Types::String.constrained(included_in: ['DAILY', 'IMMEDIATE', 'WEEKLY'])
         
         # Anomaly subscription threshold types
-        AnomalyThresholdExpression = String.enum('AND', 'OR', 'DIMENSION', 'MATCH_OPTIONS')
+        AnomalyThresholdExpression = Resources::Types::String.constrained(included_in: ['AND', 'OR', 'DIMENSION', 'MATCH_OPTIONS'])
         
         class AnomalySubscriptionAttributes < Dry::Struct
           transform_keys(&:to_sym)
           
-          attribute :name, String.constrained(format: /\A[a-zA-Z0-9\s\-_\.]{1,128}\z/)
+          attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9\s\-_\.]{1,128}\z/)
           attribute :frequency, AnomalySubscriptionFrequency
-          attribute :monitor_arn_list, Array.of(String).constrained(min_size: 1, max_size: 1024)
-          attribute :subscribers, Array.of(String).constrained(min_size: 1, max_size: 1024)
-          attribute :threshold_expression?, String.optional
-          attribute :tags?, AwsTags.optional
+          attribute :monitor_arn_list, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 1024)
+          attribute :subscribers, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 1024)
+          attribute :threshold_expression?, Resources::Types::String.optional
+          attribute :tags?, Resources::Types::AwsTags.optional
           
           def subscriber_count
             subscribers.length

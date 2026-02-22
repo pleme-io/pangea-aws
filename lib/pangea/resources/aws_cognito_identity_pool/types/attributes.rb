@@ -15,8 +15,8 @@ module Pangea
           attribute :allow_classic_flow, Resources::Types::Bool.default(false)
           attribute :cognito_identity_providers, Resources::Types::Array.of(CognitoIdentityPoolProvider).optional
           attribute :supported_login_providers, Resources::Types::Hash.optional
-          attribute :openid_connect_provider_arns, Resources::Types::Array.of(Types::String).optional
-          attribute :saml_provider_arns, Resources::Types::Array.of(Types::String).optional
+          attribute :openid_connect_provider_arns, Resources::Types::Array.of(Resources::Types::String).optional
+          attribute :saml_provider_arns, Resources::Types::Array.of(Resources::Types::String).optional
           attribute :developer_provider_name, Resources::Types::String.optional
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 

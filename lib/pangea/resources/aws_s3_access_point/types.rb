@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 
 module Pangea
@@ -21,47 +20,47 @@ module Pangea
     module AWS
       module S3AccessPoint
         # Common types for S3 Access Point configurations
-        class Types < Dry::Types::Module
-          include Dry.Types()
-
+        module Types
           # S3 Access Point Account Owner ID constraint
-          AccessPointAccountId = String.constrained(format: /\A\d{12}\z/)
+          AccessPointAccountId = Resources::Types::String.constrained(format: /\A\d{12}\z/)
           
           # S3 Access Point Name constraint  
-          AccessPointName = String.constrained(min_size: 3, max_size: 63, format: /\A[a-z0-9\-]+\z/)
+          AccessPointName = Resources::Types::String.constrained(min_size: 3, max_size: 63, format: /\A[a-z0-9\-]+\z/)
           
           # S3 Access Point Network Origin
-          NetworkOrigin = String.enum('Internet', 'VPC')
+          NetworkOrigin = Resources::Types::String.constrained(included_in: ['Internet', 'VPC'])
           
           # VPC Configuration for Access Point
-          VpcConfiguration = Hash.schema({
-            vpc_id: String
+          unless const_defined?(:VpcConfiguration)
+          VpcConfiguration = Resources::Types::Hash.schema({
+            vpc_id: Resources::Types::String
           })
+          end
           
           # Public Access Block Configuration
-          PublicAccessBlockConfiguration = Hash.schema({
-            block_public_acls?: Bool,
-            block_public_policy?: Bool,
-            ignore_public_acls?: Bool,
-            restrict_public_buckets?: Bool
+          unless const_defined?(:PublicAccessBlockConfiguration)
+          PublicAccessBlockConfiguration = Resources::Types::Hash.schema({
+            block_public_acls?: Resources::Types::Bool,
+            block_public_policy?: Resources::Types::Bool,
+            ignore_public_acls?: Resources::Types::Bool,
+            restrict_public_buckets?: Resources::Types::Bool
           })
+          end
         end
 
         # S3 Access Point attributes with comprehensive validation
         class S3AccessPointAttributes < Dry::Struct
-          include Types[self]
-          
           # Required attributes
-          attribute :account_id, AccessPointAccountId
-          attribute :bucket, String
-          attribute :name, AccessPointName
+          attribute :account_id, Types::AccessPointAccountId
+          attribute :bucket, Resources::Types::String
+          attribute :name, Types::AccessPointName
           
           # Optional attributes
-          attribute? :bucket_account_id, AccessPointAccountId
-          attribute? :network_origin, NetworkOrigin.default('Internet')
-          attribute? :policy, String.optional
-          attribute? :vpc_configuration, VpcConfiguration.optional
-          attribute? :public_access_block_configuration, PublicAccessBlockConfiguration.default({}.freeze)
+          attribute? :bucket_account_id, Types::AccessPointAccountId
+          attribute? :network_origin, Types::NetworkOrigin.default('Internet')
+          attribute? :policy, Resources::Types::String.optional
+          attribute? :vpc_configuration, Types::VpcConfiguration.optional
+          attribute? :public_access_block_configuration, Types::PublicAccessBlockConfiguration.default({}.freeze)
           
           # Computed properties
           def vpc_access_point?

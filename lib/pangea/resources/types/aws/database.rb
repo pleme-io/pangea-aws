@@ -19,19 +19,15 @@ module Pangea
   module Resources
     module Types
       # RDS engine types
-      RdsEngine = String.enum(
-        'mysql', 'postgres', 'mariadb', 'oracle-ee', 'oracle-se2',
+      RdsEngine = Resources::Types::String.constrained(included_in: ['mysql', 'postgres', 'mariadb', 'oracle-ee', 'oracle-se2',
         'oracle-se1', 'oracle-se', 'sqlserver-ee', 'sqlserver-se',
-        'sqlserver-ex', 'sqlserver-web', 'aurora-mysql', 'aurora-postgresql'
-      )
+        'sqlserver-ex', 'sqlserver-web', 'aurora-mysql', 'aurora-postgresql'])
 
       # RDS instance classes
-      RdsInstanceClass = String.enum(
-        'db.t3.micro', 'db.t3.small', 'db.t3.medium', 'db.t3.large', 'db.t3.xlarge', 'db.t3.2xlarge',
+      RdsInstanceClass = Resources::Types::String.constrained(included_in: ['db.t3.micro', 'db.t3.small', 'db.t3.medium', 'db.t3.large', 'db.t3.xlarge', 'db.t3.2xlarge',
         'db.t4g.micro', 'db.t4g.small', 'db.t4g.medium', 'db.t4g.large', 'db.t4g.xlarge', 'db.t4g.2xlarge',
         'db.m5.large', 'db.m5.xlarge', 'db.m5.2xlarge', 'db.m5.4xlarge', 'db.m5.8xlarge', 'db.m5.12xlarge', 'db.m5.16xlarge', 'db.m5.24xlarge',
-        'db.r5.large', 'db.r5.xlarge', 'db.r5.2xlarge', 'db.r5.4xlarge', 'db.r5.8xlarge', 'db.r5.12xlarge', 'db.r5.16xlarge', 'db.r5.24xlarge'
-      )
+        'db.r5.large', 'db.r5.xlarge', 'db.r5.2xlarge', 'db.r5.4xlarge', 'db.r5.8xlarge', 'db.r5.12xlarge', 'db.r5.16xlarge', 'db.r5.24xlarge'])
     end
   end
 end

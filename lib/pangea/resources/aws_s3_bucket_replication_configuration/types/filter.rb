@@ -21,6 +21,7 @@ module Pangea
     module AWS
       module Types
         # Filter types for S3 replication rules
+
         module S3BucketReplicationFilter
           # Tag filter schema
           TagFilter = Resources::Types::Hash.schema(
@@ -35,11 +36,15 @@ module Pangea
           )
 
           # Complete filter schema
+          unless const_defined?(:Filter)
           Filter = Resources::Types::Hash.schema(
             prefix?: Resources::Types::String.optional,
             tag?: TagFilter.optional,
             and?: AndFilter.optional
           )
+          end
+
+
         end
       end
     end

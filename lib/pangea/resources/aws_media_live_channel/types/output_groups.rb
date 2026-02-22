@@ -10,13 +10,16 @@ module Pangea
     module AWS
       module Types
         module MediaLiveChannel
+            T = Resources::Types
+
           # Output group type definitions
+
+
           module OutputGroups
             T = Resources::Types
             OGS = OutputGroupSettings
             HGS = HlsGroupSettings
             OS = OutputSettings
-
             # Output group settings container
             GroupSettings = T::Hash.schema(
               archive_group_settings?: OGS::ArchiveGroupSettings.optional,
@@ -35,6 +38,8 @@ module Pangea
               output_group_settings: GroupSettings,
               outputs: T::Array.of(OS::Output)
             )
+
+
           end
         end
       end

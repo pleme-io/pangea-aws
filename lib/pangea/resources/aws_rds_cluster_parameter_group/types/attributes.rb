@@ -32,11 +32,9 @@ module Pangea
 
           attribute :name, Resources::Types::String.optional
           attribute :name_prefix, Resources::Types::String.optional
-          attribute :family, Resources::Types::String.enum(
-            'aurora-mysql5.7', 'aurora-mysql8.0',
+          attribute :family, Resources::Types::String.constrained(included_in: ['aurora-mysql5.7', 'aurora-mysql8.0',
             'aurora-postgresql10', 'aurora-postgresql11', 'aurora-postgresql12',
-            'aurora-postgresql13', 'aurora-postgresql14', 'aurora-postgresql15'
-          )
+            'aurora-postgresql13', 'aurora-postgresql14', 'aurora-postgresql15'])
           attribute :description, Resources::Types::String
           attribute :parameter, Resources::Types::Array.of(DbParameter).default([].freeze)
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

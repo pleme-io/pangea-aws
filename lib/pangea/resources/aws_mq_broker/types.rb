@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -22,59 +21,61 @@ module Pangea
     module AWS
       module Types
         # MQ broker engine types
-        MqEngineType = String.enum('ActiveMQ', 'RabbitMQ')
+        unless const_defined?(:MqEngineType)
+        MqEngineType = Resources::Types::String.constrained(included_in: ['ActiveMQ', 'RabbitMQ'])
+        end
 
         # MQ instance types
-        MqInstanceType = String.enum(
-          'mq.t2.micro', 'mq.t3.micro',
+        MqInstanceType = Resources::Types::String.constrained(included_in: ['mq.t2.micro', 'mq.t3.micro',
           'mq.m4.large', 'mq.m5.large', 'mq.m5.xlarge', 'mq.m5.2xlarge', 'mq.m5.4xlarge',
           'mq.c4.large', 'mq.c4.xlarge', 'mq.c5.large', 'mq.c5.xlarge', 'mq.c5.2xlarge', 'mq.c5.4xlarge', 'mq.c5.9xlarge',
           'mq.r4.large', 'mq.r4.xlarge', 'mq.r4.2xlarge', 'mq.r4.4xlarge',
-          'mq.r5.large', 'mq.r5.xlarge', 'mq.r5.2xlarge', 'mq.r5.4xlarge', 'mq.r5.12xlarge'
-        )
+          'mq.r5.large', 'mq.r5.xlarge', 'mq.r5.2xlarge', 'mq.r5.4xlarge', 'mq.r5.12xlarge'])
 
         # MQ deployment mode
-        MqDeploymentMode = String.enum('SINGLE_INSTANCE', 'ACTIVE_STANDBY_MULTI_AZ', 'CLUSTER_MULTI_AZ')
+        MqDeploymentMode = Resources::Types::String.constrained(included_in: ['SINGLE_INSTANCE', 'ACTIVE_STANDBY_MULTI_AZ', 'CLUSTER_MULTI_AZ'])
 
         # MQ storage type
-        MqStorageType = String.enum('ebs', 'efs')
+        MqStorageType = Resources::Types::String.constrained(included_in: ['ebs', 'efs'])
 
         # MQ authentication strategy
-        MqAuthenticationStrategy = String.enum('simple', 'ldap')
+        unless const_defined?(:MqAuthenticationStrategy)
+        MqAuthenticationStrategy = Resources::Types::String.constrained(included_in: ['simple', 'ldap'])
+        end
 
         # MQ day of week
-        MqDayOfWeek = String.enum('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY')
+        MqDayOfWeek = Resources::Types::String.constrained(included_in: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'])
 
         # MQ user configuration
-        MqUser = Hash.schema(
+        MqUser = Resources::Types::Hash.schema(
           username: Resources::Types::String.constrained(size: 1..100),
           password?: Resources::Types::String.constrained(size: 12..250).optional,
           console_access?: Resources::Types::Bool.optional,
-          groups?: Resources::Types::Array.of(String).optional
+          groups?: Resources::Types::Array.of(Resources::Types::String).optional
         )
 
         # MQ encryption options
-        MqEncryptionOptions = Hash.schema(
+        MqEncryptionOptions = Resources::Types::Hash.schema(
           kms_key_id?: Resources::Types::String.optional,
           use_aws_owned_key?: Resources::Types::Bool.optional
         )
 
         # MQ maintenance window start time
-        MqMaintenanceWindowStartTime = Hash.schema(
+        MqMaintenanceWindowStartTime = Resources::Types::Hash.schema(
           day_of_week: MqDayOfWeek,
           time_of_day: Resources::Types::String.constrained(format: /\A([01]?[0-9]|2[0-3]):[0-5][0-9]\z/),
           time_zone?: Resources::Types::String.optional
         )
 
         # MQ logs configuration
-        MqLogs = Hash.schema(
+        MqLogs = Resources::Types::Hash.schema(
           general?: Resources::Types::Bool.optional,
           audit?: Resources::Types::Bool.optional
         )
 
         # MQ LDAP server metadata (for LDAP authentication)
-        MqLdapServerMetadata = Hash.schema(
-          hosts: Resources::Types::Array.of(String).constrained(min_size: 1),
+        MqLdapServerMetadata = Resources::Types::Hash.schema(
+          hosts: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1),
           role_base: Resources::Types::String,
           role_name?: Resources::Types::String.optional,
           role_search_matching?: Resources::Types::String.optional,
@@ -110,7 +111,7 @@ module Pangea
           
           attribute? :auto_minor_version_upgrade, Resources::Types::Bool.default(false)
           
-          attribute? :configuration, Hash.schema(
+          attribute? :configuration, Resources::Types::Hash.schema(
             id?: Resources::Types::String.optional,
             revision?: Resources::Types::Integer.constrained(gteq: 1).optional
           ).optional
@@ -127,11 +128,11 @@ module Pangea
           
           attribute? :publicly_accessible, Resources::Types::Bool.default(false)
           
-          attribute? :security_groups, Resources::Types::Array.of(String).optional
+          attribute? :security_groups, Resources::Types::Array.of(Resources::Types::String).optional
           
           attribute? :storage_type, MqStorageType.optional
           
-          attribute? :subnet_ids, Resources::Types::Array.of(String).optional
+          attribute? :subnet_ids, Resources::Types::Array.of(Resources::Types::String).optional
 
           attribute? :tags, Resources::Types::AwsTags
 

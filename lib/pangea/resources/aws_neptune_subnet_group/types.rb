@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -24,7 +23,7 @@ module Pangea
       # Provides a Neptune subnet group resource.
       class NeptuneSubnetGroupAttributes < Dry::Struct
         attribute :name, Resources::Types::String
-        attribute :subnet_ids, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         attribute :description, Resources::Types::String.optional
         
         # Tags to apply to the resource
@@ -47,4 +46,3 @@ module Pangea
       end
     end
   end
-end

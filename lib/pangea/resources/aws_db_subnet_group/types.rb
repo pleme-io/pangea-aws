@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -26,7 +25,7 @@ module Pangea
         attribute :name, Resources::Types::String
 
         # List of subnet IDs (minimum 2 subnets in different AZs required)
-        attribute :subnet_ids, Resources::Types::Array.of(Types::String).constrained(min_size: 2)
+        attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 2)
 
         # Description for the subnet group
         attribute :description, Resources::Types::String.optional.default("Managed by Pangea")
@@ -99,4 +98,3 @@ module Pangea
       end
     end
   end
-end

@@ -42,7 +42,7 @@ module Pangea
           attribute :priority, Resources::Types::Integer.constrained(gteq: 0, lteq: 1000)
 
           # State (required)
-          attribute :state, Resources::Types::String.enum('ENABLED', 'DISABLED')
+          attribute :state, Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED'])
 
           # Compute environment order (required)
           attribute :compute_environment_order, Resources::Types::Array.of(
@@ -63,9 +63,7 @@ module Pangea
           attribute? :scheduling_policy_arn, Resources::Types::String.optional
 
           # Tags (optional)
-          attribute? :tags, Resources::Types::Hash.schema(
-            Resources::Types::String => Resources::Types::String
-          ).optional
+          attribute? :tags, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
 
           # Custom validation
           def self.new(attributes = {})

@@ -11,16 +11,16 @@ module Pangea
         class BudgetActionAttributes < Dry::Struct
           transform_keys(&:to_sym)
 
-          attribute :budget_name, String.constrained(format: /\A[a-zA-Z0-9_\-. ]{1,100}\z/)
+          attribute :budget_name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_\-. ]{1,100}\z/)
           attribute :action_type, BudgetActionType
           attribute :approval_model, BudgetActionApprovalModel
           attribute :notification_type, ActionNotificationType
-          attribute :action_threshold, Numeric
-          attribute :action_threshold_type, String.enum('PERCENTAGE', 'ABSOLUTE_VALUE').default('PERCENTAGE')
+          attribute :action_threshold, Resources::Types::Float
+          attribute :action_threshold_type, Resources::Types::String.constrained(included_in: ['PERCENTAGE', 'ABSOLUTE_VALUE']).default('PERCENTAGE')
           attribute :definition, BudgetActionDefinition
           attribute :execution_role_arn, BudgetActionExecutionRole
-          attribute :subscribers?, Array.of(ActionSubscriber).constrained(max_size: 11).optional
-          attribute :tags?, AwsTags.optional
+          attribute :subscribers?, Resources::Types::Array.of(ActionSubscriber).constrained(max_size: 11).optional
+          attribute :tags?, Resources::Types::AwsTags.optional
 
           def self.new(attributes)
             attrs = attributes.is_a?(Hash) ? attributes : {}

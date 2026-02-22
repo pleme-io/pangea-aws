@@ -21,6 +21,7 @@ module Pangea
     module AWS
       module Types
         # Input transformer configuration for CloudWatch Event targets
+        unless const_defined?(:InputTransformer)
         class InputTransformer < Dry::Struct
           transform_keys(&:to_sym)
 
@@ -33,6 +34,7 @@ module Pangea
               input_template: input_template
             }.compact
           end
+        end
         end
       end
     end

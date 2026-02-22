@@ -7,15 +7,13 @@ module Pangea
     module AWS
       module Types
         # Instance types supported by AWS Braket Jobs
-        BraketJobInstanceType = Resources::Types::String.enum(
-          'ml.m5.large', 'ml.m5.xlarge', 'ml.m5.2xlarge', 'ml.m5.4xlarge',
+        BraketJobInstanceType = Resources::Types::String.constrained(included_in: ['ml.m5.large', 'ml.m5.xlarge', 'ml.m5.2xlarge', 'ml.m5.4xlarge',
           'ml.m5.12xlarge', 'ml.m5.24xlarge',
           'ml.c5.large', 'ml.c5.xlarge', 'ml.c5.2xlarge', 'ml.c5.4xlarge',
           'ml.c5.9xlarge', 'ml.c5.18xlarge',
           'ml.p3.2xlarge', 'ml.p3.8xlarge', 'ml.p3.16xlarge',
           'ml.g4dn.xlarge', 'ml.g4dn.2xlarge', 'ml.g4dn.4xlarge',
-          'ml.g4dn.8xlarge', 'ml.g4dn.12xlarge', 'ml.g4dn.16xlarge'
-        )
+          'ml.g4dn.8xlarge', 'ml.g4dn.12xlarge', 'ml.g4dn.16xlarge'])
 
         # Cost estimates for Braket job instance types (USD per hour)
         module BraketJobCosts

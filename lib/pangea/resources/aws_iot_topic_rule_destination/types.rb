@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -22,10 +21,10 @@ module Pangea
       class IotTopicRuleDestinationAttributes < Dry::Struct
         attribute :enabled, Resources::Types::Bool.default(true)
         attribute :vpc_configuration, Resources::Types::Hash.schema(
-          subnet_ids: Types::Array.of(Types::String),
-          security_group_ids: Types::Array.of(Types::String),
-          vpc_id: Types::String,
-          role_arn: Types::String
+          subnet_ids: Resources::Types::Array.of(Resources::Types::String),
+          security_group_ids: Resources::Types::Array.of(Resources::Types::String),
+          vpc_id: Resources::Types::String,
+          role_arn: Resources::Types::String
         )
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         

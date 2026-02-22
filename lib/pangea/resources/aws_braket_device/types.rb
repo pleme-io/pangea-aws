@@ -31,12 +31,10 @@ module Pangea
           attribute :device_name, Resources::Types::String
 
           # Device type (required)
-          attribute :device_type, Resources::Types::String.enum('QPU', 'SIMULATOR')
+          attribute :device_type, Resources::Types::String.constrained(included_in: ['QPU', 'SIMULATOR'])
 
           # Provider name (required)
-          attribute :provider_name, Resources::Types::String.enum(
-            'AMAZON', 'IONQ', 'RIGETTI', 'OQC', 'XANADU', 'QUERA'
-          )
+          attribute :provider_name, Resources::Types::String.constrained(included_in: ['AMAZON', 'IONQ', 'RIGETTI', 'OQC', 'XANADU', 'QUERA'])
 
           # Device capabilities (required)
           attribute :device_capabilities, Resources::Types::Hash.schema(
@@ -47,10 +45,8 @@ module Pangea
               ),
               executionWindows: Resources::Types::Array.of(
                 Resources::Types::Hash.schema(
-                  executionDay: Resources::Types::String.enum(
-                    'Everyday', 'Weekdays', 'Weekend',
-                    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
-                  ),
+                  executionDay: Resources::Types::String.constrained(included_in: ['Everyday', 'Weekdays', 'Weekend',
+                    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']),
                   windowStartHour: Resources::Types::String,
                   windowEndHour: Resources::Types::String
                 )
@@ -92,12 +88,10 @@ module Pangea
           attribute? :device_arn, Resources::Types::String.optional
 
           # Device status (optional)
-          attribute? :device_status, Resources::Types::String.enum('ONLINE', 'OFFLINE', 'RETIRED').optional
+          attribute? :device_status, Resources::Types::String.constrained(included_in: ['ONLINE', 'OFFLINE', 'RETIRED']).optional
 
           # Tags (optional)
-          attribute? :tags, Resources::Types::Hash.schema(
-            Resources::Types::String => Resources::Types::String
-          ).optional
+          attribute? :tags, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
 
           # Custom validation
           def self.new(attributes = {})

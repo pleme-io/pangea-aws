@@ -30,7 +30,7 @@ module Pangea
           attribute :cluster_endpoint_identifier, Resources::Types::String
 
           # Custom endpoint type (READER, WRITER, ANY)
-          attribute :custom_endpoint_type, Resources::Types::String.enum("READER", "WRITER", "ANY")
+          attribute :custom_endpoint_type, Resources::Types::String.constrained(included_in: ["READER", "WRITER", "ANY"])
 
           # List of static cluster members to include in the endpoint
           # These members will always be included regardless of their role

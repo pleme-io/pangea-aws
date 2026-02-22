@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -24,7 +23,7 @@ module Pangea
       # Provides a License Manager grant resource.
       class LicensemanagerGrantAttributes < Dry::Struct
         attribute :name, Resources::Types::String
-        attribute :allowed_operations, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :allowed_operations, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         attribute :license_arn, Resources::Types::String
         attribute :principal, Resources::Types::String
         attribute :home_region, Resources::Types::String
@@ -49,4 +48,3 @@ module Pangea
       end
     end
   end
-end

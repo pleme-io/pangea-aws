@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -22,6 +21,27 @@ module Pangea
     module AWS
       module Types
         # ACM Certificate Validation resource attributes with validation
+
+        AcmCertificateValidationTimeouts = Resources::Types::Hash.schema(
+          create?: Resources::Types::String.constrained(format: /\A\d+[smh]\z/).optional.default('5m'),
+          update?: Resources::Types::String.constrained(format: /\A\d+[smh]\z/).optional
+        ).constructor { |value|
+          # Validate timeout formats and provide reasonable defaults
+          if value[:create]
+            timeout_value = parse_timeout(value[:create])
+            if timeout_value > 600  # 10 minutes max for create
+              raise Dry::Types::ConstraintError, "Certificate validation timeout too long: #{value[:create]} (max 10m)"
+            end
+          end
+          
+          value
+        }
+
+        
+
+        CertificateArn = Resources::Types::String.constrained(
+          format: /\Aarn:aws:acm:[a-z0-9-]+:\d{12}:certificate\/[a-f0-9-]{36}\z/
+        )
         class AcmCertificateValidationAttributes < Dry::Struct
           transform_keys(&:to_sym)
           
@@ -103,27 +123,9 @@ module Pangea
             certificate_arn.split(':')[4]
           end
         end
-        
         # Certificate ARN validation type
-        CertificateArn = Resources::Types::String.constrained(
-          format: /\Aarn:aws:acm:[a-z0-9-]+:\d{12}:certificate\/[a-f0-9-]{36}\z/
-        )
         
         # ACM Certificate Validation timeouts configuration
-        AcmCertificateValidationTimeouts = Resources::Types::Hash.schema(
-          create?: Resources::Types::String.constrained(format: /\A\d+[smh]\z/).optional.default('5m'),
-          update?: Resources::Types::String.constrained(format: /\A\d+[smh]\z/).optional
-        ).constructor { |value|
-          # Validate timeout formats and provide reasonable defaults
-          if value[:create]
-            timeout_value = parse_timeout(value[:create])
-            if timeout_value > 600  # 10 minutes max for create
-              raise Dry::Types::ConstraintError, "Certificate validation timeout too long: #{value[:create]} (max 10m)"
-            end
-          end
-          
-          value
-        }
         
         private
         

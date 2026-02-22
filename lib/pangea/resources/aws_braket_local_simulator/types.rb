@@ -42,11 +42,9 @@ module Pangea
           # Configuration (required)
           attribute :configuration, Resources::Types::Hash.schema(
             backend_configuration: Resources::Types::Hash.schema(
-              device_name: Resources::Types::String.enum(
-                'braket_sv_v2',
+              device_name: Resources::Types::String.constrained(included_in: ['braket_sv_v2',
                 'braket_dm_v2',
-                'braket_tn1'
-              ),
+                'braket_tn1']),
               shots?: Resources::Types::Integer.constrained(gteq: 1, lteq: 100_000).optional,
               max_parallel_shots?: Resources::Types::Integer.constrained(gteq: 1, lteq: 10_000).optional,
               seed?: Resources::Types::Integer.optional
@@ -59,23 +57,19 @@ module Pangea
             advanced_configuration?: Resources::Types::Hash.schema(
               enable_parallelization?: Resources::Types::Bool.optional,
               optimization_level?: Resources::Types::Integer.constrained(gteq: 0, lteq: 3).optional,
-              precision?: Resources::Types::String.enum('single', 'double').optional
+              precision?: Resources::Types::String.constrained(included_in: ['single', 'double']).optional
             ).optional
           )
 
           # Execution environment (optional)
           attribute? :execution_environment, Resources::Types::Hash.schema(
             docker_image?: Resources::Types::String.optional,
-            python_version?: Resources::Types::String.enum('3.8', '3.9', '3.10', '3.11').optional,
-            environment_variables?: Resources::Types::Hash.schema(
-              Resources::Types::String => Resources::Types::String
-            ).optional
+            python_version?: Resources::Types::String.constrained(included_in: ['3.8', '3.9', '3.10', '3.11']).optional,
+            environment_variables?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
           ).optional
 
           # Tags (optional)
-          attribute? :tags, Resources::Types::Hash.schema(
-            Resources::Types::String => Resources::Types::String
-          ).optional
+          attribute? :tags, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
 
           # Custom validation
           def self.new(attributes = {})

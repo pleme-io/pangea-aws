@@ -8,9 +8,9 @@ module Pangea
       module Types
         # Token validity units configuration
         class CognitoUserPoolClientTokenValidityUnits < Dry::Struct
-          attribute :access_token, Resources::Types::String.enum('seconds', 'minutes', 'hours', 'days').default('hours')
-          attribute :id_token, Resources::Types::String.enum('seconds', 'minutes', 'hours', 'days').default('hours')
-          attribute :refresh_token, Resources::Types::String.enum('seconds', 'minutes', 'hours', 'days').default('days')
+          attribute :access_token, Resources::Types::String.constrained(included_in: ['seconds', 'minutes', 'hours', 'days']).default('hours')
+          attribute :id_token, Resources::Types::String.constrained(included_in: ['seconds', 'minutes', 'hours', 'days']).default('hours')
+          attribute :refresh_token, Resources::Types::String.constrained(included_in: ['seconds', 'minutes', 'hours', 'days']).default('days')
         end
 
         # Analytics configuration for user pool client

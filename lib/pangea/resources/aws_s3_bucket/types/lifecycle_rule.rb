@@ -24,16 +24,20 @@ module Pangea
         STORAGE_CLASSES = %w[STANDARD_IA INTELLIGENT_TIERING ONEZONE_IA GLACIER DEEP_ARCHIVE].freeze
 
         # Lifecycle rule transition type
+        unless const_defined?(:LifecycleTransition)
         LifecycleTransition = Resources::Types::Hash.schema(
           days: Resources::Types::Integer,
           storage_class: Resources::Types::String.enum(*STORAGE_CLASSES)
         )
+        end
 
         # Lifecycle rule expiration type
+        unless const_defined?(:LifecycleExpiration)
         LifecycleExpiration = Resources::Types::Hash.schema(
           days?: Resources::Types::Integer.optional,
           expired_object_delete_marker?: Resources::Types::Bool.optional
         )
+        end
 
         # Noncurrent version expiration type
         NoncurrentVersionExpiration = Resources::Types::Hash.schema(
@@ -41,6 +45,7 @@ module Pangea
         )
 
         # Complete lifecycle rule type
+        unless const_defined?(:LifecycleRule)
         LifecycleRule = Resources::Types::Hash.schema(
           id: Resources::Types::String,
           enabled: Resources::Types::Bool.default(true),
@@ -51,6 +56,7 @@ module Pangea
           noncurrent_version_transition?: Resources::Types::Array.of(LifecycleTransition).optional,
           noncurrent_version_expiration?: NoncurrentVersionExpiration.optional
         )
+        end
       end
     end
   end

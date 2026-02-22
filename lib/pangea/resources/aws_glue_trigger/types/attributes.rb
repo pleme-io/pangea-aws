@@ -28,7 +28,7 @@ module Pangea
                 attribute :name, Resources::Types::String
 
                 # Trigger type (required)
-                attribute :type, Resources::Types::String.enum("SCHEDULED", "CONDITIONAL", "ON_DEMAND")
+                attribute :type, Resources::Types::String.constrained(included_in: ["SCHEDULED", "CONDITIONAL", "ON_DEMAND"])
 
                 # Trigger description
                 attribute :description, Resources::Types::String.optional
@@ -47,36 +47,36 @@ module Pangea
 
                 # Actions to execute when trigger fires
                 attribute :actions, Resources::Types::Array.of(
-                  Types::Hash.schema(
-                    job_name?: Types::String.optional,
-                    crawler_name?: Types::String.optional,
-                    arguments?: Types::Hash.map(Types::String, Types::String).optional,
-                    timeout?: Types::Integer.optional,
-                    security_configuration?: Types::String.optional,
-                    notification_property?: Types::Hash.schema(
-                      notify_delay_after?: Types::Integer.optional
+                  Resources::Types::Hash.schema(
+                    job_name?: Resources::Types::String.optional,
+                    crawler_name?: Resources::Types::String.optional,
+                    arguments?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional,
+                    timeout?: Resources::Types::Integer.optional,
+                    security_configuration?: Resources::Types::String.optional,
+                    notification_property?: Resources::Types::Hash.schema(
+                      notify_delay_after?: Resources::Types::Integer.optional
                     ).optional
                   )
                 ).default([].freeze)
 
                 # Predicate for CONDITIONAL triggers
                 attribute :predicate, Resources::Types::Hash.schema(
-                  logical?: Types::String.enum("AND", "ANY").optional,
-                  conditions?: Types::Array.of(
-                    Types::Hash.schema(
-                      logical_operator?: Types::String.enum("EQUALS").optional,
-                      job_name?: Types::String.optional,
-                      state?: Types::String.enum("SUCCEEDED", "STOPPED", "FAILED", "TIMEOUT").optional,
-                      crawler_name?: Types::String.optional,
-                      crawl_state?: Types::String.enum("SUCCEEDED", "CANCELLED", "FAILED").optional
+                  logical?: Resources::Types::String.constrained(included_in: ["AND", "ANY"]).optional,
+                  conditions?: Resources::Types::Array.of(
+                    Resources::Types::Hash.schema(
+                      logical_operator?: Resources::Types::String.constrained(included_in: ["EQUALS"]).optional,
+                      job_name?: Resources::Types::String.optional,
+                      state?: Resources::Types::String.constrained(included_in: ["SUCCEEDED", "STOPPED", "FAILED", "TIMEOUT"]).optional,
+                      crawler_name?: Resources::Types::String.optional,
+                      crawl_state?: Resources::Types::String.constrained(included_in: ["SUCCEEDED", "CANCELLED", "FAILED"]).optional
                     )
                   ).optional
                 ).optional
 
                 # Event batching configuration
                 attribute :event_batching_condition, Resources::Types::Hash.schema(
-                  batch_size: Types::Integer.constrained(gteq: 1, lteq: 100),
-                  batch_window?: Types::Integer.constrained(gteq: 900, lteq: 900).optional
+                  batch_size: Resources::Types::Integer.constrained(gteq: 1, lteq: 100),
+                  batch_window?: Resources::Types::Integer.constrained(gteq: 900, lteq: 900).optional
                 ).optional
 
                 # Tags

@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -22,37 +21,35 @@ module Pangea
     module AWS
       module Types
         # CUR report time units
-        CurTimeUnit = String.enum('HOURLY', 'DAILY', 'MONTHLY')
+        CurTimeUnit = Resources::Types::String.constrained(included_in: ['HOURLY', 'DAILY', 'MONTHLY'])
         
         # CUR report formats
-        CurFormat = String.enum('textORcsv', 'Parquet', 'ORC')
+        CurFormat = Resources::Types::String.constrained(included_in: ['textORcsv', 'Parquet', 'ORC'])
         
         # CUR compression types
-        CurCompression = String.enum('ZIP', 'GZIP', 'Parquet')
+        CurCompression = Resources::Types::String.constrained(included_in: ['ZIP', 'GZIP', 'Parquet'])
         
         # CUR versioning
-        CurVersioning = String.enum('CREATE_NEW_REPORT', 'OVERWRITE_REPORT')
+        CurVersioning = Resources::Types::String.constrained(included_in: ['CREATE_NEW_REPORT', 'OVERWRITE_REPORT'])
         
         # Additional schema elements
-        CurSchemaElement = String.enum(
-          'RESOURCES', 'SPLIT_COST_ALLOCATION_DATA', 'MANUAL_DISCOUNT_COMPATIBILITY'
-        )
+        CurSchemaElement = Resources::Types::String.constrained(included_in: ['RESOURCES', 'SPLIT_COST_ALLOCATION_DATA', 'MANUAL_DISCOUNT_COMPATIBILITY'])
         
         class CurReportDefinitionAttributes < Dry::Struct
           transform_keys(&:to_sym)
           
-          attribute :report_name, String.constrained(format: /\A[a-zA-Z0-9_\-\.]{1,256}\z/)
+          attribute :report_name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_\-\.]{1,256}\z/)
           attribute :time_unit, CurTimeUnit
           attribute :format, CurFormat
           attribute :compression, CurCompression
-          attribute :s3_bucket, String.constrained(format: /\A[a-z0-9][a-z0-9\-\.]{1,61}[a-z0-9]\z/)
-          attribute :s3_prefix?, String.constrained(max_size: 256).optional
-          attribute :s3_region, AwsRegion
-          attribute :additional_schema_elements?, Array.of(CurSchemaElement).optional
-          attribute :additional_artifacts?, Array.of(String.enum('REDSHIFT', 'QUICKSIGHT', 'ATHENA')).optional
-          attribute :refresh_closed_reports?, Bool.default(true).optional
+          attribute :s3_bucket, Resources::Types::String.constrained(format: /\A[a-z0-9][a-z0-9\-\.]{1,61}[a-z0-9]\z/)
+          attribute :s3_prefix?, Resources::Types::String.constrained(max_size: 256).optional
+          attribute :s3_region, Resources::Types::AwsRegion
+          attribute :additional_schema_elements?, Resources::Types::Array.of(CurSchemaElement).optional
+          attribute :additional_artifacts?, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['REDSHIFT', 'QUICKSIGHT', 'ATHENA'])).optional
+          attribute :refresh_closed_reports?, Resources::Types::Bool.default(true).optional
           attribute :report_versioning?, CurVersioning.default('CREATE_NEW_REPORT').optional
-          attribute :tags?, AwsTags.optional
+          attribute :tags?, Resources::Types::AwsTags.optional
           
           def is_hourly?
             time_unit == 'HOURLY'

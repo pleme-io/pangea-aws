@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -21,6 +20,13 @@ module Pangea
   module Resources
     module AWS
       module Types
+        unless const_defined?(:MqEngineType)
+        MqEngineType = Resources::Types::String.constrained(included_in: %w[ActiveMQ RabbitMQ])
+        end
+        unless const_defined?(:MqAuthenticationStrategy)
+        MqAuthenticationStrategy = Resources::Types::String.constrained(included_in: %w[simple ldap])
+        end
+
         # MQ Configuration resource attributes
         class MqConfigurationAttributes < Dry::Struct
           transform_keys(&:to_sym)

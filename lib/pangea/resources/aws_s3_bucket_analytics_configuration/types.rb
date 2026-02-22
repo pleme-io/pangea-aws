@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 
 module Pangea
@@ -21,56 +20,54 @@ module Pangea
     module AWS
       module S3BucketAnalyticsConfiguration
         # Common types for S3 Bucket Analytics Configuration
-        class Types < Dry::Types::Module
-          include Dry.Types()
-
+        module Types
           # Analytics Configuration Name constraint
-          ConfigurationName = String.constrained(
+          ConfigurationName = Resources::Types::String.constrained(
             min_size: 1,
             max_size: 64,
             format: /\A[a-zA-Z0-9\-_.]+\z/
           )
           
           # S3 Bucket Name constraint
-          BucketName = String.constrained(
+          unless const_defined?(:BucketName)
+          BucketName = Resources::Types::String.constrained(
             min_size: 3,
             max_size: 63,
             format: /\A[a-z0-9\-\.]+\z/
           )
+          end
           
           # Storage Class Analysis configuration
-          StorageClassAnalysis = Hash.schema({
-            data_export: Hash.schema({
-              output_schema_version: String.enum('V_1'),
-              destination: Hash.schema({
-                s3_bucket_destination: Hash.schema({
-                  bucket_arn: String.constrained(format: /\Aarn:aws:s3:::[a-zA-Z0-9.\-_]+\z/),
-                  bucket_account_id?: String.constrained(format: /\A\d{12}\z/).optional,
-                  format: String.enum('CSV'),
-                  prefix?: String.optional
+          StorageClassAnalysis = Resources::Types::Hash.schema({
+            data_export: Resources::Types::Hash.schema({
+              output_schema_version: Resources::Types::String.constrained(included_in: ['V_1']),
+              destination: Resources::Types::Hash.schema({
+                s3_bucket_destination: Resources::Types::Hash.schema({
+                  bucket_arn: Resources::Types::String.constrained(format: /\Aarn:aws:s3:::[a-zA-Z0-9.\-_]+\z/),
+                  bucket_account_id?: Resources::Types::String.constrained(format: /\A\d{12}\z/).optional,
+                  format: Resources::Types::String.constrained(included_in: ['CSV']),
+                  prefix?: Resources::Types::String.optional
                 })
               })
             })
           })
           
           # Filter for analytics configuration
-          AnalyticsFilter = Hash.schema({
-            prefix?: String.optional,
-            tags?: Hash.map(String, String).optional
+          AnalyticsFilter = Resources::Types::Hash.schema({
+            prefix?: Resources::Types::String.optional,
+            tags?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
           })
         end
 
         # S3 Bucket Analytics Configuration attributes
         class S3BucketAnalyticsConfigurationAttributes < Dry::Struct
-          include Types[self]
-          
           # Required attributes
-          attribute :bucket, BucketName
-          attribute :name, ConfigurationName
+          attribute :bucket, Types::BucketName
+          attribute :name, Types::ConfigurationName
           
           # Optional attributes
-          attribute? :filter, AnalyticsFilter.optional
-          attribute? :storage_class_analysis, StorageClassAnalysis.optional
+          attribute? :filter, Types::AnalyticsFilter.optional
+          attribute? :storage_class_analysis, Types::StorageClassAnalysis.optional
           
           # Computed properties
           def has_filter?

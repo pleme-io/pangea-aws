@@ -17,17 +17,17 @@
 require 'dry-struct'
 require 'pangea/resources/types'
 
-require_relative 'types/configs'
-require_relative 'types/sql_configs'
-require_relative 'types/validation'
-require_relative 'types/computed'
-
 module Pangea
   module Resources
     module AWS
       module Types
         # Kinesis Analytics Application resource attributes with validation
         class KinesisAnalyticsApplicationAttributes < Dry::Struct
+          require_relative 'types/configs'
+          require_relative 'types/sql_configs'
+          require_relative 'types/validation'
+          require_relative 'types/computed'
+
           include Computed
 
           transform_keys(&:to_sym)
@@ -35,15 +35,15 @@ module Pangea
           RUNTIME_ENVIRONMENTS = %w[SQL-1_0 FLINK-1_6 FLINK-1_8 FLINK-1_11 FLINK-1_13 FLINK-1_15 FLINK-1_18].freeze
 
           # Core attributes
-          attribute :name, String
-          attribute :description, String.optional
-          attribute :service_execution_role, String
-          attribute :runtime_environment, String.enum(*RUNTIME_ENVIRONMENTS)
-          attribute :start_application, Bool.default(false)
+          attribute :name, Resources::Types::String
+          attribute :description, Resources::Types::String.optional
+          attribute :service_execution_role, Resources::Types::String
+          attribute :runtime_environment, Resources::Types::String.enum(*RUNTIME_ENVIRONMENTS)
+          attribute :start_application, Resources::Types::Bool.default(false)
           attribute :tags, Resources::Types::AwsTags
 
           # Application configuration with nested types from sub-modules
-          attribute :application_configuration, Hash.schema(
+          attribute :application_configuration, Resources::Types::Hash.schema(
             application_code_configuration?: Configs::ApplicationCodeConfiguration.optional,
             flink_application_configuration?: Configs::FlinkApplicationConfiguration.optional,
             sql_application_configuration?: SqlConfigs::SqlApplicationConfiguration.optional,

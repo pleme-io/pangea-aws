@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -39,13 +38,13 @@ module Pangea
         attribute :target_action, Resources::Types::String
 
         # Authentication type
-        attribute :authentication, Resources::Types::String.enum('GITHUB_HMAC', 'IP', 'UNAUTHENTICATED').default('GITHUB_HMAC')
+        attribute :authentication, Resources::Types::String.constrained(included_in: ['GITHUB_HMAC', 'IP', 'UNAUTHENTICATED']).default('GITHUB_HMAC')
 
         # Authentication configuration
         attribute :authentication_configuration, Resources::Types::Hash.schema(
           secret_token?: Resources::Types::String.optional,
           allowed_ip_range?: Resources::Types::String.optional
-        ).default({}.freeze)
+        ).optional
 
         # Filters
         attribute :filters, Resources::Types::Array.of(
@@ -131,4 +130,3 @@ module Pangea
       end
     end
   end
-end

@@ -15,6 +15,7 @@
 
 require 'dry-struct'
 require 'pangea/resources/types'
+require_relative '../types/aws/core'
 require_relative 'types/deployment_config'
 require_relative 'types/computed_properties'
 require_relative 'types/deployment_analysis'

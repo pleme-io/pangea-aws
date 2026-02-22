@@ -22,7 +22,8 @@ module Pangea
   module Resources
     module AWS
       # SageMaker Pipeline resource for ML workflow orchestration
-      class SageMakerPipeline < Base
+      SageMakerPipeline = Struct.new(:name, :attributes, keyword_init: true)
+      class SageMakerPipeline
         def self.resource_type
           'aws_sagemaker_pipeline'
         end
@@ -56,6 +57,3 @@ module Pangea
     end
   end
 end
-
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

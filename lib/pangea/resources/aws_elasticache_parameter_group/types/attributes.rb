@@ -38,9 +38,9 @@ module Pangea
 
           # Parameters to apply to the parameter group
           attribute :parameters, Resources::Types::Array.of(
-            Types::Hash.schema(
-              name: Types::String,
-              value: Types::String
+            Resources::Types::Hash.schema(
+              name: Resources::Types::String,
+              value: Resources::Types::String
             )
           ).default([].freeze)
 

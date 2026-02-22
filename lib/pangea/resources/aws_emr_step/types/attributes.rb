@@ -10,12 +10,12 @@ module Pangea
         class EmrStepAttributes < Dry::Struct
           attribute :name, Resources::Types::String
           attribute :cluster_id, Resources::Types::String
-          attribute :action_on_failure, Resources::Types::String.enum("TERMINATE_JOB_FLOW", "TERMINATE_CLUSTER", "CANCEL_AND_WAIT", "CONTINUE")
+          attribute :action_on_failure, Resources::Types::String.constrained(included_in: ["TERMINATE_JOB_FLOW", "TERMINATE_CLUSTER", "CANCEL_AND_WAIT", "CONTINUE"])
           attribute :hadoop_jar_step, Resources::Types::Hash.schema(
-            jar: Types::String,
-            main_class?: Types::String.optional,
-            args?: Types::Array.of(Types::String).optional,
-            properties?: Types::Hash.map(Types::String, Types::String).optional
+            jar: Resources::Types::String,
+            main_class?: Resources::Types::String.optional,
+            args?: Resources::Types::Array.of(Resources::Types::String).optional,
+            properties?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
           )
           attribute :description, Resources::Types::String.optional
           attribute :step_concurrency_level, Resources::Types::Integer.constrained(gteq: 1, lteq: 256).optional

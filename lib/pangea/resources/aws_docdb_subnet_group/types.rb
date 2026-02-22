@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -25,7 +24,7 @@ module Pangea
       class DocdbSubnetGroupAttributes < Dry::Struct
         attribute :name, Resources::Types::String
         attribute :description, Resources::Types::String.optional
-        attribute :subnet_ids, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -47,4 +46,3 @@ module Pangea
       end
     end
   end
-end

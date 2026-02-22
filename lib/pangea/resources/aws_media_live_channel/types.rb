@@ -38,6 +38,7 @@ module Pangea
       module Types
         # Type-safe attributes for AWS MediaLive Channel resources
         class MediaLiveChannelAttributes < Dry::Struct
+          CS = MediaLiveChannel::CaptionSettings
           include MediaLiveChannel::Helpers
           transform_keys(&:to_sym)
 
@@ -47,7 +48,6 @@ module Pangea
           VCS = MediaLiveChannel::VideoCodecH265Mpeg2
           OG = MediaLiveChannel::OutputGroups
           EC = MediaLiveChannel::EncoderConfig
-          CS = MediaLiveChannel::CaptionSettings
           SS = MediaLiveChannel::ScheduleSettings
           CC = MediaLiveChannel::ChannelConfig
 
@@ -71,12 +71,12 @@ module Pangea
           attribute :destinations, Resources::Types::Array.of(CC::Destination)
           attribute :input_specification, CC::InputSpecification
           attribute :log_level, CC::LogLevel.default('INFO')
-          attribute :maintenance, CC::MaintenanceWindow.default({}.freeze)
+          attribute :maintenance, CC::MaintenanceWindow.optional
           attribute :reserved_instances, Resources::Types::Array.of(CC::ReservedInstance).default([].freeze)
           attribute :role_arn, Resources::Types::String
           attribute :schedule, Resources::Types::Array.of(SS::ScheduleAction).default([].freeze)
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
-          attribute :vpc, CC::VpcConfig.default({}.freeze)
+          attribute :vpc, CC::VpcConfig.optional
 
           def self.new(attributes = {})
             attrs = super(attributes)

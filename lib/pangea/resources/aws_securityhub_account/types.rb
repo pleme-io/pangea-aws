@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -26,7 +25,7 @@ module Pangea
           transform_keys(&:to_sym)
           
           attribute :enable_default_standards, Resources::Types::Bool.default(true)
-          attribute :control_finding_generator, String.enum('STANDARD_CONTROL', 'SECURITY_CONTROL').default('STANDARD_CONTROL')
+          attribute :control_finding_generator, Resources::Types::String.constrained(included_in: ['STANDARD_CONTROL', 'SECURITY_CONTROL']).default('STANDARD_CONTROL')
           attribute :auto_enable_controls, Resources::Types::Bool.default(true)
           attribute :tags, Resources::Types::AwsTags
           

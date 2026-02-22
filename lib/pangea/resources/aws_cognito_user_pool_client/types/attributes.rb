@@ -13,27 +13,25 @@ module Pangea
           attribute :name, Resources::Types::String
           attribute :user_pool_id, Resources::Types::String
           attribute :allowed_oauth_flows, Resources::Types::Array.of(
-            Types::String.enum('code', 'implicit', 'client_credentials')
+            Resources::Types::String.constrained(included_in: ['code', 'implicit', 'client_credentials'])
           ).optional
           attribute :allowed_oauth_flows_user_pool_client, Resources::Types::Bool.default(false)
-          attribute :allowed_oauth_scopes, Resources::Types::Array.of(Types::String).optional
-          attribute :supported_identity_providers, Resources::Types::Array.of(Types::String).optional
-          attribute :callback_urls, Resources::Types::Array.of(Types::String).optional
-          attribute :logout_urls, Resources::Types::Array.of(Types::String).optional
+          attribute :allowed_oauth_scopes, Resources::Types::Array.of(Resources::Types::String).optional
+          attribute :supported_identity_providers, Resources::Types::Array.of(Resources::Types::String).optional
+          attribute :callback_urls, Resources::Types::Array.of(Resources::Types::String).optional
+          attribute :logout_urls, Resources::Types::Array.of(Resources::Types::String).optional
           attribute :default_redirect_uri, Resources::Types::String.optional
           attribute :generate_secret, Resources::Types::Bool.default(false)
           attribute :enable_token_revocation, Resources::Types::Bool.default(true)
           attribute :enable_propagate_additional_user_context_data, Resources::Types::Bool.default(false)
           attribute :explicit_auth_flows, Resources::Types::Array.of(
-            Types::String.enum(
-              'ADMIN_NO_SRP_AUTH', 'CUSTOM_AUTH_FLOW_ONLY', 'USER_SRP_AUTH',
+            Resources::Types::String.constrained(included_in: ['ADMIN_NO_SRP_AUTH', 'CUSTOM_AUTH_FLOW_ONLY', 'USER_SRP_AUTH',
               'ALLOW_ADMIN_USER_PASSWORD_AUTH', 'ALLOW_CUSTOM_AUTH', 'ALLOW_USER_PASSWORD_AUTH',
-              'ALLOW_USER_SRP_AUTH', 'ALLOW_REFRESH_TOKEN_AUTH'
-            )
+              'ALLOW_USER_SRP_AUTH', 'ALLOW_REFRESH_TOKEN_AUTH'])
           ).optional
-          attribute :prevent_user_existence_errors, Resources::Types::String.enum('ENABLED', 'LEGACY').optional
-          attribute :read_attributes, Resources::Types::Array.of(Types::String).optional
-          attribute :write_attributes, Resources::Types::Array.of(Types::String).optional
+          attribute :prevent_user_existence_errors, Resources::Types::String.constrained(included_in: ['ENABLED', 'LEGACY']).optional
+          attribute :read_attributes, Resources::Types::Array.of(Resources::Types::String).optional
+          attribute :write_attributes, Resources::Types::Array.of(Resources::Types::String).optional
           attribute :refresh_token_validity, Resources::Types::Integer.optional.constrained(gteq: 1, lteq: 315360000)
           attribute :access_token_validity, Resources::Types::Integer.optional.constrained(gteq: 5, lteq: 86400)
           attribute :id_token_validity, Resources::Types::Integer.optional.constrained(gteq: 5, lteq: 86400)

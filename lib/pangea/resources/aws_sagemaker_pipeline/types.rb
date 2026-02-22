@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -40,7 +39,7 @@ module Pangea
           attribute :pipeline_description, Resources::Types::String.optional
           attribute :pipeline_display_name, Resources::Types::String.optional
           attribute :parallelism_configuration, Resources::Types::Hash.schema(
-            max_parallel_execution_steps: Integer.constrained(gteq: 1, lteq: 256)
+            max_parallel_execution_steps: Resources::Types::Integer.constrained(gteq: 1, lteq: 256)
           ).optional
           attribute :tags, Resources::Types::AwsTags
           

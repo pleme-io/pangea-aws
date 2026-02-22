@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -39,11 +38,11 @@ module Pangea
 
         # HLS package configuration
         attribute :hls_package, Resources::Types::Hash.schema(
-          ad_markers?: Resources::Types::String.enum('NONE', 'SCTE35_ENHANCED', 'PASSTHROUGH').optional,
+          ad_markers?: Resources::Types::String.constrained(included_in: ['NONE', 'SCTE35_ENHANCED', 'PASSTHROUGH']).optional,
           ad_triggers?: Resources::Types::Array.of(Resources::Types::String).optional,
-          ads_on_delivery_restrictions?: Resources::Types::String.enum('NONE', 'RESTRICTED', 'UNRESTRICTED', 'BOTH').optional,
+          ads_on_delivery_restrictions?: Resources::Types::String.constrained(included_in: ['NONE', 'RESTRICTED', 'UNRESTRICTED', 'BOTH']).optional,
           include_iframe_only_stream?: Resources::Types::Bool.optional,
-          playlist_type?: Resources::Types::String.enum('NONE', 'EVENT', 'VOD').optional,
+          playlist_type?: Resources::Types::String.constrained(included_in: ['NONE', 'EVENT', 'VOD']).optional,
           playlist_window_seconds?: Resources::Types::Integer.optional,
           program_date_time_interval_seconds?: Resources::Types::Integer.optional,
           segment_duration_seconds?: Resources::Types::Integer.optional,
@@ -54,14 +53,14 @@ module Pangea
         # DASH package configuration
         attribute :dash_package, Resources::Types::Hash.schema(
           ad_triggers?: Resources::Types::Array.of(Resources::Types::String).optional,
-          ads_on_delivery_restrictions?: Resources::Types::String.enum('NONE', 'RESTRICTED', 'UNRESTRICTED', 'BOTH').optional,
-          manifest_layout?: Resources::Types::String.enum('FULL', 'COMPACT').optional,
+          ads_on_delivery_restrictions?: Resources::Types::String.constrained(included_in: ['NONE', 'RESTRICTED', 'UNRESTRICTED', 'BOTH']).optional,
+          manifest_layout?: Resources::Types::String.constrained(included_in: ['FULL', 'COMPACT']).optional,
           manifest_window_seconds?: Resources::Types::Integer.optional,
           min_buffer_time_seconds?: Resources::Types::Integer.optional,
           min_update_period_seconds?: Resources::Types::Integer.optional,
-          profile?: Resources::Types::String.enum('NONE', 'HBBTV_1_5').optional,
+          profile?: Resources::Types::String.constrained(included_in: ['NONE', 'HBBTV_1_5']).optional,
           segment_duration_seconds?: Resources::Types::Integer.optional,
-          segment_template_format?: Resources::Types::String.enum('NUMBER_WITH_TIMELINE', 'TIME_WITH_TIMELINE', 'NUMBER_WITH_DURATION').optional,
+          segment_template_format?: Resources::Types::String.constrained(included_in: ['NUMBER_WITH_TIMELINE', 'TIME_WITH_TIMELINE', 'NUMBER_WITH_DURATION']).optional,
           stream_selection?: Resources::Types::Hash.optional,
           suggested_presentation_delay_seconds?: Resources::Types::Integer.optional,
           utc_timing?: Resources::Types::String.optional,
@@ -102,7 +101,7 @@ module Pangea
           manifest_window_seconds?: Resources::Types::Integer.optional,
           segment_duration_seconds?: Resources::Types::Integer.optional,
           stream_selection?: Resources::Types::Hash.optional
-        ).default({}.freeze)
+        ).optional
 
         # Start over behavior
         attribute :startover_window_seconds, Resources::Types::Integer.optional
@@ -117,7 +116,7 @@ module Pangea
         attribute :authorization, Resources::Types::Hash.schema(
           cdn_identifier_secret: Resources::Types::String,
           secrets_role_arn: Resources::Types::String
-        ).default({}.freeze)
+        ).optional
 
         # Tags
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -194,4 +193,3 @@ module Pangea
       end
     end
   end
-end

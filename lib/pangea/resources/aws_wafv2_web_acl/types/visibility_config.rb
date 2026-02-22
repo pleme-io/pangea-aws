@@ -26,7 +26,7 @@ module Pangea
           transform_keys(&:to_sym)
 
           attribute :cloudwatch_metrics_enabled, Resources::Types::Bool
-          attribute :metric_name, String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
+          attribute :metric_name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
           attribute :sampled_requests_enabled, Resources::Types::Bool
         end
       end

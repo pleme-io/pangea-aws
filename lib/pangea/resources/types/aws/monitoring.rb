@@ -19,12 +19,12 @@ module Pangea
   module Resources
     module Types
       # GuardDuty types
-      GuardDutyFindingPublishingFrequency = String.enum('FIFTEEN_MINUTES', 'ONE_HOUR', 'SIX_HOURS')
-      GuardDutyDetectorStatus = String.enum('ENABLED', 'DISABLED')
-      GuardDutyDataSourceStatus = String.enum('ENABLED', 'DISABLED')
-      GuardDutyThreatIntelSetFormat = String.enum('TXT', 'STIX', 'OTX_CSV', 'ALIEN_VAULT', 'PROOF_POINT', 'FIRE_EYE')
-      GuardDutyIpSetFormat = String.enum('TXT', 'STIX', 'OTX_CSV', 'ALIEN_VAULT', 'PROOF_POINT', 'FIRE_EYE')
-      GuardDutyMemberStatus = String.enum('CREATED', 'INVITED', 'DISABLED', 'ENABLED', 'REMOVED', 'RESIGNED')
+      GuardDutyFindingPublishingFrequency = Resources::Types::String.constrained(included_in: ['FIFTEEN_MINUTES', 'ONE_HOUR', 'SIX_HOURS'])
+      GuardDutyDetectorStatus = Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED'])
+      GuardDutyDataSourceStatus = Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED'])
+      GuardDutyThreatIntelSetFormat = Resources::Types::String.constrained(included_in: ['TXT', 'STIX', 'OTX_CSV', 'ALIEN_VAULT', 'PROOF_POINT', 'FIRE_EYE'])
+      GuardDutyIpSetFormat = Resources::Types::String.constrained(included_in: ['TXT', 'STIX', 'OTX_CSV', 'ALIEN_VAULT', 'PROOF_POINT', 'FIRE_EYE'])
+      GuardDutyMemberStatus = Resources::Types::String.constrained(included_in: ['CREATED', 'INVITED', 'DISABLED', 'ENABLED', 'REMOVED', 'RESIGNED'])
       GuardDutyDetectorArn = String.constrained(format: /\Aarn:aws:guardduty:[a-z0-9-]+:\d{12}:detector\/[a-f0-9]{32}\z/)
 
       GuardDutyInvitationEmail = String.constrained(format: /\A[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\z/).constructor { |value|
@@ -35,17 +35,17 @@ module Pangea
       }
 
       # Inspector v2 types
-      InspectorV2ResourceType = String.enum('ECR', 'EC2')
-      InspectorV2ScanType = String.enum('NETWORK', 'PACKAGE')
-      InspectorV2ScanStatus = String.enum('ENABLED', 'DISABLED', 'SUSPENDED')
+      InspectorV2ResourceType = Resources::Types::String.constrained(included_in: ['ECR', 'EC2'])
+      InspectorV2ScanType = Resources::Types::String.constrained(included_in: ['NETWORK', 'PACKAGE'])
+      InspectorV2ScanStatus = Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED', 'SUSPENDED'])
 
       # Security Hub types
       SecurityHubStandardsArn = String.constrained(format: /\Aarn:aws:securityhub:[a-z0-9-]+::\w+\/\w+\/\w+\z/)
-      SecurityHubControlStatus = String.enum('ENABLED', 'DISABLED')
-      SecurityHubComplianceStatus = String.enum('PASSED', 'WARNING', 'FAILED', 'NOT_AVAILABLE')
-      SecurityHubSeverity = String.enum('INFORMATIONAL', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL')
-      SecurityHubRecordState = String.enum('ACTIVE', 'ARCHIVED')
-      SecurityHubWorkflowStatus = String.enum('NEW', 'NOTIFIED', 'RESOLVED', 'SUPPRESSED')
+      SecurityHubControlStatus = Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED'])
+      SecurityHubComplianceStatus = Resources::Types::String.constrained(included_in: ['PASSED', 'WARNING', 'FAILED', 'NOT_AVAILABLE'])
+      SecurityHubSeverity = Resources::Types::String.constrained(included_in: ['INFORMATIONAL', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'])
+      SecurityHubRecordState = Resources::Types::String.constrained(included_in: ['ACTIVE', 'ARCHIVED'])
+      SecurityHubWorkflowStatus = Resources::Types::String.constrained(included_in: ['NEW', 'NOTIFIED', 'RESOLVED', 'SUPPRESSED'])
       SecurityHubArn = String.constrained(format: /\Aarn:aws:securityhub:[a-z0-9-]+:\d{12}:hub\/default\z/)
     end
   end

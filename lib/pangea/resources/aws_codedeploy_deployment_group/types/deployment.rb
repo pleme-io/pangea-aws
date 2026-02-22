@@ -28,7 +28,7 @@ module Pangea
           attribute :auto_rollback_configuration, Resources::Types::Hash.schema(
             enabled?: Resources::Types::Bool.optional,
             events?: Resources::Types::Array.of(
-              Resources::Types::String.enum('DEPLOYMENT_FAILURE', 'DEPLOYMENT_STOP_ON_ALARM', 'DEPLOYMENT_STOP_ON_REQUEST')
+              Resources::Types::String.constrained(included_in: ['DEPLOYMENT_FAILURE', 'DEPLOYMENT_STOP_ON_ALARM', 'DEPLOYMENT_STOP_ON_REQUEST'])
             ).optional
           ).default({}.freeze)
 
@@ -37,26 +37,26 @@ module Pangea
             alarms?: Resources::Types::Array.of(Resources::Types::String).optional,
             enabled?: Resources::Types::Bool.optional,
             ignore_poll_alarm_failure?: Resources::Types::Bool.optional
-          ).default({}.freeze)
+          ).optional
 
           # Blue-green deployment configuration
           attribute :blue_green_deployment_config, Resources::Types::Hash.schema(
             terminate_blue_instances_on_deployment_success?: Resources::Types::Hash.schema(
-              action?: Resources::Types::String.enum('TERMINATE', 'KEEP_ALIVE').optional,
+              action?: Resources::Types::String.constrained(included_in: ['TERMINATE', 'KEEP_ALIVE']).optional,
               termination_wait_time_in_minutes?: Resources::Types::Integer.constrained(gteq: 0, lteq: 2880).optional
             ).optional,
             deployment_ready_option?: Resources::Types::Hash.schema(
-              action_on_timeout?: Resources::Types::String.enum('CONTINUE_DEPLOYMENT', 'STOP_DEPLOYMENT').optional
+              action_on_timeout?: Resources::Types::String.constrained(included_in: ['CONTINUE_DEPLOYMENT', 'STOP_DEPLOYMENT']).optional
             ).optional,
             green_fleet_provisioning_option?: Resources::Types::Hash.schema(
-              action?: Resources::Types::String.enum('DISCOVER_EXISTING', 'COPY_AUTO_SCALING_GROUP').optional
+              action?: Resources::Types::String.constrained(included_in: ['DISCOVER_EXISTING', 'COPY_AUTO_SCALING_GROUP']).optional
             ).optional
           ).default({}.freeze)
 
           # Deployment style
           attribute :deployment_style, Resources::Types::Hash.schema(
-            deployment_type?: Resources::Types::String.enum('IN_PLACE', 'BLUE_GREEN').optional,
-            deployment_option?: Resources::Types::String.enum('WITH_TRAFFIC_CONTROL', 'WITHOUT_TRAFFIC_CONTROL').optional
+            deployment_type?: Resources::Types::String.constrained(included_in: ['IN_PLACE', 'BLUE_GREEN']).optional,
+            deployment_option?: Resources::Types::String.constrained(included_in: ['WITH_TRAFFIC_CONTROL', 'WITHOUT_TRAFFIC_CONTROL']).optional
           ).default({}.freeze)
         end
       end

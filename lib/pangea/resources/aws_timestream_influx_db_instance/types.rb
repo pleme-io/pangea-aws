@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -29,14 +28,14 @@ module Pangea
         attribute :db_name, Resources::Types::String
         attribute :db_parameter_group_identifier, Resources::Types::String.optional
         attribute :deployment_type, Resources::Types::String.optional
-        attribute :log_delivery_configuration, Resources::Types::Array.of(Types::Hash).default([].freeze).optional
+        attribute :log_delivery_configuration, Resources::Types::Array.of(Resources::Types::Hash).default([].freeze).optional
         attribute :name, Resources::Types::String
         attribute :organization, Resources::Types::String.optional
         attribute :password, Resources::Types::String
         attribute :publicly_accessible, Resources::Types::Bool.optional
         attribute :username, Resources::Types::String
-        attribute :vpc_security_group_ids, Resources::Types::Array.of(Types::String).default([].freeze).optional
-        attribute :vpc_subnet_ids, Resources::Types::Array.of(Types::String).default([].freeze).optional
+        attribute :vpc_security_group_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
+        attribute :vpc_subnet_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -58,4 +57,3 @@ module Pangea
       end
     end
   end
-end

@@ -13,25 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require "dry-struct"
-require "pangea/types"
+require 'pangea/resources/types'
 
 module Pangea
   module Resources
     module AwsDeviceFarmProject
       module Types
         # Main attributes for Device Farm project
+        unless const_defined?(:Attributes)
         class Attributes < Dry::Struct
           # Required attributes
-          attribute :name, Pangea::Types::String
+          attribute :name, Pangea::Resources::Types::String
           
           # Optional attributes
-          attribute :default_job_timeout_minutes?, Pangea::Types::Integer.constrained(gteq: 5, lteq: 150)
-          attribute :tags?, Pangea::Types::Hash.map(Pangea::Types::String, Pangea::Types::String)
+          attribute :default_job_timeout_minutes?, Pangea::Resources::Types::Integer.constrained(gteq: 5, lteq: 150)
+          attribute :tags?, Pangea::Resources::Types::Hash.map(Pangea::Resources::Types::String, Pangea::Resources::Types::String)
 
           def self.from_dynamic(d)
-            d = Pangea::Types::Hash[d]
+            d = Pangea::Resources::Types::Hash[d]
             new(
               name: d.fetch(:name),
               default_job_timeout_minutes: d[:default_job_timeout_minutes],
@@ -42,10 +42,11 @@ module Pangea
 
         # Reference for Device Farm project resources
         class Reference < Dry::Struct
-          attribute :id, Pangea::Types::String
-          attribute :arn, Pangea::Types::String
+          attribute :id, Pangea::Resources::Types::String
+          attribute :arn, Pangea::Resources::Types::String
         end
       end
+        end
     end
   end
 end

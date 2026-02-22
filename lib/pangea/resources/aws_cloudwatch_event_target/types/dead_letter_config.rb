@@ -21,6 +21,7 @@ module Pangea
     module AWS
       module Types
         # Dead letter configuration for CloudWatch Event targets
+        unless const_defined?(:DeadLetterConfig)
         class DeadLetterConfig < Dry::Struct
           transform_keys(&:to_sym)
 
@@ -29,6 +30,7 @@ module Pangea
           def to_h
             { arn: arn }
           end
+        end
         end
       end
     end

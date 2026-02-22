@@ -21,9 +21,10 @@ module Pangea
     module AWS
       module Types
         # Destination types for S3 replication rules
+
         module S3BucketReplicationDestination
           # Status enum type (without default - applied in schemas)
-          Status = Resources::Types::String.enum('Enabled', 'Disabled')
+          Status = Resources::Types::String.constrained(included_in: ['Enabled', 'Disabled'])
 
           # Status with disabled default
           StatusDefaultDisabled = Resources::Types::String.default('Disabled').enum('Enabled', 'Disabled')
@@ -61,13 +62,12 @@ module Pangea
           )
 
           # Storage class enum
-          StorageClass = Resources::Types::String.enum(
-            'STANDARD', 'REDUCED_REDUNDANCY', 'STANDARD_IA', 'ONEZONE_IA',
+          StorageClass = Resources::Types::String.constrained(included_in: ['STANDARD', 'REDUCED_REDUNDANCY', 'STANDARD_IA', 'ONEZONE_IA',
             'INTELLIGENT_TIERING', 'GLACIER', 'DEEP_ARCHIVE', 'OUTPOSTS',
-            'GLACIER_IR'
-          )
+            'GLACIER_IR'])
 
           # Complete destination schema
+          unless const_defined?(:Destination)
           Destination = Resources::Types::Hash.schema(
             bucket: Resources::Types::String,
             storage_class?: StorageClass.optional,
@@ -77,6 +77,9 @@ module Pangea
             metrics?: Metrics.optional,
             replication_time?: ReplicationTime.optional
           )
+          end
+
+
         end
       end
     end

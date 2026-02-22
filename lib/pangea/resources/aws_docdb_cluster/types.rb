@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -32,17 +31,17 @@ module Pangea
         attribute :preferred_backup_window, Resources::Types::String.optional
         attribute :preferred_maintenance_window, Resources::Types::String.optional
         attribute :port, Resources::Types::Integer.optional
-        attribute :vpc_security_group_ids, Resources::Types::Array.of(Types::String).default([].freeze).optional
+        attribute :vpc_security_group_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         attribute :db_subnet_group_name, Resources::Types::String.optional
         attribute :db_cluster_parameter_group_name, Resources::Types::String.optional
         attribute :storage_encrypted, Resources::Types::Bool.optional
         attribute :kms_key_id, Resources::Types::String.optional
-        attribute :enabled_cloudwatch_logs_exports, Resources::Types::Array.of(Types::String).default([].freeze).optional
+        attribute :enabled_cloudwatch_logs_exports, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         attribute :deletion_protection, Resources::Types::Bool.optional
         attribute :skip_final_snapshot, Resources::Types::Bool.optional
         attribute :final_snapshot_identifier, Resources::Types::String.optional
         attribute :apply_immediately, Resources::Types::Bool.optional
-        attribute :availability_zones, Resources::Types::Array.of(Types::String).default([].freeze).optional
+        attribute :availability_zones, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         attribute :enable_global_write_forwarding, Resources::Types::Bool.optional
         
         # Tags to apply to the resource
@@ -67,4 +66,3 @@ module Pangea
       end
     end
   end
-end

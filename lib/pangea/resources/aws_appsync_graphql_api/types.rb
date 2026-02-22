@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -37,16 +36,20 @@ module Pangea
           included_in: ['NONE', 'ERROR', 'ALL']
         )
 
-        # AppSync resolver kind  
+        # AppSync resolver kind
+        unless const_defined?(:AppSyncResolverKind)
         AppSyncResolverKind = Pangea::Resources::Types::String.constrained(
           included_in: ['UNIT', 'PIPELINE']
         )
+        end
 
         # AppSync runtime
+        unless const_defined?(:AppSyncRuntime)
         AppSyncRuntime = Pangea::Resources::Types::Hash.schema(
           name: Pangea::Resources::Types::String.constrained(included_in: ['APPSYNC_JS']),
           runtime_version: Pangea::Resources::Types::String.constrained(format: /\A\d+\.\d+\.\d+\z/)
         )
+        end
 
         # AppSync log config
         AppSyncLogConfig = Pangea::Resources::Types::Hash.schema(

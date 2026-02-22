@@ -45,22 +45,20 @@ module Pangea
           attribute :description, Resources::Types::String.optional
 
           # Table type
-          attribute :table_type, Resources::Types::String.enum(
-            "EXTERNAL_TABLE", "MANAGED_TABLE", "VIRTUAL_VIEW"
-          ).optional
+          attribute :table_type, Resources::Types::String.constrained(included_in: ["EXTERNAL_TABLE", "MANAGED_TABLE", "VIRTUAL_VIEW"]).optional
 
           # Parameters for the table
-          attribute :parameters, Resources::Types::Hash.map(Types::String, Types::String).default({}.freeze)
+          attribute :parameters, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
 
           # Storage descriptor
           attribute :storage_descriptor, GlueCatalogTableStorageDescriptor::StorageDescriptorSchema.optional
 
           # Partition keys
           attribute :partition_keys, Resources::Types::Array.of(
-            Types::Hash.schema(
-              name: Types::String,
-              type: Types::String,
-              comment?: Types::String.optional
+            Resources::Types::Hash.schema(
+              name: Resources::Types::String,
+              type: Resources::Types::String,
+              comment?: Resources::Types::String.optional
             )
           ).default([].freeze)
 
@@ -73,10 +71,10 @@ module Pangea
 
           # Targeted column information
           attribute :target_table, Resources::Types::Hash.schema(
-            catalog_id?: Types::String.optional,
-            database_name?: Types::String.optional,
-            name?: Types::String.optional
-          ).default({}.freeze)
+            catalog_id?: Resources::Types::String.optional,
+            database_name?: Resources::Types::String.optional,
+            name?: Resources::Types::String.optional
+          ).optional
 
           # Custom validation
           def self.new(attributes = {})

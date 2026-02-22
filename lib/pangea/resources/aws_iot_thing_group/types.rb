@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -37,7 +36,7 @@ module Pangea
           schema schema.strict
           
           # Map of attributes and their values
-          attribute :attributes, Resources::Types::Hash.map(Types::String, Types::String).optional
+          attribute :attributes, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
           
           # Whether payload should merge or replace existing attributes
           attribute :merge, Resources::Types::Bool.optional
@@ -47,54 +46,8 @@ module Pangea
       end
 
       # Main attributes for IoT thing group resource
-      class Attributes < Dry::Struct
-        schema schema.strict
-
-        # Name of the thing group (must be unique within account)
-        attribute :thing_group_name, Resources::Types::String
-
-        # Parent thing group name for hierarchical organization
-        attribute :parent_group_name, Resources::Types::String.optional
-
-        # Properties for thing group configuration  
-        attribute? :thing_group_properties, ThingGroupProperties.optional
-
-        # Resource tags for organization and billing
-        attribute :tags, Resources::Types::Hash.map(Types::String, Types::String).optional
-      end
 
       # Output attributes from thing group resource
-      class Outputs < Dry::Struct
-        schema schema.strict
-
-        # The thing group ARN
-        attribute :arn, Resources::Types::String
-
-        # The thing group ID
-        attribute :id, Resources::Types::String
-
-        # The thing group name
-        attribute :thing_group_name, Resources::Types::String
-
-        # The thing group version for optimistic locking
-        attribute :version, Resources::Types::Integer
-
-        # Metadata about thing group creation
-        class Metadata < Dry::Struct
-          schema schema.strict
-
-          # Creation date of thing group
-          attribute :creation_date, Resources::Types::String
-
-          # Parent group ARN if this is a child group
-          attribute :parent_group_name, Resources::Types::String.optional
-
-          # Root to this group path for navigation
-          attribute :root_to_parent_thing_groups, Resources::Types::Array.of(Types::String).optional
-        end
-
-        attribute :metadata, Metadata
-      end
     end
   end
 end

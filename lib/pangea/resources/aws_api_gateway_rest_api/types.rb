@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -30,11 +29,11 @@ module Pangea
           attribute :description, Pangea::Resources::Types::String.optional
           
           # API type - EDGE (CloudFront), REGIONAL, or PRIVATE
-          attribute :endpoint_configuration, Pangea::Resources::Types::Hash.optional do
+          attribute? :endpoint_configuration do
             attribute :types, Pangea::Resources::Types::Array.of(
               Pangea::Resources::Types::String.constrained(included_in: ['EDGE', 'REGIONAL', 'PRIVATE'])
             ).default(['REGIONAL'].freeze)
-            attribute :vpc_endpoint_ids, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).optional
+            attribute? :vpc_endpoint_ids, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).optional
           end
           
           # API versioning

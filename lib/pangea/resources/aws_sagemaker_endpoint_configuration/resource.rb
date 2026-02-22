@@ -154,7 +154,8 @@ module Pangea
       #       Environment: "production"
       #     }
       #   })
-      class SageMakerEndpointConfiguration < Base
+      SageMakerEndpointConfiguration = Struct.new(:name, :attributes, keyword_init: true)
+      class SageMakerEndpointConfiguration
         def self.resource_type
           'aws_sagemaker_endpoint_configuration'
         end
@@ -187,6 +188,3 @@ module Pangea
     end
   end
 end
-
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

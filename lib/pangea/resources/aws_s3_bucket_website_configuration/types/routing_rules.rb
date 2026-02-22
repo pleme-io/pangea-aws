@@ -42,7 +42,7 @@ module Pangea
         class WebsiteRoutingRuleRedirect < Dry::Struct
           attribute :host_name, Resources::Types::String.optional
           attribute :http_redirect_code, Resources::Types::String.optional
-          attribute :protocol, Resources::Types::String.enum("http", "https").optional
+          attribute :protocol, Resources::Types::String.constrained(included_in: ["http", "https"]).optional
           attribute :replace_key_prefix_with, Resources::Types::String.optional
           attribute :replace_key_with, Resources::Types::String.optional
 

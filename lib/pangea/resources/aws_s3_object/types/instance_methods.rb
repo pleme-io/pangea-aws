@@ -18,6 +18,24 @@ module Pangea
   module Resources
     module AWS
       module Types
+
+          MIME_TYPE_MAP = {
+            '.html' => 'text/html',
+            '.htm' => 'text/html',
+            '.css' => 'text/css',
+            '.js' => 'application/javascript',
+            '.json' => 'application/json',
+            '.xml' => 'application/xml',
+            '.pdf' => 'application/pdf',
+            '.jpg' => 'image/jpeg',
+            '.jpeg' => 'image/jpeg',
+            '.png' => 'image/png',
+            '.gif' => 'image/gif',
+            '.svg' => 'image/svg+xml',
+            '.txt' => 'text/plain',
+            '.md' => 'text/markdown',
+            '.zip' => 'application/zip'
+          }.freeze
         module S3ObjectInstanceMethods
           def has_source_file?
             !source.nil?
@@ -88,23 +106,6 @@ module Pangea
             MIME_TYPE_MAP[ext] || 'application/octet-stream'
           end
 
-          MIME_TYPE_MAP = {
-            '.html' => 'text/html',
-            '.htm' => 'text/html',
-            '.css' => 'text/css',
-            '.js' => 'application/javascript',
-            '.json' => 'application/json',
-            '.xml' => 'application/xml',
-            '.pdf' => 'application/pdf',
-            '.jpg' => 'image/jpeg',
-            '.jpeg' => 'image/jpeg',
-            '.png' => 'image/png',
-            '.gif' => 'image/gif',
-            '.svg' => 'image/svg+xml',
-            '.txt' => 'text/plain',
-            '.md' => 'text/markdown',
-            '.zip' => 'application/zip'
-          }.freeze
         end
       end
     end

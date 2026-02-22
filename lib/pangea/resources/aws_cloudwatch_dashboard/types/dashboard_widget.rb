@@ -25,9 +25,7 @@ module Pangea
         class DashboardWidget < Dry::Struct
           transform_keys(&:to_sym)
 
-          attribute :type, Resources::Types::String.enum(
-            'metric', 'text', 'log', 'number', 'explorer'
-          )
+          attribute :type, Resources::Types::String.constrained(included_in: ['metric', 'text', 'log', 'number', 'explorer'])
           attribute :x, Resources::Types::Integer.constrained(gteq: 0, lt: 24)
           attribute :y, Resources::Types::Integer.constrained(gteq: 0)
           attribute :width, Resources::Types::Integer.constrained(gteq: 1, lteq: 24)

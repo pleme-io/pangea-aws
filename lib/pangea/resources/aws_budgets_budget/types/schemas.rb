@@ -21,8 +21,8 @@ module Pangea
     module AWS
       module Types
         # Budget spend definition
-        BudgetSpend = Hash.schema(
-          amount: String.constrained(format: /\A\d+(\.\d{1,2})?\z/).constructor { |value|
+        BudgetSpend = Resources::Types::Hash.schema(
+          amount: Resources::Types::String.constrained(format: /\A\d+(\.\d{1,2})?\z/).constructor { |value|
             amount_float = value.to_f
             if amount_float <= 0
               raise Dry::Types::ConstraintError, "Budget amount must be positive"
@@ -36,10 +36,10 @@ module Pangea
         )
 
         # Time period for budget
-        BudgetTimePeriod = Hash.schema(
-          start?: String.constrained(format: /\A\d{4}-\d{2}-\d{2}\z/).optional,
-          end?: String.constrained(format: /\A\d{4}-\d{2}-\d{2}\z/).optional
-        ).constructor { |value|
+        BudgetTimePeriod = Resources::Types::Hash.schema(
+          start?: Resources::Types::String.constrained(format: /\A\d{4}-\d{2}-\d{2}\z/).optional,
+          end?: Resources::Types::String.constrained(format: /\A\d{4}-\d{2}-\d{2}\z/).optional
+        ).constructor do |value|
           if value[:start] && value[:end]
             start_date = Date.parse(value[:start])
             end_date = Date.parse(value[:end])
@@ -57,51 +57,51 @@ module Pangea
           value
         rescue Date::Error
           raise Dry::Types::ConstraintError, "Budget time period dates must be in YYYY-MM-DD format"
-        }
+        end
 
         # Cost filter for budget
-        BudgetCostFilter = Hash.schema(
+        BudgetCostFilter = Resources::Types::Hash.schema(
           dimension_key: CostDimensionKey,
-          values: Array.of(String).constrained(min_size: 1, max_size: 1000),
-          match_options?: Array.of(
-            String.enum('EQUALS', 'ABSENT', 'STARTS_WITH', 'ENDS_WITH', 'CONTAINS',
-                        'CASE_SENSITIVE', 'CASE_INSENSITIVE')
+          values: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 1000),
+          match_options?: Resources::Types::Array.of(
+            Resources::Types::String.constrained(included_in: ['EQUALS', 'ABSENT', 'STARTS_WITH', 'ENDS_WITH', 'CONTAINS',
+                        'CASE_SENSITIVE', 'CASE_INSENSITIVE'])
           ).optional
         )
 
         # Tag filter for budget costs
-        BudgetTagFilter = Hash.schema(
-          key: String.constrained(min_size: 1, max_size: 128),
-          values?: Array.of(String).constrained(max_size: 1000).optional,
-          match_options?: Array.of(
-            String.enum('EQUALS', 'ABSENT', 'STARTS_WITH', 'ENDS_WITH', 'CONTAINS',
-                        'CASE_SENSITIVE', 'CASE_INSENSITIVE')
+        BudgetTagFilter = Resources::Types::Hash.schema(
+          key: Resources::Types::String.constrained(min_size: 1, max_size: 128),
+          values?: Resources::Types::Array.of(Resources::Types::String).constrained(max_size: 1000).optional,
+          match_options?: Resources::Types::Array.of(
+            Resources::Types::String.constrained(included_in: ['EQUALS', 'ABSENT', 'STARTS_WITH', 'ENDS_WITH', 'CONTAINS',
+                        'CASE_SENSITIVE', 'CASE_INSENSITIVE'])
           ).optional
         )
 
         # Cost filters for budget
-        BudgetCostFilters = Hash.schema(
-          and?: Array.of(
-            Hash.schema(
-              dimensions?: Hash.map(CostDimensionKey, Array.of(String)).optional,
-              tags?: Hash.map(String, Array.of(String)).optional,
-              cost_categories?: Hash.map(String, Array.of(String)).optional
+        BudgetCostFilters = Resources::Types::Hash.schema(
+          and?: Resources::Types::Array.of(
+            Resources::Types::Hash.schema(
+              dimensions?: Resources::Types::Hash.map(CostDimensionKey, Resources::Types::Array.of(Resources::Types::String)).optional,
+              tags?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::Array.of(Resources::Types::String)).optional,
+              cost_categories?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::Array.of(Resources::Types::String)).optional
             )
           ).optional,
-          dimensions?: Hash.map(CostDimensionKey, Array.of(String)).optional,
-          tags?: Hash.map(String, Array.of(String)).optional,
-          cost_categories?: Hash.map(String, Array.of(String)).optional,
-          not?: Hash.schema(
-            dimensions?: Hash.map(CostDimensionKey, Array.of(String)).optional,
-            tags?: Hash.map(String, Array.of(String)).optional,
-            cost_categories?: Hash.map(String, Array.of(String)).optional
+          dimensions?: Resources::Types::Hash.map(CostDimensionKey, Resources::Types::Array.of(Resources::Types::String)).optional,
+          tags?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::Array.of(Resources::Types::String)).optional,
+          cost_categories?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::Array.of(Resources::Types::String)).optional,
+          not?: Resources::Types::Hash.schema(
+            dimensions?: Resources::Types::Hash.map(CostDimensionKey, Resources::Types::Array.of(Resources::Types::String)).optional,
+            tags?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::Array.of(Resources::Types::String)).optional,
+            cost_categories?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::Array.of(Resources::Types::String)).optional
           ).optional
         )
 
         # Budget notification subscriber
-        BudgetSubscriber = Hash.schema(
+        BudgetSubscriber = Resources::Types::Hash.schema(
           subscription_type: BudgetSubscriberProtocol,
-          address: String.constructor { |value, context|
+          address: Resources::Types::String.constructor { |value, context|
             protocol = context[:subscription_type] rescue nil
 
             case protocol
@@ -120,10 +120,10 @@ module Pangea
         )
 
         # Budget notification configuration
-        BudgetNotification = Hash.schema(
+        BudgetNotification = Resources::Types::Hash.schema(
           notification_type: BudgetNotificationType,
           comparison_operator: BudgetComparisonOperator,
-          threshold: Numeric.constructor { |value|
+          threshold: Resources::Types::Float.constructor { |value|
             if value <= 0
               raise Dry::Types::ConstraintError, "Budget notification threshold must be positive"
             end
@@ -133,14 +133,14 @@ module Pangea
             value
           },
           threshold_type?: BudgetThresholdType.default('PERCENTAGE').optional,
-          subscribers?: Array.of(BudgetSubscriber).constrained(max_size: 11).optional
+          subscribers?: Resources::Types::Array.of(BudgetSubscriber).constrained(max_size: 11).optional
         )
 
         # Planned budget limits for cost budgets
-        BudgetPlannedBudgetLimits = Hash.map(
-          String.constrained(format: /\A\d{4}-\d{2}-\d{2}\z/),
+        BudgetPlannedBudgetLimits = Resources::Types::Hash.map(
+          Resources::Types::String.constrained(format: /\A\d{4}-\d{2}-\d{2}\z/),
           BudgetSpend
-        ).constructor { |value|
+        ).constructor do |value|
           dates = value.keys.sort
           dates.each_cons(2) do |prev_date, curr_date|
             prev_parsed = Date.parse(prev_date)
@@ -154,14 +154,14 @@ module Pangea
           value
         rescue Date::Error
           raise Dry::Types::ConstraintError, "Planned budget limit dates must be in YYYY-MM-DD format"
-        }
+        end
 
         # Auto-adjust data configuration
-        BudgetAutoAdjustData = Hash.schema(
-          auto_adjust_type: String.enum('HISTORICAL', 'FORECAST'),
-          historical_options?: Hash.schema(
-            budget_adjustment_period: Integer.constrained(gteq: 1, lteq: 60),
-            lookback_available_periods?: Integer.constrained(gteq: 1, lteq: 60).optional
+        BudgetAutoAdjustData = Resources::Types::Hash.schema(
+          auto_adjust_type: Resources::Types::String.constrained(included_in: ['HISTORICAL', 'FORECAST']),
+          historical_options?: Resources::Types::Hash.schema(
+            budget_adjustment_period: Resources::Types::Integer.constrained(gteq: 1, lteq: 60),
+            lookback_available_periods?: Resources::Types::Integer.constrained(gteq: 1, lteq: 60).optional
           ).optional
         ).constructor { |value|
           if value[:auto_adjust_type] == 'HISTORICAL' && !value[:historical_options]

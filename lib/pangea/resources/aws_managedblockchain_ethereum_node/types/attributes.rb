@@ -14,20 +14,16 @@ module Pangea
           transform_keys(&:to_sym)
 
           # Network ID (required)
-          attribute :network_id, Resources::Types::String.enum(
-            'n-ethereum-mainnet',
+          attribute :network_id, Resources::Types::String.constrained(included_in: ['n-ethereum-mainnet',
             'n-ethereum-goerli',
-            'n-ethereum-rinkeby'
-          )
+            'n-ethereum-rinkeby'])
 
           # Node configuration (required)
           attribute :node_configuration, Resources::Types::Hash.schema(
-            instance_type: Resources::Types::String.enum(
-              'bc.t3.small', 'bc.t3.medium', 'bc.t3.large', 'bc.t3.xlarge',
+            instance_type: Resources::Types::String.constrained(included_in: ['bc.t3.small', 'bc.t3.medium', 'bc.t3.large', 'bc.t3.xlarge',
               'bc.m5.large', 'bc.m5.xlarge', 'bc.m5.2xlarge', 'bc.m5.4xlarge',
               'bc.c5.large', 'bc.c5.xlarge', 'bc.c5.2xlarge', 'bc.c5.4xlarge',
-              'bc.r5.large', 'bc.r5.xlarge', 'bc.r5.2xlarge', 'bc.r5.4xlarge'
-            ),
+              'bc.r5.large', 'bc.r5.xlarge', 'bc.r5.2xlarge', 'bc.r5.4xlarge']),
             availability_zone?: Resources::Types::String.optional,
             subnet_id?: Resources::Types::String.optional
           )
@@ -36,9 +32,7 @@ module Pangea
           attribute? :client_request_token, Resources::Types::String.optional
 
           # Tags (optional)
-          attribute? :tags, Resources::Types::Hash.schema(
-            Resources::Types::String => Resources::Types::String
-          ).optional
+          attribute? :tags, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
 
           # Custom validation
           def self.new(attributes = {})

@@ -15,10 +15,7 @@
 # limitations under the License.
 
 require 'pangea/resources/types'
-
-require_relative 'types/validation'
-require_relative 'types/instance_methods'
-require_relative 'types/configs'
+require_relative '../types/aws/core'
 
 module Pangea
   module Resources
@@ -26,6 +23,10 @@ module Pangea
       module Types
         # Type-safe attributes for AWS CloudFormation Stack resources
         class CloudFormationStackAttributes < Dry::Struct
+          require_relative 'types/validation'
+          require_relative 'types/instance_methods'
+          require_relative 'types/configs'
+
           include InstanceMethods
 
           # Stack name (required)
@@ -36,19 +37,17 @@ module Pangea
           attribute :template_url, Resources::Types::String.optional
 
           # Stack parameters
-          attribute :parameters, Resources::Types::Hash.map(Types::String, Types::String).default({}.freeze)
+          attribute :parameters, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
 
           # Stack capabilities (for IAM resources)
           attribute :capabilities, Resources::Types::Array.of(
-            Types::String.enum(
-              "CAPABILITY_IAM",
+            Resources::Types::String.constrained(included_in: ["CAPABILITY_IAM",
               "CAPABILITY_NAMED_IAM",
-              "CAPABILITY_AUTO_EXPAND"
-            )
+              "CAPABILITY_AUTO_EXPAND"])
           ).default([].freeze)
 
           # Stack notification topics
-          attribute :notification_arns, Resources::Types::Array.of(Types::String).default([].freeze)
+          attribute :notification_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
           # Stack policy (JSON document)
           attribute :policy_body, Resources::Types::String.optional
@@ -67,7 +66,7 @@ module Pangea
           attribute :iam_role_arn, Resources::Types::String.optional
 
           # Stack creation options
-          attribute :on_failure, Resources::Types::String.enum("DO_NOTHING", "ROLLBACK", "DELETE").default("ROLLBACK")
+          attribute :on_failure, Resources::Types::String.default("ROLLBACK").enum("DO_NOTHING", "ROLLBACK", "DELETE")
 
           # Stack tags
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

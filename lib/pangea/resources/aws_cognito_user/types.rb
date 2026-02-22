@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -44,10 +43,10 @@ module Pangea
         attribute :force_alias_creation, Resources::Types::Bool.default(false)
 
         # Message action for user creation
-        attribute :message_action, Resources::Types::String.enum('RESEND', 'SUPPRESS').optional
+        attribute :message_action, Resources::Types::String.constrained(included_in: ['RESEND', 'SUPPRESS']).optional
 
         # Desired delivery mediums
-        attribute :desired_delivery_mediums, Resources::Types::Array.of(Types::String.enum('SMS', 'EMAIL')).optional
+        attribute :desired_delivery_mediums, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['SMS', 'EMAIL'])).optional
 
         # Custom validation
         def self.new(attributes = {})
@@ -142,4 +141,3 @@ module Pangea
       end
     end
   end
-end

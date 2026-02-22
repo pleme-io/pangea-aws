@@ -32,7 +32,7 @@ module Pangea
             HlsAkamaiSettings = T::Hash.schema(
               connection_retry_interval?: T::Integer.optional,
               filecache_duration?: T::Integer.optional,
-              http_transfer_mode?: T::String.enum('CHUNKED', 'NON_CHUNKED').optional,
+              http_transfer_mode?: T::String.constrained(included_in: ['CHUNKED', 'NON_CHUNKED']).optional,
               num_retries?: T::Integer.optional,
               restart_delay?: T::Integer.optional,
               salt?: T::String.optional,
@@ -49,19 +49,19 @@ module Pangea
             HlsMediaStoreSettings = T::Hash.schema(
               connection_retry_interval?: T::Integer.optional,
               filecache_duration?: T::Integer.optional,
-              media_store_storage_class?: T::String.enum('TEMPORAL').optional,
+              media_store_storage_class?: T::String.constrained(included_in: ['TEMPORAL']).optional,
               num_retries?: T::Integer.optional,
               restart_delay?: T::Integer.optional
             )
 
             HlsS3Settings = T::Hash.schema(
-              canned_acl?: T::String.enum('AUTHENTICATED_READ', 'BUCKET_OWNER_FULL_CONTROL', 'BUCKET_OWNER_READ', 'PUBLIC_READ').optional
+              canned_acl?: T::String.constrained(included_in: ['AUTHENTICATED_READ', 'BUCKET_OWNER_FULL_CONTROL', 'BUCKET_OWNER_READ', 'PUBLIC_READ']).optional
             )
 
             HlsWebdavSettings = T::Hash.schema(
               connection_retry_interval?: T::Integer.optional,
               filecache_duration?: T::Integer.optional,
-              http_transfer_mode?: T::String.enum('CHUNKED', 'NON_CHUNKED').optional,
+              http_transfer_mode?: T::String.constrained(included_in: ['CHUNKED', 'NON_CHUNKED']).optional,
               num_retries?: T::Integer.optional,
               restart_delay?: T::Integer.optional
             )

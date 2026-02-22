@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -26,7 +25,7 @@ module Pangea
           transform_keys(&:to_sym)
           
           attribute? :amazon_side_asn, Resources::Types::TransitGatewayAsn.optional
-          attribute? :auto_accept_shared_attachments, Resources::Types::String.enum('enable', 'disable').default('disable')
+          attribute? :auto_accept_shared_attachments, Resources::Types::String.constrained(included_in: ['enable', 'disable']).default('disable')
           attribute? :default_route_table_association, Resources::Types::TransitGatewayDefaultRouteTableAssociation
           attribute? :default_route_table_propagation, Resources::Types::TransitGatewayDefaultRouteTablePropagation
           attribute? :description, Resources::Types::String.optional

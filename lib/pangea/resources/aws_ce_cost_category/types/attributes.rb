@@ -12,7 +12,7 @@ module Pangea
         class CostCategoryAttributes < Dry::Struct
           transform_keys(&:to_sym)
 
-          attribute :name, String.constrained(format: /\A[a-zA-Z0-9\s\-_\.]{1,50}\z/).constructor { |value|
+          attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9\s\-_\.]{1,50}\z/).constructor { |value|
             cleaned = value.strip
             if cleaned.empty?
               raise Dry::Struct::Error, "Cost category name cannot be empty"
@@ -26,7 +26,7 @@ module Pangea
             cleaned
           }
 
-          attribute :rules, Array.of(CostCategoryRule).constrained(min_size: 1, max_size: 500).constructor { |rules|
+          attribute :rules, Resources::Types::Array.of(CostCategoryRule).constrained(min_size: 1, max_size: 500).constructor { |rules|
             values = rules.map { |rule| rule[:value] }
             if values.size != values.uniq.size
               raise Dry::Struct::Error, "Cost category rule values must be unique within the category"
@@ -40,12 +40,12 @@ module Pangea
             rules
           }
 
-          attribute :rule_version_arn?, String.constrained(format: /\Aarn:aws:ce::[0-9]{12}:cost-category\/[a-zA-Z0-9\-]+\z/).optional
-          attribute :default_value?, String.constrained(min_size: 1, max_size: 50).optional
-          attribute :split_charge_rules?, Array.of(CostCategorySplitChargeRule).constrained(max_size: 10).optional
-          attribute :effective_start?, String.constrained(format: /\A\d{4}-\d{2}-\d{2}\z/).optional
-          attribute :effective_end?, String.constrained(format: /\A\d{4}-\d{2}-\d{2}\z/).optional
-          attribute :tags?, AwsTags.optional
+          attribute :rule_version_arn?, Resources::Types::String.constrained(format: /\Aarn:aws:ce::[0-9]{12}:cost-category\/[a-zA-Z0-9\-]+\z/).optional
+          attribute :default_value?, Resources::Types::String.constrained(min_size: 1, max_size: 50).optional
+          attribute :split_charge_rules?, Resources::Types::Array.of(CostCategorySplitChargeRule).constrained(max_size: 10).optional
+          attribute :effective_start?, Resources::Types::String.constrained(format: /\A\d{4}-\d{2}-\d{2}\z/).optional
+          attribute :effective_end?, Resources::Types::String.constrained(format: /\A\d{4}-\d{2}-\d{2}\z/).optional
+          attribute :tags?, Resources::Types::AwsTags.optional
 
           def self.new(attributes)
             attrs = attributes.is_a?(Hash) ? attributes : {}

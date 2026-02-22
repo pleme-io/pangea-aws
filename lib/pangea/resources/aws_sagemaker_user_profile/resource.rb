@@ -138,7 +138,8 @@ module Pangea
       #       }
       #     }
       #   })
-      class SageMakerUserProfile < Base
+      SageMakerUserProfile = Struct.new(:name, :attributes, keyword_init: true)
+      class SageMakerUserProfile
         def self.resource_type
           'aws_sagemaker_user_profile'
         end
@@ -193,6 +194,3 @@ module Pangea
     end
   end
 end
-
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

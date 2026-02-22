@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -29,18 +28,18 @@ module Pangea
           attribute :finding_publishing_frequency, Resources::Types::GuardDutyFindingPublishingFrequency.default('SIX_HOURS')
           
           # Data source configurations
-          attribute :datasources, Hash.schema(
-            s3_logs?: Hash.schema(
+          attribute :datasources, Resources::Types::Hash.schema(
+            s3_logs?: Resources::Types::Hash.schema(
               enable: Resources::Types::Bool
             ).optional,
-            kubernetes?: Hash.schema(
-              audit_logs: Hash.schema(
+            kubernetes?: Resources::Types::Hash.schema(
+              audit_logs: Resources::Types::Hash.schema(
                 enable: Resources::Types::Bool
               )
             ).optional,
-            malware_protection?: Hash.schema(
-              scan_ec2_instance_with_findings: Hash.schema(
-                ebs_volumes: Hash.schema(
+            malware_protection?: Resources::Types::Hash.schema(
+              scan_ec2_instance_with_findings: Resources::Types::Hash.schema(
+                ebs_volumes: Resources::Types::Hash.schema(
                   enable: Resources::Types::Bool
                 )
               )

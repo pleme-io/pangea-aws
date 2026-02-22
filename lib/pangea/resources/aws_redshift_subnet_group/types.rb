@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -29,7 +28,7 @@ module Pangea
         attribute :description, Resources::Types::String.optional
         
         # Subnet IDs (required)
-        attribute :subnet_ids, Resources::Types::Array.of(Types::String).constrained(min_size: 1)
+        attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
         
         # Tags
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -139,4 +138,3 @@ module Pangea
       end
     end
   end
-end

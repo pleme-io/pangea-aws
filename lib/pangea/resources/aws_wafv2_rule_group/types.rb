@@ -32,10 +32,10 @@ module Pangea
           include WafV2ComputedProperties
           transform_keys(&:to_sym)
 
-          attribute :name, String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
+          attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
           attribute :scope, Resources::Types::WafV2Scope
           attribute :capacity, Resources::Types::WafV2CapacityUnits
-          attribute :description, String.constrained(max_size: 256).optional
+          attribute :description, Resources::Types::String.constrained(max_size: 256).optional
           attribute :rules, WafV2RuleSchema::RulesArray
           attribute :visibility_config, WafV2Schemas::VisibilityConfigSchema
           attribute :tags, Resources::Types::AwsTags

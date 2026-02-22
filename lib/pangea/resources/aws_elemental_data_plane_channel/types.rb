@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -32,14 +31,14 @@ module Pangea
         attribute :description, Resources::Types::String.default("")
 
         # Channel type
-        attribute :channel_type, Resources::Types::String.enum('LIVE', 'PLAYOUT').default('LIVE')
+        attribute :channel_type, Resources::Types::String.constrained(included_in: ['LIVE', 'PLAYOUT']).default('LIVE')
 
         # Input specifications
         attribute :input_specifications, Resources::Types::Array.of(
           Resources::Types::Hash.schema(
-            codec: Resources::Types::String.enum('MPEG2', 'AVC', 'HEVC'),
-            maximum_bitrate: Resources::Types::String.enum('MAX_10_MBPS', 'MAX_20_MBPS', 'MAX_50_MBPS'),
-            resolution: Resources::Types::String.enum('SD', 'HD', 'UHD')
+            codec: Resources::Types::String.constrained(included_in: ['MPEG2', 'AVC', 'HEVC']),
+            maximum_bitrate: Resources::Types::String.constrained(included_in: ['MAX_10_MBPS', 'MAX_20_MBPS', 'MAX_50_MBPS']),
+            resolution: Resources::Types::String.constrained(included_in: ['SD', 'HD', 'UHD'])
           )
         ).default([].freeze)
 
@@ -63,4 +62,3 @@ module Pangea
       end
     end
   end
-end

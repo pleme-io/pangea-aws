@@ -22,38 +22,39 @@ module Pangea
     module AWS
       module Types
         # WAF v2 rule action type definitions
+
         module WafV2Actions
           include Dry.Types()
 
           # Allow action with optional custom request handling
-          AllowActionSchema = Hash.schema(
+          AllowActionSchema = Resources::Types::Hash.schema(
             custom_request_handling?: WafV2Schemas::CustomRequestHandlingSchema
           ).optional
 
           # Block action with optional custom response
-          BlockActionSchema = Hash.schema(
+          BlockActionSchema = Resources::Types::Hash.schema(
             custom_response?: WafV2Schemas::CustomResponseSchema
           ).optional
 
           # Count action with optional custom request handling
-          CountActionSchema = Hash.schema(
+          CountActionSchema = Resources::Types::Hash.schema(
             custom_request_handling?: WafV2Schemas::CustomRequestHandlingSchema
           ).optional
 
           # Captcha action with optional custom request handling
-          CaptchaActionSchema = Hash.schema(
+          CaptchaActionSchema = Resources::Types::Hash.schema(
             custom_request_handling?: WafV2Schemas::CustomRequestHandlingSchema
           ).optional
 
           # Challenge action with optional custom request handling
-          ChallengeActionSchema = Hash.schema(
+          ChallengeActionSchema = Resources::Types::Hash.schema(
             custom_request_handling?: WafV2Schemas::CustomRequestHandlingSchema
           ).optional
 
           # Combined action schema with validation
           ACTION_TYPES = %i[allow block count captcha challenge].freeze
 
-          ActionSchema = Hash.schema(
+          ActionSchema = Resources::Types::Hash.schema(
             allow?: AllowActionSchema,
             block?: BlockActionSchema,
             count?: CountActionSchema,

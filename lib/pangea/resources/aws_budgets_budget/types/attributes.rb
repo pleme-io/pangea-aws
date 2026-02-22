@@ -29,7 +29,7 @@ module Pangea
 
           transform_keys(&:to_sym)
 
-          attribute :budget_name, String.constrained(format: /\A[a-zA-Z0-9_\-. ]{1,100}\z/).constructor { |value|
+          attribute :budget_name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_\-. ]{1,100}\z/).constructor { |value|
             cleaned = value.strip
             if cleaned.empty?
               raise Dry::Struct::Error, "Budget name cannot be empty"
@@ -44,7 +44,7 @@ module Pangea
           attribute :time_unit, BudgetTimeUnit
 
           # Main budget limit
-          attribute :limit_amount, String.constrained(format: /\A\d+(\.\d{1,2})?\z/).constructor { |value|
+          attribute :limit_amount, Resources::Types::String.constrained(format: /\A\d+(\.\d{1,2})?\z/).constructor { |value|
             amount_float = value.to_f
             if amount_float <= 0
               raise Dry::Struct::Error, "Budget limit amount must be positive"
@@ -59,8 +59,8 @@ module Pangea
           attribute :cost_filters?, BudgetCostFilters.optional
           attribute :planned_budget_limits?, BudgetPlannedBudgetLimits.optional
           attribute :auto_adjust_data?, BudgetAutoAdjustData.optional
-          attribute :notifications?, Array.of(BudgetNotification).constrained(max_size: 5).optional
-          attribute :tags?, AwsTags.optional
+          attribute :notifications?, Resources::Types::Array.of(BudgetNotification).constrained(max_size: 5).optional
+          attribute :tags?, Resources::Types::AwsTags.optional
         end
       end
     end

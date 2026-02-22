@@ -26,8 +26,7 @@ module Pangea
     module AWS
       module Types
         # SageMaker Notebook Instance types
-        SageMakerNotebookInstanceType = String.enum(
-          'ml.t2.medium', 'ml.t2.large', 'ml.t2.xlarge', 'ml.t2.2xlarge',
+        SageMakerNotebookInstanceType = Resources::Types::String.constrained(included_in: ['ml.t2.medium', 'ml.t2.large', 'ml.t2.xlarge', 'ml.t2.2xlarge',
           'ml.t3.medium', 'ml.t3.large', 'ml.t3.xlarge', 'ml.t3.2xlarge',
           'ml.m4.xlarge', 'ml.m4.2xlarge', 'ml.m4.4xlarge', 'ml.m4.10xlarge', 'ml.m4.16xlarge',
           'ml.m5.xlarge', 'ml.m5.2xlarge', 'ml.m5.4xlarge', 'ml.m5.8xlarge', 'ml.m5.12xlarge', 'ml.m5.24xlarge',
@@ -37,28 +36,23 @@ module Pangea
           'ml.r4.xlarge', 'ml.r4.2xlarge', 'ml.r4.4xlarge', 'ml.r4.8xlarge', 'ml.r4.16xlarge',
           'ml.r5.xlarge', 'ml.r5.2xlarge', 'ml.r5.4xlarge', 'ml.r5.8xlarge', 'ml.r5.12xlarge', 'ml.r5.24xlarge',
           'ml.p2.xlarge', 'ml.p2.8xlarge', 'ml.p2.16xlarge',
-          'ml.p3.2xlarge', 'ml.p3.8xlarge', 'ml.p3.16xlarge'
-        )
+          'ml.p3.2xlarge', 'ml.p3.8xlarge', 'ml.p3.16xlarge'])
 
         # SageMaker Notebook Instance volume types
-        SageMakerNotebookVolumeType = String.enum('gp2', 'gp3', 'io1', 'io2')
+        SageMakerNotebookVolumeType = Resources::Types::String.constrained(included_in: ['gp2', 'gp3', 'io1', 'io2'])
 
         # SageMaker Notebook Instance platform identifier
-        SageMakerNotebookPlatformIdentifier = String.enum('notebook-al1-v1', 'notebook-al2-v1', 'notebook-al2-v2')
+        SageMakerNotebookPlatformIdentifier = Resources::Types::String.constrained(included_in: ['notebook-al1-v1', 'notebook-al2-v1', 'notebook-al2-v2'])
 
         # SageMaker Notebook Instance root access
-        SageMakerNotebookRootAccess = String.enum('Enabled', 'Disabled').default('Enabled')
+        SageMakerNotebookRootAccess = Resources::Types::String.constrained(included_in: ['Enabled', 'Disabled']).default('Enabled')
 
         # SageMaker Notebook Instance status
-        SageMakerNotebookInstanceStatus = String.enum(
-          'Pending', 'InService', 'Stopping', 'Stopped', 'Failed', 'Deleting', 'Updating'
-        )
+        SageMakerNotebookInstanceStatus = Resources::Types::String.constrained(included_in: ['Pending', 'InService', 'Stopping', 'Stopped', 'Failed', 'Deleting', 'Updating'])
 
         # Accelerator types enum
-        SageMakerAcceleratorType = String.enum(
-          'ml.eia1.medium', 'ml.eia1.large', 'ml.eia1.xlarge',
-          'ml.eia2.medium', 'ml.eia2.large', 'ml.eia2.xlarge'
-        )
+        SageMakerAcceleratorType = Resources::Types::String.constrained(included_in: ['ml.eia1.medium', 'ml.eia1.large', 'ml.eia1.xlarge',
+          'ml.eia2.medium', 'ml.eia2.large', 'ml.eia2.xlarge'])
 
         # SageMaker Notebook Instance attributes with comprehensive validation
         class SageMakerNotebookInstanceAttributes < Dry::Struct
@@ -81,19 +75,19 @@ module Pangea
 
           # Optional attributes
           attribute :subnet_id, Resources::Types::String.optional
-          attribute :security_group_ids, Resources::Types::Array.of(String).optional
+          attribute :security_group_ids, Resources::Types::Array.of(Resources::Types::String).optional
           attribute :kms_key_id, Resources::Types::String.optional
           attribute :lifecycle_config_name, Resources::Types::String.optional
-          attribute :direct_internet_access, String.enum('Enabled', 'Disabled').default('Enabled')
-          attribute :volume_size_in_gb, Integer.constrained(gteq: 5, lteq: 16384).default(20)
+          attribute :direct_internet_access, Resources::Types::String.constrained(included_in: ['Enabled', 'Disabled']).default('Enabled')
+          attribute :volume_size_in_gb, Resources::Types::Integer.constrained(gteq: 5, lteq: 16384).default(20)
           attribute :volume_type, SageMakerNotebookVolumeType.default('gp2')
           attribute :accelerator_types, Resources::Types::Array.of(SageMakerAcceleratorType).optional
           attribute :default_code_repository, Resources::Types::String.optional
-          attribute :additional_code_repositories, Resources::Types::Array.of(String).optional
+          attribute :additional_code_repositories, Resources::Types::Array.of(Resources::Types::String).optional
           attribute :root_access, SageMakerNotebookRootAccess
           attribute :platform_identifier, SageMakerNotebookPlatformIdentifier.optional
           attribute :instance_metadata_service_configuration, Resources::Types::Hash.schema(
-            minimum_instance_metadata_service_version: String.enum('1', '2').default('1')
+            minimum_instance_metadata_service_version: Resources::Types::String.constrained(included_in: ['1', '2']).default('1')
           ).optional
           attribute :tags, Resources::Types::AwsTags
 

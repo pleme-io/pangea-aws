@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -28,17 +27,17 @@ module Pangea
         
         # Optional attributes
         attribute :description, Resources::Types::String.optional
-        attribute :private_ips, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :private_ips, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         attribute :private_ips_count, Resources::Types::Integer.optional
-        attribute :security_groups, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :security_groups, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         attribute :source_dest_check, Resources::Types::Bool.optional.default(true)
-        attribute :interface_type, Resources::Types::String.enum("efa", "branch", "trunk").optional
-        attributeipv4_prefix_count :, Resources::Types::Integer.optional
-        attributeipv4_prefixes :, Resources::Types::Array.of(Types::String).default([].freeze)
-        attributeipv6_address_count :, Resources::Types::Integer.optional
-        attributeipv6_addresses :, Resources::Types::Array.of(Types::String).default([].freeze)
-        attributeipv6_prefix_count :, Resources::Types::Integer.optional
-        attributeipv6_prefixes :, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :interface_type, Resources::Types::String.constrained(included_in: ["efa", "branch", "trunk"]).optional
+        attribute :ipv4_prefix_count, Resources::Types::Integer.optional
+        attribute :ipv4_prefixes, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
+        attribute :ipv6_address_count, Resources::Types::Integer.optional
+        attribute :ipv6_addresses, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
+        attribute :ipv6_prefix_count, Resources::Types::Integer.optional
+        attribute :ipv6_prefixes, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         
         # Attachment configuration (for attaching at creation)
         attribute :attachment, Resources::Types::Hash.default({}.freeze)
@@ -100,8 +99,7 @@ module Pangea
             "Standard Network Interface"
           end
         end
-      end
-    end
+        end
       end
     end
   end

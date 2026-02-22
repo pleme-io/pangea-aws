@@ -28,9 +28,7 @@ module Pangea
           transform_keys(&:to_sym)
 
           attribute :topic_arn, Resources::Types::String
-          attribute :protocol, Resources::Types::String.enum(
-            'email', 'email-json', 'sms', 'sqs', 'lambda', 'http', 'https', 'application', 'firehose'
-          )
+          attribute :protocol, Resources::Types::String.constrained(included_in: ['email', 'email-json', 'sms', 'sqs', 'lambda', 'http', 'https', 'application', 'firehose'])
           attribute :endpoint, Resources::Types::String
           attribute? :filter_policy, Resources::Types::String.optional
           attribute :filter_policy_scope, Resources::Types::String.default('MessageAttributes').enum('MessageAttributes', 'MessageBody')

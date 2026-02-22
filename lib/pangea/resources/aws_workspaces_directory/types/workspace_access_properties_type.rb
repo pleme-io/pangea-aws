@@ -24,7 +24,7 @@ module Pangea
         class WorkspaceAccessPropertiesType < Dry::Struct
           transform_keys(&:to_sym)
 
-          AllowDeny = Resources::Types::String.enum('ALLOW', 'DENY')
+          AllowDeny = Resources::Types::String.constrained(included_in: ['ALLOW', 'DENY'])
 
           attribute :device_type_windows, AllowDeny.default('ALLOW')
           attribute :device_type_osx, AllowDeny.default('ALLOW')

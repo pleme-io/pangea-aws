@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -28,7 +27,7 @@ module Pangea
           # Required attributes
           attribute :repository, Resources::Types::String
           attribute :domain, Resources::Types::String
-          attribute :format, Resources::Types::String.enum('npm', 'pypi', 'maven', 'nuget')
+          attribute :format, Resources::Types::String.constrained(included_in: ['npm', 'pypi', 'maven', 'nuget'])
           
           # Optional attributes
           attribute :domain_owner, Resources::Types::String.optional.default(nil)

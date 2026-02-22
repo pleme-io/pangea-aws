@@ -9,7 +9,7 @@ module Pangea
         class EmrInstanceGroupAttributes < Dry::Struct
           attribute :name, Resources::Types::String.optional
           attribute :cluster_id, Resources::Types::String
-          attribute :instance_role, Resources::Types::String.enum('MASTER', 'CORE', 'TASK')
+          attribute :instance_role, Resources::Types::String.constrained(included_in: ['MASTER', 'CORE', 'TASK'])
           attribute :instance_type, Resources::Types::String
           attribute :instance_count, Resources::Types::Integer.constrained(gteq: 1).default(1)
           attribute :bid_price, Resources::Types::String.optional

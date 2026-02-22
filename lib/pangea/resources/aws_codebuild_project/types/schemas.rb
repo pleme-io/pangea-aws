@@ -25,7 +25,7 @@ module Pangea
 
             # Source configuration schema
             SOURCE = T::Hash.schema(
-              type: T::String.enum('CODECOMMIT', 'CODEPIPELINE', 'GITHUB', 'GITHUB_ENTERPRISE', 'BITBUCKET', 'S3', 'NO_SOURCE'),
+              type: T::String.constrained(included_in: ['CODECOMMIT', 'CODEPIPELINE', 'GITHUB', 'GITHUB_ENTERPRISE', 'BITBUCKET', 'S3', 'NO_SOURCE']),
               location?: T::String.optional,
               git_clone_depth?: T::Integer.constrained(gteq: 0).optional,
               buildspec?: T::String.optional,
@@ -35,18 +35,18 @@ module Pangea
                 fetch_submodules: T::Bool
               ).optional,
               auth?: T::Hash.schema(
-                type: T::String.enum('OAUTH'),
+                type: T::String.constrained(included_in: ['OAUTH']),
                 resource?: T::String.optional
               ).optional
             )
 
             # Artifacts configuration schema
             ARTIFACTS = T::Hash.schema(
-              type: T::String.enum('CODEPIPELINE', 'S3', 'NO_ARTIFACTS'),
+              type: T::String.constrained(included_in: ['CODEPIPELINE', 'S3', 'NO_ARTIFACTS']),
               location?: T::String.optional,
               name?: T::String.optional,
-              namespace_type?: T::String.enum('NONE', 'BUILD_ID').optional,
-              packaging?: T::String.enum('NONE', 'ZIP').optional,
+              namespace_type?: T::String.constrained(included_in: ['NONE', 'BUILD_ID']).optional,
+              packaging?: T::String.constrained(included_in: ['NONE', 'ZIP']).optional,
               path?: T::String.optional,
               encryption_disabled?: T::Bool.optional,
               artifact_identifier?: T::String.optional,
@@ -56,7 +56,7 @@ module Pangea
             # Secondary source schema
             SECONDARY_SOURCE = T::Hash.schema(
               source_identifier: T::String,
-              type: T::String.enum('CODECOMMIT', 'CODEPIPELINE', 'GITHUB', 'S3'),
+              type: T::String.constrained(included_in: ['CODECOMMIT', 'CODEPIPELINE', 'GITHUB', 'S3']),
               location?: T::String.optional,
               git_clone_depth?: T::Integer.optional,
               buildspec?: T::String.optional,
@@ -67,11 +67,11 @@ module Pangea
             # Secondary artifact schema
             SECONDARY_ARTIFACT = T::Hash.schema(
               artifact_identifier: T::String,
-              type: T::String.enum('S3'),
+              type: T::String.constrained(included_in: ['S3']),
               location?: T::String.optional,
               name?: T::String.optional,
-              namespace_type?: T::String.enum('NONE', 'BUILD_ID').optional,
-              packaging?: T::String.enum('NONE', 'ZIP').optional,
+              namespace_type?: T::String.constrained(included_in: ['NONE', 'BUILD_ID']).optional,
+              packaging?: T::String.constrained(included_in: ['NONE', 'ZIP']).optional,
               path?: T::String.optional,
               encryption_disabled?: T::Bool.optional,
               override_artifact_name?: T::Bool.optional
@@ -79,31 +79,31 @@ module Pangea
 
             # Environment configuration schema
             ENVIRONMENT = T::Hash.schema(
-              type: T::String.enum('LINUX_CONTAINER', 'LINUX_GPU_CONTAINER', 'WINDOWS_CONTAINER', 'WINDOWS_SERVER_2019_CONTAINER', 'ARM_CONTAINER'),
+              type: T::String.constrained(included_in: ['LINUX_CONTAINER', 'LINUX_GPU_CONTAINER', 'WINDOWS_CONTAINER', 'WINDOWS_SERVER_2019_CONTAINER', 'ARM_CONTAINER']),
               image: T::String,
-              compute_type: T::String.enum('BUILD_GENERAL1_SMALL', 'BUILD_GENERAL1_MEDIUM', 'BUILD_GENERAL1_LARGE', 'BUILD_GENERAL1_2XLARGE'),
+              compute_type: T::String.constrained(included_in: ['BUILD_GENERAL1_SMALL', 'BUILD_GENERAL1_MEDIUM', 'BUILD_GENERAL1_LARGE', 'BUILD_GENERAL1_2XLARGE']),
               environment_variables?: T::Array.of(
                 T::Hash.schema(
                   name: T::String,
                   value: T::String,
-                  type?: T::String.enum('PLAINTEXT', 'PARAMETER_STORE', 'SECRETS_MANAGER').optional
+                  type?: T::String.constrained(included_in: ['PLAINTEXT', 'PARAMETER_STORE', 'SECRETS_MANAGER']).optional
                 )
               ).optional,
               privileged_mode?: T::Bool.optional,
               certificate?: T::String.optional,
               registry_credential?: T::Hash.schema(
                 credential: T::String,
-                credential_provider: T::String.enum('SECRETS_MANAGER')
+                credential_provider: T::String.constrained(included_in: ['SECRETS_MANAGER'])
               ).optional,
-              image_pull_credentials_type?: T::String.enum('CODEBUILD', 'SERVICE_ROLE').optional
+              image_pull_credentials_type?: T::String.constrained(included_in: ['CODEBUILD', 'SERVICE_ROLE']).optional
             )
 
             # Cache configuration schema
             CACHE = T::Hash.schema(
-              type: T::String.enum('NO_CACHE', 'S3', 'LOCAL'),
+              type: T::String.constrained(included_in: ['NO_CACHE', 'S3', 'LOCAL']),
               location?: T::String.optional,
               modes?: T::Array.of(
-                T::String.enum('LOCAL_DOCKER_LAYER_CACHE', 'LOCAL_SOURCE_CACHE', 'LOCAL_CUSTOM_CACHE')
+                T::String.constrained(included_in: ['LOCAL_DOCKER_LAYER_CACHE', 'LOCAL_SOURCE_CACHE', 'LOCAL_CUSTOM_CACHE'])
               ).optional
             )
 
@@ -117,12 +117,12 @@ module Pangea
             # Logs configuration schema
             LOGS_CONFIG = T::Hash.schema(
               cloudwatch_logs?: T::Hash.schema(
-                status?: T::String.enum('ENABLED', 'DISABLED').optional,
+                status?: T::String.constrained(included_in: ['ENABLED', 'DISABLED']).optional,
                 group_name?: T::String.optional,
                 stream_name?: T::String.optional
               ).optional,
               s3_logs?: T::Hash.schema(
-                status?: T::String.enum('ENABLED', 'DISABLED').optional,
+                status?: T::String.constrained(included_in: ['ENABLED', 'DISABLED']).optional,
                 location?: T::String.optional,
                 encryption_disabled?: T::Bool.optional
               ).optional
@@ -141,7 +141,7 @@ module Pangea
 
             # File system location schema
             FILE_SYSTEM_LOCATION = T::Hash.schema(
-              type: T::String.enum('EFS'),
+              type: T::String.constrained(included_in: ['EFS']),
               location: T::String,
               mount_point: T::String,
               identifier: T::String,

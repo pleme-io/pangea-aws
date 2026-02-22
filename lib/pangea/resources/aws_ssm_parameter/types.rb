@@ -30,7 +30,7 @@ module Pangea
           attribute :name, Resources::Types::String
 
           # Parameter type
-          attribute :type, Resources::Types::String.enum("String", "StringList", "SecureString")
+          attribute :type, Resources::Types::String.constrained(included_in: ["String", "StringList", "SecureString"])
 
           # Parameter value (required)
           attribute :value, Resources::Types::String
@@ -42,13 +42,13 @@ module Pangea
           attribute :key_id, Resources::Types::String.optional
 
           # Parameter tier (Standard or Advanced)
-          attribute :tier, Resources::Types::String.enum("Standard", "Advanced").default("Standard")
+          attribute :tier, Resources::Types::String.constrained(included_in: ["Standard", "Advanced"]).default("Standard")
 
           # Allowed pattern for parameter value
           attribute :allowed_pattern, Resources::Types::String.optional
 
           # Data type for parameter
-          attribute :data_type, Resources::Types::String.enum("text", "aws:ec2:image").optional
+          attribute :data_type, Resources::Types::String.constrained(included_in: ["text", "aws:ec2:image"]).optional
 
           # Overwrite existing parameter
           attribute :overwrite, Resources::Types::Bool.default(false)

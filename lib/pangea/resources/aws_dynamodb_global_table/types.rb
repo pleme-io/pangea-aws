@@ -29,39 +29,39 @@ module Pangea
           attribute :name, Resources::Types::String
 
           # Billing mode
-          attribute :billing_mode, Resources::Types::String.enum("PAY_PER_REQUEST", "PROVISIONED").default("PAY_PER_REQUEST")
+          attribute :billing_mode, Resources::Types::String.constrained(included_in: ["PAY_PER_REQUEST", "PROVISIONED"]).default("PAY_PER_REQUEST")
 
           # Replica configurations (required, must have at least 2 regions)
           attribute :replica, Resources::Types::Array.of(
-            Types::Hash.schema(
-              region_name: Types::String,
-              kms_key_id?: Types::String.optional,
-              point_in_time_recovery?: Types::Bool.optional,
-              table_class?: Types::String.enum("STANDARD", "STANDARD_INFREQUENT_ACCESS").optional,
-              global_secondary_index?: Types::Array.of(
-                Types::Hash.schema(
-                  name: Types::String,
-                  read_capacity?: Types::Integer.optional.constrained(gteq: 1),
-                  write_capacity?: Types::Integer.optional.constrained(gteq: 1)
+            Resources::Types::Hash.schema(
+              region_name: Resources::Types::String,
+              kms_key_id?: Resources::Types::String.optional,
+              point_in_time_recovery?: Resources::Types::Bool.optional,
+              table_class?: Resources::Types::String.constrained(included_in: ["STANDARD", "STANDARD_INFREQUENT_ACCESS"]).optional,
+              global_secondary_index?: Resources::Types::Array.of(
+                Resources::Types::Hash.schema(
+                  name: Resources::Types::String,
+                  read_capacity?: Resources::Types::Integer.optional.constrained(gteq: 1),
+                  write_capacity?: Resources::Types::Integer.optional.constrained(gteq: 1)
                 )
               ).optional,
-              tags?: Types::AwsTags.optional
+              tags?: Resources::Types::AwsTags.optional
             )
           ).constrained(min_size: 2)
 
           # Stream specification
           attribute :stream_enabled, Resources::Types::Bool.optional
-          attribute :stream_view_type, Resources::Types::String.enum("KEYS_ONLY", "NEW_IMAGE", "OLD_IMAGE", "NEW_AND_OLD_IMAGES").optional
+          attribute :stream_view_type, Resources::Types::String.constrained(included_in: ["KEYS_ONLY", "NEW_IMAGE", "OLD_IMAGE", "NEW_AND_OLD_IMAGES"]).optional
 
           # Server-side encryption
           attribute :server_side_encryption, Resources::Types::Hash.schema(
-            enabled: Types::Bool.default(true),
-            kms_key_id?: Types::String.optional
+            enabled: Resources::Types::Bool.default(true),
+            kms_key_id?: Resources::Types::String.optional
           ).optional
 
           # Time-based recovery
           attribute :point_in_time_recovery, Resources::Types::Hash.schema(
-            enabled: Types::Bool.default(false)
+            enabled: Resources::Types::Bool.default(false)
           ).optional
 
           # Tags to apply to the global table

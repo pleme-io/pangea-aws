@@ -48,7 +48,7 @@ module Pangea
           )
 
           # Input class for billing and performance
-          attribute :input_class, Resources::Types::String.enum('STANDARD', 'SINGLE_PIPELINE').default('STANDARD')
+          attribute :input_class, Resources::Types::String.constrained(included_in: ['STANDARD', 'SINGLE_PIPELINE']).default('STANDARD')
 
           # Input destinations for redundancy
           attribute :destinations, Resources::Types::Array.of(
@@ -66,13 +66,13 @@ module Pangea
                 audio_channel_pairs?: Resources::Types::Array.of(
                   Resources::Types::Hash.schema(
                     id: Resources::Types::Integer,
-                    profile?: Resources::Types::String.enum('CBR-1000', 'CBR-2000', 'VBR-1000', 'VBR-2000').optional
+                    profile?: Resources::Types::String.constrained(included_in: ['CBR-1000', 'CBR-2000', 'VBR-1000', 'VBR-2000']).optional
                   )
                 ).optional,
-                codec?: Resources::Types::String.enum('MPEG2', 'AVC', 'HEVC').optional,
+                codec?: Resources::Types::String.constrained(included_in: ['MPEG2', 'AVC', 'HEVC']).optional,
                 max_bitrate?: Resources::Types::Integer.optional,
-                resolution?: Resources::Types::String.enum('SD', 'HD', 'UHD').optional,
-                scan_type?: Resources::Types::String.enum('PROGRESSIVE', 'INTERLACED').optional
+                resolution?: Resources::Types::String.constrained(included_in: ['SD', 'HD', 'UHD']).optional,
+                scan_type?: Resources::Types::String.constrained(included_in: ['PROGRESSIVE', 'INTERLACED']).optional
               ).optional
             )
           ).default([].freeze)

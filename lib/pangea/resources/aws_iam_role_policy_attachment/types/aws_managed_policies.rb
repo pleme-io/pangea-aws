@@ -19,6 +19,10 @@ module Pangea
     module AWS
       module Types
         # Common AWS managed policies for different use cases
+
+            READ_ONLY = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+
+          # Service-specific policies
         module AwsManagedPolicies
           # Administrative access
           ADMINISTRATOR_ACCESS = "arn:aws:iam::aws:policy/AdministratorAccess"
@@ -29,10 +33,8 @@ module Pangea
           READ_ONLY_ACCESS = "arn:aws:iam::aws:policy/ReadOnlyAccess"
           SECURITY_AUDIT = "arn:aws:iam::aws:policy/SecurityAudit"
 
-          # Service-specific policies
           module S3
             FULL_ACCESS = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-            READ_ONLY = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
           end
 
           module EC2

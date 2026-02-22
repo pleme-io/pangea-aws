@@ -20,6 +20,7 @@ module Pangea
     module AWS
       module Types
         # Individual parameter definition for DB parameter groups
+        unless const_defined?(:DbParameter)
         class DbParameter < Dry::Struct
           # Parameter name
           attribute :name, Resources::Types::String
@@ -28,7 +29,7 @@ module Pangea
           attribute :value, Resources::Types::String
 
           # Apply method for parameter application
-          attribute :apply_method, Resources::Types::String.enum("immediate", "pending-reboot").optional
+          attribute :apply_method, Resources::Types::String.constrained(included_in: ["immediate", "pending-reboot"]).optional
 
           def self.new(attributes = {})
             attrs = super(attributes)
@@ -50,6 +51,7 @@ module Pangea
           def applies_immediately?
             apply_method == "immediate" || apply_method.nil?
           end
+        end
         end
       end
     end

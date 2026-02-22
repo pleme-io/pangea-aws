@@ -21,6 +21,7 @@ module Pangea
         class KinesisAnalyticsApplicationAttributes
           # Configuration type definitions for Kinesis Analytics Application
           module Configs
+            include Pangea::Resources::Types
             S3ContentLocation = Hash.schema(
               bucket_arn: String,
               file_key: String,
@@ -35,24 +36,24 @@ module Pangea
 
             ApplicationCodeConfiguration = Hash.schema(
               code_content: CodeContent,
-              code_content_type: String.enum('PLAINTEXT', 'ZIPFILE')
+              code_content_type: String.constrained(included_in: ['PLAINTEXT', 'ZIPFILE'])
             )
 
             CheckpointConfiguration = Hash.schema(
-              configuration_type: String.enum('DEFAULT', 'CUSTOM'),
+              configuration_type: String.constrained(included_in: ['DEFAULT', 'CUSTOM']),
               checkpointing_enabled?: Bool.optional,
               checkpoint_interval?: Integer.constrained(gteq: 1000, lteq: 300_000).optional,
               min_pause_between_checkpoints?: Integer.constrained(gteq: 0, lteq: 300_000).optional
             )
 
             MonitoringConfiguration = Hash.schema(
-              configuration_type: String.enum('DEFAULT', 'CUSTOM'),
-              log_level?: String.enum('INFO', 'WARN', 'ERROR', 'DEBUG').optional,
-              metrics_level?: String.enum('APPLICATION', 'TASK', 'OPERATOR', 'PARALLELISM').optional
+              configuration_type: String.constrained(included_in: ['DEFAULT', 'CUSTOM']),
+              log_level?: String.constrained(included_in: ['INFO', 'WARN', 'ERROR', 'DEBUG']).optional,
+              metrics_level?: String.constrained(included_in: ['APPLICATION', 'TASK', 'OPERATOR', 'PARALLELISM']).optional
             )
 
             ParallelismConfiguration = Hash.schema(
-              configuration_type: String.enum('DEFAULT', 'CUSTOM'),
+              configuration_type: String.constrained(included_in: ['DEFAULT', 'CUSTOM']),
               parallelism?: Integer.constrained(gteq: 1, lteq: 1000).optional,
               parallelism_per_kpu?: Integer.constrained(gteq: 1, lteq: 4).optional,
               auto_scaling_enabled?: Bool.optional
@@ -74,10 +75,14 @@ module Pangea
               ))
             )
 
+
+            unless const_defined?(:VpcConfiguration)
             VpcConfiguration = Hash.schema(
               subnet_ids: Array.of(String).constrained(min_size: 2, max_size: 16),
               security_group_ids: Array.of(String).constrained(min_size: 1, max_size: 5)
             )
+
+            end
           end
         end
       end

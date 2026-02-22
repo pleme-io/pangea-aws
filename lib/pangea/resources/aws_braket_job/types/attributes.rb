@@ -19,7 +19,7 @@ module Pangea
             script_mode_config: Resources::Types::Hash.schema(
               entry_point: Resources::Types::String,
               s3_uri: Resources::Types::String,
-              compression_type?: Resources::Types::String.enum('NONE', 'GZIP').optional
+              compression_type?: Resources::Types::String.constrained(included_in: ['NONE', 'GZIP']).optional
             )
           )
 
@@ -58,12 +58,12 @@ module Pangea
               data_source: Resources::Types::Hash.schema(
                 s3_data_source: Resources::Types::Hash.schema(
                   s3_uri: Resources::Types::String,
-                  s3_data_type?: Resources::Types::String.enum('ManifestFile', 'S3Prefix').optional
+                  s3_data_type?: Resources::Types::String.constrained(included_in: ['ManifestFile', 'S3Prefix']).optional
                 )
               ),
               content_type?: Resources::Types::String.optional,
-              compression_type?: Resources::Types::String.enum('None', 'Gzip').optional,
-              record_wrapper_type?: Resources::Types::String.enum('None', 'RecordIO').optional
+              compression_type?: Resources::Types::String.constrained(included_in: ['None', 'Gzip']).optional,
+              record_wrapper_type?: Resources::Types::String.constrained(included_in: ['None', 'RecordIO']).optional
             )
           ).optional
 

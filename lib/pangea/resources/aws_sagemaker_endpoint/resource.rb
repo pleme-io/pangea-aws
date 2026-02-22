@@ -120,7 +120,8 @@ module Pangea
       #       RollbackEnabled: "true"
       #     }
       #   })
-      class SageMakerEndpoint < Base
+      SageMakerEndpoint = Struct.new(:name, :attributes, keyword_init: true)
+      class SageMakerEndpoint
         def self.resource_type
           'aws_sagemaker_endpoint'
         end
@@ -153,6 +154,3 @@ module Pangea
     end
   end
 end
-
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

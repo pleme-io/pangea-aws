@@ -45,7 +45,7 @@ module Pangea
           if budget_attrs.time_period
             time_period do
               start budget_attrs.time_period[:start] if budget_attrs.time_period[:start]
-              end budget_attrs.time_period[:end] if budget_attrs.time_period[:end]
+              send(:end, budget_attrs.time_period[:end]) if budget_attrs.time_period[:end]
             end
           end
           
@@ -195,5 +195,3 @@ module Pangea
   end
 end
 
-# Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

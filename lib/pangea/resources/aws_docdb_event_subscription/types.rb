@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -26,8 +25,8 @@ module Pangea
         attribute :name, Resources::Types::String
         attribute :sns_topic_arn, Resources::Types::String
         attribute :source_type, Resources::Types::String.optional
-        attribute :source_ids, Resources::Types::Array.of(Types::String).default([].freeze).optional
-        attribute :event_categories, Resources::Types::Array.of(Types::String).default([].freeze).optional
+        attribute :source_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
+        attribute :event_categories, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         attribute :enabled, Resources::Types::Bool.optional
         
         # Tags to apply to the resource
@@ -50,4 +49,3 @@ module Pangea
       end
     end
   end
-end

@@ -31,17 +31,17 @@ module Pangea
 
           transform_keys(&:to_sym)
 
-          attribute :name, String.constrained(
+          attribute :name, Resources::Types::String.constrained(
             min_size: 1,
             max_size: 256,
             format: /\A[a-zA-Z0-9_\.\-]+\z/
           )
-          attribute :data_retention_in_hours, Integer.constrained(gteq: 0, lteq: 87600).default(0)
-          attribute :device_name, String.constrained(min_size: 1, max_size: 128).optional
-          attribute :media_type, String.constrained(
+          attribute :data_retention_in_hours, Resources::Types::Integer.constrained(gteq: 0, lteq: 87600).default(0)
+          attribute :device_name, Resources::Types::String.constrained(min_size: 1, max_size: 128).optional
+          attribute :media_type, Resources::Types::String.constrained(
             format: /\Avideo\/[a-zA-Z0-9\-\+\.]+\z/
           ).default("video/h264")
-          attribute :kms_key_id, String.optional
+          attribute :kms_key_id, Resources::Types::String.optional
           attribute :tags, Resources::Types::AwsTags
 
           # Custom validation

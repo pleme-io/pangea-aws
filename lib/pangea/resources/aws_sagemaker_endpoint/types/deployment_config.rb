@@ -23,27 +23,27 @@ module Pangea
         include Dry.Types()
 
         # SageMaker Endpoint deployment configuration for updates
-        SageMakerDeploymentConfig = Hash.schema(
-          blue_green_update_policy?: Hash.schema(
-            traffic_routing_configuration: Hash.schema(
-              type: String.enum('ALL_AT_ONCE', 'CANARY', 'LINEAR'),
-              wait_interval_in_seconds: Integer.constrained(gteq: 0, lteq: 3600),
-              canary_size?: Hash.schema(
-                type: String.enum('INSTANCE_COUNT', 'CAPACITY_PERCENT'),
-                value: Integer.constrained(gteq: 1, lteq: 100)
+        SageMakerDeploymentConfig = Resources::Types::Hash.schema(
+          blue_green_update_policy?: Resources::Types::Hash.schema(
+            traffic_routing_configuration: Resources::Types::Hash.schema(
+              type: Resources::Types::String.constrained(included_in: ['ALL_AT_ONCE', 'CANARY', 'LINEAR']),
+              wait_interval_in_seconds: Resources::Types::Integer.constrained(gteq: 0, lteq: 3600),
+              canary_size?: Resources::Types::Hash.schema(
+                type: Resources::Types::String.constrained(included_in: ['INSTANCE_COUNT', 'CAPACITY_PERCENT']),
+                value: Resources::Types::Integer.constrained(gteq: 1, lteq: 100)
               ).optional,
-              linear_step_size?: Hash.schema(
-                type: String.enum('INSTANCE_COUNT', 'CAPACITY_PERCENT'),
-                value: Integer.constrained(gteq: 1, lteq: 100)
+              linear_step_size?: Resources::Types::Hash.schema(
+                type: Resources::Types::String.constrained(included_in: ['INSTANCE_COUNT', 'CAPACITY_PERCENT']),
+                value: Resources::Types::Integer.constrained(gteq: 1, lteq: 100)
               ).optional
             ),
-            termination_wait_in_seconds?: Integer.constrained(gteq: 0, lteq: 3600).optional,
-            maximum_execution_timeout_in_seconds?: Integer.constrained(gteq: 600, lteq: 14400).optional
+            termination_wait_in_seconds?: Resources::Types::Integer.constrained(gteq: 0, lteq: 3600).optional,
+            maximum_execution_timeout_in_seconds?: Resources::Types::Integer.constrained(gteq: 600, lteq: 14400).optional
           ).optional,
-          auto_rollback_configuration?: Hash.schema(
-            alarms?: Array.of(
-              Hash.schema(
-                alarm_name: String
+          auto_rollback_configuration?: Resources::Types::Hash.schema(
+            alarms?: Resources::Types::Array.of(
+              Resources::Types::Hash.schema(
+                alarm_name: Resources::Types::String
               )
             ).optional
           ).optional

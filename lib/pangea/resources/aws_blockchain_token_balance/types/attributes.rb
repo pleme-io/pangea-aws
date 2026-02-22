@@ -28,14 +28,12 @@ module Pangea
           transform_keys(&:to_sym)
 
           # Blockchain network (required)
-          attribute :blockchain_network, Resources::Types::String.enum(
-            'ETHEREUM_MAINNET',
+          attribute :blockchain_network, Resources::Types::String.constrained(included_in: ['ETHEREUM_MAINNET',
             'ETHEREUM_GOERLI_TESTNET',
             'BITCOIN_MAINNET',
             'BITCOIN_TESTNET',
             'POLYGON_MAINNET',
-            'POLYGON_MUMBAI_TESTNET'
-          )
+            'POLYGON_MUMBAI_TESTNET'])
 
           # Wallet address (optional, but required if token_contract_address not provided)
           attribute? :wallet_address, Resources::Types::String.optional
@@ -47,13 +45,11 @@ module Pangea
           attribute? :at_block_number, Resources::Types::Integer.constrained(gteq: 0).optional
 
           # Token standard (optional)
-          attribute? :token_standard, Resources::Types::String.enum(
-            'ERC20',
+          attribute? :token_standard, Resources::Types::String.constrained(included_in: ['ERC20',
             'ERC721',
             'ERC1155',
             'BEP20',
-            'NATIVE'
-          ).optional
+            'NATIVE']).optional
 
           def self.new(attributes = {})
             attrs = super(attributes)

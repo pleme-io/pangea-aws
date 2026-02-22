@@ -23,9 +23,10 @@ module Pangea
     module AWS
       module Types
         # Rule types for S3 replication configuration
+
         module S3BucketReplicationRule
           # Status enum type (without default)
-          Status = Resources::Types::String.enum('Enabled', 'Disabled')
+          Status = Resources::Types::String.constrained(included_in: ['Enabled', 'Disabled'])
 
           # Status with default values
           StatusDefaultEnabled = Resources::Types::String.default('Enabled').enum('Enabled', 'Disabled')
@@ -71,6 +72,8 @@ module Pangea
 
           # Array of rules type
           Rules = Resources::Types::Array.of(Rule).constrained(min_size: 1)
+
+
         end
       end
     end

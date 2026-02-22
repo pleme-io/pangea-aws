@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -45,7 +44,7 @@ module Pangea
         attribute :cluster_name, Resources::Types::String
         
         # Capacity providers to associate with the cluster
-        attribute :capacity_providers, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :capacity_providers, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         
         # Default capacity provider strategy
         attribute :default_capacity_provider_strategy, Resources::Types::Array.of(EcsDefaultCapacityProviderStrategy).default([].freeze)
@@ -168,4 +167,3 @@ module Pangea
       end
     end
   end
-end

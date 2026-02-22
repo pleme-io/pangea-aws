@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -22,6 +21,93 @@ module Pangea
     module AWS
       module Types
         # WorkSpaces Workspace resource attributes with validation
+
+        class WorkspacePropertiesType < Dry::Struct
+          transform_keys(&:to_sym)
+          
+          attribute :compute_type_name, Resources::Types::String.constrained(included_in: ['VALUE',
+            'STANDARD', 
+            'PERFORMANCE',
+            'POWER',
+            'POWERPRO',
+            'GRAPHICS',
+            'GRAPHICSPRO']).optional
+          
+          attribute :root_volume_size_gib, Resources::Types::Integer.constrained(
+            gteq: 80,
+            lteq: 2000
+          ).optional
+          
+          attribute :user_volume_size_gib, Resources::Types::Integer.constrained(
+            gteq: 10,
+            lteq: 2000
+          ).optional
+          
+          attribute :running_mode, Resources::Types::String.constrained(included_in: ['AUTO_STOP',
+            'ALWAYS_ON']).default('AUTO_STOP')
+          
+          attribute :running_mode_auto_stop_timeout_in_minutes, Resources::Types::Integer.constrained(
+            included_in: [60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720]
+          ).optional
+          
+          # Validation for auto stop timeout when running mode is AUTO_STOP
+          def self.new(attributes)
+            attrs = attributes.is_a?(Hash) ? attributes : {}
+            
+            # If running mode is AUTO_STOP, timeout should be specified
+            if attrs[:running_mode] == 'AUTO_STOP' && !attrs[:running_mode_auto_stop_timeout_in_minutes]
+              attrs[:running_mode_auto_stop_timeout_in_minutes] = 60 # Default to 60 minutes
+            end
+            
+            # If running mode is ALWAYS_ON, timeout should not be specified
+            if attrs[:running_mode] == 'ALWAYS_ON' && attrs[:running_mode_auto_stop_timeout_in_minutes]
+              raise Dry::Struct::Error, "running_mode_auto_stop_timeout_in_minutes cannot be set when running_mode is ALWAYS_ON"
+            end
+            
+            super(attrs)
+          end
+          
+          # Helper methods
+          def auto_stop_enabled?
+            running_mode == 'AUTO_STOP'
+          end
+          
+          def always_on?
+            running_mode == 'ALWAYS_ON'
+          end
+          
+          def monthly_cost_estimate
+            # Rough estimates based on compute type and running mode
+            base_cost = case compute_type_name
+                       when 'VALUE' then 21
+                       when 'STANDARD' then 25
+                       when 'PERFORMANCE' then 35
+                       when 'POWER' then 44
+                       when 'POWERPRO' then 88
+                       when 'GRAPHICS' then 145
+                       when 'GRAPHICSPRO' then 251
+                       else 25 # Default to standard
+                       end
+            
+            # Add hourly costs for always-on mode (assuming 730 hours/month)
+            if always_on?
+              hourly_cost = case compute_type_name
+                           when 'VALUE' then 0.17
+                           when 'STANDARD' then 0.21
+                           when 'PERFORMANCE' then 0.29
+                           when 'POWER' then 0.52
+                           when 'POWERPRO' then 0.74
+                           when 'GRAPHICS' then 1.75
+                           when 'GRAPHICSPRO' then 2.42
+                           else 0.21
+                           end
+              base_cost + (hourly_cost * 730)
+            else
+              base_cost
+            end
+          end
+        end
+
         class WorkspacesWorkspaceAttributes < Dry::Struct
           transform_keys(&:to_sym)
           
@@ -87,97 +173,7 @@ module Pangea
             end
           end
         end
-        
-        # WorkSpace properties configuration
-        class WorkspacePropertiesType < Dry::Struct
-          transform_keys(&:to_sym)
-          
-          attribute :compute_type_name, Resources::Types::String.enum(
-            'VALUE',
-            'STANDARD', 
-            'PERFORMANCE',
-            'POWER',
-            'POWERPRO',
-            'GRAPHICS',
-            'GRAPHICSPRO'
-          ).optional
-          
-          attribute :root_volume_size_gib, Resources::Types::Integer.constrained(
-            gteq: 80,
-            lteq: 2000
-          ).optional
-          
-          attribute :user_volume_size_gib, Resources::Types::Integer.constrained(
-            gteq: 10,
-            lteq: 2000
-          ).optional
-          
-          attribute :running_mode, Resources::Types::String.enum(
-            'AUTO_STOP',
-            'ALWAYS_ON'
-          ).default('AUTO_STOP')
-          
-          attribute :running_mode_auto_stop_timeout_in_minutes, Resources::Types::Integer.constrained(
-            included_in: [60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720]
-          ).optional
-          
-          # Validation for auto stop timeout when running mode is AUTO_STOP
-          def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
-            
-            # If running mode is AUTO_STOP, timeout should be specified
-            if attrs[:running_mode] == 'AUTO_STOP' && !attrs[:running_mode_auto_stop_timeout_in_minutes]
-              attrs[:running_mode_auto_stop_timeout_in_minutes] = 60 # Default to 60 minutes
-            end
-            
-            # If running mode is ALWAYS_ON, timeout should not be specified
-            if attrs[:running_mode] == 'ALWAYS_ON' && attrs[:running_mode_auto_stop_timeout_in_minutes]
-              raise Dry::Struct::Error, "running_mode_auto_stop_timeout_in_minutes cannot be set when running_mode is ALWAYS_ON"
-            end
-            
-            super(attrs)
-          end
-          
-          # Helper methods
-          def auto_stop_enabled?
-            running_mode == 'AUTO_STOP'
-          end
-          
-          def always_on?
-            running_mode == 'ALWAYS_ON'
-          end
-          
-          def monthly_cost_estimate
-            # Rough estimates based on compute type and running mode
-            base_cost = case compute_type_name
-                       when 'VALUE' then 21
-                       when 'STANDARD' then 25
-                       when 'PERFORMANCE' then 35
-                       when 'POWER' then 44
-                       when 'POWERPRO' then 88
-                       when 'GRAPHICS' then 145
-                       when 'GRAPHICSPRO' then 251
-                       else 25 # Default to standard
-                       end
-            
-            # Add hourly costs for always-on mode (assuming 730 hours/month)
-            if always_on?
-              hourly_cost = case compute_type_name
-                           when 'VALUE' then 0.17
-                           when 'STANDARD' then 0.21
-                           when 'PERFORMANCE' then 0.29
-                           when 'POWER' then 0.52
-                           when 'POWERPRO' then 0.74
-                           when 'GRAPHICS' then 1.75
-                           when 'GRAPHICSPRO' then 2.42
-                           else 0.21
-                           end
-              base_cost + (hourly_cost * 730)
-            else
-              base_cost
-            end
-          end
-        end
+
       end
     end
   end

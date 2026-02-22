@@ -25,26 +25,26 @@ module Pangea
         class WafV2WebAclAttributes < Dry::Struct
           transform_keys(&:to_sym)
 
-          attribute :name, String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
+          attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
           attribute :scope, Resources::Types::WafV2Scope
-          attribute :default_action, WafV2DefaultAction
-          attribute :description, String.constrained(max_size: 256).optional
-          attribute :rules, Array.of(WafV2Rule).default([].freeze)
+          attribute :default_action, Resources::Types::WafV2DefaultAction
+          attribute :description, Resources::Types::String.constrained(max_size: 256).optional
+          attribute :rules, Resources::Types::Array.of(WafV2Rule).default([].freeze)
           attribute :visibility_config, WafV2VisibilityConfig
           attribute :tags, Resources::Types::AwsTags
-          attribute :custom_response_bodies, Hash.map(
-            String.constrained(format: /\A[a-zA-Z0-9_-]{1,64}\z/),
-            Hash.schema(
-              content: String.constrained(max_size: 10_240),
-              content_type: String.enum('TEXT_PLAIN', 'TEXT_HTML', 'APPLICATION_JSON')
+          attribute :custom_response_bodies, Resources::Types::Hash.map(
+            Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,64}\z/),
+            Resources::Types::Hash.schema(
+              content: Resources::Types::String.constrained(max_size: 10_240),
+              content_type: Resources::Types::String.constrained(included_in: ['TEXT_PLAIN', 'TEXT_HTML', 'APPLICATION_JSON'])
             )
           ).default({}.freeze)
-          attribute :token_domains, Array.of(String.constrained(format: /\A[a-zA-Z0-9.-]+\z/)).default([].freeze)
-          attribute :challenge_config, Hash.schema(
-            immunity_time_property: Hash.schema(immunity_time: Integer.constrained(gteq: 60, lteq: 259_200))
+          attribute :token_domains, Resources::Types::Array.of(Resources::Types::String.constrained(format: /\A[a-zA-Z0-9.-]+\z/)).default([].freeze)
+          attribute :challenge_config, Resources::Types::Hash.schema(
+            immunity_time_property: Resources::Types::Hash.schema(immunity_time: Resources::Types::Integer.constrained(gteq: 60, lteq: 259_200))
           ).optional
-          attribute :captcha_config, Hash.schema(
-            immunity_time_property: Hash.schema(immunity_time: Integer.constrained(gteq: 60, lteq: 259_200))
+          attribute :captcha_config, Resources::Types::Hash.schema(
+            immunity_time_property: Resources::Types::Hash.schema(immunity_time: Resources::Types::Integer.constrained(gteq: 60, lteq: 259_200))
           ).optional
 
           def self.new(attributes)

@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 
 module Pangea
@@ -21,22 +20,20 @@ module Pangea
     module AWS
       module S3AccessPointPolicy
         # Common types for S3 Access Point Policy configurations
-        class Types < Dry::Types::Module
-          include Dry.Types()
-
+        module Types
           # S3 Access Point ARN constraint
-          AccessPointArn = String.constrained(
+          unless const_defined?(:AccessPointArn)
+          AccessPointArn = Resources::Types::String.constrained(
             format: /\Aarn:aws:s3:[a-z0-9\-]*:[0-9]{12}:accesspoint\/[a-z0-9\-]+\z/
           )
+          end
         end
 
         # S3 Access Point Policy attributes with comprehensive validation
         class S3AccessPointPolicyAttributes < Dry::Struct
-          include Types[self]
-          
           # Required attributes
-          attribute :access_point_arn, AccessPointArn
-          attribute :policy, String
+          attribute :access_point_arn, Types::AccessPointArn
+          attribute :policy, Resources::Types::String
           
           # Computed properties
           def policy_document

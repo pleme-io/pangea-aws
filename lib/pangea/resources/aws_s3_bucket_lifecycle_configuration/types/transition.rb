@@ -18,6 +18,7 @@ module Pangea
         ].freeze
 
         # S3 lifecycle rule transition
+        unless const_defined?(:LifecycleTransition)
         class LifecycleTransition < Dry::Struct
           attribute :date, Resources::Types::String.optional
           attribute :days, Resources::Types::Integer.optional
@@ -37,6 +38,7 @@ module Pangea
 
             attrs
           end
+        end
         end
 
         # S3 lifecycle rule noncurrent version transition

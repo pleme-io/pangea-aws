@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -22,6 +21,57 @@ module Pangea
     module AWS
       module Types
         # WorkSpaces IP Group resource attributes with validation
+
+        class IpRuleType < Dry::Struct
+          transform_keys(&:to_sym)
+          
+          attribute :ip_rule, Resources::Types::CidrBlock
+          attribute :rule_desc, Resources::Types::String.constrained(
+            max_size: 100
+          ).default('')
+          
+          # Validation for CIDR format and range
+          def self.new(attributes)
+            attrs = attributes.is_a?(Hash) ? attributes : {}
+            
+            # Additional CIDR validation
+            if attrs[:ip_rule]
+              cidr_parts = attrs[:ip_rule].split('/')
+              if cidr_parts.length == 2
+                prefix = cidr_parts[1].to_i
+                
+                # WorkSpaces supports /16 to /32 for IP groups
+                if prefix < 16 || prefix > 32
+                  raise Dry::Struct::Error, "CIDR prefix must be between /16 and /32 for WorkSpaces IP groups"
+                end
+              end
+            end
+            
+            super(attrs)
+          end
+          
+          # Helper methods
+          def cidr_prefix
+            ip_rule.split('/')[1].to_i
+          end
+          
+          def network_address
+            ip_rule.split('/')[0]
+          end
+          
+          def is_single_host?
+            cidr_prefix == 32
+          end
+          
+          def is_broad_range?
+            cidr_prefix <= 20  # /20 or broader
+          end
+          
+          def estimated_hosts
+            # Calculate number of hosts in the CIDR range
+            32 - cidr_prefix == 0 ? 1 : 2 ** (32 - cidr_prefix) - 2
+          end
+        end
         class WorkspacesIpGroupAttributes < Dry::Struct
           transform_keys(&:to_sym)
           
@@ -93,56 +143,6 @@ module Pangea
         end
         
         # IP rule configuration
-        class IpRuleType < Dry::Struct
-          transform_keys(&:to_sym)
-          
-          attribute :ip_rule, Resources::Types::CidrBlock
-          attribute :rule_desc, Resources::Types::String.constrained(
-            max_size: 100
-          ).default('')
-          
-          # Validation for CIDR format and range
-          def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
-            
-            # Additional CIDR validation
-            if attrs[:ip_rule]
-              cidr_parts = attrs[:ip_rule].split('/')
-              if cidr_parts.length == 2
-                prefix = cidr_parts[1].to_i
-                
-                # WorkSpaces supports /16 to /32 for IP groups
-                if prefix < 16 || prefix > 32
-                  raise Dry::Struct::Error, "CIDR prefix must be between /16 and /32 for WorkSpaces IP groups"
-                end
-              end
-            end
-            
-            super(attrs)
-          end
-          
-          # Helper methods
-          def cidr_prefix
-            ip_rule.split('/')[1].to_i
-          end
-          
-          def network_address
-            ip_rule.split('/')[0]
-          end
-          
-          def is_single_host?
-            cidr_prefix == 32
-          end
-          
-          def is_broad_range?
-            cidr_prefix <= 20  # /20 or broader
-          end
-          
-          def estimated_hosts
-            # Calculate number of hosts in the CIDR range
-            32 - cidr_prefix == 0 ? 1 : 2 ** (32 - cidr_prefix) - 2
-          end
-        end
       end
     end
   end

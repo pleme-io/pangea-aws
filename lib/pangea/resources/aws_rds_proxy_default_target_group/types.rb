@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/types'
 
 module Pangea
@@ -30,7 +29,7 @@ module Pangea
 
         # Session pinning filters to reduce connection reuse
         attribute :session_pinning_filters, Resources::Types::Array.of(
-          Types::String.enum("EXCLUDE_VARIABLE_SETS")
+          Resources::Types::String.constrained(included_in: ["EXCLUDE_VARIABLE_SETS"])
         ).default([].freeze)
 
         # Initialize query for database connections
@@ -118,4 +117,3 @@ module Pangea
       end
     end
   end
-end

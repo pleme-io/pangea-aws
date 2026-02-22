@@ -15,11 +15,8 @@
 # limitations under the License.
 
 require 'pangea/resources/types'
-
-require_relative 'types/properties'
-require_relative 'types/recommendations'
-require_relative 'types/templates'
-require_relative 'types/analysis'
+require_relative '../types/aws/core'
+require_relative '../types/aws/iot'
 
 module Pangea
   module Resources
@@ -27,6 +24,11 @@ module Pangea
       module Types
         # Type-safe attributes for AWS IoT Thing Type resources
         class IotThingTypeAttributes < Dry::Struct
+          require_relative 'types/properties'
+          require_relative 'types/recommendations'
+          require_relative 'types/templates'
+          require_relative 'types/analysis'
+
           include Properties
           include Recommendations
           include Templates

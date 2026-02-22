@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'pangea'
+require 'pangea-core'
 require 'terraform-synthesizer'
 
 # AWS types

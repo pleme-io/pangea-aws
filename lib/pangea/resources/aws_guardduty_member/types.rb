@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -26,10 +25,10 @@ module Pangea
           transform_keys(&:to_sym)
           
           attribute :account_id, Resources::Types::AwsAccountId
-          attribute :detector_id, String
+          attribute :detector_id, Resources::Types::String
           attribute :email, Resources::Types::GuardDutyInvitationEmail
           attribute :invite, Resources::Types::Bool.default(true)
-          attribute :invitation_message, String.constrained(max_size: 1000).optional
+          attribute :invitation_message, Resources::Types::String.constrained(max_size: 1000).optional
           attribute :disable_email_notification, Resources::Types::Bool.default(false)
           
           # Custom validation

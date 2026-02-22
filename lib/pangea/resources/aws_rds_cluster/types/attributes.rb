@@ -18,8 +18,8 @@ module Pangea
           attribute :manage_master_user_password, Resources::Types::Bool.default(true)
           attribute :master_user_secret_kms_key_id, Resources::Types::String.optional
           attribute :db_subnet_group_name, Resources::Types::String.optional
-          attribute :vpc_security_group_ids, Resources::Types::Array.of(Types::String).default([].freeze)
-          attribute :availability_zones, Resources::Types::Array.of(Types::String).optional
+          attribute :vpc_security_group_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
+          attribute :availability_zones, Resources::Types::Array.of(Resources::Types::String).optional
           attribute :db_cluster_parameter_group_name, Resources::Types::String.optional
           attribute :port, Resources::Types::Integer.optional
           attribute :backup_retention_period, Resources::Types::Integer.default(7).constrained(gteq: 1, lteq: 35)
@@ -37,7 +37,7 @@ module Pangea
           attribute? :restore_to_point_in_time, RestoreToPointInTime.optional
           attribute :snapshot_identifier, Resources::Types::String.optional
           attribute :source_region, Resources::Types::String.optional
-          attribute :enabled_cloudwatch_logs_exports, Resources::Types::Array.of(Types::String).default([].freeze)
+          attribute :enabled_cloudwatch_logs_exports, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
           attribute :monitoring_interval, Resources::Types::Integer.default(0).constrained(gteq: 0, lteq: 60)
           attribute :monitoring_role_arn, Resources::Types::String.optional
           attribute :performance_insights_enabled, Resources::Types::Bool.default(false)

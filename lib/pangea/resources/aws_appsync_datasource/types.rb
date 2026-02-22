@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -22,69 +21,67 @@ module Pangea
     module AWS
       module Types
         # AppSync data source types
-        AppSyncDataSourceType = String.enum(
-          'AWS_LAMBDA',
+        AppSyncDataSourceType = Resources::Types::String.constrained(included_in: ['AWS_LAMBDA',
           'AMAZON_DYNAMODB',
           'AMAZON_ELASTICSEARCH',
           'AMAZON_OPENSEARCH_SERVICE',
           'NONE',
           'HTTP',
           'RELATIONAL_DATABASE',
-          'AMAZON_EVENTBRIDGE'
-        )
+          'AMAZON_EVENTBRIDGE'])
 
         # DynamoDB config for AppSync data source
-        AppSyncDynamodbConfig = Hash.schema(
-          table_name: String,
+        AppSyncDynamodbConfig = Resources::Types::Hash.schema(
+          table_name: Resources::Types::String,
           region?: Resources::Types::AwsRegion.optional,
           use_caller_credentials?: Resources::Types::Bool.optional,
           versioned?: Resources::Types::Bool.optional,
-          delta_sync_config?: Hash.schema(
+          delta_sync_config?: Resources::Types::Hash.schema(
             base_table_ttl?: Resources::Types::Integer.constrained(gteq: 60, lteq: 31536000).optional,
-            delta_sync_table_name?: String.optional,
+            delta_sync_table_name?: Resources::Types::String.optional,
             delta_sync_table_ttl?: Resources::Types::Integer.constrained(gteq: 60, lteq: 31536000).optional
           ).optional
         )
 
         # Lambda config for AppSync data source
-        AppSyncLambdaConfig = Hash.schema(
-          function_arn: String.constrained(format: /\Aarn:aws:lambda:/)
+        AppSyncLambdaConfig = Resources::Types::Hash.schema(
+          function_arn: Resources::Types::String.constrained(format: /\Aarn:aws:lambda:/)
         )
 
         # Elasticsearch/OpenSearch config for AppSync data source
-        AppSyncElasticsearchConfig = Hash.schema(
-          endpoint: String.constrained(format: /\Ahttps?:\/\//),
+        AppSyncElasticsearchConfig = Resources::Types::Hash.schema(
+          endpoint: Resources::Types::String.constrained(format: /\Ahttps?:\/\//),
           region?: Resources::Types::AwsRegion.optional
         )
 
         # HTTP config for AppSync data source  
-        AppSyncHttpConfig = Hash.schema(
-          endpoint: String.constrained(format: /\Ahttps?:\/\//),
-          authorization_config?: Hash.schema(
-            authorization_type: String.enum('AWS_IAM'),
-            aws_iam_config?: Hash.schema(
+        AppSyncHttpConfig = Resources::Types::Hash.schema(
+          endpoint: Resources::Types::String.constrained(format: /\Ahttps?:\/\//),
+          authorization_config?: Resources::Types::Hash.schema(
+            authorization_type: Resources::Types::String.constrained(included_in: ['AWS_IAM']),
+            aws_iam_config?: Resources::Types::Hash.schema(
               signing_region?: Resources::Types::AwsRegion.optional,
-              signing_service_name?: String.optional
+              signing_service_name?: Resources::Types::String.optional
             ).optional
           ).optional
         )
 
         # Relational database config for AppSync data source
-        AppSyncRelationalDatabaseConfig = Hash.schema(
-          database_name?: String.optional,
-          rds_http_endpoint_config?: Hash.schema(
-            aws_secret_store_arn: String.constrained(format: /\Aarn:aws:secretsmanager:/),
-            database_name?: String.optional,
-            db_cluster_identifier: String,
+        AppSyncRelationalDatabaseConfig = Resources::Types::Hash.schema(
+          database_name?: Resources::Types::String.optional,
+          rds_http_endpoint_config?: Resources::Types::Hash.schema(
+            aws_secret_store_arn: Resources::Types::String.constrained(format: /\Aarn:aws:secretsmanager:/),
+            database_name?: Resources::Types::String.optional,
+            db_cluster_identifier: Resources::Types::String,
             region?: Resources::Types::AwsRegion.optional,
-            schema?: String.optional
+            schema?: Resources::Types::String.optional
           ).optional,
-          source_type?: String.enum('RDS_HTTP_ENDPOINT').optional
+          source_type?: Resources::Types::String.constrained(included_in: ['RDS_HTTP_ENDPOINT']).optional
         )
 
         # EventBridge config for AppSync data source
-        AppSyncEventBridgeConfig = Hash.schema(
-          event_bus_arn: String.constrained(format: /\Aarn:aws:events:/)
+        AppSyncEventBridgeConfig = Resources::Types::Hash.schema(
+          event_bus_arn: Resources::Types::String.constrained(format: /\Aarn:aws:events:/)
         )
 
         # AppSync DataSource resource attributes

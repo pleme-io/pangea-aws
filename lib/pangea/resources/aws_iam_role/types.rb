@@ -39,17 +39,17 @@ module Pangea
           # Assume role policy document (required)
           # Can be a Hash or a policy document structure
           attribute :assume_role_policy, Resources::Types::Hash.schema(
-            Version: Types::String.default("2012-10-17"),
-            Statement: Types::Array.of(
-              Types::Hash.schema(
-                Effect: Types::String.enum("Allow", "Deny"),
-                Principal: Types::Hash.schema(
-                  Service?: Types::String | Types::Array.of(Types::String),
-                  AWS?: Types::String | Types::Array.of(Types::String),
-                  Federated?: Types::String | Types::Array.of(Types::String)
+            Version: Resources::Types::String.default("2012-10-17"),
+            Statement: Resources::Types::Array.of(
+              Resources::Types::Hash.schema(
+                Effect: Resources::Types::String.constrained(included_in: ["Allow", "Deny"]),
+                Principal: Resources::Types::Hash.schema(
+                  Service?: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String),
+                  AWS?: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String),
+                  Federated?: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String)
                 ).optional,
-                Action: Types::String | Types::Array.of(Types::String),
-                Condition?: Types::Hash.optional
+                Action: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String),
+                Condition?: Resources::Types::Hash.optional
               )
             )
           )
@@ -135,18 +135,6 @@ module Pangea
         end
 
         # Common IAM policy document structure
-        class IamPolicyDocument < Dry::Struct
-          attribute :Version, Resources::Types::String.default("2012-10-17")
-          attribute :Statement, Resources::Types::Array.of(
-            Types::Hash.schema(
-              Sid?: Types::String.optional,
-              Effect: Types::String.enum("Allow", "Deny"),
-              Action: Types::String | Types::Array.of(Types::String),
-              Resource: Types::String | Types::Array.of(Types::String),
-              Condition?: Types::Hash.optional
-            )
-          )
-        end
       end
     end
   end

@@ -13,9 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require "dry-struct"
-require "pangea/types"
+require 'pangea/resources/types'
 
 module Pangea
   module Resources
@@ -23,39 +22,40 @@ module Pangea
       module Types
         # Campaign hook for Lambda integration
         class CampaignHook < Dry::Struct
-          attribute :lambda_function_name?, Pangea::Types::String
-          attribute :mode?, Pangea::Types::String.enum("DELIVERY", "FILTER")
-          attribute :web_url?, Pangea::Types::String
+          attribute :lambda_function_name?, Pangea::Resources::Types::String
+          attribute :mode?, Pangea::Resources::Types::String.constrained(included_in: ["DELIVERY", "FILTER"])
+          attribute :web_url?, Pangea::Resources::Types::String
         end
 
         # Quiet time configuration
         class QuietTime < Dry::Struct
-          attribute :end?, Pangea::Types::String  # HH:MM format
-          attribute :start?, Pangea::Types::String  # HH:MM format
+          attribute :end?, Pangea::Resources::Types::String  # HH:MM format
+          attribute :start?, Pangea::Resources::Types::String  # HH:MM format
         end
 
         # Application limits
         class Limits < Dry::Struct
-          attribute :daily?, Pangea::Types::Integer
-          attribute :maximum_duration?, Pangea::Types::Integer
-          attribute :messages_per_second?, Pangea::Types::Integer
-          attribute :total?, Pangea::Types::Integer
+          attribute :daily?, Pangea::Resources::Types::Integer
+          attribute :maximum_duration?, Pangea::Resources::Types::Integer
+          attribute :messages_per_second?, Pangea::Resources::Types::Integer
+          attribute :total?, Pangea::Resources::Types::Integer
         end
 
         # Main attributes for Pinpoint app
+        unless const_defined?(:Attributes)
         class Attributes < Dry::Struct
           # Required attributes
-          attribute :name, Pangea::Types::String
+          attribute :name, Pangea::Resources::Types::String
           
           # Optional attributes
-          attribute :name_prefix?, Pangea::Types::String
+          attribute :name_prefix?, Pangea::Resources::Types::String
           attribute :campaign_hook?, CampaignHook
           attribute :limits?, Limits
           attribute :quiet_time?, QuietTime
-          attribute :tags?, Pangea::Types::Hash.map(Pangea::Types::String, Pangea::Types::String)
+          attribute :tags?, Pangea::Resources::Types::Hash.map(Pangea::Resources::Types::String, Pangea::Resources::Types::String)
 
           def self.from_dynamic(d)
-            d = Pangea::Types::Hash[d]
+            d = Pangea::Resources::Types::Hash[d]
             
             # Validate quiet time format
             if d[:quiet_time]
@@ -80,12 +80,8 @@ module Pangea
         end
 
         # Reference for Pinpoint app resources
-        class Reference < Dry::Struct
-          attribute :application_id, Pangea::Types::String
-          attribute :arn, Pangea::Types::String
-          attribute :name, Pangea::Types::String
-        end
       end
+        end
     end
   end
 end

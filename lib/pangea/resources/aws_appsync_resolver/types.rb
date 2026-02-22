@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/resources/types'
 
@@ -22,31 +21,35 @@ module Pangea
     module AWS
       module Types
         # AppSync resolver kind
-        AppSyncResolverKind = String.enum('UNIT', 'PIPELINE')
+        unless const_defined?(:AppSyncResolverKind)
+        AppSyncResolverKind = Resources::Types::String.constrained(included_in: ['UNIT', 'PIPELINE'])
+        end
 
         # AppSync runtime configuration
-        AppSyncRuntime = Hash.schema(
-          name: String.enum('APPSYNC_JS'),
-          runtime_version: String.constrained(format: /\A\d+\.\d+\.\d+\z/)
+        unless const_defined?(:AppSyncRuntime)
+        AppSyncRuntime = Resources::Types::Hash.schema(
+          name: Resources::Types::String.constrained(included_in: ['APPSYNC_JS']),
+          runtime_version: Resources::Types::String.constrained(format: /\A\d+\.\d+\.\d+\z/)
         )
+        end
 
         # AppSync pipeline config
-        AppSyncPipelineConfig = Hash.schema(
-          functions: Resources::Types::Array.of(String).constrained(min_size: 1)
+        AppSyncPipelineConfig = Resources::Types::Hash.schema(
+          functions: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
         )
 
         # AppSync caching config
-        AppSyncCachingConfig = Hash.schema(
-          caching_keys?: Resources::Types::Array.of(String).optional,
+        AppSyncCachingConfig = Resources::Types::Hash.schema(
+          caching_keys?: Resources::Types::Array.of(Resources::Types::String).optional,
           ttl?: Resources::Types::Integer.constrained(gteq: 1, lteq: 3600).optional
         )
 
         # AppSync sync config for subscriptions
-        AppSyncSyncConfig = Hash.schema(
-          conflict_detection?: String.enum('VERSION', 'NONE').optional,
-          conflict_handler?: String.enum('OPTIMISTIC_CONCURRENCY', 'LAMBDA', 'AUTOMERGE', 'NONE').optional,
-          lambda_conflict_handler_config?: Hash.schema(
-            lambda_conflict_handler_arn?: String.constrained(format: /\Aarn:aws:lambda:/).optional
+        AppSyncSyncConfig = Resources::Types::Hash.schema(
+          conflict_detection?: Resources::Types::String.constrained(included_in: ['VERSION', 'NONE']).optional,
+          conflict_handler?: Resources::Types::String.constrained(included_in: ['OPTIMISTIC_CONCURRENCY', 'LAMBDA', 'AUTOMERGE', 'NONE']).optional,
+          lambda_conflict_handler_config?: Resources::Types::Hash.schema(
+            lambda_conflict_handler_arn?: Resources::Types::String.constrained(format: /\Aarn:aws:lambda:/).optional
           ).optional
         )
 

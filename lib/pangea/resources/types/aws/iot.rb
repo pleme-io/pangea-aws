@@ -34,8 +34,8 @@ module Pangea
         value
       }
 
-      IotCertificateStatus = String.enum('ACTIVE', 'INACTIVE', 'REVOKED', 'PENDING_TRANSFER', 'REGISTER_INACTIVE', 'PENDING_ACTIVATION')
-      IotCertificateFormat = String.enum('PEM')
+      IotCertificateStatus = Resources::Types::String.constrained(included_in: ['ACTIVE', 'INACTIVE', 'REVOKED', 'PENDING_TRANSFER', 'REGISTER_INACTIVE', 'PENDING_ACTIVATION'])
+      IotCertificateFormat = Resources::Types::String.constrained(included_in: ['PEM'])
 
       IotPolicyName = String.constrained(format: /\A[a-zA-Z0-9:_-]{1,128}\z/).constructor { |value|
         if value.start_with?(':', '$', '#')
@@ -73,8 +73,8 @@ module Pangea
         value
       }
 
-      IotTopicRuleDestinationStatus = String.enum('ENABLED', 'DISABLED', 'IN_PROGRESS', 'ERROR')
-      IotTopicRuleDestinationType = String.enum('VPC')
+      IotTopicRuleDestinationStatus = Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED', 'IN_PROGRESS', 'ERROR'])
+      IotTopicRuleDestinationType = Resources::Types::String.constrained(included_in: ['VPC'])
 
       IotSecurityProfileName = String.constrained(format: /\A[a-zA-Z0-9:_-]{1,128}\z/).constructor { |value|
         if value.start_with?(':', '$', '#')
@@ -83,16 +83,14 @@ module Pangea
         value
       }
 
-      IotBehaviorCriteriaType = String.enum('consecutive-datapoints-to-alarm', 'consecutive-datapoints-to-clear', 'statistical-threshold', 'ml-detection-config')
+      IotBehaviorCriteriaType = Resources::Types::String.constrained(included_in: ['consecutive-datapoints-to-alarm', 'consecutive-datapoints-to-clear', 'statistical-threshold', 'ml-detection-config'])
 
-      IotMetricType = String.enum(
-        'ip-count', 'tcp-port-count', 'udp-port-count', 'source-ip-count',
+      IotMetricType = Resources::Types::String.constrained(included_in: ['ip-count', 'tcp-port-count', 'udp-port-count', 'source-ip-count',
         'authorization-failure-count', 'connection-attempt-count', 'disconnection-count',
-        'data-size-in-bytes', 'message-count', 'number-of-authorization-failures'
-      )
+        'data-size-in-bytes', 'message-count', 'number-of-authorization-failures'])
 
       IotStatisticalThreshold = Hash.schema(statistic?: String.optional)
-      IotMlDetectionConfig = Hash.schema(confidence_level: String.enum('LOW', 'MEDIUM', 'HIGH'))
+      IotMlDetectionConfig = Hash.schema(confidence_level: Resources::Types::String.constrained(included_in: ['LOW', 'MEDIUM', 'HIGH']))
 
       IotMqttTopic = String.constructor { |value|
         raise Dry::Types::ConstraintError, "MQTT topic cannot exceed 256 characters" if value.length > 256
@@ -137,18 +135,18 @@ module Pangea
         value
       }
 
-      IotJobExecutionStatus = String.enum('QUEUED', 'IN_PROGRESS', 'SUCCEEDED', 'FAILED', 'TIMED_OUT', 'REJECTED', 'REMOVED', 'CANCELED')
-      IotJobTargetSelection = String.enum('CONTINUOUS', 'SNAPSHOT')
-      IotOtaUpdateStatus = String.enum('CREATE_PENDING', 'CREATE_IN_PROGRESS', 'CREATE_COMPLETE', 'CREATE_FAILED', 'DELETE_IN_PROGRESS', 'DELETE_FAILED')
+      IotJobExecutionStatus = Resources::Types::String.constrained(included_in: ['QUEUED', 'IN_PROGRESS', 'SUCCEEDED', 'FAILED', 'TIMED_OUT', 'REJECTED', 'REMOVED', 'CANCELED'])
+      IotJobTargetSelection = Resources::Types::String.constrained(included_in: ['CONTINUOUS', 'SNAPSHOT'])
+      IotOtaUpdateStatus = Resources::Types::String.constrained(included_in: ['CREATE_PENDING', 'CREATE_IN_PROGRESS', 'CREATE_COMPLETE', 'CREATE_FAILED', 'DELETE_IN_PROGRESS', 'DELETE_FAILED'])
 
       IotIndexingConfiguration = Hash.schema(
-        thing_indexing_mode?: String.enum('OFF', 'REGISTRY', 'REGISTRY_AND_SHADOW').optional,
-        thing_connectivity_indexing_mode?: String.enum('OFF', 'STATUS').optional
+        thing_indexing_mode?: Resources::Types::String.constrained(included_in: ['OFF', 'REGISTRY', 'REGISTRY_AND_SHADOW']).optional,
+        thing_connectivity_indexing_mode?: Resources::Types::String.constrained(included_in: ['OFF', 'STATUS']).optional
       )
 
-      IotLogsLevel = String.enum('DEBUG', 'INFO', 'ERROR', 'WARN', 'DISABLED')
-      IotLogsTargetType = String.enum('DEFAULT', 'THING_GROUP')
-      IotEndpointType = String.enum('iot:Data', 'iot:Data-ATS', 'iot:CredentialProvider', 'iot:Jobs')
+      IotLogsLevel = Resources::Types::String.constrained(included_in: ['DEBUG', 'INFO', 'ERROR', 'WARN', 'DISABLED'])
+      IotLogsTargetType = Resources::Types::String.constrained(included_in: ['DEFAULT', 'THING_GROUP'])
+      IotEndpointType = Resources::Types::String.constrained(included_in: ['iot:Data', 'iot:Data-ATS', 'iot:CredentialProvider', 'iot:Jobs'])
 
       IotShadowDocument = String.constructor { |value|
         begin
@@ -161,7 +159,7 @@ module Pangea
         end
       }
 
-      IotAlertTargetType = String.enum('SNS')
+      IotAlertTargetType = Resources::Types::String.constrained(included_in: ['SNS'])
       IotAlertTarget = Hash.schema(
         alert_target_arn: String.constrained(format: /\Aarn:aws:sns:/),
         role_arn: String.constrained(format: /\Aarn:aws:iam::\d{12}:role\//)
