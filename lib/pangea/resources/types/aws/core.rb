@@ -26,18 +26,8 @@ module Pangea
       # AWS Availability Zone validation
       AwsAvailabilityZone = String.constrained(format: /\A[a-z]{2}-[a-z]+-\d[a-z]\z/) unless const_defined?(:AwsAvailabilityZone)
 
-      # CIDR block validation
-      CidrBlock = String.constrained(format: /\A\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}\z/) unless const_defined?(:CidrBlock)
-
       # Common AWS resource attributes
       AwsTags = Hash.map(Coercible::Symbol, String).default({}.freeze) unless const_defined?(:AwsTags)
-
-      # Network protocols
-      IpProtocol = Resources::Types::String.constrained(included_in: ['tcp', 'udp', 'icmp', 'icmpv6', 'all', '-1']) unless const_defined?(:IpProtocol)
-
-      # Port ranges
-      Port = Integer.constrained(gteq: 0, lteq: 65535) unless const_defined?(:Port)
-      PortRange = Hash.schema(from_port: Port, to_port: Port).lax unless const_defined?(:PortRange)
 
       # Security group rule
       SecurityGroupRule = Hash.schema(
@@ -55,18 +45,6 @@ module Pangea
       # EBS volume types
       EbsVolumeType = Resources::Types::String.constrained(included_in: ['gp2', 'gp3', 'io1', 'io2', 'st1', 'sc1', 'standard']) unless const_defined?(:EbsVolumeType)
 
-      # Domain name validation
-      DomainName = String.constrained(
-        format: /\A(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)*[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\z/i
-      ) unless const_defined?(:DomainName)
-
-      # Wildcard domain name validation
-      WildcardDomainName = String.constrained(
-        format: /\A\*\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)*[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\z/i
-      ) unless const_defined?(:WildcardDomainName)
-
-      # Email address validation
-      EmailAddress = String.constrained(format: /\A[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\z/) unless const_defined?(:EmailAddress)
 
       # AWS Account ID validation
       unless const_defined?(:AwsAccountId)
@@ -127,12 +105,6 @@ module Pangea
         }
       end
 
-      # POSIX permissions (octal format)
-      PosixPermissions = String.constrained(format: /\A[0-7]{3,4}\z/) unless const_defined?(:PosixPermissions)
-
-      # Unix User/Group IDs
-      UnixUserId = Integer.constrained(gteq: 0, lteq: 4294967295) unless const_defined?(:UnixUserId)
-      UnixGroupId = Integer.constrained(gteq: 0, lteq: 4294967295) unless const_defined?(:UnixGroupId)
     end
   end
 end

@@ -3,6 +3,13 @@
 require 'pangea-core'
 require 'terraform-synthesizer'
 
+# AWS registry types (from pangea)
+require_relative 'pangea/types/aws_types'
+require_relative 'pangea/types/computed_types'
+
+# AWS validators
+require_relative 'pangea/resources/validators/aws_validators'
+
 # AWS types
 require_relative 'pangea/resources/types/aws/core'
 require_relative 'pangea/resources/types/aws/compute'
@@ -463,3 +470,18 @@ Pangea::Resources::ResourceReference.register_computed_attributes(
   'aws_subnet' => Pangea::Resources::SubnetComputedAttributes,
   'aws_instance' => Pangea::Resources::InstanceComputedAttributes
 )
+
+# AWS composition patterns
+require_relative 'pangea/resources/aws/composition'
+
+# AWS component types and capabilities
+require_relative 'pangea/components/types'
+require_relative 'pangea/components/capabilities'
+
+# AWS components (loaded on-demand; some use incomplete DSL scaffolding)
+# require_relative 'pangea/components/aws/secure_vpc/component'
+# require_relative 'pangea/components/aws/public_private_subnets/component'
+# require_relative 'pangea/components/aws/vpc_with_subnets/component'
+
+# AWS pricing utilities
+require_relative 'pangea/utilities/aws/pricing'
