@@ -21,28 +21,26 @@ module Pangea
     module AWS
       module Types
         # EKS cluster encryption configuration
-        class EncryptionConfig < Dry::Struct
+        class EncryptionConfig < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :resources, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).constrained(
+          attribute? :resources, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).constrained(
             min_size: 1,
             max_size: 1
           ).default(['secrets'].freeze)
           
           # Provider configuration for encryption
-          class Provider < Dry::Struct
+          class Provider < Pangea::Resources::BaseAttributes
             transform_keys(&:to_sym)
             
-            attribute :key_arn, Pangea::Resources::Types::String.constrained(
-              format: /\Aarn:aws:kms:[a-z0-9-]+:\d{12}:key\/[a-f0-9-]+\z/
-            )
+            attribute? :key_arn, Pangea::Resources::Types::String
             
             def to_h
               { key_arn: key_arn }
             end
           end
           
-          attribute :provider, Provider
+          attribute? :provider, Provider.optional
           
           def to_h
             {
@@ -53,21 +51,21 @@ module Pangea
         end
         
         # VPC configuration for EKS cluster
-        class VpcConfig < Dry::Struct
+        class VpcConfig < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :subnet_ids, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).constrained(
+          attribute? :subnet_ids, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).constrained(
             min_size: 2
           )
           attribute :security_group_ids, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([].freeze)
           attribute :endpoint_private_access, Pangea::Resources::Types::Bool.default(false)
           attribute :endpoint_public_access, Pangea::Resources::Types::Bool.default(true)
-          attribute :public_access_cidrs, Pangea::Resources::Types::Array.of(
+          attribute? :public_access_cidrs, Pangea::Resources::Types::Array.of(
             Pangea::Resources::Types::String.constrained(format: /\A\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}\z/)
           ).default(['0.0.0.0/0'].freeze)
           
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate subnet count
             if attrs[:subnet_ids] && attrs[:subnet_ids].size < 2
@@ -97,14 +95,10 @@ module Pangea
         end
         
         # Kubernetes network configuration
-        class KubernetesNetworkConfig < Dry::Struct
+        class KubernetesNetworkConfig < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :service_ipv4_cidr, Pangea::Resources::Types::String.optional.default(nil).constrained(
-            format: /\A10\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}\z|
-                    \A172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}\/\d{1,2}\z|
-                    \A192\.168\.\d{1,3}\.\d{1,3}\/\d{1,2}\z/
-          )
+          attribute :service_ipv4_cidr, Pangea::Resources::Types::String.optional.default(nil)
           attribute :ip_family, Pangea::Resources::Types::String.default('ipv4').constrained(included_in: ['ipv4', 'ipv6'])
           
           def to_h
@@ -115,12 +109,12 @@ module Pangea
         end
         
         # EKS cluster logging configuration
-        class ClusterLogging < Dry::Struct
+        class ClusterLogging < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           VALID_LOG_TYPES = %w[api audit authenticator controllerManager scheduler].freeze
           
-          attribute :enabled_types, Pangea::Resources::Types::Array.of(
+          attribute? :enabled_types, Pangea::Resources::Types::Array.of(
             Pangea::Resources::Types::String.constrained(included_in: VALID_LOG_TYPES)
           ).default([].freeze)
           
@@ -134,21 +128,19 @@ module Pangea
         end
         
         # EKS cluster attributes with validation
-        class EksClusterAttributes < Dry::Struct
+        class EksClusterAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           SUPPORTED_VERSIONS = %w[1.24 1.25 1.26 1.27 1.28 1.29].freeze
           
           # Required attributes
           attribute :name, Pangea::Resources::Types::String.optional.default(nil)
-          attribute :role_arn, Pangea::Resources::Types::String.constrained(
-            format: /\Aarn:aws:iam::\d{12}:role\/.+\z/
-          )
-          attribute :vpc_config, VpcConfig
+          attribute? :role_arn, Pangea::Resources::Types::String
+          attribute? :vpc_config, VpcConfig.optional
           
           # Optional attributes
           attribute :version, Pangea::Resources::Types::String.constrained(included_in: SUPPORTED_VERSIONS).default('1.28')
-          attribute :enabled_cluster_log_types, Pangea::Resources::Types::Array.of(
+          attribute? :enabled_cluster_log_types, Pangea::Resources::Types::Array.of(
             Pangea::Resources::Types::String.constrained(included_in: ClusterLogging::VALID_LOG_TYPES)
           ).default([].freeze)
           attribute :encryption_config, Pangea::Resources::Types::Array.of(EncryptionConfig).default([].freeze)

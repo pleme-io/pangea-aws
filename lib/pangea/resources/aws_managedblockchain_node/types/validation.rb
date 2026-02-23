@@ -40,9 +40,9 @@ module Pangea
           end
 
           def validate_instance_type_for_workload(attrs)
-            instance_type = attrs.node_configuration[:instance_type]
+            instance_type = attrs.node_configuration&.dig(:instance_type)
 
-            return unless attrs.node_configuration[:state_db] == 'CouchDB'
+            return unless attrs.node_configuration&.dig(:state_db) == 'CouchDB'
 
             small_instances = ['bc.t3.small', 'bc.t3.medium']
             return unless small_instances.include?(instance_type)

@@ -14,6 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'types/attributes'
 require_relative 'types/templates'
+require_relative 'types/attributes'
 require_relative 'types/validation'

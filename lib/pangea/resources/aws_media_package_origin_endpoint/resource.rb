@@ -40,19 +40,19 @@ module Pangea
           manifest_name endpoint_attrs.manifest_name if endpoint_attrs.manifest_name && !endpoint_attrs.manifest_name.empty?
           
           # HLS package
-          if endpoint_attrs.hls_package.any?
+          if endpoint_attrs.hls_package&.any?
             hls_package do
-              ad_markers endpoint_attrs.hls_package[:ad_markers] if endpoint_attrs.hls_package[:ad_markers]
-              ad_triggers endpoint_attrs.hls_package[:ad_triggers] if endpoint_attrs.hls_package[:ad_triggers]
-              ads_on_delivery_restrictions endpoint_attrs.hls_package[:ads_on_delivery_restrictions] if endpoint_attrs.hls_package[:ads_on_delivery_restrictions]
-              include_iframe_only_stream endpoint_attrs.hls_package[:include_iframe_only_stream] if endpoint_attrs.hls_package.key?(:include_iframe_only_stream)
-              playlist_type endpoint_attrs.hls_package[:playlist_type] if endpoint_attrs.hls_package[:playlist_type]
-              playlist_window_seconds endpoint_attrs.hls_package[:playlist_window_seconds] if endpoint_attrs.hls_package[:playlist_window_seconds]
-              program_date_time_interval_seconds endpoint_attrs.hls_package[:program_date_time_interval_seconds] if endpoint_attrs.hls_package[:program_date_time_interval_seconds]
-              segment_duration_seconds endpoint_attrs.hls_package[:segment_duration_seconds] if endpoint_attrs.hls_package[:segment_duration_seconds]
-              use_audio_rendition_group endpoint_attrs.hls_package[:use_audio_rendition_group] if endpoint_attrs.hls_package.key?(:use_audio_rendition_group)
+              ad_markers endpoint_attrs.hls_package&.dig(:ad_markers) if endpoint_attrs.hls_package&.dig(:ad_markers)
+              ad_triggers endpoint_attrs.hls_package&.dig(:ad_triggers) if endpoint_attrs.hls_package&.dig(:ad_triggers)
+              ads_on_delivery_restrictions endpoint_attrs.hls_package&.dig(:ads_on_delivery_restrictions) if endpoint_attrs.hls_package&.dig(:ads_on_delivery_restrictions)
+              include_iframe_only_stream endpoint_attrs.hls_package&.dig(:include_iframe_only_stream) if endpoint_attrs.hls_package.key?(:include_iframe_only_stream)
+              playlist_type endpoint_attrs.hls_package&.dig(:playlist_type) if endpoint_attrs.hls_package&.dig(:playlist_type)
+              playlist_window_seconds endpoint_attrs.hls_package&.dig(:playlist_window_seconds) if endpoint_attrs.hls_package&.dig(:playlist_window_seconds)
+              program_date_time_interval_seconds endpoint_attrs.hls_package&.dig(:program_date_time_interval_seconds) if endpoint_attrs.hls_package&.dig(:program_date_time_interval_seconds)
+              segment_duration_seconds endpoint_attrs.hls_package&.dig(:segment_duration_seconds) if endpoint_attrs.hls_package&.dig(:segment_duration_seconds)
+              use_audio_rendition_group endpoint_attrs.hls_package&.dig(:use_audio_rendition_group) if endpoint_attrs.hls_package.key?(:use_audio_rendition_group)
               
-              if endpoint_attrs.hls_package[:stream_selection]
+              if endpoint_attrs.hls_package&.dig(:stream_selection)
                 stream_selection do
                   # Stream selection configuration would go here
                 end
@@ -61,22 +61,22 @@ module Pangea
           end
           
           # DASH package
-          if endpoint_attrs.dash_package.any?
+          if endpoint_attrs.dash_package&.any?
             dash_package do
-              ad_triggers endpoint_attrs.dash_package[:ad_triggers] if endpoint_attrs.dash_package[:ad_triggers]
-              ads_on_delivery_restrictions endpoint_attrs.dash_package[:ads_on_delivery_restrictions] if endpoint_attrs.dash_package[:ads_on_delivery_restrictions]
-              manifest_layout endpoint_attrs.dash_package[:manifest_layout] if endpoint_attrs.dash_package[:manifest_layout]
-              manifest_window_seconds endpoint_attrs.dash_package[:manifest_window_seconds] if endpoint_attrs.dash_package[:manifest_window_seconds]
-              min_buffer_time_seconds endpoint_attrs.dash_package[:min_buffer_time_seconds] if endpoint_attrs.dash_package[:min_buffer_time_seconds]
-              min_update_period_seconds endpoint_attrs.dash_package[:min_update_period_seconds] if endpoint_attrs.dash_package[:min_update_period_seconds]
-              profile endpoint_attrs.dash_package[:profile] if endpoint_attrs.dash_package[:profile]
-              segment_duration_seconds endpoint_attrs.dash_package[:segment_duration_seconds] if endpoint_attrs.dash_package[:segment_duration_seconds]
-              segment_template_format endpoint_attrs.dash_package[:segment_template_format] if endpoint_attrs.dash_package[:segment_template_format]
-              suggested_presentation_delay_seconds endpoint_attrs.dash_package[:suggested_presentation_delay_seconds] if endpoint_attrs.dash_package[:suggested_presentation_delay_seconds]
-              utc_timing endpoint_attrs.dash_package[:utc_timing] if endpoint_attrs.dash_package[:utc_timing]
-              utc_timing_uri endpoint_attrs.dash_package[:utc_timing_uri] if endpoint_attrs.dash_package[:utc_timing_uri]
+              ad_triggers endpoint_attrs.dash_package&.dig(:ad_triggers) if endpoint_attrs.dash_package&.dig(:ad_triggers)
+              ads_on_delivery_restrictions endpoint_attrs.dash_package&.dig(:ads_on_delivery_restrictions) if endpoint_attrs.dash_package&.dig(:ads_on_delivery_restrictions)
+              manifest_layout endpoint_attrs.dash_package&.dig(:manifest_layout) if endpoint_attrs.dash_package&.dig(:manifest_layout)
+              manifest_window_seconds endpoint_attrs.dash_package&.dig(:manifest_window_seconds) if endpoint_attrs.dash_package&.dig(:manifest_window_seconds)
+              min_buffer_time_seconds endpoint_attrs.dash_package&.dig(:min_buffer_time_seconds) if endpoint_attrs.dash_package&.dig(:min_buffer_time_seconds)
+              min_update_period_seconds endpoint_attrs.dash_package&.dig(:min_update_period_seconds) if endpoint_attrs.dash_package&.dig(:min_update_period_seconds)
+              profile endpoint_attrs.dash_package&.dig(:profile) if endpoint_attrs.dash_package&.dig(:profile)
+              segment_duration_seconds endpoint_attrs.dash_package&.dig(:segment_duration_seconds) if endpoint_attrs.dash_package&.dig(:segment_duration_seconds)
+              segment_template_format endpoint_attrs.dash_package&.dig(:segment_template_format) if endpoint_attrs.dash_package&.dig(:segment_template_format)
+              suggested_presentation_delay_seconds endpoint_attrs.dash_package&.dig(:suggested_presentation_delay_seconds) if endpoint_attrs.dash_package&.dig(:suggested_presentation_delay_seconds)
+              utc_timing endpoint_attrs.dash_package&.dig(:utc_timing) if endpoint_attrs.dash_package&.dig(:utc_timing)
+              utc_timing_uri endpoint_attrs.dash_package&.dig(:utc_timing_uri) if endpoint_attrs.dash_package&.dig(:utc_timing_uri)
               
-              if endpoint_attrs.dash_package[:stream_selection]
+              if endpoint_attrs.dash_package&.dig(:stream_selection)
                 stream_selection do
                   # Stream selection configuration would go here
                 end
@@ -85,13 +85,13 @@ module Pangea
           end
           
           # CMAF package
-          if endpoint_attrs.cmaf_package.any?
+          if endpoint_attrs.cmaf_package&.any?
             cmaf_package do
-              segment_duration_seconds endpoint_attrs.cmaf_package[:segment_duration_seconds] if endpoint_attrs.cmaf_package[:segment_duration_seconds]
-              segment_prefix endpoint_attrs.cmaf_package[:segment_prefix] if endpoint_attrs.cmaf_package[:segment_prefix]
+              segment_duration_seconds endpoint_attrs.cmaf_package&.dig(:segment_duration_seconds) if endpoint_attrs.cmaf_package&.dig(:segment_duration_seconds)
+              segment_prefix endpoint_attrs.cmaf_package&.dig(:segment_prefix) if endpoint_attrs.cmaf_package&.dig(:segment_prefix)
               
-              if endpoint_attrs.cmaf_package[:hls_manifests]
-                endpoint_attrs.cmaf_package[:hls_manifests].each do |manifest|
+              if endpoint_attrs.cmaf_package&.dig(:hls_manifests)
+                endpoint_attrs.cmaf_package&.dig(:hls_manifests).each do |manifest|
                   hls_manifests do
                     ad_markers manifest[:ad_markers] if manifest[:ad_markers]
                     id manifest[:id]
@@ -104,8 +104,8 @@ module Pangea
                 end
               end
               
-              if endpoint_attrs.cmaf_package[:dash_manifests]
-                endpoint_attrs.cmaf_package[:dash_manifests].each do |manifest|
+              if endpoint_attrs.cmaf_package&.dig(:dash_manifests)
+                endpoint_attrs.cmaf_package&.dig(:dash_manifests).each do |manifest|
                   dash_manifests do
                     id manifest[:id]
                     manifest_layout manifest[:manifest_layout] if manifest[:manifest_layout]
@@ -126,12 +126,12 @@ module Pangea
           end
           
           # MSS package
-          if endpoint_attrs.mss_package.any?
+          if endpoint_attrs.mss_package&.any?
             mss_package do
-              manifest_window_seconds endpoint_attrs.mss_package[:manifest_window_seconds] if endpoint_attrs.mss_package[:manifest_window_seconds]
-              segment_duration_seconds endpoint_attrs.mss_package[:segment_duration_seconds] if endpoint_attrs.mss_package[:segment_duration_seconds]
+              manifest_window_seconds endpoint_attrs.mss_package&.dig(:manifest_window_seconds) if endpoint_attrs.mss_package&.dig(:manifest_window_seconds)
+              segment_duration_seconds endpoint_attrs.mss_package&.dig(:segment_duration_seconds) if endpoint_attrs.mss_package&.dig(:segment_duration_seconds)
               
-              if endpoint_attrs.mss_package[:stream_selection]
+              if endpoint_attrs.mss_package&.dig(:stream_selection)
                 stream_selection do
                   # Stream selection configuration
                 end
@@ -142,18 +142,18 @@ module Pangea
           # Optional configurations
           startover_window_seconds endpoint_attrs.startover_window_seconds if endpoint_attrs.startover_window_seconds
           time_delay_seconds endpoint_attrs.time_delay_seconds if endpoint_attrs.time_delay_seconds
-          whitelist endpoint_attrs.whitelist if endpoint_attrs.whitelist.any?
+          whitelist endpoint_attrs.whitelist if endpoint_attrs.whitelist&.any?
           
           # Authorization
           if endpoint_attrs.has_authorization?
             authorization do
-              cdn_identifier_secret endpoint_attrs.authorization[:cdn_identifier_secret]
-              secrets_role_arn endpoint_attrs.authorization[:secrets_role_arn]
+              cdn_identifier_secret endpoint_attrs.authorization&.dig(:cdn_identifier_secret)
+              secrets_role_arn endpoint_attrs.authorization&.dig(:secrets_role_arn)
             end
           end
           
           # Apply tags
-          if endpoint_attrs.tags.any?
+          if endpoint_attrs.tags&.any?
             tags do
               endpoint_attrs.tags.each do |key, value|
                 public_send(key, value)

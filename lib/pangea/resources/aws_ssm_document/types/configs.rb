@@ -11,27 +11,27 @@ module Pangea
             content = { schemaVersion: '2.2', description: description || 'Execute commands on instances',
                         mainSteps: [{ action: 'aws:runShellScript', name: 'executeCommands',
                                       inputs: { runCommand: Array(commands) } }] }
-            { name: name, document_type: 'Command', content: JSON.pretty_generate(content), document_format: 'JSON', target_type: '/AWS::EC2::Instance' }
+            { name: name, document_type: 'Command', content: ::JSON.pretty_generate(content), document_format: 'JSON', target_type: '/AWS::EC2::Instance' }
           end
 
           def self.powershell_command_document(name, commands, description: nil)
             content = { schemaVersion: '2.2', description: description || 'Execute PowerShell commands on Windows instances',
                         mainSteps: [{ action: 'aws:runPowerShellScript', name: 'executePowerShell',
                                       inputs: { runCommand: Array(commands) } }] }
-            { name: name, document_type: 'Command', content: JSON.pretty_generate(content), document_format: 'JSON', target_type: '/AWS::EC2::Instance' }
+            { name: name, document_type: 'Command', content: ::JSON.pretty_generate(content), document_format: 'JSON', target_type: '/AWS::EC2::Instance' }
           end
 
           def self.automation_document(name, steps, description: nil)
             content = { schemaVersion: '0.3', description: description || 'Automation document', assumeRole: '{{ AutomationAssumeRole }}',
                         parameters: { AutomationAssumeRole: { type: 'String', description: 'IAM role for automation execution' } }, mainSteps: steps }
-            { name: name, document_type: 'Automation', content: JSON.pretty_generate(content), document_format: 'JSON' }
+            { name: name, document_type: 'Automation', content: ::JSON.pretty_generate(content), document_format: 'JSON' }
           end
 
           def self.session_document(name, shell_profile: {}, description: nil)
             content = { schemaVersion: '1.0', description: description || 'Session Manager configuration', sessionType: 'Standard_Stream',
                         inputs: { s3BucketName: '', s3KeyPrefix: '', s3EncryptionEnabled: true, cloudWatchLogGroupName: '',
                                   cloudWatchEncryptionEnabled: true, kmsKeyId: '', shellProfile: shell_profile } }
-            { name: name, document_type: 'Session', content: JSON.pretty_generate(content), document_format: 'JSON' }
+            { name: name, document_type: 'Session', content: ::JSON.pretty_generate(content), document_format: 'JSON' }
           end
 
           def self.package_install_document(name, package_name, version: 'latest', description: nil)
@@ -42,7 +42,7 @@ module Pangea
                                       inputs: { runCommand: ['#!/bin/bash', 'if command -v yum &> /dev/null; then', '  yum install -y {{ PackageName }}-{{ PackageVersion }}',
                                                              'elif command -v apt-get &> /dev/null; then', '  apt-get update && apt-get install -y {{ PackageName }}={{ PackageVersion }}',
                                                              'else', "  echo 'Package manager not supported'", '  exit 1', 'fi'] } }] }
-            { name: name, document_type: 'Command', content: JSON.pretty_generate(content), document_format: 'JSON', target_type: '/AWS::EC2::Instance' }
+            { name: name, document_type: 'Command', content: ::JSON.pretty_generate(content), document_format: 'JSON', target_type: '/AWS::EC2::Instance' }
           end
 
           def self.shared_document(name, content, account_ids, version: nil)

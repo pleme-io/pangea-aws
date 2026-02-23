@@ -48,7 +48,7 @@ module Pangea
         AppSyncRuntime = Pangea::Resources::Types::Hash.schema(
           name: Pangea::Resources::Types::String.constrained(included_in: ['APPSYNC_JS']),
           runtime_version: Pangea::Resources::Types::String.constrained(format: /\A\d+\.\d+\.\d+\z/)
-        )
+        ).lax
         end
 
         # AppSync log config
@@ -56,7 +56,7 @@ module Pangea
           cloudwatch_logs_role_arn: Pangea::Resources::Types::String.constrained(format: /\Aarn:aws:iam::\d{12}:role\//),
           field_log_level: AppSyncFieldLogLevel,
           exclude_verbose_content?: Pangea::Resources::Types::Bool.optional
-        )
+        ).lax
 
         # AppSync user pool config
         AppSyncUserPoolConfig = Pangea::Resources::Types::Hash.schema(
@@ -64,7 +64,7 @@ module Pangea
           aws_region?: Pangea::Resources::Types::AwsRegion.optional,
           default_action?: Pangea::Resources::Types::String.constrained(included_in: ['ALLOW', 'DENY']).optional,
           user_pool_id: Pangea::Resources::Types::String.constrained(format: /\A[\w-]+_[a-zA-Z0-9]+\z/)
-        )
+        ).lax
 
         # AppSync OpenID Connect config
         AppSyncOpenIdConnectConfig = Pangea::Resources::Types::Hash.schema(
@@ -72,14 +72,14 @@ module Pangea
           client_id?: Pangea::Resources::Types::String.optional,
           iat_ttl?: Pangea::Resources::Types::Integer.constrained(gteq: 0).optional,
           issuer: Pangea::Resources::Types::String.constrained(format: /\Ahttps?:\/\//)
-        )
+        ).lax
 
         # AppSync Lambda authorizer config
         AppSyncLambdaAuthorizerConfig = Pangea::Resources::Types::Hash.schema(
           authorizer_result_ttl_in_seconds?: Pangea::Resources::Types::Integer.constrained(gteq: 0, lteq: 3600).optional,
           authorizer_uri: Pangea::Resources::Types::String.constrained(format: /\Aarn:aws:lambda:/),
           identity_validation_expression?: Pangea::Resources::Types::String.optional
-        )
+        ).lax
 
         # AppSync additional authentication provider
         AppSyncAdditionalAuthenticationProvider = Pangea::Resources::Types::Hash.schema(
@@ -87,18 +87,18 @@ module Pangea
           user_pool_config?: AppSyncUserPoolConfig.optional,
           openid_connect_config?: AppSyncOpenIdConnectConfig.optional,
           lambda_authorizer_config?: AppSyncLambdaAuthorizerConfig.optional
-        )
+        ).lax
 
         # AppSync GraphQL API resource attributes
-        class AppSyncGraphqlApiAttributes < Dry::Struct
+        class AppSyncGraphqlApiAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :name, Pangea::Resources::Types::String.constrained(
+          attribute? :name, Pangea::Resources::Types::String.constrained(
             format: /\A[a-zA-Z][a-zA-Z0-9_-]{0,63}\z/,
             size: 1..64
           )
           
-          attribute :authentication_type, AppSyncAuthenticationType
+          attribute? :authentication_type, AppSyncAuthenticationType.optional
 
           attribute? :additional_authentication_providers, Pangea::Resources::Types::Array.of(
             AppSyncAdditionalAuthenticationProvider
@@ -138,7 +138,7 @@ module Pangea
 
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate authentication provider configurations match authentication type
             if attrs[:authentication_type] == 'AMAZON_COGNITO_USER_POOLS' && !attrs[:user_pool_config]

@@ -39,7 +39,7 @@ module Pangea
           input_class input_attrs.input_class
           
           # Destinations for push inputs
-          if input_attrs.push_input? && input_attrs.destinations.any?
+          if input_attrs.push_input? && input_attrs.destinations&.any?
             input_attrs.destinations.each do |destination|
               destinations do
                 stream_name destination[:stream_name] if destination[:stream_name]
@@ -49,7 +49,7 @@ module Pangea
           end
           
           # Input devices for hardware inputs
-          if input_attrs.device_input? && input_attrs.input_devices.any?
+          if input_attrs.device_input? && input_attrs.input_devices&.any?
             input_attrs.input_devices.each do |device|
               input_devices do
                 id device[:id]
@@ -77,7 +77,7 @@ module Pangea
           end
           
           # MediaConnect flows
-          if input_attrs.mediaconnect_input? && input_attrs.media_connect_flows.any?
+          if input_attrs.mediaconnect_input? && input_attrs.media_connect_flows&.any?
             input_attrs.media_connect_flows.each do |flow|
               media_connect_flows do
                 flow_arn flow[:flow_arn]
@@ -86,7 +86,7 @@ module Pangea
           end
           
           # Input security groups
-          if input_attrs.input_security_groups.any?
+          if input_attrs.input_security_groups&.any?
             input_security_groups input_attrs.input_security_groups
           end
           
@@ -94,7 +94,7 @@ module Pangea
           role_arn input_attrs.role_arn if input_attrs.role_arn
           
           # Sources for pull inputs
-          if (input_attrs.pull_input? || input_attrs.file_input?) && input_attrs.sources.any?
+          if (input_attrs.pull_input? || input_attrs.file_input?) && input_attrs.sources&.any?
             input_attrs.sources.each do |source|
               sources do
                 password_param source[:password_param] if source[:password_param]
@@ -107,13 +107,13 @@ module Pangea
           # VPC configuration
           if input_attrs.has_vpc_config?
             vpc do
-              security_group_ids input_attrs.vpc[:security_group_ids] if input_attrs.vpc[:security_group_ids]
-              subnet_ids input_attrs.vpc[:subnet_ids] if input_attrs.vpc[:subnet_ids]
+              security_group_ids input_attrs.vpc&.dig(:security_group_ids) if input_attrs.vpc&.dig(:security_group_ids)
+              subnet_ids input_attrs.vpc&.dig(:subnet_ids) if input_attrs.vpc&.dig(:subnet_ids)
             end
           end
           
           # Apply tags
-          if input_attrs.tags.any?
+          if input_attrs.tags&.any?
             tags do
               input_attrs.tags.each do |key, value|
                 public_send(key, value)

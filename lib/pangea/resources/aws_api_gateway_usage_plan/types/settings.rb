@@ -22,28 +22,28 @@ module Pangea
         ThrottleSettingsType = Resources::Types::Hash.schema(
           burst_limit?: Resources::Types::Integer.optional,
           rate_limit?: Resources::Types::Coercible::Float.optional
-        ).optional
+        ).lax.optional
 
         # Quota settings type for API Gateway usage plans
         QuotaSettingsType = Resources::Types::Hash.schema(
           limit: Resources::Types::Integer,
           offset?: Resources::Types::Integer.optional,
           period: Resources::Types::String.constrained(included_in: ['DAY', 'WEEK', 'MONTH'])
-        ).optional
+        ).lax.optional
 
         # Per-path throttle settings for API stages
         PathThrottleType = Resources::Types::Hash.schema(
           path?: Resources::Types::String.optional,
           burst_limit?: Resources::Types::Integer.optional,
           rate_limit?: Resources::Types::Coercible::Float.optional
-        ).optional
+        ).lax.optional
 
         # API stage configuration type
         ApiStageType = Resources::Types::Hash.schema(
           api_id: Resources::Types::String,
           stage: Resources::Types::String,
           throttle?: PathThrottleType
-        )
+        ).lax
 
         # Array of API stages type
         ApiStagesType = Resources::Types::Array.of(ApiStageType).default([].freeze)

@@ -22,25 +22,25 @@ module Pangea
     module AWS
       module Types
         # WAF v2 Default action configuration
-        class WafV2DefaultAction < Dry::Struct
+        class WafV2DefaultAction < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :allow, Resources::Types::Hash.schema(
+          attribute? :allow, Resources::Types::Hash.schema(
             custom_request_handling?: Resources::Types::Hash.schema(
-              insert_headers: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String))
+              insert_headers: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String).lax)
             ).optional
           ).optional
 
-          attribute :block, Resources::Types::Hash.schema(
+          attribute? :block, Resources::Types::Hash.schema(
             custom_response?: Resources::Types::Hash.schema(
               response_code: Resources::Types::Integer.constrained(gteq: 200, lteq: 599),
               custom_response_body_key?: Resources::Types::String.optional,
-              response_headers?: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String)).optional
+              response_headers?: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String).lax).optional
             ).optional
           ).optional
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             action_types = %i[allow block]
             provided_actions = action_types.select { |type| attrs.key?(type) }
 

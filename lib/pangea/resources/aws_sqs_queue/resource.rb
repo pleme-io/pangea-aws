@@ -30,7 +30,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_sqs_queue(name, attributes = {})
         # Validate attributes using dry-struct
-        queue_attrs = AWS::Types::Types::SQSQueueAttributes.new(attributes)
+        queue_attrs = Types::SQSQueueAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_sqs_queue, name) do
@@ -55,13 +55,13 @@ module Pangea
           receive_wait_time_seconds queue_attrs.receive_wait_time_seconds
           
           # Dead letter queue configuration
-          if queue_attrs.redrive_policy && queue_attrs.redrive_policy[:deadLetterTargetArn]
-            redrive_policy JSON.generate(queue_attrs.redrive_policy)
+          if queue_attrs.redrive_policy && queue_attrs.redrive_policy&.dig(:deadLetterTargetArn)
+            redrive_policy ::JSON.generate(queue_attrs.redrive_policy)
           end
           
           # Redrive allow policy (for DLQ source queues)
-          if queue_attrs.redrive_allow_policy && queue_attrs.redrive_allow_policy.any?
-            redrive_allow_policy JSON.generate(queue_attrs.redrive_allow_policy)
+          if queue_attrs.redrive_allow_policy && queue_attrs.redrive_allow_policy&.any?
+            redrive_allow_policy ::JSON.generate(queue_attrs.redrive_allow_policy)
           end
           
           # Encryption configuration
@@ -76,7 +76,7 @@ module Pangea
           policy queue_attrs.policy if queue_attrs.policy
           
           # Apply tags
-          if queue_attrs.tags.any?
+          if queue_attrs.tags&.any?
             tags queue_attrs.tags
           end
         end

@@ -21,20 +21,20 @@ module Pangea
     module AWS
       module Types
         # EFS Mount Target resource attributes with validation
-        class EfsMountTargetAttributes < Dry::Struct
+        class EfsMountTargetAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :file_system_id, Resources::Types::String
-          attribute :subnet_id, Resources::Types::String
+          attribute? :file_system_id, Resources::Types::String.optional
+          attribute? :subnet_id, Resources::Types::String.optional
           
           # Optional attributes  
-          attribute :ip_address, Resources::Types::String.optional
+          attribute? :ip_address, Resources::Types::String.optional
           attribute :security_groups, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate IP address format if provided
             if attrs[:ip_address]

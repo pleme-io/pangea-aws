@@ -42,7 +42,7 @@ module Pangea
           storage_encrypted attrs.storage_encrypted if attrs.storage_encrypted
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

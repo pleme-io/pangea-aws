@@ -60,7 +60,7 @@ module Pangea
           
           # Network configuration
           db_subnet_group_name db_attrs.db_subnet_group_name if db_attrs.db_subnet_group_name
-          vpc_security_group_ids db_attrs.vpc_security_group_ids if db_attrs.vpc_security_group_ids.any?
+          vpc_security_group_ids db_attrs.vpc_security_group_ids if db_attrs.vpc_security_group_ids&.any?
           availability_zone db_attrs.availability_zone if db_attrs.availability_zone
           multi_az db_attrs.multi_az
           publicly_accessible db_attrs.publicly_accessible
@@ -71,7 +71,7 @@ module Pangea
           maintenance_window db_attrs.maintenance_window if db_attrs.maintenance_window
           
           # Performance and monitoring
-          enabled_cloudwatch_logs_exports db_attrs.enabled_cloudwatch_logs_exports if db_attrs.enabled_cloudwatch_logs_exports.any?
+          enabled_cloudwatch_logs_exports db_attrs.enabled_cloudwatch_logs_exports if db_attrs.enabled_cloudwatch_logs_exports&.any?
           performance_insights_enabled db_attrs.performance_insights_enabled
           performance_insights_retention_period db_attrs.performance_insights_retention_period if db_attrs.performance_insights_enabled
           
@@ -82,7 +82,7 @@ module Pangea
           final_snapshot_identifier db_attrs.final_snapshot_identifier if db_attrs.final_snapshot_identifier && !db_attrs.skip_final_snapshot
           
           # Apply tags if present
-          if db_attrs.tags.any?
+          if db_attrs.tags&.any?
             tags do
               db_attrs.tags.each do |key, value|
                 public_send(key, value)

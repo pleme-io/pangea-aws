@@ -25,9 +25,9 @@ RSpec.describe "aws_route53_record resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -87,19 +87,31 @@ RSpec.describe "aws_route53_record resource function" do
     end
     
     it "validates DNS record types" do
-      valid_types = ["A", "AAAA", "CNAME", "MX", "NS", "PTR", "SOA", "SPF", "SRV", "TXT"]
-      
-      valid_types.each do |record_type|
+      # Use type-appropriate record values for validation
+      type_records = {
+        "A" => ["203.0.113.1"],
+        "AAAA" => ["2001:db8::1"],
+        "CNAME" => ["example.com"],
+        "MX" => ["10 mail.example.com"],
+        "NS" => ["ns1.example.com"],
+        "PTR" => ["host.example.com"],
+        "SOA" => ["ns1.example.com admin.example.com 1 3600 600 604800 60"],
+        "SPF" => ["v=spf1 include:example.com ~all"],
+        "SRV" => ["10 5 443 target.example.com"],
+        "TXT" => ["test-value"]
+      }
+
+      type_records.each do |record_type, records|
         attrs = Pangea::Resources::AWS::Types::Route53RecordAttributes.new({
           zone_id: test_zone_id,
           name: "test.example.com",
           type: record_type,
           ttl: 300,
-          records: ["test-value"]
+          records: records
         })
         expect(attrs.type).to eq(record_type)
       end
-      
+
       expect {
         Pangea::Resources::AWS::Types::Route53RecordAttributes.new({
           zone_id: test_zone_id,
@@ -108,7 +120,7 @@ RSpec.describe "aws_route53_record resource function" do
           ttl: 300,
           records: ["test-value"]
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "validates zone ID format" do
@@ -175,7 +187,7 @@ RSpec.describe "aws_route53_record resource function" do
           ttl: -1,
           records: ["203.0.113.1"]
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "validates A record IPv4 addresses" do
@@ -934,7 +946,7 @@ RSpec.describe "aws_route53_record resource function" do
           set_identifier: "weight-256",
           weighted_routing_policy: { weight: 256 }
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
   end
   

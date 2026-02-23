@@ -7,9 +7,9 @@ module Pangea
     module AWS
       module Types
         # S3 website routing rule condition
-        class WebsiteRoutingRuleCondition < Dry::Struct
-          attribute :http_error_code_returned_equals, Resources::Types::String.optional
-          attribute :key_prefix_equals, Resources::Types::String.optional
+        class WebsiteRoutingRuleCondition < Pangea::Resources::BaseAttributes
+          attribute? :http_error_code_returned_equals, Resources::Types::String.optional
+          attribute? :key_prefix_equals, Resources::Types::String.optional
 
           def self.new(attributes = {})
             attrs = super(attributes)
@@ -39,12 +39,12 @@ module Pangea
         end
 
         # S3 website routing rule redirect
-        class WebsiteRoutingRuleRedirect < Dry::Struct
-          attribute :host_name, Resources::Types::String.optional
-          attribute :http_redirect_code, Resources::Types::String.optional
-          attribute :protocol, Resources::Types::String.constrained(included_in: ["http", "https"]).optional
-          attribute :replace_key_prefix_with, Resources::Types::String.optional
-          attribute :replace_key_with, Resources::Types::String.optional
+        class WebsiteRoutingRuleRedirect < Pangea::Resources::BaseAttributes
+          attribute? :host_name, Resources::Types::String.optional
+          attribute? :http_redirect_code, Resources::Types::String.optional
+          attribute? :protocol, Resources::Types::String.constrained(included_in: ["http", "https"]).optional
+          attribute? :replace_key_prefix_with, Resources::Types::String.optional
+          attribute? :replace_key_with, Resources::Types::String.optional
 
           def self.new(attributes = {})
             attrs = super(attributes)
@@ -84,9 +84,9 @@ module Pangea
         end
 
         # S3 website routing rule
-        class WebsiteRoutingRule < Dry::Struct
+        class WebsiteRoutingRule < Pangea::Resources::BaseAttributes
           attribute? :condition, WebsiteRoutingRuleCondition.optional
-          attribute :redirect, WebsiteRoutingRuleRedirect
+          attribute? :redirect, WebsiteRoutingRuleRedirect.optional
 
           def has_condition? = !condition.nil?
           def unconditional? = condition.nil?

@@ -18,15 +18,15 @@ require 'pangea/resources/types'
 module Pangea
   module Resources
     module AWS
-      class IotTopicRuleAttributes < Dry::Struct
-        attribute :name, Resources::Types::IotTopicRuleName
+      class IotTopicRuleAttributes < Pangea::Resources::BaseAttributes
+        attribute? :name, Resources::Types::IotTopicRuleName.optional
         attribute :enabled, Resources::Types::Bool.default(true)
-        attribute :sql, Resources::Types::IotSqlQuery
+        attribute? :sql, Resources::Types::IotSqlQuery.optional
         attribute :sql_version, Resources::Types::String.default("2016-03-23")
-        attribute :aws_iot_sql_version, Resources::Types::String.optional
-        attribute :description, Resources::Types::String.optional
+        attribute? :aws_iot_sql_version, Resources::Types::String.optional
+        attribute? :description, Resources::Types::String.optional
         attribute :actions, Resources::Types::Array.of(Resources::Types::Hash).default([].freeze)
-        attribute :error_action, Resources::Types::Hash.optional
+        attribute :error_action, Resources::Types::Hash.default({}.freeze)
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         def action_types

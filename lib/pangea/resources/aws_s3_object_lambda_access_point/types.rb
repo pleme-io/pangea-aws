@@ -53,30 +53,30 @@ module Pangea
               aws_lambda: Resources::Types::Hash.schema({
                 function_arn: LambdaFunctionArn,
                 function_payload?: Resources::Types::String.optional
-              })
+              }).lax
             })
           })
         end
 
         # S3 Object Lambda Access Point attributes with comprehensive validation
-        class S3ObjectLambdaAccessPointAttributes < Dry::Struct
+        class S3ObjectLambdaAccessPointAttributes < Pangea::Resources::BaseAttributes
           # Required attributes
-          attribute :configuration, Resources::Types::Hash.schema({
+          attribute? :configuration, Resources::Types::Hash.schema({
             supporting_access_point: Types::AccessPointArn,
             transformation_configuration: Resources::Types::Array.of(Types::TransformationConfiguration).constrained(min_size: 1)
-          })
-          attribute :name, Types::ObjectLambdaAccessPointName
+          }).lax
+          attribute? :name, Types::ObjectLambdaAccessPointName.optional
           
           # Optional attributes
           attribute? :account_id, Resources::Types::String.constrained(format: /\A\d{12}\z/).optional
           
           # Computed properties
           def supporting_access_point
-            configuration[:supporting_access_point]
+            configuration&.dig(:supporting_access_point)
           end
           
           def transformations
-            configuration[:transformation_configuration]
+            configuration&.dig(:transformation_configuration)
           end
           
           def transformation_count

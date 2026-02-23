@@ -9,11 +9,11 @@ module Pangea
     module AWS
       module Types
         # Event selector for CloudTrail data events
-        class EventSelector < Dry::Struct
-          attribute :read_write_type, Resources::Types::String.optional.constrained(included_in: %w[ReadOnly WriteOnly All])
+        class EventSelector < Pangea::Resources::BaseAttributes
+          attribute? :read_write_type, Resources::Types::String.optional.constrained(included_in: %w[ReadOnly WriteOnly All])
           attribute :include_management_events, Resources::Types::Bool.default(true)
-          attribute :data_resource, Resources::Types::Array.of(
-            Resources::Types::Hash.schema(type: Resources::Types::String, values: Resources::Types::Array.of(Resources::Types::String))
+          attribute? :data_resource, Resources::Types::Array.of(
+            Resources::Types::Hash.schema(type: Resources::Types::String, values: Resources::Types::Array.of(Resources::Types::String).lax)
           ).default([].freeze)
 
           def includes_s3_data_events?
@@ -30,8 +30,8 @@ module Pangea
         end
 
         # Insight selector for CloudTrail Insights
-        class InsightSelector < Dry::Struct
-          attribute :insight_type, Resources::Types::String.constrained(included_in: %w[ApiCallRateInsight ApiErrorRateInsight])
+        class InsightSelector < Pangea::Resources::BaseAttributes
+          attribute? :insight_type, Resources::Types::String.constrained(included_in: %w[ApiCallRateInsight ApiErrorRateInsight]).optional
 
           def is_api_call_rate_insight? = insight_type == 'ApiCallRateInsight'
           def is_api_error_rate_insight? = insight_type == 'ApiErrorRateInsight'

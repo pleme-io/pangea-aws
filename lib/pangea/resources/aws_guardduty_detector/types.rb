@@ -21,36 +21,36 @@ module Pangea
     module AWS
       module Types
         # GuardDuty Detector attributes with validation
-        class GuardDutyDetectorAttributes < Dry::Struct
+        class GuardDutyDetectorAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           attribute :enable, Resources::Types::Bool.default(true)
           attribute :finding_publishing_frequency, Resources::Types::GuardDutyFindingPublishingFrequency.default('SIX_HOURS')
           
           # Data source configurations
-          attribute :datasources, Resources::Types::Hash.schema(
+          attribute? :datasources, Resources::Types::Hash.schema(
             s3_logs?: Resources::Types::Hash.schema(
               enable: Resources::Types::Bool
-            ).optional,
+            ).lax.optional,
             kubernetes?: Resources::Types::Hash.schema(
               audit_logs: Resources::Types::Hash.schema(
                 enable: Resources::Types::Bool
-              )
+              ).lax
             ).optional,
             malware_protection?: Resources::Types::Hash.schema(
               scan_ec2_instance_with_findings: Resources::Types::Hash.schema(
                 ebs_volumes: Resources::Types::Hash.schema(
                   enable: Resources::Types::Bool
-                )
+                ).lax
               )
             ).optional
           ).default({}.freeze)
           
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # If detector is disabled, finding publishing frequency should be considered
             if attrs[:enable] == false && attrs[:finding_publishing_frequency]

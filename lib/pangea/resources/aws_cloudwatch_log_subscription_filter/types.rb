@@ -21,13 +21,13 @@ module Pangea
     module AWS
       module Types
         # CloudWatch Log Subscription Filter resource attributes with validation
-        class CloudWatchLogSubscriptionFilterAttributes < Dry::Struct
+        class CloudWatchLogSubscriptionFilterAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :name, Resources::Types::String
-          attribute :log_group_name, Resources::Types::String
-          attribute :destination_arn, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
+          attribute? :log_group_name, Resources::Types::String.optional
+          attribute? :destination_arn, Resources::Types::String.optional
           attribute :filter_pattern, Resources::Types::String.default('')
           
           # Optional attributes
@@ -38,7 +38,7 @@ module Pangea
           
           # Validate ARN formats and filter configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate name format
             if attrs[:name] && !attrs[:name].match?(/^[\.\-_#A-Za-z0-9]+$/)

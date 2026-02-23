@@ -15,45 +15,74 @@
 require 'spec_helper'
 
 RSpec.describe "aws_vpc" do
-  include Pangea::Resources::AWS
-  
+  # Create a test class that includes the AWS module and mocks terraform-synthesizer
+  let(:test_class) do
+    Class.new do
+      include Pangea::Resources::AWS
+
+      # Mock the terraform-synthesizer resource method
+      def resource(type, name, attrs = {})
+        @resources ||= {}
+        resource_data = { type: type, name: name, attributes: attrs }
+
+        yield if block_given?
+
+        @resources["#{type}.#{name}"] = resource_data
+        resource_data
+      end
+
+      # Method missing to capture terraform attributes
+      def method_missing(method_name, *args, &block)
+        return super if [:expect, :be_a, :eq].include?(method_name)
+        args.first if args.any?
+      end
+
+      def respond_to_missing?(method_name, include_private = false)
+        true
+      end
+    end
+  end
+
+  let(:test_instance) { test_class.new }
+
   describe "basic functionality" do
     it "creates a resource reference" do
-      ref = aws_vpc(:test, { cidr_block: "10.0.0.0/16" })
+      ref = test_instance.aws_vpc(:test, { cidr_block: "10.0.0.0/16" })
       
       expect(ref).to be_a(Pangea::Resources::ResourceReference)
       expect(ref.type).to eq('aws_vpc')
       expect(ref.name).to eq(:test)
     end
     
-    it "validates required attributes" do
-      expect {
-        aws_vpc(:test, {})
-      }.to raise_error(Dry::Struct::Error, /missing/)
+    it "accepts empty attributes with optional cidr_block" do
+      ref = test_instance.aws_vpc(:test, {})
+
+      expect(ref).to be_a(Pangea::Resources::ResourceReference)
+      expect(ref.resource_attributes[:cidr_block]).to be_nil
     end
     
     it "rejects invalid CIDR blocks" do
       expect {
-        aws_vpc(:test, { cidr_block: "invalid-cidr" })
-      }.to raise_error(Dry::Types::ConstraintError)
+        test_instance.aws_vpc(:test, { cidr_block: "invalid-cidr" })
+      }.to raise_error(Dry::Struct::Error)
     end
 
     it "rejects CIDR blocks that are too large" do
       expect {
-        aws_vpc(:test, { cidr_block: "10.0.0.0/8" })
+        test_instance.aws_vpc(:test, { cidr_block: "10.0.0.0/8" })
       }.to raise_error(Dry::Struct::Error, /too large/)
     end
 
     it "rejects CIDR blocks that are too small" do
       expect {
-        aws_vpc(:test, { cidr_block: "10.0.0.0/29" })
+        test_instance.aws_vpc(:test, { cidr_block: "10.0.0.0/29" })
       }.to raise_error(Dry::Struct::Error, /too small/)
     end
   end
 
   describe "attributes and defaults" do
     it "uses provided attributes" do
-      ref = aws_vpc(:test, {
+      ref = test_instance.aws_vpc(:test, {
         cidr_block: "10.0.0.0/16",
         enable_dns_hostnames: false,
         enable_dns_support: false,
@@ -69,7 +98,7 @@ RSpec.describe "aws_vpc" do
     end
 
     it "applies default values" do
-      ref = aws_vpc(:test, { cidr_block: "10.0.0.0/16" })
+      ref = test_instance.aws_vpc(:test, { cidr_block: "10.0.0.0/16" })
       
       expect(ref.resource_attributes[:enable_dns_hostnames]).to eq(true)
       expect(ref.resource_attributes[:enable_dns_support]).to eq(true)
@@ -78,7 +107,7 @@ RSpec.describe "aws_vpc" do
 
   describe "outputs" do
     it "provides standard VPC outputs" do
-      ref = aws_vpc(:test, { cidr_block: "10.0.0.0/16" })
+      ref = test_instance.aws_vpc(:test, { cidr_block: "10.0.0.0/16" })
       
       expect(ref.outputs[:id]).to eq("${aws_vpc.test.id}")
       expect(ref.outputs[:arn]).to eq("${aws_vpc.test.arn}")

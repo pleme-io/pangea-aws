@@ -14,6 +14,7 @@
 # limitations under the License.
 
 require 'pangea/resources/types'
+require_relative 'types/templates'
 require_relative 'types/attributes'
 
 module Pangea

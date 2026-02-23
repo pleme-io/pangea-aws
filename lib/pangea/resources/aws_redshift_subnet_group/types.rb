@@ -20,15 +20,15 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS Redshift Subnet Group resources
-      class RedshiftSubnetGroupAttributes < Dry::Struct
+      class RedshiftSubnetGroupAttributes < Pangea::Resources::BaseAttributes
         # Subnet group name (required)
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
         
         # Description
-        attribute :description, Resources::Types::String.optional
+        attribute? :description, Resources::Types::String.optional
         
         # Subnet IDs (required)
-        attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
+        attribute? :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1).optional
         
         # Tags
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

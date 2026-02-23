@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
         # API Gateway Deployment attributes with validation
-        class ApiGatewayDeploymentAttributes < Dry::Struct
+        class ApiGatewayDeploymentAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Core attributes
-          attribute :rest_api_id, Pangea::Resources::Types::String
+          attribute? :rest_api_id, Pangea::Resources::Types::String.optional
           
           # Stage name for deployment (optional - can create deployment without stage)
           attribute :stage_name, Pangea::Resources::Types::String.optional.default(nil)
@@ -37,7 +37,7 @@ module Pangea
           attribute :stage_description, Pangea::Resources::Types::String.optional.default(nil)
           
           # Variables for the stage
-          attribute :variables, Pangea::Resources::Types::Hash.map(
+          attribute? :variables, Pangea::Resources::Types::Hash.map(
             Pangea::Resources::Types::String, Pangea::Resources::Types::String
           ).default({}.freeze)
           
@@ -45,13 +45,13 @@ module Pangea
           attribute :canary_settings, Pangea::Resources::Types::Hash.optional.default(nil)
           
           # Triggers for redeployment (helps with detecting changes)
-          attribute :triggers, Pangea::Resources::Types::Hash.map(
+          attribute? :triggers, Pangea::Resources::Types::Hash.map(
             Pangea::Resources::Types::String, Pangea::Resources::Types::String
           ).default({}.freeze)
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate stage_name format if provided
             if attrs[:stage_name]
@@ -79,7 +79,7 @@ module Pangea
               end
               
               # Validate stage_variable_overrides is a hash
-              if canary[:stage_variable_overrides] && !canary[:stage_variable_overrides].is_a?(Hash)
+              if canary[:stage_variable_overrides] && !canary[:stage_variable_overrides].is_a?(::Hash)
                 raise Dry::Struct::Error, "Canary stage_variable_overrides must be a hash"
               end
               

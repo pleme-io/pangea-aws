@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_route53_health_check(name, attributes = {})
         # Validate attributes using dry-struct
-        health_check_attrs = AWS::Types::Types::Route53HealthCheckAttributes.new(attributes)
+        health_check_attrs = Types::Route53HealthCheckAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_route53_health_check, name) do
@@ -77,12 +77,12 @@ module Pangea
           reference_name health_check_attrs.reference_name if health_check_attrs.reference_name
           
           # Regions for health checking
-          if health_check_attrs.regions.any?
+          if health_check_attrs.regions&.any?
             regions health_check_attrs.regions
           end
           
           # Apply tags if present
-          if health_check_attrs.tags.any?
+          if health_check_attrs.tags&.any?
             tags do
               health_check_attrs.tags.each do |key, value|
                 public_send(key, value)

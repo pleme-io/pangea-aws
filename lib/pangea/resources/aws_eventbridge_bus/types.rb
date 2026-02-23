@@ -20,15 +20,15 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS EventBridge Bus resources
-      class EventBridgeBusAttributes < Dry::Struct
+      class EventBridgeBusAttributes < Pangea::Resources::BaseAttributes
         # Event bus name (required)
-        attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9._-]{1,256}\z/)
+        attribute? :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9._-]{1,256}\z/).optional
 
         # Event source name (for partner event buses)
-        attribute :event_source_name, Resources::Types::String.optional
+        attribute? :event_source_name, Resources::Types::String.optional
 
         # KMS key for encryption
-        attribute :kms_key_id, Resources::Types::String.optional
+        attribute? :kms_key_id, Resources::Types::String.optional
 
         # Tagging support
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -49,7 +49,7 @@ module Pangea
 
           # Partner event bus validation
           if attrs.event_source_name
-            unless attrs.event_source_name.match?(/\A[a-zA-Z0-9._-]+\z/)
+            unless attrs.event_source_name.match?(/\A[a-zA-Z0-9._\-\/]+\z/)
               raise Dry::Struct::Error, "Event source name contains invalid characters"
             end
           end

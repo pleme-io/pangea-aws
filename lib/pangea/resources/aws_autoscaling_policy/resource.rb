@@ -56,7 +56,7 @@ module Pangea
       #   })
       def aws_autoscaling_policy(name, attributes = {})
         # Validate attributes using dry-struct
-        policy_attrs = Types::Types::AutoScalingPolicyAttributes.new(attributes)
+        policy_attrs = Types::AutoScalingPolicyAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_autoscaling_policy, name) do

@@ -21,7 +21,7 @@ module Pangea
     module AWS
       module Types
         # Transit Gateway resource attributes with validation
-        class TransitGatewayAttributes < Dry::Struct
+        class TransitGatewayAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           attribute? :amazon_side_asn, Resources::Types::TransitGatewayAsn.optional
@@ -36,7 +36,7 @@ module Pangea
           
           # Custom validation for Transit Gateway configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate ASN if provided
             if attrs[:amazon_side_asn]

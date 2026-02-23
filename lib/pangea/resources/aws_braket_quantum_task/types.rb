@@ -21,23 +21,23 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS Braket Quantum Task resources
-        class BraketQuantumTaskAttributes < Dry::Struct
+        class BraketQuantumTaskAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Device ARN (required)
-        attribute :device_arn, Resources::Types::String
+        attribute? :device_arn, Resources::Types::String.optional
 
         # Action JSON specification (required)
-        attribute :action, Resources::Types::String
+        attribute? :action, Resources::Types::String.optional
 
         # Device parameters (optional)
         attribute? :device_parameters, Resources::Types::String.optional
 
         # Output S3 bucket (required)
-        attribute :output_s3_bucket, Resources::Types::String
+        attribute? :output_s3_bucket, Resources::Types::String.optional
 
         # Output S3 key prefix (required)
-        attribute :output_s3_key_prefix, Resources::Types::String
+        attribute? :output_s3_key_prefix, Resources::Types::String.optional
 
         # Shots - number of times to run the quantum circuit (optional)
         attribute? :shots, Resources::Types::Integer.default(1000)
@@ -64,16 +64,16 @@ module Pangea
 
           # Validate action is valid JSON
           begin
-            JSON.parse(attrs.action)
-          rescue JSON::ParserError => e
+            ::JSON.parse(attrs.action)
+          rescue ::JSON::ParserError => e
             raise Dry::Struct::Error, "action must be valid JSON: #{e.message}"
           end
 
           # Validate device_parameters is valid JSON if provided
           if attrs.device_parameters
             begin
-              JSON.parse(attrs.device_parameters)
-            rescue JSON::ParserError => e
+              ::JSON.parse(attrs.device_parameters)
+            rescue ::JSON::ParserError => e
               raise Dry::Struct::Error, "device_parameters must be valid JSON: #{e.message}"
             end
           end
@@ -119,7 +119,7 @@ module Pangea
 
         def quantum_circuit
           @quantum_circuit ||= begin
-            action_data = JSON.parse(action)
+            action_data = ::JSON.parse(action)
             action_data['braketSchemaHeader']['name'] if action_data['braketSchemaHeader']
           rescue
             nil
@@ -151,7 +151,7 @@ module Pangea
         end
 
         def action_summary
-          action_data = JSON.parse(action)
+          action_data = ::JSON.parse(action)
           {
             type: action_data['braketSchemaHeader']&.fetch('name', 'unknown'),
             version: action_data['braketSchemaHeader']&.fetch('version', 'unknown'),

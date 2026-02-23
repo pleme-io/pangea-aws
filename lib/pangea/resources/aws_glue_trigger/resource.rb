@@ -61,7 +61,7 @@ module Pangea
                 if action[:arguments]&.any?
                   arguments do
                     action[:arguments].each do |key, value|
-                      public_send(key.gsub(/[^a-zA-Z0-9_]/, '_').downcase, value)
+                      public_send(key.to_s.gsub(/[^a-zA-Z0-9_]/, '_').downcase, value)
                     end
                   end
                 end
@@ -115,7 +115,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if trigger_attrs.tags.any?
+          if trigger_attrs.tags&.any?
             tags do
               trigger_attrs.tags.each do |key, value|
                 public_send(key, value)

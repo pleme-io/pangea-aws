@@ -13,7 +13,7 @@ module Pangea
 
           def load_balanced? = load_balancer.any?
           def service_discovery_enabled? = service_registries.any?
-          def service_connect_enabled? = service_connect_configuration&.dig(:enabled)
+          def service_connect_enabled? = !!service_connect_configuration&.dig(:enabled)
 
           def estimated_monthly_cost
             cost = 0.0

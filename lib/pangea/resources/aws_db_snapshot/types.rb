@@ -20,12 +20,12 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS DB Snapshot resources
-      class DbSnapshotAttributes < Dry::Struct
+      class DbSnapshotAttributes < Pangea::Resources::BaseAttributes
         # DB instance identifier to create snapshot from
-        attribute :db_instance_identifier, Resources::Types::String
+        attribute? :db_instance_identifier, Resources::Types::String.optional
 
         # Snapshot identifier (unique within AWS account and region)
-        attribute :db_snapshot_identifier, Resources::Types::String
+        attribute? :db_snapshot_identifier, Resources::Types::String.optional
 
         # Tags to apply to the snapshot
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

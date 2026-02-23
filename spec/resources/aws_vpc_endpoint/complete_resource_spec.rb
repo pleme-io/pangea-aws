@@ -27,9 +27,9 @@ RSpec.describe "aws_vpc_endpoint resource function" do
       include Pangea::Resources::AwsVpcEndpoint
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -70,7 +70,7 @@ RSpec.describe "aws_vpc_endpoint resource function" do
       expect(endpoint.vpc_id).to eq("vpc-12345678")
       expect(endpoint.service_name).to eq("com.amazonaws.us-east-1.s3")
       expect(endpoint.vpc_endpoint_type).to eq("Gateway")
-      expect(endpoint.route_table_ids).to have(2).items
+      expect(endpoint.route_table_ids.size).to eq(2)
       expect(endpoint.is_gateway_endpoint?).to eq(true)
       expect(endpoint.is_interface_endpoint?).to eq(false)
     end
@@ -93,8 +93,8 @@ RSpec.describe "aws_vpc_endpoint resource function" do
       })
       
       expect(endpoint.vpc_endpoint_type).to eq("Interface")
-      expect(endpoint.subnet_ids).to have(2).items
-      expect(endpoint.security_group_ids).to have(1).item
+      expect(endpoint.subnet_ids.size).to eq(2)
+      expect(endpoint.security_group_ids.size).to eq(1)
       expect(endpoint.private_dns_enabled).to eq(true)
       expect(endpoint.dns_options).to eq({ dns_record_ip_type: "ipv4" })
       expect(endpoint.is_interface_endpoint?).to eq(true)
@@ -271,7 +271,7 @@ RSpec.describe "aws_vpc_endpoint resource function" do
       expect(config[:vpc_id]).to eq("vpc-12345678")
       expect(config[:service_name]).to eq("com.example.vpce-svc-123456")
       expect(config[:vpc_endpoint_type]).to eq("Interface")
-      expect(config[:subnet_ids]).to have(2).items
+      expect(config[:subnet_ids].size).to eq(2)
       expect(config[:private_dns_enabled]).to eq(true)
     end
   end
@@ -382,7 +382,7 @@ RSpec.describe "aws_vpc_endpoint resource function" do
         }
       })
       
-      expect(result.resource_attributes[:route_table_ids]).to have(4).items
+      expect(result.resource_attributes[:route_table_ids].size).to eq(4)
       expect(result.service_type).to eq("s3")
     end
     
@@ -403,7 +403,7 @@ RSpec.describe "aws_vpc_endpoint resource function" do
         }
       })
       
-      expect(result.resource_attributes[:subnet_ids]).to have(3).items
+      expect(result.resource_attributes[:subnet_ids].size).to eq(3)
       expect(result.is_interface_endpoint?).to eq(true)
     end
     

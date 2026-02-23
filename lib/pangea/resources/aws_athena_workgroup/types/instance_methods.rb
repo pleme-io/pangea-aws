@@ -27,9 +27,9 @@ module Pangea
 
           # Check if workgroup has output location
           def has_output_location?
-            configuration &&
+            !!(configuration &&
               configuration[:result_configuration] &&
-              configuration[:result_configuration][:output_location]
+              configuration[:result_configuration][:output_location])
           end
 
           # Check if workgroup enforces configuration
@@ -58,7 +58,7 @@ module Pangea
 
           # Check if workgroup has query limits
           def has_query_limits?
-            configuration && configuration[:bytes_scanned_cutoff_per_query]
+            !!(configuration && configuration[:bytes_scanned_cutoff_per_query])
           end
 
           # Calculate query limit in GB

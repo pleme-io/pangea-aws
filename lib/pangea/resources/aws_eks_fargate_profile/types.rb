@@ -21,15 +21,15 @@ module Pangea
     module AWS
       module Types
         # Fargate profile selector for pod matching
-        class FargateSelector < Dry::Struct
+        class FargateSelector < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :namespace, Resources::Types::String
+          attribute? :namespace, Resources::Types::String.optional
           attribute :labels, Resources::Types::Hash.default({}.freeze)
           
           # Validate namespace format
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate namespace is not empty
             if attrs[:namespace] && attrs[:namespace].strip.empty?
@@ -61,16 +61,16 @@ module Pangea
         end
         
         # EKS Fargate profile attributes with validation
-        class EksFargateProfileAttributes < Dry::Struct
+        class EksFargateProfileAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :cluster_name, Resources::Types::String
+          attribute? :cluster_name, Resources::Types::String.optional
           attribute :fargate_profile_name, Resources::Types::String.optional.default(nil)
-          attribute :pod_execution_role_arn, Resources::Types::String.constrained(
+          attribute? :pod_execution_role_arn, Resources::Types::String.constrained(
             format: /\Aarn:aws:iam::\d{12}:role\/.+\z/
           )
-          attribute :selectors, Resources::Types::Array.of(FargateSelector).constrained(
+          attribute? :selectors, Resources::Types::Array.of(FargateSelector).constrained(
             min_size: 1,
             max_size: 5
           )
@@ -81,7 +81,7 @@ module Pangea
           
           # Validate selectors
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Convert raw selector hashes to FargateSelector objects if needed
             if attrs[:selectors] && attrs[:selectors].is_a?(Array)

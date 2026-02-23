@@ -38,17 +38,17 @@ module Pangea
           description sg_attrs.description if sg_attrs.description
           
           # Add ingress rules as array
-          if sg_attrs.ingress_rules.any?
+          if sg_attrs.ingress_rules&.any?
             ingress sg_attrs.ingress_rules
           end
           
           # Add egress rules as array
-          if sg_attrs.egress_rules.any?
+          if sg_attrs.egress_rules&.any?
             egress sg_attrs.egress_rules
           end
           
           # Apply tags if present
-          if sg_attrs.tags.any?
+          if sg_attrs.tags&.any?
             tags do
               sg_attrs.tags.each do |key, value|
                 public_send(key, value)

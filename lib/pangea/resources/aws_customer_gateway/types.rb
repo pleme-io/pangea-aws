@@ -21,22 +21,22 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AwsCustomerGateway resources
-      class CustomerGatewayAttributes < Dry::Struct
+      class CustomerGatewayAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
         
         # Required attributes
-        attribute :bgp_asn, Resources::Types::BgpAsn
-        attribute :ip_address, Resources::Types::PublicIpAddress
-        attribute :type, Resources::Types::VpnGatewayType
+        attribute? :bgp_asn, Resources::Types::BgpAsn.optional
+        attribute? :ip_address, Resources::Types::PublicIpAddress.optional
+        attribute? :type, Resources::Types::VpnGatewayType.optional
         
         # Optional attributes
-        attribute :certificate_arn, Resources::Types::String.optional
-        attribute :device_name, Resources::Types::String.optional
+        attribute? :certificate_arn, Resources::Types::String.optional
+        attribute? :device_name, Resources::Types::String.optional
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})
-          attrs = attributes.is_a?(Hash) ? attributes : {}
+          attrs = attributes.is_a?(::Hash) ? attributes : {}
           
           # Validate BGP ASN for customer gateway
           if attrs[:bgp_asn]

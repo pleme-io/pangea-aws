@@ -21,16 +21,16 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Load Balancer Listener resources
-        class LoadBalancerListenerAttributes < Dry::Struct
+        class LoadBalancerListenerAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           # The ARN of the load balancer to attach the listener to
-          attribute :load_balancer_arn, Pangea::Resources::Types::String
+          attribute? :load_balancer_arn, Pangea::Resources::Types::String.optional
         
           # The port on which the load balancer is listening
-          attribute :port, Pangea::Resources::Types::ListenerPort
+          attribute? :port, Pangea::Resources::Types::ListenerPort.optional
         
           # The protocol for connections from clients to the load balancer
-          attribute :protocol, Pangea::Resources::Types::ListenerProtocol
+          attribute? :protocol, Pangea::Resources::Types::ListenerProtocol.optional
         
           # The security policy for HTTPS/TLS listeners (required for HTTPS/TLS)
           attribute? :ssl_policy, Pangea::Resources::Types::SslPolicy.optional
@@ -42,7 +42,7 @@ module Pangea
           attribute? :alpn_policy, Pangea::Resources::Types::String.constrained(included_in: ['HTTP1Only', 'HTTP2Only', 'HTTP2Optional', 'HTTP2Preferred', 'None']).optional
         
           # Default actions for the listener
-          attribute :default_action, Pangea::Resources::Types::Array.of(
+          attribute? :default_action, Pangea::Resources::Types::Array.of(
             Pangea::Resources::Types::Hash.schema(
               type: Pangea::Resources::Types::ListenerActionType,
               target_group_arn?: Pangea::Resources::Types::String.optional,
@@ -52,7 +52,7 @@ module Pangea
               authenticate_cognito?: Pangea::Resources::Types::ListenerAuthenticateCognitoAction.optional,
               authenticate_oidc?: Pangea::Resources::Types::ListenerAuthenticateOidcAction.optional,
               order?: Pangea::Resources::Types::Integer.constrained(gteq: 1, lteq: 50000).optional
-            )
+            ).lax
           ).constrained(min_size: 1)
         
           # Tags to apply to the listener

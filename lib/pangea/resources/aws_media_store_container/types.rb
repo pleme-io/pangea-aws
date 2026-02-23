@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS MediaStore Container resources
-      class MediaStoreContainerAttributes < Dry::Struct
+      class MediaStoreContainerAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Container name (required)
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
 
         # Tags
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

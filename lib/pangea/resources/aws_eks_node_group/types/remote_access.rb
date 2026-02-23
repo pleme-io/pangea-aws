@@ -22,7 +22,7 @@ module Pangea
     module AWS
       module Types
         # Remote access configuration
-        class RemoteAccess < Dry::Struct
+        class RemoteAccess < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           attribute :ec2_ssh_key, Pangea::Resources::Types::String.optional.default(nil)

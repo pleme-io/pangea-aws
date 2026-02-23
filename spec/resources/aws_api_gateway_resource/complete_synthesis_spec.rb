@@ -32,12 +32,14 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test basic resource synthesis
   it "synthesizes basic API Gateway resource correctly" do
+    _rest_api_id = rest_api_id
+    _root_resource_id = root_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_resource(:users, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "users"
       })
     end
@@ -52,12 +54,14 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test resource with path parameter
   it "synthesizes resource with path parameter" do
+    _rest_api_id = rest_api_id
+    _users_resource_id = users_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_resource(:user_by_id, {
-        rest_api_id: rest_api_id,
-        parent_id: users_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _users_resource_id,
         path_part: "{userId}"
       })
     end
@@ -72,12 +76,14 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test resource with greedy parameter
   it "synthesizes resource with greedy parameter" do
+    _rest_api_id = rest_api_id
+    _admin_resource_id = admin_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_resource(:proxy_resource, {
-        rest_api_id: rest_api_id,
-        parent_id: admin_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _admin_resource_id,
         path_part: "{proxy+}"
       })
     end
@@ -92,17 +98,19 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test versioned API structure
   it "synthesizes versioned API structure" do
+    _rest_api_id = rest_api_id
+    _root_resource_id = root_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_resource(:v1, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "v1"
       })
       
       aws_api_gateway_resource(:v1_users, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "v1_resource_id",  # Would be reference in real usage
         path_part: "users"
       })
@@ -123,33 +131,36 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test RESTful resource hierarchy
   it "synthesizes RESTful resource hierarchy" do
+    _rest_api_id = rest_api_id
+    _root_resource_id = root_resource_id
+    _users_resource_id = users_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # /users
       aws_api_gateway_resource(:users, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "users"
       })
       
       # /users/{userId}
       aws_api_gateway_resource(:user_by_id, {
-        rest_api_id: rest_api_id,
-        parent_id: users_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _users_resource_id,
         path_part: "{userId}"
       })
       
       # /users/{userId}/posts
       aws_api_gateway_resource(:user_posts, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "user_by_id_resource",
         path_part: "posts"
       })
       
       # /users/{userId}/posts/{postId}
       aws_api_gateway_resource(:user_post_by_id, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "user_posts_resource",
         path_part: "{postId}"
       })
@@ -159,7 +170,7 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
     resources = json_output.dig(:resource, :aws_api_gateway_resource)
     
     expect(resources.keys).to contain_exactly(
-      :users, :user_by_id, :user_posts, :user_post_by_id
+      'users', 'user_by_id', 'user_posts', 'user_post_by_id'
     )
     
     # Verify structure
@@ -171,26 +182,28 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test microservices gateway pattern
   it "synthesizes microservices gateway pattern" do
+    _rest_api_id = rest_api_id
+    _root_resource_id = root_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # /services
       aws_api_gateway_resource(:services, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "services"
       })
       
       # /services/{serviceName}
       aws_api_gateway_resource(:service_by_name, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "services_resource",
         path_part: "{serviceName}"
       })
       
       # /services/{serviceName}/{proxy+}
       aws_api_gateway_resource(:service_proxy, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "service_by_name_resource",
         path_part: "{proxy+}"
       })
@@ -206,33 +219,35 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test operational endpoints
   it "synthesizes operational endpoints" do
+    _rest_api_id = rest_api_id
+    _root_resource_id = root_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # Health check
       aws_api_gateway_resource(:health, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "health"
       })
       
       # Metrics
       aws_api_gateway_resource(:metrics, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "metrics"
       })
       
       # Webhooks
       aws_api_gateway_resource(:webhooks, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "webhooks"
       })
       
       # Webhook receiver
       aws_api_gateway_resource(:webhook_by_type, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "webhooks_resource",
         path_part: "{webhookType}"
       })
@@ -249,27 +264,30 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test search and filtering patterns
   it "synthesizes search and filtering patterns" do
+    _rest_api_id = rest_api_id
+    _root_resource_id = root_resource_id
+    _users_resource_id = users_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # Global search
       aws_api_gateway_resource(:search, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "search"
       })
       
       # Resource-specific search
       aws_api_gateway_resource(:user_search, {
-        rest_api_id: rest_api_id,
-        parent_id: users_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _users_resource_id,
         path_part: "search"
       })
       
       # Filtering endpoint
       aws_api_gateway_resource(:filter, {
-        rest_api_id: rest_api_id,
-        parent_id: users_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _users_resource_id,
         path_part: "filter"
       })
     end
@@ -284,27 +302,30 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test batch operations pattern
   it "synthesizes batch operations pattern" do
+    _rest_api_id = rest_api_id
+    _root_resource_id = root_resource_id
+    _users_resource_id = users_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # Batch endpoint
       aws_api_gateway_resource(:batch, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "batch"
       })
       
       # Batch operations by type
       aws_api_gateway_resource(:batch_operation, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "batch_resource",
         path_part: "{operation}"
       })
       
       # Resource-specific batch
       aws_api_gateway_resource(:user_batch, {
-        rest_api_id: rest_api_id,
-        parent_id: users_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _users_resource_id,
         path_part: "batch"
       })
     end
@@ -319,34 +340,37 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test admin interface pattern
   it "synthesizes admin interface pattern" do
+    _rest_api_id = rest_api_id
+    _root_resource_id = root_resource_id
+    _admin_resource_id = admin_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # Admin section
       aws_api_gateway_resource(:admin, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "admin"
       })
       
       # Admin resource management
       aws_api_gateway_resource(:admin_resource, {
-        rest_api_id: rest_api_id,
-        parent_id: admin_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _admin_resource_id,
         path_part: "{resource}"
       })
       
       # Admin actions
       aws_api_gateway_resource(:admin_action, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "admin_resource_resource",
         path_part: "{action}"
       })
       
       # Admin proxy for flexibility
       aws_api_gateway_resource(:admin_proxy, {
-        rest_api_id: rest_api_id,
-        parent_id: admin_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _admin_resource_id,
         path_part: "{proxy+}"
       })
     end
@@ -362,33 +386,36 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test data export/import patterns
   it "synthesizes data export/import patterns" do
+    _rest_api_id = rest_api_id
+    _root_resource_id = root_resource_id
+    _users_resource_id = users_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # Export endpoint
       aws_api_gateway_resource(:export, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "export"
       })
       
       # Import endpoint
       aws_api_gateway_resource(:import, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "import"
       })
       
       # Resource-specific export
       aws_api_gateway_resource(:user_export, {
-        rest_api_id: rest_api_id,
-        parent_id: users_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _users_resource_id,
         path_part: "export"
       })
       
       # Format-specific export
       aws_api_gateway_resource(:export_format, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "export_resource",
         path_part: "{format}"
       })
@@ -405,57 +432,59 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test complex nested API structure
   it "synthesizes complex nested API structure" do
+    _rest_api_id = rest_api_id
+    _root_resource_id = root_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # API versioning
       aws_api_gateway_resource(:api, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "api"
       })
       
       aws_api_gateway_resource(:v2, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "api_resource",
         path_part: "v2"
       })
       
       # Organizations
       aws_api_gateway_resource(:organizations, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "v2_resource",
         path_part: "organizations"
       })
       
       aws_api_gateway_resource(:org_by_id, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "organizations_resource",
         path_part: "{orgId}"
       })
       
       # Projects within organizations
       aws_api_gateway_resource(:projects, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "org_by_id_resource",
         path_part: "projects"
       })
       
       aws_api_gateway_resource(:project_by_id, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "projects_resource",
         path_part: "{projectId}"
       })
       
       # Resources within projects
       aws_api_gateway_resource(:resources, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "project_by_id_resource",
         path_part: "resources"
       })
       
       aws_api_gateway_resource(:resource_by_id, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         parent_id: "resources_resource",
         path_part: "{resourceId}"
       })
@@ -466,8 +495,8 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
     
     # Verify all resources are created
     expect(resources.keys).to contain_exactly(
-      :api, :v2, :organizations, :org_by_id,
-      :projects, :project_by_id, :resources, :resource_by_id
+      'api', 'v2', 'organizations', 'org_by_id',
+      'projects', 'project_by_id', 'resources', 'resource_by_id'
     )
     
     # Verify path structure
@@ -483,34 +512,36 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test resource naming patterns
   it "synthesizes resources with various naming patterns" do
+    _rest_api_id = rest_api_id
+    _root_resource_id = root_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # Hyphenated names
       aws_api_gateway_resource(:user_profiles, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "user-profiles"
       })
       
       # Underscore names
       aws_api_gateway_resource(:api_keys, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "api_keys"
       })
       
       # Numeric names
       aws_api_gateway_resource(:version_2, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "v2"
       })
       
       # Mixed patterns
       aws_api_gateway_resource(:user_session_v1, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "user-session-v1"
       })
     end
@@ -526,41 +557,43 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test parameter naming patterns
   it "synthesizes resources with various parameter patterns" do
+    _rest_api_id = rest_api_id
+    _root_resource_id = root_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # Simple ID
       aws_api_gateway_resource(:simple_id, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "{id}"
       })
       
       # Entity-specific ID
       aws_api_gateway_resource(:user_id, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "{userId}"
       })
       
       # Hyphenated parameter
       aws_api_gateway_resource(:user_profile_id, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "{user-profile-id}"
       })
       
       # Underscore parameter
       aws_api_gateway_resource(:api_key_id, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "{api_key_id}"
       })
       
       # Greedy parameters
       aws_api_gateway_resource(:catch_all, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "{catchAll+}"
       })
     end
@@ -617,7 +650,7 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
     
     # Verify all resources are created
     expect(resources.keys).to contain_exactly(
-      :api1_users, :api1_user_id, :api2_products, :api2_product_id
+      'api1_users', 'api1_user_id', 'api2_products', 'api2_product_id'
     )
     
     # Verify API separation
@@ -629,34 +662,36 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
 
   # Test synthesis with edge cases
   it "synthesizes resources with edge case configurations" do
+    _rest_api_id = rest_api_id
+    _root_resource_id = root_resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # Single character path
       aws_api_gateway_resource(:single_char, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "a"
       })
       
       # Numeric path
       aws_api_gateway_resource(:numeric_path, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "123"
       })
       
       # Long path part
       aws_api_gateway_resource(:long_path, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "very-long-resource-name-with-many-hyphens"
       })
       
       # Mixed case (API Gateway normalizes)
       aws_api_gateway_resource(:mixed_case, {
-        rest_api_id: rest_api_id,
-        parent_id: root_resource_id,
+        rest_api_id: _rest_api_id,
+        parent_id: _root_resource_id,
         path_part: "MixedCase"
       })
     end
@@ -673,24 +708,28 @@ RSpec.describe "aws_api_gateway_resource terraform synthesis" do
   # Test synthesis validates input parameters
   it "validates synthesis parameters through dry-struct" do
     expect {
+      _rest_api_id = rest_api_id
+      _root_resource_id = root_resource_id
       synthesizer.instance_eval do
         extend Pangea::Resources::AWS
         
         aws_api_gateway_resource(:invalid_path, {
-          rest_api_id: rest_api_id,
-          parent_id: root_resource_id,
+          rest_api_id: _rest_api_id,
+          parent_id: _root_resource_id,
           path_part: "users/profile"  # Contains slash
         })
       end
     }.to raise_error(Dry::Struct::Error, /Path part cannot contain slashes/)
     
     expect {
+      _rest_api_id = rest_api_id
+      _root_resource_id = root_resource_id
       synthesizer.instance_eval do
         extend Pangea::Resources::AWS
         
         aws_api_gateway_resource(:invalid_greedy, {
-          rest_api_id: rest_api_id,
-          parent_id: root_resource_id,
+          rest_api_id: _rest_api_id,
+          parent_id: _root_resource_id,
           path_part: "prefix{proxy+}"  # Invalid greedy format
         })
       end

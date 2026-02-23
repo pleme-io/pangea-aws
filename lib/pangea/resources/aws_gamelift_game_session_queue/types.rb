@@ -21,24 +21,24 @@ module Pangea
     module AwsGameliftGameSessionQueue
       module Types
         # Player latency policy for queue
-        class PlayerLatencyPolicy < Dry::Struct
-          attribute :maximum_individual_player_latency_milliseconds, Pangea::Resources::Types::Integer
+        class PlayerLatencyPolicy < Pangea::Resources::BaseAttributes
+          attribute? :maximum_individual_player_latency_milliseconds, Pangea::Resources::Types::Integer.optional
           attribute :policy_duration_seconds?, Pangea::Resources::Types::Integer
         end
 
         # Destination for game sessions
         unless const_defined?(:Destination)
-        class Destination < Dry::Struct
-          attribute :destination_arn, Pangea::Resources::Types::String
+        class Destination < Pangea::Resources::BaseAttributes
+          attribute? :destination_arn, Pangea::Resources::Types::String.optional
         end
 
         # Filter configuration for fleet selection
-        class FilterConfiguration < Dry::Struct
+        class FilterConfiguration < Pangea::Resources::BaseAttributes
           attribute :allowed_locations?, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String)
         end
 
         # Priority configuration for destinations
-        class PriorityConfiguration < Dry::Struct
+        class PriorityConfiguration < Pangea::Resources::BaseAttributes
           attribute :location_order?, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String)
           attribute :priority_order?, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String.constrained(included_in: ["COST", "DESTINATION", "LATENCY", "LOCATION"]))
         end

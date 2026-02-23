@@ -26,13 +26,13 @@ module Pangea
         # Anomaly subscription threshold types
         AnomalyThresholdExpression = Resources::Types::String.constrained(included_in: ['AND', 'OR', 'DIMENSION', 'MATCH_OPTIONS'])
         
-        class AnomalySubscriptionAttributes < Dry::Struct
+        class AnomalySubscriptionAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9\s\-_\.]{1,128}\z/)
-          attribute :frequency, AnomalySubscriptionFrequency
-          attribute :monitor_arn_list, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 1024)
-          attribute :subscribers, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 1024)
+          attribute? :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9\s\-_\.]{1,128}\z/).optional
+          attribute? :frequency, AnomalySubscriptionFrequency.optional
+          attribute? :monitor_arn_list, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 1024).optional
+          attribute? :subscribers, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 1024).optional
           attribute :threshold_expression?, Resources::Types::String.optional
           attribute :tags?, Resources::Types::AwsTags.optional
           

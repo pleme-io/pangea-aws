@@ -20,15 +20,15 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS ElastiCache Subnet Group resources
-      class ElastiCacheSubnetGroupAttributes < Dry::Struct
+      class ElastiCacheSubnetGroupAttributes < Pangea::Resources::BaseAttributes
         # Name of the subnet group
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
 
         # Description of the subnet group
-        attribute :description, Resources::Types::String.optional
+        attribute? :description, Resources::Types::String.optional
 
         # List of subnet IDs to include in the subnet group
-        attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
+        attribute? :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1).optional
 
         # Tags to apply to the subnet group
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -62,9 +62,9 @@ module Pangea
             # This is allowed but limits cluster to single-AZ
           end
 
-          # Validate subnet ID format
+          # Validate subnet ID format (allow Terraform references and various ID formats)
           attrs.subnet_ids.each do |subnet_id|
-            unless subnet_id.match?(/\Asubnet-[a-f0-9]{8,17}\z/)
+            unless subnet_id.match?(/\Asubnet-[a-zA-Z0-9]+\z/) || subnet_id.match?(/\A\$\{.+\}\z/)
               raise Dry::Struct::Error, "Invalid subnet ID format: #{subnet_id}"
             end
           end

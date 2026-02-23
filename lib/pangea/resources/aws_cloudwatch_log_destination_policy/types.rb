@@ -22,17 +22,17 @@ module Pangea
     module AWS
       module Types
         # CloudWatch Log Destination Policy resource attributes with validation
-        class CloudWatchLogDestinationPolicyAttributes < Dry::Struct
+        class CloudWatchLogDestinationPolicyAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :destination_name, Resources::Types::String
-          attribute :access_policy, Resources::Types::String
+          attribute? :destination_name, Resources::Types::String.optional
+          attribute? :access_policy, Resources::Types::String.optional
           attribute :force_update, Resources::Types::Bool.default(false)
           
           # Validate policy JSON and structure
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate destination_name format
             if attrs[:destination_name] && !attrs[:destination_name].match?(/^[\w\-\.]+$/)
@@ -42,10 +42,10 @@ module Pangea
             # Validate access_policy is valid JSON
             if attrs[:access_policy]
               begin
-                policy = JSON.parse(attrs[:access_policy])
+                policy = ::JSON.parse(attrs[:access_policy])
                 
                 # Validate policy structure
-                unless policy.is_a?(Hash) && policy['Statement'].is_a?(Array)
+                unless policy.is_a?(::Hash) && policy['Statement'].is_a?(Array)
                   raise Dry::Struct::Error, "access_policy must be a valid IAM policy document with Statement array"
                 end
                 
@@ -67,7 +67,7 @@ module Pangea
                     raise Dry::Struct::Error, "Statement #{idx} contains invalid actions for log destination"
                   end
                 end
-              rescue JSON::ParserError => e
+              rescue ::JSON::ParserError => e
                 raise Dry::Struct::Error, "access_policy must be valid JSON: #{e.message}"
               end
             end
@@ -77,9 +77,9 @@ module Pangea
           
           # Computed properties
           def policy_statements
-            policy = JSON.parse(access_policy)
+            policy = ::JSON.parse(access_policy)
             policy['Statement'] || []
-          rescue JSON::ParserError
+          rescue ::JSON::ParserError
             []
           end
           

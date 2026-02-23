@@ -31,7 +31,7 @@ module Pangea
           allowed_origins: Resources::Types::Array.of(Resources::Types::String),
           expose_headers?: Resources::Types::Array.of(Resources::Types::String).optional,
           max_age_seconds?: Resources::Types::Integer.optional
-        )
+        ).lax
         end
       end
     end

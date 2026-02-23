@@ -41,28 +41,28 @@ module Pangea
           # Required attributes - details block
           details do
             # Access point name
-            name mrap_attrs.details[:name]
+            name mrap_attrs.details&.dig(:name)
             
             # Public access block configuration
-            if mrap_attrs.details[:public_access_block_configuration].any?
+            if mrap_attrs.details&.dig(:public_access_block_configuration).any?
               public_access_block_configuration do
-                if mrap_attrs.details[:public_access_block_configuration].key?(:block_public_acls)
-                  block_public_acls mrap_attrs.details[:public_access_block_configuration][:block_public_acls]
+                if mrap_attrs.details&.dig(:public_access_block_configuration).key?(:block_public_acls)
+                  block_public_acls mrap_attrs.details&.dig(:public_access_block_configuration)[:block_public_acls]
                 end
-                if mrap_attrs.details[:public_access_block_configuration].key?(:block_public_policy)
-                  block_public_policy mrap_attrs.details[:public_access_block_configuration][:block_public_policy]
+                if mrap_attrs.details&.dig(:public_access_block_configuration).key?(:block_public_policy)
+                  block_public_policy mrap_attrs.details&.dig(:public_access_block_configuration)[:block_public_policy]
                 end
-                if mrap_attrs.details[:public_access_block_configuration].key?(:ignore_public_acls)
-                  ignore_public_acls mrap_attrs.details[:public_access_block_configuration][:ignore_public_acls]
+                if mrap_attrs.details&.dig(:public_access_block_configuration).key?(:ignore_public_acls)
+                  ignore_public_acls mrap_attrs.details&.dig(:public_access_block_configuration)[:ignore_public_acls]
                 end
-                if mrap_attrs.details[:public_access_block_configuration].key?(:restrict_public_buckets)
-                  restrict_public_buckets mrap_attrs.details[:public_access_block_configuration][:restrict_public_buckets]
+                if mrap_attrs.details&.dig(:public_access_block_configuration).key?(:restrict_public_buckets)
+                  restrict_public_buckets mrap_attrs.details&.dig(:public_access_block_configuration)[:restrict_public_buckets]
                 end
               end
             end
             
             # Region configurations
-            mrap_attrs.details[:region].each do |region_config|
+            mrap_attrs.details&.dig(:region).each do |region_config|
               region do
                 bucket region_config[:bucket]
                 bucket_account_id region_config[:bucket_account_id] if region_config[:bucket_account_id]

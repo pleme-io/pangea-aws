@@ -27,19 +27,19 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS S3 Bucket Replication Configuration resources
-        class S3BucketReplicationConfigurationAttributes < Dry::Struct
+        class S3BucketReplicationConfigurationAttributes < Pangea::Resources::BaseAttributes
           include S3BucketReplicationHelpers
 
           transform_keys(&:to_sym)
 
           # The name of the bucket for which replication configuration is set
-          attribute :bucket, Resources::Types::String
+          attribute? :bucket, Resources::Types::String.optional
 
           # IAM role ARN that S3 can assume to replicate objects
-          attribute :role, Resources::Types::String
+          attribute? :role, Resources::Types::String.optional
 
           # Array of replication rules
-          attribute :rule, S3BucketReplicationRule::Rules
+          attribute? :rule, S3BucketReplicationRule::Rules.optional
 
           # Custom validation
           def self.new(attributes = {})

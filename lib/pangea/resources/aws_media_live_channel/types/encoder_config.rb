@@ -16,41 +16,41 @@ module Pangea
               password_param?: T::String.optional,
               uri: T::String,
               username?: T::String.optional
-            )
+            ).lax
 
             # Timecode config
             TimecodeConfig = T::Hash.schema(
               source: T::String.constrained(included_in: ['EMBEDDED', 'SYSTEMCLOCK', 'ZEROBASED']),
               sync_threshold?: T::Integer.optional
-            )
+            ).lax
 
             # Avail blanking
             AvailBlanking = T::Hash.schema(
               avail_blanking_image?: ImageInput.optional,
               state?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional
-            )
+            ).lax
 
             # SCTE35 avail settings
             Scte35SpliceInsert = T::Hash.schema(
               ad_avail_offset?: T::Integer.optional,
               no_regional_blackout_flag?: T::String.constrained(included_in: ['FOLLOW', 'IGNORE']).optional,
               web_delivery_allowed_flag?: T::String.constrained(included_in: ['FOLLOW', 'IGNORE']).optional
-            )
+            ).lax
 
             Scte35TimeSignalApos = T::Hash.schema(
               ad_avail_offset?: T::Integer.optional,
               no_regional_blackout_flag?: T::String.constrained(included_in: ['FOLLOW', 'IGNORE']).optional,
               web_delivery_allowed_flag?: T::String.constrained(included_in: ['FOLLOW', 'IGNORE']).optional
-            )
+            ).lax
 
             AvailSettings = T::Hash.schema(
               scte35_splice_insert?: Scte35SpliceInsert.optional,
               scte35_time_signal_apos?: Scte35TimeSignalApos.optional
-            )
+            ).lax
 
             AvailConfiguration = T::Hash.schema(
               avail_settings?: AvailSettings.optional
-            )
+            ).lax
 
             # Blackout slate
             BlackoutSlate = T::Hash.schema(
@@ -59,12 +59,12 @@ module Pangea
               network_end_blackout_image?: ImageInput.optional,
               network_id?: T::String.optional,
               state?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional
-            )
+            ).lax
 
             # Feature activations
             FeatureActivations = T::Hash.schema(
               input_prepare_schedule_actions?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional
-            )
+            ).lax
 
             # Input loss behavior
             InputLossBehavior = T::Hash.schema(
@@ -73,7 +73,7 @@ module Pangea
               input_loss_image_slate?: ImageInput.optional,
               input_loss_image_type?: T::String.constrained(included_in: ['COLOR', 'SLATE']).optional,
               repeat_frame_msec?: T::Integer.optional
-            )
+            ).lax
 
             # Global configuration
             GlobalConfiguration = T::Hash.schema(
@@ -83,23 +83,23 @@ module Pangea
               output_locking_mode?: T::String.constrained(included_in: ['EPOCH_LOCKING', 'PIPELINE_LOCKING']).optional,
               output_timing_source?: T::String.constrained(included_in: ['INPUT_CLOCK', 'SYSTEM_CLOCK']).optional,
               support_low_framerate_inputs?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional
-            )
+            ).lax
 
             # Motion graphics configuration
             MotionGraphicsSettings = T::Hash.schema(
               html_motion_graphics_settings?: T::Hash.optional
-            )
+            ).lax
 
             MotionGraphicsConfiguration = T::Hash.schema(
               motion_graphics_insertion?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional,
               motion_graphics_settings?: MotionGraphicsSettings.optional
-            )
+            ).lax
 
             # Nielsen configuration
             NielsenConfiguration = T::Hash.schema(
               distributor_id?: T::String.optional,
               nielsen_pcm_to_id3_tagging?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional
-            )
+            ).lax
           end
         end
       end

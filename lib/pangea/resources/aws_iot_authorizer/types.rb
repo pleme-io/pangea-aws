@@ -25,28 +25,28 @@ module Pangea
     # flexible authentication patterns for diverse IoT use cases.
     module AwsIotAuthorizerTypes
       # Token key name configuration for custom tokens
-      class TokenKeyName < Dry::Struct
+      class TokenKeyName < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # Name of the key to extract from the token
-        attribute :key, Resources::Types::String
+        attribute? :key, Resources::Types::String.optional
       end
 
       # Main attributes for IoT authorizer resource
 
       # Output attributes from authorizer resource
       unless const_defined?(:Outputs)
-      class Outputs < Dry::Struct
+      class Outputs < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # The authorizer ARN
-        attribute :arn, Resources::Types::String
+        attribute? :arn, Resources::Types::String.optional
 
         # The authorizer name
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
 
         # The unique authorizer ID
-        attribute :id, Resources::Types::String
+        attribute? :id, Resources::Types::String.optional
       end
     end
       end

@@ -28,7 +28,7 @@ module Pangea
         LifecycleTransition = Resources::Types::Hash.schema(
           days: Resources::Types::Integer,
           storage_class: Resources::Types::String.enum(*STORAGE_CLASSES)
-        )
+        ).lax
         end
 
         # Lifecycle rule expiration type
@@ -36,13 +36,13 @@ module Pangea
         LifecycleExpiration = Resources::Types::Hash.schema(
           days?: Resources::Types::Integer.optional,
           expired_object_delete_marker?: Resources::Types::Bool.optional
-        )
+        ).lax
         end
 
         # Noncurrent version expiration type
         NoncurrentVersionExpiration = Resources::Types::Hash.schema(
           days: Resources::Types::Integer
-        )
+        ).lax
 
         # Complete lifecycle rule type
         unless const_defined?(:LifecycleRule)
@@ -55,7 +55,7 @@ module Pangea
           expiration?: LifecycleExpiration.optional,
           noncurrent_version_transition?: Resources::Types::Array.of(LifecycleTransition).optional,
           noncurrent_version_expiration?: NoncurrentVersionExpiration.optional
-        )
+        ).lax
         end
       end
     end

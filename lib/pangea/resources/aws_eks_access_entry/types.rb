@@ -41,10 +41,10 @@ module Pangea
         end
 
         # EKS Access Entry attributes with comprehensive validation
-        class EksAccessEntryAttributes < Dry::Struct
+        class EksAccessEntryAttributes < Pangea::Resources::BaseAttributes
           # Required attributes
-          attribute :cluster_name, Types::ClusterName
-          attribute :principal_arn, Types::PrincipalArn
+          attribute? :cluster_name, Types::ClusterName.optional
+          attribute? :principal_arn, Types::PrincipalArn.optional
           
           # Optional attributes
           attribute? :kubernetes_groups, Resources::Types::Array.of(Types::KubernetesGroup).optional

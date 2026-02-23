@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2InstanceMetadataDefaults resources
       # Manages aws ec2 instance metadata defaults resources.
-      class AwsEc2InstanceMetadataDefaultsAttributes < Dry::Struct
+      class AwsEc2InstanceMetadataDefaultsAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_instance_metadata_defaults
         
         # Tags to apply to the resource

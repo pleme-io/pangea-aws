@@ -12,7 +12,7 @@ module Pangea
             validate_job_name(attrs.job_name)
             validate_role_arn(attrs.role_arn)
             validate_s3_uris(attrs)
-            validate_volume_size(attrs.instance_config[:volume_size_in_gb])
+            validate_volume_size(attrs.instance_config&.dig(:volume_size_in_gb))
             validate_instance_count(attrs)
           end
 
@@ -39,10 +39,10 @@ module Pangea
 
           def self.collect_s3_uris(attrs)
             uris = [
-              attrs.algorithm_specification[:script_mode_config][:s3_uri],
-              attrs.output_data_config[:s3_path]
+              attrs.algorithm_specification&.dig(:script_mode_config)[:s3_uri],
+              attrs.output_data_config&.dig(:s3_path)
             ]
-            uris << attrs.checkpoint_config[:s3_uri] if attrs.checkpoint_config
+            uris << attrs.checkpoint_config&.dig(:s3_uri) if attrs.checkpoint_config
             attrs.input_data_config&.each do |input_config|
               uris << input_config[:data_source][:s3_data_source][:s3_uri]
             end
@@ -56,9 +56,9 @@ module Pangea
           end
 
           def self.validate_instance_count(attrs)
-            instance_count = attrs.instance_config[:instance_count]
+            instance_count = attrs.instance_config&.dig(:instance_count)
             return unless instance_count && instance_count > 1
-            return if attrs.device_config[:device].include?('local')
+            return if attrs.device_config&.dig(:device).include?('local')
 
             raise Dry::Struct::Error, 'Multi-instance jobs are only supported with local simulators'
           end

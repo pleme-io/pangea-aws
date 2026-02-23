@@ -54,12 +54,12 @@ module Pangea
           builder.build_tags(self)
         end
 
-        build_resource_reference(name, cluster_attrs)
+        build_aws_emr_cluster_resource_reference(name, cluster_attrs)
       end
 
       private
 
-      def build_resource_reference(name, cluster_attrs)
+      def build_aws_emr_cluster_resource_reference(name, cluster_attrs)
         ResourceReference.new(
           type: 'aws_emr_cluster',
           name: name,

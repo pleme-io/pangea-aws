@@ -20,16 +20,16 @@ module Pangea
     module AWS
       module Types
       # Type definitions for Network ACL rules
-      class NetworkAclRule < Dry::Struct
-        attribute :rule_number, Resources::Types::Integer
-        attribute :protocol, Resources::Types::String  # "-1" for all
-        attribute :action, Resources::Types::String.constrained(included_in: ["allow", "deny"])
-        attribute :cidr_block, Resources::Types::String.optional
-        attribute :ipv6_cidr_block, Resources::Types::String.optional
-        attribute :from_port, Resources::Types::Integer.optional
-        attribute :to_port, Resources::Types::Integer.optional
-        attribute :icmp_type, Resources::Types::Integer.optional
-        attribute :icmp_code, Resources::Types::Integer.optional
+      class NetworkAclRule < Pangea::Resources::BaseAttributes
+        attribute? :rule_number, Resources::Types::Integer.optional
+        attribute? :protocol, Resources::Types::String  # "-1" for all.optional
+        attribute? :action, Resources::Types::String.constrained(included_in: ["allow", "deny"]).optional
+        attribute? :cidr_block, Resources::Types::String.optional
+        attribute? :ipv6_cidr_block, Resources::Types::String.optional
+        attribute? :from_port, Resources::Types::Integer.optional
+        attribute? :to_port, Resources::Types::Integer.optional
+        attribute? :icmp_type, Resources::Types::Integer.optional
+        attribute? :icmp_code, Resources::Types::Integer.optional
         
         def self.new(attributes = {})
           attrs = super(attributes)
@@ -64,8 +64,8 @@ module Pangea
       
       # Type-safe attributes for AwsNetworkAcl resources
       # Provides an network ACL resource. You might set up network ACLs with rules similar to your security groups in order to add an additional layer of security to your VPC.
-      class NetworkAclAttributes < Dry::Struct
-        attribute :vpc_id, Resources::Types::String
+      class NetworkAclAttributes < Pangea::Resources::BaseAttributes
+        attribute? :vpc_id, Resources::Types::String.optional
         attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         attribute :ingress, Resources::Types::Array.of(NetworkAclRule).default([].freeze)
         attribute :egress, Resources::Types::Array.of(NetworkAclRule).default([].freeze)

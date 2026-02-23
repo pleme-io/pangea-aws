@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS SQS Queue resources
-        class SQSQueueAttributes < Dry::Struct
+        class SQSQueueAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Queue name (required - must end with .fifo for FIFO queues)
-        attribute :name, Pangea::Resources::Types::String
+        attribute? :name, Pangea::Resources::Types::String.optional
 
         # Queue type (Standard or FIFO)
         attribute :fifo_queue, Pangea::Resources::Types::Bool.default(false)
@@ -49,16 +49,16 @@ module Pangea
         attribute :receive_wait_time_seconds, Pangea::Resources::Types::Integer.constrained(gteq: 0, lteq: 20).default(0)
 
         # Dead letter queue configuration
-        attribute :redrive_policy, Pangea::Resources::Types::Hash.schema(
+        attribute? :redrive_policy, Pangea::Resources::Types::Hash.schema(
           deadLetterTargetArn: Pangea::Resources::Types::String,
           maxReceiveCount: Pangea::Resources::Types::Integer.constrained(gteq: 1, lteq: 1000).default(3)
-        ).optional.default(nil)
+        ).lax.optional.default(nil)
 
         # Allow messages from source queues (for dead letter queue)
-        attribute :redrive_allow_policy, Pangea::Resources::Types::Hash.schema(
+        attribute? :redrive_allow_policy, Pangea::Resources::Types::Hash.schema(
           redrivePermission: Pangea::Resources::Types::String.default('allowAll').constrained(included_in: ['allowAll', 'denyAll', 'byQueue']),
           sourceQueueArns?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).optional
-        ).optional.default(nil)
+        ).lax.optional.default(nil)
 
         # KMS encryption configuration
         attribute :kms_master_key_id, Pangea::Resources::Types::String.optional.default(nil)
@@ -110,8 +110,8 @@ module Pangea
 
           # Validate redrive allow policy
           if attrs.redrive_allow_policy && 
-             attrs.redrive_allow_policy[:redrivePermission] == 'byQueue' && 
-             (attrs.redrive_allow_policy[:sourceQueueArns].nil? || attrs.redrive_allow_policy[:sourceQueueArns].empty?)
+             attrs.redrive_allow_policy&.dig(:redrivePermission) == 'byQueue' && 
+             (attrs.redrive_allow_policy&.dig(:sourceQueueArns).nil? || attrs.redrive_allow_policy&.dig(:sourceQueueArns).empty?)
             raise Dry::Struct::Error, "sourceQueueArns must be specified when redrivePermission is 'byQueue'"
           end
 
@@ -129,11 +129,11 @@ module Pangea
         end
 
         def is_encrypted?
-          kms_master_key_id.present? || sqs_managed_sse_enabled
+          (kms_master_key_id && !kms_master_key_id.empty?) || sqs_managed_sse_enabled
         end
 
         def has_dlq?
-          redrive_policy && redrive_policy[:deadLetterTargetArn].present?
+          !!(redrive_policy && redrive_policy[:deadLetterTargetArn] && !redrive_policy[:deadLetterTargetArn].to_s.empty?)
         end
 
         def long_polling_enabled?
@@ -145,7 +145,7 @@ module Pangea
         end
 
         def allows_all_sources?
-          redrive_allow_policy.nil? || redrive_allow_policy[:redrivePermission] == 'allowAll'
+          redrive_allow_policy.nil? || redrive_allow_policy&.dig(:redrivePermission) == 'allowAll'
         end
 
         def queue_type

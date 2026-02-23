@@ -23,23 +23,23 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS WAFv2 Regex Pattern Set resources
-        class WafV2RegexPatternSetAttributes < Dry::Struct
+        class WafV2RegexPatternSetAttributes < Pangea::Resources::BaseAttributes
           include WafV2RegexPatternSetHelpers
 
           # Name for the regex pattern set
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Description of the regex pattern set
           attribute :description, Resources::Types::String.optional.default(nil)
 
           # Scope of the regex pattern set (CLOUDFRONT or REGIONAL)
-          attribute :scope, Resources::Types::String.constrained(included_in: ['CLOUDFRONT', 'REGIONAL'])
+          attribute? :scope, Resources::Types::String.constrained(included_in: ['CLOUDFRONT', 'REGIONAL']).optional
 
           # List of regular expression patterns
-          attribute :regular_expression, Resources::Types::Array.of(
+          attribute? :regular_expression, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               regex_string: Resources::Types::String
-            )
+            ).lax
           )
 
           # Tags to apply to the regex pattern set

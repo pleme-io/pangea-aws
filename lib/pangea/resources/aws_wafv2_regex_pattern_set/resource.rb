@@ -45,7 +45,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if regex_attrs.tags.any?
+          if regex_attrs.tags&.any?
             tags do
               regex_attrs.tags.each do |key, value|
                 public_send(key, value)

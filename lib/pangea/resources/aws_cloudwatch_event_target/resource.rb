@@ -58,25 +58,25 @@ module Pangea
       #     retry_policy: { maximum_retry_attempts: 2, maximum_event_age_in_seconds: 3600 }
       #   })
       def aws_cloudwatch_event_target(name, attributes = {})
-        target_attrs = Types::Types::CloudWatchEventTargetAttributes.new(attributes)
+        target_attrs = Types::CloudWatchEventTargetAttributes.new(attributes)
 
         resource(:aws_cloudwatch_event_target, name) do
           rule target_attrs.rule
           arn target_attrs.arn
           target_id target_attrs.target_id if target_attrs.target_id
           event_bus_name target_attrs.event_bus_name if target_attrs.event_bus_name != 'default'
-          build_input_configuration(self, target_attrs)
+          build_aws_cloudwatch_event_target_input_configuration(self, target_attrs)
           role_arn target_attrs.role_arn if target_attrs.role_arn
-          build_target_configurations(self, target_attrs)
-          build_error_handling(self, target_attrs)
+          build_aws_cloudwatch_event_target_target_configurations(self, target_attrs)
+          build_aws_cloudwatch_event_target_error_handling(self, target_attrs)
         end
 
-        build_resource_reference(name, target_attrs)
+        build_aws_cloudwatch_event_target_resource_reference(name, target_attrs)
       end
 
       private
 
-      def build_input_configuration(context, target_attrs)
+      def build_aws_cloudwatch_event_target_input_configuration(context, target_attrs)
         if target_attrs.input
           context.input target_attrs.input
         elsif target_attrs.input_path
@@ -89,16 +89,16 @@ module Pangea
         end
       end
 
-      def build_target_configurations(context, target_attrs)
+      def build_aws_cloudwatch_event_target_target_configurations(context, target_attrs)
         build_ecs_target(context, target_attrs.ecs_target) if target_attrs.ecs_target
         build_batch_target(context, target_attrs.batch_target) if target_attrs.batch_target
         build_kinesis_target(context, target_attrs.kinesis_target) if target_attrs.kinesis_target
         build_sqs_target(context, target_attrs.sqs_target) if target_attrs.sqs_target
         build_http_target(context, target_attrs.http_target) if target_attrs.http_target
-        build_run_command_targets(context, target_attrs.run_command_targets) if target_attrs.run_command_targets.any?
+        build_run_command_targets(context, target_attrs.run_command_targets) if target_attrs.run_command_targets&.any?
       end
 
-      def build_error_handling(context, target_attrs)
+      def build_aws_cloudwatch_event_target_error_handling(context, target_attrs)
         if target_attrs.retry_policy
           context.retry_policy do
             maximum_retry_attempts target_attrs.retry_policy.maximum_retry_attempts if target_attrs.retry_policy.maximum_retry_attempts
@@ -113,7 +113,7 @@ module Pangea
         end
       end
 
-      def build_resource_reference(name, target_attrs)
+      def build_aws_cloudwatch_event_target_resource_reference(name, target_attrs)
         ResourceReference.new(
           type: 'aws_cloudwatch_event_target',
           name: name,

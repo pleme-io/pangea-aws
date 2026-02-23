@@ -21,69 +21,69 @@ module Pangea
   module Resources
     module AwsIotanalyticsDatasetTypes
       # Action configuration for dataset content generation
-      class Action < Dry::Struct
+      class Action < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # Name of the action
-        attribute :action_name, Resources::Types::String
+        attribute? :action_name, Resources::Types::String.optional
 
         # SQL query to execute for data retrieval
-        class QueryAction < Dry::Struct
+        class QueryAction < Pangea::Resources::BaseAttributes
           schema schema.strict
 
           # SQL query string
-          attribute :sql_query, Resources::Types::String
+          attribute? :sql_query, Resources::Types::String.optional
 
           # Filter configuration for query results
           unless const_defined?(:Filter)
-          class Filter < Dry::Struct
+          class Filter < Pangea::Resources::BaseAttributes
             schema schema.strict
 
             # Delta time filter for incremental processing
-            class DeltaTime < Dry::Struct
+            class DeltaTime < Pangea::Resources::BaseAttributes
               schema schema.strict
 
               # Offset in seconds from current time
-              attribute :offset_seconds, Resources::Types::Integer
+              attribute? :offset_seconds, Resources::Types::Integer.optional
 
               # Time expression for filtering
-              attribute :time_expression, Resources::Types::String
+              attribute? :time_expression, Resources::Types::String.optional
             end
 
             attribute? :delta_time, DeltaTime.optional
           end
           end
 
-          attribute :filters, Resources::Types::Array.of(Filter).optional
+          attribute :filters, Resources::Types::Array.of(Filter).default([].freeze)
         end
 
         attribute? :query_action, QueryAction.optional
 
         # Container action for custom data processing
-        class ContainerAction < Dry::Struct
+        class ContainerAction < Pangea::Resources::BaseAttributes
           schema schema.strict
 
           # Docker image URI for processing
-          attribute :image, Resources::Types::String
+          attribute? :image, Resources::Types::String.optional
 
           # Execution role ARN
-          attribute :execution_role_arn, Resources::Types::String
+          attribute? :execution_role_arn, Resources::Types::String.optional
 
           # Resource configuration
-          class ResourceConfiguration < Dry::Struct
+          class ResourceConfiguration < Pangea::Resources::BaseAttributes
             schema schema.strict
 
             # Compute type for processing
-            attribute :compute_type, Resources::Types::String.constrained(included_in: ['ACU_1', 'ACU_2'])
+            attribute? :compute_type, Resources::Types::String.constrained(included_in: ['ACU_1', 'ACU_2']).optional
 
             # Volume size in GB
-            attribute :volume_size_in_gb, Resources::Types::Integer.constrained(gteq: 1, lteq: 50)
+            attribute? :volume_size_in_gb, Resources::Types::Integer.constrained(gteq: 1, lteq: 50).optional
           end
 
-          attribute :resource_configuration, ResourceConfiguration
+          attribute? :resource_configuration, ResourceConfiguration.optional
 
           # Environment variables for container
-          attribute :variables, Resources::Types::Hash.map(Types::String, Types::String).optional
+          attribute :variables, Resources::Types::Hash.map(Types::String, Types::String).default({}.freeze)
         end
 
         attribute? :container_action, ContainerAction.optional

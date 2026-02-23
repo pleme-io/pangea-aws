@@ -55,7 +55,7 @@ module Pangea
           'ml.eia2.medium', 'ml.eia2.large', 'ml.eia2.xlarge'])
 
         # SageMaker Notebook Instance attributes with comprehensive validation
-        class SageMakerNotebookInstanceAttributes < Dry::Struct
+        class SageMakerNotebookInstanceAttributes < Pangea::Resources::BaseAttributes
           include SageMakerNotebookInstance::Pricing
           include SageMakerNotebookInstance::Helpers
           include SageMakerNotebookInstance::Security
@@ -63,37 +63,37 @@ module Pangea
           transform_keys(&:to_sym)
 
           # Required attributes
-          attribute :instance_name, Resources::Types::String.constrained(
+          attribute? :instance_name, Resources::Types::String.constrained(
             min_size: 1,
             max_size: 63,
             format: /\A[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]\z/
           )
-          attribute :instance_type, SageMakerNotebookInstanceType
-          attribute :role_arn, Resources::Types::String.constrained(
+          attribute? :instance_type, SageMakerNotebookInstanceType.optional
+          attribute? :role_arn, Resources::Types::String.constrained(
             format: /\Aarn:aws:iam::\d{12}:role\/[a-zA-Z0-9_+=,.@-]+\z/
           )
 
           # Optional attributes
-          attribute :subnet_id, Resources::Types::String.optional
-          attribute :security_group_ids, Resources::Types::Array.of(Resources::Types::String).optional
-          attribute :kms_key_id, Resources::Types::String.optional
-          attribute :lifecycle_config_name, Resources::Types::String.optional
+          attribute? :subnet_id, Resources::Types::String.optional
+          attribute :security_group_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
+          attribute? :kms_key_id, Resources::Types::String.optional
+          attribute? :lifecycle_config_name, Resources::Types::String.optional
           attribute :direct_internet_access, Resources::Types::String.constrained(included_in: ['Enabled', 'Disabled']).default('Enabled')
           attribute :volume_size_in_gb, Resources::Types::Integer.constrained(gteq: 5, lteq: 16384).default(20)
           attribute :volume_type, SageMakerNotebookVolumeType.default('gp2')
-          attribute :accelerator_types, Resources::Types::Array.of(SageMakerAcceleratorType).optional
-          attribute :default_code_repository, Resources::Types::String.optional
-          attribute :additional_code_repositories, Resources::Types::Array.of(Resources::Types::String).optional
-          attribute :root_access, SageMakerNotebookRootAccess
-          attribute :platform_identifier, SageMakerNotebookPlatformIdentifier.optional
-          attribute :instance_metadata_service_configuration, Resources::Types::Hash.schema(
+          attribute :accelerator_types, Resources::Types::Array.of(SageMakerAcceleratorType).default([].freeze)
+          attribute? :default_code_repository, Resources::Types::String.optional
+          attribute :additional_code_repositories, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
+          attribute? :root_access, SageMakerNotebookRootAccess.optional
+          attribute? :platform_identifier, SageMakerNotebookPlatformIdentifier.optional
+          attribute? :instance_metadata_service_configuration, Resources::Types::Hash.schema(
             minimum_instance_metadata_service_version: Resources::Types::String.constrained(included_in: ['1', '2']).default('1')
-          ).optional
-          attribute :tags, Resources::Types::AwsTags
+          ).lax.optional
+          attribute? :tags, Resources::Types::AwsTags.optional
 
           # Custom validation for SageMaker Notebook Instance
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             SageMakerNotebookInstance::Validators.validate!(attrs)
             super(attrs)
           end

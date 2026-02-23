@@ -25,21 +25,21 @@ module Pangea
     # multiple things at once and to simplify device fleet management.
     module AwsIotThingGroupTypes
       # Thing group properties for device management
-      class ThingGroupProperties < Dry::Struct
+      class ThingGroupProperties < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # Brief description of thing group
-        attribute :description, Resources::Types::String.optional
+        attribute? :description, Resources::Types::String.optional
 
         # Attribute payload for additional metadata
-        class AttributePayload < Dry::Struct
+        class AttributePayload < Pangea::Resources::BaseAttributes
           schema schema.strict
           
           # Map of attributes and their values
-          attribute :attributes, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
+          attribute :attributes, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
           
           # Whether payload should merge or replace existing attributes
-          attribute :merge, Resources::Types::Bool.optional
+          attribute? :merge, Resources::Types::Bool.optional
         end
 
         attribute? :attribute_payload, AttributePayload.optional

@@ -21,14 +21,14 @@ module Pangea
       module Types
       # Type-safe attributes for AwsTimestreamBatchLoadTask resources
       # Provides a Timestream batch load task resource.
-      class TimestreamBatchLoadTaskAttributes < Dry::Struct
-        attribute :database_name, Resources::Types::String
-        attribute :table_name, Resources::Types::String
+      class TimestreamBatchLoadTaskAttributes < Pangea::Resources::BaseAttributes
+        attribute? :database_name, Resources::Types::String.optional
+        attribute? :table_name, Resources::Types::String.optional
         attribute :data_source_configuration, Resources::Types::Hash.default({}.freeze)
         attribute :data_model_configuration, Resources::Types::Hash.default({}.freeze).optional
         attribute :report_configuration, Resources::Types::Hash.default({}.freeze).optional
-        attribute :target_database_name, Resources::Types::String.optional
-        attribute :target_table_name, Resources::Types::String.optional
+        attribute? :target_database_name, Resources::Types::String.optional
+        attribute? :target_table_name, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

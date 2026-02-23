@@ -21,7 +21,7 @@ module Pangea
     module AWS
       module Types
         # Predictive scaling configuration
-        class PredictiveScalingConfiguration < Dry::Struct
+        class PredictiveScalingConfiguration < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           attribute :mode, Resources::Types::String.default('ForecastOnly').enum('ForecastOnly', 'ForecastAndScale')

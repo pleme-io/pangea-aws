@@ -22,7 +22,7 @@ module Pangea
         module ApiGatewayStageValidators
           VALID_HTTP_METHODS = %w[GET POST PUT DELETE OPTIONS HEAD PATCH ANY *].freeze
           VALID_LOGGING_LEVELS = %w[OFF ERROR INFO].freeze
-          RESERVED_STAGE_NAMES = %w[test].freeze
+          RESERVED_STAGE_NAMES = [].freeze
 
           class << self
             def validate!(attrs)

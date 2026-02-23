@@ -272,18 +272,13 @@ RSpec.describe "aws_iam_policy terraform synthesis" do
         }
       })
       
-      # Verify tags synthesis
+      # Verify tags synthesis via method calls
       expect(test_synthesizer.method_calls).to include([:tags])
-      
-      # Find the tags resource context
-      resource = test_synthesizer.resources["aws_iam_policy.tagged_policy"]
-      expect(resource.attributes).to have_key(:tags)
-      tags_context = resource.attributes[:tags]
-      expect(tags_context.attributes).to eq({
-        Environment: "production",
-        Team: "platform",
-        ManagedBy: "terraform"
-      })
+
+      # Verify individual tag values were set via DSL
+      expect(test_synthesizer.method_calls).to include([:Environment, "production"])
+      expect(test_synthesizer.method_calls).to include([:Team, "platform"])
+      expect(test_synthesizer.method_calls).to include([:ManagedBy, "terraform"])
     end
     
     it "synthesizes complex multi-statement policy correctly" do
@@ -376,7 +371,7 @@ RSpec.describe "aws_iam_policy terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use S3 bucket read-only template
-      template = Pangea::Resources::AWS::PolicyTemplates.s3_bucket_readonly("my-bucket")
+      template = Pangea::Resources::AWS::Types::PolicyTemplates.s3_bucket_readonly("my-bucket")
       ref = test_instance.aws_iam_policy(:s3_readonly, {
         name: "S3ReadOnlyPolicy",
         policy: template
@@ -417,7 +412,7 @@ RSpec.describe "aws_iam_policy terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use CloudWatch logs write template
-      template = Pangea::Resources::AWS::PolicyTemplates.cloudwatch_logs_write
+      template = Pangea::Resources::AWS::Types::PolicyTemplates.cloudwatch_logs_write
       ref = test_instance.aws_iam_policy(:logs_write, {
         name: "LogsWritePolicy",
         policy: template
@@ -547,7 +542,7 @@ RSpec.describe "aws_iam_policy terraform synthesis" do
       
       # Use KMS decrypt template
       key_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
-      template = Pangea::Resources::AWS::PolicyTemplates.kms_decrypt(key_arn)
+      template = Pangea::Resources::AWS::Types::PolicyTemplates.kms_decrypt(key_arn)
       ref = test_instance.aws_iam_policy(:kms_decrypt, {
         name: "KMSDecryptPolicy",
         policy: template
@@ -585,7 +580,7 @@ RSpec.describe "aws_iam_policy terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use Lambda basic execution template
-      template = Pangea::Resources::AWS::PolicyTemplates.lambda_basic_execution
+      template = Pangea::Resources::AWS::Types::PolicyTemplates.lambda_basic_execution
       ref = test_instance.aws_iam_policy(:lambda_exec, {
         name: "LambdaExecutionPolicy",
         description: "Basic execution policy for Lambda functions",

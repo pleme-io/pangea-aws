@@ -25,11 +25,11 @@ module Pangea
         AcmCertificateLifecycle = Resources::Types::Hash.schema(
           create_before_destroy?: Resources::Types::Bool.default(true),
           prevent_destroy?: Resources::Types::Bool.default(false)
-        )
-        class AcmCertificateAttributes < Dry::Struct
+        ).lax
+        class AcmCertificateAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :domain_name, Resources::Types::DomainName
+          attribute? :domain_name, (Resources::Types::DomainName | Resources::Types::WildcardDomainName).optional
           attribute :subject_alternative_names?, Resources::Types::Array.of(Resources::Types::DomainName | Resources::Types::WildcardDomainName).optional
           attribute :validation_method, Resources::Types::AcmValidationMethod.default('DNS')
           attribute :key_algorithm?, Resources::Types::AcmKeyAlgorithm.optional.default('RSA-2048')
@@ -40,7 +40,7 @@ module Pangea
           
           # Custom validation logic
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate domain name patterns
             if attrs[:domain_name]

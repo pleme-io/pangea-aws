@@ -38,7 +38,7 @@ module Pangea
           token_properties attrs.token_properties if attrs.token_properties
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

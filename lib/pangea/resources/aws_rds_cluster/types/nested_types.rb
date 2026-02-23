@@ -6,9 +6,9 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class ServerlessV2Scaling < Dry::Struct
-          attribute :min_capacity, Resources::Types::Float.constrained(gteq: 0.5, lteq: 128)
-          attribute :max_capacity, Resources::Types::Float.constrained(gteq: 0.5, lteq: 128)
+        class ServerlessV2Scaling < Pangea::Resources::BaseAttributes
+          attribute? :min_capacity, Resources::Types::Float.constrained(gteq: 0.5, lteq: 128).optional
+          attribute? :max_capacity, Resources::Types::Float.constrained(gteq: 0.5, lteq: 128).optional
 
           def self.new(attributes = {})
             attrs = super(attributes)
@@ -22,11 +22,11 @@ module Pangea
           def estimated_hourly_cost_range = "$#{(min_capacity * 0.12).round(2)}-#{(max_capacity * 0.12).round(2)}/hour"
         end
 
-        class RestoreToPointInTime < Dry::Struct
-          attribute :source_cluster_identifier, Resources::Types::String.optional
-          attribute :restore_to_time, Resources::Types::String.optional
+        class RestoreToPointInTime < Pangea::Resources::BaseAttributes
+          attribute? :source_cluster_identifier, Resources::Types::String.optional
+          attribute? :restore_to_time, Resources::Types::String.optional
           attribute :use_latest_restorable_time, Resources::Types::Bool.default(false)
-          attribute :restore_type, Resources::Types::String.optional.constrained(included_in: %w[full-copy copy-on-write])
+          attribute? :restore_type, Resources::Types::String.optional.constrained(included_in: %w[full-copy copy-on-write])
 
           def self.new(attributes = {})
             attrs = super(attributes)

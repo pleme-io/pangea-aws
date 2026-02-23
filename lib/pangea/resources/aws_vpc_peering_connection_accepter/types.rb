@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsVpcPeeringConnectionAccepter resources
       # Manages aws vpc peering connection accepter resources.
-      class AwsVpcPeeringConnectionAccepterAttributes < Dry::Struct
+      class AwsVpcPeeringConnectionAccepterAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_vpc_peering_connection_accepter
         
         # Tags to apply to the resource

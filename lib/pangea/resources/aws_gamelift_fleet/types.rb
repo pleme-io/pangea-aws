@@ -21,35 +21,35 @@ module Pangea
     module AwsGameliftFleet
       module Types
         # IP permission configuration for the fleet
-        class IpPermission < Dry::Struct
-          attribute :from_port, Pangea::Resources::Types::Integer
-          attribute :to_port, Pangea::Resources::Types::Integer
-          attribute :ip_range, Pangea::Resources::Types::String
-          attribute :protocol, Pangea::Resources::Types::String.constrained(included_in: ["TCP", "UDP"])
+        class IpPermission < Pangea::Resources::BaseAttributes
+          attribute? :from_port, Pangea::Resources::Types::Integer.optional
+          attribute? :to_port, Pangea::Resources::Types::Integer.optional
+          attribute? :ip_range, Pangea::Resources::Types::String.optional
+          attribute? :protocol, Pangea::Resources::Types::String.constrained(included_in: ["TCP", "UDP"]).optional
         end
 
         # Runtime configuration for fleet instances
-        class ServerProcess < Dry::Struct
-          attribute :concurrent_executions, Pangea::Resources::Types::Integer
-          attribute :launch_path, Pangea::Resources::Types::String
+        class ServerProcess < Pangea::Resources::BaseAttributes
+          attribute? :concurrent_executions, Pangea::Resources::Types::Integer.optional
+          attribute? :launch_path, Pangea::Resources::Types::String.optional
           attribute :parameters?, Pangea::Resources::Types::String
         end
 
-        class RuntimeConfiguration < Dry::Struct
+        class RuntimeConfiguration < Pangea::Resources::BaseAttributes
           attribute :game_session_activation_timeout_seconds?, Pangea::Resources::Types::Integer.constrained(gteq: 1, lteq: 600)
           attribute :max_concurrent_game_session_activations?, Pangea::Resources::Types::Integer.constrained(gteq: 1, lteq: 2147483647)
           attribute :server_process?, Pangea::Resources::Types::Array.of(ServerProcess)
         end
 
         # Resource creation limit policy
-        class ResourceCreationLimitPolicy < Dry::Struct
+        class ResourceCreationLimitPolicy < Pangea::Resources::BaseAttributes
           attribute :new_game_sessions_per_creator?, Pangea::Resources::Types::Integer
           attribute :policy_period_in_minutes?, Pangea::Resources::Types::Integer
         end
 
         # Certificate configuration for TLS
-        class CertificateConfiguration < Dry::Struct
-          attribute :certificate_type, Pangea::Resources::Types::String.constrained(included_in: ["DISABLED", "GENERATED"])
+        class CertificateConfiguration < Pangea::Resources::BaseAttributes
+          attribute? :certificate_type, Pangea::Resources::Types::String.constrained(included_in: ["DISABLED", "GENERATED"]).optional
         end
 
         # Main attributes for GameLift fleet

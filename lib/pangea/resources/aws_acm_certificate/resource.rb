@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_acm_certificate(name, attributes = {})
         # Validate attributes using dry-struct
-        cert_attrs = Types::Types::AcmCertificateAttributes.new(attributes)
+        cert_attrs = Types::AcmCertificateAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_acm_certificate, name) do
@@ -78,11 +78,11 @@ module Pangea
           # Apply lifecycle configuration if specified
           if cert_attrs.lifecycle
             lifecycle do
-              if cert_attrs.lifecycle[:create_before_destroy]
-                create_before_destroy cert_attrs.lifecycle[:create_before_destroy]
+              if cert_attrs.lifecycle&.dig(:create_before_destroy)
+                create_before_destroy cert_attrs.lifecycle&.dig(:create_before_destroy)
               end
-              if cert_attrs.lifecycle[:prevent_destroy]
-                prevent_destroy cert_attrs.lifecycle[:prevent_destroy]
+              if cert_attrs.lifecycle&.dig(:prevent_destroy)
+                prevent_destroy cert_attrs.lifecycle&.dig(:prevent_destroy)
               end
             end
           end

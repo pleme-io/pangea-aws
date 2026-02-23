@@ -7,15 +7,15 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS S3 Bucket Lifecycle Configuration
-        class S3BucketLifecycleConfigurationAttributes < Dry::Struct
+        class S3BucketLifecycleConfigurationAttributes < Pangea::Resources::BaseAttributes
           # S3 bucket to apply lifecycle configuration to
-          attribute :bucket, Resources::Types::String
+          attribute? :bucket, Resources::Types::String.optional
 
           # Expected bucket owner (optional)
-          attribute :expected_bucket_owner, Resources::Types::String.optional
+          attribute? :expected_bucket_owner, Resources::Types::String.optional
 
           # Lifecycle rules
-          attribute :rule, Resources::Types::Array.of(LifecycleRule).constrained(min_size: 1, max_size: 1000)
+          attribute? :rule, Resources::Types::Array.of(LifecycleRule).constrained(min_size: 1, max_size: 1000).optional
 
           def self.new(attributes = {})
             attrs = super(attributes)

@@ -95,7 +95,7 @@ module Pangea
       #   })
       def aws_cloudwatch_log_destination_policy(name, attributes = {})
         # Validate attributes using dry-struct
-        policy_attrs = Types::Types::CloudWatchLogDestinationPolicyAttributes.new(attributes)
+        policy_attrs = Types::CloudWatchLogDestinationPolicyAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_cloudwatch_logs_destination_policy, name) do

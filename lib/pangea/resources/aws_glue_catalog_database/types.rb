@@ -20,37 +20,37 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS Glue Catalog Database resources
-      class GlueCatalogDatabaseAttributes < Dry::Struct
+      class GlueCatalogDatabaseAttributes < Pangea::Resources::BaseAttributes
         # Database name (required)
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
         
         # Catalog ID (optional, defaults to AWS account ID)
-        attribute :catalog_id, Resources::Types::String.optional
+        attribute? :catalog_id, Resources::Types::String.optional
         
         # Database description
-        attribute :description, Resources::Types::String.optional
+        attribute? :description, Resources::Types::String.optional
         
         # Location URI for external databases
-        attribute :location_uri, Resources::Types::String.optional
+        attribute? :location_uri, Resources::Types::String.optional
         
         # Parameters for the database
         attribute :parameters, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
         
         # Database type
-        attribute :database_input, Resources::Types::Hash.schema(
+        attribute? :database_input, Resources::Types::Hash.schema(
           description?: Resources::Types::String.optional,
           location_uri?: Resources::Types::String.optional,
           parameters?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
-        ).optional
+        ).lax.optional
         
         # Permissions and access control
-        attribute :create_table_default_permission, Resources::Types::Array.of(
+        attribute? :create_table_default_permission, Resources::Types::Array.of(
           Resources::Types::Hash.schema(
             permissions: Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ["ALL", "SELECT", "INSERT", "DELETE", "UPDATE", "CREATE_TABLE", "DROP_TABLE", "ALTER"])),
             principal: Resources::Types::Hash.schema(
               data_lake_principal_identifier?: Resources::Types::String.optional,
               data_lake_principal?: Resources::Types::String.optional
-            )
+            ).lax
           )
         ).default([].freeze)
         

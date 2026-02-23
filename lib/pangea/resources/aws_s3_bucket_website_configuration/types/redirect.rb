@@ -7,9 +7,9 @@ module Pangea
     module AWS
       module Types
         # S3 website redirect all requests configuration
-        class WebsiteRedirectAllRequestsTo < Dry::Struct
-          attribute :host_name, Resources::Types::String
-          attribute :protocol, Resources::Types::String.constrained(included_in: ["http", "https"]).optional
+        class WebsiteRedirectAllRequestsTo < Pangea::Resources::BaseAttributes
+          attribute? :host_name, Resources::Types::String.optional
+          attribute? :protocol, Resources::Types::String.constrained(included_in: ["http", "https"]).optional
 
           def self.new(attributes = {})
             attrs = super(attributes)

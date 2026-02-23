@@ -25,9 +25,9 @@ RSpec.describe "aws_s3_bucket resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -58,7 +58,7 @@ RSpec.describe "aws_s3_bucket resource function" do
   
   describe "S3BucketAttributes validation" do
     it "accepts minimal configuration with defaults" do
-      attrs = Pangea::Resources::AWS::S3BucketAttributes.new({})
+      attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({})
       
       expect(attrs.acl).to eq('private')
       expect(attrs.versioning[:enabled]).to eq(false)
@@ -73,7 +73,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     end
     
     it "accepts custom bucket name" do
-      attrs = Pangea::Resources::AWS::S3BucketAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({
         bucket: "my-custom-bucket-name"
       })
       
@@ -84,13 +84,13 @@ RSpec.describe "aws_s3_bucket resource function" do
       acl_values = ['private', 'public-read', 'public-read-write', 'authenticated-read', 'log-delivery-write']
       
       acl_values.each do |acl|
-        attrs = Pangea::Resources::AWS::S3BucketAttributes.new({ acl: acl })
+        attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({ acl: acl })
         expect(attrs.acl).to eq(acl)
       end
     end
     
     it "accepts versioning configuration" do
-      attrs = Pangea::Resources::AWS::S3BucketAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({
         versioning: {
           enabled: true,
           mfa_delete: true
@@ -102,7 +102,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     end
     
     it "accepts KMS encryption configuration" do
-      attrs = Pangea::Resources::AWS::S3BucketAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({
         server_side_encryption_configuration: {
           rule: {
             apply_server_side_encryption_by_default: {
@@ -121,7 +121,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     
     it "validates KMS encryption requires key ID" do
       expect {
-        Pangea::Resources::AWS::S3BucketAttributes.new({
+        Pangea::Resources::AWS::Types::S3BucketAttributes.new({
           server_side_encryption_configuration: {
             rule: {
               apply_server_side_encryption_by_default: {
@@ -135,7 +135,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     end
     
     it "accepts lifecycle rules" do
-      attrs = Pangea::Resources::AWS::S3BucketAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({
         lifecycle_rule: [
           {
             id: "archive-old-objects",
@@ -166,7 +166,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     
     it "validates lifecycle rules must have actions" do
       expect {
-        Pangea::Resources::AWS::S3BucketAttributes.new({
+        Pangea::Resources::AWS::Types::S3BucketAttributes.new({
           lifecycle_rule: [
             {
               id: "invalid-rule",
@@ -179,7 +179,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     end
     
     it "accepts CORS rules" do
-      attrs = Pangea::Resources::AWS::S3BucketAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({
         cors_rule: [
           {
             allowed_headers: ["*"],
@@ -197,7 +197,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     end
     
     it "accepts website configuration" do
-      attrs = Pangea::Resources::AWS::S3BucketAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({
         website: {
           index_document: "index.html",
           error_document: "error.html"
@@ -209,7 +209,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     end
     
     it "accepts website redirect configuration" do
-      attrs = Pangea::Resources::AWS::S3BucketAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({
         website: {
           redirect_all_requests_to: {
             host_name: "example.com",
@@ -224,7 +224,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     
     it "validates website configuration consistency" do
       expect {
-        Pangea::Resources::AWS::S3BucketAttributes.new({
+        Pangea::Resources::AWS::Types::S3BucketAttributes.new({
           website: {
             index_document: "index.html",
             redirect_all_requests_to: {
@@ -236,7 +236,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     end
     
     it "accepts logging configuration" do
-      attrs = Pangea::Resources::AWS::S3BucketAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({
         logging: {
           target_bucket: "my-log-bucket",
           target_prefix: "logs/"
@@ -248,7 +248,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     end
     
     it "accepts object lock configuration" do
-      attrs = Pangea::Resources::AWS::S3BucketAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({
         versioning: { enabled: true },
         object_lock_configuration: {
           object_lock_enabled: "Enabled",
@@ -268,7 +268,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     
     it "validates object lock requires versioning" do
       expect {
-        Pangea::Resources::AWS::S3BucketAttributes.new({
+        Pangea::Resources::AWS::Types::S3BucketAttributes.new({
           object_lock_configuration: {
             object_lock_enabled: "Enabled"
           }
@@ -277,7 +277,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     end
     
     it "accepts public access block configuration" do
-      attrs = Pangea::Resources::AWS::S3BucketAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({
         public_access_block_configuration: {
           block_public_acls: true,
           block_public_policy: true,
@@ -295,7 +295,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     it "accepts bucket policy as JSON string" do
       policy_json = '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":"*","Action":"s3:GetObject","Resource":"arn:aws:s3:::my-bucket/*"}]}'
       
-      attrs = Pangea::Resources::AWS::S3BucketAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({
         policy: policy_json
       })
       
@@ -303,7 +303,7 @@ RSpec.describe "aws_s3_bucket resource function" do
     end
     
     it "accepts tags" do
-      attrs = Pangea::Resources::AWS::S3BucketAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::S3BucketAttributes.new({
         tags: {
           Name: "my-bucket",
           Environment: "production",

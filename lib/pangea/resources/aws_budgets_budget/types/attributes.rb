@@ -24,12 +24,12 @@ module Pangea
     module AWS
       module Types
         # Budget resource attributes with comprehensive validation
-        class BudgetAttributes < Dry::Struct
+        class BudgetAttributes < Pangea::Resources::BaseAttributes
           include BudgetHelpers
 
           transform_keys(&:to_sym)
 
-          attribute :budget_name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_\-. ]{1,100}\z/).constructor { |value|
+          attribute? :budget_name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_\-. ]{1,100}\z/).constructor { |value|
             cleaned = value.strip
             if cleaned.empty?
               raise Dry::Struct::Error, "Budget name cannot be empty"
@@ -40,11 +40,11 @@ module Pangea
             cleaned
           }
 
-          attribute :budget_type, BudgetType
-          attribute :time_unit, BudgetTimeUnit
+          attribute? :budget_type, BudgetType.optional
+          attribute? :time_unit, BudgetTimeUnit.optional
 
           # Main budget limit
-          attribute :limit_amount, Resources::Types::String.constrained(format: /\A\d+(\.\d{1,2})?\z/).constructor { |value|
+          attribute? :limit_amount, Resources::Types::String.constrained(format: /\A\d+(\.\d{1,2})?\z/).constructor { |value|
             amount_float = value.to_f
             if amount_float <= 0
               raise Dry::Struct::Error, "Budget limit amount must be positive"
@@ -52,7 +52,7 @@ module Pangea
             value
           }
 
-          attribute :limit_unit, BudgetCurrency
+          attribute? :limit_unit, BudgetCurrency.optional
 
           # Optional attributes
           attribute :time_period?, BudgetTimePeriod.optional

@@ -66,7 +66,7 @@ module Pangea
               def validate_predicate(attrs)
                 return unless attrs.type == "CONDITIONAL"
 
-                unless attrs.predicate && attrs.predicate[:conditions]&.any?
+                unless attrs.predicate && attrs.predicate&.dig(:conditions)&.any?
                   raise Dry::Struct::Error, "Predicate with conditions is required for CONDITIONAL triggers"
                 end
               end

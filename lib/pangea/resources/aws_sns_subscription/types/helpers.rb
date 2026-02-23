@@ -47,7 +47,7 @@ module Pangea
             return [] unless filter_policy
 
             begin
-              policy = JSON.parse(filter_policy)
+              policy = ::JSON.parse(filter_policy)
               policy.keys
             rescue StandardError
               []
@@ -58,9 +58,9 @@ module Pangea
             return false unless filter_policy
 
             begin
-              policy = JSON.parse(filter_policy)
+              policy = ::JSON.parse(filter_policy)
               policy.values.any? do |filter|
-                filter.is_a?(Hash) && filter.key?('numeric')
+                filter.is_a?(::Hash) && filter.key?('numeric')
               end
             rescue StandardError
               false

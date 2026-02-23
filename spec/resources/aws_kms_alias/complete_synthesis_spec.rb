@@ -32,9 +32,12 @@ RSpec.describe "aws_kms_alias terraform synthesis" do
           @method_calls = []
         end
         
-        def resource(type, name)
+        def resource(type, name, attrs = nil)
           @method_calls << [:resource, type, name]
           resource_context = ResourceContext.new(self, type, name)
+          if attrs.is_a?(Hash)
+            attrs.each { |k, v| resource_context.attributes[k] = v }
+          end
           @resources["#{type}.#{name}"] = resource_context
           yield resource_context if block_given?
           resource_context
@@ -156,14 +159,12 @@ RSpec.describe "aws_kms_alias terraform synthesis" do
       
       # Verify terraform synthesis calls were made correctly
       expect(test_synthesizer.method_calls).to include(
-        [:resource, :aws_kms_alias, :basic_alias],
-        [:name, "alias/test-key"],
-        [:target_key_id, "12345678-1234-1234-1234-123456789012"]
+        [:resource, :aws_kms_alias, :basic_alias]
       )
-      
+
       # Verify resource was created in synthesizer
       expect(test_synthesizer.resources).to have_key("aws_kms_alias.basic_alias")
-      
+
       # Verify resource attributes
       resource = test_synthesizer.resources["aws_kms_alias.basic_alias"]
       expect(resource.attributes[:name]).to eq("alias/test-key")
@@ -199,11 +200,10 @@ RSpec.describe "aws_kms_alias terraform synthesis" do
         target_key_id: "arn:aws:kms:us-east-1:123456789012:key/87654321-4321-4321-4321-210987654321"
       })
       
-      # Verify ARN target synthesis
-      expect(test_synthesizer.method_calls).to include(
-        [:name, "alias/database/prod"],
-        [:target_key_id, "arn:aws:kms:us-east-1:123456789012:key/87654321-4321-4321-4321-210987654321"]
-      )
+      # Verify ARN target synthesis via resource attributes
+      resource = test_synthesizer.resources["aws_kms_alias.arn_alias"]
+      expect(resource.attributes[:name]).to eq("alias/database/prod")
+      expect(resource.attributes[:target_key_id]).to eq("arn:aws:kms:us-east-1:123456789012:key/87654321-4321-4321-4321-210987654321")
     end
     
     it "synthesizes service-specific alias patterns" do
@@ -242,10 +242,9 @@ RSpec.describe "aws_kms_alias terraform synthesis" do
           name: alias_config[:name],
           target_key_id: "#{index}2345678-1234-1234-1234-123456789012"
         })
-        
-        expect(test_synthesizer.method_calls).to include(
-          [:name, alias_config[:name]]
-        )
+
+        resource = test_synthesizer.resources["aws_kms_alias.service_#{index}"]
+        expect(resource.attributes[:name]).to eq(alias_config[:name])
       end
     end
     
@@ -285,10 +284,9 @@ RSpec.describe "aws_kms_alias terraform synthesis" do
           name: alias_name,
           target_key_id: "#{index}2345678-1234-1234-1234-123456789012"
         })
-        
-        expect(test_synthesizer.method_calls).to include(
-          [:name, alias_name]
-        )
+
+        resource = test_synthesizer.resources["aws_kms_alias.hierarchy_#{index}"]
+        expect(resource.attributes[:name]).to eq(alias_name)
       end
     end
     
@@ -366,11 +364,7 @@ RSpec.describe "aws_kms_alias terraform synthesis" do
         target_key_id: key_reference
       })
       
-      # Verify reference integration synthesis
-      expect(test_synthesizer.method_calls).to include(
-        [:target_key_id, key_reference]
-      )
-      
+      # Verify resource was created and attributes are correct
       resource = test_synthesizer.resources["aws_kms_alias.key_ref_alias"]
       expect(resource.attributes[:target_key_id]).to eq(key_reference)
     end
@@ -411,10 +405,9 @@ RSpec.describe "aws_kms_alias terraform synthesis" do
           target_key_id: env_config[:key_id]
         })
         
-        expect(test_synthesizer.method_calls).to include(
-          [:name, "alias/app/#{env_config[:env]}"],
-          [:target_key_id, env_config[:key_id]]
-        )
+        resource = test_synthesizer.resources["aws_kms_alias.#{env_config[:env]}_alias"]
+        expect(resource.attributes[:name]).to eq("alias/app/#{env_config[:env]}")
+        expect(resource.attributes[:target_key_id]).to eq(env_config[:key_id])
       end
       
       # Verify all environment aliases were created
@@ -464,10 +457,9 @@ RSpec.describe "aws_kms_alias terraform synthesis" do
           target_key_id: master_key_id
         })
         
-        expect(test_synthesizer.method_calls).to include(
-          [:name, alias_name],
-          [:target_key_id, master_key_id]
-        )
+        resource = test_synthesizer.resources["aws_kms_alias.service_#{index}"]
+        expect(resource.attributes[:name]).to eq(alias_name)
+        expect(resource.attributes[:target_key_id]).to eq(master_key_id)
       end
       
       # Verify all service aliases were created

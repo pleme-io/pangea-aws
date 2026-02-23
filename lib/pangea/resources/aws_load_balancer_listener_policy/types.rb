@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsLoadBalancerListenerPolicy resources
       # Manages aws load balancer listener policy resources.
-      class AwsLoadBalancerListenerPolicyAttributes < Dry::Struct
+      class AwsLoadBalancerListenerPolicyAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_load_balancer_listener_policy
         
         # Tags to apply to the resource

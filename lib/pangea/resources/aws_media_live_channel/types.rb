@@ -37,7 +37,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS MediaLive Channel resources
-        class MediaLiveChannelAttributes < Dry::Struct
+        class MediaLiveChannelAttributes < Pangea::Resources::BaseAttributes
           CS = MediaLiveChannel::CaptionSettings
           include MediaLiveChannel::Helpers
           transform_keys(&:to_sym)
@@ -51,10 +51,10 @@ module Pangea
           SS = MediaLiveChannel::ScheduleSettings
           CC = MediaLiveChannel::ChannelConfig
 
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
           attribute :channel_class, CC::ChannelClass.default('STANDARD')
-          attribute :input_attachments, Resources::Types::Array.of(IS::InputAttachment)
-          attribute :encoder_settings, Resources::Types::Hash.schema(
+          attribute :input_attachments, Resources::Types::Array.of(IS::InputAttachment).default([].freeze)
+          attribute? :encoder_settings, Resources::Types::Hash.schema(
             audio_descriptions: Resources::Types::Array.of(ACS::AudioDescription),
             output_groups: Resources::Types::Array.of(OG::OutputGroup),
             timecode_config: EC::TimecodeConfig,
@@ -67,16 +67,16 @@ module Pangea
             global_configuration?: EC::GlobalConfiguration.optional,
             motion_graphics_configuration?: EC::MotionGraphicsConfiguration.optional,
             nielsen_configuration?: EC::NielsenConfiguration.optional
-          )
-          attribute :destinations, Resources::Types::Array.of(CC::Destination)
-          attribute :input_specification, CC::InputSpecification
+          ).lax
+          attribute :destinations, Resources::Types::Array.of(CC::Destination).default([].freeze)
+          attribute? :input_specification, CC::InputSpecification.optional
           attribute :log_level, CC::LogLevel.default('INFO')
-          attribute :maintenance, CC::MaintenanceWindow.optional
+          attribute? :maintenance, CC::MaintenanceWindow.optional
           attribute :reserved_instances, Resources::Types::Array.of(CC::ReservedInstance).default([].freeze)
-          attribute :role_arn, Resources::Types::String
+          attribute? :role_arn, Resources::Types::String.optional
           attribute :schedule, Resources::Types::Array.of(SS::ScheduleAction).default([].freeze)
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
-          attribute :vpc, CC::VpcConfig.optional
+          attribute? :vpc, CC::VpcConfig.optional
 
           def self.new(attributes = {})
             attrs = super(attributes)
@@ -107,7 +107,7 @@ module Pangea
             end
 
             def validate_encoder_settings(attrs)
-              raise Dry::Struct::Error, 'At least one output group is required' if attrs.encoder_settings[:output_groups].empty?
+              raise Dry::Struct::Error, 'At least one output group is required' if attrs.encoder_settings&.dig(:output_groups).empty?
             end
 
             def validate_destinations(attrs)
@@ -118,7 +118,7 @@ module Pangea
             end
 
             def validate_maintenance(attrs)
-              start_time = attrs.maintenance[:maintenance_start_time]
+              start_time = attrs.maintenance&.dig(:maintenance_start_time)
               return unless start_time && !start_time.match?(/^\d{2}:\d{2}$/)
 
               raise Dry::Struct::Error, 'Maintenance start time must be in HH:MM format'

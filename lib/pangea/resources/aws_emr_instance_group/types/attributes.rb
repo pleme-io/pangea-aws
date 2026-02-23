@@ -6,15 +6,15 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class EmrInstanceGroupAttributes < Dry::Struct
-          attribute :name, Resources::Types::String.optional
-          attribute :cluster_id, Resources::Types::String
-          attribute :instance_role, Resources::Types::String.constrained(included_in: ['MASTER', 'CORE', 'TASK'])
-          attribute :instance_type, Resources::Types::String
+        class EmrInstanceGroupAttributes < Pangea::Resources::BaseAttributes
+          attribute? :name, Resources::Types::String.optional
+          attribute? :cluster_id, Resources::Types::String.optional
+          attribute? :instance_role, Resources::Types::String.constrained(included_in: ['MASTER', 'CORE', 'TASK']).optional
+          attribute? :instance_type, Resources::Types::String.optional
           attribute :instance_count, Resources::Types::Integer.constrained(gteq: 1).default(1)
-          attribute :bid_price, Resources::Types::String.optional
-          attribute :ebs_config, Resources::Types::Hash.optional
-          attribute :auto_scaling_policy, Resources::Types::Hash.optional
+          attribute? :bid_price, Resources::Types::String.optional
+          attribute :ebs_config, Resources::Types::Hash.default({}.freeze)
+          attribute :auto_scaling_policy, Resources::Types::Hash.default({}.freeze)
           attribute :configurations, Resources::Types::Array.of(Resources::Types::Hash).default([].freeze)
 
           def self.new(attributes = {})
@@ -27,13 +27,13 @@ module Pangea
           end
 
           def self.validate_auto_scaling(attrs)
-            constraints = attrs.auto_scaling_policy[:constraints]
+            constraints = attrs.auto_scaling_policy&.dig(:constraints)
             raise Dry::Struct::Error, 'min_capacity cannot be greater than max_capacity' if constraints[:min_capacity] > constraints[:max_capacity]
             raise Dry::Struct::Error, 'Core instance group min_capacity must be at least 1' if attrs.instance_role == 'CORE' && constraints[:min_capacity] < 1
           end
 
           def self.validate_ebs_config(attrs)
-            attrs.ebs_config[:ebs_block_device_config].each do |device_config|
+            attrs.ebs_config&.dig(:ebs_block_device_config).each do |device_config|
               vol_spec = device_config[:volume_specification]
               raise Dry::Struct::Error, 'IOPS must be specified for io1 and io2 volume types' if %w[io1 io2].include?(vol_spec[:volume_type]) && !vol_spec[:iops]
               raise Dry::Struct::Error, 'IOPS can only be specified for io1, io2, and gp3 volume types' if vol_spec[:iops] && !%w[io1 io2 gp3].include?(vol_spec[:volume_type])

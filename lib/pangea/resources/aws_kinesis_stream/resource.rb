@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_kinesis_stream(name, attributes = {})
         # Validate attributes using dry-struct
-        stream_attrs = Types::Types::KinesisStreamAttributes.new(attributes)
+        stream_attrs = Types::KinesisStreamAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_kinesis_stream, name) do
@@ -51,12 +51,12 @@ module Pangea
           # Stream mode configuration
           if stream_attrs.stream_mode_details
             stream_mode_details do
-              stream_mode stream_attrs.stream_mode_details[:stream_mode]
+              stream_mode stream_attrs.stream_mode_details&.dig(:stream_mode)
             end
           end
           
           # Apply tags if present
-          if stream_attrs.tags.any?
+          if stream_attrs.tags&.any?
             tags do
               stream_attrs.tags.each do |key, value|
                 public_send(key, value)

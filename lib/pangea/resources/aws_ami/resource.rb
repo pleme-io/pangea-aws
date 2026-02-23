@@ -75,7 +75,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if ami_attrs.tags.any?
+          if ami_attrs.tags&.any?
             tags do
               ami_attrs.tags.each do |key, value|
                 public_send(key, value)

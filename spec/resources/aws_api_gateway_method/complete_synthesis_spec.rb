@@ -32,12 +32,14 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test basic method synthesis
   it "synthesizes basic GET method correctly" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_method(:get_users, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "GET"
       })
     end
@@ -54,12 +56,14 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test POST method with request models
   it "synthesizes POST method with request models" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_method(:create_user, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "POST",
         request_models: {
           "application/json" => "UserModel"
@@ -78,12 +82,14 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test method with IAM authorization
   it "synthesizes method with IAM authorization" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_method(:iam_protected, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "POST",
         authorization: "AWS_IAM"
       })
@@ -99,15 +105,18 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test method with custom authorizer
   it "synthesizes method with custom authorizer" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
+    _authorizer_id = authorizer_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_method(:custom_auth_method, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "POST",
         authorization: "CUSTOM",
-        authorizer_id: authorizer_id
+        authorizer_id: _authorizer_id
       })
     end
     
@@ -120,15 +129,18 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test method with Cognito User Pool authorization and scopes
   it "synthesizes method with Cognito User Pool authorization" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
+    _authorizer_id = authorizer_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_method(:cognito_method, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "POST",
         authorization: "COGNITO_USER_POOLS",
-        authorizer_id: authorizer_id,
+        authorizer_id: _authorizer_id,
         authorization_scopes: ["read", "write", "admin"]
       })
     end
@@ -143,12 +155,14 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test method with API key requirement
   it "synthesizes method with API key requirement" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_method(:api_key_method, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "GET",
         api_key_required: true
       })
@@ -162,12 +176,14 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test method with request parameters
   it "synthesizes method with request parameters" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_method(:parameterized_method, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "GET",
         request_parameters: {
           "method.request.path.userId" => true,
@@ -189,12 +205,14 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test method with multiple request models
   it "synthesizes method with multiple request models" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_method(:multi_model_method, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "POST",
         request_models: {
           "application/json" => "UserJsonModel",
@@ -216,14 +234,17 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test method with request validator
   it "synthesizes method with request validator" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
+    _validator_id = validator_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_method(:validated_method, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "POST",
-        request_validator_id: validator_id
+        request_validator_id: _validator_id
       })
     end
     
@@ -235,12 +256,14 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test method with operation name
   it "synthesizes method with operation name for SDK generation" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_method(:named_operation, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "GET",
         operation_name: "getUserById"
       })
@@ -254,12 +277,14 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test CORS OPTIONS method
   it "synthesizes CORS OPTIONS method" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_method(:cors_preflight, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "OPTIONS"
       })
     end
@@ -273,15 +298,19 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test comprehensive method configuration
   it "synthesizes method with comprehensive configuration" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
+    _authorizer_id = authorizer_id
+    _validator_id = validator_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_method(:comprehensive_method, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "POST",
         authorization: "COGNITO_USER_POOLS",
-        authorizer_id: authorizer_id,
+        authorizer_id: _authorizer_id,
         authorization_scopes: ["read", "write"],
         api_key_required: true,
         request_parameters: {
@@ -292,7 +321,7 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
         request_models: {
           "application/json" => "ComprehensiveModel"
         },
-        request_validator_id: validator_id,
+        request_validator_id: _validator_id,
         operation_name: "comprehensiveOperation"
       })
     end
@@ -314,12 +343,13 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test RESTful CRUD operations
   it "synthesizes complete RESTful CRUD operations" do
+    _rest_api_id = rest_api_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # List users (GET /users)
       aws_api_gateway_method(:list_users, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "users_resource_id",
         http_method: "GET",
         operation_name: "listUsers",
@@ -331,7 +361,7 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
       
       # Create user (POST /users)
       aws_api_gateway_method(:create_user, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "users_resource_id",
         http_method: "POST",
         operation_name: "createUser",
@@ -342,7 +372,7 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
       
       # Get user (GET /users/{id})
       aws_api_gateway_method(:get_user, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "user_by_id_resource_id",
         http_method: "GET",
         operation_name: "getUserById",
@@ -353,7 +383,7 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
       
       # Update user (PUT /users/{id})
       aws_api_gateway_method(:update_user, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "user_by_id_resource_id",
         http_method: "PUT",
         operation_name: "updateUser",
@@ -367,7 +397,7 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
       
       # Delete user (DELETE /users/{id})
       aws_api_gateway_method(:delete_user, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "user_by_id_resource_id",
         http_method: "DELETE",
         operation_name: "deleteUser",
@@ -381,7 +411,7 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
     methods = json_output.dig(:resource, :aws_api_gateway_method)
     
     expect(methods.keys).to contain_exactly(
-      :list_users, :create_user, :get_user, :update_user, :delete_user
+      "list_users", "create_user", "get_user", "update_user", "delete_user"
     )
     
     # Verify each method has correct configuration
@@ -397,11 +427,12 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
     methods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD', 'PATCH', 'ANY']
     
     methods.each_with_index do |method, index|
+      _rest_api_id = rest_api_id
       synthesizer.instance_eval do
         extend Pangea::Resources::AWS
         
         aws_api_gateway_method(:"method_#{method.downcase}", {
-          rest_api_id: rest_api_id,
+          rest_api_id: _rest_api_id,
           resource_id: "resource_#{index}",
           http_method: method
         })
@@ -419,41 +450,44 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test different authorization types
   it "synthesizes all authorization types correctly" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
+    _authorizer_id = authorizer_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # NONE authorization
       aws_api_gateway_method(:auth_none, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "GET",
         authorization: "NONE"
       })
       
       # AWS_IAM authorization
       aws_api_gateway_method(:auth_iam, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "GET",
         authorization: "AWS_IAM"
       })
       
       # CUSTOM authorization
       aws_api_gateway_method(:auth_custom, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "GET",
         authorization: "CUSTOM",
-        authorizer_id: authorizer_id
+        authorizer_id: _authorizer_id
       })
       
       # COGNITO_USER_POOLS authorization
       aws_api_gateway_method(:auth_cognito, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "GET",
         authorization: "COGNITO_USER_POOLS",
-        authorizer_id: authorizer_id,
+        authorizer_id: _authorizer_id,
         authorization_scopes: ["openid", "profile"]
       })
     end
@@ -478,12 +512,13 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test API Gateway batch operations pattern
   it "synthesizes batch operations pattern" do
+    _rest_api_id = rest_api_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # Batch create
       aws_api_gateway_method(:batch_create_users, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "batch_users_resource",
         http_method: "POST",
         operation_name: "batchCreateUsers",
@@ -494,7 +529,7 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
       
       # Batch update
       aws_api_gateway_method(:batch_update_users, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "batch_users_resource",
         http_method: "PUT",
         operation_name: "batchUpdateUsers",
@@ -505,7 +540,7 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
       
       # Batch delete
       aws_api_gateway_method(:batch_delete_users, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "batch_users_resource",
         http_method: "DELETE",
         operation_name: "batchDeleteUsers",
@@ -525,12 +560,13 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test webhook receiver pattern
   it "synthesizes webhook receiver pattern" do
+    _rest_api_id = rest_api_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # GitHub webhook
       aws_api_gateway_method(:github_webhook, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "github_webhook_resource",
         http_method: "POST",
         operation_name: "handleGitHubWebhook",
@@ -545,7 +581,7 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
       
       # Stripe webhook
       aws_api_gateway_method(:stripe_webhook, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "stripe_webhook_resource",
         http_method: "POST",
         operation_name: "handleStripeWebhook",
@@ -575,12 +611,13 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test search and filtering endpoints
   it "synthesizes search and filtering endpoints" do
+    _rest_api_id = rest_api_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # Search endpoint
       aws_api_gateway_method(:search_users, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "search_resource",
         http_method: "GET",
         operation_name: "searchUsers",
@@ -594,7 +631,7 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
       
       # Advanced filter endpoint
       aws_api_gateway_method(:filter_users, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "filter_resource",
         http_method: "POST",
         operation_name: "filterUsers",
@@ -621,12 +658,13 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test file upload endpoints
   it "synthesizes file upload endpoints" do
+    _rest_api_id = rest_api_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       # File upload via multipart form
       aws_api_gateway_method(:upload_file, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "upload_resource",
         http_method: "POST",
         operation_name: "uploadFile",
@@ -640,7 +678,7 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
       
       # Direct file upload via binary
       aws_api_gateway_method(:upload_binary, {
-        rest_api_id: rest_api_id,
+        rest_api_id: _rest_api_id,
         resource_id: "binary_upload_resource",
         http_method: "PUT",
         operation_name: "uploadBinary",
@@ -669,12 +707,14 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
 
   # Test complex parameter combinations
   it "synthesizes methods with complex parameter combinations" do
+    _rest_api_id = rest_api_id
+    _resource_id = resource_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_api_gateway_method(:complex_params, {
-        rest_api_id: rest_api_id,
-        resource_id: resource_id,
+        rest_api_id: _rest_api_id,
+        resource_id: _resource_id,
         http_method: "GET",
         request_parameters: {
           # Path parameters
@@ -715,24 +755,28 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
   # Test synthesis validates input parameters
   it "validates synthesis parameters through dry-struct" do
     expect {
+      _rest_api_id = rest_api_id
+      _resource_id = resource_id
       synthesizer.instance_eval do
         extend Pangea::Resources::AWS
         
         aws_api_gateway_method(:invalid_method, {
-          rest_api_id: rest_api_id,
-          resource_id: resource_id,
+          rest_api_id: _rest_api_id,
+          resource_id: _resource_id,
           http_method: "INVALID"
         })
       end
     }.to raise_error(Dry::Struct::Error)
     
     expect {
+      _rest_api_id = rest_api_id
+      _resource_id = resource_id
       synthesizer.instance_eval do
         extend Pangea::Resources::AWS
         
         aws_api_gateway_method(:missing_authorizer, {
-          rest_api_id: rest_api_id,
-          resource_id: resource_id,
+          rest_api_id: _rest_api_id,
+          resource_id: _resource_id,
           http_method: "GET",
           authorization: "CUSTOM"
         })
@@ -740,12 +784,14 @@ RSpec.describe "aws_api_gateway_method terraform synthesis" do
     }.to raise_error(Dry::Struct::Error, /authorizer_id is required/)
     
     expect {
+      _rest_api_id = rest_api_id
+      _resource_id = resource_id
       synthesizer.instance_eval do
         extend Pangea::Resources::AWS
         
         aws_api_gateway_method(:invalid_params, {
-          rest_api_id: rest_api_id,
-          resource_id: resource_id,
+          rest_api_id: _rest_api_id,
+          resource_id: _resource_id,
           http_method: "GET",
           request_parameters: {
             "invalid.parameter.format" => true

@@ -95,7 +95,7 @@ module Pangea
       #   })
       def aws_eks_fargate_profile(name, attributes = {})
         # Validate attributes using dry-struct
-        profile_attrs = Types::Types::EksFargateProfileAttributes.new(attributes)
+        profile_attrs = Types::EksFargateProfileAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_eks_fargate_profile, name) do
@@ -118,7 +118,7 @@ module Pangea
           end
           
           # Tags
-          tags profile_attrs.tags if profile_attrs.tags.any?
+          tags profile_attrs.tags if profile_attrs.tags&.any?
         end
         
         # Return resource reference with available outputs

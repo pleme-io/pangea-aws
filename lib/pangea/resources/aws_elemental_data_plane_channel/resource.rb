@@ -41,7 +41,7 @@ module Pangea
             end
           end
           
-          if channel_attrs.tags.any?
+          if channel_attrs.tags&.any?
             tags do
               channel_attrs.tags.each do |key, value|
                 public_send(key, value)

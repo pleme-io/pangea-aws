@@ -20,51 +20,51 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS AMI resources
-      class AmiAttributes < Dry::Struct
+      class AmiAttributes < Pangea::Resources::BaseAttributes
         # AMI name (required)
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
 
         # AMI description
-        attribute :description, Resources::Types::String.optional
+        attribute? :description, Resources::Types::String.optional
 
         # AMI architecture (x86_64, i386, arm64)
         attribute :architecture, Resources::Types::String.default("x86_64").constrained(included_in: ["x86_64", "i386", "arm64"])
 
         # Boot mode (legacy-bios, uefi)
-        attribute :boot_mode, Resources::Types::String.optional.constrained(included_in: ["legacy-bios", "uefi"])
+        attribute? :boot_mode, Resources::Types::String.optional.constrained(included_in: ["legacy-bios", "uefi"])
 
         # Deprecation time (ISO 8601 format)
-        attribute :deprecation_time, Resources::Types::String.optional
+        attribute? :deprecation_time, Resources::Types::String.optional
 
         # Enhanced networking support
-        attribute :ena_support, Resources::Types::Bool.optional
+        attribute? :ena_support, Resources::Types::Bool.optional
 
         # S3 bucket path for AMI
-        attribute :image_location, Resources::Types::String.optional
+        attribute? :image_location, Resources::Types::String.optional
 
         # Instance metadata service version (v1.0, v2.0)
-        attribute :imds_support, Resources::Types::String.optional.constrained(included_in: ["v1.0", "v2.0"])
+        attribute? :imds_support, Resources::Types::String.optional.constrained(included_in: ["v1.0", "v2.0"])
 
         # Kernel ID
-        attribute :kernel_id, Resources::Types::String.optional
+        attribute? :kernel_id, Resources::Types::String.optional
 
         # RAM disk ID
-        attribute :ramdisk_id, Resources::Types::String.optional
+        attribute? :ramdisk_id, Resources::Types::String.optional
 
         # Root device name
-        attribute :root_device_name, Resources::Types::String.optional
+        attribute? :root_device_name, Resources::Types::String.optional
 
         # SR-IOV networking support
-        attribute :sriov_net_support, Resources::Types::String.optional.constrained(included_in: ["simple"])
+        attribute? :sriov_net_support, Resources::Types::String.optional.constrained(included_in: ["simple"])
 
         # TPM support (v2.0)
-        attribute :tpm_support, Resources::Types::String.optional.constrained(included_in: ["v2.0"])
+        attribute? :tpm_support, Resources::Types::String.optional.constrained(included_in: ["v2.0"])
 
         # Virtualization type (hvm, paravirtual)
         attribute :virtualization_type, Resources::Types::String.default("hvm").constrained(included_in: ["hvm", "paravirtual"])
 
         # EBS block device mappings
-        attribute :ebs_block_device, Resources::Types::Array.of(
+        attribute? :ebs_block_device, Resources::Types::Array.of(
           Resources::Types::Hash.schema(
             device_name: Resources::Types::String,
             delete_on_termination?: Resources::Types::Bool.optional,
@@ -75,15 +75,15 @@ module Pangea
             volume_size?: Resources::Types::Integer.optional,
             volume_type?: Resources::Types::String.optional.constrained(included_in: ["gp2", "gp3", "io1", "io2", "st1", "sc1", "standard"]),
             kms_key_id?: Resources::Types::String.optional
-          )
+          ).lax
         ).default([].freeze)
 
         # Instance store block device mappings
-        attribute :ephemeral_block_device, Resources::Types::Array.of(
+        attribute? :ephemeral_block_device, Resources::Types::Array.of(
           Resources::Types::Hash.schema(
             device_name: Resources::Types::String,
             virtual_name: Resources::Types::String
-          )
+          ).lax
         ).default([].freeze)
 
         # Tags

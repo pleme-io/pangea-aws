@@ -11,7 +11,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS RDS Cluster Parameter Group resources
-        class RdsClusterParameterGroupAttributes < Dry::Struct
+        class RdsClusterParameterGroupAttributes < Pangea::Resources::BaseAttributes
           AURORA_MYSQL_PARAMETERS = Set.new(%w[
             innodb_buffer_pool_size max_connections slow_query_log long_query_time innodb_lock_wait_timeout
             interactive_timeout wait_timeout max_allowed_packet innodb_flush_log_at_trx_commit innodb_file_per_table
@@ -30,12 +30,12 @@ module Pangea
             lc_monetary lc_numeric lc_time statement_timeout idle_in_transaction_session_timeout
           ]).freeze
 
-          attribute :name, Resources::Types::String.optional
-          attribute :name_prefix, Resources::Types::String.optional
-          attribute :family, Resources::Types::String.constrained(included_in: ['aurora-mysql5.7', 'aurora-mysql8.0',
+          attribute? :name, Resources::Types::String.optional
+          attribute? :name_prefix, Resources::Types::String.optional
+          attribute? :family, Resources::Types::String.constrained(included_in: ['aurora-mysql5.7', 'aurora-mysql8.0',
             'aurora-postgresql10', 'aurora-postgresql11', 'aurora-postgresql12',
             'aurora-postgresql13', 'aurora-postgresql14', 'aurora-postgresql15'])
-          attribute :description, Resources::Types::String
+          attribute? :description, Resources::Types::String.optional
           attribute :parameter, Resources::Types::Array.of(DbParameter).default([].freeze)
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 

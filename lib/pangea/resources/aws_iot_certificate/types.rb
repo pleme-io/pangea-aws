@@ -22,20 +22,20 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS IoT Certificate resources
-        class IotCertificateAttributes < Dry::Struct
+        class IotCertificateAttributes < Pangea::Resources::BaseAttributes
           include IotCertificateHelpers
 
           # Certificate status (optional - defaults to ACTIVE)
           attribute :active, Resources::Types::Bool.default(true)
 
           # Certificate signing request (optional)
-          attribute :csr, Resources::Types::String.optional
+          attribute? :csr, Resources::Types::String.optional
 
           # Certificate PEM format (optional - for bring your own cert)
-          attribute :certificate_pem, Resources::Types::String.optional
+          attribute? :certificate_pem, Resources::Types::String.optional
 
           # CA certificate PEM format (optional - for bring your own CA cert)
-          attribute :ca_certificate_pem, Resources::Types::String.optional
+          attribute? :ca_certificate_pem, Resources::Types::String.optional
 
           # Tags (optional)
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

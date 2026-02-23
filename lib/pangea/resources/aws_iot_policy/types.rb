@@ -20,19 +20,19 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS IoT Policy resources
-      class IotPolicyAttributes < Dry::Struct
+      class IotPolicyAttributes < Pangea::Resources::BaseAttributes
         # Policy name (required)
-        attribute :name, Resources::Types::IotPolicyName
+        attribute? :name, Resources::Types::IotPolicyName.optional
         
         # Policy document (required) 
-        attribute :policy, Resources::Types::IotPolicyDocument
+        attribute? :policy, Resources::Types::IotPolicyDocument.optional
         
         # Tags (optional)
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         # Parse policy document for analysis
         def parsed_policy
-          @parsed_policy ||= JSON.parse(policy)
+          @parsed_policy ||= ::JSON.parse(policy)
         end
         
         # Get policy version

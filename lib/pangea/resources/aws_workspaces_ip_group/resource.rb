@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_workspaces_ip_group(name, attributes = {})
         # Validate attributes using dry-struct
-        ip_group_attrs = Types::Types::WorkspacesIpGroupAttributes.new(attributes)
+        ip_group_attrs = Types::WorkspacesIpGroupAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_workspaces_ip_group, name) do
@@ -37,7 +37,7 @@ module Pangea
           group_desc ip_group_attrs.group_desc
           
           # User rules
-          if ip_group_attrs.user_rules.any?
+          if ip_group_attrs.user_rules&.any?
             ip_group_attrs.user_rules.each do |rule|
               user_rules do
                 ip_rule rule.ip_rule
@@ -47,7 +47,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if ip_group_attrs.tags.any?
+          if ip_group_attrs.tags&.any?
             tags do
               ip_group_attrs.tags.each do |key, value|
                 public_send(key, value)

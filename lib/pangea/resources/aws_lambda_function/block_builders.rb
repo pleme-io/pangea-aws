@@ -26,9 +26,9 @@ module Pangea
           return unless env_config && env_config[:variables]
 
           ctx.environment do
-            variables do
+            ctx.variables do
               env_config[:variables].each do |key, value|
-                public_send(key, value)
+                ctx.public_send(key, value)
               end
             end
           end
@@ -38,8 +38,8 @@ module Pangea
           return unless vpc_config
 
           ctx.vpc_config do
-            subnet_ids vpc_config[:subnet_ids]
-            security_group_ids vpc_config[:security_group_ids]
+            ctx.subnet_ids vpc_config[:subnet_ids]
+            ctx.security_group_ids vpc_config[:security_group_ids]
           end
         end
 
@@ -47,26 +47,27 @@ module Pangea
           return unless dlq_config
 
           ctx.dead_letter_config do
-            target_arn dlq_config[:target_arn]
+            ctx.target_arn dlq_config[:target_arn]
           end
         end
 
         def apply_file_system_configs(ctx, fs_configs)
-          return unless fs_configs.any?
+          return unless fs_configs&.any?
 
-          fs_configs.each do |fs_config|
-            ctx.file_system_config do
-              arn fs_config[:arn]
-              local_mount_path fs_config[:local_mount_path]
-            end
+          configs_array = fs_configs.map do |fs_config|
+            config_hash = {}
+            config_hash[:arn] = fs_config[:arn] if fs_config[:arn]
+            config_hash[:local_mount_path] = fs_config[:local_mount_path] if fs_config[:local_mount_path]
+            config_hash
           end
+          ctx.file_system_config configs_array
         end
 
         def apply_tracing_config(ctx, tracing_config)
           return unless tracing_config
 
           ctx.tracing_config do
-            mode tracing_config[:mode]
+            ctx.mode tracing_config[:mode]
           end
         end
 
@@ -74,7 +75,7 @@ module Pangea
           return unless storage_config
 
           ctx.ephemeral_storage do
-            size storage_config[:size]
+            ctx.size storage_config[:size]
           end
         end
 
@@ -82,7 +83,7 @@ module Pangea
           return unless snap_start_config
 
           ctx.snap_start do
-            apply_on snap_start_config[:apply_on]
+            ctx.apply_on snap_start_config[:apply_on]
           end
         end
 
@@ -90,19 +91,19 @@ module Pangea
           return unless logging_config
 
           ctx.logging_config do
-            log_format logging_config[:log_format] if logging_config[:log_format]
-            log_group logging_config[:log_group] if logging_config[:log_group]
-            system_log_level logging_config[:system_log_level] if logging_config[:system_log_level]
-            application_log_level logging_config[:application_log_level] if logging_config[:application_log_level]
+            ctx.log_format logging_config[:log_format] if logging_config[:log_format]
+            ctx.log_group logging_config[:log_group] if logging_config[:log_group]
+            ctx.system_log_level logging_config[:system_log_level] if logging_config[:system_log_level]
+            ctx.application_log_level logging_config[:application_log_level] if logging_config[:application_log_level]
           end
         end
 
         def apply_tags(ctx, tags)
-          return unless tags.any?
+          return unless tags&.any?
 
           ctx.tags do
             tags.each do |key, value|
-              public_send(key, value)
+              ctx.public_send(key, value)
             end
           end
         end

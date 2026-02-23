@@ -123,7 +123,7 @@ module Pangea
       #   })
       def aws_ecr_lifecycle_policy(name, attributes = {})
         # Validate attributes using dry-struct
-        policy_attrs = Types::Types::ECRLifecyclePolicyAttributes.new(attributes)
+        policy_attrs = Types::ECRLifecyclePolicyAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_ecr_lifecycle_policy, name) do

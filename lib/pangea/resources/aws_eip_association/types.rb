@@ -21,13 +21,13 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEipAssociation resources
       # Provides an AWS EIP Association as a top level resource, to associate and disassociate Elastic IPs from AWS Instances and Network Interfaces.
-      class EipAssociationAttributes < Dry::Struct
-        attribute :allocation_id, Resources::Types::String.optional
-        attribute :allow_reassociation, Resources::Types::Bool.optional
-        attribute :instance_id, Resources::Types::String.optional
-        attribute :network_interface_id, Resources::Types::String.optional
-        attribute :private_ip_address, Resources::Types::String.optional
-        attribute :public_ip, Resources::Types::String.optional
+      class EipAssociationAttributes < Pangea::Resources::BaseAttributes
+        attribute? :allocation_id, Resources::Types::String.optional
+        attribute? :allow_reassociation, Resources::Types::Bool.optional
+        attribute? :instance_id, Resources::Types::String.optional
+        attribute? :network_interface_id, Resources::Types::String.optional
+        attribute? :private_ip_address, Resources::Types::String.optional
+        attribute? :public_ip, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

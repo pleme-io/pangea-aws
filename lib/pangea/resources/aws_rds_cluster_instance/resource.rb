@@ -76,7 +76,7 @@ module Pangea
           promotion_tier instance_attrs.promotion_tier
           
           # Apply tags if present
-          if instance_attrs.tags.any?
+          if instance_attrs.tags&.any?
             tags do
               instance_attrs.tags.each do |key, value|
                 public_send(key, value)

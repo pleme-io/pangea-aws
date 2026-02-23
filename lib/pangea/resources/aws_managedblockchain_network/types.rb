@@ -25,32 +25,32 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Managed Blockchain Network resources
-        class ManagedBlockchainNetworkAttributes < Dry::Struct
+        class ManagedBlockchainNetworkAttributes < Pangea::Resources::BaseAttributes
           include ManagedBlockchainNetworkHelpers
 
           transform_keys(&:to_sym)
 
           # Network name (required)
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Description (optional)
           attribute? :description, Resources::Types::String.optional
 
           # Framework (required)
-          attribute :framework, Resources::Types::String.constrained(included_in: ['HYPERLEDGER_FABRIC',
+          attribute? :framework, Resources::Types::String.constrained(included_in: ['HYPERLEDGER_FABRIC',
             'ETHEREUM'])
 
           # Framework version (required)
-          attribute :framework_version, Resources::Types::String
+          attribute? :framework_version, Resources::Types::String.optional
 
           # Framework configuration (required for Hyperledger Fabric)
           attribute? :framework_configuration, Resources::Types::Hash.schema(
             network_fabric_configuration?: Resources::Types::Hash.schema(
               edition: Resources::Types::String.constrained(included_in: ['STARTER', 'STANDARD'])
-            ).optional,
+            ).lax.optional,
             network_ethereum_configuration?: Resources::Types::Hash.schema(
               chain_id: Resources::Types::String
-            ).optional
+            ).lax.optional
           ).optional
 
           # Voting policy (required for Hyperledger Fabric)
@@ -59,25 +59,25 @@ module Pangea
               threshold_percentage?: Resources::Types::Integer.constrained(gteq: 0, lteq: 100).optional,
               proposal_duration_in_hours?: Resources::Types::Integer.constrained(gteq: 1, lteq: 168).optional,
               threshold_comparator?: Resources::Types::String.constrained(included_in: ['GREATER_THAN', 'GREATER_THAN_OR_EQUAL_TO']).optional
-            ).optional
+            ).lax.optional
           ).optional
 
           # Member configuration (required)
-          attribute :member_configuration, Resources::Types::Hash.schema(
+          attribute? :member_configuration, Resources::Types::Hash.schema(
             name: Resources::Types::String,
             description?: Resources::Types::String.optional,
             framework_configuration: Resources::Types::Hash.schema(
               member_fabric_configuration?: Resources::Types::Hash.schema(
                 admin_username: Resources::Types::String,
                 admin_password: Resources::Types::String
-              ).optional
+              ).lax.optional
             ),
             log_publishing_configuration?: Resources::Types::Hash.schema(
               fabric?: Resources::Types::Hash.schema(
                 ca_logs?: Resources::Types::Hash.schema(
                   cloudwatch?: Resources::Types::Hash.schema(
                     enabled?: Resources::Types::Bool.optional
-                  ).optional
+                  ).lax.optional
                 ).optional
               ).optional
             ).optional,
@@ -92,7 +92,7 @@ module Pangea
             attrs = super(attributes)
 
             ManagedBlockchainNetworkValidation.validate_name(attrs.name)
-            ManagedBlockchainNetworkValidation.validate_member_name(attrs.member_configuration[:name])
+            ManagedBlockchainNetworkValidation.validate_member_name(attrs.member_configuration&.dig(:name))
 
             case attrs.framework
             when 'HYPERLEDGER_FABRIC'

@@ -28,37 +28,37 @@ module Pangea
 
           def build_lifecycle_rule(context, rule_config)
             context.lifecycle_rule do
-              id rule_config[:id]
-              enabled rule_config[:enabled]
-              prefix rule_config[:prefix] if rule_config[:prefix]
+              context.id rule_config[:id]
+              context.enabled rule_config[:enabled]
+              context.prefix rule_config[:prefix] if rule_config[:prefix]
 
-              build_lifecycle_tags(self, rule_config[:tags]) if rule_config[:tags]
-              build_transitions(self, rule_config[:transition]) if rule_config[:transition]
-              build_expiration(self, rule_config[:expiration]) if rule_config[:expiration]
-              build_noncurrent_transitions(self, rule_config[:noncurrent_version_transition])
-              build_noncurrent_expiration(self, rule_config[:noncurrent_version_expiration])
+              build_lifecycle_tags(context, rule_config[:tags]) if rule_config[:tags]
+              build_transitions(context, rule_config[:transition]) if rule_config[:transition]
+              build_expiration(context, rule_config[:expiration]) if rule_config[:expiration]
+              build_noncurrent_transitions(context, rule_config[:noncurrent_version_transition])
+              build_noncurrent_expiration(context, rule_config[:noncurrent_version_expiration])
             end
           end
 
           def build_lifecycle_tags(context, tags)
             context.tags do
-              tags.each { |key, value| public_send(key, value) }
+              tags.each { |key, value| context.public_send(key, value) }
             end
           end
 
           def build_transitions(context, transitions)
             transitions.each do |transition_config|
               context.transition do
-                days transition_config[:days]
-                storage_class transition_config[:storage_class]
+                context.days transition_config[:days]
+                context.storage_class transition_config[:storage_class]
               end
             end
           end
 
           def build_expiration(context, expiration)
             context.expiration do
-              days expiration[:days] if expiration[:days]
-              expired_object_delete_marker expiration[:expired_object_delete_marker] if expiration.key?(:expired_object_delete_marker)
+              context.days expiration[:days] if expiration[:days]
+              context.expired_object_delete_marker expiration[:expired_object_delete_marker] if expiration.key?(:expired_object_delete_marker)
             end
           end
 
@@ -67,8 +67,8 @@ module Pangea
 
             transitions.each do |nv_transition|
               context.noncurrent_version_transition do
-                days nv_transition[:days]
-                storage_class nv_transition[:storage_class]
+                context.days nv_transition[:days]
+                context.storage_class nv_transition[:storage_class]
               end
             end
           end
@@ -77,7 +77,7 @@ module Pangea
             return unless expiration
 
             context.noncurrent_version_expiration do
-              days expiration[:days]
+              context.days expiration[:days]
             end
           end
 
@@ -87,11 +87,11 @@ module Pangea
 
           def build_cors_rule(context, cors_config)
             context.cors_rule do
-              allowed_headers cors_config[:allowed_headers] if cors_config[:allowed_headers]
-              allowed_methods cors_config[:allowed_methods]
-              allowed_origins cors_config[:allowed_origins]
-              expose_headers cors_config[:expose_headers] if cors_config[:expose_headers]
-              max_age_seconds cors_config[:max_age_seconds] if cors_config[:max_age_seconds]
+              context.allowed_headers cors_config[:allowed_headers] if cors_config[:allowed_headers]
+              context.allowed_methods cors_config[:allowed_methods]
+              context.allowed_origins cors_config[:allowed_origins]
+              context.expose_headers cors_config[:expose_headers] if cors_config[:expose_headers]
+              context.max_age_seconds cors_config[:max_age_seconds] if cors_config[:max_age_seconds]
             end
           end
         end

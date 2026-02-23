@@ -59,6 +59,14 @@ module Pangea
             end
 
             def validate_attribute_definitions!(attrs)
+              valid_types = %w[S N B]
+              attrs.attribute.each do |attr_def|
+                attr_type = attr_def[:type]
+                unless valid_types.include?(attr_type)
+                  raise Dry::Struct::Error, "Invalid attribute type '#{attr_type}' for attribute '#{attr_def[:name]}'. Must be one of: #{valid_types.join(', ')}"
+                end
+              end
+
               all_key_attributes = collect_key_attributes(attrs)
               defined_attributes = attrs.attribute.map { |attr| attr[:name] }
               missing_attributes = all_key_attributes.uniq - defined_attributes

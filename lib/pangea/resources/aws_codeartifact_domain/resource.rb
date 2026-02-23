@@ -70,7 +70,7 @@ module Pangea
       #   })
       def aws_codeartifact_domain(name, attributes = {})
         # Validate attributes using dry-struct
-        domain_attrs = Types::Types::CodeArtifactDomainAttributes.new(attributes)
+        domain_attrs = Types::CodeArtifactDomainAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_codeartifact_domain, name) do
@@ -81,7 +81,7 @@ module Pangea
           encryption_key domain_attrs.encryption_key if domain_attrs.encryption_key
           
           # Apply tags if present
-          if domain_attrs.tags.any?
+          if domain_attrs.tags&.any?
             tags do
               domain_attrs.tags.each do |key, value|
                 public_send(key, value)

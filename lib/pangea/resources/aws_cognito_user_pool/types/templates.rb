@@ -8,7 +8,8 @@ module Pangea
       module Types
         # Pre-configured user pool templates for common scenarios
         module UserPoolTemplates
-          def self.basic_email_auth(pool_name)
+          module_function
+          def basic_email_auth(pool_name)
             {
               name: pool_name,
               username_attributes: ['email'],
@@ -19,7 +20,7 @@ module Pangea
             }
           end
 
-          def self.phone_auth(pool_name, sns_role_arn)
+          def phone_auth(pool_name, sns_role_arn)
             {
               name: pool_name,
               username_attributes: ['phone_number'],
@@ -29,11 +30,11 @@ module Pangea
             }
           end
 
-          def self.mfa_enabled(pool_name)
+          def mfa_enabled(pool_name)
             basic_email_auth(pool_name).merge(mfa_configuration: 'ON', software_token_mfa_configuration: { enabled: true })
           end
 
-          def self.enterprise_security(pool_name)
+          def enterprise_security(pool_name)
             basic_email_auth(pool_name).merge(
               user_pool_add_ons: { advanced_security_mode: 'ENFORCED' },
               mfa_configuration: 'OPTIONAL',
@@ -41,7 +42,7 @@ module Pangea
             )
           end
 
-          def self.social_signin(pool_name)
+          def social_signin(pool_name)
             {
               name: pool_name,
               username_attributes: ['email'],

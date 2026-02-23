@@ -25,15 +25,21 @@ module Pangea
               if config[:all_query_arguments]
                 ctx.all_query_arguments
               elsif config[:body]
-                ctx.body { oversize_handling config[:body][:oversize_handling] if config[:body][:oversize_handling] }
+                ctx.body do
+                  ctx.oversize_handling config[:body][:oversize_handling] if config[:body][:oversize_handling]
+                end
               elsif config[:method]
                 ctx.method
               elsif config[:query_string]
                 ctx.query_string
               elsif config[:single_header]
-                ctx.single_header { name config[:single_header][:name] }
+                ctx.single_header do
+                  ctx.name config[:single_header][:name]
+                end
               elsif config[:single_query_argument]
-                ctx.single_query_argument { name config[:single_query_argument][:name] }
+                ctx.single_query_argument do
+                  ctx.name config[:single_query_argument][:name]
+                end
               elsif config[:uri_path]
                 ctx.uri_path
               elsif config[:json_body]
@@ -45,16 +51,16 @@ module Pangea
 
             def build_json_body(ctx, config)
               ctx.json_body do
-                match_scope config[:match_scope]
-                match_pattern do
+                ctx.match_scope config[:match_scope]
+                ctx.match_pattern do
                   if config[:match_pattern][:all]
-                    all
+                    ctx.all
                   elsif config[:match_pattern][:included_paths]
-                    config[:match_pattern][:included_paths].each { |path| included_paths path }
+                    config[:match_pattern][:included_paths].each { |path| ctx.included_paths path }
                   end
                 end
-                invalid_fallback_behavior config[:invalid_fallback_behavior] if config[:invalid_fallback_behavior]
-                oversize_handling config[:oversize_handling] if config[:oversize_handling]
+                ctx.invalid_fallback_behavior config[:invalid_fallback_behavior] if config[:invalid_fallback_behavior]
+                ctx.oversize_handling config[:oversize_handling] if config[:oversize_handling]
               end
             end
           end

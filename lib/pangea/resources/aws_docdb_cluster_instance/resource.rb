@@ -49,7 +49,7 @@ module Pangea
           ca_cert_identifier attrs.ca_cert_identifier if attrs.ca_cert_identifier
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

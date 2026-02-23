@@ -21,12 +21,12 @@ module Pangea
       module Types
       # Type-safe attributes for AwsLicensemanagerLicenseConfiguration resources
       # Provides a License Manager license configuration resource.
-      class LicensemanagerLicenseConfigurationAttributes < Dry::Struct
-        attribute :name, Resources::Types::String
-        attribute :license_counting_type, Resources::Types::String
-        attribute :description, Resources::Types::String.optional
-        attribute :license_count, Resources::Types::Integer.optional
-        attribute :license_count_hard_limit, Resources::Types::Bool.optional
+      class LicensemanagerLicenseConfigurationAttributes < Pangea::Resources::BaseAttributes
+        attribute? :name, Resources::Types::String.optional
+        attribute? :license_counting_type, Resources::Types::String.optional
+        attribute? :description, Resources::Types::String.optional
+        attribute? :license_count, Resources::Types::Integer.optional
+        attribute? :license_count_hard_limit, Resources::Types::Bool.optional
         attribute :license_rules, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         
         # Tags to apply to the resource

@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsAutoscalingLifecycleHook resources
       # Manages aws autoscaling lifecycle hook resources.
-      class AwsAutoscalingLifecycleHookAttributes < Dry::Struct
+      class AwsAutoscalingLifecycleHookAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_autoscaling_lifecycle_hook
         
         # Tags to apply to the resource

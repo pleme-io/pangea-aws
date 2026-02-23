@@ -21,14 +21,14 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS MediaPackage Origin Endpoint resources
-      class MediaPackageOriginEndpointAttributes < Dry::Struct
+      class MediaPackageOriginEndpointAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Channel ID that this endpoint belongs to (required)
-        attribute :channel_id, Resources::Types::String
+        attribute? :channel_id, Resources::Types::String.optional
 
         # Endpoint ID (required) - unique within channel
-        attribute :id, Resources::Types::String
+        attribute? :id, Resources::Types::String.optional
 
         # Endpoint description
         attribute :description, Resources::Types::String.default("")
@@ -37,7 +37,7 @@ module Pangea
         attribute :manifest_name, Resources::Types::String.default("")
 
         # HLS package configuration
-        attribute :hls_package, Resources::Types::Hash.schema(
+        attribute? :hls_package, Resources::Types::Hash.schema(
           ad_markers?: Resources::Types::String.constrained(included_in: ['NONE', 'SCTE35_ENHANCED', 'PASSTHROUGH']).optional,
           ad_triggers?: Resources::Types::Array.of(Resources::Types::String).optional,
           ads_on_delivery_restrictions?: Resources::Types::String.constrained(included_in: ['NONE', 'RESTRICTED', 'UNRESTRICTED', 'BOTH']).optional,
@@ -48,10 +48,10 @@ module Pangea
           segment_duration_seconds?: Resources::Types::Integer.optional,
           stream_selection?: Resources::Types::Hash.optional,
           use_audio_rendition_group?: Resources::Types::Bool.optional
-        ).default({}.freeze)
+        ).lax.default({}.freeze)
 
         # DASH package configuration
-        attribute :dash_package, Resources::Types::Hash.schema(
+        attribute? :dash_package, Resources::Types::Hash.schema(
           ad_triggers?: Resources::Types::Array.of(Resources::Types::String).optional,
           ads_on_delivery_restrictions?: Resources::Types::String.constrained(included_in: ['NONE', 'RESTRICTED', 'UNRESTRICTED', 'BOTH']).optional,
           manifest_layout?: Resources::Types::String.constrained(included_in: ['FULL', 'COMPACT']).optional,
@@ -65,10 +65,10 @@ module Pangea
           suggested_presentation_delay_seconds?: Resources::Types::Integer.optional,
           utc_timing?: Resources::Types::String.optional,
           utc_timing_uri?: Resources::Types::String.optional
-        ).default({}.freeze)
+        ).lax.default({}.freeze)
 
         # CMAF package configuration
-        attribute :cmaf_package, Resources::Types::Hash.schema(
+        attribute? :cmaf_package, Resources::Types::Hash.schema(
           encryption?: Resources::Types::Hash.optional,
           hls_manifests?: Resources::Types::Array.of(
             Resources::Types::Hash.schema(
@@ -79,7 +79,7 @@ module Pangea
               playlist_type?: Resources::Types::String.optional,
               playlist_window_seconds?: Resources::Types::Integer.optional,
               program_date_time_interval_seconds?: Resources::Types::Integer.optional
-            )
+            ).lax
           ).optional,
           dash_manifests?: Resources::Types::Array.of(
             Resources::Types::Hash.schema(
@@ -90,33 +90,33 @@ module Pangea
               min_buffer_time_seconds?: Resources::Types::Integer.optional,
               profile?: Resources::Types::String.optional,
               stream_selection?: Resources::Types::Hash.optional
-            )
+            ).lax
           ).optional,
           segment_duration_seconds?: Resources::Types::Integer.optional,
           segment_prefix?: Resources::Types::String.optional
         ).default({}.freeze)
 
         # MSS package configuration
-        attribute :mss_package, Resources::Types::Hash.schema(
+        attribute? :mss_package, Resources::Types::Hash.schema(
           manifest_window_seconds?: Resources::Types::Integer.optional,
           segment_duration_seconds?: Resources::Types::Integer.optional,
           stream_selection?: Resources::Types::Hash.optional
-        ).optional
+        ).lax.optional
 
         # Start over behavior
-        attribute :startover_window_seconds, Resources::Types::Integer.optional
+        attribute? :startover_window_seconds, Resources::Types::Integer.optional
 
         # Time delay seconds
-        attribute :time_delay_seconds, Resources::Types::Integer.optional
+        attribute? :time_delay_seconds, Resources::Types::Integer.optional
 
         # Whitelist for endpoint access
         attribute :whitelist, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
         # Authorization configuration
-        attribute :authorization, Resources::Types::Hash.schema(
+        attribute? :authorization, Resources::Types::Hash.schema(
           cdn_identifier_secret: Resources::Types::String,
           secrets_role_arn: Resources::Types::String
-        ).optional
+        ).lax.optional
 
         # Tags
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -146,7 +146,7 @@ module Pangea
           end
 
           # Validate playlist window
-          if attrs.hls_package[:playlist_window_seconds] && attrs.hls_package[:playlist_window_seconds] < 60
+          if attrs.hls_package&.dig(:playlist_window_seconds) && attrs.hls_package&.dig(:playlist_window_seconds) < 60
             raise Dry::Struct::Error, "HLS playlist window must be at least 60 seconds"
           end
 
@@ -163,7 +163,7 @@ module Pangea
         end
 
         def has_authorization?
-          authorization[:cdn_identifier_secret] && authorization[:secrets_role_arn]
+          authorization&.dig(:cdn_identifier_secret) && authorization&.dig(:secrets_role_arn)
         end
 
         def has_whitelist?
@@ -181,9 +181,9 @@ module Pangea
         def supports_ads?
           case package_type
           when :hls
-            hls_package[:ad_markers] && hls_package[:ad_markers] != 'NONE'
+            hls_package&.dig(:ad_markers) && hls_package&.dig(:ad_markers) != 'NONE'
           when :dash
-            dash_package[:ads_on_delivery_restrictions] && dash_package[:ads_on_delivery_restrictions] != 'NONE'
+            dash_package&.dig(:ads_on_delivery_restrictions) && dash_package&.dig(:ads_on_delivery_restrictions) != 'NONE'
           else
             false
           end

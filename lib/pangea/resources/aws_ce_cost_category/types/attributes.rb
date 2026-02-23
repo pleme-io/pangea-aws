@@ -9,10 +9,10 @@ module Pangea
     module AWS
       module Types
         # Cost category resource attributes with comprehensive validation
-        class CostCategoryAttributes < Dry::Struct
+        class CostCategoryAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9\s\-_\.]{1,50}\z/).constructor { |value|
+          attribute? :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9\s\-_\.]{1,50}\z/).constructor { |value|
             cleaned = value.strip
             if cleaned.empty?
               raise Dry::Struct::Error, "Cost category name cannot be empty"
@@ -26,7 +26,7 @@ module Pangea
             cleaned
           }
 
-          attribute :rules, Resources::Types::Array.of(CostCategoryRule).constrained(min_size: 1, max_size: 500).constructor { |rules|
+          attribute? :rules, Resources::Types::Array.of(CostCategoryRule).constrained(min_size: 1, max_size: 500).constructor { |rules|
             values = rules.map { |rule| rule[:value] }
             if values.size != values.uniq.size
               raise Dry::Struct::Error, "Cost category rule values must be unique within the category"
@@ -48,7 +48,7 @@ module Pangea
           attribute :tags?, Resources::Types::AwsTags.optional
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             if attrs[:effective_start] && attrs[:effective_end]
               start_date = Date.parse(attrs[:effective_start])

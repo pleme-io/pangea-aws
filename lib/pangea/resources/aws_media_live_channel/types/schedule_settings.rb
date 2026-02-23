@@ -19,31 +19,31 @@ module Pangea
             # Input clipping settings
             StartTimecode = T::Hash.schema(
               timecode: T::String
-            )
+            ).lax
 
             StopTimecode = T::Hash.schema(
               last_frame_clipping_behavior?: T::String.constrained(included_in: ['EXCLUDE_LAST_FRAME', 'INCLUDE_LAST_FRAME']).optional,
               timecode: T::String
-            )
+            ).lax
 
             InputClippingSettings = T::Hash.schema(
               input_timecode_source: T::String.constrained(included_in: ['EMBEDDED', 'ZEROBASED']),
               start_timecode?: StartTimecode.optional,
               stop_timecode?: StopTimecode.optional
-            )
+            ).lax
 
             # Input prepare/switch settings
             InputPrepareSettings = T::Hash.schema(
               input_attachment_name_reference: T::String,
               input_clipping_settings?: InputClippingSettings.optional,
               url_path?: T::Array.of(T::String).optional
-            )
+            ).lax
 
             InputSwitchSettings = T::Hash.schema(
               input_attachment_name_reference: T::String,
               input_clipping_settings?: InputClippingSettings.optional,
               url_path?: T::Array.of(T::String).optional
-            )
+            ).lax
 
             # Motion graphics settings
             MotionGraphicsImageActivate = T::Hash.schema(
@@ -51,34 +51,34 @@ module Pangea
               password_param?: T::String.optional,
               uri: T::String,
               username?: T::String.optional
-            )
+            ).lax
 
             # Pause state settings
             PipelineState = T::Hash.schema(
               pipeline_id: T::String.constrained(included_in: ['PIPELINE_0', 'PIPELINE_1'])
-            )
+            ).lax
 
             PauseStateSettings = T::Hash.schema(
               pipelines: T::Array.of(PipelineState)
-            )
+            ).lax
 
             # SCTE35 settings
             Scte35ReturnToNetwork = T::Hash.schema(
               splice_event_id: T::Integer
-            )
+            ).lax
 
             SpliceInsertMessage = T::Hash.schema(
               avail_num?: T::Integer.optional,
               avails_expected?: T::Integer.optional,
               splice_immediate_flag: T::Bool,
               unique_program_id: T::Integer
-            )
+            ).lax
 
             Scte35SpliceInsertSettings = T::Hash.schema(
               duration?: T::Integer.optional,
               splice_event_id: T::Integer,
               splice_insert_message?: SpliceInsertMessage.optional
-            )
+            ).lax
 
             # SCTE35 time signal settings
             DeliveryRestrictions = T::Hash.schema(
@@ -86,7 +86,7 @@ module Pangea
               device_restrictions: T::String.constrained(included_in: ['NONE', 'RESTRICT_GROUP0', 'RESTRICT_GROUP1', 'RESTRICT_GROUP2']),
               no_regional_blackout_flag: T::Bool,
               web_delivery_allowed_flag: T::Bool
-            )
+            ).lax
 
             SegmentationDescriptor = T::Hash.schema(
               delivery_restrictions?: DeliveryRestrictions.optional,
@@ -100,26 +100,26 @@ module Pangea
               segments_expected?: T::Integer.optional,
               sub_segment_num?: T::Integer.optional,
               sub_segments_expected?: T::Integer.optional
-            )
+            ).lax
 
             Scte35DescriptorSettings = T::Hash.schema(
               segmentation_descriptor_scte35_settings: SegmentationDescriptor
-            )
+            ).lax
 
             Scte35Descriptor = T::Hash.schema(
               scte35_descriptor_settings: Scte35DescriptorSettings
-            )
+            ).lax
 
             Scte35TimeSignalSettings = T::Hash.schema(
               scte35_descriptors: T::Array.of(Scte35Descriptor)
-            )
+            ).lax
 
             # Static image settings
             StaticImage = T::Hash.schema(
               password_param?: T::String.optional,
               uri: T::String,
               username?: T::String.optional
-            )
+            ).lax
 
             StaticImageActivateSettings = T::Hash.schema(
               duration?: T::Integer.optional,
@@ -132,21 +132,21 @@ module Pangea
               layer?: T::Integer.optional,
               opacity?: T::Integer.optional,
               width?: T::Integer.optional
-            )
+            ).lax
 
             StaticImageDeactivateSettings = T::Hash.schema(
               fade_out?: T::Integer.optional,
               layer?: T::Integer.optional
-            )
+            ).lax
 
             # HLS settings
             HlsId3SegmentTaggingSettings = T::Hash.schema(
               tag: T::String
-            )
+            ).lax
 
             HlsTimedMetadataSettings = T::Hash.schema(
               id3: T::String
-            )
+            ).lax
 
             # Schedule action settings container
             ActionSettings = T::Hash.schema(
@@ -162,30 +162,30 @@ module Pangea
               scte35_time_signal_settings?: Scte35TimeSignalSettings.optional,
               static_image_activate_settings?: StaticImageActivateSettings.optional,
               static_image_deactivate_settings?: StaticImageDeactivateSettings.optional
-            )
+            ).lax
 
             # Schedule action start settings
             FixedModeStartSettings = T::Hash.schema(
               time: T::String
-            )
+            ).lax
 
             FollowModeStartSettings = T::Hash.schema(
               follow_point: T::String.constrained(included_in: ['END', 'START']),
               reference_action_name: T::String
-            )
+            ).lax
 
             ActionStartSettings = T::Hash.schema(
               fixed_mode_schedule_action_start_settings?: FixedModeStartSettings.optional,
               follow_mode_schedule_action_start_settings?: FollowModeStartSettings.optional,
               immediate_mode_schedule_action_start_settings?: T::Hash.optional
-            )
+            ).lax
 
             # Schedule action
             ScheduleAction = T::Hash.schema(
               action_name: T::String,
               schedule_action_settings: ActionSettings,
               schedule_action_start_settings: ActionStartSettings
-            )
+            ).lax
           end
         end
       end

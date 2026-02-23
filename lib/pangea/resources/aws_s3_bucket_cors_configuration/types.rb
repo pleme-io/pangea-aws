@@ -21,26 +21,26 @@ module Pangea
       module Types
       # S3 CORS rule configuration
       unless const_defined?(:CorsRule)
-      class CorsRule < Dry::Struct
+      class CorsRule < Pangea::Resources::BaseAttributes
         # Unique identifier for the rule (optional)
-        attribute :id, Resources::Types::String.optional
+        attribute? :id, Resources::Types::String.optional
         
         # HTTP methods allowed for CORS requests
-        attribute :allowed_methods, Resources::Types::Array.of(
+        attribute? :allowed_methods, Resources::Types::Array.of(
           Resources::Types::String.constrained(included_in: ["GET", "PUT", "POST", "DELETE", "HEAD"])
         ).constrained(min_size: 1)
         
         # Origins allowed to make CORS requests
-        attribute :allowed_origins, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
+        attribute? :allowed_origins, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1).optional
         
         # Headers allowed in CORS requests (optional)
-        attribute :allowed_headers, Resources::Types::Array.of(Resources::Types::String).optional
+        attribute :allowed_headers, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         
         # Headers exposed to client in CORS response (optional)
-        attribute :expose_headers, Resources::Types::Array.of(Resources::Types::String).optional
+        attribute :expose_headers, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         
         # Maximum time in seconds for browser to cache preflight response (optional)
-        attribute :max_age_seconds, Resources::Types::Integer.constrained(gteq: 0, lteq: 2147483647).optional
+        attribute? :max_age_seconds, Resources::Types::Integer.constrained(gteq: 0, lteq: 2147483647).optional
 
         # Custom validation
         def self.new(attributes = {})
@@ -96,15 +96,15 @@ module Pangea
       end
 
       # Type-safe attributes for AWS S3 Bucket CORS Configuration
-      class S3BucketCorsConfigurationAttributes < Dry::Struct
+      class S3BucketCorsConfigurationAttributes < Pangea::Resources::BaseAttributes
         # S3 bucket to apply CORS configuration to
-        attribute :bucket, Resources::Types::String
+        attribute? :bucket, Resources::Types::String.optional
         
         # Expected bucket owner (optional)
-        attribute :expected_bucket_owner, Resources::Types::String.optional
+        attribute? :expected_bucket_owner, Resources::Types::String.optional
         
         # CORS rules (1-100 rules maximum)
-        attribute :cors_rule, Resources::Types::Array.of(CorsRule).constrained(min_size: 1, max_size: 100)
+        attribute? :cors_rule, Resources::Types::Array.of(CorsRule).constrained(min_size: 1, max_size: 100).optional
 
         # Custom validation
         def self.new(attributes = {})

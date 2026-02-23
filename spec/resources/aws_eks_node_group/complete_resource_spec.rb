@@ -27,9 +27,9 @@ RSpec.describe "aws_eks_node_group resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -141,7 +141,7 @@ RSpec.describe "aws_eks_node_group resource function" do
         Pangea::Resources::AWS::Types::UpdateConfig.new({
           max_unavailable_percentage: 101
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
   end
   
@@ -243,7 +243,7 @@ RSpec.describe "aws_eks_node_group resource function" do
           key: "test",
           effect: "INVALID"
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "accepts all valid effects" do
@@ -327,7 +327,7 @@ RSpec.describe "aws_eks_node_group resource function" do
           node_role_arn: "invalid-arn",
           subnet_ids: ["subnet-12345"]
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "requires at least one subnet" do
@@ -337,7 +337,7 @@ RSpec.describe "aws_eks_node_group resource function" do
           node_role_arn: node_role_arn,
           subnet_ids: []
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "validates disk size range" do
@@ -348,7 +348,7 @@ RSpec.describe "aws_eks_node_group resource function" do
           subnet_ids: ["subnet-12345"],
           disk_size: 10
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "validates ARM instance types with ARM AMI" do

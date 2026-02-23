@@ -27,11 +27,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test simple A record synthesis
   it "synthesizes basic A record correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:www, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "www.example.com",
         type: "A",
         ttl: 300,
@@ -39,7 +40,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "www")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -52,11 +53,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test AAAA record synthesis
   it "synthesizes AAAA record correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:ipv6, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "ipv6.example.com",
         type: "AAAA",
         ttl: 600,
@@ -64,7 +66,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "ipv6")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -76,11 +78,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test CNAME record synthesis
   it "synthesizes CNAME record correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:blog, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "blog.example.com",
         type: "CNAME",
         ttl: 300,
@@ -88,7 +91,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "blog")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -100,11 +103,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test MX record synthesis
   it "synthesizes MX record correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:mail, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "example.com",
         type: "MX",
         ttl: 3600,
@@ -112,7 +116,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "mail")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -124,11 +128,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test TXT record synthesis
   it "synthesizes TXT record correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:spf, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "example.com",
         type: "TXT",
         ttl: 300,
@@ -136,7 +141,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "spf")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -148,11 +153,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test alias record synthesis
   it "synthesizes alias record correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:app, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "app.example.com",
         type: "A",
         alias: {
@@ -163,7 +169,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "app")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -182,11 +188,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test weighted routing policy synthesis
   it "synthesizes weighted routing policy correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:weighted_primary, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "api.example.com",
         type: "A",
         ttl: 300,
@@ -196,7 +203,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "weighted_primary")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -214,11 +221,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test latency routing policy synthesis
   it "synthesizes latency routing policy correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:latency_us_east, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "api.example.com",
         type: "A",
         ttl: 300,
@@ -228,7 +236,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "latency_us_east")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -244,11 +252,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test failover routing policy synthesis
   it "synthesizes failover routing policy correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:failover_primary, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "api.example.com",
         type: "A",
         ttl: 300,
@@ -259,7 +268,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "failover_primary")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -276,11 +285,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test geolocation routing policy synthesis
   it "synthesizes geolocation routing policy correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:geo_us, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "api.example.com",
         type: "A",
         ttl: 300,
@@ -292,7 +302,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "geo_us")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -308,11 +318,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test geoproximity routing policy synthesis
   it "synthesizes geoproximity routing policy correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:geo_proximity_virginia, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "api.example.com",
         type: "A",
         ttl: 300,
@@ -325,7 +336,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "geo_proximity_virginia")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -342,11 +353,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test multivalue answer synthesis
   it "synthesizes multivalue answer correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:multivalue, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "api.example.com",
         type: "A",
         ttl: 300,
@@ -357,7 +369,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "multivalue")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -370,11 +382,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test SRV record synthesis with complex format
   it "synthesizes SRV record correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:sip_srv, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "_sip._tcp.example.com",
         type: "SRV",
         ttl: 600,
@@ -382,7 +395,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "sip_srv")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -394,11 +407,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test wildcard record synthesis
   it "synthesizes wildcard record correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:wildcard, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "*.example.com",
         type: "A",
         ttl: 300,
@@ -406,7 +420,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "wildcard")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -418,11 +432,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test record with allow_overwrite synthesis
   it "synthesizes record with allow_overwrite correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:overwrite_allowed, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "migrate.example.com",
         type: "A",
         ttl: 300,
@@ -431,7 +446,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "overwrite_allowed")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -442,11 +457,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test geolocation routing with continent and subdivision
   it "synthesizes geolocation routing with all fields correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:geo_california, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "api.example.com",
         type: "A",
         ttl: 300,
@@ -460,7 +476,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "geo_california")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -478,11 +494,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test geoproximity routing with coordinates
   it "synthesizes geoproximity routing with coordinates correctly" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:geo_custom_location, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "api.example.com",
         type: "A",
         ttl: 300,
@@ -498,7 +515,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "geo_custom_location")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -519,11 +536,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test alias record without evaluate_target_health (should default to false)
   it "synthesizes alias record with default evaluate_target_health" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:cdn_alias, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "cdn.example.com",
         type: "A",
         alias: {
@@ -534,7 +552,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "cdn_alias")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)
@@ -553,11 +571,12 @@ RSpec.describe "aws_route53_record terraform synthesis" do
 
   # Test comprehensive record with all optional fields
   it "synthesizes record with all optional configurations" do
+    _test_zone_id = test_zone_id
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_route53_record(:comprehensive, {
-        zone_id: test_zone_id,
+        zone_id: _test_zone_id,
         name: "comprehensive.example.com",
         type: "A",
         ttl: 600,
@@ -570,7 +589,7 @@ RSpec.describe "aws_route53_record terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     record_config = json_output.dig("resource", "aws_route53_record", "comprehensive")
     
     expect(record_config["zone_id"]).to eq(test_zone_id)

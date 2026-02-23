@@ -29,7 +29,7 @@ module Pangea
           name policy_attrs.name
           policy policy_attrs.policy
           
-          if policy_attrs.tags.any?
+          if policy_attrs.tags&.any?
             tags do
               policy_attrs.tags.each { |k, v| public_send(k, v) }
             end

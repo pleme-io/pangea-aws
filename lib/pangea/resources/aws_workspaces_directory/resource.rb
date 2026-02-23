@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_workspaces_directory(name, attributes = {})
         # Validate attributes using dry-struct
-        directory_attrs = Types::Types::WorkspacesDirectoryAttributes.new(attributes)
+        directory_attrs = Types::WorkspacesDirectoryAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_workspaces_directory, name) do
@@ -87,7 +87,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if directory_attrs.tags.any?
+          if directory_attrs.tags&.any?
             tags do
               directory_attrs.tags.each do |key, value|
                 public_send(key, value)

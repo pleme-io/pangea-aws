@@ -21,9 +21,9 @@ module Pangea
       module Types
       # Type-safe attributes for AwsNeptuneClusterSnapshot resources
       # Manages a Neptune cluster snapshot.
-      class NeptuneClusterSnapshotAttributes < Dry::Struct
-        attribute :db_cluster_identifier, Resources::Types::String
-        attribute :db_cluster_snapshot_identifier, Resources::Types::String
+      class NeptuneClusterSnapshotAttributes < Pangea::Resources::BaseAttributes
+        attribute? :db_cluster_identifier, Resources::Types::String.optional
+        attribute? :db_cluster_snapshot_identifier, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

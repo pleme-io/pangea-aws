@@ -22,10 +22,10 @@ module Pangea
       module Types
         # Dead letter configuration for CloudWatch Event targets
         unless const_defined?(:DeadLetterConfig)
-        class DeadLetterConfig < Dry::Struct
+        class DeadLetterConfig < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :arn, Resources::Types::String
+          attribute? :arn, Resources::Types::String.optional
 
           def to_h
             { arn: arn }

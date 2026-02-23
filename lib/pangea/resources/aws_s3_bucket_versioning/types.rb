@@ -21,17 +21,17 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS S3 Bucket Versioning resources
-      class S3BucketVersioningAttributes < Dry::Struct
+      class S3BucketVersioningAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Bucket name (required)
-        attribute :bucket, Resources::Types::String
+        attribute? :bucket, Resources::Types::String.optional
 
         # Versioning configuration (required)
-        attribute :versioning_configuration, Resources::Types::Hash.schema(
+        attribute? :versioning_configuration, Resources::Types::Hash.schema(
           status: Resources::Types::String.constrained(included_in: ['Enabled', 'Suspended']),
           mfa_delete?: Resources::Types::String.constrained(included_in: ['Enabled', 'Disabled']).optional
-        )
+        ).lax
 
         # Expected bucket owner for multi-account scenarios
         attribute? :expected_bucket_owner, Resources::Types::String.optional
@@ -50,15 +50,15 @@ module Pangea
 
         # Helper methods
         def versioning_enabled?
-          versioning_configuration[:status] == 'Enabled'
+          versioning_configuration&.dig(:status) == 'Enabled'
         end
 
         def versioning_suspended?
-          versioning_configuration[:status] == 'Suspended'
+          versioning_configuration&.dig(:status) == 'Suspended'
         end
 
         def mfa_delete_enabled?
-          versioning_configuration[:mfa_delete] == 'Enabled'
+          versioning_configuration&.dig(:mfa_delete) == 'Enabled'
         end
 
         def mfa_delete_configured?
@@ -66,7 +66,7 @@ module Pangea
         end
 
         def status
-          versioning_configuration[:status]
+          versioning_configuration&.dig(:status)
         end
       end
     end

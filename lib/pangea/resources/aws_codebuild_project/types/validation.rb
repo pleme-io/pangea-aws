@@ -41,7 +41,7 @@ module Pangea
               end
 
               def validate_artifacts(attrs)
-                return unless attrs.artifacts[:type] == 'S3' && attrs.artifacts[:location].nil?
+                return unless attrs.artifacts&.dig(:type) == 'S3' && attrs.artifacts&.dig(:location).nil?
 
                 raise Dry::Struct::Error, 'Artifacts location is required for S3 artifact type'
               end
@@ -49,11 +49,11 @@ module Pangea
               def validate_vpc_config(attrs)
                 return unless attrs.vpc_config
 
-                if attrs.vpc_config[:subnets].empty?
+                if attrs.vpc_config&.dig(:subnets).empty?
                   raise Dry::Struct::Error, 'At least one subnet is required for VPC configuration'
                 end
 
-                return unless attrs.vpc_config[:security_group_ids].empty?
+                return unless attrs.vpc_config&.dig(:security_group_ids).empty?
 
                 raise Dry::Struct::Error, 'At least one security group is required for VPC configuration'
               end
@@ -71,7 +71,7 @@ module Pangea
               end
 
               def validate_environment_variables(attrs)
-                env_vars = attrs.environment[:environment_variables]
+                env_vars = attrs.environment&.dig(:environment_variables)
                 return unless env_vars
 
                 var_names = env_vars.map { |v| v[:name] }

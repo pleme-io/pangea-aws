@@ -21,11 +21,11 @@ module Pangea
       module Types
       # Type-safe attributes for AwsTimestreamTableRetentionProperties resources
       # Provides a Timestream table retention properties resource.
-      class TimestreamTableRetentionPropertiesAttributes < Dry::Struct
-        attribute :database_name, Resources::Types::String
-        attribute :table_name, Resources::Types::String
-        attribute :magnetic_store_retention_period_in_days, Resources::Types::Integer.optional
-        attribute :memory_store_retention_period_in_hours, Resources::Types::Integer.optional
+      class TimestreamTableRetentionPropertiesAttributes < Pangea::Resources::BaseAttributes
+        attribute? :database_name, Resources::Types::String.optional
+        attribute? :table_name, Resources::Types::String.optional
+        attribute? :magnetic_store_retention_period_in_days, Resources::Types::Integer.optional
+        attribute? :memory_store_retention_period_in_hours, Resources::Types::Integer.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

@@ -23,7 +23,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS IoT Thing Type resources
-        class IotThingTypeAttributes < Dry::Struct
+        class IotThingTypeAttributes < Pangea::Resources::BaseAttributes
           require_relative 'types/properties'
           require_relative 'types/recommendations'
           require_relative 'types/templates'
@@ -35,10 +35,10 @@ module Pangea
           include Analysis
 
           # Thing type name (required)
-          attribute :thing_type_name, Resources::Types::IotThingTypeName
+          attribute? :thing_type_name, Resources::Types::IotThingTypeName.optional
 
           # Thing type properties (optional)
-          attribute :thing_type_properties, Resources::Types::IotThingTypeProperties.optional
+          attribute? :thing_type_properties, Resources::Types::IotThingTypeProperties.optional
 
           # Tags (optional)
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -49,7 +49,7 @@ module Pangea
 
             # Validate searchable attributes don't exceed limit
             if attrs.thing_type_properties&.dig(:searchable_attributes)
-              searchable = attrs.thing_type_properties[:searchable_attributes]
+              searchable = attrs.thing_type_properties&.dig(:searchable_attributes)
               if searchable.length > 3
                 raise Dry::Struct::Error, 'Thing type cannot have more than 3 searchable attributes'
               end

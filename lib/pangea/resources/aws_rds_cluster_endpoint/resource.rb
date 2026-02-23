@@ -38,17 +38,17 @@ module Pangea
           custom_endpoint_type endpoint_attrs.custom_endpoint_type
           
           # Static members configuration
-          if endpoint_attrs.static_members.any?
+          if endpoint_attrs.static_members&.any?
             static_members endpoint_attrs.static_members.map(&:db_instance_identifier)
           end
           
           # Excluded members configuration
-          if endpoint_attrs.excluded_members.any?
+          if endpoint_attrs.excluded_members&.any?
             excluded_members endpoint_attrs.excluded_members.map(&:db_instance_identifier)
           end
           
           # Apply tags if present
-          if endpoint_attrs.tags.any?
+          if endpoint_attrs.tags&.any?
             tags do
               endpoint_attrs.tags.each do |key, value|
                 public_send(key, value)

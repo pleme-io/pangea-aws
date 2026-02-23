@@ -43,7 +43,7 @@ module Pangea
           deployment_config_name group_attrs.deployment_config_name
           
           # Auto Scaling Groups
-          if group_attrs.auto_scaling_groups.any?
+          if group_attrs.auto_scaling_groups&.any?
             auto_scaling_groups group_attrs.auto_scaling_groups
           end
           
@@ -75,46 +75,46 @@ module Pangea
           end
           
           # Auto rollback configuration
-          if group_attrs.auto_rollback_configuration.any?
+          if group_attrs.auto_rollback_configuration&.any?
             auto_rollback_configuration do
-              enabled group_attrs.auto_rollback_configuration[:enabled] if group_attrs.auto_rollback_configuration.key?(:enabled)
-              events group_attrs.auto_rollback_configuration[:events] if group_attrs.auto_rollback_configuration[:events]
+              enabled group_attrs.auto_rollback_configuration&.dig(:enabled) if group_attrs.auto_rollback_configuration.key?(:enabled)
+              events group_attrs.auto_rollback_configuration&.dig(:events) if group_attrs.auto_rollback_configuration&.dig(:events)
             end
           end
           
           # Alarm configuration
-          if group_attrs.alarm_configuration.any?
+          if group_attrs.alarm_configuration&.any?
             alarm_configuration do
-              alarms group_attrs.alarm_configuration[:alarms] if group_attrs.alarm_configuration[:alarms]
-              enabled group_attrs.alarm_configuration[:enabled] if group_attrs.alarm_configuration.key?(:enabled)
-              ignore_poll_alarm_failure group_attrs.alarm_configuration[:ignore_poll_alarm_failure] if group_attrs.alarm_configuration.key?(:ignore_poll_alarm_failure)
+              alarms group_attrs.alarm_configuration&.dig(:alarms) if group_attrs.alarm_configuration&.dig(:alarms)
+              enabled group_attrs.alarm_configuration&.dig(:enabled) if group_attrs.alarm_configuration.key?(:enabled)
+              ignore_poll_alarm_failure group_attrs.alarm_configuration&.dig(:ignore_poll_alarm_failure) if group_attrs.alarm_configuration.key?(:ignore_poll_alarm_failure)
             end
           end
           
           # Deployment style
-          if group_attrs.deployment_style.any?
+          if group_attrs.deployment_style&.any?
             deployment_style do
-              deployment_type group_attrs.deployment_style[:deployment_type] if group_attrs.deployment_style[:deployment_type]
-              deployment_option group_attrs.deployment_style[:deployment_option] if group_attrs.deployment_style[:deployment_option]
+              deployment_type group_attrs.deployment_style&.dig(:deployment_type) if group_attrs.deployment_style&.dig(:deployment_type)
+              deployment_option group_attrs.deployment_style&.dig(:deployment_option) if group_attrs.deployment_style&.dig(:deployment_option)
             end
           end
           
           # Blue-green deployment configuration
-          build_blue_green_deployment_config(group_attrs.blue_green_deployment_config) if group_attrs.blue_green_deployment_config.any?
-          
+          build_blue_green_deployment_config(self, group_attrs.blue_green_deployment_config) if group_attrs.blue_green_deployment_config&.any?
+
           # Load balancer info
-          build_load_balancer_info(group_attrs.load_balancer_info) if group_attrs.load_balancer_info.any?
+          build_load_balancer_info(self, group_attrs.load_balancer_info) if group_attrs.load_balancer_info&.any?
           
           # ECS service
-          if group_attrs.ecs_service.any?
+          if group_attrs.ecs_service&.any?
             ecs_service do
-              cluster_name group_attrs.ecs_service[:cluster_name] if group_attrs.ecs_service[:cluster_name]
-              service_name group_attrs.ecs_service[:service_name] if group_attrs.ecs_service[:service_name]
+              cluster_name group_attrs.ecs_service&.dig(:cluster_name) if group_attrs.ecs_service&.dig(:cluster_name)
+              service_name group_attrs.ecs_service&.dig(:service_name) if group_attrs.ecs_service&.dig(:service_name)
             end
           end
           
           # Apply tags
-          if group_attrs.tags.any?
+          if group_attrs.tags&.any?
             tags do
               group_attrs.tags.each do |key, value|
                 public_send(key, value)

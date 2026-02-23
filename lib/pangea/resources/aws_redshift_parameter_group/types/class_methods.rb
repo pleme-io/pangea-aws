@@ -33,12 +33,12 @@ module Pangea
 
           def wlm_configuration(queues)
             config = queues.map { |queue| build_wlm_queue(queue) }
-            { name: 'wlm_json_configuration', value: JSON.generate(config) }
+            { name: 'wlm_json_configuration', value: ::JSON.generate(config) }
           end
 
           def query_monitoring_rules(rules)
             config = rules.map { |rule| build_monitoring_rule(rule) }
-            { name: 'query_monitoring_rules', value: JSON.generate(config) }
+            { name: 'query_monitoring_rules', value: ::JSON.generate(config) }
           end
 
           private

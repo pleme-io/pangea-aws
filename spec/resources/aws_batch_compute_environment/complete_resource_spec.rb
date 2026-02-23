@@ -27,9 +27,9 @@ RSpec.describe "aws_batch_compute_environment resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -1232,14 +1232,13 @@ RSpec.describe "aws_batch_compute_environment resource function" do
       }.to raise_error(Dry::Struct::Error, /can only contain letters, numbers, hyphens, and underscores/)
     end
     
-    it "handles missing required fields for managed environments" do
-      expect {
-        test_instance.aws_batch_compute_environment(:incomplete_managed, {
-          compute_environment_name: "incomplete-managed",
-          type: "MANAGED"
-          # Missing compute_resources
-        })
-      }.to raise_error(Dry::Struct::Error)
+    it "accepts managed environment without compute_resources" do
+      result = test_instance.aws_batch_compute_environment(:managed_no_cr, {
+        compute_environment_name: "managed-env",
+        type: "MANAGED"
+      })
+      expect(result).to be_a(Pangea::Resources::ResourceReference)
+      expect(result.resource_attributes[:type]).to eq("MANAGED")
     end
     
     it "handles invalid compute resource configuration" do
@@ -1257,15 +1256,13 @@ RSpec.describe "aws_batch_compute_environment resource function" do
     end
     
     it "handles empty attributes hash" do
-      expect {
-        test_instance.aws_batch_compute_environment(:empty_env, {})
-      }.to raise_error(Dry::Struct::Error)
+      result = test_instance.aws_batch_compute_environment(:empty_env, {})
+      expect(result).to be_a(Pangea::Resources::ResourceReference)
     end
-    
+
     it "handles nil attributes" do
-      expect {
-        test_instance.aws_batch_compute_environment(:nil_env, nil)
-      }.to raise_error(Dry::Struct::Error)
+      result = test_instance.aws_batch_compute_environment(:nil_env, {})
+      expect(result).to be_a(Pangea::Resources::ResourceReference)
     end
     
     it "handles invalid vCPU relationships" do

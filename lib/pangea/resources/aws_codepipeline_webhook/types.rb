@@ -21,37 +21,37 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS CodePipeline Webhook resources
-      class CodePipelineWebhookAttributes < Dry::Struct
+      class CodePipelineWebhookAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Webhook name (required)
-        attribute :name, Resources::Types::String.constrained(
+        attribute? :name, Resources::Types::String.constrained(
           format: /\A[A-Za-z0-9][A-Za-z0-9\-_]*\z/,
           min_size: 1,
           max_size: 100
         )
 
         # Target pipeline (required)
-        attribute :target_pipeline, Resources::Types::String
+        attribute? :target_pipeline, Resources::Types::String.optional
 
         # Target action (required)
-        attribute :target_action, Resources::Types::String
+        attribute? :target_action, Resources::Types::String.optional
 
         # Authentication type
         attribute :authentication, Resources::Types::String.constrained(included_in: ['GITHUB_HMAC', 'IP', 'UNAUTHENTICATED']).default('GITHUB_HMAC')
 
         # Authentication configuration
-        attribute :authentication_configuration, Resources::Types::Hash.schema(
+        attribute? :authentication_configuration, Resources::Types::Hash.schema(
           secret_token?: Resources::Types::String.optional,
           allowed_ip_range?: Resources::Types::String.optional
-        ).optional
+        ).lax.optional
 
         # Filters
-        attribute :filters, Resources::Types::Array.of(
+        attribute? :filters, Resources::Types::Array.of(
           Resources::Types::Hash.schema(
             json_path: Resources::Types::String,
             match_equals?: Resources::Types::String.optional
-          )
+          ).lax
         ).constrained(min_size: 1)
 
         # Tags
@@ -64,11 +64,11 @@ module Pangea
           # Validate authentication configuration
           case attrs.authentication
           when 'GITHUB_HMAC'
-            if attrs.authentication_configuration[:secret_token].nil?
+            if attrs.authentication_configuration&.dig(:secret_token).nil?
               raise Dry::Struct::Error, "GITHUB_HMAC authentication requires secret_token"
             end
           when 'IP'
-            if attrs.authentication_configuration[:allowed_ip_range].nil?
+            if attrs.authentication_configuration&.dig(:allowed_ip_range).nil?
               raise Dry::Struct::Error, "IP authentication requires allowed_ip_range"
             end
           when 'UNAUTHENTICATED'
@@ -105,7 +105,7 @@ module Pangea
         end
 
         def has_secret?
-          authentication_configuration[:secret_token].present?
+          authentication_configuration&.dig(:secret_token).present?
         end
 
         def filter_descriptions

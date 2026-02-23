@@ -44,16 +44,16 @@ module Pangea
           # Time period configuration
           if budget_attrs.time_period
             time_period do
-              start budget_attrs.time_period[:start] if budget_attrs.time_period[:start]
-              send(:end, budget_attrs.time_period[:end]) if budget_attrs.time_period[:end]
+              start budget_attrs.time_period&.dig(:start) if budget_attrs.time_period&.dig(:start)
+              send(:end, budget_attrs.time_period&.dig(:end)) if budget_attrs.time_period&.dig(:end)
             end
           end
           
           # Cost filters for granular budget tracking
           if budget_attrs.cost_filters
             cost_filters do
-              if budget_attrs.cost_filters[:dimensions]
-                budget_attrs.cost_filters[:dimensions].each do |dimension_key, values|
+              if budget_attrs.cost_filters&.dig(:dimensions)
+                budget_attrs.cost_filters&.dig(:dimensions).each do |dimension_key, values|
                   dimension do
                     key dimension_key
                     values values
@@ -61,8 +61,8 @@ module Pangea
                 end
               end
               
-              if budget_attrs.cost_filters[:tags]
-                budget_attrs.cost_filters[:tags].each do |tag_key, tag_values|
+              if budget_attrs.cost_filters&.dig(:tags)
+                budget_attrs.cost_filters&.dig(:tags).each do |tag_key, tag_values|
                   tag do
                     key tag_key
                     values tag_values
@@ -70,8 +70,8 @@ module Pangea
                 end
               end
               
-              if budget_attrs.cost_filters[:cost_categories]
-                budget_attrs.cost_filters[:cost_categories].each do |category_key, category_values|
+              if budget_attrs.cost_filters&.dig(:cost_categories)
+                budget_attrs.cost_filters&.dig(:cost_categories).each do |category_key, category_values|
                   cost_category do
                     key category_key
                     values category_values
@@ -80,8 +80,8 @@ module Pangea
               end
               
               # NOT filters for exclusions
-              if budget_attrs.cost_filters[:not]
-                not_filter = budget_attrs.cost_filters[:not]
+              if budget_attrs.cost_filters&.dig(:not)
+                not_filter = budget_attrs.cost_filters&.dig(:not)
                 if not_filter[:dimensions] || not_filter[:tags] || not_filter[:cost_categories]
                   # Terraform syntax for NOT filters
                   # This would need to be structured appropriately for the provider
@@ -104,12 +104,12 @@ module Pangea
           # Auto-adjust configuration for dynamic budgets
           if budget_attrs.auto_adjust_data
             auto_adjust_data do
-              auto_adjust_type budget_attrs.auto_adjust_data[:auto_adjust_type]
+              auto_adjust_type budget_attrs.auto_adjust_data&.dig(:auto_adjust_type)
               
-              if budget_attrs.auto_adjust_data[:historical_options]
+              if budget_attrs.auto_adjust_data&.dig(:historical_options)
                 historical_options do
-                  budget_adjustment_period budget_attrs.auto_adjust_data[:historical_options][:budget_adjustment_period]
-                  lookback_available_periods budget_attrs.auto_adjust_data[:historical_options][:lookback_available_periods] if budget_attrs.auto_adjust_data[:historical_options][:lookback_available_periods]
+                  budget_adjustment_period budget_attrs.auto_adjust_data&.dig(:historical_options)[:budget_adjustment_period]
+                  lookback_available_periods budget_attrs.auto_adjust_data&.dig(:historical_options)[:lookback_available_periods] if budget_attrs.auto_adjust_data&.dig(:historical_options)[:lookback_available_periods]
                 end
               end
             end

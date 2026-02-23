@@ -28,19 +28,19 @@ module Pangea
         end
 
         # MQ Configuration resource attributes
-        class MqConfigurationAttributes < Dry::Struct
+        class MqConfigurationAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :name, Resources::Types::String.constrained(
+          attribute? :name, Resources::Types::String.constrained(
             format: /\A[a-zA-Z0-9_-]+\z/,
             size: 1..150
           )
 
-          attribute :engine_type, MqEngineType
+          attribute? :engine_type, MqEngineType.optional
           
-          attribute :engine_version, Resources::Types::String
+          attribute? :engine_version, Resources::Types::String.optional
           
-          attribute :data, Resources::Types::String
+          attribute? :data, Resources::Types::String.optional
 
           attribute? :authentication_strategy, MqAuthenticationStrategy.default('simple')
           
@@ -50,7 +50,7 @@ module Pangea
 
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate configuration data format
             if attrs[:data] && attrs[:engine_type]

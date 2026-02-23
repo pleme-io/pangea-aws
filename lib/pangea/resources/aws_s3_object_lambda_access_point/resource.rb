@@ -44,10 +44,10 @@ module Pangea
           # Configuration block
           configuration do
             # Supporting access point ARN
-            supporting_access_point ol_attrs.configuration[:supporting_access_point]
+            supporting_access_point ol_attrs.configuration&.dig(:supporting_access_point)
             
             # Transformation configurations
-            ol_attrs.configuration[:transformation_configuration].each do |transform|
+            ol_attrs.configuration&.dig(:transformation_configuration).each do |transform|
               transformation_configuration do
                 # Supported actions
                 actions transform[:actions]

@@ -52,26 +52,26 @@ module Pangea
           password?: Resources::Types::String.constrained(size: 12..250).optional,
           console_access?: Resources::Types::Bool.optional,
           groups?: Resources::Types::Array.of(Resources::Types::String).optional
-        )
+        ).lax
 
         # MQ encryption options
         MqEncryptionOptions = Resources::Types::Hash.schema(
           kms_key_id?: Resources::Types::String.optional,
           use_aws_owned_key?: Resources::Types::Bool.optional
-        )
+        ).lax
 
         # MQ maintenance window start time
         MqMaintenanceWindowStartTime = Resources::Types::Hash.schema(
           day_of_week: MqDayOfWeek,
           time_of_day: Resources::Types::String.constrained(format: /\A([01]?[0-9]|2[0-3]):[0-5][0-9]\z/),
           time_zone?: Resources::Types::String.optional
-        )
+        ).lax
 
         # MQ logs configuration
         MqLogs = Resources::Types::Hash.schema(
           general?: Resources::Types::Bool.optional,
           audit?: Resources::Types::Bool.optional
-        )
+        ).lax
 
         # MQ LDAP server metadata (for LDAP authentication)
         MqLdapServerMetadata = Resources::Types::Hash.schema(
@@ -86,24 +86,24 @@ module Pangea
           user_role_name?: Resources::Types::String.optional,
           user_search_matching?: Resources::Types::String.optional,
           user_search_subtree?: Resources::Types::Bool.optional
-        )
+        ).lax
 
         # MQ Broker resource attributes
-        class MqBrokerAttributes < Dry::Struct
+        class MqBrokerAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :broker_name, Resources::Types::String.constrained(
+          attribute? :broker_name, Resources::Types::String.constrained(
             format: /\A[a-zA-Z0-9_-]+\z/,
             size: 1..50
           )
 
-          attribute :engine_type, MqEngineType
+          attribute? :engine_type, MqEngineType.optional
           
-          attribute :engine_version, Resources::Types::String
+          attribute? :engine_version, Resources::Types::String.optional
           
-          attribute :host_instance_type, MqInstanceType
+          attribute? :host_instance_type, MqInstanceType.optional
           
-          attribute :users, Resources::Types::Array.of(MqUser).constrained(min_size: 1, max_size: 250)
+          attribute? :users, Resources::Types::Array.of(MqUser).constrained(min_size: 1, max_size: 250).optional
 
           attribute? :apply_immediately, Resources::Types::Bool.default(false)
           
@@ -114,7 +114,7 @@ module Pangea
           attribute? :configuration, Resources::Types::Hash.schema(
             id?: Resources::Types::String.optional,
             revision?: Resources::Types::Integer.constrained(gteq: 1).optional
-          ).optional
+          ).lax.optional
           
           attribute? :deployment_mode, MqDeploymentMode.default('SINGLE_INSTANCE')
           
@@ -138,7 +138,7 @@ module Pangea
 
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate deployment mode constraints
             if attrs[:deployment_mode] && attrs[:engine_type]

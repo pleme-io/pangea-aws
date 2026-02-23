@@ -46,12 +46,12 @@ module Pangea
 
       IotPolicyDocument = String.constructor { |value|
         begin
-          parsed = JSON.parse(value)
-          unless parsed.is_a?(Hash) && parsed['Version'] && parsed['Statement']
+          parsed = ::JSON.parse(value)
+          unless parsed.is_a?(::Hash) && parsed['Version'] && parsed['Statement']
             raise Dry::Types::ConstraintError, "IoT Policy document must have 'Version' and 'Statement' fields"
           end
           value
-        rescue JSON::ParserError
+        rescue ::JSON::ParserError
           raise Dry::Types::ConstraintError, "IoT Policy document must be valid JSON"
         end
       }
@@ -89,8 +89,8 @@ module Pangea
         'authorization-failure-count', 'connection-attempt-count', 'disconnection-count',
         'data-size-in-bytes', 'message-count', 'number-of-authorization-failures'])
 
-      IotStatisticalThreshold = Hash.schema(statistic?: String.optional)
-      IotMlDetectionConfig = Hash.schema(confidence_level: Resources::Types::String.constrained(included_in: ['LOW', 'MEDIUM', 'HIGH']))
+      IotStatisticalThreshold = Hash.schema(statistic?: String.optional).lax
+      IotMlDetectionConfig = Hash.schema(confidence_level: Resources::Types::String.constrained(included_in: ['LOW', 'MEDIUM', 'HIGH']).lax)
 
       IotMqttTopic = String.constructor { |value|
         raise Dry::Types::ConstraintError, "MQTT topic cannot exceed 256 characters" if value.length > 256
@@ -122,7 +122,7 @@ module Pangea
       IotThingTypeProperties = Hash.schema(
         description?: String.constrained(max_size: 2028).optional,
         searchable_attributes?: Array.of(String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)).constrained(max_size: 3).optional
-      )
+      ).lax
 
       IotCertificateArn = String.constrained(format: /\Aarn:aws:iot:[a-z0-9-]+:\d{12}:cert\/[a-f0-9]{64}\z/)
 
@@ -142,7 +142,7 @@ module Pangea
       IotIndexingConfiguration = Hash.schema(
         thing_indexing_mode?: Resources::Types::String.constrained(included_in: ['OFF', 'REGISTRY', 'REGISTRY_AND_SHADOW']).optional,
         thing_connectivity_indexing_mode?: Resources::Types::String.constrained(included_in: ['OFF', 'STATUS']).optional
-      )
+      ).lax
 
       IotLogsLevel = Resources::Types::String.constrained(included_in: ['DEBUG', 'INFO', 'ERROR', 'WARN', 'DISABLED'])
       IotLogsTargetType = Resources::Types::String.constrained(included_in: ['DEFAULT', 'THING_GROUP'])
@@ -150,11 +150,11 @@ module Pangea
 
       IotShadowDocument = String.constructor { |value|
         begin
-          parsed = JSON.parse(value)
-          raise Dry::Types::ConstraintError, "IoT Shadow document must be a JSON object" unless parsed.is_a?(Hash)
+          parsed = ::JSON.parse(value)
+          raise Dry::Types::ConstraintError, "IoT Shadow document must be a JSON object" unless parsed.is_a?(::Hash)
           raise Dry::Types::ConstraintError, "IoT Shadow document cannot exceed 8KB" if value.bytesize > 8192
           value
-        rescue JSON::ParserError
+        rescue ::JSON::ParserError
           raise Dry::Types::ConstraintError, "IoT Shadow document must be valid JSON"
         end
       }
@@ -163,9 +163,9 @@ module Pangea
       IotAlertTarget = Hash.schema(
         alert_target_arn: String.constrained(format: /\Aarn:aws:sns:/),
         role_arn: String.constrained(format: /\Aarn:aws:iam::\d{12}:role\//)
-      )
+      ).lax
 
-      IotBillingGroupProperties = Hash.schema(billing_group_description?: String.constrained(max_size: 2028).optional)
+      IotBillingGroupProperties = Hash.schema(billing_group_description?: String.constrained(max_size: 2028).lax.optional)
 
       IotDynamicGroupQueryString = String.constructor { |value|
         raise Dry::Types::ConstraintError, "IoT Dynamic group query string cannot exceed 500 characters" if value.length > 500

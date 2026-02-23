@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsDefaultSecurityGroup resources
       # Manages aws default security group resources.
-      class AwsDefaultSecurityGroupAttributes < Dry::Struct
+      class AwsDefaultSecurityGroupAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_default_security_group
         
         # Tags to apply to the resource

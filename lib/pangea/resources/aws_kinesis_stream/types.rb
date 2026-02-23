@@ -21,13 +21,13 @@ module Pangea
     module AWS
       module Types
         # Kinesis Stream resource attributes with validation
-        class KinesisStreamAttributes < Dry::Struct
+        class KinesisStreamAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :name, Pangea::Resources::Types::String
+          attribute? :name, Pangea::Resources::Types::String.optional
           attribute :shard_count, Pangea::Resources::Types::Integer.default(1).constrained(gteq: 1, lteq: 500000)
           attribute :retention_period, Pangea::Resources::Types::Integer.default(24).constrained(gteq: 24, lteq: 8760) # 24 hours to 1 year (365 days)
-          attribute :shard_level_metrics, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String.constrained(included_in: [
+          attribute? :shard_level_metrics, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String.constrained(included_in: [
             'IncomingRecords', 'IncomingBytes', 'OutgoingRecords', 'OutgoingBytes',
             'WriteProvisionedThroughputExceeded', 'ReadProvisionedThroughputExceeded',
             'IteratorAgeMilliseconds', 'ALL'
@@ -36,12 +36,12 @@ module Pangea
           attribute? :kms_key_id, Pangea::Resources::Types::String.optional
           attribute? :stream_mode_details, Pangea::Resources::Types::Hash.schema(
             stream_mode: Pangea::Resources::Types::String.default('PROVISIONED').constrained(included_in: ['PROVISIONED', 'ON_DEMAND'])
-          ).optional
+          ).lax.optional
           attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate encryption configuration
             if attrs[:encryption_type] == 'KMS' && (!attrs[:kms_key_id] || attrs[:kms_key_id].empty?)
@@ -97,7 +97,7 @@ module Pangea
           end
           
           def is_on_demand_mode?
-            stream_mode_details && stream_mode_details[:stream_mode] == 'ON_DEMAND'
+            stream_mode_details && stream_mode_details&.dig(:stream_mode) == 'ON_DEMAND'
           end
           
           def is_provisioned_mode?

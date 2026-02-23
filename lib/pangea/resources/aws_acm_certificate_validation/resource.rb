@@ -32,7 +32,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_acm_certificate_validation(name, attributes = {})
         # Validate attributes using dry-struct
-        validation_attrs = Types::Types::AcmCertificateValidationAttributes.new(attributes)
+        validation_attrs = Types::AcmCertificateValidationAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_acm_certificate_validation, name) do
@@ -46,11 +46,11 @@ module Pangea
           # Configure timeouts if specified
           if validation_attrs.timeouts
             timeouts do
-              if validation_attrs.timeouts[:create]
-                create validation_attrs.timeouts[:create]
+              if validation_attrs.timeouts&.dig(:create)
+                create validation_attrs.timeouts&.dig(:create)
               end
-              if validation_attrs.timeouts[:update]
-                update validation_attrs.timeouts[:update]
+              if validation_attrs.timeouts&.dig(:update)
+                update validation_attrs.timeouts&.dig(:update)
               end
             end
           end

@@ -7,13 +7,14 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Cognito Identity Provider resources
-        class CognitoIdentityProviderAttributes < Dry::Struct
-          attribute :provider_name, Resources::Types::String
-          attribute :provider_type, Resources::Types::String.constrained(included_in: ['SAML', 'OIDC', 'Facebook', 'Google', 'LoginWithAmazon', 'Apple', 'Twitter'])
-          attribute :user_pool_id, Resources::Types::String
-          attribute :provider_details, Resources::Types::Hash.optional
-          attribute :attribute_mapping, Resources::Types::Hash.optional
-          attribute :idp_identifiers, Resources::Types::Array.of(Resources::Types::String).optional
+        class CognitoIdentityProviderAttributes < Pangea::Resources::BaseAttributes
+          extend Pangea::Resources::AWS::Types::IdentityProviderTemplates
+          attribute? :provider_name, Resources::Types::String.optional
+          attribute? :provider_type, Resources::Types::String.constrained(included_in: ['SAML', 'OIDC', 'Facebook', 'Google', 'LoginWithAmazon', 'Apple', 'Twitter']).optional
+          attribute? :user_pool_id, Resources::Types::String.optional
+          attribute :provider_details, Resources::Types::Hash.default({}.freeze)
+          attribute :attribute_mapping, Resources::Types::Hash.default({}.freeze)
+          attribute :idp_identifiers, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
           def self.new(attributes = {})
             attrs = super(attributes)

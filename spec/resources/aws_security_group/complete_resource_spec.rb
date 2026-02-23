@@ -25,9 +25,9 @@ RSpec.describe "aws_security_group resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -54,7 +54,7 @@ RSpec.describe "aws_security_group resource function" do
   
   describe "SecurityGroup attributes validation" do
     it "accepts minimal security group with no attributes" do
-      attrs = Pangea::Resources::AWS::SecurityGroupAttributes.new({})
+      attrs = Pangea::Resources::AWS::Types::SecurityGroupAttributes.new({})
       
       expect(attrs.name_prefix).to be_nil
       expect(attrs.vpc_id).to be_nil
@@ -65,7 +65,7 @@ RSpec.describe "aws_security_group resource function" do
     end
     
     it "accepts security group with basic attributes" do
-      attrs = Pangea::Resources::AWS::SecurityGroupAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::SecurityGroupAttributes.new({
         name_prefix: "web-sg-",
         vpc_id: vpc_id,
         description: "Web server security group"
@@ -92,7 +92,7 @@ RSpec.describe "aws_security_group resource function" do
         }
       ]
       
-      attrs = Pangea::Resources::AWS::SecurityGroupAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::SecurityGroupAttributes.new({
         vpc_id: vpc_id,
         ingress_rules: ingress_rules
       })
@@ -112,7 +112,7 @@ RSpec.describe "aws_security_group resource function" do
         }
       ]
       
-      attrs = Pangea::Resources::AWS::SecurityGroupAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::SecurityGroupAttributes.new({
         vpc_id: vpc_id,
         egress_rules: egress_rules
       })
@@ -123,7 +123,7 @@ RSpec.describe "aws_security_group resource function" do
     end
     
     it "accepts security group with tags" do
-      attrs = Pangea::Resources::AWS::SecurityGroupAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::SecurityGroupAttributes.new({
         vpc_id: vpc_id,
         tags: { Name: "test-security-group", Environment: "test" }
       })
@@ -137,7 +137,7 @@ RSpec.describe "aws_security_group resource function" do
     describe "ingress rule validation" do
       it "validates required fields in ingress rules" do
         expect {
-          Pangea::Resources::AWS::SecurityGroupAttributes.new({
+          Pangea::Resources::AWS::Types::SecurityGroupAttributes.new({
             vpc_id: vpc_id,
             ingress_rules: [
               {
@@ -152,7 +152,7 @@ RSpec.describe "aws_security_group resource function" do
       
       it "validates port range in ingress rules" do
         expect {
-          Pangea::Resources::AWS::SecurityGroupAttributes.new({
+          Pangea::Resources::AWS::Types::SecurityGroupAttributes.new({
             vpc_id: vpc_id,
             ingress_rules: [
               {
@@ -167,7 +167,7 @@ RSpec.describe "aws_security_group resource function" do
       
       it "validates protocol in ingress rules" do
         expect {
-          Pangea::Resources::AWS::SecurityGroupAttributes.new({
+          Pangea::Resources::AWS::Types::SecurityGroupAttributes.new({
             vpc_id: vpc_id,
             ingress_rules: [
               {
@@ -182,7 +182,7 @@ RSpec.describe "aws_security_group resource function" do
       
       it "validates CIDR blocks in ingress rules" do
         expect {
-          Pangea::Resources::AWS::SecurityGroupAttributes.new({
+          Pangea::Resources::AWS::Types::SecurityGroupAttributes.new({
             vpc_id: vpc_id,
             ingress_rules: [
               {
@@ -201,7 +201,7 @@ RSpec.describe "aws_security_group resource function" do
         
         valid_protocols.each do |protocol|
           expect {
-            Pangea::Resources::AWS::SecurityGroupAttributes.new({
+            Pangea::Resources::AWS::Types::SecurityGroupAttributes.new({
               vpc_id: vpc_id,
               ingress_rules: [
                 {
@@ -220,7 +220,7 @@ RSpec.describe "aws_security_group resource function" do
     describe "egress rule validation" do
       it "validates required fields in egress rules" do
         expect {
-          Pangea::Resources::AWS::SecurityGroupAttributes.new({
+          Pangea::Resources::AWS::Types::SecurityGroupAttributes.new({
             vpc_id: vpc_id,
             egress_rules: [
               {
@@ -234,7 +234,7 @@ RSpec.describe "aws_security_group resource function" do
       
       it "validates port range in egress rules" do
         expect {
-          Pangea::Resources::AWS::SecurityGroupAttributes.new({
+          Pangea::Resources::AWS::Types::SecurityGroupAttributes.new({
             vpc_id: vpc_id,
             egress_rules: [
               {

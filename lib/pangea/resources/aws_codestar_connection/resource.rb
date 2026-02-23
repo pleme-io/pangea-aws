@@ -74,7 +74,7 @@ module Pangea
       #   })
       def aws_codestar_connection(name, attributes = {})
         # Validate attributes using dry-struct
-        conn_attrs = Types::Types::CodeStarConnectionAttributes.new(attributes)
+        conn_attrs = Types::CodeStarConnectionAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_codestar_connections_connection, name) do
@@ -88,7 +88,7 @@ module Pangea
           host_arn conn_attrs.host_arn if conn_attrs.host_arn
           
           # Apply tags if present
-          if conn_attrs.tags.any?
+          if conn_attrs.tags&.any?
             tags do
               conn_attrs.tags.each do |key, value|
                 public_send(key, value)

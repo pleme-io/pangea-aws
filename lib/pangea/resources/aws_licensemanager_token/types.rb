@@ -21,8 +21,8 @@ module Pangea
       module Types
       # Type-safe attributes for AwsLicensemanagerToken resources
       # Provides a License Manager token resource.
-      class LicensemanagerTokenAttributes < Dry::Struct
-        attribute :license_arn, Resources::Types::String
+      class LicensemanagerTokenAttributes < Pangea::Resources::BaseAttributes
+        attribute? :license_arn, Resources::Types::String.optional
         attribute :role_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         attribute :token_properties, Resources::Types::Hash.default({}.freeze).optional
         

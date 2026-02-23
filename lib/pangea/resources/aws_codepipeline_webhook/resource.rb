@@ -40,10 +40,10 @@ module Pangea
           authentication webhook_attrs.authentication
           
           # Authentication configuration
-          if webhook_attrs.authentication_configuration.any?
+          if webhook_attrs.authentication_configuration&.any?
             authentication_configuration do
-              secret_token webhook_attrs.authentication_configuration[:secret_token] if webhook_attrs.authentication_configuration[:secret_token]
-              allowed_ip_range webhook_attrs.authentication_configuration[:allowed_ip_range] if webhook_attrs.authentication_configuration[:allowed_ip_range]
+              secret_token webhook_attrs.authentication_configuration&.dig(:secret_token) if webhook_attrs.authentication_configuration&.dig(:secret_token)
+              allowed_ip_range webhook_attrs.authentication_configuration&.dig(:allowed_ip_range) if webhook_attrs.authentication_configuration&.dig(:allowed_ip_range)
             end
           end
           
@@ -56,7 +56,7 @@ module Pangea
           end
           
           # Apply tags
-          if webhook_attrs.tags.any?
+          if webhook_attrs.tags&.any?
             tags do
               webhook_attrs.tags.each do |key, value|
                 public_send(key, value)

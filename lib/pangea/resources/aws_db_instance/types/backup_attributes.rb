@@ -20,17 +20,17 @@ module Pangea
     module AWS
       module Types
         # Backup configuration attributes for AWS RDS Database Instance
-        class BackupAttributes < Dry::Struct
+        class BackupAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Backup retention period in days
           attribute :backup_retention_period, Resources::Types::Integer.default(7).constrained(gteq: 0, lteq: 35)
 
           # Backup window (Format: "hh24:mi-hh24:mi")
-          attribute :backup_window, Resources::Types::String.optional
+          attribute? :backup_window, Resources::Types::String.optional
 
           # Maintenance window (Format: "ddd:hh24:mi-ddd:hh24:mi")
-          attribute :maintenance_window, Resources::Types::String.optional
+          attribute? :maintenance_window, Resources::Types::String.optional
         end
       end
     end

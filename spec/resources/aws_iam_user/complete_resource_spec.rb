@@ -25,9 +25,9 @@ RSpec.describe "aws_iam_user resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -53,7 +53,7 @@ RSpec.describe "aws_iam_user resource function" do
   
   describe "IamUserAttributes validation" do
     it "accepts minimal configuration with required name" do
-      attrs = Pangea::Resources::AWS::IamUserAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamUserAttributes.new({
         name: "test-user"
       })
       
@@ -63,7 +63,7 @@ RSpec.describe "aws_iam_user resource function" do
     end
     
     it "accepts custom path and permissions boundary" do
-      attrs = Pangea::Resources::AWS::IamUserAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamUserAttributes.new({
         name: "test-user",
         path: "/developers/",
         permissions_boundary: "arn:aws:iam::123456789012:policy/DeveloperBoundary",
@@ -77,7 +77,7 @@ RSpec.describe "aws_iam_user resource function" do
     
     it "validates user name format" do
       expect {
-        Pangea::Resources::AWS::IamUserAttributes.new({
+        Pangea::Resources::AWS::Types::IamUserAttributes.new({
           name: "invalid user name with spaces"
         })
       }.to raise_error(Dry::Struct::Error, /must contain only alphanumeric characters/)
@@ -85,7 +85,7 @@ RSpec.describe "aws_iam_user resource function" do
     
     it "validates user name length" do
       expect {
-        Pangea::Resources::AWS::IamUserAttributes.new({
+        Pangea::Resources::AWS::Types::IamUserAttributes.new({
           name: "a" * 65
         })
       }.to raise_error(Dry::Struct::Error, /cannot exceed 64 characters/)
@@ -93,7 +93,7 @@ RSpec.describe "aws_iam_user resource function" do
     
     it "validates path format" do
       expect {
-        Pangea::Resources::AWS::IamUserAttributes.new({
+        Pangea::Resources::AWS::Types::IamUserAttributes.new({
           name: "test-user",
           path: "missing-leading-slash"
         })
@@ -102,7 +102,7 @@ RSpec.describe "aws_iam_user resource function" do
 
     it "validates path length" do
       expect {
-        Pangea::Resources::AWS::IamUserAttributes.new({
+        Pangea::Resources::AWS::Types::IamUserAttributes.new({
           name: "test-user",
           path: "/" + "a" * 511 + "/"
         })
@@ -111,7 +111,7 @@ RSpec.describe "aws_iam_user resource function" do
     
     it "validates permissions boundary ARN format when provided" do
       expect {
-        Pangea::Resources::AWS::IamUserAttributes.new({
+        Pangea::Resources::AWS::Types::IamUserAttributes.new({
           name: "test-user",
           permissions_boundary: "invalid-arn"
         })
@@ -122,7 +122,7 @@ RSpec.describe "aws_iam_user resource function" do
       admin_names = ["admin-user", "super-user", "root-user"]
       
       admin_names.each do |name|
-        attrs = Pangea::Resources::AWS::IamUserAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamUserAttributes.new({ name: name })
         expect(attrs.administrative_user?).to eq(true)
         expect(attrs.user_category).to eq(:administrative)
       end
@@ -132,7 +132,7 @@ RSpec.describe "aws_iam_user resource function" do
       service_names = ["api-service", "app-svc", "system-user"]
       
       service_names.each do |name|
-        attrs = Pangea::Resources::AWS::IamUserAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamUserAttributes.new({ name: name })
         expect(attrs.service_user?).to eq(true)
         expect(attrs.user_category).to eq(:service_account)
       end
@@ -142,14 +142,14 @@ RSpec.describe "aws_iam_user resource function" do
       human_names = ["john.doe", "jane.smith", "alice.wilson"]
       
       human_names.each do |name|
-        attrs = Pangea::Resources::AWS::IamUserAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamUserAttributes.new({ name: name })
         expect(attrs.human_user?).to eq(true)
         expect(attrs.user_category).to eq(:human_user)
       end
     end
     
     it "handles organizational paths" do
-      attrs = Pangea::Resources::AWS::IamUserAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamUserAttributes.new({
         name: "test-user",
         path: "/developers/frontend/"
       })
@@ -159,7 +159,7 @@ RSpec.describe "aws_iam_user resource function" do
     end
     
     it "generates user ARN" do
-      attrs = Pangea::Resources::AWS::IamUserAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamUserAttributes.new({
         name: "test-user",
         path: "/developers/"
       })
@@ -169,7 +169,7 @@ RSpec.describe "aws_iam_user resource function" do
     end
     
     it "extracts permissions boundary policy name" do
-      attrs = Pangea::Resources::AWS::IamUserAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamUserAttributes.new({
         name: "test-user",
         permissions_boundary: "arn:aws:iam::123456789012:policy/DeveloperBoundary"
       })
@@ -180,27 +180,27 @@ RSpec.describe "aws_iam_user resource function" do
     
     it "assesses security risk levels" do
       # High risk - admin without boundary
-      attrs1 = Pangea::Resources::AWS::IamUserAttributes.new({
+      attrs1 = Pangea::Resources::AWS::Types::IamUserAttributes.new({
         name: "admin-user"
       })
       expect(attrs1.security_risk_level).to eq(:high)
       
       # Low risk - user with boundary
-      attrs2 = Pangea::Resources::AWS::IamUserAttributes.new({
+      attrs2 = Pangea::Resources::AWS::Types::IamUserAttributes.new({
         name: "dev-user",
         permissions_boundary: "arn:aws:iam::123456789012:policy/DevBoundary"
       })
       expect(attrs2.security_risk_level).to eq(:low)
       
       # Medium risk - service without boundary
-      attrs3 = Pangea::Resources::AWS::IamUserAttributes.new({
+      attrs3 = Pangea::Resources::AWS::Types::IamUserAttributes.new({
         name: "api-service"
       })
       expect(attrs3.security_risk_level).to eq(:medium)
     end
     
     it "generates secure random passwords" do
-      password = Pangea::Resources::AWS::IamUserAttributes.generate_secure_password
+      password = Pangea::Resources::AWS::Types::IamUserAttributes.generate_secure_password
       
       expect(password.length).to eq(16)
       expect(password).to match(/[A-Z]/)  # Has uppercase
@@ -209,7 +209,7 @@ RSpec.describe "aws_iam_user resource function" do
       expect(password).to match(/[!@#$%^&*]/)  # Has symbols
       
       # Test custom length
-      long_password = Pangea::Resources::AWS::IamUserAttributes.generate_secure_password(32)
+      long_password = Pangea::Resources::AWS::Types::IamUserAttributes.generate_secure_password(32)
       expect(long_password.length).to eq(32)
     end
   end
@@ -291,7 +291,7 @@ RSpec.describe "aws_iam_user resource function" do
   
   describe "UserPatterns module usage" do
     it "creates developer user pattern" do
-      pattern = Pangea::Resources::AWS::UserPatterns.developer_user("alice.smith", "frontend")
+      pattern = Pangea::Resources::AWS::Types::UserPatterns.developer_user("alice.smith", "frontend")
       ref = test_instance.aws_iam_user(:dev_alice, pattern)
       
       attrs = ref.resource_attributes
@@ -303,7 +303,7 @@ RSpec.describe "aws_iam_user resource function" do
     end
     
     it "creates service account pattern" do
-      pattern = Pangea::Resources::AWS::UserPatterns.service_account_user("user-api", "production")
+      pattern = Pangea::Resources::AWS::Types::UserPatterns.service_account_user("user-api", "production")
       ref = test_instance.aws_iam_user(:api_service, pattern)
       
       attrs = ref.resource_attributes
@@ -315,7 +315,7 @@ RSpec.describe "aws_iam_user resource function" do
     end
     
     it "creates CI/CD user pattern" do
-      pattern = Pangea::Resources::AWS::UserPatterns.cicd_user("web-app-deploy", "github.com/company/web-app")
+      pattern = Pangea::Resources::AWS::Types::UserPatterns.cicd_user("web-app-deploy", "github.com/company/web-app")
       ref = test_instance.aws_iam_user(:cicd_user, pattern)
       
       attrs = ref.resource_attributes
@@ -327,7 +327,7 @@ RSpec.describe "aws_iam_user resource function" do
     end
     
     it "creates admin user pattern" do
-      pattern = Pangea::Resources::AWS::UserPatterns.admin_user("bob.wilson", "infrastructure")
+      pattern = Pangea::Resources::AWS::Types::UserPatterns.admin_user("bob.wilson", "infrastructure")
       ref = test_instance.aws_iam_user(:admin_bob, pattern)
       
       attrs = ref.resource_attributes
@@ -338,7 +338,7 @@ RSpec.describe "aws_iam_user resource function" do
     end
     
     it "creates readonly user pattern" do
-      pattern = Pangea::Resources::AWS::UserPatterns.readonly_user("audit", "compliance")
+      pattern = Pangea::Resources::AWS::Types::UserPatterns.readonly_user("audit", "compliance")
       ref = test_instance.aws_iam_user(:audit_user, pattern)
       
       attrs = ref.resource_attributes
@@ -349,7 +349,7 @@ RSpec.describe "aws_iam_user resource function" do
     end
     
     it "creates emergency user pattern" do
-      pattern = Pangea::Resources::AWS::UserPatterns.emergency_user("breakglass")
+      pattern = Pangea::Resources::AWS::Types::UserPatterns.emergency_user("breakglass")
       ref = test_instance.aws_iam_user(:emergency, pattern)
       
       attrs = ref.resource_attributes
@@ -361,7 +361,7 @@ RSpec.describe "aws_iam_user resource function" do
     end
     
     it "creates cross-account user pattern" do
-      pattern = Pangea::Resources::AWS::UserPatterns.cross_account_user("shared-access", "987654321098")
+      pattern = Pangea::Resources::AWS::Types::UserPatterns.cross_account_user("shared-access", "987654321098")
       ref = test_instance.aws_iam_user(:cross_account, pattern)
       
       attrs = ref.resource_attributes
@@ -374,27 +374,27 @@ RSpec.describe "aws_iam_user resource function" do
   
   describe "PermissionsBoundaries module usage" do
     it "provides boundary constants" do
-      expect(Pangea::Resources::AWS::PermissionsBoundaries::DEVELOPER_BOUNDARY).to include("DeveloperPermissionsBoundary")
-      expect(Pangea::Resources::AWS::PermissionsBoundaries::SERVICE_ACCOUNT_BOUNDARY).to include("ServiceAccountPermissionsBoundary")
-      expect(Pangea::Resources::AWS::PermissionsBoundaries::ADMIN_BOUNDARY).to include("AdminPermissionsBoundary")
+      expect(Pangea::Resources::AWS::Types::PermissionsBoundaries::DEVELOPER_BOUNDARY).to include("DeveloperPermissionsBoundary")
+      expect(Pangea::Resources::AWS::Types::PermissionsBoundaries::SERVICE_ACCOUNT_BOUNDARY).to include("ServiceAccountPermissionsBoundary")
+      expect(Pangea::Resources::AWS::Types::PermissionsBoundaries::ADMIN_BOUNDARY).to include("AdminPermissionsBoundary")
     end
     
     it "provides boundary lookup by user type" do
-      expect(Pangea::Resources::AWS::PermissionsBoundaries.boundary_for_user_type(:developer))
-        .to eq(Pangea::Resources::AWS::PermissionsBoundaries::DEVELOPER_BOUNDARY)
+      expect(Pangea::Resources::AWS::Types::PermissionsBoundaries.boundary_for_user_type(:developer))
+        .to eq(Pangea::Resources::AWS::Types::PermissionsBoundaries::DEVELOPER_BOUNDARY)
       
-      expect(Pangea::Resources::AWS::PermissionsBoundaries.boundary_for_user_type(:administrator))
-        .to eq(Pangea::Resources::AWS::PermissionsBoundaries::ADMIN_BOUNDARY)
+      expect(Pangea::Resources::AWS::Types::PermissionsBoundaries.boundary_for_user_type(:administrator))
+        .to eq(Pangea::Resources::AWS::Types::PermissionsBoundaries::ADMIN_BOUNDARY)
       
-      expect(Pangea::Resources::AWS::PermissionsBoundaries.boundary_for_user_type(:unknown))
+      expect(Pangea::Resources::AWS::Types::PermissionsBoundaries.boundary_for_user_type(:unknown))
         .to be_nil
     end
     
     it "lists all boundaries" do
-      all_boundaries = Pangea::Resources::AWS::PermissionsBoundaries.all_boundaries
+      all_boundaries = Pangea::Resources::AWS::Types::PermissionsBoundaries.all_boundaries
       
-      expect(all_boundaries).to include(Pangea::Resources::AWS::PermissionsBoundaries::DEVELOPER_BOUNDARY)
-      expect(all_boundaries).to include(Pangea::Resources::AWS::PermissionsBoundaries::CICD_BOUNDARY)
+      expect(all_boundaries).to include(Pangea::Resources::AWS::Types::PermissionsBoundaries::DEVELOPER_BOUNDARY)
+      expect(all_boundaries).to include(Pangea::Resources::AWS::Types::PermissionsBoundaries::CICD_BOUNDARY)
       expect(all_boundaries.all? { |b| b.match?(/\Aarn:aws:iam::[0-9]{12}:policy\//) }).to eq(true)
     end
   end
@@ -443,7 +443,7 @@ RSpec.describe "aws_iam_user resource function" do
       valid_names = ["test_user", "test-user", "test.user", "test@user", "test+user", "test,user", "test=user"]
       
       valid_names.each do |name|
-        attrs = Pangea::Resources::AWS::IamUserAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamUserAttributes.new({ name: name })
         expect(attrs.name).to eq(name)
       end
     end
@@ -457,7 +457,7 @@ RSpec.describe "aws_iam_user resource function" do
       }
       
       complex_cases.each do |name, expected_category|
-        attrs = Pangea::Resources::AWS::IamUserAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamUserAttributes.new({ name: name })
         expect(attrs.user_category).to eq(expected_category)
       end
     end
@@ -472,7 +472,7 @@ RSpec.describe "aws_iam_user resource function" do
     it "warns about admin users without permissions boundary" do
       expect($stdout).to receive(:puts).with(/should have a permissions boundary/)
       
-      Pangea::Resources::AWS::IamUserAttributes.new({
+      Pangea::Resources::AWS::Types::IamUserAttributes.new({
         name: "platform-admin"
       })
     end
@@ -480,7 +480,7 @@ RSpec.describe "aws_iam_user resource function" do
     it "warns about unsafe user names" do
       expect($stdout).to receive(:puts).with(/matches common attack targets/)
       
-      Pangea::Resources::AWS::IamUserAttributes.new({
+      Pangea::Resources::AWS::Types::IamUserAttributes.new({
         name: "root"
       })
     end
@@ -488,7 +488,7 @@ RSpec.describe "aws_iam_user resource function" do
     it "warns about users in root path" do
       expect($stdout).to receive(:puts).with(/consider organizational path structure/)
       
-      Pangea::Resources::AWS::IamUserAttributes.new({
+      Pangea::Resources::AWS::Types::IamUserAttributes.new({
         name: "generic-user"
       })
     end
@@ -496,7 +496,7 @@ RSpec.describe "aws_iam_user resource function" do
     it "does not warn for properly configured users" do
       expect($stdout).not_to receive(:puts)
       
-      Pangea::Resources::AWS::IamUserAttributes.new({
+      Pangea::Resources::AWS::Types::IamUserAttributes.new({
         name: "alice.smith",
         path: "/developers/",
         permissions_boundary: "arn:aws:iam::123456789012:policy/DeveloperBoundary"

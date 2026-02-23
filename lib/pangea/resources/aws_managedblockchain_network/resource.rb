@@ -47,16 +47,16 @@ module Pangea
           if network_attrs.framework_configuration
             framework_configuration do
               # Hyperledger Fabric configuration
-              if network_attrs.framework_configuration[:network_fabric_configuration]
+              if network_attrs.framework_configuration&.dig(:network_fabric_configuration)
                 network_fabric_configuration do
-                  edition network_attrs.framework_configuration[:network_fabric_configuration][:edition]
+                  edition network_attrs.framework_configuration&.dig(:network_fabric_configuration)[:edition]
                 end
               end
               
               # Ethereum configuration
-              if network_attrs.framework_configuration[:network_ethereum_configuration]
+              if network_attrs.framework_configuration&.dig(:network_ethereum_configuration)
                 network_ethereum_configuration do
-                  chain_id network_attrs.framework_configuration[:network_ethereum_configuration][:chain_id]
+                  chain_id network_attrs.framework_configuration&.dig(:network_ethereum_configuration)[:chain_id]
                 end
               end
             end
@@ -65,11 +65,11 @@ module Pangea
           # Set voting policy for Hyperledger Fabric
           if network_attrs.voting_policy
             voting_policy do
-              if network_attrs.voting_policy[:approval_threshold_policy]
+              if network_attrs.voting_policy&.dig(:approval_threshold_policy)
                 approval_threshold_policy do
-                  threshold_percentage network_attrs.voting_policy[:approval_threshold_policy][:threshold_percentage] if network_attrs.voting_policy[:approval_threshold_policy][:threshold_percentage]
-                  proposal_duration_in_hours network_attrs.voting_policy[:approval_threshold_policy][:proposal_duration_in_hours] if network_attrs.voting_policy[:approval_threshold_policy][:proposal_duration_in_hours]
-                  threshold_comparator network_attrs.voting_policy[:approval_threshold_policy][:threshold_comparator] if network_attrs.voting_policy[:approval_threshold_policy][:threshold_comparator]
+                  threshold_percentage network_attrs.voting_policy&.dig(:approval_threshold_policy)[:threshold_percentage] if network_attrs.voting_policy&.dig(:approval_threshold_policy)[:threshold_percentage]
+                  proposal_duration_in_hours network_attrs.voting_policy&.dig(:approval_threshold_policy)[:proposal_duration_in_hours] if network_attrs.voting_policy&.dig(:approval_threshold_policy)[:proposal_duration_in_hours]
+                  threshold_comparator network_attrs.voting_policy&.dig(:approval_threshold_policy)[:threshold_comparator] if network_attrs.voting_policy&.dig(:approval_threshold_policy)[:threshold_comparator]
                 end
               end
             end
@@ -77,29 +77,29 @@ module Pangea
           
           # Set member configuration
           member_configuration do
-            name network_attrs.member_configuration[:name]
-            description network_attrs.member_configuration[:description] if network_attrs.member_configuration[:description]
+            name network_attrs.member_configuration&.dig(:name)
+            description network_attrs.member_configuration&.dig(:description) if network_attrs.member_configuration&.dig(:description)
             
             # Framework-specific member configuration
             framework_configuration do
-              if network_attrs.member_configuration[:framework_configuration][:member_fabric_configuration]
+              if network_attrs.member_configuration&.dig(:framework_configuration)[:member_fabric_configuration]
                 member_fabric_configuration do
-                  admin_username network_attrs.member_configuration[:framework_configuration][:member_fabric_configuration][:admin_username]
-                  admin_password network_attrs.member_configuration[:framework_configuration][:member_fabric_configuration][:admin_password]
+                  admin_username network_attrs.member_configuration&.dig(:framework_configuration)[:member_fabric_configuration][:admin_username]
+                  admin_password network_attrs.member_configuration&.dig(:framework_configuration)[:member_fabric_configuration][:admin_password]
                 end
               end
             end
             
             # Log publishing configuration
-            if network_attrs.member_configuration[:log_publishing_configuration]
+            if network_attrs.member_configuration&.dig(:log_publishing_configuration)
               log_publishing_configuration do
-                if network_attrs.member_configuration[:log_publishing_configuration][:fabric]
+                if network_attrs.member_configuration&.dig(:log_publishing_configuration)[:fabric]
                   fabric do
-                    if network_attrs.member_configuration[:log_publishing_configuration][:fabric][:ca_logs]
+                    if network_attrs.member_configuration&.dig(:log_publishing_configuration)[:fabric][:ca_logs]
                       ca_logs do
-                        if network_attrs.member_configuration[:log_publishing_configuration][:fabric][:ca_logs][:cloudwatch]
+                        if network_attrs.member_configuration&.dig(:log_publishing_configuration)[:fabric][:ca_logs][:cloudwatch]
                           cloudwatch do
-                            enabled network_attrs.member_configuration[:log_publishing_configuration][:fabric][:ca_logs][:cloudwatch][:enabled]
+                            enabled network_attrs.member_configuration&.dig(:log_publishing_configuration)[:fabric][:ca_logs][:cloudwatch][:enabled]
                           end
                         end
                       end
@@ -110,8 +110,8 @@ module Pangea
             end
             
             # Member tags
-            if network_attrs.member_configuration[:tags] && !network_attrs.member_configuration[:tags].empty?
-              tags network_attrs.member_configuration[:tags]
+            if network_attrs.member_configuration&.dig(:tags) && !network_attrs.member_configuration&.dig(:tags).empty?
+              tags network_attrs.member_configuration&.dig(:tags)
             end
           end
           

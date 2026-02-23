@@ -30,14 +30,14 @@ module Pangea
         end
 
         # S3 Access Point Policy attributes with comprehensive validation
-        class S3AccessPointPolicyAttributes < Dry::Struct
+        class S3AccessPointPolicyAttributes < Pangea::Resources::BaseAttributes
           # Required attributes
-          attribute :access_point_arn, Types::AccessPointArn
-          attribute :policy, Resources::Types::String
+          attribute? :access_point_arn, Types::AccessPointArn.optional
+          attribute? :policy, Resources::Types::String.optional
           
           # Computed properties
           def policy_document
-            JSON.parse(policy) rescue nil
+            ::JSON.parse(policy) rescue nil
           end
           
           def has_valid_json?

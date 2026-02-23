@@ -21,36 +21,36 @@ module Pangea
     module AWS
       module Types
         # SageMaker Pipeline attributes with MLOps workflow validation
-        class SageMakerPipelineAttributes < Dry::Struct
+        class SageMakerPipelineAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :pipeline_name, Resources::Types::String.constrained(
+          attribute? :pipeline_name, Resources::Types::String.constrained(
             min_size: 1,
             max_size: 256,
             format: /\A[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]\z/
           )
-          attribute :pipeline_definition, Resources::Types::String
-          attribute :role_arn, Resources::Types::String.constrained(
+          attribute? :pipeline_definition, Resources::Types::String.optional
+          attribute? :role_arn, Resources::Types::String.constrained(
             format: /\Aarn:aws:iam::\d{12}:role\/[a-zA-Z0-9_+=,.@-]+\z/
           )
           
           # Optional attributes
-          attribute :pipeline_description, Resources::Types::String.optional
-          attribute :pipeline_display_name, Resources::Types::String.optional
-          attribute :parallelism_configuration, Resources::Types::Hash.schema(
+          attribute? :pipeline_description, Resources::Types::String.optional
+          attribute? :pipeline_display_name, Resources::Types::String.optional
+          attribute? :parallelism_configuration, Resources::Types::Hash.schema(
             max_parallel_execution_steps: Resources::Types::Integer.constrained(gteq: 1, lteq: 256)
-          ).optional
-          attribute :tags, Resources::Types::AwsTags
+          ).lax.optional
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate pipeline definition is valid JSON
             if attrs[:pipeline_definition]
               begin
-                JSON.parse(attrs[:pipeline_definition])
-              rescue JSON::ParserError
+                ::JSON.parse(attrs[:pipeline_definition])
+              rescue ::JSON::ParserError
                 raise Dry::Struct::Error, "pipeline_definition must be valid JSON"
               end
             end

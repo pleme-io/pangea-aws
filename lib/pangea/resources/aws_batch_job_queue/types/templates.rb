@@ -8,6 +8,7 @@ module Pangea
       module Types
         # Queue configuration templates for AWS Batch Job Queue
         module BatchJobQueueTemplates
+          module_function
           PRIORITY_LEVELS = {
             critical: 1000,
             high: 900,
@@ -18,14 +19,14 @@ module Pangea
             background: 1
           }.freeze
 
-          def self.priority_levels = PRIORITY_LEVELS
-          def self.critical_priority = PRIORITY_LEVELS[:critical]
-          def self.high_priority = PRIORITY_LEVELS[:high]
-          def self.medium_priority = PRIORITY_LEVELS[:medium]
-          def self.low_priority = PRIORITY_LEVELS[:low]
-          def self.background_priority = PRIORITY_LEVELS[:background]
+          def priority_levels = PRIORITY_LEVELS
+          def critical_priority = PRIORITY_LEVELS[:critical]
+          def high_priority = PRIORITY_LEVELS[:high]
+          def medium_priority = PRIORITY_LEVELS[:medium]
+          def low_priority = PRIORITY_LEVELS[:low]
+          def background_priority = PRIORITY_LEVELS[:background]
 
-          def self.high_priority_queue(name, compute_environments, options = {})
+          def high_priority_queue(name, compute_environments, options = {})
             {
               name: name,
               state: options[:state] || 'ENABLED',
@@ -35,7 +36,7 @@ module Pangea
             }
           end
 
-          def self.medium_priority_queue(name, compute_environments, options = {})
+          def medium_priority_queue(name, compute_environments, options = {})
             {
               name: name,
               state: options[:state] || 'ENABLED',
@@ -45,7 +46,7 @@ module Pangea
             }
           end
 
-          def self.low_priority_queue(name, compute_environments, options = {})
+          def low_priority_queue(name, compute_environments, options = {})
             {
               name: name,
               state: options[:state] || 'ENABLED',
@@ -55,7 +56,7 @@ module Pangea
             }
           end
 
-          def self.mixed_compute_queue(name, compute_env_configs, options = {})
+          def mixed_compute_queue(name, compute_env_configs, options = {})
             compute_order = compute_env_configs.map.with_index do |config, index|
               { order: config[:order] || index, compute_environment: config[:env] || config[:compute_environment] }
             end
@@ -63,7 +64,7 @@ module Pangea
             { name: name, state: options[:state] || 'ENABLED', priority: options[:priority] || 500, compute_environment_order: compute_order, tags: options[:tags] || {} }
           end
 
-          def self.build_compute_environment_order(compute_environments)
+          def build_compute_environment_order(compute_environments)
             case compute_environments
             when String
               [{ order: 1, compute_environment: compute_environments }]
@@ -80,7 +81,7 @@ module Pangea
             end
           end
 
-          def self.queue_naming_patterns
+          def queue_naming_patterns
             {
               production: ->(workload) { "prod-#{workload}-queue" },
               staging: ->(workload) { "staging-#{workload}-queue" },
@@ -91,23 +92,23 @@ module Pangea
             }
           end
 
-          def self.data_processing_queue(name, compute_environments, priority = :medium, options = {})
+          def data_processing_queue(name, compute_environments, priority = :medium, options = {})
             { name: name, state: 'ENABLED', priority: PRIORITY_LEVELS[priority] || priority, compute_environment_order: build_compute_environment_order(compute_environments), tags: (options[:tags] || {}).merge(Workload: 'data-processing', Type: 'batch', Priority: priority.to_s) }
           end
 
-          def self.ml_training_queue(name, compute_environments, options = {})
+          def ml_training_queue(name, compute_environments, options = {})
             { name: name, state: 'ENABLED', priority: options[:priority] || PRIORITY_LEVELS[:high], compute_environment_order: build_compute_environment_order(compute_environments), tags: (options[:tags] || {}).merge(Workload: 'ml-training', Type: 'gpu-intensive', Priority: 'high') }
           end
 
-          def self.batch_processing_queue(name, compute_environments, options = {})
+          def batch_processing_queue(name, compute_environments, options = {})
             { name: name, state: 'ENABLED', priority: options[:priority] || PRIORITY_LEVELS[:medium_low], compute_environment_order: build_compute_environment_order(compute_environments), tags: (options[:tags] || {}).merge(Workload: 'batch-processing', Type: 'background', Priority: 'medium-low') }
           end
 
-          def self.real_time_queue(name, compute_environments, options = {})
+          def real_time_queue(name, compute_environments, options = {})
             { name: name, state: 'ENABLED', priority: options[:priority] || PRIORITY_LEVELS[:critical], compute_environment_order: build_compute_environment_order(compute_environments), tags: (options[:tags] || {}).merge(Workload: 'real-time', Type: 'latency-sensitive', Priority: 'critical') }
           end
 
-          def self.environment_queue_set(base_name, compute_environments_by_env, options = {})
+          def environment_queue_set(base_name, compute_environments_by_env, options = {})
             priorities = { production: :high, staging: :medium, development: :low }
             queues = {}
 

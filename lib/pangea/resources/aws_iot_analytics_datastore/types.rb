@@ -18,11 +18,11 @@ require 'pangea/resources/types'
 module Pangea
   module Resources
     module AWS
-      class IotAnalyticsDatastoreAttributes < Dry::Struct
-        attribute :datastore_name, Resources::Types::IotAnalyticsDatastoreName
-        attribute :datastore_storage, Resources::Types::Hash.optional
-        attribute :retention_period, Resources::Types::Hash.optional
-        attribute :file_format_configuration, Resources::Types::Hash.optional
+      class IotAnalyticsDatastoreAttributes < Pangea::Resources::BaseAttributes
+        attribute? :datastore_name, Resources::Types::IotAnalyticsDatastoreName.optional
+        attribute :datastore_storage, Resources::Types::Hash.default({}.freeze)
+        attribute :retention_period, Resources::Types::Hash.default({}.freeze)
+        attribute :file_format_configuration, Resources::Types::Hash.default({}.freeze)
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         def has_parquet_format?

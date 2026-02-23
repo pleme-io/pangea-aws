@@ -50,8 +50,8 @@ module Pangea
           
           # Network configuration
           db_subnet_group_name cluster_attrs.db_subnet_group_name if cluster_attrs.db_subnet_group_name
-          vpc_security_group_ids cluster_attrs.vpc_security_group_ids if cluster_attrs.vpc_security_group_ids.any?
-          availability_zones cluster_attrs.availability_zones if cluster_attrs.availability_zones && cluster_attrs.availability_zones.any?
+          vpc_security_group_ids cluster_attrs.vpc_security_group_ids if cluster_attrs.vpc_security_group_ids&.any?
+          availability_zones cluster_attrs.availability_zones if cluster_attrs.availability_zones && cluster_attrs.availability_zones&.any?
           db_cluster_parameter_group_name cluster_attrs.db_cluster_parameter_group_name if cluster_attrs.db_cluster_parameter_group_name
           port cluster_attrs.port if cluster_attrs.port
           
@@ -103,7 +103,7 @@ module Pangea
           source_region cluster_attrs.source_region if cluster_attrs.source_region
           
           # Monitoring and logging
-          enabled_cloudwatch_logs_exports cluster_attrs.enabled_cloudwatch_logs_exports if cluster_attrs.enabled_cloudwatch_logs_exports.any?
+          enabled_cloudwatch_logs_exports cluster_attrs.enabled_cloudwatch_logs_exports if cluster_attrs.enabled_cloudwatch_logs_exports&.any?
           monitoring_interval cluster_attrs.monitoring_interval if cluster_attrs.monitoring_interval > 0
           monitoring_role_arn cluster_attrs.monitoring_role_arn if cluster_attrs.monitoring_role_arn
           performance_insights_enabled cluster_attrs.performance_insights_enabled if cluster_attrs.performance_insights_enabled
@@ -124,7 +124,7 @@ module Pangea
           enable_http_endpoint cluster_attrs.enable_http_endpoint if cluster_attrs.enable_http_endpoint
           
           # Apply tags if present
-          if cluster_attrs.tags.any?
+          if cluster_attrs.tags&.any?
             tags do
               cluster_attrs.tags.each do |key, value|
                 public_send(key, value)

@@ -9,12 +9,12 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class CloudFrontDistributionAttributes < Dry::Struct
+        class CloudFrontDistributionAttributes < Pangea::Resources::BaseAttributes
           include CloudFrontDistributionMethods
           transform_keys(&:to_sym)
 
-          attribute :origin, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::Hash).constrained(min_size: 1)
-          attribute :default_cache_behavior, Pangea::Resources::Types::Hash
+          attribute? :origin, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::Hash).constrained(min_size: 1).optional
+          attribute :default_cache_behavior, Pangea::Resources::Types::Hash.default({}.freeze)
           attribute :ordered_cache_behavior, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::Hash).default([].freeze)
           attribute :comment, Pangea::Resources::Types::String.default('')
           attribute? :default_root_object, Pangea::Resources::Types::String.optional
@@ -35,7 +35,7 @@ module Pangea
             attrs = super(attributes)
             CloudFrontDistributionValidation.validate_origin_references(attrs)
             CloudFrontDistributionValidation.validate_ssl_configuration(attrs.viewer_certificate, attrs.aliases)
-            CloudFrontDistributionValidation.validate_geo_restrictions(attrs.restrictions[:geo_restriction])
+            CloudFrontDistributionValidation.validate_geo_restrictions(attrs.restrictions&.dig(:geo_restriction))
             CloudFrontDistributionValidation.validate_custom_error_responses(attrs.custom_error_response)
             CloudFrontDistributionValidation.validate_function_associations(attrs)
             attrs

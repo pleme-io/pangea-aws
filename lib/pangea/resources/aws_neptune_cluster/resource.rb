@@ -58,7 +58,7 @@ module Pangea
           serverless_v2_scaling_configuration attrs.serverless_v2_scaling_configuration if attrs.serverless_v2_scaling_configuration
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

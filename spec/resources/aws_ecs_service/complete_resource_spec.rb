@@ -27,9 +27,9 @@ RSpec.describe "aws_ecs_service resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -237,7 +237,7 @@ RSpec.describe "aws_ecs_service resource function" do
       
       expect(attrs.placement_strategy.size).to eq(2)
       expect(attrs.placement_strategy.first.type).to eq("spread")
-      expect(attrs.placement_strategy.last.type).to eq("binpack")
+      expect(attrs.placement_strategy[-1].type).to eq("binpack")
     end
     
     it "accepts deployment configuration" do
@@ -396,7 +396,7 @@ RSpec.describe "aws_ecs_service resource function" do
           container_name: "web",
           container_port: 70000
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
   end
   
@@ -526,14 +526,14 @@ RSpec.describe "aws_ecs_service resource function" do
       })
       
       expect(result.id).to eq("${aws_ecs_service.test.id}")
-      expect(result.name).to eq("${aws_ecs_service.test.name}")
-      expect(result.cluster).to eq("${aws_ecs_service.test.cluster}")
-      expect(result.iam_role).to eq("${aws_ecs_service.test.iam_role}")
-      expect(result.desired_count).to eq("${aws_ecs_service.test.desired_count}")
-      expect(result.launch_type).to eq("${aws_ecs_service.test.launch_type}")
-      expect(result.platform_version).to eq("${aws_ecs_service.test.platform_version}")
-      expect(result.task_definition).to eq("${aws_ecs_service.test.task_definition}")
-      expect(result.tags_all).to eq("${aws_ecs_service.test.tags_all}")
+      expect(result.outputs[:name]).to eq("${aws_ecs_service.test.name}")
+      expect(result.outputs[:cluster]).to eq("${aws_ecs_service.test.cluster}")
+      expect(result.outputs[:iam_role]).to eq("${aws_ecs_service.test.iam_role}")
+      expect(result.outputs[:desired_count]).to eq("${aws_ecs_service.test.desired_count}")
+      expect(result.outputs[:launch_type]).to eq("${aws_ecs_service.test.launch_type}")
+      expect(result.outputs[:platform_version]).to eq("${aws_ecs_service.test.platform_version}")
+      expect(result.outputs[:task_definition]).to eq("${aws_ecs_service.test.task_definition}")
+      expect(result.outputs[:tags_all]).to eq("${aws_ecs_service.test.tags_all}")
     end
     
     it "provides computed properties" do
@@ -542,7 +542,6 @@ RSpec.describe "aws_ecs_service resource function" do
         cluster: "test-cluster",
         task_definition: "web:1",
         launch_type: "FARGATE",
-        desired_count: 3,
         deployment_configuration: {
           deployment_circuit_breaker: { enable: true, rollback: true }
         },

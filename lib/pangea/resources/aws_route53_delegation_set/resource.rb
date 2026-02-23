@@ -36,7 +36,7 @@ module Pangea
           reference_name delegation_set_attrs.reference_name if delegation_set_attrs.reference_name
           
           # Apply tags if present
-          if delegation_set_attrs.tags.any?
+          if delegation_set_attrs.tags&.any?
             tags do
               delegation_set_attrs.tags.each do |key, value|
                 public_send(key, value)

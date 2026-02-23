@@ -30,7 +30,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs
       def aws_ses_email_identity(name, attributes = {})
         # Validate attributes using dry-struct
-        identity_attrs = Types::Types::SesEmailIdentityAttributes.new(attributes)
+        identity_attrs = Types::SesEmailIdentityAttributes.new(attributes)
         
         # Generate terraform resource block
         resource(:aws_ses_email_identity, name) do

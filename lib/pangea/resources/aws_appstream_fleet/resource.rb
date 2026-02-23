@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_appstream_fleet(name, attributes = {})
         # Validate attributes using dry-struct
-        fleet_attrs = Types::Types::AppstreamFleetAttributes.new(attributes)
+        fleet_attrs = Types::AppstreamFleetAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_appstream_fleet, name) do
@@ -79,7 +79,7 @@ module Pangea
           stream_view fleet_attrs.stream_view
           
           # Apply tags if present
-          if fleet_attrs.tags.any?
+          if fleet_attrs.tags&.any?
             tags do
               fleet_attrs.tags.each do |key, value|
                 public_send(key, value)

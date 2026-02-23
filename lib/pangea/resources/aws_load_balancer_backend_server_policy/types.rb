@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsLoadBalancerBackendServerPolicy resources
       # Manages aws load balancer backend server policy resources.
-      class AwsLoadBalancerBackendServerPolicyAttributes < Dry::Struct
+      class AwsLoadBalancerBackendServerPolicyAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_load_balancer_backend_server_policy
         
         # Tags to apply to the resource

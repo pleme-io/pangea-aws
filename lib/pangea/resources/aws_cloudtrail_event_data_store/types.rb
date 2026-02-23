@@ -20,19 +20,19 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class CloudTrailEventDataStoreAttributes < Dry::Struct
+        class CloudTrailEventDataStoreAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
           attribute :multi_region_enabled, Resources::Types::Bool.default(true)
           attribute :organization_enabled, Resources::Types::Bool.default(false)
           attribute :retention_period, Resources::Types::Integer.default(2555) # 7 years
           attribute :termination_protection_enabled, Resources::Types::Bool.default(true)
           
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             if attrs[:retention_period]
               period = attrs[:retention_period]

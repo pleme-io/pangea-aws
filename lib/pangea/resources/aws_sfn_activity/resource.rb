@@ -24,7 +24,7 @@ module Pangea
       # Provides type-safe function for creating activities
       def aws_sfn_activity(name, attributes = {})
         # Validate attributes using dry-struct
-        validated_attrs = Types::Types::SfnActivityAttributes.new(attributes)
+        validated_attrs = Types::SfnActivityAttributes.new(attributes)
         
         # Create reference that will be returned
         ref = ResourceReference.new(

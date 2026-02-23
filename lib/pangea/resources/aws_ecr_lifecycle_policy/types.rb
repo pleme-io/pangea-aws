@@ -23,7 +23,7 @@ module Pangea
     module AWS
       module Types
         # ECR Lifecycle Policy resource attributes with validation
-        class ECRLifecyclePolicyAttributes < Dry::Struct
+        class ECRLifecyclePolicyAttributes < Pangea::Resources::BaseAttributes
           require_relative 'types/validation'
           require_relative 'types/computed'
 
@@ -32,12 +32,12 @@ module Pangea
           transform_keys(&:to_sym)
 
           # Required attributes
-          attribute :repository, Resources::Types::String
-          attribute :policy, Resources::Types::String
+          attribute? :repository, Resources::Types::String.optional
+          attribute? :policy, Resources::Types::String.optional
 
           # Validate attributes
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             validate_repository(attrs[:repository]) if attrs[:repository]
             validate_policy(attrs[:policy]) if attrs[:policy]
@@ -57,15 +57,15 @@ module Pangea
             return if policy_str.match?(/^\$\{/) || policy_str.match?(/^jsonencode\(/)
 
             begin
-              policy_doc = JSON.parse(policy_str)
+              policy_doc = ::JSON.parse(policy_str)
               validate_policy_structure(policy_doc)
-            rescue JSON::ParserError => e
+            rescue ::JSON::ParserError => e
               raise Dry::Struct::Error, "lifecycle policy must be valid JSON: #{e.message}"
             end
           end
 
           def self.validate_policy_structure(policy_doc)
-            unless policy_doc.is_a?(Hash) && policy_doc['rules']
+            unless policy_doc.is_a?(::Hash) && policy_doc['rules']
               raise Dry::Struct::Error, 'lifecycle policy must contain a rules array'
             end
 

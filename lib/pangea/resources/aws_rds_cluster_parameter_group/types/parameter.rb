@@ -11,9 +11,9 @@ module Pangea
         # Database parameter configuration — skip if already defined by aws_db_parameter_group
         unless const_defined?(:DbParameter)
           unless const_defined?(:DbParameter)
-          class DbParameter < Dry::Struct
-            attribute :name, Resources::Types::String
-            attribute :value, Resources::Types::String | Resources::Types::Integer | Resources::Types::Float | Resources::Types::Bool
+          class DbParameter < Pangea::Resources::BaseAttributes
+            attribute? :name, Resources::Types::String.optional
+            attribute? :value, Resources::Types::String | Resources::Types::Integer | Resources::Types::Float | Resources::Types::Bool.optional
             attribute :apply_method, Resources::Types::String.constrained(included_in: ['immediate', 'pending-reboot']).default('pending-reboot')
 
             def self.new(attributes = {})

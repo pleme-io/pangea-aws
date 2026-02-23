@@ -21,16 +21,16 @@ module Pangea
       module Types
       # Type-safe attributes for AwsTimestreamScheduledQuery resources
       # Provides a Timestream scheduled query resource.
-      class TimestreamScheduledQueryAttributes < Dry::Struct
-        attribute :name, Resources::Types::String
-        attribute :query_string, Resources::Types::String
+      class TimestreamScheduledQueryAttributes < Pangea::Resources::BaseAttributes
+        attribute? :name, Resources::Types::String.optional
+        attribute? :query_string, Resources::Types::String.optional
         attribute :schedule_configuration, Resources::Types::Hash.default({}.freeze)
         attribute :notification_configuration, Resources::Types::Hash.default({}.freeze)
         attribute :target_configuration, Resources::Types::Hash.default({}.freeze).optional
-        attribute :client_token, Resources::Types::String.optional
-        attribute :scheduled_query_execution_role_arn, Resources::Types::String
+        attribute? :client_token, Resources::Types::String.optional
+        attribute? :scheduled_query_execution_role_arn, Resources::Types::String.optional
         attribute :error_report_configuration, Resources::Types::Hash.default({}.freeze).optional
-        attribute :kms_key_id, Resources::Types::String.optional
+        attribute? :kms_key_id, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

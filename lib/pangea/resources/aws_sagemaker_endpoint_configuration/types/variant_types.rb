@@ -39,8 +39,8 @@ module Pangea
           instance_type: SageMakerInferenceInstanceType,
           initial_variant_weight?: Resources::Types::Float.constrained(gteq: 0.0, lteq: 1.0).default(1.0),
           accelerator_type?: Resources::Types::String.constrained(included_in: ['ml.eia1.medium', 'ml.eia1.large', 'ml.eia1.xlarge', 'ml.eia2.medium', 'ml.eia2.large', 'ml.eia2.xlarge']).optional,
-          core_dump_config?: Resources::Types::Hash.schema(destination_s3_uri: Resources::Types::String.constrained(format: /\As3:\/\//), kms_key_id?: Resources::Types::String.optional).optional,
-          serverless_config?: Resources::Types::Hash.schema(memory_size_in_mb: Resources::Types::Integer.constrained(gteq: 1024, lteq: 6144), max_concurrency: Resources::Types::Integer.constrained(gteq: 1, lteq: 200)).optional
+          core_dump_config?: Resources::Types::Hash.schema(destination_s3_uri: Resources::Types::String.constrained(format: /\As3:\/\//).lax, kms_key_id?: Resources::Types::String.optional).optional,
+          serverless_config?: Resources::Types::Hash.schema(memory_size_in_mb: Resources::Types::Integer.constrained(gteq: 1024, lteq: 6144).lax, max_concurrency: Resources::Types::Integer.constrained(gteq: 1, lteq: 200)).optional
         ).constructor do |value|
           if value[:serverless_config] && value[:instance_type]
             unless %w[ml.m5.large ml.m5.xlarge ml.m5.2xlarge ml.m5.4xlarge ml.m5.12xlarge ml.m5.24xlarge].include?(value[:instance_type])
@@ -64,8 +64,8 @@ module Pangea
           initial_sampling_percentage: Resources::Types::Integer.constrained(gteq: 0, lteq: 100),
           destination_s3_uri: Resources::Types::String.constrained(format: /\As3:\/\//),
           kms_key_id?: Resources::Types::String.optional,
-          capture_options: Resources::Types::Array.of(Resources::Types::Hash.schema(capture_mode: Resources::Types::String.constrained(included_in: ['Input', 'Output']))).constrained(min_size: 1),
-          capture_content_type_header?: Resources::Types::Hash.schema(csv_content_types?: Resources::Types::Array.of(Resources::Types::String).optional, json_content_types?: Resources::Types::Array.of(Resources::Types::String).optional).optional
+          capture_options: Resources::Types::Array.of(Resources::Types::Hash.schema(capture_mode: Resources::Types::String.constrained(included_in: ['Input', 'Output']).lax)).constrained(min_size: 1),
+          capture_content_type_header?: Resources::Types::Hash.schema(csv_content_types?: Resources::Types::Array.of(Resources::Types::String).lax.optional, json_content_types?: Resources::Types::Array.of(Resources::Types::String).optional).optional
         )
       end
     end

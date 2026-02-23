@@ -26,15 +26,15 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS MediaLive Input resources
-        class MediaLiveInputAttributes < Dry::Struct
+        class MediaLiveInputAttributes < Pangea::Resources::BaseAttributes
           include MediaLiveInput::Helpers
           transform_keys(&:to_sym)
 
           # Input name (required)
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Input type - determines the protocol and method
-          attribute :type, Resources::Types::String.enum(
+          attribute? :type, Resources::Types::String.enum(
             'UDP_PUSH',           # UDP unicast or multicast push
             'RTP_PUSH',           # RTP push
             'RTMP_PUSH',          # RTMP push from encoder
@@ -51,15 +51,15 @@ module Pangea
           attribute :input_class, Resources::Types::String.constrained(included_in: ['STANDARD', 'SINGLE_PIPELINE']).default('STANDARD')
 
           # Input destinations for redundancy
-          attribute :destinations, Resources::Types::Array.of(
+          attribute? :destinations, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               stream_name?: Resources::Types::String.optional,
               url?: Resources::Types::String.optional
-            )
+            ).lax
           ).default([].freeze)
 
           # Input devices for hardware inputs
-          attribute :input_devices, Resources::Types::Array.of(
+          attribute? :input_devices, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               id: Resources::Types::String,
               settings?: Resources::Types::Hash.schema(
@@ -67,7 +67,7 @@ module Pangea
                   Resources::Types::Hash.schema(
                     id: Resources::Types::Integer,
                     profile?: Resources::Types::String.constrained(included_in: ['CBR-1000', 'CBR-2000', 'VBR-1000', 'VBR-2000']).optional
-                  )
+                  ).lax
                 ).optional,
                 codec?: Resources::Types::String.constrained(included_in: ['MPEG2', 'AVC', 'HEVC']).optional,
                 max_bitrate?: Resources::Types::Integer.optional,
@@ -78,32 +78,32 @@ module Pangea
           ).default([].freeze)
 
           # MediaConnect flows for MediaConnect inputs
-          attribute :media_connect_flows, Resources::Types::Array.of(
+          attribute? :media_connect_flows, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               flow_arn: Resources::Types::String
-            )
+            ).lax
           ).default([].freeze)
 
           # Input security groups for access control
           attribute :input_security_groups, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
           # Role ARN for accessing input sources
-          attribute :role_arn, Resources::Types::String.optional
+          attribute? :role_arn, Resources::Types::String.optional
 
           # Sources for URL_PULL inputs
-          attribute :sources, Resources::Types::Array.of(
+          attribute? :sources, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               password_param?: Resources::Types::String.optional,
               url: Resources::Types::String,
               username?: Resources::Types::String.optional
-            )
+            ).lax
           ).default([].freeze)
 
           # VPC configuration for enhanced security
-          attribute :vpc, Resources::Types::Hash.schema(
+          attribute? :vpc, Resources::Types::Hash.schema(
             security_group_ids?: Resources::Types::Array.of(Resources::Types::String).optional,
             subnet_ids?: Resources::Types::Array.of(Resources::Types::String).optional
-          ).default({}.freeze)
+          ).lax.default({}.freeze)
 
           # Tags
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

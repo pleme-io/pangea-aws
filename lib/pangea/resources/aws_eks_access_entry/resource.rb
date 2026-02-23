@@ -47,7 +47,7 @@ module Pangea
           user_name entry_attrs.user_name if entry_attrs.user_name
           
           # Apply tags
-          if entry_attrs.tags.any?
+          if entry_attrs.tags&.any?
             tags do
               entry_attrs.tags.each do |key, value|
                 public_send(key, value)

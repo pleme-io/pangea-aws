@@ -26,9 +26,9 @@ module Pangea
           attribute :event_bus_name, Resources::Types::String.default('default')
           attribute :target_id, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9._-]{1,64}\z/)
           attribute :arn, Resources::Types::String.constrained(format: /\Aarn:aws:/)
-          attribute :role_arn, Resources::Types::String.optional.constrained(format: /\Aarn:aws:iam::/)
-          attribute :input, Resources::Types::String.optional
-          attribute :input_path, Resources::Types::String.optional
+          attribute? :role_arn, Resources::Types::String.optional.constrained(format: /\Aarn:aws:iam::/)
+          attribute? :input, Resources::Types::String.optional
+          attribute? :input_path, Resources::Types::String.optional
           attribute? :input_transformer, InputTransformer.optional
           attribute? :retry_policy, RetryPolicy.optional
           attribute? :dead_letter_config, DeadLetterConfig.optional
@@ -92,8 +92,8 @@ module Pangea
           def has_dead_letter_queue? = !dead_letter_config.nil?
           def uses_default_bus? = event_bus_name == 'default'
           def uses_custom_bus? = !uses_default_bus?
-          def max_retry_attempts = retry_policy&.dig(:maximum_retry_attempts) || 3
-          def max_event_age_hours = retry_policy&.dig(:maximum_event_age_in_seconds)&.then { |s| s / 3600.0 }
+          def max_retry_attempts = retry_policy&.[](:maximum_retry_attempts) || 3
+          def max_event_age_hours = retry_policy&.[](:maximum_event_age_in_seconds)&.then { |s| s / 3600.0 }
           def target_service = target_type.upcase
 
           def estimated_monthly_cost

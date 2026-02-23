@@ -64,7 +64,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if attachment_attrs.tags.any?
+          if attachment_attrs.tags&.any?
             tags do
               attachment_attrs.tags.each do |key, value|
                 public_send(key, value)

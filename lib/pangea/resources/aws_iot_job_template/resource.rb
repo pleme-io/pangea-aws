@@ -26,7 +26,7 @@ module Pangea
     # They enable consistent job deployment across device fleets.
     #
     # @example Firmware update job template
-    #   job_document = JSON.generate({
+    #   job_document = ::JSON.generate({
     #     "version" => "1.0",
     #     "steps" => [{
     #       "action" => {

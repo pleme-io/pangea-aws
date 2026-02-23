@@ -64,7 +64,7 @@ module Pangea
           end
 
           # Apply tags if present
-          if window_attrs.tags.any?
+          if window_attrs.tags&.any?
             tags do
               window_attrs.tags.each do |key, value|
                 public_send(key, value)

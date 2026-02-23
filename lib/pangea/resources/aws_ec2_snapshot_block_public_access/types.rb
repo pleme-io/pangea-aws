@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2SnapshotBlockPublicAccess resources
       # Manages aws ec2 snapshot block public access resources.
-      class AwsEc2SnapshotBlockPublicAccessAttributes < Dry::Struct
+      class AwsEc2SnapshotBlockPublicAccessAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_snapshot_block_public_access
         
         # Tags to apply to the resource

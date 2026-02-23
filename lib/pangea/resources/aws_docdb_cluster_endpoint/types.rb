@@ -21,10 +21,10 @@ module Pangea
       module Types
       # Type-safe attributes for AwsDocdbClusterEndpoint resources
       # Provides a DocumentDB cluster endpoint resource.
-      class DocdbClusterEndpointAttributes < Dry::Struct
-        attribute :cluster_endpoint_identifier, Resources::Types::String
-        attribute :cluster_identifier, Resources::Types::String
-        attribute :endpoint_type, Resources::Types::String
+      class DocdbClusterEndpointAttributes < Pangea::Resources::BaseAttributes
+        attribute? :cluster_endpoint_identifier, Resources::Types::String.optional
+        attribute? :cluster_identifier, Resources::Types::String.optional
+        attribute? :endpoint_type, Resources::Types::String.optional
         attribute :static_members, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         attribute :excluded_members, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         

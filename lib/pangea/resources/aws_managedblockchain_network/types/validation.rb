@@ -38,7 +38,7 @@ module Pangea
           end
 
           def self.validate_fabric_configuration(attrs)
-            if attrs.framework_configuration.nil? || attrs.framework_configuration[:network_fabric_configuration].nil?
+            if attrs.framework_configuration.nil? || attrs.framework_configuration&.dig(:network_fabric_configuration).nil?
               raise Dry::Struct::Error, 'network_fabric_configuration is required for Hyperledger Fabric networks'
             end
 
@@ -54,7 +54,7 @@ module Pangea
           end
 
           def self.validate_fabric_member_configuration(attrs)
-            member_fabric_config = attrs.member_configuration[:framework_configuration][:member_fabric_configuration]
+            member_fabric_config = attrs.member_configuration&.dig(:framework_configuration)[:member_fabric_configuration]
             if member_fabric_config.nil?
               raise Dry::Struct::Error, 'member_fabric_configuration is required for Hyperledger Fabric members'
             end
@@ -72,7 +72,7 @@ module Pangea
           end
 
           def self.validate_ethereum_configuration(attrs)
-            if attrs.framework_configuration.nil? || attrs.framework_configuration[:network_ethereum_configuration].nil?
+            if attrs.framework_configuration.nil? || attrs.framework_configuration&.dig(:network_ethereum_configuration).nil?
               raise Dry::Struct::Error, 'network_ethereum_configuration is required for Ethereum networks'
             end
 

@@ -19,16 +19,16 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Athena Workgroup resources
-        class AthenaWorkgroupAttributes < Dry::Struct
+        class AthenaWorkgroupAttributes < Pangea::Resources::BaseAttributes
           extend AthenaWorkgroupClassMethods
           extend AthenaWorkgroupValidation
           include AthenaWorkgroupInstanceMethods
 
           # Workgroup name (required)
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Workgroup description
-          attribute :description, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
 
           # State of the workgroup
           attribute :state, Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED']).default('ENABLED')
@@ -37,18 +37,18 @@ module Pangea
           attribute :force_destroy, Resources::Types::Bool.default(false)
 
           # Workgroup configuration
-          attribute :configuration, Resources::Types::Hash.schema(
+          attribute? :configuration, Resources::Types::Hash.schema(
             # Query result configuration
             result_configuration?: Resources::Types::Hash.schema(
               output_location?: Resources::Types::String.optional,
               encryption_configuration?: Resources::Types::Hash.schema(
                 encryption_option: Resources::Types::String.constrained(included_in: ['SSE_S3', 'SSE_KMS', 'CSE_KMS']),
                 kms_key_id?: Resources::Types::String.optional
-              ).optional,
+              ).lax.optional,
               expected_bucket_owner?: Resources::Types::String.optional,
               acl_configuration?: Resources::Types::Hash.schema(
                 s3_acl_option: Resources::Types::String.constrained(included_in: ['BUCKET_OWNER_FULL_CONTROL'])
-              ).optional
+              ).lax.optional
             ).optional,
 
             # Execution configuration
@@ -61,7 +61,7 @@ module Pangea
             engine_version?: Resources::Types::Hash.schema(
               selected_engine_version?: Resources::Types::String.optional,
               effective_engine_version?: Resources::Types::String.optional
-            ).optional,
+            ).lax.optional,
 
             # Result configuration override
             result_configuration_updates?: Resources::Types::Hash.schema(
@@ -70,7 +70,7 @@ module Pangea
               encryption_configuration?: Resources::Types::Hash.schema(
                 encryption_option: Resources::Types::String.constrained(included_in: ['SSE_S3', 'SSE_KMS', 'CSE_KMS']),
                 kms_key_id?: Resources::Types::String.optional
-              ).optional,
+              ).lax.optional,
               remove_encryption_configuration?: Resources::Types::Bool.optional
             ).optional,
 
@@ -80,7 +80,7 @@ module Pangea
             # Customer content encryption
             customer_content_encryption_configuration?: Resources::Types::Hash.schema(
               kms_key_id: Resources::Types::String
-            ).optional
+            ).lax.optional
           ).optional
 
           # Tags

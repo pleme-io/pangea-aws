@@ -21,10 +21,10 @@ module Pangea
     module AWS
       module Types
         # User storage configuration
-        class UserStorageConfigurationType < Dry::Struct
+        class UserStorageConfigurationType < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :capacity, Resources::Types::Coercible::String.constrained(
+          attribute? :capacity, Resources::Types::Coercible::String.constrained(
             format: /\A\d+\z/
           ).constructor { |value|
             capacity_int = value.to_i
@@ -44,10 +44,10 @@ module Pangea
         end
 
         # Root storage configuration
-        class RootStorageConfigurationType < Dry::Struct
+        class RootStorageConfigurationType < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :capacity, Resources::Types::Coercible::String.constrained(
+          attribute? :capacity, Resources::Types::Coercible::String.constrained(
             format: /\A\d+\z/
           ).constructor { |value|
             capacity_int = value.to_i

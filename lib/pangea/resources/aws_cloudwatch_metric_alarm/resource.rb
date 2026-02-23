@@ -89,7 +89,7 @@ module Pangea
       #   })
       def aws_cloudwatch_metric_alarm(name, attributes = {})
         # Validate attributes using dry-struct
-        alarm_attrs = AWS::Types::Types::CloudWatchMetricAlarmAttributes.new(attributes)
+        alarm_attrs = Types::CloudWatchMetricAlarmAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_cloudwatch_metric_alarm, name) do
@@ -104,9 +104,9 @@ module Pangea
           evaluate_low_sample_count_percentile alarm_attrs.evaluate_low_sample_count_percentile if alarm_attrs.evaluate_low_sample_count_percentile
           
           # Actions
-          alarm_actions alarm_attrs.alarm_actions if alarm_attrs.alarm_actions.any?
-          ok_actions alarm_attrs.ok_actions if alarm_attrs.ok_actions.any?
-          insufficient_data_actions alarm_attrs.insufficient_data_actions if alarm_attrs.insufficient_data_actions.any?
+          alarm_actions alarm_attrs.alarm_actions if alarm_attrs.alarm_actions&.any?
+          ok_actions alarm_attrs.ok_actions if alarm_attrs.ok_actions&.any?
+          insufficient_data_actions alarm_attrs.insufficient_data_actions if alarm_attrs.insufficient_data_actions&.any?
           
           # Traditional alarm configuration
           if alarm_attrs.is_traditional_alarm?
@@ -118,7 +118,7 @@ module Pangea
             unit alarm_attrs.unit if alarm_attrs.unit
             threshold alarm_attrs.threshold
             
-            if alarm_attrs.dimensions.any?
+            if alarm_attrs.dimensions&.any?
               dimensions alarm_attrs.dimensions
             end
           end
@@ -127,39 +127,29 @@ module Pangea
           if alarm_attrs.is_metric_math_alarm?
             threshold alarm_attrs.threshold if alarm_attrs.threshold
             threshold_metric_id alarm_attrs.threshold_metric_id if alarm_attrs.threshold_metric_id
-            
-            alarm_attrs.metric_query.each do |query|
-              metric_query do
-                id query.id
-                expression query.expression if query.expression
-                label query.label if query.label
-                return_data query.return_data
-                
-                if query.metric
-                  metric do
-                    metric_name query.metric[:metric_name]
-                    namespace query.metric[:namespace]
-                    period query.metric[:period]
-                    stat query.metric[:stat]
-                    unit query.metric[:unit] if query.metric[:unit]
-                    
-                    if query.metric[:dimensions]
-                      dimensions query.metric[:dimensions]
-                    end
-                  end
-                end
+
+            metric_query alarm_attrs.metric_query.map { |query|
+              mq = { id: query.id, return_data: query.return_data }
+              mq[:expression] = query.expression if query.expression
+              mq[:label] = query.label if query.label
+
+              if query.metric
+                m = {}
+                m[:metric_name] = query.metric[:metric_name]
+                m[:namespace] = query.metric[:namespace]
+                m[:period] = query.metric[:period]
+                m[:stat] = query.metric[:stat]
+                m[:unit] = query.metric[:unit] if query.metric[:unit]
+                m[:dimensions] = query.metric[:dimensions] if query.metric[:dimensions]
+                mq[:metric] = m
               end
-            end
+
+              mq
+            }
           end
-          
-          # Apply tags if present
-          if alarm_attrs.tags.any?
-            tags do
-              alarm_attrs.tags.each do |key, value|
-                public_send(key, value)
-              end
-            end
-          end
+
+          # Apply tags
+          tags alarm_attrs.tags if alarm_attrs.tags&.any?
         end
         
         # Return resource reference with available outputs

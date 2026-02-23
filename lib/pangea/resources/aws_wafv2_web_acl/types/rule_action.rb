@@ -22,45 +22,45 @@ module Pangea
     module AWS
       module Types
         # WAF v2 Rule action configuration
-        class WafV2RuleAction < Dry::Struct
+        class WafV2RuleAction < Pangea::Resources::BaseAttributes
           ACTION_TYPES = %i[allow block count captcha challenge].freeze
 
           transform_keys(&:to_sym)
 
-          attribute :allow, Resources::Types::Hash.schema(
+          attribute? :allow, Resources::Types::Hash.schema(
             custom_request_handling?: Resources::Types::Hash.schema(
-              insert_headers: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String))
+              insert_headers: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String).lax)
             ).optional
           ).optional
 
-          attribute :block, Resources::Types::Hash.schema(
+          attribute? :block, Resources::Types::Hash.schema(
             custom_response?: Resources::Types::Hash.schema(
               response_code: Resources::Types::Integer.constrained(gteq: 200, lteq: 599),
               custom_response_body_key?: Resources::Types::String.optional,
-              response_headers?: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String)).optional
+              response_headers?: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String).lax).optional
             ).optional
           ).optional
 
-          attribute :count, Resources::Types::Hash.schema(
+          attribute? :count, Resources::Types::Hash.schema(
             custom_request_handling?: Resources::Types::Hash.schema(
-              insert_headers: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String))
+              insert_headers: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String).lax)
             ).optional
           ).optional
 
-          attribute :captcha, Resources::Types::Hash.schema(
+          attribute? :captcha, Resources::Types::Hash.schema(
             custom_request_handling?: Resources::Types::Hash.schema(
-              insert_headers: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String))
+              insert_headers: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String).lax)
             ).optional
           ).optional
 
-          attribute :challenge, Resources::Types::Hash.schema(
+          attribute? :challenge, Resources::Types::Hash.schema(
             custom_request_handling?: Resources::Types::Hash.schema(
-              insert_headers: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String))
+              insert_headers: Resources::Types::Array.of(Resources::Types::Hash.schema(name: Resources::Types::String, value: Resources::Types::String).lax)
             ).optional
           ).optional
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             provided_actions = ACTION_TYPES.select { |type| attrs.key?(type) }
 
             raise Dry::Struct::Error, 'WAF v2 rule action must specify exactly one action type' if provided_actions.empty?

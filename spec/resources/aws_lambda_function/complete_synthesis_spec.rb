@@ -28,12 +28,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test basic lambda function synthesis
   it "synthesizes basic lambda function correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:api_handler, {
         function_name: "api-handler",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "index.handler",
         runtime: "nodejs18.x",
         filename: "function.zip",
@@ -44,7 +45,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "api_handler")
     
     expect(function_config["function_name"]).to eq("api-handler")
@@ -62,12 +63,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test S3 code source synthesis
   it "synthesizes lambda with S3 code source correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:s3_function, {
         function_name: "s3-deployed-function",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "app.lambda_handler",
         runtime: "python3.11",
         s3_bucket: "my-lambda-deployments",
@@ -76,7 +78,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "s3_function")
     
     expect(function_config["s3_bucket"]).to eq("my-lambda-deployments")
@@ -87,12 +89,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test container image function synthesis
   it "synthesizes container image function correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:container_function, {
         function_name: "ml-processor",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         package_type: "Image",
         image_uri: "123456789012.dkr.ecr.us-east-1.amazonaws.com/ml-processor:v2.0",
         timeout: 900,
@@ -105,7 +108,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "container_function")
     
     expect(function_config["package_type"]).to eq("Image")
@@ -126,12 +129,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test VPC configuration synthesis
   it "synthesizes VPC lambda function correctly" do
+    _vpc_execution_role_arn = vpc_execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:vpc_function, {
         function_name: "database-processor",
-        role: vpc_execution_role_arn,
+        role: _vpc_execution_role_arn,
         handler: "db.process",
         runtime: "python3.11",
         filename: "db-function.zip",
@@ -142,7 +146,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "vpc_function")
     
     vpc_config = function_config["vpc_config"]
@@ -153,12 +157,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test environment variables synthesis
   it "synthesizes environment variables correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:env_function, {
         function_name: "config-processor",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "config.handler",
         runtime: "python3.11",
         filename: "config.zip",
@@ -173,7 +178,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "env_function")
     
     env_config = function_config["environment"]
@@ -188,12 +193,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
   # Test dead letter queue synthesis
   it "synthesizes dead letter queue configuration correctly" do
     dlq_arn = "arn:aws:sqs:us-east-1:123456789012:lambda-dlq"
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:dlq_function, {
         function_name: "event-processor",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "events.process",
         runtime: "python3.11",
         filename: "events.zip",
@@ -203,7 +209,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "dlq_function")
     
     dlq_config = function_config["dead_letter_config"]
@@ -214,12 +220,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
   # Test EFS file system synthesis
   it "synthesizes EFS file system configuration correctly" do
     efs_arn = "arn:aws:elasticfilesystem:us-east-1:123456789012:file-system/fs-12345"
+    _vpc_execution_role_arn = vpc_execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:efs_function, {
         function_name: "file-processor",
-        role: vpc_execution_role_arn,
+        role: _vpc_execution_role_arn,
         handler: "files.process",
         runtime: "python3.11",
         filename: "files.zip",
@@ -230,7 +237,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "efs_function")
     
     fs_configs = function_config["file_system_config"]
@@ -246,12 +253,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       "arn:aws:lambda:us-east-1:123456789012:layer:database-lib:1"
     ]
     
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:layered_function, {
         function_name: "layered-app",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "app.handler",
         runtime: "python3.11",
         filename: "app.zip",
@@ -259,7 +267,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "layered_function")
     
     expect(function_config["layers"]).to eq(layer_arns)
@@ -267,12 +275,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test X-Ray tracing synthesis
   it "synthesizes X-Ray tracing configuration correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:traced_function, {
         function_name: "traced-api",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "api.handler",
         runtime: "python3.11",
         filename: "api.zip",
@@ -282,7 +291,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "traced_function")
     
     tracing_config = function_config["tracing_config"]
@@ -292,12 +301,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test reserved concurrent executions synthesis
   it "synthesizes reserved concurrent executions correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:limited_function, {
         function_name: "rate-limited-processor",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "processor.handler",
         runtime: "python3.11",
         filename: "processor.zip",
@@ -305,7 +315,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "limited_function")
     
     expect(function_config["reserved_concurrent_executions"]).to eq(100)
@@ -313,12 +323,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test ARM64 architecture synthesis
   it "synthesizes ARM64 architecture correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:arm_function, {
         function_name: "arm-optimized",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "bootstrap",
         runtime: "provided.al2",
         filename: "arm-function.zip",
@@ -326,7 +337,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "arm_function")
     
     expect(function_config["architectures"]).to eq(["arm64"])
@@ -334,12 +345,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test Java function with snap start synthesis
   it "synthesizes Java function with snap start correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:java_function, {
         function_name: "java-processor",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "com.example.ProcessorHandler::handleRequest",
         runtime: "java17",
         filename: "processor.jar",
@@ -351,7 +363,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "java_function")
     
     expect(function_config["handler"]).to eq("com.example.ProcessorHandler::handleRequest")
@@ -364,12 +376,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test ephemeral storage synthesis
   it "synthesizes ephemeral storage correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:storage_function, {
         function_name: "large-storage-processor",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "storage.handler",
         runtime: "python3.11",
         filename: "storage.zip",
@@ -379,7 +392,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "storage_function")
     
     ephemeral_config = function_config["ephemeral_storage"]
@@ -390,12 +403,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
   # Test KMS encryption synthesis
   it "synthesizes KMS encryption correctly" do
     kms_key_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:encrypted_function, {
         function_name: "encrypted-processor",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "secure.handler",
         runtime: "python3.11",
         filename: "secure.zip",
@@ -408,7 +422,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "encrypted_function")
     
     expect(function_config["kms_key_arn"]).to eq(kms_key_arn)
@@ -419,12 +433,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test logging configuration synthesis
   it "synthesizes logging configuration correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:logging_function, {
         function_name: "structured-logging",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "log.handler",
         runtime: "python3.11",
         filename: "logging.zip",
@@ -437,7 +452,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "logging_function")
     
     logging_config = function_config["logging_config"]
@@ -450,12 +465,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test comprehensive configuration synthesis
   it "synthesizes comprehensive lambda configuration correctly" do
+    _vpc_execution_role_arn = vpc_execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:comprehensive_function, {
         function_name: "comprehensive-processor",
-        role: vpc_execution_role_arn,
+        role: _vpc_execution_role_arn,
         handler: "comprehensive.handler",
         runtime: "python3.11",
         filename: "comprehensive.zip",
@@ -489,7 +505,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "comprehensive_function")
     
     expect(function_config["function_name"]).to eq("comprehensive-processor")
@@ -527,19 +543,20 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test minimal configuration synthesis (optional fields excluded)
   it "synthesizes minimal lambda without optional fields" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:minimal_function, {
         function_name: "minimal-function",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "index.handler",
         runtime: "nodejs18.x",
         filename: "function.zip"
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "minimal_function")
     
     # Required fields should be present
@@ -572,12 +589,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
   # Test code signing synthesis
   it "synthesizes code signing configuration correctly" do
     signing_arn = "arn:aws:signer:us-east-1:123456789012:/signing-profiles/MyProfile"
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:signed_function, {
         function_name: "signed-processor",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "secure.handler",
         runtime: "python3.11",
         filename: "secure.zip",
@@ -585,7 +603,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "signed_function")
     
     expect(function_config["code_signing_config_arn"]).to eq(signing_arn)
@@ -593,12 +611,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test Python runtime patterns
   it "synthesizes Python runtime patterns correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:python_function, {
         function_name: "data-analyzer",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "analyzer.process_data",
         runtime: "python3.11",
         filename: "analyzer.zip",
@@ -608,7 +627,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "python_function")
     
     expect(function_config["handler"]).to eq("analyzer.process_data")
@@ -619,12 +638,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test Go runtime patterns
   it "synthesizes Go runtime patterns correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:go_function, {
         function_name: "go-processor",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "main",
         runtime: "go1.x",
         filename: "main.zip",
@@ -632,7 +652,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "go_function")
     
     expect(function_config["handler"]).to eq("main")
@@ -642,12 +662,13 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test .NET runtime patterns
   it "synthesizes .NET runtime patterns correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:dotnet_function, {
         function_name: "dotnet-api",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "DotNetApi::DotNetApi.Functions.ApiFunction::FunctionHandler",
         runtime: "dotnet8",
         filename: "dotnet-api.zip",
@@ -656,7 +677,7 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "dotnet_function")
     
     expect(function_config["handler"]).to eq("DotNetApi::DotNetApi.Functions.ApiFunction::FunctionHandler")
@@ -665,19 +686,20 @@ RSpec.describe "aws_lambda_function terraform synthesis" do
 
   # Test Ruby runtime patterns  
   it "synthesizes Ruby runtime patterns correctly" do
+    _execution_role_arn = execution_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_function(:ruby_function, {
         function_name: "ruby-processor",
-        role: execution_role_arn,
+        role: _execution_role_arn,
         handler: "lambda_function.lambda_handler",
         runtime: "ruby3.2",
         filename: "ruby-function.zip"
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     function_config = json_output.dig("resource", "aws_lambda_function", "ruby_function")
     
     expect(function_config["handler"]).to eq("lambda_function.lambda_handler")

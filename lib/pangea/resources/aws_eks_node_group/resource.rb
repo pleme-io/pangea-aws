@@ -101,7 +101,7 @@ module Pangea
       #     }]
       #   })
       def aws_eks_node_group(name, attributes = {})
-        node_group_attrs = AWS::Types::Types::EksNodeGroupAttributes.new(attributes)
+        node_group_attrs = Types::EksNodeGroupAttributes.new(attributes)
 
         resource(:aws_eks_node_group, name) do
           EksNodeGroup::DslBuilder.build_resource(self, node_group_attrs)

@@ -22,14 +22,14 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Blockchain Query resources
-        class BlockchainQueryAttributes < Dry::Struct
+        class BlockchainQueryAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Query name (required)
-          attribute :query_name, Resources::Types::String
+          attribute? :query_name, Resources::Types::String.optional
 
           # Blockchain network (required)
-          attribute :blockchain_network, Resources::Types::String.constrained(included_in: ['ETHEREUM_MAINNET',
+          attribute? :blockchain_network, Resources::Types::String.constrained(included_in: ['ETHEREUM_MAINNET',
             'ETHEREUM_GOERLI_TESTNET',
             'BITCOIN_MAINNET',
             'BITCOIN_TESTNET',
@@ -37,17 +37,17 @@ module Pangea
             'POLYGON_MUMBAI_TESTNET'])
 
           # Query string (required)
-          attribute :query_string, Resources::Types::String
+          attribute? :query_string, Resources::Types::String.optional
 
           # Output configuration (required)
-          attribute :output_configuration, Resources::Types::Hash.schema(
+          attribute? :output_configuration, Resources::Types::Hash.schema(
             s3_configuration: Resources::Types::Hash.schema(
               bucket_name: Resources::Types::String,
               key_prefix: Resources::Types::String,
               encryption_configuration?: Resources::Types::Hash.schema(
                 encryption_option: Resources::Types::String.constrained(included_in: ['SSE_S3', 'SSE_KMS']),
                 kms_key?: Resources::Types::String.optional
-              ).optional
+              ).lax.optional
             )
           )
 
@@ -58,7 +58,7 @@ module Pangea
           attribute? :schedule_configuration, Resources::Types::Hash.schema(
             schedule_expression: Resources::Types::String,
             timezone?: Resources::Types::String.optional
-          ).optional
+          ).lax.optional
 
           # Tags (optional)
           attribute? :tags, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional

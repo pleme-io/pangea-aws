@@ -20,8 +20,8 @@ module Pangea
     module AWS
       module Types
       # Default capacity provider strategy
-      class EcsDefaultCapacityProviderStrategy < Dry::Struct
-        attribute :capacity_provider, Resources::Types::String
+      class EcsDefaultCapacityProviderStrategy < Pangea::Resources::BaseAttributes
+        attribute? :capacity_provider, Resources::Types::String.optional
         attribute :weight, Resources::Types::Integer.constrained(gteq: 0, lteq: 1000).default(1)
         attribute :base, Resources::Types::Integer.constrained(gteq: 0, lteq: 100000).default(0)
         
@@ -39,9 +39,9 @@ module Pangea
       end
       
       # Type-safe attributes for AWS ECS Cluster Capacity Providers
-      class EcsClusterCapacityProvidersAttributes < Dry::Struct
+      class EcsClusterCapacityProvidersAttributes < Pangea::Resources::BaseAttributes
         # Cluster name (required)
-        attribute :cluster_name, Resources::Types::String
+        attribute? :cluster_name, Resources::Types::String.optional
         
         # Capacity providers to associate with the cluster
         attribute :capacity_providers, Resources::Types::Array.of(Resources::Types::String).default([].freeze)

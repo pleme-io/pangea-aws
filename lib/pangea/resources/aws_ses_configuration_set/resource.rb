@@ -33,7 +33,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs
       def aws_ses_configuration_set(name, attributes = {})
         # Validate attributes using dry-struct
-        config_attrs = Types::Types::SesConfigurationSetAttributes.new(attributes)
+        config_attrs = Types::SesConfigurationSetAttributes.new(attributes)
         
         # Generate terraform resource block
         resource(:aws_ses_configuration_set, name) do
@@ -42,7 +42,7 @@ module Pangea
           # Delivery options
           if config_attrs.delivery_options
             delivery_options do
-              tls_policy config_attrs.delivery_options[:tls_policy] if config_attrs.delivery_options[:tls_policy]
+              tls_policy config_attrs.delivery_options&.dig(:tls_policy) if config_attrs.delivery_options&.dig(:tls_policy)
             end
           end
           

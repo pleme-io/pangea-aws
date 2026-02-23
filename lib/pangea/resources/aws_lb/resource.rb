@@ -38,12 +38,12 @@ module Pangea
           internal lb_attrs.internal
           
           # Subnets are required for ALB/NLB
-          if lb_attrs.subnet_ids.any?
+          if lb_attrs.subnet_ids&.any?
             subnets lb_attrs.subnet_ids
           end
           
           # Security groups (ALB only)
-          if lb_attrs.security_groups.any? && lb_attrs.load_balancer_type == "application"
+          if lb_attrs.security_groups&.any? && lb_attrs.load_balancer_type == "application"
             security_groups lb_attrs.security_groups
           end
           
@@ -61,14 +61,14 @@ module Pangea
           # Access logs configuration
           if lb_attrs.access_logs
             access_logs do
-              bucket lb_attrs.access_logs[:bucket]
-              enabled lb_attrs.access_logs[:enabled]
-              prefix lb_attrs.access_logs[:prefix] if lb_attrs.access_logs[:prefix]
+              bucket lb_attrs.access_logs&.dig(:bucket)
+              enabled lb_attrs.access_logs&.dig(:enabled)
+              prefix lb_attrs.access_logs&.dig(:prefix) if lb_attrs.access_logs&.dig(:prefix)
             end
           end
           
           # Apply tags if present
-          if lb_attrs.tags.any?
+          if lb_attrs.tags&.any?
             tags do
               lb_attrs.tags.each do |key, value|
                 public_send(key, value)

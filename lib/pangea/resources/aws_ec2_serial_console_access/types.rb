@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2SerialConsoleAccess resources
       # Manages aws ec2 serial console access resources.
-      class AwsEc2SerialConsoleAccessAttributes < Dry::Struct
+      class AwsEc2SerialConsoleAccessAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_serial_console_access
         
         # Tags to apply to the resource

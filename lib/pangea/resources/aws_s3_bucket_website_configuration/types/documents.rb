@@ -7,8 +7,8 @@ module Pangea
     module AWS
       module Types
         # S3 website error document configuration
-        class WebsiteErrorDocument < Dry::Struct
-          attribute :key, Resources::Types::String
+        class WebsiteErrorDocument < Pangea::Resources::BaseAttributes
+          attribute? :key, Resources::Types::String.optional
 
           def self.new(attributes = {})
             attrs = super(attributes)
@@ -34,8 +34,8 @@ module Pangea
         end
 
         # S3 website index document configuration
-        class WebsiteIndexDocument < Dry::Struct
-          attribute :suffix, Resources::Types::String
+        class WebsiteIndexDocument < Pangea::Resources::BaseAttributes
+          attribute? :suffix, Resources::Types::String.optional
 
           def self.new(attributes = {})
             attrs = super(attributes)

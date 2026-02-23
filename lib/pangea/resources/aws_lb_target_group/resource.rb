@@ -63,7 +63,7 @@ module Pangea
       #   })
       def aws_lb_target_group(name, attributes = {})
         # Validate attributes using dry-struct
-        tg_attrs = Types::Types::TargetGroupAttributes.new(attributes)
+        tg_attrs = Types::TargetGroupAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_lb_target_group, name) do
@@ -116,7 +116,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if tg_attrs.tags.any?
+          if tg_attrs.tags&.any?
             tags do
               tg_attrs.tags.each do |key, value|
                 public_send(key, value)

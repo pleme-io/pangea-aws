@@ -8,7 +8,7 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class RdsClusterInstanceAttributes < Dry::Struct
+        class RdsClusterInstanceAttributes < Pangea::Resources::BaseAttributes
           include RdsClusterInstanceMethods
 
           INSTANCE_CLASSES = %w[
@@ -21,26 +21,26 @@ module Pangea
             serverless
           ].freeze
 
-          attribute :identifier, Resources::Types::String.optional
-          attribute :identifier_prefix, Resources::Types::String.optional
-          attribute :cluster_identifier, Resources::Types::String
-          attribute :instance_class, Resources::Types::String.enum(*INSTANCE_CLASSES)
-          attribute :engine, Resources::Types::String.optional
-          attribute :engine_version, Resources::Types::String.optional
-          attribute :availability_zone, Resources::Types::String.optional
-          attribute :db_parameter_group_name, Resources::Types::String.optional
+          attribute? :identifier, Resources::Types::String.optional
+          attribute? :identifier_prefix, Resources::Types::String.optional
+          attribute? :cluster_identifier, Resources::Types::String.optional
+          attribute? :instance_class, Resources::Types::String.enum(*INSTANCE_CLASSES).optional
+          attribute? :engine, Resources::Types::String.optional
+          attribute? :engine_version, Resources::Types::String.optional
+          attribute? :availability_zone, Resources::Types::String.optional
+          attribute? :db_parameter_group_name, Resources::Types::String.optional
           attribute :publicly_accessible, Resources::Types::Bool.default(false)
           attribute :monitoring_interval, Resources::Types::Integer.default(0).constrained(gteq: 0, lteq: 60)
-          attribute :monitoring_role_arn, Resources::Types::String.optional
+          attribute? :monitoring_role_arn, Resources::Types::String.optional
           attribute :performance_insights_enabled, Resources::Types::Bool.default(false)
-          attribute :performance_insights_kms_key_id, Resources::Types::String.optional
+          attribute? :performance_insights_kms_key_id, Resources::Types::String.optional
           attribute :performance_insights_retention_period, Resources::Types::Integer.default(7).constrained(gteq: 7, lteq: 731)
-          attribute :preferred_backup_window, Resources::Types::String.optional
-          attribute :preferred_maintenance_window, Resources::Types::String.optional
+          attribute? :preferred_backup_window, Resources::Types::String.optional
+          attribute? :preferred_maintenance_window, Resources::Types::String.optional
           attribute :auto_minor_version_upgrade, Resources::Types::Bool.default(true)
           attribute :apply_immediately, Resources::Types::Bool.default(false)
           attribute :copy_tags_to_snapshot, Resources::Types::Bool.default(true)
-          attribute :ca_cert_identifier, Resources::Types::String.optional
+          attribute? :ca_cert_identifier, Resources::Types::String.optional
           attribute :promotion_tier, Resources::Types::Integer.default(1).constrained(gteq: 0, lteq: 15)
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 

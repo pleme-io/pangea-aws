@@ -19,34 +19,34 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS CodePipeline resources
-        class CodePipelineAttributes < Dry::Struct
+        class CodePipelineAttributes < Pangea::Resources::BaseAttributes
           include CodePipelineValidation
           include CodePipelineInstanceMethods
 
           transform_keys(&:to_sym)
 
           # Pipeline name (required)
-          attribute :name, Resources::Types::String.constrained(
+          attribute? :name, Resources::Types::String.constrained(
             format: /\A[A-Za-z0-9][A-Za-z0-9\-_]*\z/,
             min_size: 1,
             max_size: 100
           )
 
           # Role ARN (required)
-          attribute :role_arn, Resources::Types::String
+          attribute? :role_arn, Resources::Types::String.optional
 
           # Artifact store configuration
-          attribute :artifact_store, Resources::Types::Hash.schema(
+          attribute? :artifact_store, Resources::Types::Hash.schema(
             type: Resources::Types::String.constrained(included_in: ['S3']).default('S3'),
             location: Resources::Types::String,
             encryption_key?: Resources::Types::Hash.schema(
               id: Resources::Types::String,
               type: Resources::Types::String.constrained(included_in: ['KMS']).default('KMS')
-            ).optional
+            ).lax.optional
           )
 
           # Stages configuration (required, min 2 stages)
-          attribute :stages, Resources::Types::Array.of(
+          attribute? :stages, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               name: Resources::Types::String.constrained(max_size: 100),
               actions: Resources::Types::Array.of(

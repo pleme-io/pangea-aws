@@ -21,10 +21,10 @@ module Pangea
       module Types
       # Type-safe attributes for AwsNeptuneClusterEndpoint resources
       # Provides a Neptune cluster endpoint resource.
-      class NeptuneClusterEndpointAttributes < Dry::Struct
-        attribute :cluster_endpoint_identifier, Resources::Types::String
-        attribute :cluster_identifier, Resources::Types::String
-        attribute :endpoint_type, Resources::Types::String
+      class NeptuneClusterEndpointAttributes < Pangea::Resources::BaseAttributes
+        attribute? :cluster_endpoint_identifier, Resources::Types::String.optional
+        attribute? :cluster_identifier, Resources::Types::String.optional
+        attribute? :endpoint_type, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

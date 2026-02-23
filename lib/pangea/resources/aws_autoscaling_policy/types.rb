@@ -24,11 +24,11 @@ module Pangea
     module AWS
       module Types
         # Auto Scaling Policy resource attributes with validation
-        class AutoScalingPolicyAttributes < Dry::Struct
+        class AutoScalingPolicyAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Required
-          attribute :autoscaling_group_name, Resources::Types::String
+          attribute? :autoscaling_group_name, Resources::Types::String.optional
           attribute :name, Resources::Types::String.optional.default(nil)
 
           # Policy type determines which other attributes are valid
@@ -63,7 +63,7 @@ module Pangea
 
           # Validate policy type specific requirements
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             policy_type = attrs[:policy_type] || 'SimpleScaling'
 
             validate_policy_attributes!(policy_type, attrs)
@@ -120,18 +120,22 @@ module Pangea
           def simple_scaling?
             policy_type == 'SimpleScaling'
           end
+          alias_method :is_simple_scaling?, :simple_scaling?
 
           def step_scaling?
             policy_type == 'StepScaling'
           end
+          alias_method :is_step_scaling?, :step_scaling?
 
           def target_tracking?
             policy_type == 'TargetTrackingScaling'
           end
+          alias_method :is_target_tracking?, :target_tracking?
 
           def predictive?
             policy_type == 'PredictiveScaling'
           end
+          alias_method :is_predictive?, :predictive?
 
           def to_h
             hash = { autoscaling_group_name: autoscaling_group_name, policy_type: policy_type }

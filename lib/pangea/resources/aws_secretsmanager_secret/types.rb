@@ -25,16 +25,16 @@ module Pangea
         SecretResourcePolicy = Resources::Types::String.constructor { |value|
           # Validate it's proper JSON
           begin
-            parsed = JSON.parse(value)
-            unless parsed.is_a?(Hash)
+            parsed = ::JSON.parse(value)
+            unless parsed.is_a?(::Hash)
               raise Dry::Types::ConstraintError, "Secret policy must be a JSON object"
             end
             value
-          rescue JSON::ParserError => e
+          rescue ::JSON::ParserError => e
             raise Dry::Types::ConstraintError, "Invalid JSON in secret policy: #{e.message}"
           end
         }
-        class SecretsManagerSecretAttributes < Dry::Struct
+        class SecretsManagerSecretAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           attribute :name?, Resources::Types::SecretName.optional
@@ -48,7 +48,7 @@ module Pangea
           
           # Custom validation logic
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate secret name if provided
             if attrs[:name]
@@ -115,10 +115,10 @@ module Pangea
           def self.validate_secret_policy(policy)
             # Basic JSON validation
             begin
-              parsed = JSON.parse(policy)
+              parsed = ::JSON.parse(policy)
               
               # Must be a JSON object
-              unless parsed.is_a?(Hash)
+              unless parsed.is_a?(::Hash)
                 raise Dry::Struct::Error, "Secret policy must be a JSON object"
               end
               
@@ -127,7 +127,7 @@ module Pangea
                 raise Dry::Struct::Error, "Secret policy should have Version and Statement fields"
               end
               
-            rescue JSON::ParserError => e
+            rescue ::JSON::ParserError => e
               raise Dry::Struct::Error, "Invalid JSON in secret policy: #{e.message}"
             end
           end

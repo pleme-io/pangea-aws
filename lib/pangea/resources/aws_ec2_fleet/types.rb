@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2Fleet resources
       # Manages aws ec2 fleet resources.
-      class AwsEc2FleetAttributes < Dry::Struct
+      class AwsEc2FleetAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_fleet
         
         # Tags to apply to the resource

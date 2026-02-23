@@ -33,7 +33,7 @@ module Pangea
             rule_labels?: Resources::Types::Array.of(WafV2Schemas::RuleLabelSchema).optional,
             captcha_config?: WafV2Schemas::ImmunityTimeSchema,
             challenge_config?: WafV2Schemas::ImmunityTimeSchema
-          )
+          ).lax
         module WafV2RuleSchema
           include Dry.Types()
 

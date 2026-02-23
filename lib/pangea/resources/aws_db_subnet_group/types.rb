@@ -20,12 +20,12 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS RDS DB Subnet Group resources
-      class DbSubnetGroupAttributes < Dry::Struct
+      class DbSubnetGroupAttributes < Pangea::Resources::BaseAttributes
         # Subnet group name (required)
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
 
         # List of subnet IDs (minimum 2 subnets in different AZs required)
-        attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 2)
+        attribute? :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 2).optional
 
         # Description for the subnet group
         attribute :description, Resources::Types::String.optional.default("Managed by Pangea")
@@ -49,7 +49,10 @@ module Pangea
 
           # Validate subnet ID format
           attrs.subnet_ids.each do |subnet_id|
-            unless subnet_id.match?(/^subnet-[a-f0-9]+$/)
+            # Accept Terraform interpolation references
+            next if subnet_id.start_with?('${') && subnet_id.end_with?('}')
+
+            unless subnet_id.match?(/^subnet-[a-zA-Z0-9]+$/)
               raise Dry::Struct::Error, "Invalid subnet ID format: #{subnet_id}. Expected format: subnet-xxxxxxxx"
             end
           end

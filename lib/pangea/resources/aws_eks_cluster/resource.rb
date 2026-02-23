@@ -74,55 +74,36 @@ module Pangea
       #   })
       def aws_eks_cluster(name, attributes = {})
         # Validate attributes using dry-struct
-        cluster_attrs = AWS::Types::Types::EksClusterAttributes.new(attributes)
+        cluster_attrs = Types::EksClusterAttributes.new(attributes)
         
-        # Generate terraform resource block via terraform-synthesizer
-        resource(:aws_eks_cluster, name) do
-          # Use custom name if provided, otherwise use resource name
-          __send__(:name, cluster_attrs.name) if cluster_attrs.name
-          
-          # Required attributes
-          role_arn cluster_attrs.role_arn
-          version cluster_attrs.version
-          
-          # VPC configuration block
-          vpc_config do
-            subnet_ids cluster_attrs.vpc_config.subnet_ids
-            security_group_ids cluster_attrs.vpc_config.security_group_ids if cluster_attrs.vpc_config.security_group_ids.any?
-            endpoint_private_access cluster_attrs.vpc_config.endpoint_private_access
-            endpoint_public_access cluster_attrs.vpc_config.endpoint_public_access
-            public_access_cidrs cluster_attrs.vpc_config.public_access_cidrs if cluster_attrs.vpc_config.endpoint_public_access
-          end
-          
-          # Logging configuration
-          if cluster_attrs.enabled_cluster_log_types.any?
-            enabled_cluster_log_types cluster_attrs.enabled_cluster_log_types
-          end
-          
-          # Encryption configuration
-          if cluster_attrs.encryption_config.any?
-            cluster_attrs.encryption_config.each do |enc_config|
-              encryption_config do
-                resources enc_config.resources
-                provider do
-                  key_arn enc_config.provider.key_arn
-                end
-              end
-            end
-          end
-          
-          # Kubernetes network configuration
-          if cluster_attrs.kubernetes_network_config
-            kubernetes_network_config do
-              service_ipv4_cidr cluster_attrs.kubernetes_network_config.service_ipv4_cidr if cluster_attrs.kubernetes_network_config.service_ipv4_cidr
-              ip_family cluster_attrs.kubernetes_network_config.ip_family
-            end
-          end
-          
-          # Tags
-          if cluster_attrs.tags.any?
-            tags cluster_attrs.tags
-          end
+        # Build resource attributes as a hash
+        resource_attrs = {
+          role_arn: cluster_attrs.role_arn,
+          version: cluster_attrs.version,
+          vpc_config: cluster_attrs.vpc_config.to_h
+        }
+
+        resource_attrs[:name] = cluster_attrs.name if cluster_attrs.name
+        resource_attrs[:enabled_cluster_log_types] = cluster_attrs.enabled_cluster_log_types if cluster_attrs.enabled_cluster_log_types&.any?
+
+        if cluster_attrs.encryption_config&.any?
+          resource_attrs[:encryption_config] = cluster_attrs.encryption_config.map(&:to_h)
+        end
+
+        if cluster_attrs.kubernetes_network_config
+          resource_attrs[:kubernetes_network_config] = cluster_attrs.kubernetes_network_config.to_h
+        end
+
+        resource_attrs[:tags] = cluster_attrs.tags if cluster_attrs.tags&.any?
+
+        # Write to manifest: direct access for synthesizer (supports arrays/hashes),
+        # fall back to resource() for test mocks
+        if is_a?(AbstractSynthesizer)
+          translation[:manifest][:resource] ||= {}
+          translation[:manifest][:resource][:aws_eks_cluster] ||= {}
+          translation[:manifest][:resource][:aws_eks_cluster][name] = resource_attrs
+        else
+          resource(:aws_eks_cluster, name, resource_attrs)
         end
         
         # Return resource reference with available outputs

@@ -74,7 +74,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if rt_attrs.tags.any?
+          if rt_attrs.tags&.any?
             tags do
               rt_attrs.tags.each do |key, value|
                 public_send(key, value)

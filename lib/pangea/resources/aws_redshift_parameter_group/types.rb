@@ -24,25 +24,25 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Redshift Parameter Group resources
-        class RedshiftParameterGroupAttributes < Dry::Struct
+        class RedshiftParameterGroupAttributes < Pangea::Resources::BaseAttributes
           extend RedshiftParameterGroupClassMethods
           include RedshiftParameterGroupInstanceMethods
 
           # Parameter group name (required)
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Parameter group family (required)
           attribute :family, Resources::Types::String.default('redshift-1.0')
 
           # Description
-          attribute :description, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
 
           # Parameters
-          attribute :parameters, Resources::Types::Array.of(
+          attribute? :parameters, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               name: Resources::Types::String,
               value: Resources::Types::String
-            )
+            ).lax
           ).default([].freeze)
 
           # Tags

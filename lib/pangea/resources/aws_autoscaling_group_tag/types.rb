@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsAutoscalingGroupTag resources
       # Manages aws autoscaling group tag resources.
-      class AwsAutoscalingGroupTagAttributes < Dry::Struct
+      class AwsAutoscalingGroupTagAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_autoscaling_group_tag
         
         # Tags to apply to the resource

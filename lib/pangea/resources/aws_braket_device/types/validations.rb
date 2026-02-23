@@ -46,14 +46,14 @@ module Pangea
           end
 
           def self.validate_qubit_count!(attrs)
-            qubit_count = attrs.device_capabilities[:paradigm][:qubitCount]
+            qubit_count = attrs.device_capabilities&.dig(:paradigm)[:qubitCount]
             return if qubit_count.positive?
 
             raise Dry::Struct::Error, 'qubitCount must be positive'
           end
 
           def self.validate_execution_windows!(attrs)
-            windows = attrs.device_capabilities[:service][:executionWindows]
+            windows = attrs.device_capabilities&.dig(:service)[:executionWindows]
             return unless windows
 
             windows.each do |window|

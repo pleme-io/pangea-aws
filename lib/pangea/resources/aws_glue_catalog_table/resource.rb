@@ -48,7 +48,7 @@ module Pangea
             table_type table_attrs.table_type if table_attrs.table_type
             
             # Parameters
-            if table_attrs.parameters.any?
+            if table_attrs.parameters&.any?
               parameters do
                 table_attrs.parameters.each do |key, value|
                   public_send(key, value)
@@ -138,7 +138,7 @@ module Pangea
             view_expanded_text table_attrs.view_expanded_text if table_attrs.view_expanded_text
             
             # Target table
-            if table_attrs.target_table.any?
+            if table_attrs.target_table&.any?
               target_table do
                 tt = table_attrs.target_table
                 catalog_id tt[:catalog_id] if tt[:catalog_id]

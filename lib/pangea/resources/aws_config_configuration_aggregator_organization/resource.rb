@@ -1,0 +1,65 @@
+# frozen_string_literal: true
+# Copyright 2025 The Pangea Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+require 'pangea/resources/base'
+require 'pangea/resources/reference'
+require 'pangea/resources/aws_config_configuration_aggregator_organization/types'
+require 'pangea/resource_registry'
+
+module Pangea
+  module Resources
+    module AWS
+      # Create an AWS Config Configuration Aggregator Organization with type-safe attributes
+      #
+      # @param name [Symbol] The resource name
+      # @param attributes [Hash] Configuration Aggregator Organization attributes
+      # @option attributes [String] :name The name of the aggregator
+      # @option attributes [String] :role_arn The ARN of the IAM role for the aggregator
+      # @option attributes [Boolean] :all_regions Whether to aggregate from all regions
+      # @option attributes [Hash] :tags A map of tags to assign to the resource
+      # @return [ResourceReference] Reference object with outputs
+      def aws_config_configuration_aggregator_organization(name, attributes = {})
+        aggregator_attrs = Types::ConfigConfigurationAggregatorOrganizationAttributes.new(attributes)
+
+        resource(:aws_config_configuration_aggregator_organization, name) do
+          self.name aggregator_attrs.name if aggregator_attrs.name
+          role_arn aggregator_attrs.role_arn if aggregator_attrs.role_arn
+          all_regions aggregator_attrs.all_regions unless aggregator_attrs.all_regions.nil?
+
+          if aggregator_attrs.tags&.any?
+            tags do
+              aggregator_attrs.tags.each do |key, value|
+                public_send(key, value)
+              end
+            end
+          end
+        end
+
+        ResourceReference.new(
+          type: 'aws_config_configuration_aggregator_organization',
+          name: name,
+          resource_attributes: aggregator_attrs.to_h,
+          outputs: {
+            id: "${aws_config_configuration_aggregator_organization.#{name}.id}",
+            arn: "${aws_config_configuration_aggregator_organization.#{name}.arn}",
+            name: "${aws_config_configuration_aggregator_organization.#{name}.name}",
+            tags_all: "${aws_config_configuration_aggregator_organization.#{name}.tags_all}"
+          }
+        )
+      end
+    end
+  end
+end

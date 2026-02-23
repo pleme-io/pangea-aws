@@ -44,7 +44,7 @@ module Pangea
           force_destroy schedule_attrs.force_destroy
           
           # Apply tags if present
-          if schedule_attrs.tags.any?
+          if schedule_attrs.tags&.any?
             tags do
               schedule_attrs.tags.each do |key, value|
                 public_send(key, value)

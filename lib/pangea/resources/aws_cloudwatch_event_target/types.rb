@@ -28,14 +28,14 @@ module Pangea
     module AWS
       module Types
         # CloudWatch Event Target resource attributes with validation
-        class CloudWatchEventTargetAttributes < Dry::Struct
+        class CloudWatchEventTargetAttributes < Pangea::Resources::BaseAttributes
           include TargetServiceDetection
 
           transform_keys(&:to_sym)
 
           # Required attributes
-          attribute :rule, Resources::Types::String
-          attribute :arn, Resources::Types::String
+          attribute? :rule, Resources::Types::String.optional
+          attribute? :arn, Resources::Types::String.optional
           attribute :target_id, Resources::Types::String.optional.default(nil)
 
           # Optional attributes
@@ -61,7 +61,7 @@ module Pangea
 
           # Validate target configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             CloudWatchEventTargetValidators.validate_arn(attrs[:arn])
             CloudWatchEventTargetValidators.validate_input_options(attrs)

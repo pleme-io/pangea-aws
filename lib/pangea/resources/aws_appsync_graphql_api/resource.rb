@@ -45,7 +45,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs
       def aws_appsync_graphql_api(name, attributes = {})
         # Validate attributes using dry-struct
-        api_attrs = Types::Types::AppSyncGraphqlApiAttributes.new(attributes)
+        api_attrs = Types::AppSyncGraphqlApiAttributes.new(attributes)
         
         # Generate terraform resource block
         resource(:aws_appsync_graphql_api, name) do
@@ -93,18 +93,18 @@ module Pangea
           # Lambda authorizer config
           if api_attrs.lambda_authorizer_config
             lambda_authorizer_config do
-              authorizer_uri api_attrs.lambda_authorizer_config[:authorizer_uri]
-              authorizer_result_ttl_in_seconds api_attrs.lambda_authorizer_config[:authorizer_result_ttl_in_seconds] if api_attrs.lambda_authorizer_config[:authorizer_result_ttl_in_seconds]
-              identity_validation_expression api_attrs.lambda_authorizer_config[:identity_validation_expression] if api_attrs.lambda_authorizer_config[:identity_validation_expression]
+              authorizer_uri api_attrs.lambda_authorizer_config&.dig(:authorizer_uri)
+              authorizer_result_ttl_in_seconds api_attrs.lambda_authorizer_config&.dig(:authorizer_result_ttl_in_seconds) if api_attrs.lambda_authorizer_config&.dig(:authorizer_result_ttl_in_seconds)
+              identity_validation_expression api_attrs.lambda_authorizer_config&.dig(:identity_validation_expression) if api_attrs.lambda_authorizer_config&.dig(:identity_validation_expression)
             end
           end
           
           # Log config
           if api_attrs.log_config
             log_config do
-              cloudwatch_logs_role_arn api_attrs.log_config[:cloudwatch_logs_role_arn]
-              field_log_level api_attrs.log_config[:field_log_level]
-              exclude_verbose_content api_attrs.log_config[:exclude_verbose_content] if api_attrs.log_config.key?(:exclude_verbose_content)
+              cloudwatch_logs_role_arn api_attrs.log_config&.dig(:cloudwatch_logs_role_arn)
+              field_log_level api_attrs.log_config&.dig(:field_log_level)
+              exclude_verbose_content api_attrs.log_config&.dig(:exclude_verbose_content) if api_attrs.log_config.key?(:exclude_verbose_content)
             end
           end
           
@@ -113,10 +113,10 @@ module Pangea
           # OpenID Connect config
           if api_attrs.openid_connect_config
             openid_connect_config do
-              issuer api_attrs.openid_connect_config[:issuer]
-              auth_ttl api_attrs.openid_connect_config[:auth_ttl] if api_attrs.openid_connect_config[:auth_ttl]
-              client_id api_attrs.openid_connect_config[:client_id] if api_attrs.openid_connect_config[:client_id]
-              iat_ttl api_attrs.openid_connect_config[:iat_ttl] if api_attrs.openid_connect_config[:iat_ttl]
+              issuer api_attrs.openid_connect_config&.dig(:issuer)
+              auth_ttl api_attrs.openid_connect_config&.dig(:auth_ttl) if api_attrs.openid_connect_config&.dig(:auth_ttl)
+              client_id api_attrs.openid_connect_config&.dig(:client_id) if api_attrs.openid_connect_config&.dig(:client_id)
+              iat_ttl api_attrs.openid_connect_config&.dig(:iat_ttl) if api_attrs.openid_connect_config&.dig(:iat_ttl)
             end
           end
           
@@ -127,10 +127,10 @@ module Pangea
           # User pool config
           if api_attrs.user_pool_config
             user_pool_config do
-              user_pool_id api_attrs.user_pool_config[:user_pool_id]
-              app_id_client_regex api_attrs.user_pool_config[:app_id_client_regex] if api_attrs.user_pool_config[:app_id_client_regex]
-              aws_region api_attrs.user_pool_config[:aws_region] if api_attrs.user_pool_config[:aws_region]
-              default_action api_attrs.user_pool_config[:default_action] if api_attrs.user_pool_config[:default_action]
+              user_pool_id api_attrs.user_pool_config&.dig(:user_pool_id)
+              app_id_client_regex api_attrs.user_pool_config&.dig(:app_id_client_regex) if api_attrs.user_pool_config&.dig(:app_id_client_regex)
+              aws_region api_attrs.user_pool_config&.dig(:aws_region) if api_attrs.user_pool_config&.dig(:aws_region)
+              default_action api_attrs.user_pool_config&.dig(:default_action) if api_attrs.user_pool_config&.dig(:default_action)
             end
           end
           

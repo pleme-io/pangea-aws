@@ -41,7 +41,7 @@ module Pangea
           description subnet_group_attrs.generated_description
           
           # Apply tags if present
-          if subnet_group_attrs.tags.any?
+          if subnet_group_attrs.tags&.any?
             tags do
               subnet_group_attrs.tags.each do |key, value|
                 public_send(key, value)

@@ -21,11 +21,11 @@ module Pangea
       module Types
       # Type-safe attributes for AwsMemorydbSnapshot resources
       # Provides a MemoryDB Snapshot resource.
-      class MemorydbSnapshotAttributes < Dry::Struct
-        attribute :cluster_name, Resources::Types::String
-        attribute :name, Resources::Types::String
-        attribute :name_prefix, Resources::Types::String.optional
-        attribute :kms_key_id, Resources::Types::String.optional
+      class MemorydbSnapshotAttributes < Pangea::Resources::BaseAttributes
+        attribute? :cluster_name, Resources::Types::String.optional
+        attribute? :name, Resources::Types::String.optional
+        attribute? :name_prefix, Resources::Types::String.optional
+        attribute? :kms_key_id, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

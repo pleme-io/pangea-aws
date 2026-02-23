@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsVpcDhcpOptionsAssociation resources
       # Manages aws vpc dhcp options association resources.
-      class AwsVpcDhcpOptionsAssociationAttributes < Dry::Struct
+      class AwsVpcDhcpOptionsAssociationAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_vpc_dhcp_options_association
         
         # Tags to apply to the resource

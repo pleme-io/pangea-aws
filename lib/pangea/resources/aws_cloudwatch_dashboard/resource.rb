@@ -35,7 +35,7 @@ module Pangea
       # @example Simple dashboard with JSON body
       #   dashboard = aws_cloudwatch_dashboard(:app_dashboard, {
       #     dashboard_name: "application-monitoring",
-      #     dashboard_body_json: JSON.pretty_generate({
+      #     dashboard_body_json: ::JSON.pretty_generate({
       #       widgets: [
       #         {
       #           type: "metric",
@@ -122,12 +122,12 @@ module Pangea
       #   })
       def aws_cloudwatch_dashboard(name, attributes = {})
         # Validate attributes using dry-struct
-        dashboard_attrs = Types::Types::CloudWatchDashboardAttributes.new(attributes)
+        dashboard_attrs = Types::CloudWatchDashboardAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_cloudwatch_dashboard, name) do
           dashboard_name dashboard_attrs.dashboard_name
-          dashboard_body dashboard_attrs.to_h[:dashboard_body]
+          dashboard_body dashboard_attrs.to_h&.dig(:dashboard_body)
         end
         
         # Return resource reference with available outputs

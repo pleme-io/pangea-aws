@@ -21,38 +21,38 @@ module Pangea
             ArchiveContainerSettings = T::Hash.schema(
               m2ts_settings?: T::Hash.optional,
               raw_settings?: T::Hash.optional
-            )
+            ).lax
 
             ArchiveOutputSettings = T::Hash.schema(
               container_settings: ArchiveContainerSettings,
               extension?: T::String.optional,
               name_modifier?: T::String.optional
-            )
+            ).lax
 
             # Frame capture output settings
             FrameCaptureOutputSettings = T::Hash.schema(
               name_modifier?: T::String.optional
-            )
+            ).lax
 
             # HLS output settings
             AudioOnlyImage = T::Hash.schema(
               password_param?: T::String.optional,
               uri: T::String,
               username?: T::String.optional
-            )
+            ).lax
 
             AudioOnlyHlsSettings = T::Hash.schema(
               audio_group_id?: T::String.optional,
               audio_only_image?: AudioOnlyImage.optional,
               audio_track_type?: T::String.constrained(included_in: ['ALTERNATE_AUDIO_AUTO_SELECT', 'ALTERNATE_AUDIO_AUTO_SELECT_DEFAULT', 'ALTERNATE_AUDIO_NOT_AUTO_SELECT', 'AUDIO_ONLY_VARIANT_STREAM']).optional,
               segment_type?: T::String.constrained(included_in: ['AAC', 'FMP4']).optional
-            )
+            ).lax
 
             Fmp4HlsSettings = T::Hash.schema(
               audio_rendition_sets?: T::String.optional,
               nielsen_id3_behavior?: T::String.constrained(included_in: ['NO_PASSTHROUGH', 'PASSTHROUGH']).optional,
               timed_metadata_behavior?: T::String.constrained(included_in: ['NO_PASSTHROUGH', 'PASSTHROUGH']).optional
-            )
+            ).lax
 
             M3u8Settings = T::Hash.schema(
               audio_frames_per_pes?: T::Integer.optional,
@@ -72,36 +72,36 @@ module Pangea
               timed_metadata_pid?: T::String.optional,
               transport_stream_id?: T::Integer.optional,
               video_pid?: T::String.optional
-            )
+            ).lax
 
             StandardHlsSettings = T::Hash.schema(
               audio_rendition_sets?: T::String.optional,
               m3u8_settings: M3u8Settings
-            )
+            ).lax
 
             HlsSettingsContainer = T::Hash.schema(
               audio_only_hls_settings?: AudioOnlyHlsSettings.optional,
               fmp4_hls_settings?: Fmp4HlsSettings.optional,
               standard_hls_settings?: StandardHlsSettings.optional
-            )
+            ).lax
 
             HlsOutputSettings = T::Hash.schema(
               h265_packaging_type?: T::String.constrained(included_in: ['HEV1', 'HVC1']).optional,
               hls_settings: HlsSettingsContainer,
               name_modifier?: T::String.optional,
               segment_modifier?: T::String.optional
-            )
+            ).lax
 
             # MS Smooth output settings
             MsSmoothOutputSettings = T::Hash.schema(
               h265_packaging_type?: T::String.constrained(included_in: ['HEV1', 'HVC1']).optional,
               name_modifier?: T::String.optional
-            )
+            ).lax
 
             # Multiplex output settings
             MultiplexOutputSettings = T::Hash.schema(
               destination: OGS::DestinationRef
-            )
+            ).lax
 
             # RTMP output settings
             RtmpOutputSettings = T::Hash.schema(
@@ -109,25 +109,25 @@ module Pangea
               connection_retry_interval?: T::Integer.optional,
               destination: OGS::DestinationRef,
               num_retries?: T::Integer.optional
-            )
+            ).lax
 
             # UDP FEC output settings
             FecOutputSettings = T::Hash.schema(
               column_depth?: T::Integer.optional,
               include_fec?: T::String.constrained(included_in: ['COLUMN', 'COLUMN_AND_ROW']).optional,
               row_length?: T::Integer.optional
-            )
+            ).lax
 
             UdpContainerSettings = T::Hash.schema(
               m2ts_settings?: T::Hash.optional
-            )
+            ).lax
 
             UdpOutputSettings = T::Hash.schema(
               buffer_msec?: T::Integer.optional,
               container_settings: UdpContainerSettings,
               destination: OGS::DestinationRef,
               fec_output_settings?: FecOutputSettings.optional
-            )
+            ).lax
             # Output settings container
             Settings = T::Hash.schema(
               archive_output_settings?: ArchiveOutputSettings.optional,
@@ -138,7 +138,7 @@ module Pangea
               multiplex_output_settings?: MultiplexOutputSettings.optional,
               rtmp_output_settings?: RtmpOutputSettings.optional,
               udp_output_settings?: UdpOutputSettings.optional
-            )
+            ).lax
 
             # Output definition
             Output = T::Hash.schema(
@@ -147,7 +147,7 @@ module Pangea
               output_name?: T::String.optional,
               output_settings: Settings,
               video_description_name?: T::String.optional
-            )
+            ).lax
 
 
           end

@@ -22,7 +22,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS CloudFormation Stack resources
-        class CloudFormationStackAttributes < Dry::Struct
+        class CloudFormationStackAttributes < Pangea::Resources::BaseAttributes
           require_relative 'types/validation'
           require_relative 'types/instance_methods'
           require_relative 'types/configs'
@@ -30,17 +30,17 @@ module Pangea
           include InstanceMethods
 
           # Stack name (required)
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Template body or URL
-          attribute :template_body, Resources::Types::String.optional
-          attribute :template_url, Resources::Types::String.optional
+          attribute? :template_body, Resources::Types::String.optional
+          attribute? :template_url, Resources::Types::String.optional
 
           # Stack parameters
           attribute :parameters, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
 
           # Stack capabilities (for IAM resources)
-          attribute :capabilities, Resources::Types::Array.of(
+          attribute? :capabilities, Resources::Types::Array.of(
             Resources::Types::String.constrained(included_in: ["CAPABILITY_IAM",
               "CAPABILITY_NAMED_IAM",
               "CAPABILITY_AUTO_EXPAND"])
@@ -50,11 +50,11 @@ module Pangea
           attribute :notification_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
           # Stack policy (JSON document)
-          attribute :policy_body, Resources::Types::String.optional
-          attribute :policy_url, Resources::Types::String.optional
+          attribute? :policy_body, Resources::Types::String.optional
+          attribute? :policy_url, Resources::Types::String.optional
 
           # Stack timeout (in minutes)
-          attribute :timeout_in_minutes, Resources::Types::Integer.optional.constrained(gteq: 1)
+          attribute? :timeout_in_minutes, Resources::Types::Integer.optional.constrained(gteq: 1)
 
           # Disable rollback on failure
           attribute :disable_rollback, Resources::Types::Bool.default(false)
@@ -63,7 +63,7 @@ module Pangea
           attribute :enable_termination_protection, Resources::Types::Bool.default(false)
 
           # IAM role for CloudFormation service
-          attribute :iam_role_arn, Resources::Types::String.optional
+          attribute? :iam_role_arn, Resources::Types::String.optional
 
           # Stack creation options
           attribute :on_failure, Resources::Types::String.default("ROLLBACK").enum("DO_NOTHING", "ROLLBACK", "DELETE")

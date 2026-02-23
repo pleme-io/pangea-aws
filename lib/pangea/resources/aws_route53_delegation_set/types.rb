@@ -20,9 +20,9 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS Route53 Delegation Set resources
-      class Route53DelegationSetAttributes < Dry::Struct
+      class Route53DelegationSetAttributes < Pangea::Resources::BaseAttributes
         # Reference name for the delegation set (optional)
-        attribute :reference_name, Resources::Types::String.optional
+        attribute? :reference_name, Resources::Types::String.optional
 
         # Whether to use the same delegation set for all hosted zones
         attribute :reusable_delegation_set, Resources::Types::Bool.default(true)

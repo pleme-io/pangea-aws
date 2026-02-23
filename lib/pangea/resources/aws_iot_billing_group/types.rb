@@ -24,11 +24,11 @@ module Pangea
     # They help organize devices for billing purposes and provide detailed cost insights.
     module AwsIotBillingGroupTypes
       # Properties for billing group configuration
-      class BillingGroupProperties < Dry::Struct
+      class BillingGroupProperties < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # Description of the billing group
-        attribute :description, Resources::Types::String.optional
+        attribute? :description, Resources::Types::String.optional
       end
 
       # Main attributes for IoT billing group resource

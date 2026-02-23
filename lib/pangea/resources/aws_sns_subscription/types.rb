@@ -23,13 +23,13 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS SNS Subscription resources
-        class SNSSubscriptionAttributes < Dry::Struct
+        class SNSSubscriptionAttributes < Pangea::Resources::BaseAttributes
           include SNSSubscriptionHelpers
           transform_keys(&:to_sym)
 
-          attribute :topic_arn, Resources::Types::String
-          attribute :protocol, Resources::Types::String.constrained(included_in: ['email', 'email-json', 'sms', 'sqs', 'lambda', 'http', 'https', 'application', 'firehose'])
-          attribute :endpoint, Resources::Types::String
+          attribute? :topic_arn, Resources::Types::String.optional
+          attribute? :protocol, Resources::Types::String.constrained(included_in: ['email', 'email-json', 'sms', 'sqs', 'lambda', 'http', 'https', 'application', 'firehose']).optional
+          attribute? :endpoint, Resources::Types::String.optional
           attribute? :filter_policy, Resources::Types::String.optional
           attribute :filter_policy_scope, Resources::Types::String.default('MessageAttributes').enum('MessageAttributes', 'MessageBody')
           attribute :raw_message_delivery, Resources::Types::Bool.default(false)

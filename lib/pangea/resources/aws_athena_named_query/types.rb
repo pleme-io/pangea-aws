@@ -21,7 +21,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Athena Named Query resources
-        class AthenaNamedQueryAttributes < Dry::Struct
+        class AthenaNamedQueryAttributes < Pangea::Resources::BaseAttributes
           require_relative 'types/query_analysis'
           require_relative 'types/query_templates'
 
@@ -29,16 +29,16 @@ module Pangea
           extend QueryTemplates
 
           # Query name (required)
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Database name
-          attribute :database, Resources::Types::String
+          attribute? :database, Resources::Types::String.optional
 
           # Query string (SQL)
-          attribute :query, Resources::Types::String
+          attribute? :query, Resources::Types::String.optional
 
           # Query description
-          attribute :description, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
 
           # Workgroup where query will be saved
           attribute :workgroup, Resources::Types::String.default('primary')

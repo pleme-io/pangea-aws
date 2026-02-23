@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2AmiLaunchPermission resources
       # Manages aws ec2 ami launch permission resources.
-      class AwsEc2AmiLaunchPermissionAttributes < Dry::Struct
+      class AwsEc2AmiLaunchPermissionAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_ami_launch_permission
         
         # Tags to apply to the resource

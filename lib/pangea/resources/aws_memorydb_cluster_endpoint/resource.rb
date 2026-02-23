@@ -36,7 +36,7 @@ module Pangea
           cluster_name attrs.cluster_name if attrs.cluster_name
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

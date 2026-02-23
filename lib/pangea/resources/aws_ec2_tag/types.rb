@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2Tag resources
       # Manages aws ec2 tag resources.
-      class AwsEc2TagAttributes < Dry::Struct
+      class AwsEc2TagAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_tag
         
         # Tags to apply to the resource

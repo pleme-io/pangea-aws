@@ -39,37 +39,37 @@ module Pangea
           # Configure CORS if specified
           if headers_policy_attrs.cors_config
             cors_config do
-              access_control_allow_credentials headers_policy_attrs.cors_config[:access_control_allow_credentials]
-              origin_override headers_policy_attrs.cors_config[:origin_override]
+              access_control_allow_credentials headers_policy_attrs.cors_config&.dig(:access_control_allow_credentials)
+              origin_override headers_policy_attrs.cors_config&.dig(:origin_override)
               
-              if headers_policy_attrs.cors_config[:access_control_allow_headers]
+              if headers_policy_attrs.cors_config&.dig(:access_control_allow_headers)
                 access_control_allow_headers do
-                  items headers_policy_attrs.cors_config[:access_control_allow_headers][:items]
+                  items headers_policy_attrs.cors_config&.dig(:access_control_allow_headers)[:items]
                 end
               end
               
               access_control_allow_methods do
-                items headers_policy_attrs.cors_config[:access_control_allow_methods][:items]
+                items headers_policy_attrs.cors_config&.dig(:access_control_allow_methods)[:items]
               end
               
               access_control_allow_origins do
-                items headers_policy_attrs.cors_config[:access_control_allow_origins][:items]
+                items headers_policy_attrs.cors_config&.dig(:access_control_allow_origins)[:items]
               end
               
-              if headers_policy_attrs.cors_config[:access_control_expose_headers]
+              if headers_policy_attrs.cors_config&.dig(:access_control_expose_headers)
                 access_control_expose_headers do
-                  items headers_policy_attrs.cors_config[:access_control_expose_headers][:items]
+                  items headers_policy_attrs.cors_config&.dig(:access_control_expose_headers)[:items]
                 end
               end
               
-              access_control_max_age_sec headers_policy_attrs.cors_config[:access_control_max_age_sec] if headers_policy_attrs.cors_config[:access_control_max_age_sec]
+              access_control_max_age_sec headers_policy_attrs.cors_config&.dig(:access_control_max_age_sec) if headers_policy_attrs.cors_config&.dig(:access_control_max_age_sec)
             end
           end
           
           # Configure custom headers if specified
           if headers_policy_attrs.custom_headers_config&.dig(:items)
             custom_headers_config do
-              headers_policy_attrs.custom_headers_config[:items].each do |header_config|
+              headers_policy_attrs.custom_headers_config&.dig(:items).each do |header_config|
                 items do
                   header header_config[:header]
                   value header_config[:value]
@@ -82,7 +82,7 @@ module Pangea
           # Configure remove headers if specified
           if headers_policy_attrs.remove_headers_config
             remove_headers_config do
-              headers_policy_attrs.remove_headers_config[:items].each do |header_config|
+              headers_policy_attrs.remove_headers_config&.dig(:items).each do |header_config|
                 items do
                   header header_config[:header]
                 end
@@ -93,32 +93,32 @@ module Pangea
           # Configure security headers if specified
           if headers_policy_attrs.security_headers_config
             security_headers_config do
-              if headers_policy_attrs.security_headers_config[:content_type_options]
+              if headers_policy_attrs.security_headers_config&.dig(:content_type_options)
                 content_type_options do
-                  override headers_policy_attrs.security_headers_config[:content_type_options][:override]
+                  override headers_policy_attrs.security_headers_config&.dig(:content_type_options)[:override]
                 end
               end
               
-              if headers_policy_attrs.security_headers_config[:frame_options]
+              if headers_policy_attrs.security_headers_config&.dig(:frame_options)
                 frame_options do
-                  frame_option headers_policy_attrs.security_headers_config[:frame_options][:frame_option]
-                  override headers_policy_attrs.security_headers_config[:frame_options][:override]
+                  frame_option headers_policy_attrs.security_headers_config&.dig(:frame_options)[:frame_option]
+                  override headers_policy_attrs.security_headers_config&.dig(:frame_options)[:override]
                 end
               end
               
-              if headers_policy_attrs.security_headers_config[:referrer_policy]
+              if headers_policy_attrs.security_headers_config&.dig(:referrer_policy)
                 referrer_policy do
-                  referrer_policy headers_policy_attrs.security_headers_config[:referrer_policy][:referrer_policy]
-                  override headers_policy_attrs.security_headers_config[:referrer_policy][:override]
+                  referrer_policy headers_policy_attrs.security_headers_config&.dig(:referrer_policy)[:referrer_policy]
+                  override headers_policy_attrs.security_headers_config&.dig(:referrer_policy)[:override]
                 end
               end
               
-              if headers_policy_attrs.security_headers_config[:strict_transport_security]
+              if headers_policy_attrs.security_headers_config&.dig(:strict_transport_security)
                 strict_transport_security do
-                  access_control_max_age_sec headers_policy_attrs.security_headers_config[:strict_transport_security][:access_control_max_age_sec]
-                  include_subdomains headers_policy_attrs.security_headers_config[:strict_transport_security][:include_subdomains] if headers_policy_attrs.security_headers_config[:strict_transport_security][:include_subdomains]
-                  override headers_policy_attrs.security_headers_config[:strict_transport_security][:override]
-                  preload headers_policy_attrs.security_headers_config[:strict_transport_security][:preload] if headers_policy_attrs.security_headers_config[:strict_transport_security][:preload]
+                  access_control_max_age_sec headers_policy_attrs.security_headers_config&.dig(:strict_transport_security)[:access_control_max_age_sec]
+                  include_subdomains headers_policy_attrs.security_headers_config&.dig(:strict_transport_security)[:include_subdomains] if headers_policy_attrs.security_headers_config&.dig(:strict_transport_security)[:include_subdomains]
+                  override headers_policy_attrs.security_headers_config&.dig(:strict_transport_security)[:override]
+                  preload headers_policy_attrs.security_headers_config&.dig(:strict_transport_security)[:preload] if headers_policy_attrs.security_headers_config&.dig(:strict_transport_security)[:preload]
                 end
               end
             end
@@ -127,8 +127,8 @@ module Pangea
           # Configure server timing headers if specified
           if headers_policy_attrs.server_timing_headers_config
             server_timing_headers_config do
-              enabled headers_policy_attrs.server_timing_headers_config[:enabled]
-              sampling_rate headers_policy_attrs.server_timing_headers_config[:sampling_rate] if headers_policy_attrs.server_timing_headers_config[:sampling_rate]
+              enabled headers_policy_attrs.server_timing_headers_config&.dig(:enabled)
+              sampling_rate headers_policy_attrs.server_timing_headers_config&.dig(:sampling_rate) if headers_policy_attrs.server_timing_headers_config&.dig(:sampling_rate)
             end
           end
         end

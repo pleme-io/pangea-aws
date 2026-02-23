@@ -30,19 +30,19 @@ module Pangea
         AppSyncRuntime = Resources::Types::Hash.schema(
           name: Resources::Types::String.constrained(included_in: ['APPSYNC_JS']),
           runtime_version: Resources::Types::String.constrained(format: /\A\d+\.\d+\.\d+\z/)
-        )
+        ).lax
         end
 
         # AppSync pipeline config
         AppSyncPipelineConfig = Resources::Types::Hash.schema(
           functions: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
-        )
+        ).lax
 
         # AppSync caching config
         AppSyncCachingConfig = Resources::Types::Hash.schema(
           caching_keys?: Resources::Types::Array.of(Resources::Types::String).optional,
           ttl?: Resources::Types::Integer.constrained(gteq: 1, lteq: 3600).optional
-        )
+        ).lax
 
         # AppSync sync config for subscriptions
         AppSyncSyncConfig = Resources::Types::Hash.schema(
@@ -50,21 +50,21 @@ module Pangea
           conflict_handler?: Resources::Types::String.constrained(included_in: ['OPTIMISTIC_CONCURRENCY', 'LAMBDA', 'AUTOMERGE', 'NONE']).optional,
           lambda_conflict_handler_config?: Resources::Types::Hash.schema(
             lambda_conflict_handler_arn?: Resources::Types::String.constrained(format: /\Aarn:aws:lambda:/).optional
-          ).optional
+          ).lax.optional
         )
 
         # AppSync Resolver resource attributes
-        class AppSyncResolverAttributes < Dry::Struct
+        class AppSyncResolverAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :api_id, Resources::Types::String
+          attribute? :api_id, Resources::Types::String.optional
           
-          attribute :type, Resources::Types::String.constrained(
+          attribute? :type, Resources::Types::String.constrained(
             format: /\A[A-Z][a-zA-Z0-9_]*\z/,
             size: 1..65
           )
           
-          attribute :field, Resources::Types::String.constrained(
+          attribute? :field, Resources::Types::String.constrained(
             format: /\A[a-zA-Z][a-zA-Z0-9_]*\z/,
             size: 1..65
           )
@@ -93,7 +93,7 @@ module Pangea
 
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate resolver configuration based on kind
             if attrs[:kind] == 'PIPELINE'

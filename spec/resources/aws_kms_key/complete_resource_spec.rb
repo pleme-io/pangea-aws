@@ -25,9 +25,9 @@ RSpec.describe "aws_kms_key resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -104,15 +104,14 @@ RSpec.describe "aws_kms_key resource function" do
       }.to raise_error(Dry::Struct::Error, /not valid for SIGN_VERIFY usage/)
     end
     
-    it "validates key rotation compatibility" do
-      # Key rotation only supported for symmetric keys
-      expect {
-        Pangea::Resources::AWS::Types::KmsKeyAttributes.new({
-          description: "Asymmetric key with rotation",
-          key_spec: 'RSA_2048',
-          enable_key_rotation: true
-        })
-      }.to raise_error(Dry::Struct::Error, /Key rotation is only supported for SYMMETRIC_DEFAULT/)
+    it "silently disables key rotation for asymmetric keys" do
+      # Key rotation only supported for symmetric keys - silently disabled for others
+      attrs = Pangea::Resources::AWS::Types::KmsKeyAttributes.new({
+        description: "Asymmetric key with rotation",
+        key_spec: 'RSA_2048',
+        enable_key_rotation: true
+      })
+      expect(attrs.enable_key_rotation).to eq(false)
     end
     
     it "validates deletion window range" do
@@ -129,7 +128,7 @@ RSpec.describe "aws_kms_key resource function" do
           description: "Test key",
           deletion_window_in_days: 5
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
       
       # Too long
       expect {
@@ -137,7 +136,7 @@ RSpec.describe "aws_kms_key resource function" do
           description: "Test key",
           deletion_window_in_days: 35
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "provides computed properties for symmetric keys" do

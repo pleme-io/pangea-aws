@@ -23,14 +23,14 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS IAM Role Policy Attachment resources
-        class IamRolePolicyAttachmentAttributes < Dry::Struct
+        class IamRolePolicyAttachmentAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Role name or ARN (required)
-          attribute :role, Resources::Types::String
+          attribute? :role, Resources::Types::String.optional
 
           # Policy ARN (required)
-          attribute :policy_arn, Resources::Types::String
+          attribute? :policy_arn, Resources::Types::String.optional
 
           # Custom validation
           def self.new(attributes = {})
@@ -107,17 +107,19 @@ module Pangea
 
           # Categorize policy type for better organization
           def policy_category
+            if policy_arn.include?('service-role/')
+              return :service_linked
+            end
+
             case policy_name
-            when /Admin/, /FullAccess/
-              :administrative
-            when /ReadOnly/, /ViewOnly/
-              :read_only
             when /PowerUser/
               :power_user
-            when /Service/
-              :service_linked
-            when /Lambda/, /EC2/, /S3/, /RDS/
+            when /ReadOnly/, /ViewOnly/
+              :read_only
+            when /Lambda/, /EC2/, /S3/, /RDS/, /ECS/, /DynamoDB/, /SQS/, /SNS/, /CloudWatch/
               :service_specific
+            when /Admin/, /\AIAMFullAccess\z/
+              :administrative
             else
               :custom
             end

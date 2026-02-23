@@ -39,7 +39,7 @@ module Pangea
           memory_store_retention_period_in_hours attrs.memory_store_retention_period_in_hours if attrs.memory_store_retention_period_in_hours
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

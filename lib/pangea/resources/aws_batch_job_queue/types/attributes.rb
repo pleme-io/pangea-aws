@@ -10,17 +10,18 @@ module Pangea
     module AWS
       module Types
         # AWS Batch Job Queue attributes with validation
-        class BatchJobQueueAttributes < Dry::Struct
+        class BatchJobQueueAttributes < Pangea::Resources::BaseAttributes
+          extend Pangea::Resources::AWS::Types::BatchJobQueueTemplates
           transform_keys(&:to_sym)
 
-          attribute :name, Resources::Types::String
-          attribute :state, Resources::Types::String
-          attribute :priority, Resources::Types::Integer
-          attribute :compute_environment_order, Resources::Types::Array
+          attribute? :name, Resources::Types::String.optional
+          attribute? :state, Resources::Types::String.optional
+          attribute? :priority, Resources::Types::Integer.optional
+          attribute :compute_environment_order, Resources::Types::Array.default([].freeze)
           attribute? :tags, Resources::Types::Hash.optional
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             validate_job_queue_name(attrs[:name]) if attrs[:name]
             raise Dry::Struct::Error, "Job queue state must be 'ENABLED' or 'DISABLED'" if attrs[:state] && !%w[ENABLED DISABLED].include?(attrs[:state])
@@ -48,7 +49,7 @@ module Pangea
             raise Dry::Struct::Error, 'Compute environment order must be a non-empty array' unless compute_envs.is_a?(Array) && !compute_envs.empty?
 
             compute_envs.each_with_index do |env, index|
-              raise Dry::Struct::Error, "Compute environment order item #{index} must be a hash" unless env.is_a?(Hash)
+              raise Dry::Struct::Error, "Compute environment order item #{index} must be a hash" unless env.is_a?(::Hash)
               raise Dry::Struct::Error, "Compute environment order item #{index} must have 'order' and 'compute_environment' fields" unless env[:order] && env[:compute_environment]
               raise Dry::Struct::Error, 'Compute environment order must be a non-negative integer' unless env[:order].is_a?(Integer) && env[:order] >= 0
               raise Dry::Struct::Error, 'Compute environment must be a non-empty string' unless env[:compute_environment].is_a?(String) && !env[:compute_environment].empty?

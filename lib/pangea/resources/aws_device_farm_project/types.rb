@@ -22,9 +22,9 @@ module Pangea
       module Types
         # Main attributes for Device Farm project
         unless const_defined?(:Attributes)
-        class Attributes < Dry::Struct
+        class Attributes < Pangea::Resources::BaseAttributes
           # Required attributes
-          attribute :name, Pangea::Resources::Types::String
+          attribute? :name, Pangea::Resources::Types::String.optional
           
           # Optional attributes
           attribute :default_job_timeout_minutes?, Pangea::Resources::Types::Integer.constrained(gteq: 5, lteq: 150)
@@ -41,9 +41,9 @@ module Pangea
         end
 
         # Reference for Device Farm project resources
-        class Reference < Dry::Struct
-          attribute :id, Pangea::Resources::Types::String
-          attribute :arn, Pangea::Resources::Types::String
+        class Reference < Pangea::Resources::BaseAttributes
+          attribute? :id, Pangea::Resources::Types::String.optional
+          attribute? :arn, Pangea::Resources::Types::String.optional
         end
       end
         end

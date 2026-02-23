@@ -46,16 +46,16 @@ module Pangea
           token object_lock_attrs.token if object_lock_attrs.token
           
           # Configure default retention rule
-          if object_lock_attrs.rule[:default_retention]
+          if object_lock_attrs.rule&.dig(:default_retention)
             rule do
               default_retention do
-                mode object_lock_attrs.rule[:default_retention][:mode]
+                mode object_lock_attrs.rule&.dig(:default_retention)[:mode]
                 
                 # Set either days or years (validation ensures only one is specified)
-                if object_lock_attrs.rule[:default_retention][:days]
-                  days object_lock_attrs.rule[:default_retention][:days]
-                elsif object_lock_attrs.rule[:default_retention][:years]
-                  years object_lock_attrs.rule[:default_retention][:years]
+                if object_lock_attrs.rule&.dig(:default_retention)[:days]
+                  days object_lock_attrs.rule&.dig(:default_retention)[:days]
+                elsif object_lock_attrs.rule&.dig(:default_retention)[:years]
+                  years object_lock_attrs.rule&.dig(:default_retention)[:years]
                 end
               end
             end

@@ -25,10 +25,10 @@ module Pangea
           type?: Resources::Types::String.constrained(included_in: ['KEY_ONLY', 'VALUE_ONLY', 'KEY_AND_VALUE']).optional,
           key?: Resources::Types::String.optional,
           value?: Resources::Types::String.optional
-        )
+        ).lax
 
         # Tag filter attributes for CodeDeploy deployment groups
-        class TagFilterAttributes < Dry::Struct
+        class TagFilterAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # EC2 tag filters (for EC2/Server platform)

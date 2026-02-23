@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS CodeCommit Repository resources
-      class CodeCommitRepositoryAttributes < Dry::Struct
+      class CodeCommitRepositoryAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Repository name (required)
-        attribute :repository_name, Resources::Types::String.constrained(
+        attribute? :repository_name, Resources::Types::String.constrained(
           format: /\A[\w.-]+\z/,
           max_size: 100
         )
@@ -40,7 +40,7 @@ module Pangea
         attribute? :kms_key_id, Resources::Types::String.optional
 
         # Trigger configuration
-        attribute :triggers, Resources::Types::Array.of(
+        attribute? :triggers, Resources::Types::Array.of(
           Resources::Types::Hash.schema(
             name: Resources::Types::String.constrained(max_size: 100),
             destination_arn: Resources::Types::String,
@@ -49,7 +49,7 @@ module Pangea
             events: Resources::Types::Array.of(
               Resources::Types::String.constrained(included_in: ['all', 'updateReference', 'createReference', 'deleteReference'])
             )
-          )
+          ).lax
         ).default([].freeze)
 
         # Tags

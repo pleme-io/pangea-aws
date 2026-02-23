@@ -94,7 +94,7 @@ module Pangea
       #   })
       def aws_codeartifact_repository(name, attributes = {})
         # Validate attributes using dry-struct
-        repo_attrs = Types::Types::CodeArtifactRepositoryAttributes.new(attributes)
+        repo_attrs = Types::CodeArtifactRepositoryAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_codeartifact_repository, name) do
@@ -114,7 +114,7 @@ module Pangea
           description repo_attrs.description if repo_attrs.description
           
           # Upstream repositories
-          if repo_attrs.upstream.any?
+          if repo_attrs.upstream&.any?
             repo_attrs.upstream.each do |upstream_config|
               upstream do
                 repository_name upstream_config[:repository_name]
@@ -123,14 +123,14 @@ module Pangea
           end
           
           # External connections
-          if repo_attrs.external_connections && repo_attrs.external_connections[:external_connection_name]
+          if repo_attrs.external_connections && repo_attrs.external_connections&.dig(:external_connection_name)
             external_connections do
-              external_connection_name repo_attrs.external_connections[:external_connection_name]
+              external_connection_name repo_attrs.external_connections&.dig(:external_connection_name)
             end
           end
           
           # Apply tags if present
-          if repo_attrs.tags.any?
+          if repo_attrs.tags&.any?
             tags do
               repo_attrs.tags.each do |key, value|
                 public_send(key, value)

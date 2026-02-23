@@ -21,13 +21,13 @@ module Pangea
       module Types
       # Type-safe attributes for AwsNeptuneEventSubscription resources
       # Provides a Neptune event subscription resource.
-      class NeptuneEventSubscriptionAttributes < Dry::Struct
-        attribute :name, Resources::Types::String
-        attribute :sns_topic_arn, Resources::Types::String
-        attribute :source_type, Resources::Types::String.optional
+      class NeptuneEventSubscriptionAttributes < Pangea::Resources::BaseAttributes
+        attribute? :name, Resources::Types::String.optional
+        attribute? :sns_topic_arn, Resources::Types::String.optional
+        attribute? :source_type, Resources::Types::String.optional
         attribute :source_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         attribute :event_categories, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
-        attribute :enabled, Resources::Types::Bool.optional
+        attribute? :enabled, Resources::Types::Bool.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

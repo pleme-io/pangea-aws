@@ -21,9 +21,9 @@ module Pangea
       module Types
       # Type-safe attributes for AwsRamManagedPermission resources
       # Retrieves information about a Resource Access Manager (RAM) managed permission.
-      class RamManagedPermissionAttributes < Dry::Struct
-        attribute :name, Resources::Types::String
-        attribute :resource_type, Resources::Types::String.optional
+      class RamManagedPermissionAttributes < Pangea::Resources::BaseAttributes
+        attribute? :name, Resources::Types::String.optional
+        attribute? :resource_type, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

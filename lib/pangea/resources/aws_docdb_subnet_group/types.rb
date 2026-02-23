@@ -21,9 +21,9 @@ module Pangea
       module Types
       # Type-safe attributes for AwsDocdbSubnetGroup resources
       # Provides a DocumentDB subnet group resource.
-      class DocdbSubnetGroupAttributes < Dry::Struct
-        attribute :name, Resources::Types::String
-        attribute :description, Resources::Types::String.optional
+      class DocdbSubnetGroupAttributes < Pangea::Resources::BaseAttributes
+        attribute? :name, Resources::Types::String.optional
+        attribute? :description, Resources::Types::String.optional
         attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         
         # Tags to apply to the resource

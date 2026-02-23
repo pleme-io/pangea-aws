@@ -37,7 +37,7 @@ module Pangea
           resource_share_arn attrs.resource_share_arn if attrs.resource_share_arn
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

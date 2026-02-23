@@ -38,7 +38,7 @@ module Pangea
           auto_enable_controls account_attrs.auto_enable_controls
           
           # Apply tags if present
-          if account_attrs.tags.any?
+          if account_attrs.tags&.any?
             tags do
               account_attrs.tags.each do |key, value|
                 public_send(key, value)

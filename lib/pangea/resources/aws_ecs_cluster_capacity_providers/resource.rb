@@ -37,7 +37,7 @@ module Pangea
           cluster_name providers_attrs.cluster_name
           
           # Capacity providers
-          capacity_providers providers_attrs.capacity_providers if providers_attrs.capacity_providers.any?
+          capacity_providers providers_attrs.capacity_providers if providers_attrs.capacity_providers&.any?
           
           # Default capacity provider strategy
           providers_attrs.default_capacity_provider_strategy.each do |strategy|
@@ -67,7 +67,7 @@ module Pangea
             spot_prioritized: providers_attrs.spot_prioritized?,
             estimated_spot_savings_percent: providers_attrs.estimated_spot_savings_percent,
             provider_count: providers_attrs.capacity_providers.size,
-            has_default_strategy: providers_attrs.default_capacity_provider_strategy.any?
+            has_default_strategy: providers_attrs.default_capacity_provider_strategy&.any?
           }
         )
       end

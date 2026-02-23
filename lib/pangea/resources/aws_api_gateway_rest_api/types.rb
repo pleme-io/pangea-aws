@@ -21,24 +21,24 @@ module Pangea
     module AWS
       module Types
         # API Gateway REST API attributes with validation
-        class ApiGatewayRestApiAttributes < Dry::Struct
+        class ApiGatewayRestApiAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Core attributes
-          attribute :name, Pangea::Resources::Types::String
-          attribute :description, Pangea::Resources::Types::String.optional
+          attribute? :name, Pangea::Resources::Types::String.optional
+          attribute? :description, Pangea::Resources::Types::String.optional
           
           # API type - EDGE (CloudFront), REGIONAL, or PRIVATE
           attribute? :endpoint_configuration do
-            attribute :types, Pangea::Resources::Types::Array.of(
+            attribute? :types, Pangea::Resources::Types::Array.of(
               Pangea::Resources::Types::String.constrained(included_in: ['EDGE', 'REGIONAL', 'PRIVATE'])
             ).default(['REGIONAL'].freeze)
             attribute? :vpc_endpoint_ids, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).optional
           end
           
           # API versioning
-          attribute :version, Pangea::Resources::Types::String.optional
-          attribute :clone_from, Pangea::Resources::Types::String.optional
+          attribute? :version, Pangea::Resources::Types::String.optional
+          attribute? :clone_from, Pangea::Resources::Types::String.optional
           
           # Binary media types for file uploads
           attribute :binary_media_types, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([].freeze)
@@ -47,29 +47,29 @@ module Pangea
           attribute :minimum_tls_version, Pangea::Resources::Types::String.constrained(included_in: ['TLS_1_0', 'TLS_1_2']).default('TLS_1_2')
           
           # Compression settings
-          attribute :minimum_compression_size, Pangea::Resources::Types::Coercible::Integer.optional
+          attribute? :minimum_compression_size, Pangea::Resources::Types::Coercible::Integer.optional
           
           # API Key source for authentication
           attribute :api_key_source, Pangea::Resources::Types::String.constrained(included_in: ['HEADER', 'AUTHORIZER']).default('HEADER')
           
           # Policy document for resource policies
-          attribute :policy, Pangea::Resources::Types::String.optional
+          attribute? :policy, Pangea::Resources::Types::String.optional
           
           # OpenAPI/Swagger specification
-          attribute :body, Pangea::Resources::Types::String.optional
+          attribute? :body, Pangea::Resources::Types::String.optional
           
           # Disable execute API endpoint
           attribute :disable_execute_api_endpoint, Pangea::Resources::Types::Bool.default(false)
           
           # Custom domain settings
-          attribute :custom_domain_name, Pangea::Resources::Types::String.optional
+          attribute? :custom_domain_name, Pangea::Resources::Types::String.optional
           
           # Tags
           attribute :tags, Pangea::Resources::Types::Hash.default({}.freeze)
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate name follows API Gateway naming conventions
             if attrs[:name] && !attrs[:name].match?(/^[a-zA-Z0-9._-]+$/)
@@ -103,15 +103,15 @@ module Pangea
           
           # Computed properties
           def is_edge_optimized?
-            endpoint_configuration&.fetch(:types, [])&.include?('EDGE')
+            endpoint_configuration&.types&.include?('EDGE')
           end
-          
+
           def is_regional?
-            endpoint_configuration&.fetch(:types, [])&.include?('REGIONAL')
+            endpoint_configuration&.types&.include?('REGIONAL')
           end
-          
+
           def is_private?
-            endpoint_configuration&.fetch(:types, [])&.include?('PRIVATE')
+            endpoint_configuration&.types&.include?('PRIVATE')
           end
           
           def supports_binary_content?

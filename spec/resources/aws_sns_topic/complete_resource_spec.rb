@@ -27,9 +27,9 @@ RSpec.describe "aws_sns_topic resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -418,7 +418,7 @@ RSpec.describe "aws_sns_topic resource function" do
       
       expect(result.id).to eq("${aws_sns_topic.alerts.id}")
       expect(result.arn).to eq("${aws_sns_topic.alerts.arn}")
-      expect(result.name).to eq("${aws_sns_topic.alerts.name}")
+      expect(result.outputs[:name]).to eq("${aws_sns_topic.alerts.name}")
       expect(result.owner).to eq("${aws_sns_topic.alerts.owner}")
       expect(result.beginning_archive_time).to eq("${aws_sns_topic.alerts.beginning_archive_time}")
     end

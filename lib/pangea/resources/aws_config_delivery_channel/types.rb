@@ -21,12 +21,12 @@ module Pangea
     module AWS
       module Types
         # AWS Config Delivery Channel resource attributes with validation
-        class ConfigDeliveryChannelAttributes < Dry::Struct
+        class ConfigDeliveryChannelAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :name, Resources::Types::String
-          attribute :s3_bucket_name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
+          attribute? :s3_bucket_name, Resources::Types::String.optional
           
           # Optional attributes
           attribute :s3_key_prefix, Resources::Types::String.optional.default(nil)
@@ -35,11 +35,11 @@ module Pangea
           attribute :snapshot_delivery_properties, Resources::Types::Hash.optional.default(nil)
           
           # Tags
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Validate delivery channel name and S3 bucket name
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             if attrs[:name]
               name = attrs[:name]
@@ -96,7 +96,7 @@ module Pangea
             end
             
             # Validate snapshot delivery properties if provided
-            if attrs[:snapshot_delivery_properties].is_a?(Hash)
+            if attrs[:snapshot_delivery_properties].is_a?(::Hash)
               props = attrs[:snapshot_delivery_properties]
               
               if props.key?(:delivery_frequency) && !props[:delivery_frequency].is_a?(String)

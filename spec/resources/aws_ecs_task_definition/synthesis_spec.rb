@@ -256,13 +256,14 @@ RSpec.describe "aws_ecs_task_definition synthesis" do
       end
 
       result = synthesizer.synthesis
-      task_config = result["resource"]["aws_ecs_task_definition"]["test"]
+      task_config = result.dig(:resource, :aws_ecs_task_definition, :test)
 
-      expect(task_config).to have_key("volume")
-      volume = task_config["volume"]
-      expect(volume["name"]).to eq("data-volume")
+      expect(task_config).to have_key(:volume)
+      volume = task_config[:volume]
+      expect(volume).to be_an(Array)
+      expect(volume.first[:name]).to eq("data-volume")
 
-      container_defs = JSON.parse(task_config["container_definitions"])
+      container_defs = JSON.parse(task_config[:container_definitions])
       expect(container_defs[0]).to have_key("mountPoints")
       mount_point = container_defs[0]["mountPoints"][0]
       expect(mount_point["sourceVolume"]).to eq("data-volume")
@@ -303,14 +304,15 @@ RSpec.describe "aws_ecs_task_definition synthesis" do
       end
 
       result = synthesizer.synthesis
-      task_config = result["resource"]["aws_ecs_task_definition"]["test"]
+      task_config = result.dig(:resource, :aws_ecs_task_definition, :test)
 
-      expect(task_config).to have_key("volume")
-      volume = task_config["volume"]
-      expect(volume).to have_key("efs_volume_configuration")
-      efs_config = volume["efs_volume_configuration"]
-      expect(efs_config["file_system_id"]).to eq("fs-12345678")
-      expect(efs_config["transit_encryption"]).to eq("ENABLED")
+      expect(task_config).to have_key(:volume)
+      volume = task_config[:volume]
+      expect(volume).to be_an(Array)
+      expect(volume.first).to have_key(:efs_volume_configuration)
+      efs_config = volume.first[:efs_volume_configuration]
+      expect(efs_config[:file_system_id]).to eq("fs-12345678")
+      expect(efs_config[:transit_encryption]).to eq("ENABLED")
     end
 
     it "supports runtime platform for Fargate" do

@@ -24,17 +24,17 @@ module Pangea
     module AWS
       module Types
         # Auto Scaling Group tag attributes with validation
-        class AutoScalingTagAttributes < Dry::Struct
+        class AutoScalingTagAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           include TagQueries
 
           # Required attributes
-          attribute :autoscaling_group_name, Resources::Types::String
-          attribute :tags, Resources::Types::Array.of(TagSpecification).constrained(min_size: 1)
+          attribute? :autoscaling_group_name, Resources::Types::String.optional
+          attribute? :tags, Resources::Types::Array.of(TagSpecification).constrained(min_size: 1).optional
 
           # Validate configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             if attrs[:autoscaling_group_name]
               TagValidator.validate_group_name(attrs[:autoscaling_group_name])

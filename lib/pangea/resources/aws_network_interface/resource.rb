@@ -38,32 +38,32 @@ module Pangea
           
           # Optional attributes
           description attrs.description if attrs.description
-          private_ips attrs.private_ips if attrs.private_ips.any?
+          private_ips attrs.private_ips if attrs.private_ips&.any?
           private_ips_count attrs.private_ips_count if attrs.private_ips_count
-          security_groups attrs.security_groups if attrs.security_groups.any?
+          security_groups attrs.security_groups if attrs.security_groups&.any?
           source_dest_check attrs.source_dest_check unless attrs.source_dest_check.nil?
           interface_type attrs.interface_type if attrs.interface_type
           
           # IPv4 prefix configuration
           ipv4_prefix_count attrs.ipv4_prefix_count if attrs.ipv4_prefix_count
-          ipv4_prefixes attrs.ipv4_prefixes if attrs.ipv4_prefixes.any?
+          ipv4_prefixes attrs.ipv4_prefixes if attrs.ipv4_prefixes&.any?
           
           # IPv6 configuration
           ipv6_address_count attrs.ipv6_address_count if attrs.ipv6_address_count
-          ipv6_addresses attrs.ipv6_addresses if attrs.ipv6_addresses.any?
+          ipv6_addresses attrs.ipv6_addresses if attrs.ipv6_addresses&.any?
           ipv6_prefix_count attrs.ipv6_prefix_count if attrs.ipv6_prefix_count
-          ipv6_prefixes attrs.ipv6_prefixes if attrs.ipv6_prefixes.any?
+          ipv6_prefixes attrs.ipv6_prefixes if attrs.ipv6_prefixes&.any?
           
           # Attachment configuration
-          if attrs.attachment.any?
+          if attrs.attachment&.any?
             attachment do
-              instance attrs.attachment[:instance]
-              device_index attrs.attachment[:device_index]
+              instance attrs.attachment&.dig(:instance)
+              device_index attrs.attachment&.dig(:device_index)
             end
           end
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

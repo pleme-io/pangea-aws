@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2CapacityReservation resources
       # Manages aws ec2 capacity reservation resources.
-      class AwsEc2CapacityReservationAttributes < Dry::Struct
+      class AwsEc2CapacityReservationAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_capacity_reservation
         
         # Tags to apply to the resource

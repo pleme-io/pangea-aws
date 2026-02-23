@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS Elemental Data Plane Channel resources
-      class ElementalDataPlaneChannelAttributes < Dry::Struct
+      class ElementalDataPlaneChannelAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Channel name (required)
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
 
         # Channel description
         attribute :description, Resources::Types::String.default("")
@@ -34,12 +34,12 @@ module Pangea
         attribute :channel_type, Resources::Types::String.constrained(included_in: ['LIVE', 'PLAYOUT']).default('LIVE')
 
         # Input specifications
-        attribute :input_specifications, Resources::Types::Array.of(
+        attribute? :input_specifications, Resources::Types::Array.of(
           Resources::Types::Hash.schema(
             codec: Resources::Types::String.constrained(included_in: ['MPEG2', 'AVC', 'HEVC']),
             maximum_bitrate: Resources::Types::String.constrained(included_in: ['MAX_10_MBPS', 'MAX_20_MBPS', 'MAX_50_MBPS']),
             resolution: Resources::Types::String.constrained(included_in: ['SD', 'HD', 'UHD'])
-          )
+          ).lax
         ).default([].freeze)
 
         # Tags

@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS ECS Cluster resources
-        class EcsClusterAttributes < Dry::Struct
+        class EcsClusterAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Cluster name (required)
-          attribute :name, Pangea::Resources::Types::String
+          attribute? :name, Pangea::Resources::Types::String.optional
 
           # Capacity providers
           attribute :capacity_providers, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([].freeze)
@@ -34,11 +34,11 @@ module Pangea
           attribute? :container_insights_enabled, Pangea::Resources::Types::Bool.optional
 
           # Settings
-          attribute :setting, Pangea::Resources::Types::Array.of(
+          attribute? :setting, Pangea::Resources::Types::Array.of(
             Pangea::Resources::Types::Hash.schema(
               name: Pangea::Resources::Types::String.constrained(included_in: ["containerInsights"]),
               value: Pangea::Resources::Types::String.constrained(included_in: ["enabled", "disabled"])
-            )
+            ).lax
           ).default([].freeze)
 
           # Configuration for execute command
@@ -52,14 +52,14 @@ module Pangea
                 s3_bucket_name?: Pangea::Resources::Types::String.optional,
                 s3_bucket_encryption_enabled?: Pangea::Resources::Types::Bool.optional,
                 s3_key_prefix?: Pangea::Resources::Types::String.optional
-              ).optional
+              ).lax.optional
             ).optional
           ).optional
 
           # Service Connect defaults
           attribute? :service_connect_defaults, Pangea::Resources::Types::Hash.schema(
             namespace: Pangea::Resources::Types::String
-          ).optional
+          ).lax.optional
 
           # Tags
           attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
@@ -130,10 +130,10 @@ module Pangea
 
         # Type for ECS cluster capacity provider strategy
         unless const_defined?(:EcsCapacityProviderStrategy)
-        class EcsCapacityProviderStrategy < Dry::Struct
+        class EcsCapacityProviderStrategy < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :capacity_provider, Pangea::Resources::Types::String
+          attribute? :capacity_provider, Pangea::Resources::Types::String.optional
           attribute :weight, Pangea::Resources::Types::Integer.constrained(gteq: 0, lteq: 1000).default(1)
           attribute :base, Pangea::Resources::Types::Integer.constrained(gteq: 0, lteq: 100000).default(0)
           

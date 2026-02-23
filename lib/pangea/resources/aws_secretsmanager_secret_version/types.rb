@@ -21,17 +21,17 @@ module Pangea
     module AWS
       module Types
         # Secrets Manager Secret Version resource attributes with validation
-        class SecretsManagerSecretVersionAttributes < Dry::Struct
+        class SecretsManagerSecretVersionAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :secret_id, Resources::Types::String
+          attribute? :secret_id, Resources::Types::String.optional
           attribute :secret_string?, Resources::Types::SecretValue.optional
           attribute :secret_binary?, Resources::Types::SecretBinary.optional
           attribute :version_stages?, Resources::Types::Array.of(Resources::Types::SecretVersionStage).optional
           
           # Custom validation logic
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Must have either secret_string or secret_binary, but not both
             if attrs[:secret_string] && attrs[:secret_binary]
@@ -52,12 +52,15 @@ module Pangea
           
           # Secret ID validation helper
           def self.validate_secret_id(secret_id)
+            # Skip validation for terraform references
+            return if secret_id.match?(/\A\$\{.+\}\z/)
+
             # Can be secret name, ARN, or partial ARN
             valid_formats = [
               /\A[a-zA-Z0-9\/_+=.@-]{1,512}\z/,  # Secret name
               /\Aarn:aws:secretsmanager:[a-z0-9-]+:\d{12}:secret:[a-zA-Z0-9\/_+=.@-]+-[a-zA-Z0-9]{6}\z/  # Full ARN
             ]
-            
+
             unless valid_formats.any? { |format| secret_id.match?(format) }
               raise Dry::Struct::Error, "Invalid secret ID format: #{secret_id}"
             end

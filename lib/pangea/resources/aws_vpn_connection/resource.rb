@@ -64,7 +64,7 @@ module Pangea
           tunnel2_preshared_key attrs.tunnel2_preshared_key if attrs.tunnel2_preshared_key
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

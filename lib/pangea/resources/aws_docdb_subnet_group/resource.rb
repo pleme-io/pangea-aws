@@ -38,7 +38,7 @@ module Pangea
           subnet_ids attrs.subnet_ids if attrs.subnet_ids
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

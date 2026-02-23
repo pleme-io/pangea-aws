@@ -23,32 +23,32 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Systems Manager Parameter resources
-        class SsmParameterAttributes < Dry::Struct
+        class SsmParameterAttributes < Pangea::Resources::BaseAttributes
           include SsmParameterHelpers
 
           # Parameter name (required)
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Parameter type
-          attribute :type, Resources::Types::String.constrained(included_in: ["String", "StringList", "SecureString"])
+          attribute? :type, Resources::Types::String.constrained(included_in: ["String", "StringList", "SecureString"]).optional
 
           # Parameter value (required)
-          attribute :value, Resources::Types::String
+          attribute? :value, Resources::Types::String.optional
 
           # Parameter description
-          attribute :description, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
 
           # KMS Key ID for SecureString parameters
-          attribute :key_id, Resources::Types::String.optional
+          attribute? :key_id, Resources::Types::String.optional
 
           # Parameter tier (Standard or Advanced)
           attribute :tier, Resources::Types::String.constrained(included_in: ["Standard", "Advanced"]).default("Standard")
 
           # Allowed pattern for parameter value
-          attribute :allowed_pattern, Resources::Types::String.optional
+          attribute? :allowed_pattern, Resources::Types::String.optional
 
           # Data type for parameter
-          attribute :data_type, Resources::Types::String.constrained(included_in: ["text", "aws:ec2:image"]).optional
+          attribute? :data_type, Resources::Types::String.constrained(included_in: ["text", "aws:ec2:image"]).optional
 
           # Overwrite existing parameter
           attribute :overwrite, Resources::Types::Bool.default(false)

@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_lambda_event_source_mapping(name, attributes = {})
         # Validate attributes using dry-struct
-        mapping_attrs = Types::Types::LambdaEventSourceMappingAttributes.new(attributes)
+        mapping_attrs = Types::LambdaEventSourceMappingAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_lambda_event_source_mapping, name) do
@@ -55,10 +55,10 @@ module Pangea
           maximum_retry_attempts mapping_attrs.maximum_retry_attempts if mapping_attrs.maximum_retry_attempts
           
           # Destination configuration
-          if mapping_attrs.destination_config && mapping_attrs.destination_config[:on_failure]
+          if mapping_attrs.destination_config && mapping_attrs.destination_config&.dig(:on_failure)
             destination_config do
               on_failure do
-                destination mapping_attrs.destination_config[:on_failure][:destination]
+                destination mapping_attrs.destination_config&.dig(:on_failure)[:destination]
               end
             end
           end
@@ -67,7 +67,7 @@ module Pangea
           if mapping_attrs.self_managed_event_source
             self_managed_event_source do
               endpoints do
-                mapping_attrs.self_managed_event_source[:endpoints].each do |key, value|
+                mapping_attrs.self_managed_event_source&.dig(:endpoints).each do |key, value|
                   public_send(key, value)
                 end
               end
@@ -75,7 +75,7 @@ module Pangea
           end
           
           # Source access configurations
-          if mapping_attrs.source_access_configuration.any?
+          if mapping_attrs.source_access_configuration&.any?
             mapping_attrs.source_access_configuration.each do |config|
               source_access_configuration do
                 type config[:type]
@@ -89,9 +89,9 @@ module Pangea
           queues mapping_attrs.queues if mapping_attrs.queues
           
           # Filter criteria
-          if mapping_attrs.filter_criteria && mapping_attrs.filter_criteria[:filters]
+          if mapping_attrs.filter_criteria && mapping_attrs.filter_criteria&.dig(:filters)
             filter_criteria do
-              mapping_attrs.filter_criteria[:filters].each do |filter|
+              mapping_attrs.filter_criteria&.dig(:filters).each do |filter|
                 filter do
                   pattern filter[:pattern] if filter[:pattern]
                 end
@@ -102,21 +102,21 @@ module Pangea
           # Scaling configuration
           if mapping_attrs.scaling_config
             scaling_config do
-              maximum_concurrency mapping_attrs.scaling_config[:maximum_concurrency] if mapping_attrs.scaling_config[:maximum_concurrency]
+              maximum_concurrency mapping_attrs.scaling_config&.dig(:maximum_concurrency) if mapping_attrs.scaling_config&.dig(:maximum_concurrency)
             end
           end
           
           # Amazon Managed Kafka configuration
           if mapping_attrs.amazon_managed_kafka_event_source_config
             amazon_managed_kafka_event_source_config do
-              consumer_group_id mapping_attrs.amazon_managed_kafka_event_source_config[:consumer_group_id] if mapping_attrs.amazon_managed_kafka_event_source_config[:consumer_group_id]
+              consumer_group_id mapping_attrs.amazon_managed_kafka_event_source_config&.dig(:consumer_group_id) if mapping_attrs.amazon_managed_kafka_event_source_config&.dig(:consumer_group_id)
             end
           end
           
           # Self-managed Kafka configuration
           if mapping_attrs.self_managed_kafka_event_source_config
             self_managed_kafka_event_source_config do
-              consumer_group_id mapping_attrs.self_managed_kafka_event_source_config[:consumer_group_id] if mapping_attrs.self_managed_kafka_event_source_config[:consumer_group_id]
+              consumer_group_id mapping_attrs.self_managed_kafka_event_source_config&.dig(:consumer_group_id) if mapping_attrs.self_managed_kafka_event_source_config&.dig(:consumer_group_id)
             end
           end
         end

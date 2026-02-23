@@ -40,7 +40,7 @@ module Pangea
           kms_key_id video_stream_attrs.kms_key_id if video_stream_attrs.is_encrypted?
           
           # Apply tags if present
-          if video_stream_attrs.tags.any?
+          if video_stream_attrs.tags&.any?
             tags do
               video_stream_attrs.tags.each do |key, value|
                 public_send(key, value)

@@ -21,22 +21,22 @@ module Pangea
     module AWS
       module Types
         # AWS Config Configuration Recorder resource attributes with validation
-        class ConfigConfigurationRecorderAttributes < Dry::Struct
+        class ConfigConfigurationRecorderAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :name, Resources::Types::String
-          attribute :role_arn, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
+          attribute? :role_arn, Resources::Types::String.optional
           
           # Optional attributes
           attribute :recording_group, Resources::Types::Hash.optional.default(nil)
           
           # Tags
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Validate configuration recorder name and role ARN
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             if attrs[:name]
               name = attrs[:name]
@@ -72,7 +72,7 @@ module Pangea
             end
             
             # Validate recording group if provided
-            if attrs[:recording_group].is_a?(Hash)
+            if attrs[:recording_group].is_a?(::Hash)
               recording_group = attrs[:recording_group]
               
               # Validate boolean fields if present

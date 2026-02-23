@@ -40,7 +40,7 @@ module Pangea
           map_public_ip_on_launch subnet_attrs.map_public_ip_on_launch
 
           # Apply tags if present
-          tags subnet_attrs.tags if subnet_attrs.tags.any?
+          tags subnet_attrs.tags if subnet_attrs.tags&.any?
         end
 
         # Return resource reference with available outputs

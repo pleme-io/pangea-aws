@@ -6,9 +6,9 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class GlobalClusterBackupConfiguration < Dry::Struct
+        class GlobalClusterBackupConfiguration < Pangea::Resources::BaseAttributes
           attribute :backup_retention_period, Resources::Types::Integer.default(7).constrained(gteq: 7, lteq: 35)
-          attribute :preferred_backup_window, Resources::Types::String.optional
+          attribute? :preferred_backup_window, Resources::Types::String.optional
           attribute :copy_tags_to_snapshot, Resources::Types::Bool.default(true)
 
           def self.new(attributes = {})

@@ -35,7 +35,7 @@ module Pangea
             tag_keys = []
 
             tags.each do |tag|
-              tag_hash = tag.is_a?(Hash) ? tag : {}
+              tag_hash = tag.is_a?(::Hash) ? tag : {}
               validate_tag(tag_hash, tag_keys)
             end
 

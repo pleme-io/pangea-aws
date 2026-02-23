@@ -9,39 +9,39 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS CloudFront Response Headers Policy resources
-        class CloudFrontResponseHeadersPolicyAttributes < Dry::Struct
-          attribute :name, Resources::Types::String
-          attribute :comment, Resources::Types::String.optional
+        class CloudFrontResponseHeadersPolicyAttributes < Pangea::Resources::BaseAttributes
+          attribute? :name, Resources::Types::String.optional
+          attribute? :comment, Resources::Types::String.optional
 
-          attribute :cors_config, Resources::Types::Hash.schema(
+          attribute? :cors_config, Resources::Types::Hash.schema(
             access_control_allow_credentials: Resources::Types::Bool.default(false),
-            access_control_allow_headers?: Resources::Types::Hash.schema(items: Resources::Types::Array.of(Resources::Types::String)).optional,
-            access_control_allow_methods: Resources::Types::Hash.schema(items: Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH']))),
-            access_control_allow_origins: Resources::Types::Hash.schema(items: Resources::Types::Array.of(Resources::Types::String)),
-            access_control_expose_headers?: Resources::Types::Hash.schema(items: Resources::Types::Array.of(Resources::Types::String)).optional,
+            access_control_allow_headers?: Resources::Types::Hash.schema(items: Resources::Types::Array.of(Resources::Types::String).lax).optional,
+            access_control_allow_methods: Resources::Types::Hash.schema(items: Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH']).lax)),
+            access_control_allow_origins: Resources::Types::Hash.schema(items: Resources::Types::Array.of(Resources::Types::String).lax),
+            access_control_expose_headers?: Resources::Types::Hash.schema(items: Resources::Types::Array.of(Resources::Types::String).lax).optional,
             access_control_max_age_sec?: Resources::Types::Integer.optional,
             origin_override: Resources::Types::Bool.default(true)
           ).optional
 
-          attribute :custom_headers_config, Resources::Types::Hash.schema(
-            items?: Resources::Types::Array.of(Resources::Types::Hash.schema(header: Resources::Types::String, value: Resources::Types::String, override: Resources::Types::Bool.default(true))).optional
+          attribute? :custom_headers_config, Resources::Types::Hash.schema(
+            items?: Resources::Types::Array.of(Resources::Types::Hash.schema(header: Resources::Types::String, value: Resources::Types::String, override: Resources::Types::Bool.default(true).lax)).optional
           ).optional
 
-          attribute :remove_headers_config, Resources::Types::Hash.schema(
-            items: Resources::Types::Array.of(Resources::Types::Hash.schema(header: Resources::Types::String))
+          attribute? :remove_headers_config, Resources::Types::Hash.schema(
+            items: Resources::Types::Array.of(Resources::Types::Hash.schema(header: Resources::Types::String).lax)
           ).optional
 
-          attribute :security_headers_config, Resources::Types::Hash.schema(
-            content_type_options?: Resources::Types::Hash.schema(override: Resources::Types::Bool.default(true)).optional,
-            frame_options?: Resources::Types::Hash.schema(frame_option: Resources::Types::String.constrained(included_in: ['DENY', 'SAMEORIGIN']), override: Resources::Types::Bool.default(true)).optional,
-            referrer_policy?: Resources::Types::Hash.schema(referrer_policy: Resources::Types::String.constrained(included_in: ['no-referrer', 'no-referrer-when-downgrade', 'origin', 'origin-when-cross-origin', 'same-origin', 'strict-origin', 'strict-origin-when-cross-origin', 'unsafe-url']), override: Resources::Types::Bool.default(true)).optional,
-            strict_transport_security?: Resources::Types::Hash.schema(access_control_max_age_sec: Resources::Types::Integer, include_subdomains?: Resources::Types::Bool.default(false).optional, override: Resources::Types::Bool.default(true), preload?: Resources::Types::Bool.default(false).optional).optional
+          attribute? :security_headers_config, Resources::Types::Hash.schema(
+            content_type_options?: Resources::Types::Hash.schema(override: Resources::Types::Bool.default(true).lax).optional,
+            frame_options?: Resources::Types::Hash.schema(frame_option: Resources::Types::String.constrained(included_in: ['DENY', 'SAMEORIGIN']).lax, override: Resources::Types::Bool.default(true)).optional,
+            referrer_policy?: Resources::Types::Hash.schema(referrer_policy: Resources::Types::String.constrained(included_in: ['no-referrer', 'no-referrer-when-downgrade', 'origin', 'origin-when-cross-origin', 'same-origin', 'strict-origin', 'strict-origin-when-cross-origin', 'unsafe-url']).lax, override: Resources::Types::Bool.default(true)).optional,
+            strict_transport_security?: Resources::Types::Hash.schema(access_control_max_age_sec: Resources::Types::Integer, include_subdomains?: Resources::Types::Bool.default(false).lax.optional, override: Resources::Types::Bool.default(true), preload?: Resources::Types::Bool.default(false).optional).optional
           ).optional
 
-          attribute :server_timing_headers_config, Resources::Types::Hash.schema(
+          attribute? :server_timing_headers_config, Resources::Types::Hash.schema(
             enabled: Resources::Types::Bool.default(false),
             sampling_rate?: Resources::Types::Coercible::Float.constrained(gteq: 0.0, lteq: 1.0).optional
-          ).optional
+          ).lax.optional
 
           def self.new(attributes = {})
             attrs = super(attributes)
@@ -63,7 +63,7 @@ module Pangea
           def self.validate_cors_origins!(attrs)
             return unless attrs.cors_config&.dig(:access_control_allow_origins)
 
-            attrs.cors_config[:access_control_allow_origins][:items].each do |origin|
+            attrs.cors_config&.dig(:access_control_allow_origins)[:items].each do |origin|
               next if origin == '*' || origin.match?(/\Ahttps?:\/\/.+/) || origin.match?(/\A[a-zA-Z0-9\.\-]+\z/)
 
               raise Dry::Struct::Error, "Invalid CORS origin format: #{origin}"
@@ -73,7 +73,7 @@ module Pangea
           def self.validate_custom_headers!(attrs)
             return unless attrs.custom_headers_config&.dig(:items)
 
-            attrs.custom_headers_config[:items].each do |header|
+            attrs.custom_headers_config&.dig(:items).each do |header|
               raise Dry::Struct::Error, "Invalid custom header name: #{header[:header]}" unless header[:header].match?(/\A[a-zA-Z0-9\-_]+\z/)
             end
           end
@@ -105,9 +105,9 @@ module Pangea
           def validate_configuration
             warnings = []
             warnings << 'CORS credentials with wildcard origins is not allowed by browsers' if cors_allows_credentials? && cors_allows_all_origins?
-            warnings << 'CORS configuration should typically include OPTIONS method' if has_cors? && !cors_config[:access_control_allow_methods][:items].include?('OPTIONS')
+            warnings << 'CORS configuration should typically include OPTIONS method' if has_cors? && !cors_config&.dig(:access_control_allow_methods)[:items].include?('OPTIONS')
             warnings << 'HSTS with wildcard CORS origins may cause unexpected behavior' if hsts_enabled? && cors_allows_all_origins?
-            warnings << 'Server timing enabled without sampling rate - consider setting sampling rate' if server_timing_headers_config&.dig(:enabled) && server_timing_headers_config[:sampling_rate].nil?
+            warnings << 'Server timing enabled without sampling rate - consider setting sampling rate' if server_timing_headers_config&.dig(:enabled) && server_timing_headers_config&.dig(:sampling_rate).nil?
             warnings << 'No security headers configured - consider adding security headers for protection' unless has_security_headers?
             warnings
           end

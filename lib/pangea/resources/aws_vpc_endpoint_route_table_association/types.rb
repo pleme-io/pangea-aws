@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsVpcEndpointRouteTableAssociation resources
       # Manages aws vpc endpoint route table association resources.
-      class AwsVpcEndpointRouteTableAssociationAttributes < Dry::Struct
+      class AwsVpcEndpointRouteTableAssociationAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_vpc_endpoint_route_table_association
         
         # Tags to apply to the resource

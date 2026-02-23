@@ -15,13 +15,40 @@
 require 'spec_helper'
 
 RSpec.describe "aws_vpc integration" do
-  include Pangea::Resources::AWS
-  
+  # Create a test class that includes the AWS module and mocks terraform-synthesizer
+  let(:test_class) do
+    Class.new do
+      include Pangea::Resources::AWS
+
+      # Mock the terraform-synthesizer resource method
+      def resource(type, name, attrs = {})
+        @resources ||= {}
+        resource_data = { type: type, name: name, attributes: attrs }
+
+        yield if block_given?
+
+        @resources["#{type}.#{name}"] = resource_data
+        resource_data
+      end
+
+      # Method missing to capture terraform attributes
+      def method_missing(method_name, *args, &block)
+        return super if [:expect, :be_a, :eq].include?(method_name)
+        args.first if args.any?
+      end
+
+      def respond_to_missing?(method_name, include_private = false)
+        true
+      end
+    end
+  end
+
+  let(:test_instance) { test_class.new }
   let(:synthesizer) { TerraformSynthesizer.new }
-  
+
   describe "resource references" do
     it "provides terraform output references" do
-      ref = aws_vpc(:test, { cidr_block: "10.0.0.0/16" })
+      ref = test_instance.aws_vpc(:test, { cidr_block: "10.0.0.0/16" })
       
       # Test reference format
       expect(ref.id).to match(/\$\{aws_vpc\.test\.id\}/)
@@ -58,8 +85,8 @@ RSpec.describe "aws_vpc integration" do
 
   describe "computed properties" do
     it "provides computed attributes for VPC types" do
-      ref = aws_vpc(:test, { cidr_block: "10.0.0.0/16" })
-      
+      ref = test_instance.aws_vpc(:test, { cidr_block: "10.0.0.0/16" })
+
       # Access computed properties from the type attributes
       vpc_attrs = ref.resource_attributes
       expect(vpc_attrs[:cidr_block]).to eq("10.0.0.0/16")

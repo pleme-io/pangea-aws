@@ -21,7 +21,7 @@ module Pangea
     module AWS
       module Types
         # Self-service permissions configuration
-        class SelfServicePermissionsType < Dry::Struct
+        class SelfServicePermissionsType < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           EnabledDisabled = Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED'])

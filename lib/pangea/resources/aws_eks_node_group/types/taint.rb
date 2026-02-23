@@ -22,14 +22,14 @@ module Pangea
     module AWS
       module Types
         # Taint configuration for node group
-        class Taint < Dry::Struct
+        class Taint < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           VALID_EFFECTS = %w[NO_SCHEDULE NO_EXECUTE PREFER_NO_SCHEDULE].freeze
 
-          attribute :key, Pangea::Resources::Types::String
+          attribute? :key, Pangea::Resources::Types::String.optional
           attribute :value, Pangea::Resources::Types::String.optional.default(nil)
-          attribute :effect, Pangea::Resources::Types::String.constrained(included_in: VALID_EFFECTS)
+          attribute? :effect, Pangea::Resources::Types::String.constrained(included_in: VALID_EFFECTS).optional
 
           def to_h
             hash = { key: key, effect: effect }

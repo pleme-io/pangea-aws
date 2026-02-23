@@ -22,10 +22,10 @@ module Pangea
       module Types
         # WorkSpaces Workspace resource attributes with validation
 
-        class WorkspacePropertiesType < Dry::Struct
+        class WorkspacePropertiesType < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :compute_type_name, Resources::Types::String.constrained(included_in: ['VALUE',
+          attribute? :compute_type_name, Resources::Types::String.constrained(included_in: ['VALUE',
             'STANDARD', 
             'PERFORMANCE',
             'POWER',
@@ -33,26 +33,26 @@ module Pangea
             'GRAPHICS',
             'GRAPHICSPRO']).optional
           
-          attribute :root_volume_size_gib, Resources::Types::Integer.constrained(
+          attribute? :root_volume_size_gib, Resources::Types::Integer.constrained(
             gteq: 80,
             lteq: 2000
           ).optional
           
-          attribute :user_volume_size_gib, Resources::Types::Integer.constrained(
+          attribute? :user_volume_size_gib, Resources::Types::Integer.constrained(
             gteq: 10,
             lteq: 2000
           ).optional
           
-          attribute :running_mode, Resources::Types::String.constrained(included_in: ['AUTO_STOP',
+          attribute? :running_mode, Resources::Types::String.constrained(included_in: ['AUTO_STOP',
             'ALWAYS_ON']).default('AUTO_STOP')
           
-          attribute :running_mode_auto_stop_timeout_in_minutes, Resources::Types::Integer.constrained(
+          attribute? :running_mode_auto_stop_timeout_in_minutes, Resources::Types::Integer.constrained(
             included_in: [60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720]
           ).optional
           
           # Validation for auto stop timeout when running mode is AUTO_STOP
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # If running mode is AUTO_STOP, timeout should be specified
             if attrs[:running_mode] == 'AUTO_STOP' && !attrs[:running_mode_auto_stop_timeout_in_minutes]
@@ -108,17 +108,17 @@ module Pangea
           end
         end
 
-        class WorkspacesWorkspaceAttributes < Dry::Struct
+        class WorkspacesWorkspaceAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :directory_id, Resources::Types::String.constrained(
+          attribute? :directory_id, Resources::Types::String.constrained(
             format: /\Ad-[a-f0-9]{10}\z/
           )
-          attribute :bundle_id, Resources::Types::String.constrained(
+          attribute? :bundle_id, Resources::Types::String.constrained(
             format: /\Awsb-[a-z0-9]{9}\z/
           )
-          attribute :user_name, Resources::Types::String.constrained(
+          attribute? :user_name, Resources::Types::String.constrained(
             min_size: 1,
             max_size: 63,
             format: /\A[a-zA-Z0-9][a-zA-Z0-9._-]*\z/
@@ -127,13 +127,13 @@ module Pangea
           # Optional attributes
           attribute :root_volume_encryption_enabled, Resources::Types::Bool.default(false)
           attribute :user_volume_encryption_enabled, Resources::Types::Bool.default(false)
-          attribute :volume_encryption_key, Resources::Types::String.optional
-          attribute :workspace_properties, WorkspacePropertiesType.optional
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :volume_encryption_key, Resources::Types::String.optional
+          attribute? :workspace_properties, WorkspacePropertiesType.optional
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Validation for encryption key when encryption is enabled
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate encryption key is provided when encryption is enabled
             if (attrs[:root_volume_encryption_enabled] || attrs[:user_volume_encryption_enabled])

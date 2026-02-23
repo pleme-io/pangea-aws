@@ -69,7 +69,7 @@ module Pangea
       #   })
       def aws_cloudwatch_composite_alarm(name, attributes = {})
         # Validate attributes using dry-struct
-        alarm_attrs = Types::Types::CloudWatchCompositeAlarmAttributes.new(attributes)
+        alarm_attrs = Types::CloudWatchCompositeAlarmAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_cloudwatch_composite_alarm, name) do
@@ -84,19 +84,19 @@ module Pangea
           # Actions suppressor
           if alarm_attrs.actions_suppressor
             actions_suppressor do
-              alarm alarm_attrs.actions_suppressor[:alarm]
-              extension_period alarm_attrs.actions_suppressor[:extension_period] if alarm_attrs.actions_suppressor[:extension_period]
-              wait_period alarm_attrs.actions_suppressor[:wait_period] if alarm_attrs.actions_suppressor[:wait_period]
+              alarm alarm_attrs.actions_suppressor&.dig(:alarm)
+              extension_period alarm_attrs.actions_suppressor&.dig(:extension_period) if alarm_attrs.actions_suppressor&.dig(:extension_period)
+              wait_period alarm_attrs.actions_suppressor&.dig(:wait_period) if alarm_attrs.actions_suppressor&.dig(:wait_period)
             end
           end
           
           # Actions
-          alarm_actions alarm_attrs.alarm_actions if alarm_attrs.alarm_actions.any?
-          ok_actions alarm_attrs.ok_actions if alarm_attrs.ok_actions.any?
-          insufficient_data_actions alarm_attrs.insufficient_data_actions if alarm_attrs.insufficient_data_actions.any?
+          alarm_actions alarm_attrs.alarm_actions if alarm_attrs.alarm_actions&.any?
+          ok_actions alarm_attrs.ok_actions if alarm_attrs.ok_actions&.any?
+          insufficient_data_actions alarm_attrs.insufficient_data_actions if alarm_attrs.insufficient_data_actions&.any?
           
           # Apply tags if present
-          if alarm_attrs.tags.any?
+          if alarm_attrs.tags&.any?
             tags do
               alarm_attrs.tags.each do |key, value|
                 public_send(key, value)

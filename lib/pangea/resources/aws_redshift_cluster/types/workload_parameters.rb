@@ -26,7 +26,7 @@ module Pangea
             'max_concurrency_scaling_clusters' => '1',
             'enable_user_activity_logging' => 'true',
             'statement_timeout' => '0',
-            'wlm_json_configuration' => JSON.generate([{
+            'wlm_json_configuration' => ::JSON.generate([{
               'query_group' => 'etl',
               'memory_percent_to_use' => 70,
               'max_execution_time' => 0
@@ -38,7 +38,7 @@ module Pangea
             'enable_user_activity_logging' => 'true',
             'statement_timeout' => '600000',
             'search_path' => 'analytics,public',
-            'wlm_json_configuration' => JSON.generate([{
+            'wlm_json_configuration' => ::JSON.generate([{
               'query_group' => 'analytics',
               'memory_percent_to_use' => 50,
               'max_execution_time' => 300_000

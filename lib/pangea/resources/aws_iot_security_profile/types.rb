@@ -18,12 +18,12 @@ require 'pangea/resources/types'
 module Pangea
   module Resources
     module AWS
-      class IotSecurityProfileAttributes < Dry::Struct
-        attribute :security_profile_name, Resources::Types::IotSecurityProfileName
-        attribute :security_profile_description, Resources::Types::String.optional
+      class IotSecurityProfileAttributes < Pangea::Resources::BaseAttributes
+        attribute? :security_profile_name, Resources::Types::IotSecurityProfileName.optional
+        attribute? :security_profile_description, Resources::Types::String.optional
         attribute :behaviors, Resources::Types::Array.of(Resources::Types::Hash).default([].freeze)
-        attribute :alert_targets, Resources::Types::Hash.optional
-        attribute :additional_metrics_to_retain_v2, Resources::Types::Array.of(Resources::Types::Hash).optional
+        attribute :alert_targets, Resources::Types::Hash.default({}.freeze)
+        attribute :additional_metrics_to_retain_v2, Resources::Types::Array.of(Resources::Types::Hash).default([].freeze)
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         def behavior_count

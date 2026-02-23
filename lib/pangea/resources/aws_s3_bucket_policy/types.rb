@@ -22,14 +22,14 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS S3 Bucket Policy resources
-      class S3BucketPolicyAttributes < Dry::Struct
+      class S3BucketPolicyAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Bucket name (required)
-        attribute :bucket, Resources::Types::String
+        attribute? :bucket, Resources::Types::String.optional
 
         # JSON policy document (required)
-        attribute :policy, Resources::Types::String
+        attribute? :policy, Resources::Types::String.optional
 
         # Custom validation
         def self.new(attributes = {})
@@ -37,19 +37,19 @@ module Pangea
 
           # Validate policy is valid JSON
           begin
-            policy_doc = JSON.parse(attrs.policy)
-          rescue JSON::ParserError => e
+            policy_doc = ::JSON.parse(attrs.policy)
+          rescue ::JSON::ParserError => e
             raise Dry::Struct::Error, "policy must be valid JSON: #{e.message}"
           end
 
           # Validate policy has required IAM policy structure
-          unless policy_doc.is_a?(Hash) && policy_doc.key?('Version') && policy_doc.key?('Statement')
+          unless policy_doc.is_a?(::Hash) && policy_doc.key?('Version') && policy_doc.key?('Statement')
             raise Dry::Struct::Error, "policy must be a valid IAM policy document with Version and Statement"
           end
 
           # Validate statements structure
           statements = policy_doc['Statement']
-          unless statements.is_a?(Array) && statements.all? { |s| s.is_a?(Hash) && s.key?('Effect') }
+          unless statements.is_a?(Array) && statements.all? { |s| s.is_a?(::Hash) && s.key?('Effect') }
             raise Dry::Struct::Error, "policy statements must be an array with each statement having an Effect"
           end
 
@@ -58,7 +58,7 @@ module Pangea
 
         # Helper methods
         def policy_document
-          JSON.parse(policy)
+          ::JSON.parse(policy)
         end
 
         def statement_count

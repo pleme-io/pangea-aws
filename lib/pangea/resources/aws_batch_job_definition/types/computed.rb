@@ -22,19 +22,23 @@ module Pangea
           # Computed properties for batch job definitions
           module Computed
             def container_job?
-              type == 'container'
+              self[:type] == 'container'
             end
 
+            alias is_container_job? container_job?
+
             def multinode_job?
-              type == 'multinode'
+              self[:type] == 'multinode'
             end
+
+            alias is_multinode_job? multinode_job?
 
             def supports_ec2?
               platform_capabilities.nil? || platform_capabilities.include?('EC2')
             end
 
             def supports_fargate?
-              platform_capabilities&.include?('FARGATE')
+              platform_capabilities&.include?('FARGATE') || false
             end
 
             def has_retry_strategy?

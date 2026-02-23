@@ -45,14 +45,14 @@ module Pangea
             allow_origins?: Resources::Types::Array.of(Origin).optional,
             expose_headers?: Resources::Types::Array.of(Resources::Types::String).optional,
             max_age?: Resources::Types::Integer.constrained(gteq: 0, lteq: 86400).optional
-          })
+          }).lax
         end
 
         # Lambda Function URL attributes with comprehensive validation
-        class LambdaFunctionUrlAttributes < Dry::Struct
+        class LambdaFunctionUrlAttributes < Pangea::Resources::BaseAttributes
           # Required attributes
-          attribute :authorization_type, Types::AuthorizationType
-          attribute :function_name, Types::FunctionName
+          attribute? :authorization_type, Types::AuthorizationType.optional
+          attribute? :function_name, Types::FunctionName.optional
           
           # Optional attributes
           attribute? :cors, Types::CorsConfiguration.optional
@@ -65,7 +65,7 @@ module Pangea
           end
           
           def allows_credentials?
-            cors && cors[:allow_credentials] == true
+            cors && cors&.dig(:allow_credentials) == true
           end
           
           def public_access?

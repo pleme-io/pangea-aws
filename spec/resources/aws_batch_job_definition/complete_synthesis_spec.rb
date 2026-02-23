@@ -690,7 +690,7 @@ RSpec.describe "aws_batch_job_definition terraform synthesis" do
     json_output = synthesizer.synthesis
     job_definitions = json_output.dig(:resource, :aws_batch_job_definition)
     
-    expect(job_definitions.keys).to contain_exactly(:basic_job, :gpu_job, :fargate_job)
+    expect(job_definitions.keys).to contain_exactly("basic_job", "gpu_job", "fargate_job")
     
     # Verify each job definition has correct type and properties
     expect(job_definitions[:basic_job][:type]).to eq("container")
@@ -700,6 +700,8 @@ RSpec.describe "aws_batch_job_definition terraform synthesis" do
 
   # Test synthesis with complex nested structure
   it "synthesizes complex nested container properties correctly" do
+    _efs_file_system_id = efs_file_system_id
+    _efs_access_point_id = efs_access_point_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -721,11 +723,11 @@ RSpec.describe "aws_batch_job_definition terraform synthesis" do
             {
               name: "volume2",
               efs_volume_configuration: {
-                file_system_id: efs_file_system_id,
+                file_system_id: _efs_file_system_id,
                 root_directory: "/root",
                 transit_encryption: "ENABLED",
                 authorization_config: {
-                  access_point_id: efs_access_point_id,
+                  access_point_id: _efs_access_point_id,
                   iam: "ENABLED"
                 }
               }

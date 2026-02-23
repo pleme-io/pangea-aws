@@ -20,9 +20,9 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS Load Balancer resources
-      class LoadBalancerAttributes < Dry::Struct
+      class LoadBalancerAttributes < Pangea::Resources::BaseAttributes
         # Load balancer name (optional, AWS will generate if not provided)
-        attribute :name, Resources::Types::String.optional
+        attribute? :name, Resources::Types::String.optional
 
         # Load balancer type: "application", "network", or "gateway"
         attribute :load_balancer_type, Resources::Types::String.default("application").enum("application", "network", "gateway")
@@ -31,34 +31,43 @@ module Pangea
         attribute :internal, Resources::Types::Bool.default(false)
 
         # Subnet IDs where the load balancer will be provisioned
-        attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 2)
+        attribute? :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 2).optional
 
         # Security groups (ALB only) - array of security group IDs
         attribute :security_groups, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
         # IP address type: "ipv4" or "dualstack"
-        attribute :ip_address_type, Resources::Types::String.optional.enum("ipv4", "dualstack")
+        attribute? :ip_address_type, Resources::Types::String.optional.enum("ipv4", "dualstack")
 
         # Enable deletion protection
         attribute :enable_deletion_protection, Resources::Types::Bool.default(false)
 
         # Enable cross-zone load balancing (NLB only)
-        attribute :enable_cross_zone_load_balancing, Resources::Types::Bool.optional
+        attribute? :enable_cross_zone_load_balancing, Resources::Types::Bool.optional
 
         # Access logs configuration
-        attribute :access_logs, Resources::Types::Hash.schema(
+        attribute? :access_logs, Resources::Types::Hash.schema(
           enabled: Resources::Types::Bool,
           bucket: Resources::Types::String,
           prefix?: Resources::Types::String.optional
-        ).optional
+        ).lax.optional
 
         # Tags to apply to the load balancer
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation for type-specific attributes
         def self.new(attributes = {})
+          raw_attrs = attributes.is_a?(::Hash) ? attributes : {}
+
+          # Validate access_logs bucket is present when enabled
+          if raw_attrs[:access_logs].is_a?(Hash) && raw_attrs[:access_logs][:enabled]
+            unless raw_attrs[:access_logs][:bucket] && !raw_attrs[:access_logs][:bucket].to_s.empty?
+              raise Dry::Struct::Error, "access_logs bucket is required when access_logs is enabled"
+            end
+          end
+
           attrs = super(attributes)
-          
+
           # Validate security groups only for ALB
           if attrs.security_groups.any? && attrs.load_balancer_type != "application"
             raise Dry::Struct::Error, "security_groups can only be specified for application load balancers"

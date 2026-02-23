@@ -25,7 +25,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS S3 Bucket resources
-        class S3BucketAttributes < Dry::Struct
+        class S3BucketAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Bucket name (optional - AWS will generate if not provided)
@@ -37,13 +37,13 @@ module Pangea
           )
 
           # Bucket versioning configuration
-          attribute :versioning, Resources::Types::Hash.schema(
+          attribute? :versioning, Resources::Types::Hash.schema(
             enabled: Resources::Types::Bool.default(false),
             mfa_delete?: Resources::Types::Bool.optional
-          ).default({ enabled: false })
+          ).lax.default({ enabled: false })
 
           # Server-side encryption configuration
-          attribute :server_side_encryption_configuration,
+          attribute? :server_side_encryption_configuration,
                     ServerSideEncryptionConfiguration.default(DEFAULT_SSE_CONFIG)
 
           # Lifecycle rules
@@ -53,41 +53,41 @@ module Pangea
           attribute :cors_rule, Resources::Types::Array.of(CorsRule).default([].freeze)
 
           # Website configuration
-          attribute :website, Resources::Types::Hash.schema(
+          attribute? :website, Resources::Types::Hash.schema(
             index_document?: Resources::Types::String.optional,
             error_document?: Resources::Types::String.optional,
             redirect_all_requests_to?: Resources::Types::Hash.schema(
               host_name: Resources::Types::String,
               protocol?: Resources::Types::String.constrained(included_in: ['http', 'https']).optional
-            ).optional,
+            ).lax.optional,
             routing_rules?: Resources::Types::String.optional
           ).default({}.freeze)
 
           # Logging configuration
-          attribute :logging, Resources::Types::Hash.schema(
+          attribute? :logging, Resources::Types::Hash.schema(
             target_bucket?: Resources::Types::String.optional,
             target_prefix?: Resources::Types::String.optional
-          ).optional
+          ).lax.default({}.freeze)
 
           # Object lock configuration
-          attribute :object_lock_configuration, Resources::Types::Hash.schema(
+          attribute? :object_lock_configuration, Resources::Types::Hash.schema(
             object_lock_enabled?: Resources::Types::String.constrained(included_in: ['Enabled']).optional,
             rule?: Resources::Types::Hash.schema(
               default_retention: Resources::Types::Hash.schema(
                 mode: Resources::Types::String.constrained(included_in: ['COMPLIANCE', 'GOVERNANCE']),
                 days?: Resources::Types::Integer.optional,
                 years?: Resources::Types::Integer.optional
-              )
+              ).lax
             ).optional
           ).default({}.freeze)
 
           # Public access block configuration
-          attribute :public_access_block_configuration, Resources::Types::Hash.schema(
+          attribute? :public_access_block_configuration, Resources::Types::Hash.schema(
             block_public_acls?: Resources::Types::Bool.optional,
             block_public_policy?: Resources::Types::Bool.optional,
             ignore_public_acls?: Resources::Types::Bool.optional,
             restrict_public_buckets?: Resources::Types::Bool.optional
-          ).optional
+          ).lax.default({}.freeze)
 
           # Bucket policy (as JSON string)
           attribute? :policy, Resources::Types::String.optional
@@ -97,12 +97,23 @@ module Pangea
 
           # Custom validation
           def self.new(attributes = {})
-            attrs = super(attributes)
+            attrs = super(deep_symbolize_keys(attributes))
             validate_kms_encryption(attrs)
             validate_lifecycle_rules(attrs)
             validate_object_lock(attrs)
             validate_website_config(attrs)
             attrs
+          end
+
+          def self.deep_symbolize_keys(obj)
+            case obj
+            when ::Hash
+              obj.each_with_object({}) { |(k, v), h| h[k.to_sym] = deep_symbolize_keys(v) }
+            when ::Array
+              obj.map { |v| deep_symbolize_keys(v) }
+            else
+              obj
+            end
           end
 
           def self.validate_kms_encryption(attrs)
@@ -126,15 +137,15 @@ module Pangea
           end
 
           def self.validate_object_lock(attrs)
-            return unless attrs.object_lock_configuration[:object_lock_enabled] && !attrs.versioning[:enabled]
+            return unless attrs.object_lock_configuration&.dig(:object_lock_enabled) && !attrs.versioning&.dig(:enabled)
 
             raise Dry::Struct::Error, 'Object lock requires versioning to be enabled'
           end
 
           def self.validate_website_config(attrs)
             return unless attrs.website.any?
-            return unless attrs.website[:redirect_all_requests_to]
-            return unless attrs.website[:index_document] || attrs.website[:error_document]
+            return unless attrs.website&.dig(:redirect_all_requests_to)
+            return unless attrs.website&.dig(:index_document) || attrs.website&.dig(:error_document)
 
             raise Dry::Struct::Error, 'Cannot specify both redirect_all_requests_to and index/error documents'
           end
@@ -151,11 +162,11 @@ module Pangea
           end
 
           def versioning_enabled?
-            versioning[:enabled]
+            versioning&.dig(:enabled)
           end
 
           def website_enabled?
-            !website[:index_document].nil? || !website[:redirect_all_requests_to].nil?
+            !website&.dig(:index_document).nil? || !website&.dig(:redirect_all_requests_to).nil?
           end
 
           def lifecycle_rules_count
@@ -164,6 +175,8 @@ module Pangea
 
           def public_access_blocked?
             pac = public_access_block_configuration
+            return false unless pac
+
             pac[:block_public_acls] == true && pac[:block_public_policy] == true &&
               pac[:ignore_public_acls] == true && pac[:restrict_public_buckets] == true
           end

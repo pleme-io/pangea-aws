@@ -21,69 +21,69 @@ module Pangea
     module AWS
       module Types
         # Lambda event source mapping attributes with validation
-        class LambdaEventSourceMappingAttributes < Dry::Struct
+        class LambdaEventSourceMappingAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :event_source_arn, Resources::Types::String
-          attribute :function_name, Resources::Types::String
+          attribute? :event_source_arn, Resources::Types::String.optional
+          attribute? :function_name, Resources::Types::String.optional
           
           # Optional attributes
           attribute :enabled, Resources::Types::Bool.default(true)
           attribute :batch_size, Resources::Types::Integer.default(10)
-          attribute :maximum_batching_window_in_seconds, Resources::Types::Integer.constrained(gteq: 0, lteq: 300).optional
-          attribute :parallelization_factor, Resources::Types::Integer.constrained(gteq: 1, lteq: 10).optional
-          attribute :starting_position, Resources::Types::LambdaEventSourcePosition.optional
-          attribute :starting_position_timestamp, Resources::Types::String.optional
-          attribute :maximum_record_age_in_seconds, Resources::Types::Integer.constrained(gteq: 60, lteq: 604800).optional
+          attribute? :maximum_batching_window_in_seconds, Resources::Types::Integer.constrained(gteq: 0, lteq: 300).optional
+          attribute? :parallelization_factor, Resources::Types::Integer.constrained(gteq: 1, lteq: 10).optional
+          attribute? :starting_position, Resources::Types::LambdaEventSourcePosition.optional
+          attribute? :starting_position_timestamp, Resources::Types::String.optional
+          attribute? :maximum_record_age_in_seconds, Resources::Types::Integer.constrained(gteq: 60, lteq: 604800).optional
           attribute :bisect_batch_on_function_error, Resources::Types::Bool.default(false)
-          attribute :maximum_retry_attempts, Resources::Types::Integer.constrained(gteq: 0, lteq: 10000).optional
-          attribute :tumbling_window_in_seconds, Resources::Types::Integer.constrained(gteq: 0, lteq: 900).optional
+          attribute? :maximum_retry_attempts, Resources::Types::Integer.constrained(gteq: 0, lteq: 10000).optional
+          attribute? :tumbling_window_in_seconds, Resources::Types::Integer.constrained(gteq: 0, lteq: 900).optional
           
           # Destination configuration
-          attribute :destination_config, Resources::Types::Hash.schema(
+          attribute? :destination_config, Resources::Types::Hash.schema(
             on_failure?: Resources::Types::LambdaDestinationOnFailure.optional
-          ).optional
+          ).lax.optional
           
           # Self-managed event source (Kafka)
-          attribute :self_managed_event_source, Resources::Types::LambdaSelfManagedEventSource.optional
+          attribute? :self_managed_event_source, Resources::Types::LambdaSelfManagedEventSource.optional
           
           # Source access configurations
-          attribute :source_access_configuration, Resources::Types::Array.of(
+          attribute? :source_access_configuration, Resources::Types::Array.of(
             Resources::Types::LambdaSourceAccessConfiguration
           ).default([].freeze)
           
           # Event source specific configurations
-          attribute :topics, Resources::Types::Array.of(Resources::Types::String).optional
-          attribute :queues, Resources::Types::Array.of(Resources::Types::String).optional
+          attribute :topics, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
+          attribute :queues, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
           
           # Filter criteria
-          attribute :filter_criteria, Resources::Types::Hash.schema(
+          attribute? :filter_criteria, Resources::Types::Hash.schema(
             filters?: Resources::Types::Array.of(
               Resources::Types::Hash.schema(
                 pattern?: Resources::Types::String.optional
-              )
+              ).lax
             ).optional
           ).optional
           
           # Scaling configuration
-          attribute :scaling_config, Resources::Types::Hash.schema(
+          attribute? :scaling_config, Resources::Types::Hash.schema(
             maximum_concurrency?: Resources::Types::Integer.constrained(gteq: 2, lteq: 1000).optional
-          ).optional
+          ).lax.optional
           
           # Amazon MQ specific
-          attribute :amazon_managed_kafka_event_source_config, Resources::Types::Hash.schema(
+          attribute? :amazon_managed_kafka_event_source_config, Resources::Types::Hash.schema(
             consumer_group_id?: Resources::Types::String.optional
-          ).optional
+          ).lax.optional
           
           # Self-managed Kafka specific
-          attribute :self_managed_kafka_event_source_config, Resources::Types::Hash.schema(
+          attribute? :self_managed_kafka_event_source_config, Resources::Types::Hash.schema(
             consumer_group_id?: Resources::Types::String.optional
-          ).optional
+          ).lax.optional
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Determine event source type from ARN
             if attrs[:event_source_arn]

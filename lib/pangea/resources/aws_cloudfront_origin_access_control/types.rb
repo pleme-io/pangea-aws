@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS CloudFront Origin Access Control resources
-      class CloudFrontOriginAccessControlAttributes < Dry::Struct
+      class CloudFrontOriginAccessControlAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Name for the origin access control
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
 
         # Description of the origin access control
         attribute :description, Resources::Types::String.default('')

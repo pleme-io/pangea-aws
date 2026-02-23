@@ -39,13 +39,13 @@ module Pangea
           
           # Artifact store configuration
           artifact_store do
-            type pipeline_attrs.artifact_store[:type]
-            location pipeline_attrs.artifact_store[:location]
+            type pipeline_attrs.artifact_store&.dig(:type)
+            location pipeline_attrs.artifact_store&.dig(:location)
             
-            if pipeline_attrs.artifact_store[:encryption_key]
+            if pipeline_attrs.artifact_store&.dig(:encryption_key)
               encryption_key do
-                id pipeline_attrs.artifact_store[:encryption_key][:id]
-                type pipeline_attrs.artifact_store[:encryption_key][:type]
+                id pipeline_attrs.artifact_store&.dig(:encryption_key)[:id]
+                type pipeline_attrs.artifact_store&.dig(:encryption_key)[:type]
               end
             end
           end
@@ -86,7 +86,7 @@ module Pangea
           end
           
           # Apply tags
-          if pipeline_attrs.tags.any?
+          if pipeline_attrs.tags&.any?
             tags do
               pipeline_attrs.tags.each do |key, value|
                 public_send(key, value)

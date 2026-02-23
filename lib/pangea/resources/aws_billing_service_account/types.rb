@@ -21,7 +21,7 @@ module Pangea
     module AWS
       module Types
         # Billing service account configuration
-        class BillingServiceAccountAttributes < Dry::Struct
+        class BillingServiceAccountAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           attribute :account_id?, Resources::Types::String.constrained(format: /\A\d{12}\z/).optional

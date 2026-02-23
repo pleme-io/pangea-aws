@@ -23,7 +23,7 @@ module Pangea
   module Resources
     module AWS
       def aws_cloudtrail_event_data_store(name, attributes = {})
-        store_attrs = Types::Types::CloudTrailEventDataStoreAttributes.new(attributes)
+        store_attrs = Types::CloudTrailEventDataStoreAttributes.new(attributes)
         
         resource(:aws_cloudtrail_event_data_store, name) do
           name store_attrs.name
@@ -32,7 +32,7 @@ module Pangea
           retention_period store_attrs.retention_period
           termination_protection_enabled store_attrs.termination_protection_enabled
           
-          if store_attrs.tags.any?
+          if store_attrs.tags&.any?
             tags do
               store_attrs.tags.each do |key, value|
                 public_send(key, value)

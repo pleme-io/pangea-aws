@@ -32,7 +32,7 @@ module Pangea
           end
 
           def is_aws_service_integration?
-            type == 'AWS' && !is_lambda_integration?
+            type == 'AWS' && !uri&.include?('lambda')
           end
 
           def is_mock_integration?

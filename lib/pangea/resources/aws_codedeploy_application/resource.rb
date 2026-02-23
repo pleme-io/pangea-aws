@@ -40,7 +40,7 @@ module Pangea
           compute_platform app_attrs.compute_platform
           
           # Apply tags
-          if app_attrs.tags.any?
+          if app_attrs.tags&.any?
             tags do
               app_attrs.tags.each do |key, value|
                 public_send(key, value)

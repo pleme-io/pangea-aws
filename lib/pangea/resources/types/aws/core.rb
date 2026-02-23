@@ -30,14 +30,14 @@ module Pangea
       CidrBlock = String.constrained(format: /\A\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}\z/) unless const_defined?(:CidrBlock)
 
       # Common AWS resource attributes
-      AwsTags = Hash.map(Symbol, String).default({}.freeze) unless const_defined?(:AwsTags)
+      AwsTags = Hash.map(Coercible::Symbol, String).default({}.freeze) unless const_defined?(:AwsTags)
 
       # Network protocols
       IpProtocol = Resources::Types::String.constrained(included_in: ['tcp', 'udp', 'icmp', 'icmpv6', 'all', '-1']) unless const_defined?(:IpProtocol)
 
       # Port ranges
       Port = Integer.constrained(gteq: 0, lteq: 65535) unless const_defined?(:Port)
-      PortRange = Hash.schema(from_port: Port, to_port: Port) unless const_defined?(:PortRange)
+      PortRange = Hash.schema(from_port: Port, to_port: Port).lax unless const_defined?(:PortRange)
 
       # Security group rule
       SecurityGroupRule = Hash.schema(
@@ -47,7 +47,7 @@ module Pangea
         cidr_blocks?: Array.of(CidrBlock).default([].freeze),
         security_groups?: Array.of(String).default([].freeze),
         description?: String.optional
-      ) unless const_defined?(:SecurityGroupRule)
+      ).lax unless const_defined?(:SecurityGroupRule)
 
       # Instance tenancy
       InstanceTenancy = String.default('default').enum('default', 'dedicated', 'host') unless const_defined?(:InstanceTenancy)

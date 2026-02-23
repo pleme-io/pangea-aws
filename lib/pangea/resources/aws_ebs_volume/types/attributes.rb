@@ -19,12 +19,12 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS EBS Volume resources
-        class EbsVolumeAttributes < Dry::Struct
+        class EbsVolumeAttributes < Pangea::Resources::BaseAttributes
           extend EbsVolumeValidation
           include EbsVolumeInstanceMethods
 
           # Availability zone where the volume will reside (required)
-          attribute :availability_zone, Resources::Types::AwsAvailabilityZone
+          attribute? :availability_zone, Resources::Types::AwsAvailabilityZone.optional
 
           # Size of the volume in GiB (conditional - required for gp3, gp2, st1, sc1)
           attribute? :size, Resources::Types::Integer.constrained(gteq: 1, lteq: 65_536)

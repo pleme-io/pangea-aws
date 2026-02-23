@@ -37,27 +37,27 @@ module Pangea
           finding_publishing_frequency detector_attrs.finding_publishing_frequency
           
           # Data sources configuration
-          if detector_attrs.datasources.any?
+          if detector_attrs.datasources&.any?
             datasources do
-              if detector_attrs.datasources[:s3_logs]
+              if detector_attrs.datasources&.dig(:s3_logs)
                 s3_logs do
-                  enable detector_attrs.datasources[:s3_logs][:enable]
+                  enable detector_attrs.datasources&.dig(:s3_logs)[:enable]
                 end
               end
               
-              if detector_attrs.datasources[:kubernetes]
+              if detector_attrs.datasources&.dig(:kubernetes)
                 kubernetes do
                   audit_logs do
-                    enable detector_attrs.datasources[:kubernetes][:audit_logs][:enable]
+                    enable detector_attrs.datasources&.dig(:kubernetes)[:audit_logs][:enable]
                   end
                 end
               end
               
-              if detector_attrs.datasources[:malware_protection]
+              if detector_attrs.datasources&.dig(:malware_protection)
                 malware_protection do
                   scan_ec2_instance_with_findings do
                     ebs_volumes do
-                      enable detector_attrs.datasources[:malware_protection][:scan_ec2_instance_with_findings][:ebs_volumes][:enable]
+                      enable detector_attrs.datasources&.dig(:malware_protection)[:scan_ec2_instance_with_findings][:ebs_volumes][:enable]
                     end
                   end
                 end
@@ -66,7 +66,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if detector_attrs.tags.any?
+          if detector_attrs.tags&.any?
             tags do
               detector_attrs.tags.each do |key, value|
                 public_send(key, value)

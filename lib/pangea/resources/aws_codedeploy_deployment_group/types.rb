@@ -25,20 +25,20 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS CodeDeploy Deployment Group resources
-        class CodeDeployDeploymentGroupAttributes < Dry::Struct
+        class CodeDeployDeploymentGroupAttributes < Pangea::Resources::BaseAttributes
           include CodeDeployDeploymentGroupHelpers
           transform_keys(&:to_sym)
 
           # Core attributes
-          attribute :app_name, Resources::Types::String
+          attribute? :app_name, Resources::Types::String.optional
 
-          attribute :deployment_group_name, Resources::Types::String.constrained(
+          attribute? :deployment_group_name, Resources::Types::String.constrained(
             format: /\A[a-zA-Z0-9._-]+\z/,
             min_size: 1,
             max_size: 100
           )
 
-          attribute :service_role_arn, Resources::Types::String
+          attribute? :service_role_arn, Resources::Types::String.optional
           attribute :deployment_config_name, Resources::Types::String.default('CodeDeployDefault.OneAtATime')
 
           # Compose attributes from sub-types
@@ -72,20 +72,20 @@ module Pangea
           end
 
           def self.validate_blue_green_deployment(attrs)
-            return unless attrs.deployment_style[:deployment_type] == 'BLUE_GREEN'
+            return unless attrs.deployment_style&.dig(:deployment_type) == 'BLUE_GREEN'
 
             if attrs.blue_green_deployment_config.empty?
               raise Dry::Struct::Error, 'Blue-green deployment requires blue_green_deployment_config'
             end
 
-            has_lb = attrs.load_balancer_info[:elb_info] ||
-                     attrs.load_balancer_info[:target_group_info] ||
-                     attrs.load_balancer_info[:target_group_pair_info]
+            has_lb = attrs.load_balancer_info&.dig(:elb_info) ||
+                     attrs.load_balancer_info&.dig(:target_group_info) ||
+                     attrs.load_balancer_info&.dig(:target_group_pair_info)
             raise Dry::Struct::Error, 'Blue-green deployment requires load balancer configuration' unless has_lb
           end
 
           def self.validate_ecs_service(attrs)
-            if attrs.ecs_service[:cluster_name] && !attrs.ecs_service[:service_name]
+            if attrs.ecs_service&.dig(:cluster_name) && !attrs.ecs_service&.dig(:service_name)
               raise Dry::Struct::Error, 'ECS service configuration requires both cluster_name and service_name'
             end
           end

@@ -10,23 +10,23 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Managed Blockchain Ethereum Node resources
-        class ManagedBlockchainEthereumNodeAttributes < Dry::Struct
+        class ManagedBlockchainEthereumNodeAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Network ID (required)
-          attribute :network_id, Resources::Types::String.constrained(included_in: ['n-ethereum-mainnet',
+          attribute? :network_id, Resources::Types::String.constrained(included_in: ['n-ethereum-mainnet',
             'n-ethereum-goerli',
             'n-ethereum-rinkeby'])
 
           # Node configuration (required)
-          attribute :node_configuration, Resources::Types::Hash.schema(
+          attribute? :node_configuration, Resources::Types::Hash.schema(
             instance_type: Resources::Types::String.constrained(included_in: ['bc.t3.small', 'bc.t3.medium', 'bc.t3.large', 'bc.t3.xlarge',
               'bc.m5.large', 'bc.m5.xlarge', 'bc.m5.2xlarge', 'bc.m5.4xlarge',
               'bc.c5.large', 'bc.c5.xlarge', 'bc.c5.2xlarge', 'bc.c5.4xlarge',
               'bc.r5.large', 'bc.r5.xlarge', 'bc.r5.2xlarge', 'bc.r5.4xlarge']),
             availability_zone?: Resources::Types::String.optional,
             subnet_id?: Resources::Types::String.optional
-          )
+          ).lax
 
           # Client request token (optional)
           attribute? :client_request_token, Resources::Types::String.optional
@@ -45,14 +45,14 @@ module Pangea
           end
 
           def self.validate_availability_zone(attrs)
-            az = attrs.node_configuration[:availability_zone]
+            az = attrs.node_configuration&.dig(:availability_zone)
             return unless az
             return if az.match?(/\A[a-z0-9\-]+[a-z]\z/)
             raise Dry::Struct::Error, "availability_zone must be a valid AWS availability zone format"
           end
 
           def self.validate_subnet_id(attrs)
-            subnet_id = attrs.node_configuration[:subnet_id]
+            subnet_id = attrs.node_configuration&.dig(:subnet_id)
             return unless subnet_id
             return if subnet_id.match?(/\Asubnet-[a-f0-9]{8,17}\z/)
             raise Dry::Struct::Error, "subnet_id must be a valid AWS subnet ID format"
@@ -67,7 +67,7 @@ module Pangea
 
           def self.validate_instance_type_for_network(attrs)
             return unless attrs.network_id == 'n-ethereum-mainnet'
-            instance_type = attrs.node_configuration[:instance_type]
+            instance_type = attrs.node_configuration&.dig(:instance_type)
             return unless instance_type.start_with?('bc.t3.small', 'bc.t3.medium')
             raise Dry::Struct::Error, "Ethereum mainnet requires at least bc.t3.large instance type"
           end

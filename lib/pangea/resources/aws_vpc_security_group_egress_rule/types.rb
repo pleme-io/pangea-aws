@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsVpcSecurityGroupEgressRule resources
       # Manages aws vpc security group egress rule resources.
-      class AwsVpcSecurityGroupEgressRuleAttributes < Dry::Struct
+      class AwsVpcSecurityGroupEgressRuleAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_vpc_security_group_egress_rule
         
         # Tags to apply to the resource

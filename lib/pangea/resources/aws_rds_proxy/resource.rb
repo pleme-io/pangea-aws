@@ -39,7 +39,7 @@ module Pangea
           vpc_subnet_ids proxy_attrs.vpc_subnet_ids
           
           # Optional VPC security groups
-          vpc_security_group_ids proxy_attrs.vpc_security_group_ids if proxy_attrs.vpc_security_group_ids && proxy_attrs.vpc_security_group_ids.any?
+          vpc_security_group_ids proxy_attrs.vpc_security_group_ids if proxy_attrs.vpc_security_group_ids && proxy_attrs.vpc_security_group_ids&.any?
           
           # Authentication configurations
           proxy_attrs.auth.each do |auth_config|
@@ -59,7 +59,7 @@ module Pangea
           debug_logging proxy_attrs.debug_logging
           
           # Apply tags if present
-          if proxy_attrs.tags.any?
+          if proxy_attrs.tags&.any?
             tags do
               proxy_attrs.tags.each do |key, value|
                 public_send(key, value)

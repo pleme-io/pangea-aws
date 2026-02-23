@@ -21,9 +21,9 @@ module Pangea
       module Types
       # Type-safe attributes for AwsTimestreamDatabase resources
       # Provides a Timestream database resource for time series data.
-      class TimestreamDatabaseAttributes < Dry::Struct
-        attribute :database_name, Resources::Types::String
-        attribute :kms_key_id, Resources::Types::String.optional
+      class TimestreamDatabaseAttributes < Pangea::Resources::BaseAttributes
+        attribute? :database_name, Resources::Types::String.optional
+        attribute? :kms_key_id, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

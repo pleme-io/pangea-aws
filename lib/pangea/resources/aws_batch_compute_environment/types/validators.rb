@@ -34,7 +34,7 @@ module Pangea
           end
 
           def self.validate_compute_resources(resources)
-            unless resources.is_a?(Hash)
+            unless resources.is_a?(::Hash)
               raise Dry::Struct::Error, "Compute resources must be a hash"
             end
 
@@ -122,7 +122,7 @@ module Pangea
           end
 
           def self.validate_vpc_configuration(vpc_config)
-            unless vpc_config.is_a?(Hash)
+            unless vpc_config.is_a?(::Hash)
               raise Dry::Struct::Error, "VPC configuration must be a hash"
             end
 

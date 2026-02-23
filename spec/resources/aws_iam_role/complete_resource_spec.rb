@@ -25,9 +25,9 @@ RSpec.describe "aws_iam_role resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -53,8 +53,8 @@ RSpec.describe "aws_iam_role resource function" do
   
   describe "IamRoleAttributes validation" do
     it "accepts minimal configuration with EC2 trust policy" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       expect(attrs.path).to eq('/')
@@ -65,68 +65,68 @@ RSpec.describe "aws_iam_role resource function" do
     end
     
     it "accepts custom role name" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
         name: "MyCustomRole",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       expect(attrs.name).to eq("MyCustomRole")
     end
     
     it "accepts name prefix instead of name" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
         name_prefix: "my-role-",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       expect(attrs.name_prefix).to eq("my-role-")
     end
     
     it "accepts custom path" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
         path: "/application/web/",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       expect(attrs.path).to eq("/application/web/")
     end
     
     it "accepts description" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
         description: "Role for EC2 instances in web tier",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       expect(attrs.description).to eq("Role for EC2 instances in web tier")
     end
     
     it "accepts Lambda trust policy" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.lambda_service
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.lambda_service
       })
       
       expect(attrs.assume_role_policy[:Statement].first[:Principal][:Service]).to eq("lambda.amazonaws.com")
     end
     
     it "accepts ECS task trust policy" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ecs_task_service
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ecs_task_service
       })
       
       expect(attrs.assume_role_policy[:Statement].first[:Principal][:Service]).to eq("ecs-tasks.amazonaws.com")
     end
     
     it "accepts cross-account trust policy" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.cross_account("123456789012")
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.cross_account("123456789012")
       })
       
       expect(attrs.assume_role_policy[:Statement].first[:Principal][:AWS]).to eq("arn:aws:iam::123456789012:root")
     end
     
     it "accepts SAML federated trust policy" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.saml_federated("arn:aws:iam::123456789012:saml-provider/MyProvider")
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.saml_federated("arn:aws:iam::123456789012:saml-provider/MyProvider")
       })
       
       expect(attrs.assume_role_policy[:Statement].first[:Principal][:Federated]).to include("saml-provider/MyProvider")
@@ -134,7 +134,7 @@ RSpec.describe "aws_iam_role resource function" do
     end
     
     it "accepts custom trust policy" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
         assume_role_policy: {
           Version: "2012-10-17",
           Statement: [{
@@ -151,17 +151,17 @@ RSpec.describe "aws_iam_role resource function" do
     
     it "validates name and name_prefix are mutually exclusive" do
       expect {
-        Pangea::Resources::AWS::IamRoleAttributes.new({
+        Pangea::Resources::AWS::Types::IamRoleAttributes.new({
           name: "MyRole",
           name_prefix: "my-role-",
-          assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+          assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
         })
       }.to raise_error(Dry::Struct::Error, /Cannot specify both 'name' and 'name_prefix'/)
     end
     
     it "validates assume role policy must have statements" do
       expect {
-        Pangea::Resources::AWS::IamRoleAttributes.new({
+        Pangea::Resources::AWS::Types::IamRoleAttributes.new({
           assume_role_policy: {
             Version: "2012-10-17",
             Statement: []
@@ -171,8 +171,8 @@ RSpec.describe "aws_iam_role resource function" do
     end
     
     it "accepts max session duration within valid range" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service,
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service,
         max_session_duration: 7200  # 2 hours
       })
       
@@ -181,8 +181,8 @@ RSpec.describe "aws_iam_role resource function" do
     
     it "validates max session duration minimum" do
       expect {
-        Pangea::Resources::AWS::IamRoleAttributes.new({
-          assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service,
+        Pangea::Resources::AWS::Types::IamRoleAttributes.new({
+          assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service,
           max_session_duration: 3599  # Less than 1 hour
         })
       }.to raise_error(Dry::Struct::Error)
@@ -190,16 +190,16 @@ RSpec.describe "aws_iam_role resource function" do
     
     it "validates max session duration maximum" do
       expect {
-        Pangea::Resources::AWS::IamRoleAttributes.new({
-          assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service,
+        Pangea::Resources::AWS::Types::IamRoleAttributes.new({
+          assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service,
           max_session_duration: 43201  # More than 12 hours
         })
       }.to raise_error(Dry::Struct::Error)
     end
     
     it "accepts permissions boundary ARN" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service,
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service,
         permissions_boundary: "arn:aws:iam::123456789012:policy/MyBoundary"
       })
       
@@ -207,8 +207,8 @@ RSpec.describe "aws_iam_role resource function" do
     end
     
     it "accepts inline policies" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.lambda_service,
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.lambda_service,
         inline_policies: {
           "CloudWatchLogs" => {
             Version: "2012-10-17",
@@ -238,8 +238,8 @@ RSpec.describe "aws_iam_role resource function" do
     end
     
     it "accepts tags" do
-      attrs = Pangea::Resources::AWS::IamRoleAttributes.new({
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service,
+      attrs = Pangea::Resources::AWS::Types::IamRoleAttributes.new({
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service,
         tags: {
           Name: "WebServerRole",
           Environment: "production",
@@ -256,7 +256,7 @@ RSpec.describe "aws_iam_role resource function" do
   describe "aws_iam_role function behavior" do
     it "creates a resource reference with minimal attributes" do
       ref = test_instance.aws_iam_role(:test, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       expect(ref).to be_a(Pangea::Resources::ResourceReference)
@@ -267,7 +267,7 @@ RSpec.describe "aws_iam_role resource function" do
     it "creates a role with custom name" do
       ref = test_instance.aws_iam_role(:my_role, {
         name: "MyApplicationRole",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       attrs = ref.resource_attributes
@@ -277,7 +277,7 @@ RSpec.describe "aws_iam_role resource function" do
     it "creates a role with name prefix" do
       ref = test_instance.aws_iam_role(:my_role, {
         name_prefix: "app-role-",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.lambda_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.lambda_service
       })
       
       attrs = ref.resource_attributes
@@ -288,7 +288,7 @@ RSpec.describe "aws_iam_role resource function" do
       ref = test_instance.aws_iam_role(:organized_role, {
         path: "/application/backend/",
         description: "Backend service role for data processing",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ecs_task_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ecs_task_service
       })
       
       attrs = ref.resource_attributes
@@ -298,7 +298,7 @@ RSpec.describe "aws_iam_role resource function" do
     
     it "creates a role with inline policies" do
       ref = test_instance.aws_iam_role(:lambda_role, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.lambda_service,
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.lambda_service,
         inline_policies: {
           "DynamoDBAccess" => {
             Version: "2012-10-17",
@@ -342,7 +342,7 @@ RSpec.describe "aws_iam_role resource function" do
     
     it "provides all expected outputs" do
       ref = test_instance.aws_iam_role(:test, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       expected_outputs = [:id, :arn, :name, :unique_id, :create_date]
@@ -355,7 +355,7 @@ RSpec.describe "aws_iam_role resource function" do
     
     it "provides computed properties for service roles" do
       ref = test_instance.aws_iam_role(:test, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       expect(ref.service_principal).to eq("ec2.amazonaws.com")
@@ -366,7 +366,7 @@ RSpec.describe "aws_iam_role resource function" do
     
     it "provides computed properties for federated roles" do
       ref = test_instance.aws_iam_role(:test, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.saml_federated("arn:aws:iam::123456789012:saml-provider/MyProvider")
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.saml_federated("arn:aws:iam::123456789012:saml-provider/MyProvider")
       })
       
       expect(ref.service_principal).to eq(nil)
@@ -377,7 +377,7 @@ RSpec.describe "aws_iam_role resource function" do
     
     it "provides computed properties for cross-account roles" do
       ref = test_instance.aws_iam_role(:test, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.cross_account("123456789012")
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.cross_account("123456789012")
       })
       
       expect(ref.service_principal).to eq(nil)
@@ -392,7 +392,7 @@ RSpec.describe "aws_iam_role resource function" do
       ref = test_instance.aws_iam_role(:ec2_role, {
         name: "EC2InstanceRole",
         description: "Role for EC2 instances to access AWS services",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service,
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service,
         tags: {
           Name: "EC2InstanceRole",
           Type: "instance-profile"
@@ -409,7 +409,7 @@ RSpec.describe "aws_iam_role resource function" do
       ref = test_instance.aws_iam_role(:lambda_exec, {
         name_prefix: "lambda-function-",
         description: "Lambda function execution role",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.lambda_service,
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.lambda_service,
         inline_policies: {
           "CloudWatchLogs" => {
             Version: "2012-10-17",
@@ -440,7 +440,7 @@ RSpec.describe "aws_iam_role resource function" do
         name: "ECSTaskExecutionRole",
         path: "/service/ecs/",
         description: "ECS task execution role with ECR and CloudWatch access",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ecs_task_service,
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ecs_task_service,
         tags: {
           Service: "ecs",
           Type: "task-execution"
@@ -489,7 +489,7 @@ RSpec.describe "aws_iam_role resource function" do
       ref = test_instance.aws_iam_role(:saml_role, {
         name: "SAMLFederatedRole",
         description: "Role for SAML federated users",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.saml_federated(
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.saml_federated(
           "arn:aws:iam::123456789012:saml-provider/CompanySAML"
         ),
         max_session_duration: 28800,  # 8 hours
@@ -508,7 +508,7 @@ RSpec.describe "aws_iam_role resource function" do
   describe "resource reference integration" do
     it "provides terraform interpolation syntax for outputs" do
       ref = test_instance.aws_iam_role(:test_role, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       expect(ref.outputs[:id]).to eq("${aws_iam_role.test_role.id}")
@@ -520,7 +520,7 @@ RSpec.describe "aws_iam_role resource function" do
     it "can be used with instance profiles" do
       role_ref = test_instance.aws_iam_role(:for_ec2, {
         name: "EC2Role",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       # Simulate using role reference in instance profile
@@ -556,7 +556,7 @@ RSpec.describe "aws_iam_role resource function" do
   describe "error conditions and edge cases" do
     it "handles default values correctly" do
       ref = test_instance.aws_iam_role(:defaults, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       attrs = ref.resource_attributes
@@ -570,7 +570,7 @@ RSpec.describe "aws_iam_role resource function" do
       ref = test_instance.aws_iam_role(:string_keys, {
         "name" => "StringKeyRole",
         "description" => "Role with string keys",
-        "assume_role_policy" => Pangea::Resources::AWS::TrustPolicies.lambda_service,
+        "assume_role_policy" => Pangea::Resources::AWS::Types::TrustPolicies.lambda_service,
         "tags" => {
           Name: "string-key-role"  # Tags must use symbol keys
         }

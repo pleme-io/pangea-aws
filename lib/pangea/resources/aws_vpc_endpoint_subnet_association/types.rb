@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsVpcEndpointSubnetAssociation resources
       # Manages aws vpc endpoint subnet association resources.
-      class AwsVpcEndpointSubnetAssociationAttributes < Dry::Struct
+      class AwsVpcEndpointSubnetAssociationAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_vpc_endpoint_subnet_association
         
         # Tags to apply to the resource

@@ -33,32 +33,32 @@ module Pangea
           min_ttl cache_policy_attrs.min_ttl
           
           parameters_in_cache_key_and_forwarded_to_origin do
-            enable_accept_encoding_brotli cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:enable_accept_encoding_brotli]
-            enable_accept_encoding_gzip cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:enable_accept_encoding_gzip]
+            enable_accept_encoding_brotli cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:enable_accept_encoding_brotli)
+            enable_accept_encoding_gzip cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:enable_accept_encoding_gzip)
             
             headers_config do
-              header_behavior cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:headers_config][:header_behavior]
-              if cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:headers_config][:headers]
+              header_behavior cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:headers_config)[:header_behavior]
+              if cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:headers_config)[:headers]
                 headers do
-                  items cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:headers_config][:headers][:items] if cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:headers_config][:headers][:items]
+                  items cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:headers_config)[:headers][:items] if cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:headers_config)[:headers][:items]
                 end
               end
             end
             
             query_strings_config do
-              query_string_behavior cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:query_strings_config][:query_string_behavior]
-              if cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:query_strings_config][:query_strings]
+              query_string_behavior cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:query_strings_config)[:query_string_behavior]
+              if cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:query_strings_config)[:query_strings]
                 query_strings do
-                  items cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:query_strings_config][:query_strings][:items] if cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:query_strings_config][:query_strings][:items]
+                  items cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:query_strings_config)[:query_strings][:items] if cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:query_strings_config)[:query_strings][:items]
                 end
               end
             end
             
             cookies_config do
-              cookie_behavior cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:cookies_config][:cookie_behavior]
-              if cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:cookies_config][:cookies]
+              cookie_behavior cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:cookies_config)[:cookie_behavior]
+              if cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:cookies_config)[:cookies]
                 cookies do
-                  items cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:cookies_config][:cookies][:items] if cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin[:cookies_config][:cookies][:items]
+                  items cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:cookies_config)[:cookies][:items] if cache_policy_attrs.parameters_in_cache_key_and_forwarded_to_origin&.dig(:cookies_config)[:cookies][:items]
                 end
               end
             end

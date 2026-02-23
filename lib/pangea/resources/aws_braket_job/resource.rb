@@ -42,46 +42,46 @@ module Pangea
           # Set algorithm specification
           algorithm_specification do
             script_mode_config do
-              entry_point job_attrs.algorithm_specification[:script_mode_config][:entry_point]
-              s3_uri job_attrs.algorithm_specification[:script_mode_config][:s3_uri]
+              entry_point job_attrs.algorithm_specification&.dig(:script_mode_config)[:entry_point]
+              s3_uri job_attrs.algorithm_specification&.dig(:script_mode_config)[:s3_uri]
               
-              if job_attrs.algorithm_specification[:script_mode_config][:compression_type]
-                compression_type job_attrs.algorithm_specification[:script_mode_config][:compression_type]
+              if job_attrs.algorithm_specification&.dig(:script_mode_config)[:compression_type]
+                compression_type job_attrs.algorithm_specification&.dig(:script_mode_config)[:compression_type]
               end
             end
           end
           
           # Set device configuration
           device_config do
-            device job_attrs.device_config[:device]
+            device job_attrs.device_config&.dig(:device)
           end
           
           # Set instance configuration
           instance_config do
-            instance_type job_attrs.instance_config[:instance_type]
-            volume_size_in_gb job_attrs.instance_config[:volume_size_in_gb]
+            instance_type job_attrs.instance_config&.dig(:instance_type)
+            volume_size_in_gb job_attrs.instance_config&.dig(:volume_size_in_gb)
             
-            if job_attrs.instance_config[:instance_count]
-              instance_count job_attrs.instance_config[:instance_count]
+            if job_attrs.instance_config&.dig(:instance_count)
+              instance_count job_attrs.instance_config&.dig(:instance_count)
             end
           end
           
           # Set output data configuration
           output_data_config do
-            s3_path job_attrs.output_data_config[:s3_path]
+            s3_path job_attrs.output_data_config&.dig(:s3_path)
             
-            if job_attrs.output_data_config[:kms_key_id]
-              kms_key_id job_attrs.output_data_config[:kms_key_id]
+            if job_attrs.output_data_config&.dig(:kms_key_id)
+              kms_key_id job_attrs.output_data_config&.dig(:kms_key_id)
             end
           end
           
           # Set checkpoint configuration if provided
           if job_attrs.checkpoint_config
             checkpoint_config do
-              s3_uri job_attrs.checkpoint_config[:s3_uri]
+              s3_uri job_attrs.checkpoint_config&.dig(:s3_uri)
               
-              if job_attrs.checkpoint_config[:local_path]
-                local_path job_attrs.checkpoint_config[:local_path]
+              if job_attrs.checkpoint_config&.dig(:local_path)
+                local_path job_attrs.checkpoint_config&.dig(:local_path)
               end
             end
           end
@@ -115,7 +115,7 @@ module Pangea
           
           # Set stopping condition
           stopping_condition do
-            max_runtime_in_seconds job_attrs.stopping_condition[:max_runtime_in_seconds]
+            max_runtime_in_seconds job_attrs.stopping_condition&.dig(:max_runtime_in_seconds)
           end
           
           # Set tags

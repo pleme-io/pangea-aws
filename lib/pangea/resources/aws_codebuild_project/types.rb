@@ -23,7 +23,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS CodeBuild Project resources
-        class CodeBuildProjectAttributes < Dry::Struct
+        class CodeBuildProjectAttributes < Pangea::Resources::BaseAttributes
           require_relative 'types/schemas'
           require_relative 'types/validation'
           require_relative 'types/instance_methods'
@@ -33,7 +33,7 @@ module Pangea
           transform_keys(&:to_sym)
 
           # Project name (required)
-          attribute :name, Resources::Types::String.constrained(
+          attribute? :name, Resources::Types::String.constrained(
             format: /\A[A-Za-z0-9][A-Za-z0-9\-_]*\z/,
             min_size: 2,
             max_size: 255
@@ -43,7 +43,7 @@ module Pangea
           attribute? :description, Resources::Types::String.constrained(max_size: 255).optional
 
           # Service role ARN (required)
-          attribute :service_role, Resources::Types::String
+          attribute? :service_role, Resources::Types::String.optional
 
           # Build timeout in minutes (5-480)
           attribute :build_timeout, Resources::Types::Integer.constrained(gteq: 5, lteq: 480).default(60)
@@ -55,10 +55,10 @@ module Pangea
           attribute? :concurrent_build_limit, Resources::Types::Integer.constrained(gteq: 1, lteq: 100).optional
 
           # Source configuration
-          attribute :source, Schemas::SOURCE
+          attribute? :source, Schemas::SOURCE.optional
 
           # Artifacts configuration
-          attribute :artifacts, Schemas::ARTIFACTS
+          attribute? :artifacts, Schemas::ARTIFACTS.optional
 
           # Secondary sources
           attribute :secondary_sources, Resources::Types::Array.of(Schemas::SECONDARY_SOURCE).default([].freeze)
@@ -67,7 +67,7 @@ module Pangea
           attribute :secondary_artifacts, Resources::Types::Array.of(Schemas::SECONDARY_ARTIFACT).default([].freeze)
 
           # Environment configuration
-          attribute :environment, Schemas::ENVIRONMENT
+          attribute? :environment, Schemas::ENVIRONMENT.optional
 
           # Cache configuration
           attribute :cache, Schemas::CACHE.default({ type: 'NO_CACHE' })

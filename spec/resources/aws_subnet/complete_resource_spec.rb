@@ -25,9 +25,9 @@ RSpec.describe "aws_subnet resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -55,7 +55,7 @@ RSpec.describe "aws_subnet resource function" do
   describe "Subnet attributes validation" do
     it "validates required vpc_id attribute" do
       expect {
-        Pangea::Resources::AWS::SubnetAttributes.new({
+        Pangea::Resources::AWS::Types::SubnetAttributes.new({
           cidr_block: "10.0.1.0/24",
           availability_zone: "us-east-1a"
         })
@@ -64,7 +64,7 @@ RSpec.describe "aws_subnet resource function" do
     
     it "validates required cidr_block attribute" do
       expect {
-        Pangea::Resources::AWS::SubnetAttributes.new({
+        Pangea::Resources::AWS::Types::SubnetAttributes.new({
           vpc_id: vpc_id,
           availability_zone: "us-east-1a"
         })
@@ -73,7 +73,7 @@ RSpec.describe "aws_subnet resource function" do
     
     it "validates required availability_zone attribute" do
       expect {
-        Pangea::Resources::AWS::SubnetAttributes.new({
+        Pangea::Resources::AWS::Types::SubnetAttributes.new({
           vpc_id: vpc_id,
           cidr_block: "10.0.1.0/24"
         })
@@ -81,7 +81,7 @@ RSpec.describe "aws_subnet resource function" do
     end
     
     it "accepts valid subnet attributes" do
-      attrs = Pangea::Resources::AWS::SubnetAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::SubnetAttributes.new({
         vpc_id: vpc_id,
         cidr_block: "10.0.1.0/24",
         availability_zone: "us-east-1a"
@@ -93,7 +93,7 @@ RSpec.describe "aws_subnet resource function" do
     end
     
     it "applies default for map_public_ip_on_launch" do
-      attrs = Pangea::Resources::AWS::SubnetAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::SubnetAttributes.new({
         vpc_id: vpc_id,
         cidr_block: "10.0.1.0/24",
         availability_zone: "us-east-1a"
@@ -103,7 +103,7 @@ RSpec.describe "aws_subnet resource function" do
     end
     
     it "accepts custom map_public_ip_on_launch" do
-      attrs = Pangea::Resources::AWS::SubnetAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::SubnetAttributes.new({
         vpc_id: vpc_id,
         cidr_block: "10.0.1.0/24", 
         availability_zone: "us-east-1a",
@@ -114,7 +114,7 @@ RSpec.describe "aws_subnet resource function" do
     end
     
     it "applies default empty tags" do
-      attrs = Pangea::Resources::AWS::SubnetAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::SubnetAttributes.new({
         vpc_id: vpc_id,
         cidr_block: "10.0.1.0/24",
         availability_zone: "us-east-1a"
@@ -124,7 +124,7 @@ RSpec.describe "aws_subnet resource function" do
     end
     
     it "accepts custom tags" do
-      attrs = Pangea::Resources::AWS::SubnetAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::SubnetAttributes.new({
         vpc_id: vpc_id,
         cidr_block: "10.0.1.0/24",
         availability_zone: "us-east-1a",
@@ -141,7 +141,7 @@ RSpec.describe "aws_subnet resource function" do
       # Valid sizes (/16 to /28)
       [16, 20, 24, 28].each do |size|
         expect {
-          Pangea::Resources::AWS::SubnetAttributes.new({
+          Pangea::Resources::AWS::Types::SubnetAttributes.new({
             vpc_id: vpc_id,
             cidr_block: "10.0.1.0/#{size}",
             availability_zone: "us-east-1a"
@@ -152,7 +152,7 @@ RSpec.describe "aws_subnet resource function" do
     
     it "rejects CIDR blocks that are too large (< /16)" do
       expect {
-        Pangea::Resources::AWS::SubnetAttributes.new({
+        Pangea::Resources::AWS::Types::SubnetAttributes.new({
           vpc_id: vpc_id,
           cidr_block: "10.0.0.0/8",
           availability_zone: "us-east-1a"
@@ -162,7 +162,7 @@ RSpec.describe "aws_subnet resource function" do
     
     it "rejects CIDR blocks that are too small (> /28)" do
       expect {
-        Pangea::Resources::AWS::SubnetAttributes.new({
+        Pangea::Resources::AWS::Types::SubnetAttributes.new({
           vpc_id: vpc_id,
           cidr_block: "10.0.1.0/29",
           availability_zone: "us-east-1a"

@@ -22,17 +22,17 @@ module Pangea
       module Types
         # WorkSpaces IP Group resource attributes with validation
 
-        class IpRuleType < Dry::Struct
+        class IpRuleType < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :ip_rule, Resources::Types::CidrBlock
-          attribute :rule_desc, Resources::Types::String.constrained(
+          attribute? :ip_rule, Resources::Types::CidrBlock.optional
+          attribute? :rule_desc, Resources::Types::String.constrained(
             max_size: 100
           ).default('')
           
           # Validation for CIDR format and range
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Additional CIDR validation
             if attrs[:ip_rule]
@@ -72,31 +72,31 @@ module Pangea
             32 - cidr_prefix == 0 ? 1 : 2 ** (32 - cidr_prefix) - 2
           end
         end
-        class WorkspacesIpGroupAttributes < Dry::Struct
+        class WorkspacesIpGroupAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :group_name, Resources::Types::String.constrained(
+          attribute? :group_name, Resources::Types::String.constrained(
             min_size: 1,
             max_size: 100,
             format: /\A[a-zA-Z0-9\s._-]+\z/
           )
           
-          attribute :group_desc, Resources::Types::String.constrained(
+          attribute? :group_desc, Resources::Types::String.constrained(
             min_size: 0,
             max_size: 256
           ).default('')
           
-          attribute :user_rules, Resources::Types::Array.of(IpRuleType).constrained(
+          attribute? :user_rules, Resources::Types::Array.of(IpRuleType).constrained(
             max_size: 10
           ).default([].freeze)
           
           # Optional attributes
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Validation for IP rules
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Check for duplicate IP rules
             if attrs[:user_rules] && attrs[:user_rules].is_a?(Array)

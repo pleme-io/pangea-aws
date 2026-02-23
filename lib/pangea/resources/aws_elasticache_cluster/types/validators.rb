@@ -97,13 +97,13 @@ module Pangea
           end
 
           def validate_memcached_multi_az(attrs)
-            return unless attrs.preferred_availability_zones.any? && attrs.num_cache_nodes < 2
+            return unless attrs.preferred_availability_zones&.any? && attrs.num_cache_nodes < 2
 
             raise Dry::Struct::Error, 'Multi-AZ deployment requires at least 2 cache nodes for Memcached'
           end
 
           def validate_availability_zones(attrs)
-            return unless attrs.availability_zone && attrs.preferred_availability_zones.any?
+            return unless attrs.availability_zone && attrs.preferred_availability_zones&.any?
 
             raise Dry::Struct::Error, 'Cannot specify both availability_zone and preferred_availability_zones'
           end

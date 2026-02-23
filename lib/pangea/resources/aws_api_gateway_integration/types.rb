@@ -26,7 +26,7 @@ module Pangea
     module AWS
       module Types
         # API Gateway Integration attributes with validation
-        class ApiGatewayIntegrationAttributes < Dry::Struct
+        class ApiGatewayIntegrationAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Include instance methods from modules
@@ -37,14 +37,14 @@ module Pangea
           extend ApiGatewayIntegrationFactoryMethods
 
           # Core attributes
-          attribute :rest_api_id, Pangea::Resources::Types::String
-          attribute :resource_id, Pangea::Resources::Types::String
-          attribute :http_method, Pangea::Resources::Types::String.constrained(
+          attribute? :rest_api_id, Pangea::Resources::Types::String.optional
+          attribute? :resource_id, Pangea::Resources::Types::String.optional
+          attribute? :http_method, Pangea::Resources::Types::String.constrained(
             included_in: %w[GET POST PUT DELETE OPTIONS HEAD PATCH ANY]
           )
 
           # Integration type and configuration
-          attribute :type, Pangea::Resources::Types::String.constrained(
+          attribute? :type, Pangea::Resources::Types::String.constrained(
             included_in: %w[MOCK HTTP HTTP_PROXY AWS AWS_PROXY]
           )
           attribute :integration_http_method, Pangea::Resources::Types::String.optional.default(nil)
@@ -58,17 +58,17 @@ module Pangea
 
           # Credentials and caching
           attribute :credentials, Pangea::Resources::Types::String.optional.default(nil)
-          attribute :cache_key_parameters, Pangea::Resources::Types::Array.of(
+          attribute? :cache_key_parameters, Pangea::Resources::Types::Array.of(
             Pangea::Resources::Types::String
           ).default([].freeze)
           attribute :cache_namespace, Pangea::Resources::Types::String.optional.default(nil)
 
           # Request configuration
-          attribute :request_templates, Pangea::Resources::Types::Hash.map(
+          attribute? :request_templates, Pangea::Resources::Types::Hash.map(
             Pangea::Resources::Types::String, Pangea::Resources::Types::String
           ).default({}.freeze)
 
-          attribute :request_parameters, Pangea::Resources::Types::Hash.map(
+          attribute? :request_parameters, Pangea::Resources::Types::Hash.map(
             Pangea::Resources::Types::String, Pangea::Resources::Types::String
           ).default({}.freeze)
 
@@ -87,7 +87,7 @@ module Pangea
 
           # Custom validation using extracted validators module
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             ApiGatewayIntegrationValidators.validate_attributes(attrs)
             super(attrs)
           end

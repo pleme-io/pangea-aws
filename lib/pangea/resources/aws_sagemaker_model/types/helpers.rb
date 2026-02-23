@@ -7,7 +7,7 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class SageMakerModelAttributes < Dry::Struct
+        class SageMakerModelAttributes < Pangea::Resources::BaseAttributes
           def estimated_monthly_cost
             estimate_model_storage_cost + (uses_multi_model_endpoint? ? 10.0 : 0.0)
           end

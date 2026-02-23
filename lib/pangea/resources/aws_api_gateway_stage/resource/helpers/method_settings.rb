@@ -43,11 +43,11 @@ module Pangea
               end
 
               ref.define_singleton_method(:common_log_formats) do
-                Types::Types::ApiGatewayStageAttributes.common_log_formats
+                Types::ApiGatewayStageAttributes.common_log_formats
               end
 
               ref.define_singleton_method(:common_method_paths) do
-                Types::Types::ApiGatewayStageAttributes.common_method_paths
+                Types::ApiGatewayStageAttributes.common_method_paths
               end
             end
 

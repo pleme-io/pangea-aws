@@ -21,15 +21,16 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Cognito User Pool Domain resources
-        class CognitoUserPoolDomainAttributes < Dry::Struct
+        class CognitoUserPoolDomainAttributes < Pangea::Resources::BaseAttributes
+          extend Pangea::Resources::AWS::Types::UserPoolDomainTemplates
           # Domain name (required) - can be custom domain or Cognito domain prefix
-          attribute :domain, Resources::Types::String
+          attribute? :domain, Resources::Types::String.optional
 
           # User pool ID (required)
-          attribute :user_pool_id, Resources::Types::String
+          attribute? :user_pool_id, Resources::Types::String.optional
 
           # Certificate ARN for custom domains (HTTPS only)
-          attribute :certificate_arn, Resources::Types::String.optional
+          attribute? :certificate_arn, Resources::Types::String.optional
 
           # Custom validation
           def self.new(attributes = {})

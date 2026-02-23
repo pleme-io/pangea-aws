@@ -20,8 +20,9 @@ module Pangea
       module Types
         # Pre-configured domain templates for common scenarios
         module UserPoolDomainTemplates
+          module_function
           # Cognito-hosted domain with prefix
-          def self.cognito_domain(domain_prefix, user_pool_id)
+          def cognito_domain(domain_prefix, user_pool_id)
             {
               domain: domain_prefix,
               user_pool_id: user_pool_id
@@ -29,7 +30,7 @@ module Pangea
           end
 
           # Custom domain with SSL certificate
-          def self.custom_domain(custom_domain_name, user_pool_id, certificate_arn)
+          def custom_domain(custom_domain_name, user_pool_id, certificate_arn)
             {
               domain: custom_domain_name,
               user_pool_id: user_pool_id,
@@ -38,19 +39,19 @@ module Pangea
           end
 
           # Development domain with predictable naming
-          def self.development_domain(app_name, user_pool_id, stage = 'dev')
+          def development_domain(app_name, user_pool_id, stage = 'dev')
             domain_prefix = "#{app_name}-#{stage}-auth"
             cognito_domain(domain_prefix, user_pool_id)
           end
 
           # Production custom domain
-          def self.production_custom_domain(base_domain, user_pool_id, certificate_arn)
+          def production_custom_domain(base_domain, user_pool_id, certificate_arn)
             auth_domain = "auth.#{base_domain}"
             custom_domain(auth_domain, user_pool_id, certificate_arn)
           end
 
           # Staging environment domain
-          def self.staging_domain(base_domain, user_pool_id, certificate_arn = nil)
+          def staging_domain(base_domain, user_pool_id, certificate_arn = nil)
             if certificate_arn
               staging_domain = "auth-staging.#{base_domain}"
               custom_domain(staging_domain, user_pool_id, certificate_arn)
@@ -61,7 +62,7 @@ module Pangea
           end
 
           # Multi-environment domain strategy
-          def self.environment_domain(base_domain, environment, user_pool_id, certificate_arn = nil)
+          def environment_domain(base_domain, environment, user_pool_id, certificate_arn = nil)
             case environment.to_sym
             when :production
               raise ArgumentError, 'Certificate ARN required for production custom domain' unless certificate_arn

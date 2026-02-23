@@ -24,18 +24,18 @@ module Pangea
         SSEDefault = Resources::Types::Hash.schema(
           sse_algorithm: Resources::Types::String.default('AES256').enum('AES256', 'aws:kms'),
           kms_master_key_id?: Resources::Types::String.optional
-        )
+        ).lax
 
         # Server-side encryption rule
         SSERule = Resources::Types::Hash.schema(
           apply_server_side_encryption_by_default: SSEDefault,
           bucket_key_enabled?: Resources::Types::Bool.optional
-        )
+        ).lax
 
         # Complete server-side encryption configuration
         ServerSideEncryptionConfiguration = Resources::Types::Hash.schema(
           rule: SSERule
-        )
+        ).lax
 
         # Default server-side encryption configuration
         DEFAULT_SSE_CONFIG = {

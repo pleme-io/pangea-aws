@@ -24,7 +24,7 @@ module Pangea
       # AWS Batch Job Definition implementation
       # Provides type-safe function for creating job definitions
       def aws_batch_job_definition(name, attributes = {})
-        validated_attrs = Types::Types::BatchJobDefinitionAttributes.new(attributes)
+        validated_attrs = Types::BatchJobDefinitionAttributes.new(attributes)
 
         ref = ResourceReference.new(
           type: 'aws_batch_job_definition',
@@ -39,40 +39,26 @@ module Pangea
           }
         )
 
-        container_props = validated_attrs.container_properties
-        node_props = validated_attrs.node_properties
+        attrs = validated_attrs.to_h
 
         resource :aws_batch_job_definition, name do
-          job_definition_name validated_attrs.job_definition_name
-          type validated_attrs.type
+          job_definition_name attrs[:job_definition_name]
+          type attrs[:type]
 
-          if container_props
-            container_properties do
-              BatchJobDefinitionSynthesizer.synthesize_container(self, container_props)
-            end
+          container_properties(attrs[:container_properties]) if attrs[:container_properties]
+          node_properties(attrs[:node_properties]) if attrs[:node_properties]
+
+          if attrs[:retry_strategy]
+            retry_strategy(attrs[:retry_strategy])
           end
 
-          if node_props
-            node_properties do
-              BatchJobDefinitionSynthesizer.synthesize_nodes(self, node_props)
-            end
+          if attrs[:timeout]
+            timeout(attrs[:timeout])
           end
 
-          if validated_attrs.retry_strategy
-            retry_strategy do
-              attempts validated_attrs.retry_strategy[:attempts] if validated_attrs.retry_strategy[:attempts]
-            end
-          end
-
-          if validated_attrs.timeout
-            timeout do
-              attempt_duration_seconds validated_attrs.timeout[:attempt_duration_seconds]
-            end
-          end
-
-          platform_capabilities validated_attrs.platform_capabilities if validated_attrs.platform_capabilities
-          propagate_tags validated_attrs.propagate_tags if validated_attrs.propagate_tags
-          tags validated_attrs.tags if validated_attrs.tags
+          platform_capabilities attrs[:platform_capabilities] if attrs[:platform_capabilities]
+          propagate_tags attrs[:propagate_tags] unless attrs[:propagate_tags].nil?
+          tags attrs[:tags] if attrs[:tags]
         end
 
         ref

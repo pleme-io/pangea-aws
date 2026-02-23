@@ -25,9 +25,9 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -53,7 +53,7 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
   
   describe "IamRolePolicyAttachmentAttributes validation" do
     it "accepts valid role and policy ARN" do
-      attrs = Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
         role: "test-role",
         policy_arn: "arn:aws:iam::aws:policy/ReadOnlyAccess"
       })
@@ -63,7 +63,7 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
     end
     
     it "accepts role ARN instead of name" do
-      attrs = Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
         role: "arn:aws:iam::123456789012:role/test-role",
         policy_arn: "arn:aws:iam::aws:policy/ReadOnlyAccess"
       })
@@ -74,7 +74,7 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
     end
     
     it "validates AWS managed policy ARN format" do
-      attrs = Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
         role: "test-role",
         policy_arn: "arn:aws:iam::aws:policy/AdministratorAccess"
       })
@@ -84,7 +84,7 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
     end
     
     it "validates customer managed policy ARN format" do
-      attrs = Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
         role: "test-role",
         policy_arn: "arn:aws:iam::123456789012:policy/custom-policy"
       })
@@ -96,7 +96,7 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
     
     it "rejects invalid policy ARN format" do
       expect {
-        Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+        Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
           role: "test-role",
           policy_arn: "invalid-arn"
         })
@@ -105,7 +105,7 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
     
     it "rejects invalid role name format" do
       expect {
-        Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+        Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
           role: "invalid role name with spaces",
           policy_arn: "arn:aws:iam::aws:policy/ReadOnlyAccess"
         })
@@ -113,7 +113,7 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
     end
     
     it "extracts policy name from ARN" do
-      attrs = Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
         role: "test-role",
         policy_arn: "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
       })
@@ -122,7 +122,7 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
     end
     
     it "generates attachment ID" do
-      attrs = Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
         role: "lambda-execution-role",
         policy_arn: "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
       })
@@ -138,7 +138,7 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
       ]
       
       dangerous_policies.each do |policy_arn|
-        attrs = Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+        attrs = Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
           role: "test-role",
           policy_arn: policy_arn
         })
@@ -159,7 +159,7 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
       }
       
       test_cases.each do |policy_arn, expected_category|
-        attrs = Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+        attrs = Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
           role: "test-role",
           policy_arn: policy_arn
         })
@@ -170,21 +170,21 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
     
     it "assesses security risk levels" do
       # High risk - dangerous policy
-      attrs1 = Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+      attrs1 = Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
         role: "test-role",
         policy_arn: "arn:aws:iam::aws:policy/AdministratorAccess"
       })
       expect(attrs1.security_risk_level).to eq(:high)
       
       # Low risk - read only AWS managed
-      attrs2 = Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+      attrs2 = Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
         role: "test-role",
         policy_arn: "arn:aws:iam::aws:policy/ReadOnlyAccess"
       })
       expect(attrs2.security_risk_level).to eq(:low)
       
       # Medium risk - customer managed (needs review)
-      attrs3 = Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+      attrs3 = Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
         role: "test-role",
         policy_arn: "arn:aws:iam::123456789012:policy/custom-policy"
       })
@@ -196,7 +196,7 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
     it "creates an attachment with role name and AWS managed policy" do
       ref = test_instance.aws_iam_role_policy_attachment(:lambda_basic, {
         role: "lambda-execution-role",
-        policy_arn: Pangea::Resources::AWS::AwsManagedPolicies::Lambda::BASIC_EXECUTION_ROLE
+        policy_arn: Pangea::Resources::AWS::Types::AwsManagedPolicies::Lambda::BASIC_EXECUTION_ROLE
       })
       
       expect(ref).to be_a(Pangea::Resources::ResourceReference)
@@ -250,31 +250,31 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
   
   describe "AwsManagedPolicies module usage" do
     it "provides administrative policies" do
-      expect(Pangea::Resources::AWS::AwsManagedPolicies::ADMINISTRATOR_ACCESS).to eq("arn:aws:iam::aws:policy/AdministratorAccess")
-      expect(Pangea::Resources::AWS::AwsManagedPolicies::POWER_USER_ACCESS).to eq("arn:aws:iam::aws:policy/PowerUserAccess")
-      expect(Pangea::Resources::AWS::AwsManagedPolicies::IAM_FULL_ACCESS).to eq("arn:aws:iam::aws:policy/IAMFullAccess")
+      expect(Pangea::Resources::AWS::Types::AwsManagedPolicies::ADMINISTRATOR_ACCESS).to eq("arn:aws:iam::aws:policy/AdministratorAccess")
+      expect(Pangea::Resources::AWS::Types::AwsManagedPolicies::POWER_USER_ACCESS).to eq("arn:aws:iam::aws:policy/PowerUserAccess")
+      expect(Pangea::Resources::AWS::Types::AwsManagedPolicies::IAM_FULL_ACCESS).to eq("arn:aws:iam::aws:policy/IAMFullAccess")
     end
     
     it "provides read-only policies" do
-      expect(Pangea::Resources::AWS::AwsManagedPolicies::READ_ONLY_ACCESS).to eq("arn:aws:iam::aws:policy/ReadOnlyAccess")
-      expect(Pangea::Resources::AWS::AwsManagedPolicies::SECURITY_AUDIT).to eq("arn:aws:iam::aws:policy/SecurityAudit")
+      expect(Pangea::Resources::AWS::Types::AwsManagedPolicies::READ_ONLY_ACCESS).to eq("arn:aws:iam::aws:policy/ReadOnlyAccess")
+      expect(Pangea::Resources::AWS::Types::AwsManagedPolicies::SECURITY_AUDIT).to eq("arn:aws:iam::aws:policy/SecurityAudit")
     end
     
     it "provides service-specific policies" do
-      expect(Pangea::Resources::AWS::AwsManagedPolicies::S3::FULL_ACCESS).to eq("arn:aws:iam::aws:policy/AmazonS3FullAccess")
-      expect(Pangea::Resources::AWS::AwsManagedPolicies::Lambda::BASIC_EXECUTION_ROLE).to eq("arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole")
-      expect(Pangea::Resources::AWS::AwsManagedPolicies::ECS::TASK_EXECUTION_ROLE).to eq("arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy")
+      expect(Pangea::Resources::AWS::Types::AwsManagedPolicies::S3::FULL_ACCESS).to eq("arn:aws:iam::aws:policy/AmazonS3FullAccess")
+      expect(Pangea::Resources::AWS::Types::AwsManagedPolicies::Lambda::BASIC_EXECUTION_ROLE).to eq("arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole")
+      expect(Pangea::Resources::AWS::Types::AwsManagedPolicies::ECS::TASK_EXECUTION_ROLE).to eq("arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy")
     end
     
     it "provides helper methods for policy organization" do
-      admin_policies = Pangea::Resources::AWS::AwsManagedPolicies.administrative_policies
+      admin_policies = Pangea::Resources::AWS::Types::AwsManagedPolicies.administrative_policies
       expect(admin_policies).to include("arn:aws:iam::aws:policy/AdministratorAccess")
       expect(admin_policies).to include("arn:aws:iam::aws:policy/PowerUserAccess")
       
-      readonly_policies = Pangea::Resources::AWS::AwsManagedPolicies.read_only_policies
+      readonly_policies = Pangea::Resources::AWS::Types::AwsManagedPolicies.read_only_policies
       expect(readonly_policies).to include("arn:aws:iam::aws:policy/ReadOnlyAccess")
       
-      service_policies = Pangea::Resources::AWS::AwsManagedPolicies.service_policies
+      service_policies = Pangea::Resources::AWS::Types::AwsManagedPolicies.service_policies
       expect(service_policies).to have_key(:s3)
       expect(service_policies).to have_key(:lambda)
     end
@@ -282,31 +282,31 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
   
   describe "AttachmentPatterns module usage" do
     it "provides Lambda execution role patterns" do
-      patterns = Pangea::Resources::AWS::AttachmentPatterns.lambda_execution_role_policies
+      patterns = Pangea::Resources::AWS::Types::AttachmentPatterns.lambda_execution_role_policies
       expect(patterns).to include("arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole")
       
-      vpc_patterns = Pangea::Resources::AWS::AttachmentPatterns.lambda_vpc_execution_role_policies
+      vpc_patterns = Pangea::Resources::AWS::Types::AttachmentPatterns.lambda_vpc_execution_role_policies
       expect(vpc_patterns).to include("arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole")
       expect(vpc_patterns).to include("arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole")
     end
     
     it "provides ECS task execution patterns" do
-      patterns = Pangea::Resources::AWS::AttachmentPatterns.ecs_task_execution_policies
+      patterns = Pangea::Resources::AWS::Types::AttachmentPatterns.ecs_task_execution_policies
       expect(patterns).to include("arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy")
     end
     
     it "provides environment-specific patterns" do
-      dev_patterns = Pangea::Resources::AWS::AttachmentPatterns.development_policies
+      dev_patterns = Pangea::Resources::AWS::Types::AttachmentPatterns.development_policies
       expect(dev_patterns).to include("arn:aws:iam::aws:policy/AmazonS3FullAccess")
       expect(dev_patterns).to include("arn:aws:iam::aws:policy/AWSLambda_FullAccess")
       
-      prod_patterns = Pangea::Resources::AWS::AttachmentPatterns.production_read_only_policies
+      prod_patterns = Pangea::Resources::AWS::Types::AttachmentPatterns.production_read_only_policies
       expect(prod_patterns).to include("arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess")
       expect(prod_patterns).to include("arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess")
     end
     
     it "can be used to create multiple attachments" do
-      lambda_policies = Pangea::Resources::AWS::AttachmentPatterns.lambda_execution_role_policies
+      lambda_policies = Pangea::Resources::AWS::Types::AttachmentPatterns.lambda_execution_role_policies
       attachments = []
       
       lambda_policies.each_with_index do |policy_arn, index|
@@ -387,7 +387,7 @@ RSpec.describe "aws_iam_role_policy_attachment resource function" do
       valid_role_names = ["test_role", "test-role", "test.role", "test@role", "test+role", "test,role", "test=role"]
       
       valid_role_names.each do |role_name|
-        attrs = Pangea::Resources::AWS::IamRolePolicyAttachmentAttributes.new({
+        attrs = Pangea::Resources::AWS::Types::IamRolePolicyAttachmentAttributes.new({
           role: role_name,
           policy_arn: "arn:aws:iam::aws:policy/ReadOnlyAccess"
         })

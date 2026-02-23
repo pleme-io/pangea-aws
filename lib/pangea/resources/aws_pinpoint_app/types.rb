@@ -21,20 +21,20 @@ module Pangea
     module AwsPinpointApp
       module Types
         # Campaign hook for Lambda integration
-        class CampaignHook < Dry::Struct
+        class CampaignHook < Pangea::Resources::BaseAttributes
           attribute :lambda_function_name?, Pangea::Resources::Types::String
           attribute :mode?, Pangea::Resources::Types::String.constrained(included_in: ["DELIVERY", "FILTER"])
           attribute :web_url?, Pangea::Resources::Types::String
         end
 
         # Quiet time configuration
-        class QuietTime < Dry::Struct
+        class QuietTime < Pangea::Resources::BaseAttributes
           attribute :end?, Pangea::Resources::Types::String  # HH:MM format
           attribute :start?, Pangea::Resources::Types::String  # HH:MM format
         end
 
         # Application limits
-        class Limits < Dry::Struct
+        class Limits < Pangea::Resources::BaseAttributes
           attribute :daily?, Pangea::Resources::Types::Integer
           attribute :maximum_duration?, Pangea::Resources::Types::Integer
           attribute :messages_per_second?, Pangea::Resources::Types::Integer
@@ -43,9 +43,9 @@ module Pangea
 
         # Main attributes for Pinpoint app
         unless const_defined?(:Attributes)
-        class Attributes < Dry::Struct
+        class Attributes < Pangea::Resources::BaseAttributes
           # Required attributes
-          attribute :name, Pangea::Resources::Types::String
+          attribute? :name, Pangea::Resources::Types::String.optional
           
           # Optional attributes
           attribute :name_prefix?, Pangea::Resources::Types::String

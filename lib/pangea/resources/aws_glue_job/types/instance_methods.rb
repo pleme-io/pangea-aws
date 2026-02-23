@@ -22,7 +22,7 @@ module Pangea
         module GlueJobInstanceMethods
           # Check if job uses modern worker configuration
           def uses_worker_configuration?
-            worker_type && number_of_workers
+            !!(worker_type && number_of_workers)
           end
 
           # Check if job is streaming

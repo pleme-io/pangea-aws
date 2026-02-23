@@ -37,7 +37,7 @@ module Pangea
           db_cluster_snapshot_identifier attrs.db_cluster_snapshot_identifier if attrs.db_cluster_snapshot_identifier
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

@@ -25,14 +25,14 @@ module Pangea
     # for fleet management at scale.
     module AwsIotProvisioningTemplateTypes
       # Pre-provisioning hook configuration for custom validation
-      class PreProvisioningHook < Dry::Struct
+      class PreProvisioningHook < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # ARN of Lambda function to call for pre-provisioning validation
-        attribute :target_arn, Resources::Types::String
+        attribute? :target_arn, Resources::Types::String.optional
 
         # Optional payload template for the Lambda function
-        attribute :payload_version, Resources::Types::String.optional
+        attribute? :payload_version, Resources::Types::String.optional
       end
 
       # Main attributes for IoT provisioning template resource

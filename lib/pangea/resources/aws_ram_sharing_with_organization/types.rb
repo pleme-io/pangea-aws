@@ -21,8 +21,8 @@ module Pangea
       module Types
       # Type-safe attributes for AwsRamSharingWithOrganization resources
       # Manages Resource Access Manager (RAM) resource sharing with AWS Organizations.
-      class RamSharingWithOrganizationAttributes < Dry::Struct
-        attribute :enable, Resources::Types::Bool
+      class RamSharingWithOrganizationAttributes < Pangea::Resources::BaseAttributes
+        attribute? :enable, Resources::Types::Bool.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

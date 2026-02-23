@@ -18,22 +18,22 @@ require 'pangea/resources/types'
 module Pangea
   module Resources
     module AWS
-      class IotTopicRuleDestinationAttributes < Dry::Struct
+      class IotTopicRuleDestinationAttributes < Pangea::Resources::BaseAttributes
         attribute :enabled, Resources::Types::Bool.default(true)
-        attribute :vpc_configuration, Resources::Types::Hash.schema(
+        attribute? :vpc_configuration, Resources::Types::Hash.schema(
           subnet_ids: Resources::Types::Array.of(Resources::Types::String),
           security_group_ids: Resources::Types::Array.of(Resources::Types::String),
           vpc_id: Resources::Types::String,
           role_arn: Resources::Types::String
-        )
+        ).lax
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         def vpc_subnet_count
-          vpc_configuration[:subnet_ids].length
+          vpc_configuration&.dig(:subnet_ids).length
         end
         
         def security_group_count
-          vpc_configuration[:security_group_ids].length
+          vpc_configuration&.dig(:security_group_ids).length
         end
         
         def is_multi_az?

@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
         # Tag specification for ASG
-        class AutoScalingTag < Dry::Struct
+        class AutoScalingTag < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :key, Resources::Types::String
-          attribute :value, Resources::Types::String
+          attribute? :key, Resources::Types::String.optional
+          attribute? :value, Resources::Types::String.optional
           attribute :propagate_at_launch, Resources::Types::Bool.default(true)
 
           def to_h

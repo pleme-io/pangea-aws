@@ -30,28 +30,28 @@ module Pangea
           comment policy_attrs.comment if policy_attrs.comment.present?
           
           headers_config do
-            header_behavior policy_attrs.headers_config[:header_behavior]
-            if policy_attrs.headers_config[:headers]
+            header_behavior policy_attrs.headers_config&.dig(:header_behavior)
+            if policy_attrs.headers_config&.dig(:headers)
               headers do
-                items policy_attrs.headers_config[:headers][:items] if policy_attrs.headers_config[:headers][:items]
+                items policy_attrs.headers_config&.dig(:headers)[:items] if policy_attrs.headers_config&.dig(:headers)[:items]
               end
             end
           end
           
           query_strings_config do
-            query_string_behavior policy_attrs.query_strings_config[:query_string_behavior]
-            if policy_attrs.query_strings_config[:query_strings]
+            query_string_behavior policy_attrs.query_strings_config&.dig(:query_string_behavior)
+            if policy_attrs.query_strings_config&.dig(:query_strings)
               query_strings do
-                items policy_attrs.query_strings_config[:query_strings][:items] if policy_attrs.query_strings_config[:query_strings][:items]
+                items policy_attrs.query_strings_config&.dig(:query_strings)[:items] if policy_attrs.query_strings_config&.dig(:query_strings)[:items]
               end
             end
           end
           
           cookies_config do
-            cookie_behavior policy_attrs.cookies_config[:cookie_behavior]
-            if policy_attrs.cookies_config[:cookies]
+            cookie_behavior policy_attrs.cookies_config&.dig(:cookie_behavior)
+            if policy_attrs.cookies_config&.dig(:cookies)
               cookies do
-                items policy_attrs.cookies_config[:cookies][:items] if policy_attrs.cookies_config[:cookies][:items]
+                items policy_attrs.cookies_config&.dig(:cookies)[:items] if policy_attrs.cookies_config&.dig(:cookies)[:items]
               end
             end
           end

@@ -49,7 +49,7 @@ module Pangea
           end
 
           # Supported login providers (social/OAuth)
-          if identity_pool_attrs.supported_login_providers && identity_pool_attrs.supported_login_providers.any?
+          if identity_pool_attrs.supported_login_providers && identity_pool_attrs.supported_login_providers&.any?
             supported_login_providers do
               identity_pool_attrs.supported_login_providers.each do |provider_name, app_id|
                 public_send(provider_name.gsub('.', '_').gsub('@', '_at_'), app_id)
@@ -71,7 +71,7 @@ module Pangea
           developer_provider_name identity_pool_attrs.developer_provider_name if identity_pool_attrs.developer_provider_name
 
           # Apply tags if present
-          if identity_pool_attrs.tags.any?
+          if identity_pool_attrs.tags&.any?
             tags do
               identity_pool_attrs.tags.each do |key, value|
                 public_send(key, value)

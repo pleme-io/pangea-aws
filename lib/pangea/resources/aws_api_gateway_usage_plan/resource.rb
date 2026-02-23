@@ -56,17 +56,17 @@ module Pangea
           # Configure global throttle settings
           if usage_plan_attrs.throttle_settings
             throttle_settings do
-              burst_limit usage_plan_attrs.throttle_settings[:burst_limit] if usage_plan_attrs.throttle_settings[:burst_limit]
-              rate_limit usage_plan_attrs.throttle_settings[:rate_limit] if usage_plan_attrs.throttle_settings[:rate_limit]
+              burst_limit usage_plan_attrs.throttle_settings&.dig(:burst_limit) if usage_plan_attrs.throttle_settings&.dig(:burst_limit)
+              rate_limit usage_plan_attrs.throttle_settings&.dig(:rate_limit) if usage_plan_attrs.throttle_settings&.dig(:rate_limit)
             end
           end
           
           # Configure quota settings
           if usage_plan_attrs.quota_settings
             quota_settings do
-              limit usage_plan_attrs.quota_settings[:limit]
-              offset usage_plan_attrs.quota_settings[:offset] if usage_plan_attrs.quota_settings[:offset]
-              period usage_plan_attrs.quota_settings[:period]
+              limit usage_plan_attrs.quota_settings&.dig(:limit)
+              offset usage_plan_attrs.quota_settings&.dig(:offset) if usage_plan_attrs.quota_settings&.dig(:offset)
+              period usage_plan_attrs.quota_settings&.dig(:period)
             end
           end
           
@@ -74,7 +74,7 @@ module Pangea
           product_code usage_plan_attrs.product_code if usage_plan_attrs.product_code
           
           # Apply tags if present
-          if usage_plan_attrs.tags.any?
+          if usage_plan_attrs.tags&.any?
             tags do
               usage_plan_attrs.tags.each do |key, value|
                 public_send(key, value)

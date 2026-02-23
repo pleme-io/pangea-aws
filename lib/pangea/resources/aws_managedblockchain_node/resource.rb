@@ -42,36 +42,36 @@ module Pangea
           # Set node configuration
           node_configuration do
             # Set availability zone
-            availability_zone node_attrs.node_configuration[:availability_zone]
+            availability_zone node_attrs.node_configuration&.dig(:availability_zone)
             
             # Set instance type
-            instance_type node_attrs.node_configuration[:instance_type]
+            instance_type node_attrs.node_configuration&.dig(:instance_type)
             
             # Set state DB if provided (Fabric only)
-            state_db node_attrs.node_configuration[:state_db] if node_attrs.node_configuration[:state_db]
+            state_db node_attrs.node_configuration&.dig(:state_db) if node_attrs.node_configuration&.dig(:state_db)
             
             # Set log publishing configuration if provided
-            if node_attrs.node_configuration[:log_publishing_configuration]
+            if node_attrs.node_configuration&.dig(:log_publishing_configuration)
               log_publishing_configuration do
-                if node_attrs.node_configuration[:log_publishing_configuration][:fabric]
+                if node_attrs.node_configuration&.dig(:log_publishing_configuration)[:fabric]
                   fabric do
                     # Chaincode logs
-                    if node_attrs.node_configuration[:log_publishing_configuration][:fabric][:chaincode_logs]
+                    if node_attrs.node_configuration&.dig(:log_publishing_configuration)[:fabric][:chaincode_logs]
                       chaincode_logs do
-                        if node_attrs.node_configuration[:log_publishing_configuration][:fabric][:chaincode_logs][:cloudwatch]
+                        if node_attrs.node_configuration&.dig(:log_publishing_configuration)[:fabric][:chaincode_logs][:cloudwatch]
                           cloudwatch do
-                            enabled node_attrs.node_configuration[:log_publishing_configuration][:fabric][:chaincode_logs][:cloudwatch][:enabled]
+                            enabled node_attrs.node_configuration&.dig(:log_publishing_configuration)[:fabric][:chaincode_logs][:cloudwatch][:enabled]
                           end
                         end
                       end
                     end
                     
                     # Peer logs
-                    if node_attrs.node_configuration[:log_publishing_configuration][:fabric][:peer_logs]
+                    if node_attrs.node_configuration&.dig(:log_publishing_configuration)[:fabric][:peer_logs]
                       peer_logs do
-                        if node_attrs.node_configuration[:log_publishing_configuration][:fabric][:peer_logs][:cloudwatch]
+                        if node_attrs.node_configuration&.dig(:log_publishing_configuration)[:fabric][:peer_logs][:cloudwatch]
                           cloudwatch do
-                            enabled node_attrs.node_configuration[:log_publishing_configuration][:fabric][:peer_logs][:cloudwatch][:enabled]
+                            enabled node_attrs.node_configuration&.dig(:log_publishing_configuration)[:fabric][:peer_logs][:cloudwatch][:enabled]
                           end
                         end
                       end

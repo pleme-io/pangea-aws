@@ -21,9 +21,9 @@ module Pangea
       module Types
       # Type-safe attributes for AWS VPC Endpoint Service resources
       # Allows you to create a VPC endpoint service configuration that enables other VPCs to connect to your services
-      class VpcEndpointServiceAttributes < Dry::Struct
+      class VpcEndpointServiceAttributes < Pangea::Resources::BaseAttributes
         # Whether requests to connect to your service must be accepted (required)
-        attribute :acceptance_required, Resources::Types::Bool
+        attribute? :acceptance_required, Resources::Types::Bool.optional
         
         # ARNs of one or more Network Load Balancers for the endpoint service (optional)
         attribute :network_load_balancer_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
@@ -32,12 +32,12 @@ module Pangea
         attribute :gateway_load_balancer_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         
         # The supported IP address types (optional)
-        attribute :supported_ip_address_types, Resources::Types::Array.of(
+        attribute? :supported_ip_address_types, Resources::Types::Array.of(
           Resources::Types::String.constrained(included_in: ['ipv4', 'ipv6'])
         ).default([].freeze)
         
         # The private DNS name for the service (optional)
-        attribute :private_dns_name, Resources::Types::String.optional
+        attribute? :private_dns_name, Resources::Types::String.optional
         
         # The private DNS name verification state (optional)
         attribute :private_dns_name_configuration, Resources::Types::Hash.default({}.freeze)

@@ -164,10 +164,12 @@ RSpec.describe "aws_iam_user terraform synthesis" do
       # Verify resource was created in synthesizer
       expect(test_synthesizer.resources).to have_key("aws_iam_user.basic_user")
       
-      # Verify resource attributes
-      resource = test_synthesizer.resources["aws_iam_user.basic_user"]
-      expect(resource.attributes[:name]).to eq("test-user")
-      expect(resource.attributes[:path]).to eq("/")
+      # Verify attributes were set via method calls (not stored on ResourceContext
+      # because blocks execute in caller context, not yielded context)
+      name_call = test_synthesizer.method_calls.find { |c| c[0] == :name && c[1] == "test-user" }
+      expect(name_call).not_to be_nil
+      path_call = test_synthesizer.method_calls.find { |c| c[0] == :path && c[1] == "/" }
+      expect(path_call).not_to be_nil
     end
     
     it "synthesizes IAM user with permissions boundary" do
@@ -243,18 +245,12 @@ RSpec.describe "aws_iam_user terraform synthesis" do
         }
       })
       
-      # Verify tags synthesis
-      expect(test_synthesizer.method_calls).to include([:tags])
-      
-      # Find the tags resource context
-      resource = test_synthesizer.resources["aws_iam_user.tagged_user"]
-      expect(resource.attributes).to have_key(:tags)
-      tags_context = resource.attributes[:tags]
-      expect(tags_context.attributes).to eq({
-        Department: "Engineering",
-        Team: "Platform",
-        Environment: "Production"
-      })
+      # Verify tags synthesis - tags are passed as hash argument, not block
+      tags_call = test_synthesizer.method_calls.find { |c| c[0] == :tags && c[1].is_a?(Hash) }
+      expect(tags_call).not_to be_nil
+      expect(tags_call[1][:Department]).to eq("Engineering")
+      expect(tags_call[1][:Team]).to eq("Platform")
+      expect(tags_call[1][:Environment]).to eq("Production")
     end
     
     it "synthesizes developer user pattern" do
@@ -281,7 +277,7 @@ RSpec.describe "aws_iam_user terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use developer pattern
-      pattern = Pangea::Resources::AWS::UserPatterns.developer_user("alice.smith", "frontend")
+      pattern = Pangea::Resources::AWS::Types::UserPatterns.developer_user("alice.smith", "frontend")
       ref = test_instance.aws_iam_user(:dev_alice, pattern)
       
       # Verify pattern synthesis
@@ -291,12 +287,11 @@ RSpec.describe "aws_iam_user terraform synthesis" do
         [:permissions_boundary, "arn:aws:iam::123456789012:policy/DeveloperPermissionsBoundary"]
       )
       
-      # Verify tags were synthesized
-      resource = test_synthesizer.resources["aws_iam_user.dev_alice"]
-      expect(resource.attributes[:tags].attributes).to include({
-        UserType: "Developer",
-        Department: "Frontend"
-      })
+      # Verify tags were synthesized as hash argument
+      tags_call = test_synthesizer.method_calls.find { |c| c[0] == :tags && c[1].is_a?(Hash) }
+      expect(tags_call).not_to be_nil
+      expect(tags_call[1][:UserType]).to eq("Developer")
+      expect(tags_call[1][:Department]).to eq("Frontend")
     end
     
     it "synthesizes service account pattern" do
@@ -323,7 +318,7 @@ RSpec.describe "aws_iam_user terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use service account pattern
-      pattern = Pangea::Resources::AWS::UserPatterns.service_account_user("user-api", "production")
+      pattern = Pangea::Resources::AWS::Types::UserPatterns.service_account_user("user-api", "production")
       ref = test_instance.aws_iam_user(:api_service, pattern)
       
       # Verify service account synthesis
@@ -333,14 +328,13 @@ RSpec.describe "aws_iam_user terraform synthesis" do
         [:force_destroy, true]
       )
       
-      # Verify service account tags
-      resource = test_synthesizer.resources["aws_iam_user.api_service"]
-      expect(resource.attributes[:tags].attributes).to include({
-        UserType: "ServiceAccount",
-        Service: "user-api",
-        Environment: "production",
-        AutomationManaged: "true"
-      })
+      # Verify service account tags as hash argument
+      tags_call = test_synthesizer.method_calls.find { |c| c[0] == :tags && c[1].is_a?(Hash) }
+      expect(tags_call).not_to be_nil
+      expect(tags_call[1][:UserType]).to eq("ServiceAccount")
+      expect(tags_call[1][:Service]).to eq("user-api")
+      expect(tags_call[1][:Environment]).to eq("production")
+      expect(tags_call[1][:AutomationManaged]).to eq("true")
     end
     
     it "synthesizes admin user pattern with boundary" do
@@ -367,7 +361,7 @@ RSpec.describe "aws_iam_user terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use admin pattern
-      pattern = Pangea::Resources::AWS::UserPatterns.admin_user("bob.wilson", "infrastructure")
+      pattern = Pangea::Resources::AWS::Types::UserPatterns.admin_user("bob.wilson", "infrastructure")
       ref = test_instance.aws_iam_user(:admin_bob, pattern)
       
       # Verify admin synthesis
@@ -377,9 +371,10 @@ RSpec.describe "aws_iam_user terraform synthesis" do
         [:permissions_boundary, "arn:aws:iam::123456789012:policy/AdminPermissionsBoundary"]
       )
       
-      # Verify admin requires approval
-      resource = test_synthesizer.resources["aws_iam_user.admin_bob"]
-      expect(resource.attributes[:tags].attributes[:RequiresApproval]).to eq("true")
+      # Verify admin requires approval via tags hash argument
+      tags_call = test_synthesizer.method_calls.find { |c| c[0] == :tags && c[1].is_a?(Hash) }
+      expect(tags_call).not_to be_nil
+      expect(tags_call[1][:RequiresApproval]).to eq("true")
     end
     
     it "synthesizes emergency user without boundary" do
@@ -406,19 +401,18 @@ RSpec.describe "aws_iam_user terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use emergency pattern
-      pattern = Pangea::Resources::AWS::UserPatterns.emergency_user("breakglass")
+      pattern = Pangea::Resources::AWS::Types::UserPatterns.emergency_user("breakglass")
       ref = test_instance.aws_iam_user(:emergency, pattern)
       
       # Verify no permissions boundary (emergency access)
       expect(test_synthesizer.method_calls).not_to include([:permissions_boundary, anything])
       
-      # Verify emergency tags
-      resource = test_synthesizer.resources["aws_iam_user.emergency"]
-      expect(resource.attributes[:tags].attributes).to include({
-        UserType: "Emergency",
-        AccessLevel: "BreakGlass",
-        AuditRequired: "true"
-      })
+      # Verify emergency tags via hash argument
+      tags_call = test_synthesizer.method_calls.find { |c| c[0] == :tags && c[1].is_a?(Hash) }
+      expect(tags_call).not_to be_nil
+      expect(tags_call[1][:UserType]).to eq("Emergency")
+      expect(tags_call[1][:AccessLevel]).to eq("BreakGlass")
+      expect(tags_call[1][:AuditRequired]).to eq("true")
     end
     
     it "validates terraform reference outputs" do
@@ -486,7 +480,7 @@ RSpec.describe "aws_iam_user terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use cross-account pattern
-      pattern = Pangea::Resources::AWS::UserPatterns.cross_account_user("shared-access", "987654321098")
+      pattern = Pangea::Resources::AWS::Types::UserPatterns.cross_account_user("shared-access", "987654321098")
       ref = test_instance.aws_iam_user(:cross_account, pattern)
       
       # Verify cross-account synthesis
@@ -495,9 +489,10 @@ RSpec.describe "aws_iam_user terraform synthesis" do
         [:path, "/cross-account/"]
       )
       
-      # Verify target account tag
-      resource = test_synthesizer.resources["aws_iam_user.cross_account"]
-      expect(resource.attributes[:tags].attributes[:TargetAccount]).to eq("987654321098")
+      # Verify target account tag via hash argument
+      tags_call = test_synthesizer.method_calls.find { |c| c[0] == :tags && c[1].is_a?(Hash) }
+      expect(tags_call).not_to be_nil
+      expect(tags_call[1][:TargetAccount]).to eq("987654321098")
     end
     
     it "synthesizes CI/CD user pattern" do
@@ -524,7 +519,7 @@ RSpec.describe "aws_iam_user terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use CI/CD pattern
-      pattern = Pangea::Resources::AWS::UserPatterns.cicd_user("web-app-deploy", "github.com/company/web-app")
+      pattern = Pangea::Resources::AWS::Types::UserPatterns.cicd_user("web-app-deploy", "github.com/company/web-app")
       ref = test_instance.aws_iam_user(:cicd_user, pattern)
       
       # Verify CI/CD synthesis
@@ -534,9 +529,10 @@ RSpec.describe "aws_iam_user terraform synthesis" do
         [:force_destroy, true]
       )
       
-      # Verify repository tag
-      resource = test_synthesizer.resources["aws_iam_user.cicd_user"]
-      expect(resource.attributes[:tags].attributes[:Repository]).to eq("github.com/company/web-app")
+      # Verify repository tag via hash argument
+      tags_call = test_synthesizer.method_calls.find { |c| c[0] == :tags && c[1].is_a?(Hash) }
+      expect(tags_call).not_to be_nil
+      expect(tags_call[1][:Repository]).to eq("github.com/company/web-app")
     end
     
     it "synthesizes multiple users with organizational structure" do
@@ -567,17 +563,17 @@ RSpec.describe "aws_iam_user terraform synthesis" do
       
       # Developers in different teams
       users << test_instance.aws_iam_user(:frontend_dev,
-        Pangea::Resources::AWS::UserPatterns.developer_user("alice.smith", "frontend"))
+        Pangea::Resources::AWS::Types::UserPatterns.developer_user("alice.smith", "frontend"))
       
       users << test_instance.aws_iam_user(:backend_dev,
-        Pangea::Resources::AWS::UserPatterns.developer_user("bob.jones", "backend"))
+        Pangea::Resources::AWS::Types::UserPatterns.developer_user("bob.jones", "backend"))
       
       # Service accounts for different environments
       users << test_instance.aws_iam_user(:api_prod,
-        Pangea::Resources::AWS::UserPatterns.service_account_user("api", "production"))
+        Pangea::Resources::AWS::Types::UserPatterns.service_account_user("api", "production"))
       
       users << test_instance.aws_iam_user(:api_dev,
-        Pangea::Resources::AWS::UserPatterns.service_account_user("api", "development"))
+        Pangea::Resources::AWS::Types::UserPatterns.service_account_user("api", "development"))
       
       # Verify all users were created
       expect(test_synthesizer.resources.keys).to include(

@@ -21,13 +21,13 @@ module Pangea
     module AWS
       module Types
         # API Gateway Method attributes with validation
-        class ApiGatewayMethodAttributes < Dry::Struct
+        class ApiGatewayMethodAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Core attributes
-          attribute :rest_api_id, Pangea::Resources::Types::String
-          attribute :resource_id, Pangea::Resources::Types::String
-          attribute :http_method, Pangea::Resources::Types::String.constrained(included_in: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD', 'PATCH', 'ANY'])
+          attribute? :rest_api_id, Pangea::Resources::Types::String.optional
+          attribute? :resource_id, Pangea::Resources::Types::String.optional
+          attribute? :http_method, Pangea::Resources::Types::String.constrained(included_in: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD', 'PATCH', 'ANY']).optional
           
           # Authorization
           attribute :authorization, Pangea::Resources::Types::String.default('NONE').constrained(included_in: ['NONE', 'AWS_IAM', 'CUSTOM', 'COGNITO_USER_POOLS'])
@@ -38,12 +38,12 @@ module Pangea
           attribute :api_key_required, Pangea::Resources::Types::Bool.default(false)
           
           # Request parameters and headers
-          attribute :request_parameters, Pangea::Resources::Types::Hash.map(
+          attribute? :request_parameters, Pangea::Resources::Types::Hash.map(
             Pangea::Resources::Types::String, Pangea::Resources::Types::Bool
           ).default({}.freeze)
           
           # Request models for validation
-          attribute :request_models, Pangea::Resources::Types::Hash.map(
+          attribute? :request_models, Pangea::Resources::Types::Hash.map(
             Pangea::Resources::Types::String, Pangea::Resources::Types::String
           ).default({}.freeze)
           
@@ -55,8 +55,21 @@ module Pangea
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
-            
+            attrs = attributes.is_a?(::Hash) ? attributes.transform_keys(&:to_sym) : (attributes.nil? ? {} : attributes.to_h.transform_keys(&:to_sym))
+
+            # Validate required attributes
+            unless attrs[:rest_api_id] && !attrs[:rest_api_id].to_s.empty?
+              raise Dry::Struct::Error, "rest_api_id is required"
+            end
+
+            unless attrs[:resource_id] && !attrs[:resource_id].to_s.empty?
+              raise Dry::Struct::Error, "resource_id is required"
+            end
+
+            unless attrs[:http_method] && !attrs[:http_method].to_s.empty?
+              raise Dry::Struct::Error, "http_method is required"
+            end
+
             # Validate authorizer_id is provided for CUSTOM and COGNITO_USER_POOLS
             if attrs[:authorization] && ['CUSTOM', 'COGNITO_USER_POOLS'].include?(attrs[:authorization])
               if attrs[:authorizer_id].nil? || attrs[:authorizer_id].empty?
@@ -74,7 +87,7 @@ module Pangea
             # Validate request parameters format
             if attrs[:request_parameters]
               attrs[:request_parameters].each do |param_name, _required|
-                unless param_name.match?(/^method\.request\.(path|querystring|header|multivalueheader|multivalue querystring)\..+/)
+                unless param_name.match?(/^method\.request\.(path|querystring|header|multivalueheader|multivaluequerystring)\..+/)
                   raise Dry::Struct::Error, "Invalid request parameter format: #{param_name}. Expected format: method.request.{location}.{name}"
                 end
               end

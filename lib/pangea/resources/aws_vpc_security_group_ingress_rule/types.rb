@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsVpcSecurityGroupIngressRule resources
       # Manages aws vpc security group ingress rule resources.
-      class AwsVpcSecurityGroupIngressRuleAttributes < Dry::Struct
+      class AwsVpcSecurityGroupIngressRuleAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_vpc_security_group_ingress_rule
         
         # Tags to apply to the resource

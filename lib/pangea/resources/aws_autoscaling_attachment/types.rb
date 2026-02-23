@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
         # Auto Scaling Attachment resource attributes with validation
-        class AutoScalingAttachmentAttributes < Dry::Struct
+        class AutoScalingAttachmentAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required: Auto Scaling Group name or ID
-          attribute :autoscaling_group_name, Resources::Types::String
+          attribute? :autoscaling_group_name, Resources::Types::String.optional
           
           # One of these is required (mutually exclusive)
           attribute :elb, Resources::Types::String.optional.default(nil)
@@ -34,7 +34,7 @@ module Pangea
           
           # Validate that exactly one target is specified
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Count how many attachment targets are specified
             targets = [

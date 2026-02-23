@@ -21,14 +21,14 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS QLDB Ledger resources
-      class QldbLedgerAttributes < Dry::Struct
+      class QldbLedgerAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Ledger name (required)
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
 
         # Permissions mode (required)
-        attribute :permissions_mode, Resources::Types::String.enum(
+        attribute? :permissions_mode, Resources::Types::String.enum(
           'ALLOW_ALL',    # Deprecated, allows all users full access
           'STANDARD'      # Recommended, uses IAM permissions
         )

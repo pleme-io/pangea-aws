@@ -25,43 +25,43 @@ module Pangea
     # parameters, timeouts, and retry policies.
     module AwsIotJobTemplateTypes
       # Timeout configuration for job execution
-      class TimeoutConfig < Dry::Struct
+      class TimeoutConfig < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # Timeout for job execution in minutes
-        attribute :in_progress_timeout_in_minutes, Resources::Types::Integer.optional
+        attribute? :in_progress_timeout_in_minutes, Resources::Types::Integer.optional
       end
 
       # Job execution rollout configuration
-      class JobExecutionsRolloutConfig < Dry::Struct
+      class JobExecutionsRolloutConfig < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # Maximum number of job executions per minute
-        attribute :maximum_per_minute, Resources::Types::Integer.optional
+        attribute? :maximum_per_minute, Resources::Types::Integer.optional
       end
 
       # Abort criteria for job execution
-      class AbortConfig < Dry::Struct
+      class AbortConfig < Pangea::Resources::BaseAttributes
         schema schema.strict
 
-        class CriteriaList < Dry::Struct
+        class CriteriaList < Pangea::Resources::BaseAttributes
           schema schema.strict
 
           # Failure type that triggers abort
-          attribute :failure_type, Resources::Types::String.constrained(included_in: ['FAILED', 'REJECTED', 'TIMED_OUT', 'ALL'])
+          attribute? :failure_type, Resources::Types::String.constrained(included_in: ['FAILED', 'REJECTED', 'TIMED_OUT', 'ALL']).optional
 
           # Action to take when criteria is met
-          attribute :action, Resources::Types::String.constrained(included_in: ['CANCEL'])
+          attribute? :action, Resources::Types::String.constrained(included_in: ['CANCEL']).optional
 
           # Threshold percentage for triggering abort
-          attribute :threshold_percentage, Resources::Types::Float.constrained(gteq: 0.0, lteq: 100.0)
+          attribute? :threshold_percentage, Resources::Types::Float.constrained(gteq: 0.0, lteq: 100.0).optional
 
           # Minimum number of things for percentage calculation
-          attribute :min_number_of_executed_things, Resources::Types::Integer
+          attribute? :min_number_of_executed_things, Resources::Types::Integer.optional
         end
 
         # List of abort criteria
-        attribute :criteria_list, Resources::Types::Array.of(CriteriaList)
+        attribute :criteria_list, Resources::Types::Array.of(CriteriaList).default([].freeze)
       end
 
       # Main attributes for IoT job template resource

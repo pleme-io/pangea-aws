@@ -21,13 +21,13 @@ module Pangea
       module Types
       # Type-safe attributes for AwsMemorydbMultiRegionCluster resources
       # Provides a MemoryDB Multi-Region Cluster resource.
-      class MemorydbMultiRegionClusterAttributes < Dry::Struct
-        attribute :cluster_name_suffix, Resources::Types::String
-        attribute :node_type, Resources::Types::String
-        attribute :num_shards, Resources::Types::Integer.optional
-        attribute :description, Resources::Types::String.optional
-        attribute :engine, Resources::Types::String.optional
-        attribute :engine_version, Resources::Types::String.optional
+      class MemorydbMultiRegionClusterAttributes < Pangea::Resources::BaseAttributes
+        attribute? :cluster_name_suffix, Resources::Types::String.optional
+        attribute? :node_type, Resources::Types::String.optional
+        attribute? :num_shards, Resources::Types::Integer.optional
+        attribute? :description, Resources::Types::String.optional
+        attribute? :engine, Resources::Types::String.optional
+        attribute? :engine_version, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

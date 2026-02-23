@@ -21,41 +21,42 @@ module Pangea
     module AWS
       module Types
         # ECR Repository resource attributes with validation
-        class ECRRepositoryAttributes < Dry::Struct
+        class ECRRepositoryAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :name, Pangea::Resources::Types::String
+          attribute? :name, Pangea::Resources::Types::String.optional
           
           # Optional attributes
           attribute :image_tag_mutability, Pangea::Resources::Types::String.default('MUTABLE').constrained(included_in: ['MUTABLE', 'IMMUTABLE'])
-          attribute :image_scanning_configuration, Pangea::Resources::Types::Hash.schema(
+          attribute? :image_scanning_configuration, Pangea::Resources::Types::Hash.schema(
             scan_on_push: Pangea::Resources::Types::Bool.default(false)
-          ).optional
-          attribute :encryption_configuration, Pangea::Resources::Types::Hash.schema(
+          ).lax.optional
+          attribute? :encryption_configuration, Pangea::Resources::Types::Hash.schema(
             encryption_type?: Pangea::Resources::Types::String.constrained(included_in: ['AES256', 'KMS']),
             kms_key?: Pangea::Resources::Types::String
-          ).optional.default(nil)
+          ).lax.optional.default(nil)
           attribute :force_delete, Pangea::Resources::Types::Bool.default(false)
-          attribute :tags, Pangea::Resources::Types::AwsTags
+          attribute? :tags, Pangea::Resources::Types::AwsTags.optional
           
           # Validate attributes
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate repository name
             if attrs[:name]
               name = attrs[:name]
-              unless name.match?(/^[a-z0-9]+(?:[._-][a-z0-9]+)*$/)
-                raise Dry::Struct::Error, "Repository name must contain only lowercase letters, numbers, hyphens, underscores, and periods"
-              end
-              
+
               if name.length < 2 || name.length > 256
                 raise Dry::Struct::Error, "Repository name must be between 2 and 256 characters"
               end
-              
+
               if name.start_with?('-') || name.end_with?('-')
                 raise Dry::Struct::Error, "Repository name cannot start or end with hyphens"
+              end
+
+              unless name.match?(/^[a-z0-9]+(?:[._-][a-z0-9]+)*$/)
+                raise Dry::Struct::Error, "Repository name must contain only lowercase letters, numbers, hyphens, underscores, and periods"
               end
             end
             
@@ -84,15 +85,15 @@ module Pangea
           end
           
           def scan_on_push_enabled?
-            image_scanning_configuration[:scan_on_push] || false
+            image_scanning_configuration&.dig(:scan_on_push) || false
           end
           
           def uses_kms_encryption?
-            encryption_configuration && encryption_configuration[:encryption_type] == 'KMS'
+            encryption_configuration && encryption_configuration&.dig(:encryption_type) == 'KMS'
           end
           
           def uses_aes256_encryption?
-            encryption_configuration && encryption_configuration[:encryption_type] == 'AES256'
+            encryption_configuration && encryption_configuration&.dig(:encryption_type) == 'AES256'
           end
           
           def allows_force_delete?

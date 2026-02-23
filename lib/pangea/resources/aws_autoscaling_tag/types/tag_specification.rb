@@ -22,12 +22,12 @@ module Pangea
       module Types
         # Tag specification for Auto Scaling Groups
         unless const_defined?(:TagSpecification)
-        class TagSpecification < Dry::Struct
+        class TagSpecification < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :key, Resources::Types::String
-          attribute :value, Resources::Types::String
-          attribute :propagate_at_launch, Resources::Types::Bool
+          attribute? :key, Resources::Types::String.optional
+          attribute? :value, Resources::Types::String.optional
+          attribute? :propagate_at_launch, Resources::Types::Bool.optional
 
           def to_h
             {

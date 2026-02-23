@@ -20,7 +20,7 @@ module Pangea
     module AWS
       module Types
       # Connection pooling configuration for RDS Proxy default target group
-      class ProxyDefaultTargetGroupConnectionPoolConfig < Dry::Struct
+      class ProxyDefaultTargetGroupConnectionPoolConfig < Pangea::Resources::BaseAttributes
         # Maximum connections as percentage of max_connections parameter (0-100)
         attribute :max_connections_percent, Resources::Types::Integer.default(100).constrained(gteq: 0, lteq: 100)
 
@@ -28,12 +28,12 @@ module Pangea
         attribute :max_idle_connections_percent, Resources::Types::Integer.default(50).constrained(gteq: 0, lteq: 100)
 
         # Session pinning filters to reduce connection reuse
-        attribute :session_pinning_filters, Resources::Types::Array.of(
+        attribute? :session_pinning_filters, Resources::Types::Array.of(
           Resources::Types::String.constrained(included_in: ["EXCLUDE_VARIABLE_SETS"])
         ).default([].freeze)
 
         # Initialize query for database connections
-        attribute :init_query, Resources::Types::String.optional
+        attribute? :init_query, Resources::Types::String.optional
 
         def self.new(attributes = {})
           attrs = super(attributes)
@@ -54,9 +54,9 @@ module Pangea
       end
 
       # Type-safe attributes for AWS RDS Proxy Default Target Group resources
-      class RdsProxyDefaultTargetGroupAttributes < Dry::Struct
+      class RdsProxyDefaultTargetGroupAttributes < Pangea::Resources::BaseAttributes
         # DB proxy name this target group belongs to
-        attribute :db_proxy_name, Resources::Types::String
+        attribute? :db_proxy_name, Resources::Types::String.optional
 
         # Connection pooling configuration
         attribute? :connection_pool_config, ProxyDefaultTargetGroupConnectionPoolConfig.optional

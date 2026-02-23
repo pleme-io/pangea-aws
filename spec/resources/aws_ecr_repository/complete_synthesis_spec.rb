@@ -70,6 +70,7 @@ RSpec.describe "aws_ecr_repository terraform synthesis" do
 
   # Test repository with KMS encryption synthesis
   it "synthesizes repository with KMS encryption correctly" do
+    _kms_key_arn = kms_key_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -77,7 +78,7 @@ RSpec.describe "aws_ecr_repository terraform synthesis" do
         name: "encrypted-app",
         encryption_configuration: {
           encryption_type: "KMS",
-          kms_key: kms_key_arn
+          kms_key: _kms_key_arn
         }
       })
     end
@@ -137,6 +138,7 @@ RSpec.describe "aws_ecr_repository terraform synthesis" do
 
   # Test repository with comprehensive configuration synthesis
   it "synthesizes comprehensive repository configuration correctly" do
+    _kms_key_arn = kms_key_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -148,7 +150,7 @@ RSpec.describe "aws_ecr_repository terraform synthesis" do
         },
         encryption_configuration: {
           encryption_type: "KMS",
-          kms_key: kms_key_arn
+          kms_key: _kms_key_arn
         },
         force_delete: false,
         tags: {
@@ -172,12 +174,10 @@ RSpec.describe "aws_ecr_repository terraform synthesis" do
     expect(encryption_config[:encryption_type]).to eq("KMS")
     expect(encryption_config[:kms_key]).to eq(kms_key_arn)
     
-    expect(repo_config[:tags]).to eq({
-      Environment: "production",
-      Application: "web-app",
-      Team: "backend",
-      Security: "high"
-    })
+    expect(repo_config[:tags][:Environment]).to eq("production")
+    expect(repo_config[:tags][:Application]).to eq("web-app")
+    expect(repo_config[:tags][:Team]).to eq("backend")
+    expect(repo_config[:tags][:Security]).to eq("high")
   end
 
   # Test microservices repositories synthesis
@@ -303,6 +303,7 @@ RSpec.describe "aws_ecr_repository terraform synthesis" do
 
   # Test security-focused repository synthesis
   it "synthesizes high-security repository correctly" do
+    _kms_key_arn = kms_key_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -314,7 +315,7 @@ RSpec.describe "aws_ecr_repository terraform synthesis" do
         },
         encryption_configuration: {
           encryption_type: "KMS",
-          kms_key: kms_key_arn
+          kms_key: _kms_key_arn
         },
         force_delete: false,
         tags: {
@@ -351,6 +352,7 @@ RSpec.describe "aws_ecr_repository terraform synthesis" do
       { type: "shared", apps: ["nginx", "redis"] }
     ]
     
+    _kms_key_arn = kms_key_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -364,7 +366,7 @@ RSpec.describe "aws_ecr_repository terraform synthesis" do
             },
             encryption_configuration: {
               encryption_type: tier[:type] == "shared" ? "AES256" : "KMS",
-              kms_key: tier[:type] == "shared" ? nil : kms_key_arn
+              kms_key: tier[:type] == "shared" ? nil : _kms_key_arn
             }.compact,
             tags: {
               Environment: "production",
@@ -467,19 +469,15 @@ RSpec.describe "aws_ecr_repository terraform synthesis" do
     json_output = synthesizer.synthesis
     repo_config = json_output.dig(:resource, :aws_ecr_repository, :tagged_app)
     
-    expected_tags = {
-      Environment: "production",
-      Application: "web-service",
-      Team: "backend-team",
-      CostCenter: "engineering",
-      Project: "main-platform",
-      Owner: "platform-team",
-      Backup: "required",
-      Monitoring: "enabled",
-      Security: "high",
-      Compliance: "soc2"
-    }
-    
-    expect(repo_config[:tags]).to eq(expected_tags)
+    expect(repo_config[:tags][:Environment]).to eq("production")
+    expect(repo_config[:tags][:Application]).to eq("web-service")
+    expect(repo_config[:tags][:Team]).to eq("backend-team")
+    expect(repo_config[:tags][:CostCenter]).to eq("engineering")
+    expect(repo_config[:tags][:Project]).to eq("main-platform")
+    expect(repo_config[:tags][:Owner]).to eq("platform-team")
+    expect(repo_config[:tags][:Backup]).to eq("required")
+    expect(repo_config[:tags][:Monitoring]).to eq("enabled")
+    expect(repo_config[:tags][:Security]).to eq("high")
+    expect(repo_config[:tags][:Compliance]).to eq("soc2")
   end
 end

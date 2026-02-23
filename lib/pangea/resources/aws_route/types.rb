@@ -21,10 +21,10 @@ module Pangea
       module Types
         # Type-safe attributes for AwsRoute resources
         # Provides a resource to create a routing table entry (a route) in a VPC routing table.
-        class StandaloneRouteAttributes < Dry::Struct
+        class StandaloneRouteAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :route_table_id, Resources::Types::String
+          attribute? :route_table_id, Resources::Types::String.optional
           attribute? :destination_cidr_block, Resources::Types::String.optional
           attribute? :destination_ipv6_cidr_block, Resources::Types::String.optional
           attribute? :destination_prefix_list_id, Resources::Types::String.optional

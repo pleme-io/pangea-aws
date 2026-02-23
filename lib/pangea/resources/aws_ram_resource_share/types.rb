@@ -21,9 +21,9 @@ module Pangea
       module Types
       # Type-safe attributes for AwsRamResourceShare resources
       # Provides a Resource Access Manager (RAM) Resource Share.
-      class RamResourceShareAttributes < Dry::Struct
-        attribute :name, Resources::Types::String
-        attribute :allow_external_principals, Resources::Types::Bool.optional
+      class RamResourceShareAttributes < Pangea::Resources::BaseAttributes
+        attribute? :name, Resources::Types::String.optional
+        attribute? :allow_external_principals, Resources::Types::Bool.optional
         attribute :permission_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         
         # Tags to apply to the resource

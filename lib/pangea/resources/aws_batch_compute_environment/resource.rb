@@ -24,8 +24,8 @@ module Pangea
       # Provides type-safe function for creating compute environments
       def aws_batch_compute_environment(name, attributes = {})
         # Validate attributes using dry-struct
-        validated_attrs = Types::Types::BatchComputeEnvironmentAttributes.new(attributes)
-        
+        validated_attrs = Types::BatchComputeEnvironmentAttributes.new(attributes)
+
         # Create reference that will be returned
         ref = ResourceReference.new(
           type: 'aws_batch_compute_environment',
@@ -41,112 +41,59 @@ module Pangea
             tags_all: "${aws_batch_compute_environment.#{name}.tags_all}"
           }
         )
-        
-        # Synthesize the Terraform resource
-        resource :aws_batch_compute_environment, name do
-          compute_environment_name validated_attrs.compute_environment_name
-          type validated_attrs.type
-          state validated_attrs.state if validated_attrs.state
-          
-          # Service role for managed environments
-          if validated_attrs.service_role
-            service_role validated_attrs.service_role
+
+        # Build resource attributes hash
+        resource_attrs = {
+          compute_environment_name: validated_attrs.compute_environment_name,
+          type: validated_attrs.type
+        }
+
+        resource_attrs[:state] = validated_attrs.state if validated_attrs.state
+        resource_attrs[:service_role] = validated_attrs.service_role if validated_attrs.service_role
+
+        # Compute resources for managed environments
+        if validated_attrs.compute_resources
+          cr = validated_attrs.compute_resources
+          cr_attrs = { type: cr[:type] }
+
+          cr_attrs[:allocation_strategy] = cr[:allocation_strategy] if cr[:allocation_strategy]
+          cr_attrs[:min_vcpus] = cr[:min_vcpus] if cr[:min_vcpus]
+          cr_attrs[:max_vcpus] = cr[:max_vcpus] if cr[:max_vcpus]
+          cr_attrs[:desired_vcpus] = cr[:desired_vcpus] if cr[:desired_vcpus]
+          cr_attrs[:instance_types] = cr[:instance_types] if cr[:instance_types]
+          cr_attrs[:instance_role] = cr[:instance_role] if cr[:instance_role]
+          cr_attrs[:spot_iam_fleet_request_role] = cr[:spot_iam_fleet_request_role] if cr[:spot_iam_fleet_request_role]
+          cr_attrs[:bid_percentage] = cr[:bid_percentage] if cr[:bid_percentage]
+          cr_attrs[:subnets] = cr[:subnets] if cr[:subnets]
+          cr_attrs[:security_group_ids] = cr[:security_group_ids] if cr[:security_group_ids]
+          cr_attrs[:platform_capabilities] = cr[:platform_capabilities] if cr[:platform_capabilities]
+          cr_attrs[:ec2_key_pair] = cr[:ec2_key_pair] if cr[:ec2_key_pair]
+          cr_attrs[:image_id] = cr[:image_id] if cr[:image_id]
+
+          if cr[:launch_template]
+            lt = {}
+            lt[:launch_template_id] = cr[:launch_template][:launch_template_id] if cr[:launch_template][:launch_template_id]
+            lt[:launch_template_name] = cr[:launch_template][:launch_template_name] if cr[:launch_template][:launch_template_name]
+            lt[:version] = cr[:launch_template][:version] if cr[:launch_template][:version]
+            cr_attrs[:launch_template] = lt
           end
-          
-          # Compute resources for managed environments
-          if validated_attrs.compute_resources
-            compute_resources do
-              type validated_attrs.compute_resources[:type]
-              
-              # Allocation strategy
-              if validated_attrs.compute_resources[:allocation_strategy]
-                allocation_strategy validated_attrs.compute_resources[:allocation_strategy]
-              end
-              
-              # vCPU configuration
-              if validated_attrs.compute_resources[:min_vcpus]
-                min_vcpus validated_attrs.compute_resources[:min_vcpus]
-              end
-              
-              if validated_attrs.compute_resources[:max_vcpus]
-                max_vcpus validated_attrs.compute_resources[:max_vcpus]
-              end
-              
-              if validated_attrs.compute_resources[:desired_vcpus]
-                desired_vcpus validated_attrs.compute_resources[:desired_vcpus]
-              end
-              
-              # Instance configuration
-              if validated_attrs.compute_resources[:instance_types]
-                instance_types validated_attrs.compute_resources[:instance_types]
-              end
-              
-              if validated_attrs.compute_resources[:instance_role]
-                instance_role validated_attrs.compute_resources[:instance_role]
-              end
-              
-              # Spot configuration
-              if validated_attrs.compute_resources[:spot_iam_fleet_request_role]
-                spot_iam_fleet_request_role validated_attrs.compute_resources[:spot_iam_fleet_request_role]
-              end
-              
-              if validated_attrs.compute_resources[:bid_percentage]
-                bid_percentage validated_attrs.compute_resources[:bid_percentage]
-              end
-              
-              # Networking
-              if validated_attrs.compute_resources[:subnets]
-                subnets validated_attrs.compute_resources[:subnets]
-              end
-              
-              if validated_attrs.compute_resources[:security_group_ids]
-                security_group_ids validated_attrs.compute_resources[:security_group_ids]
-              end
-              
-              # Platform capabilities
-              if validated_attrs.compute_resources[:platform_capabilities]
-                platform_capabilities validated_attrs.compute_resources[:platform_capabilities]
-              end
-              
-              # EC2 configuration
-              if validated_attrs.compute_resources[:ec2_key_pair]
-                ec2_key_pair validated_attrs.compute_resources[:ec2_key_pair]
-              end
-              
-              if validated_attrs.compute_resources[:image_id]
-                image_id validated_attrs.compute_resources[:image_id]
-              end
-              
-              # Launch template
-              if validated_attrs.compute_resources[:launch_template]
-                launch_template do
-                  if validated_attrs.compute_resources[:launch_template][:launch_template_id]
-                    launch_template_id validated_attrs.compute_resources[:launch_template][:launch_template_id]
-                  end
-                  
-                  if validated_attrs.compute_resources[:launch_template][:launch_template_name]
-                    launch_template_name validated_attrs.compute_resources[:launch_template][:launch_template_name]
-                  end
-                  
-                  if validated_attrs.compute_resources[:launch_template][:version]
-                    version validated_attrs.compute_resources[:launch_template][:version]
-                  end
-                end
-              end
-              
-              # Tags for compute resources
-              if validated_attrs.compute_resources[:tags]
-                tags validated_attrs.compute_resources[:tags]
-              end
-            end
-          end
-          
-          # Top-level tags
-          if validated_attrs.tags
-            tags validated_attrs.tags
-          end
+
+          cr_attrs[:tags] = cr[:tags] if cr[:tags]
+
+          resource_attrs[:compute_resources] = cr_attrs
         end
-        
+
+        resource_attrs[:tags] = validated_attrs.tags if validated_attrs.tags&.any?
+
+        # Dual-path write
+        if defined?(AbstractSynthesizer) && is_a?(AbstractSynthesizer)
+          translation[:manifest][:resource] ||= {}
+          translation[:manifest][:resource][:aws_batch_compute_environment] ||= {}
+          translation[:manifest][:resource][:aws_batch_compute_environment][name] = resource_attrs
+        else
+          resource(:aws_batch_compute_environment, name, resource_attrs)
+        end
+
         # Return the reference
         ref
       end

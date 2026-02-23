@@ -45,8 +45,8 @@ module Pangea
           end
           
           # Action definition based on type
-          if action_attrs.definition[:iam_action_definition]
-            iam_def = action_attrs.definition[:iam_action_definition]
+          if action_attrs.definition&.dig(:iam_action_definition)
+            iam_def = action_attrs.definition&.dig(:iam_action_definition)
             
             definition do
               iam_action_definition do
@@ -81,8 +81,8 @@ module Pangea
               end
             end
             
-          elsif action_attrs.definition[:scp_action_definition]
-            scp_def = action_attrs.definition[:scp_action_definition]
+          elsif action_attrs.definition&.dig(:scp_action_definition)
+            scp_def = action_attrs.definition&.dig(:scp_action_definition)
             
             definition do
               scp_action_definition do
@@ -97,8 +97,8 @@ module Pangea
               end
             end
             
-          elsif action_attrs.definition[:ssm_action_definition]
-            ssm_def = action_attrs.definition[:ssm_action_definition]
+          elsif action_attrs.definition&.dig(:ssm_action_definition)
+            ssm_def = action_attrs.definition&.dig(:ssm_action_definition)
             
             definition do
               ssm_action_definition do

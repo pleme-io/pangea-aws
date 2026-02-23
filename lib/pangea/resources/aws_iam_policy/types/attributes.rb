@@ -10,13 +10,14 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS IAM Policy resources
-        class IamPolicyAttributes < Dry::Struct
+        class IamPolicyAttributes < Pangea::Resources::BaseAttributes
+          extend Pangea::Resources::AWS::Types::PolicyTemplates
           transform_keys(&:to_sym)
 
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
           attribute :path, Resources::Types::String.default('/')
-          attribute :description, Resources::Types::String.optional
-          attribute :policy, Resources::Types::Hash.schema(
+          attribute? :description, Resources::Types::String.optional
+          attribute? :policy, Resources::Types::Hash.schema(
             Version: Resources::Types::String.default('2012-10-17'),
             Statement: Resources::Types::Array.of(
               Resources::Types::Hash.schema(
@@ -29,7 +30,7 @@ module Pangea
                 NotAction?: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String),
                 NotResource?: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String),
                 NotPrincipal?: Resources::Types::Hash.optional
-              )
+              ).lax
             )
           )
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -39,10 +40,10 @@ module Pangea
             raise Dry::Struct::Error, 'Policy name cannot exceed 128 characters' if attrs.name.length > 128
             raise Dry::Struct::Error, "Path must start and end with '/' and contain only valid characters" unless attrs.path.match?(/\A\/[\w+=,.@-]*\/?\z/)
             raise Dry::Struct::Error, 'Path cannot exceed 512 characters' if attrs.path.length > 512
-            raise Dry::Struct::Error, 'Policy document must have at least one statement' if attrs.policy[:Statement].empty?
+            raise Dry::Struct::Error, 'Policy document must have at least one statement' if attrs.policy&.dig(:Statement).empty?
 
             attrs.validate_policy_security!
-            policy_json = JSON.generate(attrs.policy)
+            policy_json = ::JSON.generate(attrs.policy)
             raise Dry::Struct::Error, 'Policy document cannot exceed 6144 characters' if policy_json.length > 6144
 
             attrs
@@ -51,15 +52,15 @@ module Pangea
           def uses_reserved_name? = name.start_with?('AWS') || name.include?('Amazon')
 
           def all_actions
-            policy[:Statement].flat_map { |s| Array(s[:Action]) }.uniq
+            policy&.dig(:Statement).flat_map { |s| Array(s[:Action]) }.uniq
           end
 
           def all_resources
-            policy[:Statement].flat_map { |s| Array(s[:Resource]) }.uniq
+            policy&.dig(:Statement).flat_map { |s| Array(s[:Resource]) }.uniq
           end
 
           def allows_action?(action)
-            policy[:Statement].any? do |s|
+            policy&.dig(:Statement).any? do |s|
               s[:Effect] == 'Allow' &&
                 (s[:Action] == action || Array(s[:Action]).include?(action) || s[:Action] == '*' ||
                  (s[:Action].is_a?(String) && s[:Action].end_with?('*') && action.start_with?(s[:Action][0...-1])))
@@ -67,7 +68,7 @@ module Pangea
           end
 
           def has_wildcard_permissions?
-            policy[:Statement].any? { |s| s[:Effect] == 'Allow' && (s[:Action] == '*' || s[:Resource] == '*') }
+            policy&.dig(:Statement).any? { |s| s[:Effect] == 'Allow' && (s[:Action] == '*' || s[:Resource] == '*') }
           end
 
           def security_level
@@ -92,10 +93,10 @@ module Pangea
           end
 
           def complexity_score
-            statements_count = policy[:Statement].length
+            statements_count = policy&.dig(:Statement).length
             actions_count = all_actions.length
             resources_count = all_resources.length
-            conditions_count = policy[:Statement].count { |s| s[:Condition] }
+            conditions_count = policy&.dig(:Statement).count { |s| s[:Condition] }
             statements_count + actions_count + resources_count + (conditions_count * 2)
           end
 
@@ -105,10 +106,10 @@ module Pangea
         end
 
         # Common IAM policy document structure
-        class IamPolicyDocument < Dry::Struct
+        class IamPolicyDocument < Pangea::Resources::BaseAttributes
           attribute :Version, Resources::Types::String.default('2012-10-17')
-          attribute :Statement, Resources::Types::Array.of(
-            Resources::Types::Hash.schema(Sid?: Resources::Types::String.optional, Effect: Resources::Types::String.constrained(included_in: ['Allow', 'Deny']), Action: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String), Resource: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String), Condition?: Resources::Types::Hash.optional)
+          attribute? :Statement, Resources::Types::Array.of(
+            Resources::Types::Hash.schema(Sid?: Resources::Types::String.optional, Effect: Resources::Types::String.constrained(included_in: ['Allow', 'Deny']).lax, Action: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String), Resource: Resources::Types::String | Resources::Types::Array.of(Resources::Types::String), Condition?: Resources::Types::Hash.optional)
           )
         end
       end

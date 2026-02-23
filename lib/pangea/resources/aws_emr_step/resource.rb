@@ -55,7 +55,7 @@ module Pangea
             if hjs[:properties]&.any?
               properties do
                 hjs[:properties].each do |key, value|
-                  public_send(key.gsub(/[^a-zA-Z0-9_]/, '_').downcase, value)
+                  public_send(key.to_s.gsub(/[^a-zA-Z0-9_]/, '_').downcase, value)
                 end
               end
             end

@@ -61,7 +61,7 @@ module Pangea
       #   coredns = aws_eks_addon(:coredns, {
       #     cluster_name: cluster.name,
       #     addon_name: "coredns",
-      #     configuration_values: JSON.generate({
+      #     configuration_values: ::JSON.generate({
       #       computeType: "Fargate",
       #       replicaCount: 3,
       #       resources: {
@@ -83,7 +83,7 @@ module Pangea
       #   })
       def aws_eks_addon(name, attributes = {})
         # Validate attributes using dry-struct
-        addon_attrs = AWS::Types::Types::EksAddonAttributes.new(attributes)
+        addon_attrs = Types::EksAddonAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_eks_addon, name) do
@@ -112,7 +112,7 @@ module Pangea
           preserve addon_attrs.preserve if addon_attrs.preserve != true
           
           # Tags
-          tags addon_attrs.tags if addon_attrs.tags.any?
+          tags addon_attrs.tags if addon_attrs.tags&.any?
         end
         
         # Create resource reference
@@ -141,7 +141,7 @@ module Pangea
         ref.define_singleton_method(:is_storage_addon?) { addon_attrs.is_storage_addon? }
         ref.define_singleton_method(:is_networking_addon?) { addon_attrs.is_networking_addon? }
         ref.define_singleton_method(:is_observability_addon?) { addon_attrs.is_observability_addon? }
-        ref.define_singleton_method(:addon_description) { addon_attrs.addon_info[:description] }
+        ref.define_singleton_method(:addon_description) { addon_attrs.addon_info&.dig(:description) }
         
         ref
       end

@@ -30,7 +30,7 @@ module Pangea
       module Types
         # Type-safe attributes for AWS RDS Database Instance resources
         # Composed from modular attribute structs for maintainability
-        class DbInstanceAttributes < Dry::Struct
+        class DbInstanceAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Compose attributes from modular structs

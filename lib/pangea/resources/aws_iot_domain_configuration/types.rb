@@ -25,30 +25,30 @@ module Pangea
     # requiring branded endpoints and enhanced security.
     module AwsIotDomainConfigurationTypes
       # Authorizer configuration for domain
-      class AuthorizerConfig < Dry::Struct
+      class AuthorizerConfig < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # Default authorizer name
-        attribute :default_authorizer_name, Resources::Types::String.optional
+        attribute? :default_authorizer_name, Resources::Types::String.optional
 
         # Whether authorization is allowed without a default authorizer
-        attribute :allow_authorizer_override, Resources::Types::Bool.optional
+        attribute? :allow_authorizer_override, Resources::Types::Bool.optional
       end
 
       # Server certificate configuration
-      class ServerCertificateConfig < Dry::Struct
+      class ServerCertificateConfig < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # Enable OCSP (Online Certificate Status Protocol)
-        attribute :enable_ocsp_check, Resources::Types::Bool.optional
+        attribute? :enable_ocsp_check, Resources::Types::Bool.optional
       end
 
       # TLS configuration for domain
-      class TlsConfig < Dry::Struct
+      class TlsConfig < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # Security policy for TLS connections
-        attribute :security_policy, Resources::Types::String.optional
+        attribute? :security_policy, Resources::Types::String.optional
       end
 
       # Main attributes for IoT domain configuration resource

@@ -71,8 +71,10 @@ RSpec.describe "aws_ecs_cluster synthesis" do
 
       expect(cluster_config).to have_key("setting")
       setting = cluster_config["setting"]
-      expect(setting["name"]).to eq("containerInsights")
-      expect(setting["value"]).to eq("enabled")
+      expect(setting).to be_an(Array)
+      insights_setting = setting.find { |s| s["name"] == "containerInsights" }
+      expect(insights_setting).not_to be_nil
+      expect(insights_setting["value"]).to eq("enabled")
     end
 
     it "supports Fargate capacity providers" do
@@ -170,7 +172,7 @@ RSpec.describe "aws_ecs_cluster synthesis" do
       expect(ref).to be_a(Pangea::Resources::ResourceReference)
       expect(ref.id).to eq("${aws_ecs_cluster.test.id}")
       expect(ref.arn).to eq("${aws_ecs_cluster.test.arn}")
-      expect(ref.name).to eq("${aws_ecs_cluster.test.name}")
+      expect(ref.outputs[:name]).to eq("${aws_ecs_cluster.test.name}")
     end
 
     it "provides computed properties" do

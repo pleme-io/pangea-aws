@@ -20,20 +20,20 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class OrganizationsAccountAttributes < Dry::Struct
+        class OrganizationsAccountAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :name, Resources::Types::String
-          attribute :email, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
+          attribute? :email, Resources::Types::String.optional
           attribute :iam_user_access_to_billing, Resources::Types::String.default("DENY")
           attribute :parent_id, Resources::Types::String.optional.default(nil)
           attribute :role_name, Resources::Types::String.optional.default("OrganizationAccountAccessRole")
           attribute :close_on_deletion, Resources::Types::Bool.default(false)
           
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             if attrs[:email]
               email = attrs[:email]

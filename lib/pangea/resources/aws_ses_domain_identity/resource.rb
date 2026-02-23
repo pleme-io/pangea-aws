@@ -30,7 +30,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs
       def aws_ses_domain_identity(name, attributes = {})
         # Validate attributes using dry-struct
-        identity_attrs = Types::Types::SesDomainIdentityAttributes.new(attributes)
+        identity_attrs = Types::SesDomainIdentityAttributes.new(attributes)
         
         # Generate terraform resource block
         resource(:aws_ses_domain_identity, name) do

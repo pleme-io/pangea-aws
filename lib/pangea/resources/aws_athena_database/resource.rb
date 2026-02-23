@@ -41,7 +41,7 @@ module Pangea
           comment database_attrs.comment if database_attrs.comment
           
           # Properties
-          if database_attrs.properties.any?
+          if database_attrs.properties&.any?
             properties do
               database_attrs.properties.each do |key, value|
                 public_send(key.tr(".", "_"), value)
@@ -52,8 +52,8 @@ module Pangea
           # Encryption configuration
           if database_attrs.encryption_configuration
             encryption_configuration do
-              encryption_option database_attrs.encryption_configuration[:encryption_option]
-              kms_key database_attrs.encryption_configuration[:kms_key] if database_attrs.encryption_configuration[:kms_key]
+              encryption_option database_attrs.encryption_configuration&.dig(:encryption_option)
+              kms_key database_attrs.encryption_configuration&.dig(:kms_key) if database_attrs.encryption_configuration&.dig(:kms_key)
             end
           end
           
@@ -66,12 +66,12 @@ module Pangea
           # ACL configuration
           if database_attrs.acl_configuration
             acl_configuration do
-              s3_acl_option database_attrs.acl_configuration[:s3_acl_option]
+              s3_acl_option database_attrs.acl_configuration&.dig(:s3_acl_option)
             end
           end
           
           # Apply tags if present
-          if database_attrs.tags.any?
+          if database_attrs.tags&.any?
             tags do
               database_attrs.tags.each do |key, value|
                 public_send(key, value)

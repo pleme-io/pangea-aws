@@ -27,29 +27,28 @@ module Pangea
       # @param attributes [Hash] EFS file system configuration
       # @return [ResourceReference] Reference to the created file system
       def aws_efs_file_system(name, attributes = {})
-        validated_attrs = AWS::Types::Types::EfsFileSystemAttributes.new(attributes)
-        
-        resource_attributes = {
-          creation_token: validated_attrs.creation_token,
-          performance_mode: validated_attrs.performance_mode,
-          throughput_mode: validated_attrs.throughput_mode,
-          encrypted: validated_attrs.encrypted,
-          tags: validated_attrs.tags
-        }
-        
-        # Add optional attributes
-        resource_attributes[:provisioned_throughput_in_mibps] = validated_attrs.provisioned_throughput_in_mibps if validated_attrs.provisioned_throughput_in_mibps
-        resource_attributes[:kms_key_id] = validated_attrs.kms_key_id if validated_attrs.kms_key_id
-        resource_attributes[:availability_zone_name] = validated_attrs.availability_zone_name if validated_attrs.availability_zone_name
-        
-        # Add lifecycle policy if specified
-        if validated_attrs.lifecycle_policy
-          resource_attributes[:lifecycle_policy] = [validated_attrs.lifecycle_policy]
+        validated_attrs = Types::EfsFileSystemAttributes.new(attributes)
+
+        resource(:aws_efs_file_system, name) do
+          creation_token validated_attrs.creation_token if validated_attrs.creation_token
+          performance_mode validated_attrs.performance_mode
+          throughput_mode validated_attrs.throughput_mode
+          encrypted validated_attrs.encrypted
+          tags validated_attrs.tags if validated_attrs.tags&.any?
+
+          # Optional attributes
+          provisioned_throughput_in_mibps validated_attrs.provisioned_throughput_in_mibps if validated_attrs.provisioned_throughput_in_mibps
+          kms_key_id validated_attrs.kms_key_id if validated_attrs.kms_key_id
+          availability_zone_name validated_attrs.availability_zone_name if validated_attrs.availability_zone_name
+
+          # Lifecycle policy
+          lifecycle_policy validated_attrs.lifecycle_policy if validated_attrs.lifecycle_policy&.any?
+
+          # Backup policy
+          backup_policy validated_attrs.backup_policy if validated_attrs.backup_policy
         end
-        
-        resource(:aws_efs_file_system, name, resource_attributes)
-        
-        ResourceReference.new(
+
+        ref = ResourceReference.new(
           type: :aws_efs_file_system,
           name: name,
           attributes: validated_attrs,
@@ -71,6 +70,16 @@ module Pangea
             tags_all: "${aws_efs_file_system.#{name}.tags_all}"
           }
         )
+
+        # Delegate computed methods to resource reference
+        ref.define_singleton_method(:is_one_zone?) { validated_attrs.is_one_zone? }
+        ref.define_singleton_method(:is_regional?) { validated_attrs.is_regional? }
+        ref.define_singleton_method(:is_encrypted?) { validated_attrs.is_encrypted? }
+        ref.define_singleton_method(:has_lifecycle_policy?) { validated_attrs.has_lifecycle_policy? }
+        ref.define_singleton_method(:storage_class) { validated_attrs.storage_class }
+        ref.define_singleton_method(:estimated_storage_cost_per_gb) { validated_attrs.estimated_storage_cost_per_gb }
+
+        ref
       end
     end
   end

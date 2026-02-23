@@ -19,10 +19,10 @@ module Pangea
     module AWS
       module Types
         # Metric query for metric math alarms
-        class MetricQuery < Dry::Struct
+        class MetricQuery < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :id, Pangea::Resources::Types::String
+          attribute? :id, Pangea::Resources::Types::String.optional
           attribute :expression?, Pangea::Resources::Types::String.optional
           attribute :label?, Pangea::Resources::Types::String.optional
           attribute :return_data?, Pangea::Resources::Types::Bool.optional.default(false)
@@ -35,11 +35,11 @@ module Pangea
             stat: Pangea::Resources::Types::String,
             unit?: Pangea::Resources::Types::String.optional,
             dimensions?: Pangea::Resources::Types::Hash.optional
-          ).optional
+          ).lax.optional
 
           # Validate either expression or metric is provided
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             unless attrs[:expression] || attrs[:metric]
               raise Dry::Struct::Error, 'Metric query must have either expression or metric'

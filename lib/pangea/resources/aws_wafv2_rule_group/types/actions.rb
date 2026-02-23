@@ -29,27 +29,27 @@ module Pangea
           # Allow action with optional custom request handling
           AllowActionSchema = Resources::Types::Hash.schema(
             custom_request_handling?: WafV2Schemas::CustomRequestHandlingSchema
-          ).optional
+          ).lax.optional
 
           # Block action with optional custom response
           BlockActionSchema = Resources::Types::Hash.schema(
             custom_response?: WafV2Schemas::CustomResponseSchema
-          ).optional
+          ).lax.optional
 
           # Count action with optional custom request handling
           CountActionSchema = Resources::Types::Hash.schema(
             custom_request_handling?: WafV2Schemas::CustomRequestHandlingSchema
-          ).optional
+          ).lax.optional
 
           # Captcha action with optional custom request handling
           CaptchaActionSchema = Resources::Types::Hash.schema(
             custom_request_handling?: WafV2Schemas::CustomRequestHandlingSchema
-          ).optional
+          ).lax.optional
 
           # Challenge action with optional custom request handling
           ChallengeActionSchema = Resources::Types::Hash.schema(
             custom_request_handling?: WafV2Schemas::CustomRequestHandlingSchema
-          ).optional
+          ).lax.optional
 
           # Combined action schema with validation
           ACTION_TYPES = %i[allow block count captcha challenge].freeze

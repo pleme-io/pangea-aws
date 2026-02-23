@@ -20,15 +20,15 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS Route53 Query Log Configuration resources
-      class Route53QueryLogAttributes < Dry::Struct
+      class Route53QueryLogAttributes < Pangea::Resources::BaseAttributes
         # Name for the query log configuration
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
 
         # Hosted zone ID to log queries for
-        attribute :hosted_zone_id, Resources::Types::String
+        attribute? :hosted_zone_id, Resources::Types::String.optional
 
         # CloudWatch Logs destination ARN
-        attribute :destination_arn, Resources::Types::String
+        attribute? :destination_arn, Resources::Types::String.optional
 
         # Tags to apply to the query log configuration
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsAutoscalingSchedule resources
       # Manages aws autoscaling schedule resources.
-      class AwsAutoscalingScheduleAttributes < Dry::Struct
+      class AwsAutoscalingScheduleAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_autoscaling_schedule
         
         # Tags to apply to the resource

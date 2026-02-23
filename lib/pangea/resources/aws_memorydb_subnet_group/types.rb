@@ -21,10 +21,10 @@ module Pangea
       module Types
       # Type-safe attributes for AwsMemorydbSubnetGroup resources
       # Provides a MemoryDB Subnet Group resource.
-      class MemorydbSubnetGroupAttributes < Dry::Struct
-        attribute :name, Resources::Types::String
+      class MemorydbSubnetGroupAttributes < Pangea::Resources::BaseAttributes
+        attribute? :name, Resources::Types::String.optional
         attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
-        attribute :description, Resources::Types::String.optional
+        attribute? :description, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

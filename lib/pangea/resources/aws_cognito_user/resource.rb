@@ -37,10 +37,10 @@ module Pangea
           user_pool_id user_attrs.user_pool_id
 
           # User attributes
-          if user_attrs.attributes && user_attrs.attributes.any?
+          if user_attrs.user_attributes && user_attrs.user_attributes.any?
             attributes do
-              user_attrs.attributes.each do |attr_name, attr_value|
-                public_send(attr_name.gsub(':', '_'), attr_value)
+              user_attrs.user_attributes.each do |attr_name, attr_value|
+                public_send(attr_name.to_s.gsub(':', '_'), attr_value)
               end
             end
           end

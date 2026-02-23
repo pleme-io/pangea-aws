@@ -25,20 +25,20 @@ module Pangea
             type: Resources::Types::String,
             comment?: Resources::Types::String.optional,
             parameters?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
-          )
+          ).lax
 
           # SerDe info schema type
           SerdeInfoSchema = Resources::Types::Hash.schema(
             name?: Resources::Types::String.optional,
             serialization_library?: Resources::Types::String.optional,
             parameters?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
-          )
+          ).lax
 
           # Sort column schema type
           SortColumnSchema = Resources::Types::Hash.schema(
             column: Resources::Types::String,
             sort_order: Resources::Types::Integer.constrained(included_in: [0, 1])
-          )
+          ).lax
 
           # Full storage descriptor schema
           StorageDescriptorSchema = Resources::Types::Hash.schema(
@@ -52,7 +52,7 @@ module Pangea
             bucket_columns?: Resources::Types::Array.of(Resources::Types::String).optional,
             sort_columns?: Resources::Types::Array.of(SortColumnSchema).optional,
             stored_as_sub_directories?: Resources::Types::Bool.optional
-          )
+          ).lax
         end
       end
     end

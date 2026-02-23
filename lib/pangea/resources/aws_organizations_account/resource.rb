@@ -23,7 +23,7 @@ module Pangea
   module Resources
     module AWS
       def aws_organizations_account(name, attributes = {})
-        account_attrs = Types::Types::OrganizationsAccountAttributes.new(attributes)
+        account_attrs = Types::OrganizationsAccountAttributes.new(attributes)
         
         resource(:aws_organizations_account, name) do
           name account_attrs.name
@@ -33,7 +33,7 @@ module Pangea
           role_name account_attrs.role_name if account_attrs.role_name
           close_on_deletion account_attrs.close_on_deletion
           
-          if account_attrs.tags.any?
+          if account_attrs.tags&.any?
             tags do
               account_attrs.tags.each do |key, value|
                 public_send(key, value)

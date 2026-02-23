@@ -186,7 +186,7 @@ RSpec.describe "aws_efs_file_system synthesis" do
       
       efs = result["resource"]["aws_efs_file_system"]["ia_lifecycle"]
       expect(efs["lifecycle_policy"]).to be_an(Array)
-      expect(efs["lifecycle_policy"]).to have(1).item
+      expect(efs["lifecycle_policy"].size).to eq(1)
       expect(efs["lifecycle_policy"].first).to eq({ "transition_to_ia" => "AFTER_30_DAYS" })
     end
     
@@ -204,7 +204,7 @@ RSpec.describe "aws_efs_file_system synthesis" do
       end
       
       efs = result["resource"]["aws_efs_file_system"]["full_lifecycle"]
-      expect(efs["lifecycle_policy"]).to have(2).items
+      expect(efs["lifecycle_policy"].size).to eq(2)
       expect(efs["lifecycle_policy"][0]["transition_to_ia"]).to eq("AFTER_7_DAYS")
       expect(efs["lifecycle_policy"][1]["transition_to_archive"]).to eq("AFTER_90_DAYS")
     end
@@ -296,7 +296,7 @@ RSpec.describe "aws_efs_file_system synthesis" do
       
       efs = result["resource"]["aws_efs_file_system"]["cost_optimized"]
       expect(efs["availability_zone_name"]).to eq("us-east-1a")
-      expect(efs["lifecycle_policy"]).to have(2).items
+      expect(efs["lifecycle_policy"].size).to eq(2)
       expect(efs["lifecycle_policy"][0]["transition_to_ia"]).to eq("AFTER_1_DAY")
     end
     
@@ -381,7 +381,7 @@ RSpec.describe "aws_efs_file_system synthesis" do
       end
       
       efs = result["resource"]["aws_efs_file_system"]["web_content"]
-      expect(efs["lifecycle_policy"]).to have(2).items
+      expect(efs["lifecycle_policy"].size).to eq(2)
       expect(efs["backup_policy"]["status"]).to eq("ENABLED")
     end
     

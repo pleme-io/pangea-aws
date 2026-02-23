@@ -39,7 +39,7 @@ module Pangea
           description role_attrs.description if role_attrs.description
           
           # Assume role policy (required)
-          assume_role_policy JSON.pretty_generate(role_attrs.assume_role_policy)
+          assume_role_policy ::JSON.pretty_generate(role_attrs.assume_role_policy)
           
           # Optional configurations
           force_detach_policies role_attrs.force_detach_policies
@@ -49,17 +49,17 @@ module Pangea
           permissions_boundary role_attrs.permissions_boundary if role_attrs.permissions_boundary
           
           # Inline policies
-          if role_attrs.inline_policies.any?
+          if role_attrs.inline_policies&.any?
             role_attrs.inline_policies.each do |policy_name, policy_doc|
               inline_policy do
                 name policy_name
-                policy JSON.pretty_generate(policy_doc)
+                policy ::JSON.pretty_generate(policy_doc)
               end
             end
           end
           
           # Apply tags if present
-          if role_attrs.tags.any?
+          if role_attrs.tags&.any?
             tags do
               role_attrs.tags.each do |key, value|
                 public_send(key, value)

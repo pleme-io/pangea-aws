@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2HostResourceGroupAssociation resources
       # Manages aws ec2 host resource group association resources.
-      class AwsEc2HostResourceGroupAssociationAttributes < Dry::Struct
+      class AwsEc2HostResourceGroupAssociationAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_host_resource_group_association
         
         # Tags to apply to the resource

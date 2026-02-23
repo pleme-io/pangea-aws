@@ -27,8 +27,9 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
 
   # Test traditional metric alarm synthesis
   it "synthesizes traditional metric alarm correctly" do
+    _sns_topic_arn = sns_topic_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:high_cpu, {
         alarm_name: "high-cpu-alarm",
@@ -40,14 +41,14 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
         period: 300,
         statistic: "Average",
         threshold: 80.0,
-        alarm_actions: [sns_topic_arn],
+        alarm_actions: [_sns_topic_arn],
         dimensions: {
           InstanceId: "i-1234567890abcdef0"
         }
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "high_cpu")
     
     expect(alarm_config["alarm_name"]).to eq("high-cpu-alarm")
@@ -69,7 +70,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
   # Test metric math alarm synthesis
   it "synthesizes metric math alarm correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:error_rate, {
         alarm_name: "high-error-rate",
@@ -105,7 +106,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "error_rate")
     
     expect(alarm_config["alarm_name"]).to eq("high-error-rate")
@@ -142,8 +143,9 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
 
   # Test anomaly detection alarm synthesis
   it "synthesizes anomaly detection alarm correctly" do
+    _sns_topic_arn = sns_topic_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:traffic_anomaly, {
         alarm_name: "unusual-traffic-pattern",
@@ -165,11 +167,11 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
             expression: "ANOMALY_DETECTION_BAND(m1, 2)"
           }
         ],
-        alarm_actions: [sns_topic_arn]
+        alarm_actions: [_sns_topic_arn]
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "traffic_anomaly")
     
     expect(alarm_config["alarm_name"]).to eq("unusual-traffic-pattern")
@@ -186,8 +188,9 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
 
   # Test alarm with extended statistic synthesis
   it "synthesizes alarm with extended statistic correctly" do
+    _sns_topic_arn = sns_topic_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:p95_latency, {
         alarm_name: "high-p95-latency",
@@ -198,11 +201,11 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
         period: 300,
         extended_statistic: "p95",
         threshold: 2.0,
-        alarm_actions: [sns_topic_arn]
+        alarm_actions: [_sns_topic_arn]
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "p95_latency")
     
     expect(alarm_config["alarm_name"]).to eq("high-p95-latency")
@@ -213,8 +216,9 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
 
   # Test alarm with datapoints_to_alarm synthesis
   it "synthesizes alarm with datapoints_to_alarm correctly" do
+    _sns_topic_arn = sns_topic_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:datapoints_alarm, {
         alarm_name: "burst-detection",
@@ -226,11 +230,11 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
         period: 60,
         statistic: "Average",
         threshold: 90.0,
-        alarm_actions: [sns_topic_arn]
+        alarm_actions: [_sns_topic_arn]
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "datapoints_alarm")
     
     expect(alarm_config["alarm_name"]).to eq("burst-detection")
@@ -241,8 +245,9 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
 
   # Test alarm with custom treat_missing_data synthesis
   it "synthesizes alarm with custom treat_missing_data correctly" do
+    _sns_topic_arn = sns_topic_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:missing_data_alarm, {
         alarm_name: "intermittent-metric",
@@ -254,11 +259,11 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
         statistic: "Sum",
         threshold: 10.0,
         treat_missing_data: "ignore",
-        alarm_actions: [sns_topic_arn]
+        alarm_actions: [_sns_topic_arn]
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "missing_data_alarm")
     
     expect(alarm_config["alarm_name"]).to eq("intermittent-metric")
@@ -269,7 +274,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
   # Test alarm with multiple action types synthesis
   it "synthesizes alarm with multiple action types correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:multi_action_alarm, {
         alarm_name: "comprehensive-monitoring",
@@ -293,7 +298,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "multi_action_alarm")
     
     expect(alarm_config["alarm_actions"]).to eq([
@@ -311,7 +316,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
   # Test alarm with tags synthesis
   it "synthesizes alarm with tags correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:tagged_alarm, {
         alarm_name: "production-cpu-alarm",
@@ -331,7 +336,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "tagged_alarm")
     
     expect(alarm_config["alarm_name"]).to eq("production-cpu-alarm")
@@ -348,7 +353,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
   # Test Auto Scaling trigger alarm synthesis
   it "synthesizes Auto Scaling trigger alarm correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:asg_scale_up, {
         alarm_name: "asg-scale-up-trigger",
@@ -370,7 +375,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "asg_scale_up")
     
     expect(alarm_config["alarm_name"]).to eq("asg-scale-up-trigger")
@@ -381,8 +386,9 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
 
   # Test RDS database alarm synthesis
   it "synthesizes RDS database alarm correctly" do
+    _sns_topic_arn = sns_topic_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:rds_connections, {
         alarm_name: "database-connection-count",
@@ -393,7 +399,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
         period: 300,
         statistic: "Average",
         threshold: 80,
-        alarm_actions: [sns_topic_arn],
+        alarm_actions: [_sns_topic_arn],
         dimensions: {
           DBInstanceIdentifier: "production-db"
         },
@@ -401,7 +407,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "rds_connections")
     
     expect(alarm_config["alarm_name"]).to eq("database-connection-count")
@@ -413,8 +419,9 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
 
   # Test Lambda function alarm synthesis
   it "synthesizes Lambda function alarm correctly" do
+    _sns_topic_arn = sns_topic_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:lambda_errors, {
         alarm_name: "lambda-error-rate",
@@ -425,14 +432,14 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
         period: 300,
         statistic: "Sum",
         threshold: 5,
-        alarm_actions: [sns_topic_arn],
+        alarm_actions: [_sns_topic_arn],
         dimensions: {
           FunctionName: "data-processor"
         }
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "lambda_errors")
     
     expect(alarm_config["namespace"]).to eq("AWS/Lambda")
@@ -443,8 +450,9 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
 
   # Test DynamoDB alarm synthesis
   it "synthesizes DynamoDB alarm correctly" do
+    _sns_topic_arn = sns_topic_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:dynamo_throttles, {
         alarm_name: "table-throttled-requests",
@@ -455,14 +463,14 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
         period: 300,
         statistic: "Sum",
         threshold: 0,
-        alarm_actions: [sns_topic_arn],
+        alarm_actions: [_sns_topic_arn],
         dimensions: {
           TableName: "user-sessions"
         }
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "dynamo_throttles")
     
     expect(alarm_config["namespace"]).to eq("AWS/DynamoDB")
@@ -473,8 +481,9 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
 
   # Test SQS queue alarm synthesis
   it "synthesizes SQS queue alarm correctly" do
+    _sns_topic_arn = sns_topic_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:sqs_depth, {
         alarm_name: "queue-depth-high",
@@ -485,14 +494,14 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
         period: 300,
         statistic: "Average",
         threshold: 100,
-        alarm_actions: [sns_topic_arn],
+        alarm_actions: [_sns_topic_arn],
         dimensions: {
           QueueName: "processing-queue"
         }
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "sqs_depth")
     
     expect(alarm_config["namespace"]).to eq("AWS/SQS")
@@ -504,7 +513,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
   # Test alarm without optional fields (should not appear in terraform)
   it "synthesizes minimal alarm without optional fields" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:minimal_alarm, {
         comparison_operator: "GreaterThanThreshold",
@@ -517,7 +526,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "minimal_alarm")
     
     expect(alarm_config["comparison_operator"]).to eq("GreaterThanThreshold")
@@ -543,7 +552,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
   # Test complex metric math with cross-service metrics synthesis
   it "synthesizes complex cross-service metric math alarm correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:end_to_end_latency, {
         alarm_name: "total-request-latency",
@@ -597,7 +606,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "end_to_end_latency")
     
     expect(alarm_config["alarm_name"]).to eq("total-request-latency")
@@ -628,8 +637,9 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
   
   # Test alarm with evaluate_low_sample_count_percentile synthesis
   it "synthesizes alarm with evaluate_low_sample_count_percentile correctly" do
+    _sns_topic_arn = sns_topic_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_metric_alarm(:low_sample_alarm, {
         alarm_name: "low-sample-percentile",
@@ -641,11 +651,11 @@ RSpec.describe "aws_cloudwatch_metric_alarm terraform synthesis" do
         extended_statistic: "p99",
         threshold: 3.0,
         evaluate_low_sample_count_percentile: "evaluate",
-        alarm_actions: [sns_topic_arn]
+        alarm_actions: [_sns_topic_arn]
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     alarm_config = json_output.dig("resource", "aws_cloudwatch_metric_alarm", "low_sample_alarm")
     
     expect(alarm_config["alarm_name"]).to eq("low-sample-percentile")

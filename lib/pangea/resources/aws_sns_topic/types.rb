@@ -21,17 +21,17 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS SNS Topic resources
-        class SNSTopicAttributes < Dry::Struct
+        class SNSTopicAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Topic name (optional - AWS will generate if not provided)
-        attribute :name, Pangea::Resources::Types::String.optional
+        attribute? :name, Pangea::Resources::Types::String.optional
 
         # Display name for the topic
-        attribute :display_name, Pangea::Resources::Types::String.optional
+        attribute? :display_name, Pangea::Resources::Types::String.optional
 
         # KMS encryption key
-        attribute :kms_master_key_id, Pangea::Resources::Types::String.optional
+        attribute? :kms_master_key_id, Pangea::Resources::Types::String.optional
 
         # FIFO topic (requires .fifo suffix in name)
         attribute :fifo_topic, Pangea::Resources::Types::Bool.default(false)
@@ -40,10 +40,10 @@ module Pangea
         attribute :content_based_deduplication, Pangea::Resources::Types::Bool.default(false)
 
         # Delivery policy (JSON string)
-        attribute :delivery_policy, Pangea::Resources::Types::String.optional
+        attribute? :delivery_policy, Pangea::Resources::Types::String.optional
 
         # SNS topic policy (JSON string)
-        attribute :policy, Pangea::Resources::Types::String.optional
+        attribute? :policy, Pangea::Resources::Types::String.optional
 
         # Message delivery status attributes
         attribute :application_success_feedback_role_arn, Pangea::Resources::Types::String.optional.default(nil)
@@ -67,10 +67,10 @@ module Pangea
         attribute :firehose_failure_feedback_role_arn, Pangea::Resources::Types::String.optional.default(nil)
 
         # Message data protection policy (JSON string)
-        attribute :message_data_protection_policy, Pangea::Resources::Types::String.optional
+        attribute? :message_data_protection_policy, Pangea::Resources::Types::String.optional
 
         # Tracing configuration
-        attribute :tracing_config, Pangea::Resources::Types::String.constrained(included_in: ['Active', 'PassThrough']).optional
+        attribute? :tracing_config, Pangea::Resources::Types::String.constrained(included_in: ['Active', 'PassThrough']).optional
 
         # Tags
         attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
@@ -97,8 +97,8 @@ module Pangea
           # Validate delivery policy is valid JSON if provided
           if attrs.delivery_policy
             begin
-              JSON.parse(attrs.delivery_policy)
-            rescue JSON::ParserError => e
+              ::JSON.parse(attrs.delivery_policy)
+            rescue ::JSON::ParserError => e
               raise Dry::Struct::Error, "delivery_policy must be valid JSON: #{e.message}"
             end
           end
@@ -106,8 +106,8 @@ module Pangea
           # Validate policy is valid JSON if provided
           if attrs.policy
             begin
-              JSON.parse(attrs.policy)
-            rescue JSON::ParserError => e
+              ::JSON.parse(attrs.policy)
+            rescue ::JSON::ParserError => e
               raise Dry::Struct::Error, "policy must be valid JSON: #{e.message}"
             end
           end
@@ -115,8 +115,8 @@ module Pangea
           # Validate message data protection policy is valid JSON if provided
           if attrs.message_data_protection_policy
             begin
-              JSON.parse(attrs.message_data_protection_policy)
-            rescue JSON::ParserError => e
+              ::JSON.parse(attrs.message_data_protection_policy)
+            rescue ::JSON::ParserError => e
               raise Dry::Struct::Error, "message_data_protection_policy must be valid JSON: #{e.message}"
             end
           end

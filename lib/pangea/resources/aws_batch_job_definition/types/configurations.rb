@@ -21,7 +21,7 @@ module Pangea
         class BatchJobDefinitionAttributes
           # Common container configurations
           module Configurations
-            def self.standard_environment_variables(options = {})
+            def standard_environment_variables(options = {})
               base_vars = [
                 { name: 'AWS_DEFAULT_REGION', value: options[:region] || 'us-east-1' },
                 { name: 'BATCH_JOB_ID', value: '${AWS_BATCH_JOB_ID}' },
@@ -33,7 +33,7 @@ module Pangea
               base_vars
             end
 
-            def self.common_resource_requirements(gpu_count = nil)
+            def common_resource_requirements(gpu_count = nil)
               requirements = []
 
               requirements << { type: 'GPU', value: gpu_count.to_s } if gpu_count
@@ -41,7 +41,7 @@ module Pangea
               requirements
             end
 
-            def self.efs_volume(volume_name, file_system_id, options = {})
+            def efs_volume(volume_name, file_system_id, options = {})
               {
                 name: volume_name,
                 efs_volume_configuration: {
@@ -53,14 +53,14 @@ module Pangea
               }
             end
 
-            def self.host_volume(volume_name, host_path)
+            def host_volume(volume_name, host_path)
               {
                 name: volume_name,
                 host: { source_path: host_path }
               }
             end
 
-            def self.standard_mount_point(volume_name, container_path, read_only = false)
+            def standard_mount_point(volume_name, container_path, read_only = false)
               {
                 source_volume: volume_name,
                 container_path: container_path,

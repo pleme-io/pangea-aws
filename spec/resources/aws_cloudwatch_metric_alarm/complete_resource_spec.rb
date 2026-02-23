@@ -27,9 +27,9 @@ RSpec.describe "aws_cloudwatch_metric_alarm resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -147,7 +147,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm resource function" do
           statistic: "Average",
           threshold: 80.0
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "validates statistics" do
@@ -177,7 +177,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm resource function" do
           statistic: "InvalidStatistic",
           threshold: 80.0
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "validates treat_missing_data options" do
@@ -976,7 +976,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm resource function" do
           statistic: "Average",
           threshold: 80.0
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "rejects zero evaluation periods" do
@@ -990,7 +990,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm resource function" do
           statistic: "Average",
           threshold: 80.0
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "rejects invalid statistic" do
@@ -1004,7 +1004,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm resource function" do
           statistic: "InvalidStatistic",
           threshold: 80.0
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "rejects invalid treat_missing_data option" do
@@ -1019,7 +1019,7 @@ RSpec.describe "aws_cloudwatch_metric_alarm resource function" do
           threshold: 80.0,
           treat_missing_data: "invalid_option"
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "rejects datapoints_to_alarm greater than evaluation_periods" do

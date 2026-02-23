@@ -7,22 +7,22 @@ module Pangea
     module AWS
       module Types
         # S3 lifecycle rule abort incomplete multipart upload
-        class LifecycleAbortIncompleteMultipartUpload < Dry::Struct
-          attribute :days_after_initiation, Resources::Types::Integer.constrained(gt: 0)
+        class LifecycleAbortIncompleteMultipartUpload < Pangea::Resources::BaseAttributes
+          attribute? :days_after_initiation, Resources::Types::Integer.constrained(gt: 0).optional
         end
 
         # S3 lifecycle rule
         unless const_defined?(:LifecycleRule)
-        class LifecycleRule < Dry::Struct
-          attribute :id, Resources::Types::String
-          attribute :status, Resources::Types::String.constrained(included_in: ["Enabled", "Disabled"])
+        class LifecycleRule < Pangea::Resources::BaseAttributes
+          attribute? :id, Resources::Types::String.optional
+          attribute? :status, Resources::Types::String.constrained(included_in: ["Enabled", "Disabled"]).optional
           attribute? :abort_incomplete_multipart_upload, LifecycleAbortIncompleteMultipartUpload.optional
           attribute? :expiration, LifecycleExpiration.optional
           attribute? :filter, LifecycleFilter.optional
           attribute? :noncurrent_version_expiration, LifecycleNoncurrentVersionExpiration.optional
-          attribute :noncurrent_version_transition, Resources::Types::Array.of(LifecycleNoncurrentVersionTransition).optional
-          attribute :prefix, Resources::Types::String.optional
-          attribute :transition, Resources::Types::Array.of(LifecycleTransition).optional
+          attribute :noncurrent_version_transition, Resources::Types::Array.of(LifecycleNoncurrentVersionTransition).default([].freeze)
+          attribute? :prefix, Resources::Types::String.optional
+          attribute :transition, Resources::Types::Array.of(LifecycleTransition).default([].freeze)
 
           def enabled?
             status == "Enabled"

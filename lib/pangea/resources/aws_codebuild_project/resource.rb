@@ -51,19 +51,19 @@ module Pangea
           builders.apply_secondary_artifacts(self, project_attrs.secondary_artifacts)
           builders.apply_environment(self, project_attrs.environment)
 
-          if project_attrs.cache[:type] != 'NO_CACHE'
+          if project_attrs.cache&.dig(:type) != 'NO_CACHE'
             cache do
-              type project_attrs.cache[:type]
-              location project_attrs.cache[:location] if project_attrs.cache[:location]
-              modes project_attrs.cache[:modes] if project_attrs.cache[:modes]
+              type project_attrs.cache&.dig(:type)
+              location project_attrs.cache&.dig(:location) if project_attrs.cache&.dig(:location)
+              modes project_attrs.cache&.dig(:modes) if project_attrs.cache&.dig(:modes)
             end
           end
 
           if project_attrs.vpc_config
             vpc_config do
-              vpc_id project_attrs.vpc_config[:vpc_id]
-              subnets project_attrs.vpc_config[:subnets]
-              security_group_ids project_attrs.vpc_config[:security_group_ids]
+              vpc_id project_attrs.vpc_config&.dig(:vpc_id)
+              subnets project_attrs.vpc_config&.dig(:subnets)
+              security_group_ids project_attrs.vpc_config&.dig(:security_group_ids)
             end
           end
 
@@ -80,7 +80,7 @@ module Pangea
             end
           end
 
-          if project_attrs.tags.any?
+          if project_attrs.tags&.any?
             tags do
               project_attrs.tags.each do |key, value|
                 public_send(key, value)

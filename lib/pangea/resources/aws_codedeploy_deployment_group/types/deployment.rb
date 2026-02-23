@@ -21,43 +21,43 @@ module Pangea
     module AWS
       module Types
         # Deployment configuration attributes for CodeDeploy deployment groups
-        class DeploymentAttributes < Dry::Struct
+        class DeploymentAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Auto rollback configuration
-          attribute :auto_rollback_configuration, Resources::Types::Hash.schema(
+          attribute? :auto_rollback_configuration, Resources::Types::Hash.schema(
             enabled?: Resources::Types::Bool.optional,
             events?: Resources::Types::Array.of(
               Resources::Types::String.constrained(included_in: ['DEPLOYMENT_FAILURE', 'DEPLOYMENT_STOP_ON_ALARM', 'DEPLOYMENT_STOP_ON_REQUEST'])
             ).optional
-          ).default({}.freeze)
+          ).lax.default({}.freeze)
 
           # Alarm configuration
-          attribute :alarm_configuration, Resources::Types::Hash.schema(
+          attribute? :alarm_configuration, Resources::Types::Hash.schema(
             alarms?: Resources::Types::Array.of(Resources::Types::String).optional,
             enabled?: Resources::Types::Bool.optional,
             ignore_poll_alarm_failure?: Resources::Types::Bool.optional
-          ).optional
+          ).lax.optional
 
           # Blue-green deployment configuration
-          attribute :blue_green_deployment_config, Resources::Types::Hash.schema(
+          attribute? :blue_green_deployment_config, Resources::Types::Hash.schema(
             terminate_blue_instances_on_deployment_success?: Resources::Types::Hash.schema(
               action?: Resources::Types::String.constrained(included_in: ['TERMINATE', 'KEEP_ALIVE']).optional,
               termination_wait_time_in_minutes?: Resources::Types::Integer.constrained(gteq: 0, lteq: 2880).optional
-            ).optional,
+            ).lax.optional,
             deployment_ready_option?: Resources::Types::Hash.schema(
               action_on_timeout?: Resources::Types::String.constrained(included_in: ['CONTINUE_DEPLOYMENT', 'STOP_DEPLOYMENT']).optional
-            ).optional,
+            ).lax.optional,
             green_fleet_provisioning_option?: Resources::Types::Hash.schema(
               action?: Resources::Types::String.constrained(included_in: ['DISCOVER_EXISTING', 'COPY_AUTO_SCALING_GROUP']).optional
-            ).optional
+            ).lax.optional
           ).default({}.freeze)
 
           # Deployment style
-          attribute :deployment_style, Resources::Types::Hash.schema(
+          attribute? :deployment_style, Resources::Types::Hash.schema(
             deployment_type?: Resources::Types::String.constrained(included_in: ['IN_PLACE', 'BLUE_GREEN']).optional,
             deployment_option?: Resources::Types::String.constrained(included_in: ['WITH_TRAFFIC_CONTROL', 'WITHOUT_TRAFFIC_CONTROL']).optional
-          ).default({}.freeze)
+          ).lax.default({}.freeze)
         end
       end
     end

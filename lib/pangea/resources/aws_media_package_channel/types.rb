@@ -21,24 +21,24 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS MediaPackage Channel resources
-      class MediaPackageChannelAttributes < Dry::Struct
+      class MediaPackageChannelAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Channel ID (required) - must be unique within account
-        attribute :channel_id, Resources::Types::String
+        attribute? :channel_id, Resources::Types::String.optional
 
         # Channel description for documentation
         attribute :description, Resources::Types::String.default("")
 
         # HLS ingest configuration
-        attribute :hls_ingest, Resources::Types::Hash.schema(
+        attribute? :hls_ingest, Resources::Types::Hash.schema(
           ingest_endpoints?: Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               id: Resources::Types::String,
               password?: Resources::Types::String.optional,
               url?: Resources::Types::String.optional,
               username?: Resources::Types::String.optional
-            )
+            ).lax
           ).optional
         ).default({}.freeze)
 
@@ -55,8 +55,8 @@ module Pangea
           end
 
           # Validate ingest endpoints if provided
-          if attrs.hls_ingest[:ingest_endpoints]
-            attrs.hls_ingest[:ingest_endpoints].each do |endpoint|
+          if attrs.hls_ingest&.dig(:ingest_endpoints)
+            attrs.hls_ingest&.dig(:ingest_endpoints).each do |endpoint|
               if endpoint[:id].empty?
                 raise Dry::Struct::Error, "Ingest endpoint ID cannot be empty"
               end
@@ -73,22 +73,22 @@ module Pangea
 
         # Helper methods
         def has_ingest_endpoints?
-          hls_ingest[:ingest_endpoints] && hls_ingest[:ingest_endpoints].any?
+          hls_ingest&.dig(:ingest_endpoints) && hls_ingest&.dig(:ingest_endpoints).any?
         end
 
         def ingest_endpoint_count
           return 0 unless has_ingest_endpoints?
-          hls_ingest[:ingest_endpoints].size
+          hls_ingest&.dig(:ingest_endpoints).size
         end
 
         def primary_ingest_endpoint
           return nil unless has_ingest_endpoints?
-          hls_ingest[:ingest_endpoints].first
+          hls_ingest&.dig(:ingest_endpoints).first
         end
 
         def backup_ingest_endpoints
           return [] unless has_ingest_endpoints?
-          hls_ingest[:ingest_endpoints][1..-1] || []
+          hls_ingest&.dig(:ingest_endpoints)[1..-1] || []
         end
 
         def has_redundant_ingest?

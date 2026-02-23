@@ -42,7 +42,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs
       def aws_appsync_resolver(name, attributes = {})
         # Validate attributes using dry-struct
-        resolver_attrs = Types::Types::AppSyncResolverAttributes.new(attributes)
+        resolver_attrs = Types::AppSyncResolverAttributes.new(attributes)
         
         # Generate terraform resource block
         resource(:aws_appsync_resolver, name) do
@@ -58,7 +58,7 @@ module Pangea
           # Pipeline configuration
           if resolver_attrs.pipeline_config
             pipeline_config do
-              functions resolver_attrs.pipeline_config[:functions]
+              functions resolver_attrs.pipeline_config&.dig(:functions)
             end
           end
           
@@ -68,28 +68,28 @@ module Pangea
           # Runtime configuration
           if resolver_attrs.runtime
             runtime do
-              name resolver_attrs.runtime[:name]
-              runtime_version resolver_attrs.runtime[:runtime_version]
+              name resolver_attrs.runtime&.dig(:name)
+              runtime_version resolver_attrs.runtime&.dig(:runtime_version)
             end
           end
           
           # Caching configuration
           if resolver_attrs.caching_config
             caching_config do
-              caching_keys resolver_attrs.caching_config[:caching_keys] if resolver_attrs.caching_config[:caching_keys]
-              ttl resolver_attrs.caching_config[:ttl] if resolver_attrs.caching_config[:ttl]
+              caching_keys resolver_attrs.caching_config&.dig(:caching_keys) if resolver_attrs.caching_config&.dig(:caching_keys)
+              ttl resolver_attrs.caching_config&.dig(:ttl) if resolver_attrs.caching_config&.dig(:ttl)
             end
           end
           
           # Sync configuration
           if resolver_attrs.sync_config
             sync_config do
-              conflict_detection resolver_attrs.sync_config[:conflict_detection] if resolver_attrs.sync_config[:conflict_detection]
-              conflict_handler resolver_attrs.sync_config[:conflict_handler] if resolver_attrs.sync_config[:conflict_handler]
+              conflict_detection resolver_attrs.sync_config&.dig(:conflict_detection) if resolver_attrs.sync_config&.dig(:conflict_detection)
+              conflict_handler resolver_attrs.sync_config&.dig(:conflict_handler) if resolver_attrs.sync_config&.dig(:conflict_handler)
               
-              if resolver_attrs.sync_config[:lambda_conflict_handler_config]
+              if resolver_attrs.sync_config&.dig(:lambda_conflict_handler_config)
                 lambda_conflict_handler_config do
-                  lambda_conflict_handler_arn resolver_attrs.sync_config[:lambda_conflict_handler_config][:lambda_conflict_handler_arn] if resolver_attrs.sync_config[:lambda_conflict_handler_config][:lambda_conflict_handler_arn]
+                  lambda_conflict_handler_arn resolver_attrs.sync_config&.dig(:lambda_conflict_handler_config)[:lambda_conflict_handler_arn] if resolver_attrs.sync_config&.dig(:lambda_conflict_handler_config)[:lambda_conflict_handler_arn]
                 end
               end
             end

@@ -37,15 +37,15 @@ module Pangea
           end
 
           def supports_ec2?
-            compute_resources && %w[EC2 SPOT].include?(compute_resources[:type])
+            !!(compute_resources && %w[EC2 SPOT].include?(compute_resources[:type]))
           end
 
           def supports_fargate?
-            compute_resources && %w[FARGATE FARGATE_SPOT].include?(compute_resources[:type])
+            !!(compute_resources && %w[FARGATE FARGATE_SPOT].include?(compute_resources[:type]))
           end
 
           def is_spot_based?
-            compute_resources && %w[SPOT FARGATE_SPOT].include?(compute_resources[:type])
+            !!(compute_resources && %w[SPOT FARGATE_SPOT].include?(compute_resources[:type]))
           end
         end
       end

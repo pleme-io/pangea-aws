@@ -33,7 +33,7 @@ module Pangea
             value
           },
           unit: BudgetCurrency
-        )
+        ).lax
 
         # Time period for budget
         BudgetTimePeriod = Resources::Types::Hash.schema(
@@ -67,7 +67,7 @@ module Pangea
             Resources::Types::String.constrained(included_in: ['EQUALS', 'ABSENT', 'STARTS_WITH', 'ENDS_WITH', 'CONTAINS',
                         'CASE_SENSITIVE', 'CASE_INSENSITIVE'])
           ).optional
-        )
+        ).lax
 
         # Tag filter for budget costs
         BudgetTagFilter = Resources::Types::Hash.schema(
@@ -77,7 +77,7 @@ module Pangea
             Resources::Types::String.constrained(included_in: ['EQUALS', 'ABSENT', 'STARTS_WITH', 'ENDS_WITH', 'CONTAINS',
                         'CASE_SENSITIVE', 'CASE_INSENSITIVE'])
           ).optional
-        )
+        ).lax
 
         # Cost filters for budget
         BudgetCostFilters = Resources::Types::Hash.schema(
@@ -86,7 +86,7 @@ module Pangea
               dimensions?: Resources::Types::Hash.map(CostDimensionKey, Resources::Types::Array.of(Resources::Types::String)).optional,
               tags?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::Array.of(Resources::Types::String)).optional,
               cost_categories?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::Array.of(Resources::Types::String)).optional
-            )
+            ).lax
           ).optional,
           dimensions?: Resources::Types::Hash.map(CostDimensionKey, Resources::Types::Array.of(Resources::Types::String)).optional,
           tags?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::Array.of(Resources::Types::String)).optional,
@@ -95,7 +95,7 @@ module Pangea
             dimensions?: Resources::Types::Hash.map(CostDimensionKey, Resources::Types::Array.of(Resources::Types::String)).optional,
             tags?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::Array.of(Resources::Types::String)).optional,
             cost_categories?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::Array.of(Resources::Types::String)).optional
-          ).optional
+          ).lax.optional
         )
 
         # Budget notification subscriber
@@ -117,7 +117,7 @@ module Pangea
 
             value
           }
-        )
+        ).lax
 
         # Budget notification configuration
         BudgetNotification = Resources::Types::Hash.schema(
@@ -134,7 +134,7 @@ module Pangea
           },
           threshold_type?: BudgetThresholdType.default('PERCENTAGE').optional,
           subscribers?: Resources::Types::Array.of(BudgetSubscriber).constrained(max_size: 11).optional
-        )
+        ).lax
 
         # Planned budget limits for cost budgets
         BudgetPlannedBudgetLimits = Resources::Types::Hash.map(
@@ -162,7 +162,7 @@ module Pangea
           historical_options?: Resources::Types::Hash.schema(
             budget_adjustment_period: Resources::Types::Integer.constrained(gteq: 1, lteq: 60),
             lookback_available_periods?: Resources::Types::Integer.constrained(gteq: 1, lteq: 60).optional
-          ).optional
+          ).lax.optional
         ).constructor { |value|
           if value[:auto_adjust_type] == 'HISTORICAL' && !value[:historical_options]
             raise Dry::Types::ConstraintError, "Historical auto-adjust type requires historical_options"

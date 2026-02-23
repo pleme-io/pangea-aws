@@ -22,17 +22,17 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS DynamoDB Global Table resources
-        class DynamoDbGlobalTableAttributes < Dry::Struct
+        class DynamoDbGlobalTableAttributes < Pangea::Resources::BaseAttributes
           include DynamoDbGlobalTableInstanceMethods
 
           # Global table name (required)
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Billing mode
           attribute :billing_mode, Resources::Types::String.constrained(included_in: ["PAY_PER_REQUEST", "PROVISIONED"]).default("PAY_PER_REQUEST")
 
           # Replica configurations (required, must have at least 2 regions)
-          attribute :replica, Resources::Types::Array.of(
+          attribute? :replica, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               region_name: Resources::Types::String,
               kms_key_id?: Resources::Types::String.optional,
@@ -43,26 +43,26 @@ module Pangea
                   name: Resources::Types::String,
                   read_capacity?: Resources::Types::Integer.optional.constrained(gteq: 1),
                   write_capacity?: Resources::Types::Integer.optional.constrained(gteq: 1)
-                )
+                ).lax
               ).optional,
               tags?: Resources::Types::AwsTags.optional
             )
           ).constrained(min_size: 2)
 
           # Stream specification
-          attribute :stream_enabled, Resources::Types::Bool.optional
-          attribute :stream_view_type, Resources::Types::String.constrained(included_in: ["KEYS_ONLY", "NEW_IMAGE", "OLD_IMAGE", "NEW_AND_OLD_IMAGES"]).optional
+          attribute? :stream_enabled, Resources::Types::Bool.optional
+          attribute? :stream_view_type, Resources::Types::String.constrained(included_in: ["KEYS_ONLY", "NEW_IMAGE", "OLD_IMAGE", "NEW_AND_OLD_IMAGES"]).optional
 
           # Server-side encryption
-          attribute :server_side_encryption, Resources::Types::Hash.schema(
+          attribute? :server_side_encryption, Resources::Types::Hash.schema(
             enabled: Resources::Types::Bool.default(true),
             kms_key_id?: Resources::Types::String.optional
-          ).optional
+          ).lax.optional
 
           # Time-based recovery
-          attribute :point_in_time_recovery, Resources::Types::Hash.schema(
+          attribute? :point_in_time_recovery, Resources::Types::Hash.schema(
             enabled: Resources::Types::Bool.default(false)
-          ).optional
+          ).lax.optional
 
           # Tags to apply to the global table
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -94,21 +94,21 @@ module Pangea
             # Validate billing mode consistency with replica GSI capacity
             if attrs.billing_mode == "PROVISIONED"
               attrs.replica.each do |replica|
-                next unless replica[:global_secondary_index]
+                next unless replica&.dig(:global_secondary_index)
 
-                replica[:global_secondary_index].each do |gsi|
+                replica&.dig(:global_secondary_index).each do |gsi|
                   unless gsi[:read_capacity] && gsi[:write_capacity]
-                    raise Dry::Struct::Error, "GSI '#{gsi[:name]}' in region '#{replica[:region_name]}' requires capacity settings for PROVISIONED billing mode"
+                    raise Dry::Struct::Error, "GSI '#{gsi[:name]}' in region '#{replica&.dig(:region_name)}' requires capacity settings for PROVISIONED billing mode"
                   end
                 end
               end
             elsif attrs.billing_mode == "PAY_PER_REQUEST"
               attrs.replica.each do |replica|
-                next unless replica[:global_secondary_index]
+                next unless replica&.dig(:global_secondary_index)
 
-                replica[:global_secondary_index].each do |gsi|
+                replica&.dig(:global_secondary_index).each do |gsi|
                   if gsi[:read_capacity] || gsi[:write_capacity]
-                    raise Dry::Struct::Error, "GSI '#{gsi[:name]}' in region '#{replica[:region_name]}' should not have capacity settings for PAY_PER_REQUEST billing mode"
+                    raise Dry::Struct::Error, "GSI '#{gsi[:name]}' in region '#{replica&.dig(:region_name)}' should not have capacity settings for PAY_PER_REQUEST billing mode"
                   end
                 end
               end

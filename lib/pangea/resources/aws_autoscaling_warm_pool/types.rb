@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsAutoscalingWarmPool resources
       # Manages aws autoscaling warm pool resources.
-      class AwsAutoscalingWarmPoolAttributes < Dry::Struct
+      class AwsAutoscalingWarmPoolAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_autoscaling_warm_pool
         
         # Tags to apply to the resource

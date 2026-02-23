@@ -24,13 +24,13 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS EventBridge Rule resources
-        class EventbridgeRuleAttributes < Dry::Struct
+        class EventbridgeRuleAttributes < Pangea::Resources::BaseAttributes
           include EventbridgeRuleHelpers
 
           transform_keys(&:to_sym)
 
           # Rule name (required)
-          attribute :name, Pangea::Resources::Types::String.constrained(format: /\A[a-zA-Z0-9._\-]{1,64}\z/)
+          attribute? :name, Pangea::Resources::Types::String.constrained(format: /\A[a-zA-Z0-9._\-]{1,64}\z/).optional
 
           # Rule description
           attribute? :description, Pangea::Resources::Types::String.optional.constrained(max_size: 512)

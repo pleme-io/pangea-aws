@@ -20,15 +20,15 @@ module Pangea
     module AWS
       module Types
         # Excluded cluster member configuration for Aurora endpoints
-        class ExcludedMember < Dry::Struct
+        class ExcludedMember < Pangea::Resources::BaseAttributes
           # The DB instance identifier for the cluster member to exclude
-          attribute :db_instance_identifier, Resources::Types::String
+          attribute? :db_instance_identifier, Resources::Types::String.optional
         end
 
         # Static cluster member configuration for Aurora endpoints
-        class StaticMember < Dry::Struct
+        class StaticMember < Pangea::Resources::BaseAttributes
           # The DB instance identifier for the static cluster member
-          attribute :db_instance_identifier, Resources::Types::String
+          attribute? :db_instance_identifier, Resources::Types::String.optional
         end
       end
     end

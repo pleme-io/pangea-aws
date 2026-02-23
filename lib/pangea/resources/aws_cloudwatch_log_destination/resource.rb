@@ -58,7 +58,7 @@ module Pangea
       #   })
       def aws_cloudwatch_log_destination(name, attributes = {})
         # Validate attributes using dry-struct
-        destination_attrs = Types::Types::CloudWatchLogDestinationAttributes.new(attributes)
+        destination_attrs = Types::CloudWatchLogDestinationAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_cloudwatch_logs_destination, name) do
@@ -67,7 +67,7 @@ module Pangea
           target_arn destination_attrs.target_arn
           
           # Apply tags if present
-          if destination_attrs.tags.any?
+          if destination_attrs.tags&.any?
             tags do
               destination_attrs.tags.each do |key, value|
                 public_send(key, value)

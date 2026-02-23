@@ -37,16 +37,16 @@ module Pangea
           end
 
           visibility_config do
-            cloudwatch_metrics_enabled rule_group_attrs.visibility_config[:cloudwatch_metrics_enabled]
-            metric_name rule_group_attrs.visibility_config[:metric_name]
-            sampled_requests_enabled rule_group_attrs.visibility_config[:sampled_requests_enabled]
+            cloudwatch_metrics_enabled rule_group_attrs.visibility_config&.dig(:cloudwatch_metrics_enabled)
+            metric_name rule_group_attrs.visibility_config&.dig(:metric_name)
+            sampled_requests_enabled rule_group_attrs.visibility_config&.dig(:sampled_requests_enabled)
           end
 
-          rule_group_attrs.custom_response_bodies.each do |key, body|
+          rule_group_attrs.custom_response_bodies&.each do |key, body|
             custom_response_body { self.key key.to_s; content body[:content]; content_type body[:content_type] }
           end
 
-          tags { rule_group_attrs.tags.each { |k, v| public_send(k, v) } } if rule_group_attrs.tags.any?
+          tags { rule_group_attrs.tags.each { |k, v| public_send(k, v) } } if rule_group_attrs.tags&.any?
         end
 
         ResourceReference.new(

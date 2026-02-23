@@ -29,13 +29,13 @@ module Pangea
           enabled dest_attrs.enabled
           
           vpc_configuration do
-            vpc_id dest_attrs.vpc_configuration[:vpc_id]
-            subnet_ids dest_attrs.vpc_configuration[:subnet_ids]
-            security_group_ids dest_attrs.vpc_configuration[:security_group_ids]
-            role_arn dest_attrs.vpc_configuration[:role_arn]
+            vpc_id dest_attrs.vpc_configuration&.dig(:vpc_id)
+            subnet_ids dest_attrs.vpc_configuration&.dig(:subnet_ids)
+            security_group_ids dest_attrs.vpc_configuration&.dig(:security_group_ids)
+            role_arn dest_attrs.vpc_configuration&.dig(:role_arn)
           end
           
-          if dest_attrs.tags.any?
+          if dest_attrs.tags&.any?
             tags do
               dest_attrs.tags.each { |k, v| public_send(k, v) }
             end

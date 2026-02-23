@@ -77,7 +77,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if trail_attrs.tags.any?
+          if trail_attrs.tags&.any?
             tags do
               trail_attrs.tags.each do |key, value|
                 public_send(key, value)

@@ -23,19 +23,19 @@ module Pangea
     module AWS
       module Types
         # WorkSpaces Bundle resource attributes with validation
-        class WorkspacesBundleAttributes < Dry::Struct
+        class WorkspacesBundleAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :bundle_name, Resources::Types::String.constrained(min_size: 1, max_size: 63)
-          attribute :bundle_description, Resources::Types::String.constrained(min_size: 1, max_size: 255)
-          attribute :image_id, Resources::Types::String.constrained(format: /\Awsi-[a-z0-9]{9}\z/)
-          attribute :compute_type, ComputeTypeConfigurationType
-          attribute :user_storage, UserStorageConfigurationType
-          attribute :root_storage, RootStorageConfigurationType.optional
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :bundle_name, Resources::Types::String.constrained(min_size: 1, max_size: 63).optional
+          attribute? :bundle_description, Resources::Types::String.constrained(min_size: 1, max_size: 255).optional
+          attribute? :image_id, Resources::Types::String.constrained(format: /\Awsi-[a-z0-9]{9}\z/).optional
+          attribute? :compute_type, ComputeTypeConfigurationType.optional
+          attribute? :user_storage, UserStorageConfigurationType.optional
+          attribute? :root_storage, RootStorageConfigurationType.optional
+          attribute? :tags, Resources::Types::AwsTags.optional
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             validate_storage_requirements(attrs)
             super(attrs)
           end
@@ -43,8 +43,8 @@ module Pangea
           def self.validate_storage_requirements(attrs)
             return unless attrs[:compute_type] && attrs[:user_storage]
 
-            compute_name = attrs[:compute_type][:name] if attrs[:compute_type].is_a?(Hash)
-            user_capacity = attrs[:user_storage][:capacity] if attrs[:user_storage].is_a?(Hash)
+            compute_name = attrs[:compute_type][:name] if attrs[:compute_type].is_a?(::Hash)
+            user_capacity = attrs[:user_storage][:capacity] if attrs[:user_storage].is_a?(::Hash)
 
             min_storage = case compute_name
                           when 'VALUE', 'STANDARD', 'PERFORMANCE' then 10

@@ -40,7 +40,7 @@ module Pangea
           expected_bucket_owner encryption_attrs.expected_bucket_owner if encryption_attrs.expected_bucket_owner
           
           # Configure encryption rules
-          encryption_attrs.server_side_encryption_configuration[:rule].each do |rule_config|
+          encryption_attrs.server_side_encryption_configuration&.dig(:rule).each do |rule_config|
             rule do
               apply_server_side_encryption_by_default do
                 sse_algorithm rule_config[:apply_server_side_encryption_by_default][:sse_algorithm]

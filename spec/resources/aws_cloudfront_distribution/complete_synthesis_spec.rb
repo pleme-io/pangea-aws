@@ -142,15 +142,15 @@ RSpec.describe "aws_cloudfront_distribution synthesis" do
       
       distribution = result["resource"]["aws_cloudfront_distribution"]["multi_origin"]
       
-      expect(distribution["origin"]).to have(2).items
-      expect(distribution["ordered_cache_behavior"]).to have(1).item
+      expect(distribution["origin"].size).to eq(2)
+      expect(distribution["ordered_cache_behavior"].size).to eq(1)
       
       static_origin = distribution["origin"].find { |o| o["origin_id"] == "static-origin" }
       api_origin = distribution["origin"].find { |o| o["origin_id"] == "api-origin" }
       
       expect(static_origin["s3_origin_config"]).to be_present
       expect(api_origin["custom_origin_config"]).to be_present
-      expect(api_origin["custom_header"]).to have(1).item
+      expect(api_origin["custom_header"].size).to eq(1)
       
       ordered_behavior = distribution["ordered_cache_behavior"].first
       expect(ordered_behavior["path_pattern"]).to eq("/api/*")
@@ -195,7 +195,7 @@ RSpec.describe "aws_cloudfront_distribution synthesis" do
       behavior = result["resource"]["aws_cloudfront_distribution"]["lambda_edge"]["default_cache_behavior"]
       lambda_assocs = behavior["lambda_function_association"]
       
-      expect(lambda_assocs).to have(2).items
+      expect(lambda_assocs.size).to eq(2)
       
       viewer_request = lambda_assocs.find { |a| a["event_type"] == "viewer-request" }
       origin_response = lambda_assocs.find { |a| a["event_type"] == "origin-response" }
@@ -233,7 +233,7 @@ RSpec.describe "aws_cloudfront_distribution synthesis" do
       behavior = result["resource"]["aws_cloudfront_distribution"]["cloudfront_functions"]["default_cache_behavior"]
       func_assocs = behavior["function_association"]
       
-      expect(func_assocs).to have(1).item
+      expect(func_assocs.size).to eq(1)
       expect(func_assocs.first["event_type"]).to eq("viewer-request")
       expect(func_assocs.first["function_arn"]).to include("cloudfront")
     end
@@ -373,7 +373,7 @@ RSpec.describe "aws_cloudfront_distribution synthesis" do
       
       custom_errors = result["resource"]["aws_cloudfront_distribution"]["custom_errors"]["custom_error_response"]
       
-      expect(custom_errors).to have(2).items
+      expect(custom_errors.size).to eq(2)
       
       error_404 = custom_errors.find { |e| e["error_code"] == 404 }
       error_500 = custom_errors.find { |e| e["error_code"] == 500 }
@@ -557,7 +557,7 @@ RSpec.describe "aws_cloudfront_distribution synthesis" do
       distribution = result["resource"]["aws_cloudfront_distribution"]["spa_website"]
       
       expect(distribution["default_root_object"]).to eq("index.html")
-      expect(distribution["custom_error_response"]).to have(2).items
+      expect(distribution["custom_error_response"].size).to eq(2)
       expect(distribution["aliases"]).to eq(["app.example.com"])
       
       # Check that both 404 and 403 redirect to index.html for SPA routing
@@ -606,10 +606,10 @@ RSpec.describe "aws_cloudfront_distribution synthesis" do
       origin = distribution["origin"].first
       behavior = distribution["default_cache_behavior"]
       
-      expect(origin["custom_header"]).to have(1).item
+      expect(origin["custom_header"].size).to eq(1)
       expect(origin["custom_header"].first["name"]).to eq("X-API-Key")
       expect(behavior["allowed_methods"]).to include("POST", "PUT", "DELETE")
-      expect(behavior["lambda_function_association"]).to have(1).item
+      expect(behavior["lambda_function_association"].size).to eq(1)
     end
     
     it "synthesizes global content distribution" do
@@ -662,8 +662,8 @@ RSpec.describe "aws_cloudfront_distribution synthesis" do
       
       distribution = result["resource"]["aws_cloudfront_distribution"]["global_content"]
       
-      expect(distribution["origin"]).to have(2).items
-      expect(distribution["ordered_cache_behavior"]).to have(1).item
+      expect(distribution["origin"].size).to eq(2)
+      expect(distribution["ordered_cache_behavior"].size).to eq(1)
       expect(distribution["ordered_cache_behavior"].first["path_pattern"]).to eq("/eu/*")
     end
   end

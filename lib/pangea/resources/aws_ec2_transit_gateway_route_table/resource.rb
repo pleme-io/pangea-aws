@@ -37,7 +37,7 @@ module Pangea
           transit_gateway_id route_table_attrs.transit_gateway_id
           
           # Apply tags if present
-          if route_table_attrs.tags.any?
+          if route_table_attrs.tags&.any?
             tags do
               route_table_attrs.tags.each do |key, value|
                 public_send(key, value)

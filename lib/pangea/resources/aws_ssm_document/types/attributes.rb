@@ -6,16 +6,16 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class SsmDocumentAttributes < Dry::Struct
+        class SsmDocumentAttributes < Pangea::Resources::BaseAttributes
           DOCUMENT_TYPES = %w[Command Policy Automation Session Package ApplicationConfiguration ApplicationConfigurationSchema DeploymentStrategy ChangeCalendar Composite ProblemAnalysis ProblemAnalysisTemplate CloudFormation ConformancePackTemplate QuickSetup].freeze
 
-          attribute :name, Resources::Types::String
-          attribute :document_type, Resources::Types::String.enum(*DOCUMENT_TYPES)
-          attribute :content, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
+          attribute? :document_type, Resources::Types::String.enum(*DOCUMENT_TYPES).optional
+          attribute? :content, Resources::Types::String.optional
           attribute :document_format, Resources::Types::String.constrained(included_in: ['YAML', 'JSON']).default('JSON')
-          attribute :target_type, Resources::Types::String.optional
-          attribute :schema_version, Resources::Types::String.optional
-          attribute :version_name, Resources::Types::String.optional
+          attribute? :target_type, Resources::Types::String.optional
+          attribute? :schema_version, Resources::Types::String.optional
+          attribute? :version_name, Resources::Types::String.optional
           attribute :permissions, Resources::Types::Hash.default({ type: 'Private' })
           attribute :requires, Resources::Types::Array.of(Resources::Types::Hash).default([].freeze)
           attribute :attachments_source, Resources::Types::Array.of(Resources::Types::Hash).default([].freeze)
@@ -27,14 +27,14 @@ module Pangea
             validate_name(attrs)
             validate_target_type(attrs) if attrs.document_type == 'Command'
             validate_schema_version(attrs) if attrs.schema_version
-            validate_permissions(attrs) if attrs.permissions[:type] == 'Share'
+            validate_permissions(attrs) if attrs.permissions&.dig(:type) == 'Share'
             validate_version_name(attrs) if attrs.version_name
             attrs
           end
 
           def self.validate_content(attrs)
-            attrs.document_format == 'JSON' ? JSON.parse(attrs.content) : YAML.safe_load(attrs.content)
-          rescue JSON::ParserError, Psych::SyntaxError => e
+            attrs.document_format == 'JSON' ? ::JSON.parse(attrs.content) : ::YAML.safe_load(attrs.content)
+          rescue ::JSON::ParserError, Psych::SyntaxError => e
             raise Dry::Struct::Error, "Invalid #{attrs.document_format} content: #{e.message}"
           end
 
@@ -52,8 +52,8 @@ module Pangea
           end
 
           def self.validate_permissions(attrs)
-            raise Dry::Struct::Error, 'account_ids is required when sharing document' unless attrs.permissions[:account_ids]&.any?
-            attrs.permissions[:account_ids].each do |id|
+            raise Dry::Struct::Error, 'account_ids is required when sharing document' unless attrs.permissions&.dig(:account_ids)&.any?
+            attrs.permissions&.dig(:account_ids).each do |id|
               raise Dry::Struct::Error, "Invalid AWS account ID format: #{id}" unless id.match?(/\A\d{12}\z/)
             end
           end
@@ -79,7 +79,7 @@ module Pangea
           def dependency_names = requires.map { |req| req[:name] }
 
           def parsed_content
-            uses_json_format? ? JSON.parse(content) : YAML.safe_load(content)
+            uses_json_format? ? ::JSON.parse(content) : ::YAML.safe_load(content)
           rescue StandardError
             nil
           end

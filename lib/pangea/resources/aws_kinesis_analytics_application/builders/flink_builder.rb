@@ -29,9 +29,9 @@ module Pangea
               return unless flink_config
 
               context.flink_application_configuration do
-                build_checkpoint_configuration(self, flink_config[:checkpoint_configuration])
-                build_monitoring_configuration(self, flink_config[:monitoring_configuration])
-                build_parallelism_configuration(self, flink_config[:parallelism_configuration])
+                build_checkpoint_configuration(context, flink_config[:checkpoint_configuration])
+                build_monitoring_configuration(context, flink_config[:monitoring_configuration])
+                build_parallelism_configuration(context, flink_config[:parallelism_configuration])
               end
             end
 
@@ -41,10 +41,10 @@ module Pangea
               return unless checkpoint_config
 
               context.checkpoint_configuration do
-                configuration_type checkpoint_config[:configuration_type]
-                checkpointing_enabled checkpoint_config[:checkpointing_enabled] if checkpoint_config.key?(:checkpointing_enabled)
-                checkpoint_interval checkpoint_config[:checkpoint_interval] if checkpoint_config[:checkpoint_interval]
-                min_pause_between_checkpoints checkpoint_config[:min_pause_between_checkpoints] if checkpoint_config[:min_pause_between_checkpoints]
+                context.configuration_type checkpoint_config[:configuration_type]
+                context.checkpointing_enabled checkpoint_config[:checkpointing_enabled] if checkpoint_config.key?(:checkpointing_enabled)
+                context.checkpoint_interval checkpoint_config[:checkpoint_interval] if checkpoint_config[:checkpoint_interval]
+                context.min_pause_between_checkpoints checkpoint_config[:min_pause_between_checkpoints] if checkpoint_config[:min_pause_between_checkpoints]
               end
             end
 
@@ -52,9 +52,9 @@ module Pangea
               return unless monitor_config
 
               context.monitoring_configuration do
-                configuration_type monitor_config[:configuration_type]
-                log_level monitor_config[:log_level] if monitor_config[:log_level]
-                metrics_level monitor_config[:metrics_level] if monitor_config[:metrics_level]
+                context.configuration_type monitor_config[:configuration_type]
+                context.log_level monitor_config[:log_level] if monitor_config[:log_level]
+                context.metrics_level monitor_config[:metrics_level] if monitor_config[:metrics_level]
               end
             end
 
@@ -62,10 +62,10 @@ module Pangea
               return unless parallel_config
 
               context.parallelism_configuration do
-                configuration_type parallel_config[:configuration_type]
-                parallelism parallel_config[:parallelism] if parallel_config[:parallelism]
-                parallelism_per_kpu parallel_config[:parallelism_per_kpu] if parallel_config[:parallelism_per_kpu]
-                auto_scaling_enabled parallel_config[:auto_scaling_enabled] if parallel_config.key?(:auto_scaling_enabled)
+                context.configuration_type parallel_config[:configuration_type]
+                context.parallelism parallel_config[:parallelism] if parallel_config[:parallelism]
+                context.parallelism_per_kpu parallel_config[:parallelism_per_kpu] if parallel_config[:parallelism_per_kpu]
+                context.auto_scaling_enabled parallel_config[:auto_scaling_enabled] if parallel_config.key?(:auto_scaling_enabled)
               end
             end
           end

@@ -21,48 +21,48 @@ module Pangea
   module Resources
     module AwsIotanalyticsDatasetTypes
       # Content delivery rules for dataset output
-      class ContentDeliveryRule < Dry::Struct
+      class ContentDeliveryRule < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # Entry name for the rule
-        attribute :entry_name, Resources::Types::String
+        attribute? :entry_name, Resources::Types::String.optional
 
         # S3 destination configuration
         unless const_defined?(:Destination)
-        class Destination < Dry::Struct
+        class Destination < Pangea::Resources::BaseAttributes
           schema schema.strict
 
-          class S3DestinationConfiguration < Dry::Struct
+          class S3DestinationConfiguration < Pangea::Resources::BaseAttributes
             schema schema.strict
 
             # S3 bucket name
-            attribute :bucket, Resources::Types::String
+            attribute? :bucket, Resources::Types::String.optional
 
             # Object key prefix
-            attribute :key, Resources::Types::String
+            attribute? :key, Resources::Types::String.optional
 
             # Glue database configuration
-            class GlueConfiguration < Dry::Struct
+            class GlueConfiguration < Pangea::Resources::BaseAttributes
               schema schema.strict
 
               # Glue table name
-              attribute :table_name, Resources::Types::String
+              attribute? :table_name, Resources::Types::String.optional
 
               # Glue database name
-              attribute :database_name, Resources::Types::String
+              attribute? :database_name, Resources::Types::String.optional
             end
 
             attribute? :glue_configuration, GlueConfiguration.optional
 
             # IAM role ARN for S3 access
-            attribute :role_arn, Resources::Types::String
+            attribute? :role_arn, Resources::Types::String.optional
           end
 
           attribute? :s3_destination_configuration, S3DestinationConfiguration.optional
         end
         end
 
-        attribute :destination, Destination
+        attribute? :destination, Destination.optional
       end
     end
   end

@@ -48,12 +48,12 @@ module Pangea
           # CORS configuration
           if url_attrs.cors
             cors do
-              allow_credentials url_attrs.cors[:allow_credentials] if url_attrs.cors.key?(:allow_credentials)
-              allow_headers url_attrs.cors[:allow_headers] if url_attrs.cors[:allow_headers]
-              allow_methods url_attrs.cors[:allow_methods] if url_attrs.cors[:allow_methods]
-              allow_origins url_attrs.cors[:allow_origins] if url_attrs.cors[:allow_origins]
-              expose_headers url_attrs.cors[:expose_headers] if url_attrs.cors[:expose_headers]
-              max_age url_attrs.cors[:max_age] if url_attrs.cors[:max_age]
+              allow_credentials url_attrs.cors&.dig(:allow_credentials) if url_attrs.cors.key?(:allow_credentials)
+              allow_headers url_attrs.cors&.dig(:allow_headers) if url_attrs.cors&.dig(:allow_headers)
+              allow_methods url_attrs.cors&.dig(:allow_methods) if url_attrs.cors&.dig(:allow_methods)
+              allow_origins url_attrs.cors&.dig(:allow_origins) if url_attrs.cors&.dig(:allow_origins)
+              expose_headers url_attrs.cors&.dig(:expose_headers) if url_attrs.cors&.dig(:expose_headers)
+              max_age url_attrs.cors&.dig(:max_age) if url_attrs.cors&.dig(:max_age)
             end
           end
         end

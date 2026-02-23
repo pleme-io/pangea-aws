@@ -38,7 +38,7 @@ module Pangea
           permission_arns attrs.permission_arns if attrs.permission_arns
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

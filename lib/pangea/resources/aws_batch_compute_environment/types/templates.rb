@@ -20,7 +20,7 @@ module Pangea
       module Types
         # Configuration templates for BatchComputeEnvironmentAttributes
         module BatchComputeEnvironmentTemplates
-          def self.ec2_managed_environment(name, vpc_config, options = {})
+          def ec2_managed_environment(name, vpc_config, options = {})
             {
               compute_environment_name: name,
               type: "MANAGED",
@@ -40,7 +40,7 @@ module Pangea
             }
           end
 
-          def self.spot_managed_environment(name, vpc_config, options = {})
+          def spot_managed_environment(name, vpc_config, options = {})
             {
               compute_environment_name: name,
               type: "MANAGED",
@@ -62,7 +62,7 @@ module Pangea
             }
           end
 
-          def self.fargate_managed_environment(name, vpc_config, options = {})
+          def fargate_managed_environment(name, vpc_config, options = {})
             {
               compute_environment_name: name,
               type: "MANAGED",
@@ -78,7 +78,7 @@ module Pangea
             }
           end
 
-          def self.fargate_spot_managed_environment(name, vpc_config, options = {})
+          def fargate_spot_managed_environment(name, vpc_config, options = {})
             {
               compute_environment_name: name,
               type: "MANAGED",
@@ -94,7 +94,7 @@ module Pangea
             }
           end
 
-          def self.unmanaged_environment(name, options = {})
+          def unmanaged_environment(name, options = {})
             {
               compute_environment_name: name,
               type: "UNMANAGED",
@@ -107,7 +107,7 @@ module Pangea
 
         # Common EC2 instance type groups for AWS Batch
         module BatchInstanceTypes
-          def self.compute_optimized_instances
+          def compute_optimized_instances
             %w[
               c4.large c4.xlarge c4.2xlarge c4.4xlarge c4.8xlarge
               c5.large c5.xlarge c5.2xlarge c5.4xlarge c5.9xlarge c5.12xlarge c5.18xlarge c5.24xlarge
@@ -117,7 +117,7 @@ module Pangea
             ]
           end
 
-          def self.memory_optimized_instances
+          def memory_optimized_instances
             %w[
               r4.large r4.xlarge r4.2xlarge r4.4xlarge r4.8xlarge r4.16xlarge
               r5.large r5.xlarge r5.2xlarge r5.4xlarge r5.8xlarge r5.12xlarge r5.16xlarge r5.24xlarge
@@ -127,7 +127,7 @@ module Pangea
             ]
           end
 
-          def self.general_purpose_instances
+          def general_purpose_instances
             %w[
               m4.large m4.xlarge m4.2xlarge m4.4xlarge m4.10xlarge m4.16xlarge
               m5.large m5.xlarge m5.2xlarge m5.4xlarge m5.8xlarge m5.12xlarge m5.16xlarge m5.24xlarge
@@ -137,7 +137,7 @@ module Pangea
             ]
           end
 
-          def self.gpu_instances
+          def gpu_instances
             %w[
               p2.xlarge p2.8xlarge p2.16xlarge
               p3.2xlarge p3.8xlarge p3.16xlarge

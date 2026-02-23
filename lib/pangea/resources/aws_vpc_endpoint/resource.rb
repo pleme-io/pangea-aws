@@ -68,11 +68,23 @@ module Pangea
             private_dns_enabled attrs.private_dns_enabled
           end
           
+          # IP address type (Interface endpoints)
+          if attrs.ip_address_type
+            ip_address_type attrs.ip_address_type
+          end
+
+          # DNS options (Interface endpoints)
+          if attrs.dns_options
+            dns_options do
+              dns_record_ip_type attrs.dns_options[:dns_record_ip_type] if attrs.dns_options[:dns_record_ip_type]
+            end
+          end
+
           # Auto accept endpoint connections
           auto_accept attrs.auto_accept
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)
@@ -82,7 +94,7 @@ module Pangea
         end
         
         # Return resource reference with available outputs
-        Pangea::Resources::ResourceReference.new(
+        ref = Pangea::Resources::ResourceReference.new(
           type: 'aws_vpc_endpoint',
           name: name,
           resource_attributes: attrs.to_h,
@@ -116,6 +128,19 @@ module Pangea
             connectivity_type: attrs.connectivity_type
           }
         )
+
+        # Delegate computed methods to resource reference
+        ref.define_singleton_method(:is_gateway_endpoint?) { attrs.gateway_endpoint? }
+        ref.define_singleton_method(:is_interface_endpoint?) { attrs.interface_endpoint? }
+        ref.define_singleton_method(:gateway_endpoint?) { attrs.gateway_endpoint? }
+        ref.define_singleton_method(:interface_endpoint?) { attrs.interface_endpoint? }
+        ref.define_singleton_method(:service_type) { attrs.aws_service }
+        ref.define_singleton_method(:aws_service) { attrs.aws_service }
+        ref.define_singleton_method(:aws_region) { attrs.aws_region }
+        ref.define_singleton_method(:requires_route_tables?) { attrs.requires_route_tables? }
+        ref.define_singleton_method(:requires_subnets?) { attrs.requires_subnets? }
+
+        ref
       end
     end
   end

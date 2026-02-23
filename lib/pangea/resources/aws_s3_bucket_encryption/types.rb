@@ -21,14 +21,14 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS S3 Bucket Encryption resources
-      class S3BucketEncryptionAttributes < Dry::Struct
+      class S3BucketEncryptionAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Bucket name (required)
-        attribute :bucket, Resources::Types::String
+        attribute? :bucket, Resources::Types::String.optional
 
         # Server-side encryption configuration (required)
-        attribute :server_side_encryption_configuration, Resources::Types::Hash.schema(
+        attribute? :server_side_encryption_configuration, Resources::Types::Hash.schema(
           rule: Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               apply_server_side_encryption_by_default: Resources::Types::Hash.schema(
@@ -48,12 +48,12 @@ module Pangea
           attrs = super(attributes)
 
           # Validate encryption configuration exists
-          unless attrs.server_side_encryption_configuration[:rule]&.any?
+          unless attrs.server_side_encryption_configuration&.dig(:rule)&.any?
             raise Dry::Struct::Error, "server_side_encryption_configuration must have at least one rule"
           end
 
           # Validate KMS configurations
-          attrs.server_side_encryption_configuration[:rule].each_with_index do |rule, index|
+          attrs.server_side_encryption_configuration&.dig(:rule).each_with_index do |rule, index|
             encryption_config = rule[:apply_server_side_encryption_by_default]
             algorithm = encryption_config[:sse_algorithm]
 
@@ -74,34 +74,34 @@ module Pangea
 
         # Helper methods
         def encryption_rules_count
-          server_side_encryption_configuration[:rule].size
+          server_side_encryption_configuration&.dig(:rule).size
         end
 
         def primary_encryption_algorithm
-          server_side_encryption_configuration[:rule].first[:apply_server_side_encryption_by_default][:sse_algorithm]
+          server_side_encryption_configuration&.dig(:rule).first[:apply_server_side_encryption_by_default][:sse_algorithm]
         end
 
         def uses_kms_encryption?
-          server_side_encryption_configuration[:rule].any? do |rule|
+          server_side_encryption_configuration&.dig(:rule).any? do |rule|
             alg = rule[:apply_server_side_encryption_by_default][:sse_algorithm]
             alg == 'aws:kms' || alg == 'aws:kms:dsse'
           end
         end
 
         def uses_aes256_encryption?
-          server_side_encryption_configuration[:rule].any? do |rule|
+          server_side_encryption_configuration&.dig(:rule).any? do |rule|
             rule[:apply_server_side_encryption_by_default][:sse_algorithm] == 'AES256'
           end
         end
 
         def bucket_key_enabled?
-          server_side_encryption_configuration[:rule].any? do |rule|
+          server_side_encryption_configuration&.dig(:rule).any? do |rule|
             rule[:bucket_key_enabled] == true
           end
         end
 
         def kms_key_ids
-          server_side_encryption_configuration[:rule]
+          server_side_encryption_configuration&.dig(:rule)
             .map { |rule| rule[:apply_server_side_encryption_by_default][:kms_master_key_id] }
             .compact
         end

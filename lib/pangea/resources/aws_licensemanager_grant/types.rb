@@ -21,12 +21,12 @@ module Pangea
       module Types
       # Type-safe attributes for AwsLicensemanagerGrant resources
       # Provides a License Manager grant resource.
-      class LicensemanagerGrantAttributes < Dry::Struct
-        attribute :name, Resources::Types::String
+      class LicensemanagerGrantAttributes < Pangea::Resources::BaseAttributes
+        attribute? :name, Resources::Types::String.optional
         attribute :allowed_operations, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
-        attribute :license_arn, Resources::Types::String
-        attribute :principal, Resources::Types::String
-        attribute :home_region, Resources::Types::String
+        attribute? :license_arn, Resources::Types::String.optional
+        attribute? :principal, Resources::Types::String.optional
+        attribute? :home_region, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

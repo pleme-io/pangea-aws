@@ -21,18 +21,18 @@ module Pangea
     module AWS
       module Types
         # ECR Replication Configuration resource attributes with validation
-        class ECRReplicationConfigurationAttributes < Dry::Struct
+        class ECRReplicationConfigurationAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :replication_configuration, Resources::Types::Hash.schema(
+          attribute? :replication_configuration, Resources::Types::Hash.schema(
             rule: Resources::Types::Array.of(
               Resources::Types::Hash.schema(
                 destination: Resources::Types::Array.of(
                   Resources::Types::Hash.schema(
                     region: Resources::Types::String,
                     registry_id?: Resources::Types::String.optional
-                  )
+                  ).lax
                 )
               )
             )
@@ -40,7 +40,7 @@ module Pangea
           
           # Validate attributes
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate replication configuration structure
             if attrs[:replication_configuration]
@@ -90,16 +90,16 @@ module Pangea
           
           # Computed properties
           def rule_count
-            replication_configuration[:rule].size
+            replication_configuration&.dig(:rule).size
           end
           
           def destination_count
-            replication_configuration[:rule].sum { |rule| rule[:destination].size }
+            replication_configuration&.dig(:rule).sum { |rule| rule[:destination].size }
           end
           
           def destination_regions
             regions = []
-            replication_configuration[:rule].each do |rule|
+            replication_configuration&.dig(:rule).each do |rule|
               rule[:destination].each do |dest|
                 regions << dest[:region] unless dest[:region].match?(/^\$\{/)
               end
@@ -109,7 +109,7 @@ module Pangea
           
           def destination_accounts
             accounts = []
-            replication_configuration[:rule].each do |rule|
+            replication_configuration&.dig(:rule).each do |rule|
               rule[:destination].each do |dest|
                 if dest[:registry_id] && !dest[:registry_id].match?(/^\$\{/)
                   accounts << dest[:registry_id]
@@ -120,7 +120,7 @@ module Pangea
           end
           
           def has_cross_account_replication?
-            replication_configuration[:rule].any? do |rule|
+            replication_configuration&.dig(:rule).any? do |rule|
               rule[:destination].any? { |dest| dest[:registry_id] && !dest[:registry_id].empty? }
             end
           end
@@ -134,7 +134,7 @@ module Pangea
           end
           
           def all_destinations_have_registry_id?
-            replication_configuration[:rule].all? do |rule|
+            replication_configuration&.dig(:rule).all? do |rule|
               rule[:destination].all? { |dest| dest[:registry_id] && !dest[:registry_id].empty? }
             end
           end

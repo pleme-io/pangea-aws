@@ -52,10 +52,10 @@ module Pangea
           
           if datastore_attrs.retention_period
             retention_period do
-              if datastore_attrs.retention_period[:unlimited]
-                unlimited datastore_attrs.retention_period[:unlimited]
+              if datastore_attrs.retention_period&.dig(:unlimited)
+                unlimited datastore_attrs.retention_period&.dig(:unlimited)
               else
-                number_of_days datastore_attrs.retention_period[:number_of_days]
+                number_of_days datastore_attrs.retention_period&.dig(:number_of_days)
               end
             end
           end
@@ -73,7 +73,7 @@ module Pangea
             end
           end
           
-          if datastore_attrs.tags.any?
+          if datastore_attrs.tags&.any?
             tags do
               datastore_attrs.tags.each { |k, v| public_send(k, v) }
             end

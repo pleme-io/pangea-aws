@@ -29,11 +29,11 @@ module Pangea
               return unless code_config
 
               context.application_code_configuration do
-                code_content_type code_config[:code_content_type]
+                context.code_content_type code_config[:code_content_type]
 
-                code_content do
+                context.code_content do
                   content = code_config[:code_content]
-                  build_code_content(self, content)
+                  build_code_content(context, content)
                 end
               end
             end
@@ -49,9 +49,9 @@ module Pangea
 
             def build_s3_content_location(context, s3_location)
               context.s3_content_location do
-                bucket_arn s3_location[:bucket_arn]
-                file_key s3_location[:file_key]
-                object_version s3_location[:object_version] if s3_location[:object_version]
+                context.bucket_arn s3_location[:bucket_arn]
+                context.file_key s3_location[:file_key]
+                context.object_version s3_location[:object_version] if s3_location[:object_version]
               end
             end
           end

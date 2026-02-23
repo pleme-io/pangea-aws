@@ -38,7 +38,7 @@ module Pangea
           user_pool_id provider_attrs.user_pool_id
 
           # Provider details configuration
-          if provider_attrs.provider_details && provider_attrs.provider_details.any?
+          if provider_attrs.provider_details && provider_attrs.provider_details&.any?
             provider_details do
               provider_attrs.provider_details.each do |key, value|
                 public_send(key, value)
@@ -47,7 +47,7 @@ module Pangea
           end
 
           # Attribute mapping
-          if provider_attrs.attribute_mapping && provider_attrs.attribute_mapping.any?
+          if provider_attrs.attribute_mapping && provider_attrs.attribute_mapping&.any?
             attribute_mapping do
               provider_attrs.attribute_mapping.each do |user_pool_attr, provider_attr|
                 public_send(user_pool_attr, provider_attr)

@@ -32,8 +32,8 @@ module Pangea
             # Can contain hyphens but not start or end with them
             return false if label.start_with?('-') || label.end_with?('-')
 
-            # Only alphanumeric and hyphens allowed
-            label.match?(/\A[a-zA-Z0-9\-]+\z/)
+            # Alphanumeric, hyphens, and underscores allowed (underscores produce warnings)
+            label.match?(/\A[a-zA-Z0-9\-_]+\z/)
           end
         end
       end

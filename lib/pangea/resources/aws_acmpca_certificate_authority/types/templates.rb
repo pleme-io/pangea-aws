@@ -21,7 +21,7 @@ module Pangea
         # Common ACM PCA Certificate Authority configurations
         module AcmPcaCertificateAuthorityConfigs
           # Root CA with RSA 4096 for maximum security
-          def self.secure_root_ca(organization, country = 'US')
+          def secure_root_ca(organization, country = 'US')
             {
               certificate_authority_configuration: {
                 key_algorithm: 'RSA_4096',
@@ -52,7 +52,7 @@ module Pangea
           end
 
           # Intermediate CA for issuing end-entity certificates
-          def self.intermediate_ca(organization, parent_ca_name, country = 'US')
+          def intermediate_ca(organization, parent_ca_name, country = 'US')
             {
               certificate_authority_configuration: {
                 key_algorithm: 'RSA_2048',
@@ -80,7 +80,7 @@ module Pangea
           end
 
           # Development CA with shorter validity
-          def self.development_ca(project_name)
+          def development_ca(project_name)
             {
               certificate_authority_configuration: {
                 key_algorithm: 'RSA_2048',
@@ -103,7 +103,7 @@ module Pangea
           end
 
           # Corporate internal CA
-          def self.corporate_internal_ca(organization, department)
+          def corporate_internal_ca(organization, department)
             {
               certificate_authority_configuration: {
                 key_algorithm: 'RSA_4096',

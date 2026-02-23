@@ -25,9 +25,9 @@ RSpec.describe "aws_lb resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -55,7 +55,7 @@ RSpec.describe "aws_lb resource function" do
   
   describe "LoadBalancerAttributes validation" do
     it "accepts minimal required attributes" do
-      attrs = Pangea::Resources::AWS::LoadBalancerAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
         subnet_ids: subnet_ids
       })
       
@@ -68,7 +68,7 @@ RSpec.describe "aws_lb resource function" do
     end
     
     it "accepts application load balancer with security groups" do
-      attrs = Pangea::Resources::AWS::LoadBalancerAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
         load_balancer_type: "application",
         subnet_ids: subnet_ids,
         security_groups: security_group_ids,
@@ -81,7 +81,7 @@ RSpec.describe "aws_lb resource function" do
     end
     
     it "accepts network load balancer configuration" do
-      attrs = Pangea::Resources::AWS::LoadBalancerAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
         load_balancer_type: "network",
         subnet_ids: subnet_ids,
         enable_cross_zone_load_balancing: true,
@@ -94,7 +94,7 @@ RSpec.describe "aws_lb resource function" do
     end
     
     it "accepts gateway load balancer configuration" do
-      attrs = Pangea::Resources::AWS::LoadBalancerAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
         load_balancer_type: "gateway",
         subnet_ids: subnet_ids
       })
@@ -104,7 +104,7 @@ RSpec.describe "aws_lb resource function" do
     
     it "validates security groups only allowed for ALB" do
       expect {
-        Pangea::Resources::AWS::LoadBalancerAttributes.new({
+        Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
           load_balancer_type: "network",
           subnet_ids: subnet_ids,
           security_groups: security_group_ids
@@ -114,7 +114,7 @@ RSpec.describe "aws_lb resource function" do
     
     it "validates cross-zone load balancing only for NLB" do
       expect {
-        Pangea::Resources::AWS::LoadBalancerAttributes.new({
+        Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
           load_balancer_type: "application",
           subnet_ids: subnet_ids,
           enable_cross_zone_load_balancing: true
@@ -124,7 +124,7 @@ RSpec.describe "aws_lb resource function" do
     
     it "validates minimum subnet requirement" do
       expect {
-        Pangea::Resources::AWS::LoadBalancerAttributes.new({
+        Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
           subnet_ids: ["subnet-12345"]  # Only 1 subnet, need at least 2
         })
       }.to raise_error(Dry::Struct::Error)
@@ -132,7 +132,7 @@ RSpec.describe "aws_lb resource function" do
     
     it "validates load balancer type enum" do
       expect {
-        Pangea::Resources::AWS::LoadBalancerAttributes.new({
+        Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
           load_balancer_type: "classic",  # Invalid type
           subnet_ids: subnet_ids
         })
@@ -141,7 +141,7 @@ RSpec.describe "aws_lb resource function" do
     
     it "validates IP address type enum" do
       expect {
-        Pangea::Resources::AWS::LoadBalancerAttributes.new({
+        Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
           subnet_ids: subnet_ids,
           ip_address_type: "ipv6"  # Invalid, should be ipv4 or dualstack
         })
@@ -149,12 +149,12 @@ RSpec.describe "aws_lb resource function" do
     end
     
     it "accepts valid IP address types" do
-      ipv4_attrs = Pangea::Resources::AWS::LoadBalancerAttributes.new({
+      ipv4_attrs = Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
         subnet_ids: subnet_ids,
         ip_address_type: "ipv4"
       })
       
-      dualstack_attrs = Pangea::Resources::AWS::LoadBalancerAttributes.new({
+      dualstack_attrs = Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
         subnet_ids: subnet_ids,
         ip_address_type: "dualstack"
       })
@@ -164,7 +164,7 @@ RSpec.describe "aws_lb resource function" do
     end
     
     it "accepts access logs configuration" do
-      attrs = Pangea::Resources::AWS::LoadBalancerAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
         subnet_ids: subnet_ids,
         access_logs: {
           enabled: true,
@@ -180,7 +180,7 @@ RSpec.describe "aws_lb resource function" do
     
     it "validates access logs requires bucket when enabled" do
       expect {
-        Pangea::Resources::AWS::LoadBalancerAttributes.new({
+        Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
           subnet_ids: subnet_ids,
           access_logs: {
             enabled: true
@@ -191,7 +191,7 @@ RSpec.describe "aws_lb resource function" do
     end
     
     it "accepts comprehensive configuration" do
-      attrs = Pangea::Resources::AWS::LoadBalancerAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::LoadBalancerAttributes.new({
         name: "web-application-lb",
         load_balancer_type: "application",
         internal: false,

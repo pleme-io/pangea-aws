@@ -27,9 +27,9 @@ RSpec.describe "aws_ecr_repository resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -294,7 +294,7 @@ RSpec.describe "aws_ecr_repository resource function" do
           name: "test-repo",
           image_tag_mutability: "INVALID"
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
   end
   
@@ -402,7 +402,7 @@ RSpec.describe "aws_ecr_repository resource function" do
       })
       
       expect(result.arn).to eq("${aws_ecr_repository.myapp.arn}")
-      expect(result.name).to eq("${aws_ecr_repository.myapp.name}")
+      expect(result.outputs[:name]).to eq("${aws_ecr_repository.myapp.name}")
       expect(result.registry_id).to eq("${aws_ecr_repository.myapp.registry_id}")
       expect(result.repository_url).to eq("${aws_ecr_repository.myapp.repository_url}")
       expect(result.tags_all).to eq("${aws_ecr_repository.myapp.tags_all}")

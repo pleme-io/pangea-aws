@@ -62,7 +62,7 @@ module Pangea
           end
 
           def self.validate_logging_config!(attrs)
-            return unless attrs.logging && attrs.logging[:enable] && attrs.logging[:bucket_name].nil?
+            return unless attrs.logging && attrs.logging&.dig(:enable) && attrs.logging&.dig(:bucket_name).nil?
 
             raise Dry::Struct::Error, 'Bucket name must be provided when logging is enabled'
           end

@@ -21,9 +21,9 @@ module Pangea
       module Types
         include Dry::Types()
 
-        class GameProperty < Dry::Struct
-          attribute :key, Resources::Types::String
-          attribute :value, Resources::Types::String
+        class GameProperty < Pangea::Resources::BaseAttributes
+          attribute? :key, Resources::Types::String.optional
+          attribute? :value, Resources::Types::String.optional
         end
 
 

@@ -49,7 +49,7 @@ module Pangea
               return unless attrs.tags.any?
 
               ctx.tags do
-                attrs.tags.each { |key, value| public_send(key, value) }
+                attrs.tags.each { |key, value| public_send(key.to_s, value) }
               end
             end
 

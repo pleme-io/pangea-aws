@@ -67,8 +67,8 @@ module Pangea
           # Auto deployment configuration (SERVICE_MANAGED only)
           if stack_set_attrs.auto_deployment
             auto_deployment do
-              enabled stack_set_attrs.auto_deployment[:enabled]
-              retain_stacks_on_account_removal stack_set_attrs.auto_deployment[:retain_stacks_on_account_removal]
+              enabled stack_set_attrs.auto_deployment&.dig(:enabled)
+              retain_stacks_on_account_removal stack_set_attrs.auto_deployment&.dig(:retain_stacks_on_account_removal)
             end
           end
 
@@ -98,7 +98,7 @@ module Pangea
           call_as stack_set_attrs.call_as
 
           # Apply tags if present
-          if stack_set_attrs.tags.any?
+          if stack_set_attrs.tags&.any?
             tags do
               stack_set_attrs.tags.each do |key, value|
                 public_send(key, value)

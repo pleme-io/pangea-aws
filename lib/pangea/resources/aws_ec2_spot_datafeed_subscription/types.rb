@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2SpotDatafeedSubscription resources
       # Manages aws ec2 spot datafeed subscription resources.
-      class AwsEc2SpotDatafeedSubscriptionAttributes < Dry::Struct
+      class AwsEc2SpotDatafeedSubscriptionAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_spot_datafeed_subscription
         
         # Tags to apply to the resource

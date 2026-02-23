@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsDefaultRouteTable resources
       # Manages aws default route table resources.
-      class AwsDefaultRouteTableAttributes < Dry::Struct
+      class AwsDefaultRouteTableAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_default_route_table
         
         # Tags to apply to the resource

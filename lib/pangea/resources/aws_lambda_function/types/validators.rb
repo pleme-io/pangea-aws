@@ -24,7 +24,7 @@ module Pangea
           def validate_package_type(attrs)
             if attrs[:package_type] == 'Image'
               raise Dry::Struct::Error, "image_uri is required when package_type is 'Image'" if attrs[:image_uri].nil?
-              if attrs[:handler] || attrs[:runtime] != 'provided.al2'
+              if attrs[:handler]
                 raise Dry::Struct::Error, 'handler and runtime should not be specified for container images'
               end
             else

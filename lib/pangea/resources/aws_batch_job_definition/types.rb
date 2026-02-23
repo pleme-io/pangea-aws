@@ -22,7 +22,7 @@ module Pangea
     module AWS
       module Types
         # AWS Batch Job Definition attributes with validation
-        class BatchJobDefinitionAttributes < Dry::Struct
+        class BatchJobDefinitionAttributes < Pangea::Resources::BaseAttributes
           require_relative 'types/validation'
           require_relative 'types/computed'
           require_relative 'types/templates'
@@ -35,8 +35,8 @@ module Pangea
           transform_keys(&:to_sym)
 
           # Core attributes
-          attribute :job_definition_name, Resources::Types::String
-          attribute :type, Resources::Types::String
+          attribute? :job_definition_name, Resources::Types::String.optional
+          attribute? :type, Resources::Types::String.optional
 
           # Optional attributes
           attribute? :container_properties, Resources::Types::Hash.optional
@@ -48,7 +48,7 @@ module Pangea
           attribute? :tags, Resources::Types::Hash.optional
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             validate_attributes(attrs)
 
@@ -56,15 +56,24 @@ module Pangea
           end
 
           def self.validate_attributes(attrs)
-            Validation.validate_job_definition_name(attrs[:job_definition_name]) if attrs[:job_definition_name]
+            raise Dry::Struct::Error, 'Job definition requires a type' unless attrs[:type]
+            raise Dry::Struct::Error, 'Job definition requires a job_definition_name' unless attrs[:job_definition_name]
 
-            if attrs[:type] && !%w[container multinode].include?(attrs[:type])
+            Validation.validate_job_definition_name(attrs[:job_definition_name])
+
+            unless %w[container multinode].include?(attrs[:type])
               raise Dry::Struct::Error, "Job definition type must be 'container' or 'multinode'"
             end
 
-            Validation.validate_container_properties(attrs[:container_properties]) if attrs[:type] == 'container' && attrs[:container_properties]
+            if attrs[:type] == 'container'
+              raise Dry::Struct::Error, 'Container job requires container_properties' unless attrs[:container_properties]
 
-            Validation.validate_node_properties(attrs[:node_properties]) if attrs[:type] == 'multinode' && attrs[:node_properties]
+              Validation.validate_container_properties(attrs[:container_properties])
+            end
+
+            if attrs[:type] == 'multinode' && attrs[:node_properties]
+              Validation.validate_node_properties(attrs[:node_properties])
+            end
 
             Validation.validate_retry_strategy(attrs[:retry_strategy]) if attrs[:retry_strategy]
             Validation.validate_timeout(attrs[:timeout]) if attrs[:timeout]

@@ -21,26 +21,26 @@ module Pangea
     module AWS
       module Types
         # SageMaker Feature Group attributes with Feature Store validation
-        class SageMakerFeatureGroupAttributes < Dry::Struct
+        class SageMakerFeatureGroupAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :feature_group_name, Resources::Types::String.constrained(
+          attribute? :feature_group_name, Resources::Types::String.constrained(
             min_size: 1,
             max_size: 64,
             format: /\A[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]\z/
           )
-          attribute :record_identifier_feature_name, Resources::Types::String.constrained(
+          attribute? :record_identifier_feature_name, Resources::Types::String.constrained(
             min_size: 1,
             max_size: 64,
             format: /\A[a-zA-Z_][a-zA-Z0-9_]*\z/
           )
-          attribute :event_time_feature_name, Resources::Types::String.constrained(
+          attribute? :event_time_feature_name, Resources::Types::String.constrained(
             min_size: 1,
             max_size: 64,
             format: /\A[a-zA-Z_][a-zA-Z0-9_]*\z/
           )
-          attribute :feature_definitions, Resources::Types::Array.of(
+          attribute? :feature_definitions, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               feature_name: Resources::Types::String.constrained(
                 min_size: 1,
@@ -48,22 +48,22 @@ module Pangea
                 format: /\A[a-zA-Z_][a-zA-Z0-9_]*\z/
               ),
               feature_type: Resources::Types::String.constrained(included_in: ['Integral', 'Fractional', 'String'])
-            )
+            ).lax
           ).constrained(min_size: 1, max_size: 2500)
           
           # Optional attributes
-          attribute :description, Resources::Types::String.optional
-          attribute :online_store_config, Resources::Types::Hash.schema(
+          attribute? :description, Resources::Types::String.optional
+          attribute? :online_store_config, Resources::Types::Hash.schema(
             enable_online_store?: Resources::Types::Bool.default(true),
             security_config?: Resources::Types::Hash.schema(
               kms_key_id?: Resources::Types::String.optional
-            ).optional,
+            ).lax.optional,
             ttl_duration?: Resources::Types::Hash.schema(
               unit: Resources::Types::String.constrained(included_in: ['Seconds', 'Minutes', 'Hours', 'Days', 'Weeks']),
               value: Resources::Types::Integer.constrained(gteq: 1)
-            ).optional
+            ).lax.optional
           ).optional
-          attribute :offline_store_config, Resources::Types::Hash.schema(
+          attribute? :offline_store_config, Resources::Types::Hash.schema(
             s3_storage_config: Resources::Types::Hash.schema(
               s3_uri: Resources::Types::String.constrained(format: /\As3:\/\//),
               kms_key_id?: Resources::Types::String.optional,
@@ -74,16 +74,16 @@ module Pangea
               table_name?: Resources::Types::String.optional,
               catalog?: Resources::Types::String.default('AwsDataCatalog'),
               database?: Resources::Types::String.default('sagemaker_featurestore')
-            ).optional,
+            ).lax.optional,
             table_format?: Resources::Types::String.constrained(included_in: ['Glue', 'Iceberg']).default('Glue')
           ).optional
-          attribute :role_arn, Resources::Types::String.constrained(
+          attribute? :role_arn, Resources::Types::String.constrained(
             format: /\Aarn:aws:iam::\d{12}:role\/[a-zA-Z0-9_+=,.@-]+\z/
           ).optional
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate feature definitions have unique names
             if attrs[:feature_definitions]

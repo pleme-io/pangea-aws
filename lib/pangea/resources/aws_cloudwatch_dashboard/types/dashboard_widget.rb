@@ -22,19 +22,19 @@ module Pangea
     module AWS
       module Types
         # Dashboard widget configuration
-        class DashboardWidget < Dry::Struct
+        class DashboardWidget < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :type, Resources::Types::String.constrained(included_in: ['metric', 'text', 'log', 'number', 'explorer'])
-          attribute :x, Resources::Types::Integer.constrained(gteq: 0, lt: 24)
-          attribute :y, Resources::Types::Integer.constrained(gteq: 0)
-          attribute :width, Resources::Types::Integer.constrained(gteq: 1, lteq: 24)
-          attribute :height, Resources::Types::Integer.constrained(gteq: 1)
-          attribute :properties, DashboardWidgetProperties
+          attribute? :type, Resources::Types::String.constrained(included_in: ['metric', 'text', 'log', 'number', 'explorer']).optional
+          attribute? :x, Resources::Types::Integer.constrained(gteq: 0, lt: 24).optional
+          attribute? :y, Resources::Types::Integer.constrained(gteq: 0).optional
+          attribute? :width, Resources::Types::Integer.constrained(gteq: 1, lteq: 24).optional
+          attribute? :height, Resources::Types::Integer.constrained(gteq: 1).optional
+          attribute? :properties, DashboardWidgetProperties.optional
 
           # Validate widget configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate x + width doesn't exceed 24 (grid width)
             if attrs[:x] && attrs[:width] && (attrs[:x] + attrs[:width] > 24)

@@ -21,22 +21,22 @@ module Pangea
       module Types
       # Type-safe attributes for AwsNetworkInterface resources
       # Provides a network interface resource for EC2 instances with multiple IPs and security groups
-      class NetworkInterfaceAttributes < Dry::Struct
+      class NetworkInterfaceAttributes < Pangea::Resources::BaseAttributes
         # Required subnet for the ENI
-        attribute :subnet_id, Resources::Types::String
+        attribute? :subnet_id, Resources::Types::String.optional
         
         # Optional attributes
-        attribute :description, Resources::Types::String.optional
+        attribute? :description, Resources::Types::String.optional
         attribute :private_ips, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
-        attribute :private_ips_count, Resources::Types::Integer.optional
+        attribute? :private_ips_count, Resources::Types::Integer.optional
         attribute :security_groups, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         attribute :source_dest_check, Resources::Types::Bool.optional.default(true)
-        attribute :interface_type, Resources::Types::String.constrained(included_in: ["efa", "branch", "trunk"]).optional
-        attribute :ipv4_prefix_count, Resources::Types::Integer.optional
+        attribute? :interface_type, Resources::Types::String.constrained(included_in: ["efa", "branch", "trunk"]).optional
+        attribute? :ipv4_prefix_count, Resources::Types::Integer.optional
         attribute :ipv4_prefixes, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
-        attribute :ipv6_address_count, Resources::Types::Integer.optional
+        attribute? :ipv6_address_count, Resources::Types::Integer.optional
         attribute :ipv6_addresses, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
-        attribute :ipv6_prefix_count, Resources::Types::Integer.optional
+        attribute? :ipv6_prefix_count, Resources::Types::Integer.optional
         attribute :ipv6_prefixes, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         
         # Attachment configuration (for attaching at creation)

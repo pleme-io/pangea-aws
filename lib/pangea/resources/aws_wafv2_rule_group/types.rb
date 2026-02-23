@@ -27,22 +27,22 @@ module Pangea
     module AWS
       module Types
         # WAF v2 Rule Group attributes with validation
-        class WafV2RuleGroupAttributes < Dry::Struct
+        class WafV2RuleGroupAttributes < Pangea::Resources::BaseAttributes
           include Dry.Types()
           include WafV2ComputedProperties
           transform_keys(&:to_sym)
 
-          attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
-          attribute :scope, Resources::Types::WafV2Scope
-          attribute :capacity, Resources::Types::WafV2CapacityUnits
-          attribute :description, Resources::Types::String.constrained(max_size: 256).optional
-          attribute :rules, WafV2RuleSchema::RulesArray
-          attribute :visibility_config, WafV2Schemas::VisibilityConfigSchema
-          attribute :tags, Resources::Types::AwsTags
-          attribute :custom_response_bodies, WafV2RuleSchema::CustomResponseBodiesMap
+          attribute? :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/).optional
+          attribute? :scope, Resources::Types::WafV2Scope.optional
+          attribute? :capacity, Resources::Types::WafV2CapacityUnits.optional
+          attribute? :description, Resources::Types::String.constrained(max_size: 256).optional
+          attribute? :rules, WafV2RuleSchema::RulesArray.optional
+          attribute? :visibility_config, WafV2Schemas::VisibilityConfigSchema.optional
+          attribute? :tags, Resources::Types::AwsTags.optional
+          attribute? :custom_response_bodies, WafV2RuleSchema::CustomResponseBodiesMap.optional
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             WafV2Validators.validate_attributes(attrs)
             super(attrs)
           end

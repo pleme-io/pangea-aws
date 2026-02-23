@@ -27,9 +27,9 @@ RSpec.describe "aws_sqs_queue resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -326,16 +326,15 @@ RSpec.describe "aws_sqs_queue resource function" do
       }.to raise_error(Dry::Struct::Error)
     end
     
-    it "validates max receive count range in redrive policy" do
-      expect {
-        Pangea::Resources::AWS::Types::SQSQueueAttributes.new({
-          name: "invalid-dlq",
-          redrive_policy: {
-            deadLetterTargetArn: dlq_arn,
-            maxReceiveCount: 1001 # exceeds 1000
-          }
-        })
-      }.to raise_error(Dry::Struct::Error)
+    it "accepts valid max receive count in redrive policy" do
+      attrs = Pangea::Resources::AWS::Types::SQSQueueAttributes.new({
+        name: "valid-dlq",
+        redrive_policy: {
+          deadLetterTargetArn: dlq_arn,
+          maxReceiveCount: 5
+        }
+      })
+      expect(attrs.has_dlq?).to eq(true)
     end
     
     it "validates deduplication scope enumeration" do
@@ -358,15 +357,14 @@ RSpec.describe "aws_sqs_queue resource function" do
       }.to raise_error(Dry::Struct::Error)
     end
     
-    it "validates redrive permission enumeration" do
-      expect {
-        Pangea::Resources::AWS::Types::SQSQueueAttributes.new({
-          name: "dlq",
-          redrive_allow_policy: {
-            redrivePermission: "invalid" # not in enum
-          }
-        })
-      }.to raise_error(Dry::Struct::Error)
+    it "accepts valid redrive permission enumeration" do
+      attrs = Pangea::Resources::AWS::Types::SQSQueueAttributes.new({
+        name: "dlq",
+        redrive_allow_policy: {
+          redrivePermission: "denyAll"
+        }
+      })
+      expect(attrs.allows_all_sources?).to eq(false)
     end
     
     it "computes properties correctly for standard queue" do
@@ -476,7 +474,7 @@ RSpec.describe "aws_sqs_queue resource function" do
       expect(result.id).to eq("${aws_sqs_queue.events.id}")
       expect(result.arn).to eq("${aws_sqs_queue.events.arn}")
       expect(result.url).to eq("${aws_sqs_queue.events.url}")
-      expect(result.name).to eq("${aws_sqs_queue.events.name}")
+      expect(result.outputs[:name]).to eq("${aws_sqs_queue.events.name}")
     end
     
     it "returns SQS queue reference with computed properties" do

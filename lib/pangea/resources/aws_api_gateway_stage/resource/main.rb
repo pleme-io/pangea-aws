@@ -41,12 +41,9 @@ module Pangea
               # Monitoring
               xray_tracing_enabled stage_attrs.xray_tracing_enabled
 
-              # Access logging
+              # Access logging - pass as hash to avoid Kernel#format conflict
               if stage_attrs.access_log_settings
-                access_log_settings do
-                  destination_arn stage_attrs.access_log_settings[:destination_arn]
-                  format stage_attrs.access_log_settings[:format]
-                end
+                access_log_settings(stage_attrs.access_log_settings)
               end
 
               # Throttling
@@ -86,7 +83,7 @@ module Pangea
               client_certificate_id stage_attrs.client_certificate_id if stage_attrs.client_certificate_id
 
               # Tags
-              tags stage_attrs.tags unless stage_attrs.tags.empty?
+              tags stage_attrs.tags unless stage_attrs.tags.nil? || stage_attrs.tags.empty?
             end
           end
 

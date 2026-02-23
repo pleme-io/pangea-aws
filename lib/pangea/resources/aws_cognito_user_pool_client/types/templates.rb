@@ -8,7 +8,8 @@ module Pangea
       module Types
         # Pre-configured client templates for common scenarios
         module UserPoolClientTemplates
-          def self.web_app_client(client_name, user_pool_id, callback_urls, logout_urls = [])
+          module_function
+          def web_app_client(client_name, user_pool_id, callback_urls, logout_urls = [])
             {
               name: client_name, user_pool_id: user_pool_id, generate_secret: false,
               allowed_oauth_flows: ['code'], allowed_oauth_flows_user_pool_client: true,
@@ -19,7 +20,7 @@ module Pangea
             }
           end
 
-          def self.mobile_app_client(client_name, user_pool_id)
+          def mobile_app_client(client_name, user_pool_id)
             {
               name: client_name, user_pool_id: user_pool_id, generate_secret: false,
               prevent_user_existence_errors: 'ENABLED',
@@ -29,7 +30,7 @@ module Pangea
             }
           end
 
-          def self.machine_to_machine_client(client_name, user_pool_id, scopes = [])
+          def machine_to_machine_client(client_name, user_pool_id, scopes = [])
             {
               name: client_name, user_pool_id: user_pool_id, generate_secret: true,
               allowed_oauth_flows: ['client_credentials'], allowed_oauth_flows_user_pool_client: true,
@@ -41,7 +42,7 @@ module Pangea
             }
           end
 
-          def self.spa_client(client_name, user_pool_id, callback_urls, logout_urls = [])
+          def spa_client(client_name, user_pool_id, callback_urls, logout_urls = [])
             {
               name: client_name, user_pool_id: user_pool_id, generate_secret: false,
               allowed_oauth_flows: ['code'], allowed_oauth_flows_user_pool_client: true,
@@ -54,7 +55,7 @@ module Pangea
             }
           end
 
-          def self.admin_client(client_name, user_pool_id, callback_urls, logout_urls = [])
+          def admin_client(client_name, user_pool_id, callback_urls, logout_urls = [])
             {
               name: client_name, user_pool_id: user_pool_id, generate_secret: true,
               allowed_oauth_flows: ['code'], allowed_oauth_flows_user_pool_client: true,
@@ -67,7 +68,7 @@ module Pangea
             }
           end
 
-          def self.development_client(client_name, user_pool_id)
+          def development_client(client_name, user_pool_id)
             {
               name: client_name, user_pool_id: user_pool_id, generate_secret: false,
               allowed_oauth_flows: ['code', 'implicit'], allowed_oauth_flows_user_pool_client: true,

@@ -23,21 +23,21 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Braket Device resources
-        class BraketDeviceAttributes < Dry::Struct
+        class BraketDeviceAttributes < Pangea::Resources::BaseAttributes
           include BraketDeviceHelpers
           transform_keys(&:to_sym)
 
           # Device name (required)
-          attribute :device_name, Resources::Types::String
+          attribute? :device_name, Resources::Types::String.optional
 
           # Device type (required)
-          attribute :device_type, Resources::Types::String.constrained(included_in: ['QPU', 'SIMULATOR'])
+          attribute? :device_type, Resources::Types::String.constrained(included_in: ['QPU', 'SIMULATOR']).optional
 
           # Provider name (required)
-          attribute :provider_name, Resources::Types::String.constrained(included_in: ['AMAZON', 'IONQ', 'RIGETTI', 'OQC', 'XANADU', 'QUERA'])
+          attribute? :provider_name, Resources::Types::String.constrained(included_in: ['AMAZON', 'IONQ', 'RIGETTI', 'OQC', 'XANADU', 'QUERA']).optional
 
           # Device capabilities (required)
-          attribute :device_capabilities, Resources::Types::Hash.schema(
+          attribute? :device_capabilities, Resources::Types::Hash.schema(
             service: Resources::Types::Hash.schema(
               braketSchemaHeader: Resources::Types::Hash.schema(
                 name: Resources::Types::String,
@@ -49,13 +49,13 @@ module Pangea
                     'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']),
                   windowStartHour: Resources::Types::String,
                   windowEndHour: Resources::Types::String
-                )
+                ).lax
               ).optional,
               shotsRange: Resources::Types::Array.of(Resources::Types::Integer).optional,
               deviceCost: Resources::Types::Hash.schema(
                 price: Resources::Types::Float,
                 unit: Resources::Types::String
-              ).optional
+              ).lax.optional
             ),
             action: Resources::Types::Hash.schema(
               :"braket.ir.jaqcd.program" => Resources::Types::Hash.schema(
@@ -66,12 +66,12 @@ module Pangea
                     observables?: Resources::Types::Array.of(Resources::Types::String).optional,
                     minShots?: Resources::Types::Integer.optional,
                     maxShots?: Resources::Types::Integer.optional
-                  )
+                  ).lax
                 ).optional
               ).optional,
               :"braket.ir.openqasm.program" => Resources::Types::Hash.schema(
                 supportedOperations: Resources::Types::Array.of(Resources::Types::String)
-              ).optional
+              ).lax.optional
             ),
             deviceParameters?: Resources::Types::Hash.optional,
             paradigm: Resources::Types::Hash.schema(
@@ -80,7 +80,7 @@ module Pangea
               connectivity: Resources::Types::Hash.schema(
                 fullyConnected: Resources::Types::Bool,
                 connectivityGraph?: Resources::Types::Hash.optional
-              ).optional
+              ).lax.optional
             )
           )
 

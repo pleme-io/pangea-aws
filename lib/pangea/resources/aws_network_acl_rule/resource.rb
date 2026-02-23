@@ -55,7 +55,7 @@ module Pangea
           icmp_code attrs.icmp_code if attrs.icmp_code
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

@@ -7,19 +7,19 @@ module Pangea
     module AWS
       module Types
         # Token validity units configuration
-        class CognitoUserPoolClientTokenValidityUnits < Dry::Struct
+        class CognitoUserPoolClientTokenValidityUnits < Pangea::Resources::BaseAttributes
           attribute :access_token, Resources::Types::String.constrained(included_in: ['seconds', 'minutes', 'hours', 'days']).default('hours')
           attribute :id_token, Resources::Types::String.constrained(included_in: ['seconds', 'minutes', 'hours', 'days']).default('hours')
           attribute :refresh_token, Resources::Types::String.constrained(included_in: ['seconds', 'minutes', 'hours', 'days']).default('days')
         end
 
         # Analytics configuration for user pool client
-        class CognitoUserPoolClientAnalyticsConfiguration < Dry::Struct
-          attribute :application_arn, Resources::Types::String.optional
-          attribute :application_id, Resources::Types::String.optional
-          attribute :external_id, Resources::Types::String.optional
-          attribute :role_arn, Resources::Types::String.optional
-          attribute :user_data_shared, Resources::Types::Bool.optional
+        class CognitoUserPoolClientAnalyticsConfiguration < Pangea::Resources::BaseAttributes
+          attribute? :application_arn, Resources::Types::String.optional
+          attribute? :application_id, Resources::Types::String.optional
+          attribute? :external_id, Resources::Types::String.optional
+          attribute? :role_arn, Resources::Types::String.optional
+          attribute? :user_data_shared, Resources::Types::Bool.optional
         end
       end
     end

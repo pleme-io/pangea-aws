@@ -33,11 +33,11 @@ module Pangea
               insecure_ssl?: T::Bool.optional,
               git_submodules_config?: T::Hash.schema(
                 fetch_submodules: T::Bool
-              ).optional,
+              ).lax.optional,
               auth?: T::Hash.schema(
                 type: T::String.constrained(included_in: ['OAUTH']),
                 resource?: T::String.optional
-              ).optional
+              ).lax.optional
             )
 
             # Artifacts configuration schema
@@ -51,7 +51,7 @@ module Pangea
               encryption_disabled?: T::Bool.optional,
               artifact_identifier?: T::String.optional,
               override_artifact_name?: T::Bool.optional
-            )
+            ).lax
 
             # Secondary source schema
             SECONDARY_SOURCE = T::Hash.schema(
@@ -62,7 +62,7 @@ module Pangea
               buildspec?: T::String.optional,
               report_build_status?: T::Bool.optional,
               insecure_ssl?: T::Bool.optional
-            )
+            ).lax
 
             # Secondary artifact schema
             SECONDARY_ARTIFACT = T::Hash.schema(
@@ -75,7 +75,7 @@ module Pangea
               path?: T::String.optional,
               encryption_disabled?: T::Bool.optional,
               override_artifact_name?: T::Bool.optional
-            )
+            ).lax
 
             # Environment configuration schema
             ENVIRONMENT = T::Hash.schema(
@@ -87,14 +87,14 @@ module Pangea
                   name: T::String,
                   value: T::String,
                   type?: T::String.constrained(included_in: ['PLAINTEXT', 'PARAMETER_STORE', 'SECRETS_MANAGER']).optional
-                )
+                ).lax
               ).optional,
               privileged_mode?: T::Bool.optional,
               certificate?: T::String.optional,
               registry_credential?: T::Hash.schema(
                 credential: T::String,
                 credential_provider: T::String.constrained(included_in: ['SECRETS_MANAGER'])
-              ).optional,
+              ).lax.optional,
               image_pull_credentials_type?: T::String.constrained(included_in: ['CODEBUILD', 'SERVICE_ROLE']).optional
             )
 
@@ -105,14 +105,14 @@ module Pangea
               modes?: T::Array.of(
                 T::String.constrained(included_in: ['LOCAL_DOCKER_LAYER_CACHE', 'LOCAL_SOURCE_CACHE', 'LOCAL_CUSTOM_CACHE'])
               ).optional
-            )
+            ).lax
 
             # VPC configuration schema
             VPC_CONFIG = T::Hash.schema(
               vpc_id: T::String,
               subnets: T::Array.of(T::String).constrained(min_size: 1),
               security_group_ids: T::Array.of(T::String).constrained(min_size: 1)
-            )
+            ).lax
 
             # Logs configuration schema
             LOGS_CONFIG = T::Hash.schema(
@@ -120,12 +120,12 @@ module Pangea
                 status?: T::String.constrained(included_in: ['ENABLED', 'DISABLED']).optional,
                 group_name?: T::String.optional,
                 stream_name?: T::String.optional
-              ).optional,
+              ).lax.optional,
               s3_logs?: T::Hash.schema(
                 status?: T::String.constrained(included_in: ['ENABLED', 'DISABLED']).optional,
                 location?: T::String.optional,
                 encryption_disabled?: T::Bool.optional
-              ).optional
+              ).lax.optional
             )
 
             # Build batch configuration schema
@@ -135,7 +135,7 @@ module Pangea
               restrictions?: T::Hash.schema(
                 compute_types_allowed?: T::Array.of(T::String).optional,
                 maximum_builds_allowed?: T::Integer.optional
-              ).optional,
+              ).lax.optional,
               timeout_in_mins?: T::Integer.optional
             )
 
@@ -146,7 +146,7 @@ module Pangea
               mount_point: T::String,
               identifier: T::String,
               mount_options?: T::String.optional
-            )
+            ).lax
           end
         end
       end

@@ -52,7 +52,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if thing_type_attrs.tags.any?
+          if thing_type_attrs.tags&.any?
             tags do
               thing_type_attrs.tags.each do |key, value|
                 public_send(key, value)

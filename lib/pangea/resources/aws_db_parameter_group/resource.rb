@@ -41,7 +41,7 @@ module Pangea
           description param_group_attrs.effective_description
           
           # Add parameters if present
-          if param_group_attrs.parameters.any?
+          if param_group_attrs.parameters&.any?
             param_group_attrs.parameters.each do |param|
               parameter do
                 name param.name
@@ -52,7 +52,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if param_group_attrs.tags.any?
+          if param_group_attrs.tags&.any?
             tags do
               param_group_attrs.tags.each do |key, value|
                 public_send(key, value)

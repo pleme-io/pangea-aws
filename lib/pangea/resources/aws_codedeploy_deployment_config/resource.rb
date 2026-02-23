@@ -40,27 +40,27 @@ module Pangea
           # Minimum healthy hosts (for Server platform)
           if config_attrs.server_platform?
             minimum_healthy_hosts do
-              type config_attrs.minimum_healthy_hosts[:type]
-              value config_attrs.minimum_healthy_hosts[:value]
+              type config_attrs.minimum_healthy_hosts&.dig(:type)
+              value config_attrs.minimum_healthy_hosts&.dig(:value)
             end
           end
           
           # Traffic routing config (for Lambda/ECS platforms)
-          if config_attrs.traffic_routing_config[:type]
+          if config_attrs.traffic_routing_config&.dig(:type)
             traffic_routing_config do
-              type config_attrs.traffic_routing_config[:type]
+              type config_attrs.traffic_routing_config&.dig(:type)
               
-              if config_attrs.traffic_routing_config[:time_based_canary]
+              if config_attrs.traffic_routing_config&.dig(:time_based_canary)
                 time_based_canary do
-                  canary_percentage config_attrs.traffic_routing_config[:time_based_canary][:canary_percentage]
-                  canary_interval config_attrs.traffic_routing_config[:time_based_canary][:canary_interval]
+                  canary_percentage config_attrs.traffic_routing_config&.dig(:time_based_canary)[:canary_percentage]
+                  canary_interval config_attrs.traffic_routing_config&.dig(:time_based_canary)[:canary_interval]
                 end
               end
               
-              if config_attrs.traffic_routing_config[:time_based_linear]
+              if config_attrs.traffic_routing_config&.dig(:time_based_linear)
                 time_based_linear do
-                  linear_percentage config_attrs.traffic_routing_config[:time_based_linear][:linear_percentage]
-                  linear_interval config_attrs.traffic_routing_config[:time_based_linear][:linear_interval]
+                  linear_percentage config_attrs.traffic_routing_config&.dig(:time_based_linear)[:linear_percentage]
+                  linear_interval config_attrs.traffic_routing_config&.dig(:time_based_linear)[:linear_interval]
                 end
               end
             end

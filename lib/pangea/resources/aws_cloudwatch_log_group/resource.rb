@@ -68,7 +68,7 @@ module Pangea
       #   })
       def aws_cloudwatch_log_group(name, attributes = {})
         # Validate attributes using dry-struct
-        log_group_attrs = AWS::Types::Types::CloudWatchLogGroupAttributes.new(attributes)
+        log_group_attrs = Types::CloudWatchLogGroupAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_cloudwatch_log_group, name) do
@@ -79,7 +79,7 @@ module Pangea
           skip_destroy log_group_attrs.skip_destroy
           
           # Apply tags if present
-          if log_group_attrs.tags.any?
+          if log_group_attrs.tags&.any?
             tags do
               log_group_attrs.tags.each do |key, value|
                 public_send(key, value)

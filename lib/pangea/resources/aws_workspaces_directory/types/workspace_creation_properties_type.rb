@@ -21,18 +21,18 @@ module Pangea
     module AWS
       module Types
         # Workspace creation properties
-        class WorkspaceCreationPropertiesType < Dry::Struct
+        class WorkspaceCreationPropertiesType < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :custom_security_group_id, Resources::Types::String.optional
-          attribute :default_ou, Resources::Types::String.optional
+          attribute? :custom_security_group_id, Resources::Types::String.optional
+          attribute? :default_ou, Resources::Types::String.optional
           attribute :enable_internet_access, Resources::Types::Bool.default(true)
           attribute :enable_maintenance_mode, Resources::Types::Bool.default(false)
           attribute :user_enabled_as_local_administrator, Resources::Types::Bool.default(false)
 
           # Validation for OU format
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             if attrs[:default_ou] && !attrs[:default_ou].match?(/\AOU=[^,]+/)
               raise Dry::Struct::Error, "default_ou must be in format 'OU=WorkSpaces,DC=example,DC=com'"

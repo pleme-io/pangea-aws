@@ -28,49 +28,50 @@ module Pangea
 
           def build_origin(context, origin_config)
             context.origin do
-              domain_name origin_config[:domain_name]
-              origin_id origin_config[:origin_id]
-              origin_path origin_config[:origin_path] if origin_config[:origin_path]
-              connection_attempts origin_config[:connection_attempts] if origin_config[:connection_attempts]
-              connection_timeout origin_config[:connection_timeout] if origin_config[:connection_timeout]
+              context.domain_name origin_config[:domain_name]
+              context.origin_id origin_config[:origin_id]
+              context.origin_path origin_config[:origin_path] if origin_config[:origin_path]
+              context.connection_attempts origin_config[:connection_attempts] if origin_config[:connection_attempts]
+              context.connection_timeout origin_config[:connection_timeout] if origin_config[:connection_timeout]
 
-              build_s3_origin_config(self, origin_config[:s3_origin_config]) if origin_config[:s3_origin_config]
-              build_custom_origin_config(self, origin_config[:custom_origin_config]) if origin_config[:custom_origin_config]
-              build_origin_shield(self, origin_config[:origin_shield]) if origin_config[:origin_shield]
-              build_custom_headers(self, origin_config[:custom_header])
+              build_s3_origin_config(context, origin_config[:s3_origin_config]) if origin_config[:s3_origin_config]
+              build_custom_origin_config(context, origin_config[:custom_origin_config]) if origin_config[:custom_origin_config]
+              build_origin_shield(context, origin_config[:origin_shield]) if origin_config[:origin_shield]
+              build_custom_headers(context, origin_config[:custom_header]) if origin_config[:custom_header]
             end
           end
 
           def build_s3_origin_config(context, s3_config)
             context.s3_origin_config do
-              origin_access_identity s3_config[:origin_access_identity] if s3_config[:origin_access_identity]
-              origin_access_control_id s3_config[:origin_access_control_id] if s3_config[:origin_access_control_id]
+              context.origin_access_identity s3_config[:origin_access_identity] if s3_config[:origin_access_identity]
+              context.origin_access_control_id s3_config[:origin_access_control_id] if s3_config[:origin_access_control_id]
             end
           end
 
           def build_custom_origin_config(context, custom_config)
             context.custom_origin_config do
-              http_port custom_config[:http_port]
-              https_port custom_config[:https_port]
-              origin_protocol_policy custom_config[:origin_protocol_policy]
-              origin_ssl_protocols custom_config[:origin_ssl_protocols] if custom_config[:origin_ssl_protocols]
-              origin_keepalive_timeout custom_config[:origin_keepalive_timeout] if custom_config[:origin_keepalive_timeout]
-              origin_read_timeout custom_config[:origin_read_timeout] if custom_config[:origin_read_timeout]
+              context.http_port custom_config[:http_port]
+              context.https_port custom_config[:https_port]
+              context.origin_protocol_policy custom_config[:origin_protocol_policy]
+              context.origin_ssl_protocols custom_config[:origin_ssl_protocols] if custom_config[:origin_ssl_protocols]
+              context.origin_keepalive_timeout custom_config[:origin_keepalive_timeout] if custom_config[:origin_keepalive_timeout]
+              context.origin_read_timeout custom_config[:origin_read_timeout] if custom_config[:origin_read_timeout]
             end
           end
 
           def build_origin_shield(context, shield_config)
             context.origin_shield do
-              enabled shield_config[:enabled]
-              origin_shield_region shield_config[:origin_shield_region] if shield_config[:origin_shield_region]
+              context.enabled shield_config[:enabled]
+              context.origin_shield_region shield_config[:origin_shield_region] if shield_config[:origin_shield_region]
             end
           end
 
           def build_custom_headers(context, headers)
+            return unless headers&.any?
             headers.each do |header|
               context.custom_header do
-                name header[:name]
-                value header[:value]
+                context.name header[:name]
+                context.value header[:value]
               end
             end
           end

@@ -21,13 +21,13 @@ module Pangea
       module Types
       # Type-safe attributes for AwsLicensemanagerReportGenerator resources
       # Provides a License Manager report generator resource.
-      class LicensemanagerReportGeneratorAttributes < Dry::Struct
-        attribute :license_manager_report_generator_name, Resources::Types::String
+      class LicensemanagerReportGeneratorAttributes < Pangea::Resources::BaseAttributes
+        attribute? :license_manager_report_generator_name, Resources::Types::String.optional
         attribute :type, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         attribute :report_context, Resources::Types::Hash.default({}.freeze)
-        attribute :report_frequency, Resources::Types::String
-        attribute :s3_bucket_name, Resources::Types::String
-        attribute :description, Resources::Types::String.optional
+        attribute? :report_frequency, Resources::Types::String.optional
+        attribute? :s3_bucket_name, Resources::Types::String.optional
+        attribute? :description, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

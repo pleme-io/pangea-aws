@@ -24,9 +24,9 @@ module Pangea
 
           def build_default_cache_behavior(context, behavior)
             context.default_cache_behavior do
-              apply_cache_behavior_attributes(self, behavior)
-              build_function_associations(self, behavior[:function_association])
-              build_lambda_associations(self, behavior[:lambda_function_association])
+              apply_cache_behavior_attributes(context, behavior)
+              build_function_associations(context, behavior[:function_association])
+              build_lambda_associations(context, behavior[:lambda_function_association])
             end
           end
 
@@ -36,46 +36,48 @@ module Pangea
 
           def build_ordered_cache_behavior(context, behavior)
             context.ordered_cache_behavior do
-              path_pattern behavior[:path_pattern]
-              apply_cache_behavior_attributes(self, behavior)
-              build_function_associations(self, behavior[:function_association])
-              build_lambda_associations(self, behavior[:lambda_function_association])
+              context.path_pattern behavior[:path_pattern]
+              apply_cache_behavior_attributes(context, behavior)
+              build_function_associations(context, behavior[:function_association])
+              build_lambda_associations(context, behavior[:lambda_function_association])
             end
           end
 
           def apply_cache_behavior_attributes(context, behavior)
-            context.instance_eval do
-              target_origin_id behavior[:target_origin_id]
-              viewer_protocol_policy behavior[:viewer_protocol_policy]
-              allowed_methods behavior[:allowed_methods] if behavior[:allowed_methods]
-              cached_methods behavior[:cached_methods] if behavior[:cached_methods]
-              cache_policy_id behavior[:cache_policy_id] if behavior[:cache_policy_id]
-              origin_request_policy_id behavior[:origin_request_policy_id] if behavior[:origin_request_policy_id]
-              response_headers_policy_id behavior[:response_headers_policy_id] if behavior[:response_headers_policy_id]
-              realtime_log_config_arn behavior[:realtime_log_config_arn] if behavior[:realtime_log_config_arn]
-              smooth_streaming behavior[:smooth_streaming] if behavior[:smooth_streaming]
-              trusted_signers behavior[:trusted_signers] if behavior[:trusted_signers]&.any?
-              trusted_key_groups behavior[:trusted_key_groups] if behavior[:trusted_key_groups]&.any?
-              compress behavior[:compress] if behavior.key?(:compress)
-              field_level_encryption_id behavior[:field_level_encryption_id] if behavior[:field_level_encryption_id]
-            end
+            context.target_origin_id behavior[:target_origin_id]
+            context.viewer_protocol_policy behavior[:viewer_protocol_policy]
+            context.allowed_methods behavior[:allowed_methods] if behavior[:allowed_methods]
+            context.cached_methods behavior[:cached_methods] if behavior[:cached_methods]
+            context.cache_policy_id behavior[:cache_policy_id] if behavior[:cache_policy_id]
+            context.origin_request_policy_id behavior[:origin_request_policy_id] if behavior[:origin_request_policy_id]
+            context.response_headers_policy_id behavior[:response_headers_policy_id] if behavior[:response_headers_policy_id]
+            context.realtime_log_config_arn behavior[:realtime_log_config_arn] if behavior[:realtime_log_config_arn]
+            context.smooth_streaming behavior[:smooth_streaming] if behavior[:smooth_streaming]
+            context.trusted_signers behavior[:trusted_signers] if behavior[:trusted_signers]&.any?
+            context.trusted_key_groups behavior[:trusted_key_groups] if behavior[:trusted_key_groups]&.any?
+            context.compress behavior[:compress] if behavior.key?(:compress)
+            context.field_level_encryption_id behavior[:field_level_encryption_id] if behavior[:field_level_encryption_id]
           end
 
           def build_function_associations(context, associations)
+            return unless associations&.any?
+
             associations.each do |func_assoc|
               context.function_association do
-                event_type func_assoc[:event_type]
-                function_arn func_assoc[:function_arn]
+                context.event_type func_assoc[:event_type]
+                context.function_arn func_assoc[:function_arn]
               end
             end
           end
 
           def build_lambda_associations(context, associations)
+            return unless associations&.any?
+
             associations.each do |lambda_assoc|
               context.lambda_function_association do
-                event_type lambda_assoc[:event_type]
-                lambda_arn lambda_assoc[:lambda_arn]
-                include_body lambda_assoc[:include_body] if lambda_assoc.key?(:include_body)
+                context.event_type lambda_assoc[:event_type]
+                context.lambda_arn lambda_assoc[:lambda_arn]
+                context.include_body lambda_assoc[:include_body] if lambda_assoc.key?(:include_body)
               end
             end
           end

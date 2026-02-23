@@ -38,7 +38,7 @@ module Pangea
           connection_events attrs.connection_events if attrs.connection_events
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

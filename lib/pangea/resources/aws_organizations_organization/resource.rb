@@ -24,7 +24,7 @@ module Pangea
     module AWS
       # Create an AWS Organizations Organization with type-safe attributes
       def aws_organizations_organization(name, attributes = {})
-        org_attrs = Types::Types::OrganizationsOrganizationAttributes.new(attributes)
+        org_attrs = Types::OrganizationsOrganizationAttributes.new(attributes)
         
         resource(:aws_organizations_organization, name) do
           aws_service_access_principals org_attrs.aws_service_access_principals if org_attrs.has_service_access_principals?

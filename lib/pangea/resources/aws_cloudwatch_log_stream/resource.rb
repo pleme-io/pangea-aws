@@ -55,7 +55,7 @@ module Pangea
       #   })
       def aws_cloudwatch_log_stream(name, attributes = {})
         # Validate attributes using dry-struct
-        log_stream_attrs = Types::Types::CloudWatchLogStreamAttributes.new(attributes)
+        log_stream_attrs = Types::CloudWatchLogStreamAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_cloudwatch_log_stream, name) do

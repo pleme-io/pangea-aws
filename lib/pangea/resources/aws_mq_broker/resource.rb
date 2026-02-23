@@ -48,7 +48,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs
       def aws_mq_broker(name, attributes = {})
         # Validate attributes using dry-struct
-        broker_attrs = Types::Types::MqBrokerAttributes.new(attributes)
+        broker_attrs = Types::MqBrokerAttributes.new(attributes)
         
         # Generate terraform resource block
         resource(:aws_mq_broker, name) do
@@ -74,8 +74,8 @@ module Pangea
           # Configuration
           if broker_attrs.configuration
             configuration do
-              id broker_attrs.configuration[:id] if broker_attrs.configuration[:id]
-              revision broker_attrs.configuration[:revision] if broker_attrs.configuration[:revision]
+              id broker_attrs.configuration&.dig(:id) if broker_attrs.configuration&.dig(:id)
+              revision broker_attrs.configuration&.dig(:revision) if broker_attrs.configuration&.dig(:revision)
             end
           end
           
@@ -84,42 +84,42 @@ module Pangea
           # Encryption options
           if broker_attrs.encryption_options
             encryption_options do
-              kms_key_id broker_attrs.encryption_options[:kms_key_id] if broker_attrs.encryption_options[:kms_key_id]
-              use_aws_owned_key broker_attrs.encryption_options[:use_aws_owned_key] if broker_attrs.encryption_options.key?(:use_aws_owned_key)
+              kms_key_id broker_attrs.encryption_options&.dig(:kms_key_id) if broker_attrs.encryption_options&.dig(:kms_key_id)
+              use_aws_owned_key broker_attrs.encryption_options&.dig(:use_aws_owned_key) if broker_attrs.encryption_options.key?(:use_aws_owned_key)
             end
           end
           
           # LDAP server metadata
           if broker_attrs.ldap_server_metadata
             ldap_server_metadata do
-              hosts broker_attrs.ldap_server_metadata[:hosts]
-              role_base broker_attrs.ldap_server_metadata[:role_base]
-              role_name broker_attrs.ldap_server_metadata[:role_name] if broker_attrs.ldap_server_metadata[:role_name]
-              role_search_matching broker_attrs.ldap_server_metadata[:role_search_matching] if broker_attrs.ldap_server_metadata[:role_search_matching]
-              role_search_subtree broker_attrs.ldap_server_metadata[:role_search_subtree] if broker_attrs.ldap_server_metadata.key?(:role_search_subtree)
-              service_account_password broker_attrs.ldap_server_metadata[:service_account_password]
-              service_account_username broker_attrs.ldap_server_metadata[:service_account_username]
-              user_base broker_attrs.ldap_server_metadata[:user_base]
-              user_role_name broker_attrs.ldap_server_metadata[:user_role_name] if broker_attrs.ldap_server_metadata[:user_role_name]
-              user_search_matching broker_attrs.ldap_server_metadata[:user_search_matching] if broker_attrs.ldap_server_metadata[:user_search_matching]
-              user_search_subtree broker_attrs.ldap_server_metadata[:user_search_subtree] if broker_attrs.ldap_server_metadata.key?(:user_search_subtree)
+              hosts broker_attrs.ldap_server_metadata&.dig(:hosts)
+              role_base broker_attrs.ldap_server_metadata&.dig(:role_base)
+              role_name broker_attrs.ldap_server_metadata&.dig(:role_name) if broker_attrs.ldap_server_metadata&.dig(:role_name)
+              role_search_matching broker_attrs.ldap_server_metadata&.dig(:role_search_matching) if broker_attrs.ldap_server_metadata&.dig(:role_search_matching)
+              role_search_subtree broker_attrs.ldap_server_metadata&.dig(:role_search_subtree) if broker_attrs.ldap_server_metadata.key?(:role_search_subtree)
+              service_account_password broker_attrs.ldap_server_metadata&.dig(:service_account_password)
+              service_account_username broker_attrs.ldap_server_metadata&.dig(:service_account_username)
+              user_base broker_attrs.ldap_server_metadata&.dig(:user_base)
+              user_role_name broker_attrs.ldap_server_metadata&.dig(:user_role_name) if broker_attrs.ldap_server_metadata&.dig(:user_role_name)
+              user_search_matching broker_attrs.ldap_server_metadata&.dig(:user_search_matching) if broker_attrs.ldap_server_metadata&.dig(:user_search_matching)
+              user_search_subtree broker_attrs.ldap_server_metadata&.dig(:user_search_subtree) if broker_attrs.ldap_server_metadata.key?(:user_search_subtree)
             end
           end
           
           # Logs
           if broker_attrs.logs
             logs do
-              general broker_attrs.logs[:general] if broker_attrs.logs.key?(:general)
-              audit broker_attrs.logs[:audit] if broker_attrs.logs.key?(:audit)
+              general broker_attrs.logs&.dig(:general) if broker_attrs.logs.key?(:general)
+              audit broker_attrs.logs&.dig(:audit) if broker_attrs.logs.key?(:audit)
             end
           end
           
           # Maintenance window
           if broker_attrs.maintenance_window_start_time
             maintenance_window_start_time do
-              day_of_week broker_attrs.maintenance_window_start_time[:day_of_week]
-              time_of_day broker_attrs.maintenance_window_start_time[:time_of_day]
-              time_zone broker_attrs.maintenance_window_start_time[:time_zone] if broker_attrs.maintenance_window_start_time[:time_zone]
+              day_of_week broker_attrs.maintenance_window_start_time&.dig(:day_of_week)
+              time_of_day broker_attrs.maintenance_window_start_time&.dig(:time_of_day)
+              time_zone broker_attrs.maintenance_window_start_time&.dig(:time_zone) if broker_attrs.maintenance_window_start_time&.dig(:time_zone)
             end
           end
           

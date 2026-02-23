@@ -32,21 +32,21 @@ module Pangea
           key: CostCategoryDimensionKey,
           values: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 10000),
           match_options?: Resources::Types::Array.of(CostCategoryMatchOptions).constrained(max_size: 1).optional
-        )
+        ).lax
 
         # Cost category tag filter
         CostCategoryTagFilter = Resources::Types::Hash.schema(
           key: Resources::Types::String.constrained(min_size: 1, max_size: 128),
           values?: Resources::Types::Array.of(Resources::Types::String).constrained(max_size: 1000).optional,
           match_options?: Resources::Types::Array.of(CostCategoryMatchOptions).constrained(max_size: 1).optional
-        )
+        ).lax
 
         # Cost category cost category filter (for nested categories)
         CostCategoryCostCategoryFilter = Resources::Types::Hash.schema(
           key: Resources::Types::String.constrained(min_size: 1, max_size: 50),
           values: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 20),
           match_options?: Resources::Types::Array.of(CostCategoryMatchOptions).constrained(max_size: 1).optional
-        )
+        ).lax
 
         # Cost category expression for complex filtering
         CostCategoryExpression = Resources::Types::Hash.schema(
@@ -86,7 +86,7 @@ module Pangea
             Resources::Types::Hash.schema(
               type: Resources::Types::String.constrained(included_in: ['ALLOCATION_PERCENTAGES']),
               values: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
-            )
+            ).lax
           ).constrained(max_size: 10).optional
         ).constructor { |value|
           case value[:method]
@@ -138,7 +138,7 @@ module Pangea
           inherited_value?: Resources::Types::Hash.schema(
             dimension_key?: CostCategoryDimensionKey.optional,
             dimension_name?: Resources::Types::String.optional
-          ).optional
+          ).lax.optional
         ).constructor { |value|
           if value[:type] == 'INHERITED' && !value[:inherited_value]
             raise Dry::Types::ConstraintError, "INHERITED rule type requires inherited_value configuration"

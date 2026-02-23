@@ -11,13 +11,13 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS S3 Bucket Website Configuration
-        class S3BucketWebsiteConfigurationAttributes < Dry::Struct
-          attribute :bucket, Resources::Types::String
-          attribute :expected_bucket_owner, Resources::Types::String.optional
+        class S3BucketWebsiteConfigurationAttributes < Pangea::Resources::BaseAttributes
+          attribute? :bucket, Resources::Types::String.optional
+          attribute? :expected_bucket_owner, Resources::Types::String.optional
           attribute? :error_document, WebsiteErrorDocument.optional
           attribute? :index_document, WebsiteIndexDocument.optional
           attribute? :redirect_all_requests_to, WebsiteRedirectAllRequestsTo.optional
-          attribute :routing_rule, Resources::Types::Array.of(WebsiteRoutingRule).constrained(max_size: 50).optional
+          attribute? :routing_rule, Resources::Types::Array.of(WebsiteRoutingRule).constrained(max_size: 50).optional
 
           def self.new(attributes = {})
             attrs = super(attributes)

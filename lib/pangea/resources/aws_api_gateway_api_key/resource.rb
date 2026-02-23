@@ -39,7 +39,7 @@ module Pangea
           value api_key_attrs.value if api_key_attrs.value
           
           # Apply tags if present
-          if api_key_attrs.tags.any?
+          if api_key_attrs.tags&.any?
             tags do
               api_key_attrs.tags.each do |key, value|
                 public_send(key, value)

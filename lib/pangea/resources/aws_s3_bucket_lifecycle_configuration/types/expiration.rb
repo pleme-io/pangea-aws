@@ -8,10 +8,10 @@ module Pangea
       module Types
         # S3 lifecycle rule expiration
         unless const_defined?(:LifecycleExpiration)
-        class LifecycleExpiration < Dry::Struct
-          attribute :date, Resources::Types::String.optional
-          attribute :days, Resources::Types::Integer.optional
-          attribute :expired_object_delete_marker, Resources::Types::Bool.optional
+        class LifecycleExpiration < Pangea::Resources::BaseAttributes
+          attribute? :date, Resources::Types::String.optional
+          attribute? :days, Resources::Types::Integer.optional
+          attribute? :expired_object_delete_marker, Resources::Types::Bool.optional
 
           def self.new(attributes = {})
             attrs = super(attributes)
@@ -31,9 +31,9 @@ module Pangea
         end
 
         # S3 lifecycle rule noncurrent version expiration
-        class LifecycleNoncurrentVersionExpiration < Dry::Struct
-          attribute :noncurrent_days, Resources::Types::Integer.optional
-          attribute :newer_noncurrent_versions, Resources::Types::Integer.optional
+        class LifecycleNoncurrentVersionExpiration < Pangea::Resources::BaseAttributes
+          attribute? :noncurrent_days, Resources::Types::Integer.optional
+          attribute? :newer_noncurrent_versions, Resources::Types::Integer.optional
         end
       end
     end

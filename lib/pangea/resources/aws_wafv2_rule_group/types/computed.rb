@@ -46,7 +46,7 @@ module Pangea
           end
 
           def uses_custom_responses?
-            custom_response_bodies.any?
+            custom_response_bodies&.any? || false
           end
 
           def rule_priorities

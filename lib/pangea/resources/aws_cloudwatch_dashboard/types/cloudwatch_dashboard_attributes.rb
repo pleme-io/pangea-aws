@@ -23,11 +23,11 @@ module Pangea
     module AWS
       module Types
         # CloudWatch Dashboard resource attributes with validation
-        class CloudWatchDashboardAttributes < Dry::Struct
+        class CloudWatchDashboardAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Required attributes
-          attribute :dashboard_name, Resources::Types::String
+          attribute? :dashboard_name, Resources::Types::String.optional
 
           # Dashboard body can be provided as hash or JSON string
           attribute :dashboard_body, Resources::Types::Hash.optional.default(nil)
@@ -38,7 +38,7 @@ module Pangea
 
           # Validate dashboard configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             validate_dashboard_name(attrs[:dashboard_name]) if attrs[:dashboard_name]
             validate_body_configuration(attrs)
@@ -79,8 +79,8 @@ module Pangea
           end
 
           def self.validate_body_json(json_string)
-            JSON.parse(json_string)
-          rescue JSON::ParserError => e
+            ::JSON.parse(json_string)
+          rescue ::JSON::ParserError => e
             raise Dry::Struct::Error, "dashboard_body_json contains invalid JSON: #{e.message}"
           end
 
@@ -131,7 +131,7 @@ module Pangea
 
           def generate_dashboard_body
             return dashboard_body if dashboard_body
-            return JSON.parse(dashboard_body_json) if dashboard_body_json
+            return ::JSON.parse(dashboard_body_json) if dashboard_body_json
             return nil if widgets.nil?
 
             { widgets: widgets.map(&:to_h) }
@@ -142,11 +142,11 @@ module Pangea
 
             # Use appropriate body format
             if dashboard_body
-              hash[:dashboard_body] = JSON.pretty_generate(dashboard_body)
+              hash[:dashboard_body] = ::JSON.pretty_generate(dashboard_body)
             elsif dashboard_body_json
               hash[:dashboard_body] = dashboard_body_json
             elsif widgets
-              hash[:dashboard_body] = JSON.pretty_generate({ widgets: widgets.map(&:to_h) })
+              hash[:dashboard_body] = ::JSON.pretty_generate({ widgets: widgets.map(&:to_h) })
             end
 
             hash

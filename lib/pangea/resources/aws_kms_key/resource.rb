@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_kms_key(name, attributes = {})
         # Validate attributes using dry-struct
-        key_attrs = AWS::Types::Types::KmsKeyAttributes.new(attributes)
+        key_attrs = Types::KmsKeyAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_kms_key, name) do

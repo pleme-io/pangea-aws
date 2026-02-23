@@ -48,16 +48,16 @@ module Pangea
           acceptance_required attrs.acceptance_required
           
           # Load balancer ARNs (one type required)
-          if attrs.network_load_balancer_arns.any?
+          if attrs.network_load_balancer_arns&.any?
             network_load_balancer_arns attrs.network_load_balancer_arns
           end
           
-          if attrs.gateway_load_balancer_arns.any?
+          if attrs.gateway_load_balancer_arns&.any?
             gateway_load_balancer_arns attrs.gateway_load_balancer_arns
           end
           
           # Optional: Supported IP address types
-          if attrs.supported_ip_address_types.any?
+          if attrs.supported_ip_address_types&.any?
             supported_ip_address_types attrs.supported_ip_address_types
           end
           
@@ -67,7 +67,7 @@ module Pangea
           end
           
           # Optional: Private DNS name configuration
-          if attrs.private_dns_name_configuration.any?
+          if attrs.private_dns_name_configuration&.any?
             private_dns_name_configuration do
               attrs.private_dns_name_configuration.each do |key, value|
                 public_send(key, value)
@@ -76,12 +76,12 @@ module Pangea
           end
           
           # Optional: Allowed principals
-          if attrs.allowed_principals.any?
+          if attrs.allowed_principals&.any?
             allowed_principals attrs.allowed_principals
           end
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

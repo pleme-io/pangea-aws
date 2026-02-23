@@ -60,8 +60,8 @@ module Pangea
           def parsed_event_pattern
             return nil unless event_pattern
 
-            JSON.parse(event_pattern)
-          rescue JSON::ParserError
+            ::JSON.parse(event_pattern)
+          rescue ::JSON::ParserError
             nil
           end
 

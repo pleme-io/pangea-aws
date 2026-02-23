@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_secretsmanager_secret(name, attributes = {})
         # Validate attributes using dry-struct
-        secret_attrs = Types::Types::SecretsManagerSecretAttributes.new(attributes)
+        secret_attrs = Types::SecretsManagerSecretAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_secretsmanager_secret, name) do

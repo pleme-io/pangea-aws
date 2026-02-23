@@ -25,28 +25,28 @@ module Pangea
             def self.included(base)
               base.class_eval do
                 # Trigger name (required)
-                attribute :name, Resources::Types::String
+                attribute? :name, Resources::Types::String.optional
 
                 # Trigger type (required)
-                attribute :type, Resources::Types::String.constrained(included_in: ["SCHEDULED", "CONDITIONAL", "ON_DEMAND"])
+                attribute? :type, Resources::Types::String.constrained(included_in: ["SCHEDULED", "CONDITIONAL", "ON_DEMAND"]).optional
 
                 # Trigger description
-                attribute :description, Resources::Types::String.optional
+                attribute? :description, Resources::Types::String.optional
 
                 # Enable/disable trigger
                 attribute :enabled, Resources::Types::Bool.default(true)
 
                 # Schedule expression for SCHEDULED triggers
-                attribute :schedule, Resources::Types::String.optional
+                attribute? :schedule, Resources::Types::String.optional
 
                 # Start time for scheduled triggers
-                attribute :start_on_creation, Resources::Types::Bool.optional
+                attribute? :start_on_creation, Resources::Types::Bool.optional
 
                 # Workflow name if part of workflow
-                attribute :workflow_name, Resources::Types::String.optional
+                attribute? :workflow_name, Resources::Types::String.optional
 
                 # Actions to execute when trigger fires
-                attribute :actions, Resources::Types::Array.of(
+                attribute? :actions, Resources::Types::Array.of(
                   Resources::Types::Hash.schema(
                     job_name?: Resources::Types::String.optional,
                     crawler_name?: Resources::Types::String.optional,
@@ -55,12 +55,12 @@ module Pangea
                     security_configuration?: Resources::Types::String.optional,
                     notification_property?: Resources::Types::Hash.schema(
                       notify_delay_after?: Resources::Types::Integer.optional
-                    ).optional
+                    ).lax.optional
                   )
                 ).default([].freeze)
 
                 # Predicate for CONDITIONAL triggers
-                attribute :predicate, Resources::Types::Hash.schema(
+                attribute? :predicate, Resources::Types::Hash.schema(
                   logical?: Resources::Types::String.constrained(included_in: ["AND", "ANY"]).optional,
                   conditions?: Resources::Types::Array.of(
                     Resources::Types::Hash.schema(
@@ -69,15 +69,15 @@ module Pangea
                       state?: Resources::Types::String.constrained(included_in: ["SUCCEEDED", "STOPPED", "FAILED", "TIMEOUT"]).optional,
                       crawler_name?: Resources::Types::String.optional,
                       crawl_state?: Resources::Types::String.constrained(included_in: ["SUCCEEDED", "CANCELLED", "FAILED"]).optional
-                    )
+                    ).lax
                   ).optional
                 ).optional
 
                 # Event batching configuration
-                attribute :event_batching_condition, Resources::Types::Hash.schema(
+                attribute? :event_batching_condition, Resources::Types::Hash.schema(
                   batch_size: Resources::Types::Integer.constrained(gteq: 1, lteq: 100),
                   batch_window?: Resources::Types::Integer.constrained(gteq: 900, lteq: 900).optional
-                ).optional
+                ).lax.optional
 
                 # Tags
                 attribute :tags, Resources::Types::AwsTags.default({}.freeze)

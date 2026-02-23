@@ -8,13 +8,13 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class RdsProxyAttributes < Dry::Struct
-          attribute :db_proxy_name, Resources::Types::String
-          attribute :engine_family, Resources::Types::String.constrained(included_in: ['MYSQL', 'POSTGRESQL'])
-          attribute :auth, Resources::Types::Array.of(ProxyAuth).constrained(min_size: 1)
-          attribute :role_arn, Resources::Types::String
-          attribute :vpc_subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
-          attribute :vpc_security_group_ids, Resources::Types::Array.of(Resources::Types::String).optional
+        class RdsProxyAttributes < Pangea::Resources::BaseAttributes
+          attribute? :db_proxy_name, Resources::Types::String.optional
+          attribute? :engine_family, Resources::Types::String.constrained(included_in: ['MYSQL', 'POSTGRESQL']).optional
+          attribute? :auth, Resources::Types::Array.of(ProxyAuth).constrained(min_size: 1).optional
+          attribute? :role_arn, Resources::Types::String.optional
+          attribute? :vpc_subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1).optional
+          attribute :vpc_security_group_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
           attribute :require_tls, Resources::Types::Bool.default(true)
           attribute :idle_client_timeout, Resources::Types::Integer.default(1800).constrained(gteq: 1800, lteq: 28800)
           attribute :debug_logging, Resources::Types::Bool.default(false)

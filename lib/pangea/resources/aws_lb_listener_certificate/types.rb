@@ -20,14 +20,14 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS Load Balancer Listener Certificate resources
-      class LoadBalancerListenerCertificateAttributes < Dry::Struct
+      class LoadBalancerListenerCertificateAttributes < Pangea::Resources::BaseAttributes
         # The ARN of the listener to attach the certificate to
-        attribute :listener_arn, Resources::Types::String.constrained(
+        attribute? :listener_arn, Resources::Types::String.constrained(
           format: /\Aarn:aws:elasticloadbalancing:[a-z0-9-]+:\d{12}:listener\/[a-zA-Z0-9\/-]+\z/
         )
         
         # The ARN of the SSL certificate to attach
-        attribute :certificate_arn, Resources::Types::String.constrained(
+        attribute? :certificate_arn, Resources::Types::String.constrained(
           format: /\Aarn:aws:acm:[a-z0-9-]+:\d{12}:certificate\/[a-f0-9-]+\z/
         )
 

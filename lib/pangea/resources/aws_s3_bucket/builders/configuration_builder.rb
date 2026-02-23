@@ -26,8 +26,8 @@ module Pangea
             return unless versioning[:enabled] || versioning[:mfa_delete]
 
             context.versioning do
-              enabled versioning[:enabled]
-              mfa_delete versioning[:mfa_delete] if versioning[:mfa_delete]
+              context.enabled versioning[:enabled]
+              context.mfa_delete versioning[:mfa_delete] if versioning[:mfa_delete]
             end
           end
 
@@ -35,67 +35,67 @@ module Pangea
             return unless encryption_config[:rule]
 
             context.server_side_encryption_configuration do
-              rule do
-                apply_server_side_encryption_by_default do
-                  sse_algorithm encryption_config[:rule][:apply_server_side_encryption_by_default][:sse_algorithm]
+              context.rule do
+                context.apply_server_side_encryption_by_default do
+                  context.sse_algorithm encryption_config[:rule][:apply_server_side_encryption_by_default][:sse_algorithm]
                   kms_key = encryption_config[:rule][:apply_server_side_encryption_by_default][:kms_master_key_id]
-                  kms_master_key_id kms_key if kms_key
+                  context.kms_master_key_id kms_key if kms_key
                 end
-                bucket_key_enabled encryption_config[:rule][:bucket_key_enabled] if encryption_config[:rule][:bucket_key_enabled]
+                context.bucket_key_enabled encryption_config[:rule][:bucket_key_enabled] if encryption_config[:rule][:bucket_key_enabled]
               end
             end
           end
 
           def build_logging(context, logging)
-            return unless logging[:target_bucket]
+            return unless logging&.dig(:target_bucket)
 
             context.logging do
-              target_bucket logging[:target_bucket]
-              target_prefix logging[:target_prefix] if logging[:target_prefix]
+              context.target_bucket logging[:target_bucket]
+              context.target_prefix logging[:target_prefix] if logging[:target_prefix]
             end
           end
 
           def build_object_lock(context, object_lock_config)
-            return unless object_lock_config[:object_lock_enabled]
+            return unless object_lock_config&.dig(:object_lock_enabled)
 
             context.object_lock_configuration do
-              object_lock_enabled object_lock_config[:object_lock_enabled]
-              build_object_lock_rule(self, object_lock_config[:rule]) if object_lock_config[:rule]
+              context.object_lock_enabled object_lock_config[:object_lock_enabled]
+              build_object_lock_rule(context, object_lock_config[:rule]) if object_lock_config[:rule]
             end
           end
 
           def build_object_lock_rule(context, rule_config)
             context.rule do
-              default_retention do
-                mode rule_config[:default_retention][:mode]
-                days rule_config[:default_retention][:days] if rule_config[:default_retention][:days]
-                years rule_config[:default_retention][:years] if rule_config[:default_retention][:years]
+              context.default_retention do
+                context.mode rule_config[:default_retention][:mode]
+                context.days rule_config[:default_retention][:days] if rule_config[:default_retention][:days]
+                context.years rule_config[:default_retention][:years] if rule_config[:default_retention][:years]
               end
             end
           end
 
           def build_website(context, website)
-            return unless website.any?
+            return unless website&.any?
 
             context.website do
               if website[:redirect_all_requests_to]
-                redirect_all_requests_to do
-                  host_name website[:redirect_all_requests_to][:host_name]
-                  protocol website[:redirect_all_requests_to][:protocol] if website[:redirect_all_requests_to][:protocol]
+                context.redirect_all_requests_to do
+                  context.host_name website[:redirect_all_requests_to][:host_name]
+                  context.protocol website[:redirect_all_requests_to][:protocol] if website[:redirect_all_requests_to][:protocol]
                 end
               else
-                index_document website[:index_document] if website[:index_document]
-                error_document website[:error_document] if website[:error_document]
-                routing_rules website[:routing_rules] if website[:routing_rules]
+                context.index_document website[:index_document] if website[:index_document]
+                context.error_document website[:error_document] if website[:error_document]
+                context.routing_rules website[:routing_rules] if website[:routing_rules]
               end
             end
           end
 
           def build_tags(context, tags)
-            return unless tags.any?
+            return unless tags&.any?
 
             context.tags do
-              tags.each { |key, value| public_send(key, value) }
+              tags.each { |key, value| context.public_send(key, value) }
             end
           end
         end

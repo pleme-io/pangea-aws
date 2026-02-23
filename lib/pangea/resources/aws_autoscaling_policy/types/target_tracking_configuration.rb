@@ -21,35 +21,35 @@ module Pangea
     module AWS
       module Types
         # Target tracking configuration
-        class TargetTrackingConfiguration < Dry::Struct
+        class TargetTrackingConfiguration < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :target_value, Resources::Types::Float
+          attribute? :target_value, Resources::Types::Float.optional
           attribute :disable_scale_in, Resources::Types::Bool.default(false)
           attribute :scale_in_cooldown, Resources::Types::Integer.optional.default(nil)
           attribute :scale_out_cooldown, Resources::Types::Integer.optional.default(nil)
 
           # Predefined metric specification
-          attribute :predefined_metric_specification, Resources::Types::Hash.schema(
+          attribute? :predefined_metric_specification, Resources::Types::Hash.schema(
             predefined_metric_type: Resources::Types::String.constrained(included_in: ['ASGAverageCPUUtilization',
               'ASGAverageNetworkIn',
               'ASGAverageNetworkOut',
               'ALBRequestCountPerTarget']),
             resource_label: Resources::Types::String.optional
-          ).optional.default(nil)
+          ).lax.optional.default(nil)
 
           # Custom metric specification
-          attribute :customized_metric_specification, Resources::Types::Hash.schema(
+          attribute? :customized_metric_specification, Resources::Types::Hash.schema(
             metric_name: Resources::Types::String,
             namespace: Resources::Types::String,
             statistic: Resources::Types::String.constrained(included_in: ['Average', 'Minimum', 'Maximum', 'SampleCount', 'Sum']),
             unit: Resources::Types::String.optional,
             dimensions: Resources::Types::Hash.optional
-          ).optional.default(nil)
+          ).lax.optional.default(nil)
 
           # Validate exactly one metric specification
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             metrics = [
               attrs[:predefined_metric_specification],

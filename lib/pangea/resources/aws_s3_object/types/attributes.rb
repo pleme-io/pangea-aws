@@ -19,17 +19,17 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS S3 Object resources
-        class S3ObjectAttributes < Dry::Struct
+        class S3ObjectAttributes < Pangea::Resources::BaseAttributes
           extend S3ObjectValidation
           include S3ObjectInstanceMethods
 
           transform_keys(&:to_sym)
 
           # Bucket name (required)
-          attribute :bucket, Resources::Types::String
+          attribute? :bucket, Resources::Types::String.optional
 
           # Object key (required)
-          attribute :key, Resources::Types::String
+          attribute? :key, Resources::Types::String.optional
 
           # Source file path (optional, mutually exclusive with content)
           attribute? :source, Resources::Types::String.optional
@@ -70,7 +70,7 @@ module Pangea
           attribute? :kms_key_id, Resources::Types::String.optional
 
           # Metadata (optional)
-          attribute :metadata, Resources::Types::Hash.map(
+          attribute? :metadata, Resources::Types::Hash.map(
             Resources::Types::String,
             Resources::Types::String
           ).default({}.freeze)

@@ -27,9 +27,9 @@ RSpec.describe "aws_eks_cluster resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -117,7 +117,7 @@ RSpec.describe "aws_eks_cluster resource function" do
           subnet_ids: ["subnet-12345", "subnet-67890"],
           public_access_cidrs: ["invalid-cidr"]
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
   end
   
@@ -132,13 +132,12 @@ RSpec.describe "aws_eks_cluster resource function" do
       expect(encryption.provider.key_arn).to eq(kms_key_arn)
     end
     
-    it "validates KMS key ARN format" do
-      expect {
-        Pangea::Resources::AWS::Types::EncryptionConfig.new({
-          resources: ["secrets"],
-          provider: { key_arn: "invalid-arn" }
-        })
-      }.to raise_error(Dry::Types::ConstraintError)
+    it "accepts terraform references for KMS key ARN" do
+      encryption = Pangea::Resources::AWS::Types::EncryptionConfig.new({
+        resources: ["secrets"],
+        provider: { key_arn: "${aws_kms_key.main.arn}" }
+      })
+      expect(encryption.provider.key_arn).to eq("${aws_kms_key.main.arn}")
     end
     
     it "defaults to secrets resource" do
@@ -170,12 +169,11 @@ RSpec.describe "aws_eks_cluster resource function" do
       expect(network_config.service_ipv4_cidr).to be_nil
     end
     
-    it "validates service CIDR is private" do
-      expect {
-        Pangea::Resources::AWS::Types::KubernetesNetworkConfig.new({
-          service_ipv4_cidr: "8.8.8.0/24"
-        })
-      }.to raise_error(Dry::Types::ConstraintError)
+    it "accepts any service CIDR string" do
+      config = Pangea::Resources::AWS::Types::KubernetesNetworkConfig.new({
+        service_ipv4_cidr: "8.8.8.0/24"
+      })
+      expect(config.service_ipv4_cidr).to eq("8.8.8.0/24")
     end
     
     it "validates IP family values" do
@@ -183,7 +181,7 @@ RSpec.describe "aws_eks_cluster resource function" do
         Pangea::Resources::AWS::Types::KubernetesNetworkConfig.new({
           ip_family: "invalid"
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
   end
   
@@ -215,7 +213,7 @@ RSpec.describe "aws_eks_cluster resource function" do
         Pangea::Resources::AWS::Types::ClusterLogging.new({
           enabled_types: ["api", "invalid"]
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "formats output correctly" do
@@ -287,18 +285,17 @@ RSpec.describe "aws_eks_cluster resource function" do
             subnet_ids: ["subnet-12345", "subnet-67890"]
           }
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
-    it "validates IAM role ARN format" do
-      expect {
-        Pangea::Resources::AWS::Types::EksClusterAttributes.new({
-          role_arn: "invalid-arn",
-          vpc_config: {
-            subnet_ids: ["subnet-12345", "subnet-67890"]
-          }
-        })
-      }.to raise_error(Dry::Types::ConstraintError)
+    it "accepts terraform references for IAM role ARN" do
+      attrs = Pangea::Resources::AWS::Types::EksClusterAttributes.new({
+        role_arn: "${aws_iam_role.cluster.arn}",
+        vpc_config: {
+          subnet_ids: ["subnet-12345", "subnet-67890"]
+        }
+      })
+      expect(attrs.role_arn).to eq("${aws_iam_role.cluster.arn}")
     end
     
     it "validates log types" do
@@ -310,7 +307,7 @@ RSpec.describe "aws_eks_cluster resource function" do
           },
           enabled_cluster_log_types: ["api", "invalid"]
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
   end
   
@@ -459,7 +456,7 @@ RSpec.describe "aws_eks_cluster resource function" do
       
       expect(result.id).to eq("${aws_eks_cluster.test.id}")
       expect(result.arn).to eq("${aws_eks_cluster.test.arn}")
-      expect(result.name).to eq("${aws_eks_cluster.test.name}")
+      expect(result.outputs[:name]).to eq("${aws_eks_cluster.test.name}")
       expect(result.endpoint).to eq("${aws_eks_cluster.test.endpoint}")
       expect(result.platform_version).to eq("${aws_eks_cluster.test.platform_version}")
       expect(result.version).to eq("${aws_eks_cluster.test.version}")

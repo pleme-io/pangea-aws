@@ -44,10 +44,10 @@ module Pangea
               return unless template_body
 
               begin
-                JSON.parse(template_body)
-              rescue JSON::ParserError
+                ::JSON.parse(template_body)
+              rescue ::JSON::ParserError
                 begin
-                  YAML.safe_load(template_body)
+                  ::YAML.safe_load(template_body)
                 rescue Psych::SyntaxError
                   raise Dry::Struct::Error, 'template_body must be valid JSON or YAML'
                 end
@@ -58,8 +58,8 @@ module Pangea
               return unless policy_body
 
               begin
-                JSON.parse(policy_body)
-              rescue JSON::ParserError
+                ::JSON.parse(policy_body)
+              rescue ::JSON::ParserError
                 raise Dry::Struct::Error, 'policy_body must be valid JSON'
               end
             end

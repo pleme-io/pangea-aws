@@ -40,7 +40,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs
       def aws_appsync_datasource(name, attributes = {})
         # Validate attributes using dry-struct
-        datasource_attrs = Types::Types::AppSyncDatasourceAttributes.new(attributes)
+        datasource_attrs = Types::AppSyncDatasourceAttributes.new(attributes)
         
         # Generate terraform resource block
         resource(:aws_appsync_datasource, name) do
@@ -53,16 +53,16 @@ module Pangea
           # DynamoDB configuration
           if datasource_attrs.dynamodb_config
             dynamodb_config do
-              table_name datasource_attrs.dynamodb_config[:table_name]
-              region datasource_attrs.dynamodb_config[:region] if datasource_attrs.dynamodb_config[:region]
-              use_caller_credentials datasource_attrs.dynamodb_config[:use_caller_credentials] if datasource_attrs.dynamodb_config.key?(:use_caller_credentials)
-              versioned datasource_attrs.dynamodb_config[:versioned] if datasource_attrs.dynamodb_config.key?(:versioned)
+              table_name datasource_attrs.dynamodb_config&.dig(:table_name)
+              region datasource_attrs.dynamodb_config&.dig(:region) if datasource_attrs.dynamodb_config&.dig(:region)
+              use_caller_credentials datasource_attrs.dynamodb_config&.dig(:use_caller_credentials) if datasource_attrs.dynamodb_config.key?(:use_caller_credentials)
+              versioned datasource_attrs.dynamodb_config&.dig(:versioned) if datasource_attrs.dynamodb_config.key?(:versioned)
               
-              if datasource_attrs.dynamodb_config[:delta_sync_config]
+              if datasource_attrs.dynamodb_config&.dig(:delta_sync_config)
                 delta_sync_config do
-                  base_table_ttl datasource_attrs.dynamodb_config[:delta_sync_config][:base_table_ttl] if datasource_attrs.dynamodb_config[:delta_sync_config][:base_table_ttl]
-                  delta_sync_table_name datasource_attrs.dynamodb_config[:delta_sync_config][:delta_sync_table_name] if datasource_attrs.dynamodb_config[:delta_sync_config][:delta_sync_table_name]
-                  delta_sync_table_ttl datasource_attrs.dynamodb_config[:delta_sync_config][:delta_sync_table_ttl] if datasource_attrs.dynamodb_config[:delta_sync_config][:delta_sync_table_ttl]
+                  base_table_ttl datasource_attrs.dynamodb_config&.dig(:delta_sync_config)[:base_table_ttl] if datasource_attrs.dynamodb_config&.dig(:delta_sync_config)[:base_table_ttl]
+                  delta_sync_table_name datasource_attrs.dynamodb_config&.dig(:delta_sync_config)[:delta_sync_table_name] if datasource_attrs.dynamodb_config&.dig(:delta_sync_config)[:delta_sync_table_name]
+                  delta_sync_table_ttl datasource_attrs.dynamodb_config&.dig(:delta_sync_config)[:delta_sync_table_ttl] if datasource_attrs.dynamodb_config&.dig(:delta_sync_config)[:delta_sync_table_ttl]
                 end
               end
             end
@@ -71,31 +71,31 @@ module Pangea
           # Elasticsearch/OpenSearch configuration
           if datasource_attrs.elasticsearch_config
             elasticsearch_config do
-              endpoint datasource_attrs.elasticsearch_config[:endpoint]
-              region datasource_attrs.elasticsearch_config[:region] if datasource_attrs.elasticsearch_config[:region]
+              endpoint datasource_attrs.elasticsearch_config&.dig(:endpoint)
+              region datasource_attrs.elasticsearch_config&.dig(:region) if datasource_attrs.elasticsearch_config&.dig(:region)
             end
           end
           
           # EventBridge configuration
           if datasource_attrs.event_bridge_config
             event_bridge_config do
-              event_bus_arn datasource_attrs.event_bridge_config[:event_bus_arn]
+              event_bus_arn datasource_attrs.event_bridge_config&.dig(:event_bus_arn)
             end
           end
           
           # HTTP configuration
           if datasource_attrs.http_config
             http_config do
-              endpoint datasource_attrs.http_config[:endpoint]
+              endpoint datasource_attrs.http_config&.dig(:endpoint)
               
-              if datasource_attrs.http_config[:authorization_config]
+              if datasource_attrs.http_config&.dig(:authorization_config)
                 authorization_config do
-                  authorization_type datasource_attrs.http_config[:authorization_config][:authorization_type]
+                  authorization_type datasource_attrs.http_config&.dig(:authorization_config)[:authorization_type]
                   
-                  if datasource_attrs.http_config[:authorization_config][:aws_iam_config]
+                  if datasource_attrs.http_config&.dig(:authorization_config)[:aws_iam_config]
                     aws_iam_config do
-                      signing_region datasource_attrs.http_config[:authorization_config][:aws_iam_config][:signing_region] if datasource_attrs.http_config[:authorization_config][:aws_iam_config][:signing_region]
-                      signing_service_name datasource_attrs.http_config[:authorization_config][:aws_iam_config][:signing_service_name] if datasource_attrs.http_config[:authorization_config][:aws_iam_config][:signing_service_name]
+                      signing_region datasource_attrs.http_config&.dig(:authorization_config)[:aws_iam_config][:signing_region] if datasource_attrs.http_config&.dig(:authorization_config)[:aws_iam_config][:signing_region]
+                      signing_service_name datasource_attrs.http_config&.dig(:authorization_config)[:aws_iam_config][:signing_service_name] if datasource_attrs.http_config&.dig(:authorization_config)[:aws_iam_config][:signing_service_name]
                     end
                   end
                 end
@@ -106,23 +106,23 @@ module Pangea
           # Lambda configuration
           if datasource_attrs.lambda_config
             lambda_config do
-              function_arn datasource_attrs.lambda_config[:function_arn]
+              function_arn datasource_attrs.lambda_config&.dig(:function_arn)
             end
           end
           
           # Relational database configuration
           if datasource_attrs.relational_database_config
             relational_database_config do
-              database_name datasource_attrs.relational_database_config[:database_name] if datasource_attrs.relational_database_config[:database_name]
-              source_type datasource_attrs.relational_database_config[:source_type] if datasource_attrs.relational_database_config[:source_type]
+              database_name datasource_attrs.relational_database_config&.dig(:database_name) if datasource_attrs.relational_database_config&.dig(:database_name)
+              source_type datasource_attrs.relational_database_config&.dig(:source_type) if datasource_attrs.relational_database_config&.dig(:source_type)
               
-              if datasource_attrs.relational_database_config[:rds_http_endpoint_config]
+              if datasource_attrs.relational_database_config&.dig(:rds_http_endpoint_config)
                 rds_http_endpoint_config do
-                  aws_secret_store_arn datasource_attrs.relational_database_config[:rds_http_endpoint_config][:aws_secret_store_arn]
-                  database_name datasource_attrs.relational_database_config[:rds_http_endpoint_config][:database_name] if datasource_attrs.relational_database_config[:rds_http_endpoint_config][:database_name]
-                  db_cluster_identifier datasource_attrs.relational_database_config[:rds_http_endpoint_config][:db_cluster_identifier]
-                  region datasource_attrs.relational_database_config[:rds_http_endpoint_config][:region] if datasource_attrs.relational_database_config[:rds_http_endpoint_config][:region]
-                  schema datasource_attrs.relational_database_config[:rds_http_endpoint_config][:schema] if datasource_attrs.relational_database_config[:rds_http_endpoint_config][:schema]
+                  aws_secret_store_arn datasource_attrs.relational_database_config&.dig(:rds_http_endpoint_config)[:aws_secret_store_arn]
+                  database_name datasource_attrs.relational_database_config&.dig(:rds_http_endpoint_config)[:database_name] if datasource_attrs.relational_database_config&.dig(:rds_http_endpoint_config)[:database_name]
+                  db_cluster_identifier datasource_attrs.relational_database_config&.dig(:rds_http_endpoint_config)[:db_cluster_identifier]
+                  region datasource_attrs.relational_database_config&.dig(:rds_http_endpoint_config)[:region] if datasource_attrs.relational_database_config&.dig(:rds_http_endpoint_config)[:region]
+                  schema datasource_attrs.relational_database_config&.dig(:rds_http_endpoint_config)[:schema] if datasource_attrs.relational_database_config&.dig(:rds_http_endpoint_config)[:schema]
                 end
               end
             end

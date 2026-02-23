@@ -9,28 +9,28 @@ module Pangea
     module AWS
       module Types
         # Cognito identity provider configuration for identity pool
-        class CognitoIdentityPoolProvider < Dry::Struct
-          attribute :client_id, Resources::Types::String.optional
-          attribute :provider_name, Resources::Types::String.optional
-          attribute :server_side_token_check, Resources::Types::Bool.optional
+        class CognitoIdentityPoolProvider < Pangea::Resources::BaseAttributes
+          attribute? :client_id, Resources::Types::String.optional
+          attribute? :provider_name, Resources::Types::String.optional
+          attribute? :server_side_token_check, Resources::Types::Bool.optional
         end
 
         # SAML identity provider configuration
-        class SamlIdentityProvider < Dry::Struct
-          attribute :provider_name, Resources::Types::String
-          attribute :provider_arn, Resources::Types::String
+        class SamlIdentityProvider < Pangea::Resources::BaseAttributes
+          attribute? :provider_name, Resources::Types::String.optional
+          attribute? :provider_arn, Resources::Types::String.optional
         end
 
         # OpenID Connect identity provider configuration
-        class OpenIdConnectProvider < Dry::Struct
-          attribute :provider_name, Resources::Types::String
-          attribute :provider_arn, Resources::Types::String
+        class OpenIdConnectProvider < Pangea::Resources::BaseAttributes
+          attribute? :provider_name, Resources::Types::String.optional
+          attribute? :provider_arn, Resources::Types::String.optional
         end
 
         # Developer authenticated identities configuration
-        class DeveloperProvider < Dry::Struct
-          attribute :provider_name, Resources::Types::String
-          attribute :developer_user_identifier_name, Resources::Types::String.optional
+        class DeveloperProvider < Pangea::Resources::BaseAttributes
+          attribute? :provider_name, Resources::Types::String.optional
+          attribute? :developer_user_identifier_name, Resources::Types::String.optional
         end
       end
     end

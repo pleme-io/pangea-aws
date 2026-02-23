@@ -20,17 +20,17 @@ module Pangea
     module AWS
       module Types
         # Network configuration attributes for AWS RDS Database Instance
-        class NetworkAttributes < Dry::Struct
+        class NetworkAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # DB subnet group name
-          attribute :db_subnet_group_name, Resources::Types::String.optional
+          attribute? :db_subnet_group_name, Resources::Types::String.optional
 
           # VPC security group IDs
           attribute :vpc_security_group_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
           # Availability zone
-          attribute :availability_zone, Resources::Types::String.optional
+          attribute? :availability_zone, Resources::Types::String.optional
 
           # Multi-AZ deployment
           attribute :multi_az, Resources::Types::Bool.default(false)

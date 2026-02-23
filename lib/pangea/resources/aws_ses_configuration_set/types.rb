@@ -26,16 +26,16 @@ module Pangea
         # SES delivery options
         SesDeliveryOptions = Resources::Types::Hash.schema(
           tls_policy?: SesTlsPolicy.optional
-        )
+        ).lax
 
         # SES reputation tracking
         SesReputationMetricsEnabled = Resources::Types::Bool.default(false)
 
         # SES Configuration Set resource attributes
-        class SesConfigurationSetAttributes < Dry::Struct
+        class SesConfigurationSetAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :name, Resources::Types::String.constrained(
+          attribute? :name, Resources::Types::String.constrained(
             format: /\A[a-zA-Z0-9_-]+\z/,
             size: 1..64
           )
@@ -48,7 +48,7 @@ module Pangea
 
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate configuration set name
             if attrs[:name]

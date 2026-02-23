@@ -24,9 +24,9 @@ module Pangea
         # Event pattern validation for EventBridge rules
         EventPattern = Pangea::Resources::Types::String.constructor { |value|
           begin
-            parsed = JSON.parse(value)
+            parsed = ::JSON.parse(value)
 
-            unless parsed.is_a?(Hash)
+            unless parsed.is_a?(::Hash)
               raise Dry::Types::ConstraintError, "Event pattern must be a JSON object"
             end
 
@@ -37,7 +37,7 @@ module Pangea
             end
 
             value
-          rescue JSON::ParserError => e
+          rescue ::JSON::ParserError => e
             raise Dry::Types::ConstraintError, "Event pattern must be valid JSON: #{e.message}"
           end
         }

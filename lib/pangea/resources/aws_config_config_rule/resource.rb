@@ -91,7 +91,7 @@ module Pangea
       #   })
       def aws_config_config_rule(name, attributes = {})
         # Validate attributes using dry-struct
-        rule_attrs = Types::Types::ConfigConfigRuleAttributes.new(attributes)
+        rule_attrs = Types::ConfigConfigRuleAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_config_config_rule, name) do
@@ -100,12 +100,12 @@ module Pangea
           
           # Source configuration
           source do
-            owner rule_attrs.source[:owner]
-            source_identifier rule_attrs.source[:source_identifier] if rule_attrs.source[:source_identifier]
+            owner rule_attrs.source&.dig(:owner)
+            source_identifier rule_attrs.source&.dig(:source_identifier) if rule_attrs.source&.dig(:source_identifier)
             
             # Source detail for custom policy rules
-            if rule_attrs.source[:source_detail].is_a?(Array)
-              rule_attrs.source[:source_detail].each do |detail|
+            if rule_attrs.source&.dig(:source_detail).is_a?(Array)
+              rule_attrs.source&.dig(:source_detail).each do |detail|
                 source_detail do
                   event_source detail[:event_source] if detail[:event_source]
                   message_type detail[:message_type] if detail[:message_type]
@@ -124,31 +124,31 @@ module Pangea
           # Scope configuration
           if rule_attrs.has_scope?
             scope do
-              if rule_attrs.scope[:compliance_resource_types]
-                compliance_resource_types rule_attrs.scope[:compliance_resource_types]
+              if rule_attrs.scope&.dig(:compliance_resource_types)
+                compliance_resource_types rule_attrs.scope&.dig(:compliance_resource_types)
               end
               
-              if rule_attrs.scope[:tag_key]
-                tag_key rule_attrs.scope[:tag_key]
+              if rule_attrs.scope&.dig(:tag_key)
+                tag_key rule_attrs.scope&.dig(:tag_key)
               end
               
-              if rule_attrs.scope[:tag_value] 
-                tag_value rule_attrs.scope[:tag_value]
+              if rule_attrs.scope&.dig(:tag_value) 
+                tag_value rule_attrs.scope&.dig(:tag_value)
               end
               
-              if rule_attrs.scope[:compliance_resource_id]
-                compliance_resource_id rule_attrs.scope[:compliance_resource_id]
+              if rule_attrs.scope&.dig(:compliance_resource_id)
+                compliance_resource_id rule_attrs.scope&.dig(:compliance_resource_id)
               end
             end
           end
           
           # Dependencies
-          if rule_attrs.depends_on.any?
+          if rule_attrs.depends_on&.any?
             depends_on rule_attrs.depends_on
           end
           
           # Apply tags if present
-          if rule_attrs.tags.any?
+          if rule_attrs.tags&.any?
             tags do
               rule_attrs.tags.each do |key, value|
                 public_send(key, value)

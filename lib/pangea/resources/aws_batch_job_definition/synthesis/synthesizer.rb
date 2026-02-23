@@ -45,9 +45,9 @@ module Pangea
             ctx.num_nodes props[:num_nodes]
 
             props[:node_range_properties]&.each do |node_range|
-              ctx.node_range_properties do
-                target_nodes node_range[:target_nodes]
-                synthesize_node_container(self, node_range[:container]) if node_range[:container]
+              ctx.node_range_properties do |nr|
+                nr.target_nodes node_range[:target_nodes]
+                synthesize_node_container(nr, node_range[:container]) if node_range[:container]
               end
             end
           end
@@ -58,7 +58,10 @@ module Pangea
             return unless env_vars
 
             env_vars.each do |env|
-              ctx.environment { name env[:name]; value env[:value] }
+              ctx.environment do |e|
+                e.name env[:name]
+                e.value env[:value]
+              end
             end
           end
 
@@ -66,10 +69,10 @@ module Pangea
             return unless mounts
 
             mounts.each do |mp|
-              ctx.mount_points do
-                source_volume mp[:source_volume]
-                container_path mp[:container_path]
-                read_only mp[:read_only] if mp.key?(:read_only)
+              ctx.mount_points do |m|
+                m.source_volume mp[:source_volume]
+                m.container_path mp[:container_path]
+                m.read_only mp[:read_only] if mp.key?(:read_only)
               end
             end
           end
@@ -81,26 +84,28 @@ module Pangea
           end
 
           def synthesize_single_volume(ctx, vol)
-            ctx.volumes do
-              name vol[:name]
-              synthesize_host_config(self, vol[:host]) if vol[:host]
-              synthesize_efs_config(self, vol[:efs_volume_configuration]) if vol[:efs_volume_configuration]
+            ctx.volumes do |v|
+              v.name vol[:name]
+              synthesize_host_config(v, vol[:host]) if vol[:host]
+              synthesize_efs_config(v, vol[:efs_volume_configuration]) if vol[:efs_volume_configuration]
             end
           end
 
           def synthesize_host_config(ctx, host)
-            ctx.host { source_path host[:source_path] if host[:source_path] }
+            ctx.host do |h|
+              h.source_path host[:source_path] if host[:source_path]
+            end
           end
 
           def synthesize_efs_config(ctx, efs)
-            ctx.efs_volume_configuration do
-              file_system_id efs[:file_system_id]
-              root_directory efs[:root_directory] if efs[:root_directory]
-              transit_encryption efs[:transit_encryption] if efs[:transit_encryption]
+            ctx.efs_volume_configuration do |e|
+              e.file_system_id efs[:file_system_id]
+              e.root_directory efs[:root_directory] if efs[:root_directory]
+              e.transit_encryption efs[:transit_encryption] if efs[:transit_encryption]
               if efs[:authorization_config]
-                authorization_config do
-                  access_point_id efs[:authorization_config][:access_point_id]
-                  iam efs[:authorization_config][:iam] if efs[:authorization_config][:iam]
+                e.authorization_config do |a|
+                  a.access_point_id efs[:authorization_config][:access_point_id]
+                  a.iam efs[:authorization_config][:iam] if efs[:authorization_config][:iam]
                 end
               end
             end
@@ -110,30 +115,40 @@ module Pangea
             return unless reqs
 
             reqs.each do |req|
-              ctx.resource_requirements { type req[:type]; value req[:value] }
+              ctx.resource_requirements do |r|
+                r.type req[:type]
+                r.value req[:value]
+              end
             end
           end
 
           def synthesize_network_config(ctx, config)
             return unless config
 
-            ctx.network_configuration { assign_public_ip config[:assign_public_ip] }
+            ctx.network_configuration do |n|
+              n.assign_public_ip config[:assign_public_ip]
+            end
           end
 
           def synthesize_fargate_config(ctx, config)
             return unless config
 
-            ctx.fargate_platform_configuration { platform_version config[:platform_version] }
+            ctx.fargate_platform_configuration do |f|
+              f.platform_version config[:platform_version]
+            end
           end
 
           def synthesize_node_container(ctx, container)
-            ctx.container do
-              image container[:image]
-              vcpus container[:vcpus] if container[:vcpus]
-              memory container[:memory] if container[:memory]
-              job_role_arn container[:job_role_arn] if container[:job_role_arn]
+            ctx.container do |c|
+              c.image container[:image]
+              c.vcpus container[:vcpus] if container[:vcpus]
+              c.memory container[:memory] if container[:memory]
+              c.job_role_arn container[:job_role_arn] if container[:job_role_arn]
               container[:environment]&.each do |env|
-                environment { name env[:name]; value env[:value] }
+                c.environment do |e|
+                  e.name env[:name]
+                  e.value env[:value]
+                end
               end
             end
           end

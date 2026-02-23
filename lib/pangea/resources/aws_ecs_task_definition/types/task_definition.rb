@@ -8,33 +8,33 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class EcsTaskDefinitionAttributes < Dry::Struct
+        class EcsTaskDefinitionAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :family, Pangea::Resources::Types::String
-          attribute :container_definitions, Pangea::Resources::Types::Array.of(EcsContainerDefinition).constrained(min_size: 1)
+          attribute? :family, Pangea::Resources::Types::String.optional
+          attribute? :container_definitions, Pangea::Resources::Types::Array.of(EcsContainerDefinition).constrained(min_size: 1).optional
           attribute? :task_role_arn, Pangea::Resources::Types::String.optional
           attribute? :execution_role_arn, Pangea::Resources::Types::String.optional
           attribute :network_mode, Pangea::Resources::Types::String.constrained(included_in: %w[bridge host awsvpc none]).default('bridge')
-          attribute :requires_compatibilities, Pangea::Resources::Types::Array.of(
+          attribute? :requires_compatibilities, Pangea::Resources::Types::Array.of(
             Pangea::Resources::Types::String.constrained(included_in: %w[EC2 FARGATE EXTERNAL])
           ).default(['EC2'].freeze)
           attribute? :cpu, Pangea::Resources::Types::String.optional
           attribute? :memory, Pangea::Resources::Types::String.optional
 
           attribute :volumes, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::Hash).default([].freeze)
-          attribute :placement_constraints, Pangea::Resources::Types::Array.of(
-            Pangea::Resources::Types::Hash.schema(type: Pangea::Resources::Types::String.constrained(included_in: ['memberOf']), expression?: Pangea::Resources::Types::String.optional)
+          attribute? :placement_constraints, Pangea::Resources::Types::Array.of(
+            Pangea::Resources::Types::Hash.schema(type: Pangea::Resources::Types::String.constrained(included_in: ['memberOf']).lax, expression?: Pangea::Resources::Types::String.optional)
           ).default([].freeze)
 
           attribute? :ipc_mode, Pangea::Resources::Types::String.constrained(included_in: %w[host task none]).optional
           attribute? :pid_mode, Pangea::Resources::Types::String.constrained(included_in: %w[host task]).optional
-          attribute :inference_accelerators, Pangea::Resources::Types::Array.of(
-            Pangea::Resources::Types::Hash.schema(device_name: Pangea::Resources::Types::String, device_type: Pangea::Resources::Types::String)
+          attribute? :inference_accelerators, Pangea::Resources::Types::Array.of(
+            Pangea::Resources::Types::Hash.schema(device_name: Pangea::Resources::Types::String, device_type: Pangea::Resources::Types::String).lax
           ).default([].freeze)
           attribute? :proxy_configuration, Pangea::Resources::Types::Hash.optional
           attribute? :runtime_platform, Pangea::Resources::Types::Hash.optional
-          attribute? :ephemeral_storage, Pangea::Resources::Types::Hash.schema(size_in_gib: Pangea::Resources::Types::Integer.constrained(gteq: 21, lteq: 200)).optional
+          attribute? :ephemeral_storage, Pangea::Resources::Types::Hash.schema(size_in_gib: Pangea::Resources::Types::Integer.constrained(gteq: 21, lteq: 200).lax).optional
           attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
 
           FARGATE_CPU_MEMORY = {

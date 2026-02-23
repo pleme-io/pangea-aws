@@ -22,11 +22,11 @@ module Pangea
       module Types
         # Input transformer configuration for CloudWatch Event targets
         unless const_defined?(:InputTransformer)
-        class InputTransformer < Dry::Struct
+        class InputTransformer < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           attribute :input_paths_map, Resources::Types::Hash.default({}.freeze)
-          attribute :input_template, Resources::Types::String
+          attribute? :input_template, Resources::Types::String.optional
 
           def to_h
             {

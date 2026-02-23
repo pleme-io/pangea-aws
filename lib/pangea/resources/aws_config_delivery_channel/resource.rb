@@ -75,7 +75,7 @@ module Pangea
       #   })
       def aws_config_delivery_channel(name, attributes = {})
         # Validate attributes using dry-struct
-        channel_attrs = Types::Types::ConfigDeliveryChannelAttributes.new(attributes)
+        channel_attrs = Types::ConfigDeliveryChannelAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_config_delivery_channel, name) do
@@ -92,14 +92,14 @@ module Pangea
           # Snapshot delivery properties
           if channel_attrs.has_snapshot_delivery_properties?
             snapshot_delivery_properties do
-              if channel_attrs.snapshot_delivery_properties[:delivery_frequency]
-                delivery_frequency channel_attrs.snapshot_delivery_properties[:delivery_frequency]
+              if channel_attrs.snapshot_delivery_properties&.dig(:delivery_frequency)
+                delivery_frequency channel_attrs.snapshot_delivery_properties&.dig(:delivery_frequency)
               end
             end
           end
           
           # Apply tags if present
-          if channel_attrs.tags.any?
+          if channel_attrs.tags&.any?
             tags do
               channel_attrs.tags.each do |key, value|
                 public_send(key, value)

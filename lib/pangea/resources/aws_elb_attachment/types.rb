@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsElbAttachment resources
       # Manages aws elb attachment resources.
-      class AwsElbAttachmentAttributes < Dry::Struct
+      class AwsElbAttachmentAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_elb_attachment
         
         # Tags to apply to the resource

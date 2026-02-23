@@ -20,7 +20,9 @@ module Pangea
       module Types
         # IAM user access patterns for different use cases
         module UserPatterns
-          def self.developer_user(name, organizational_unit = 'developers')
+          module_function
+
+          def developer_user(name, organizational_unit = 'developers')
             {
               name: name,
               path: "/#{organizational_unit}/",
@@ -33,7 +35,7 @@ module Pangea
             }
           end
 
-          def self.service_account_user(service_name, environment = 'production')
+          def service_account_user(service_name, environment = 'production')
             {
               name: "#{service_name}-service",
               path: "/service-accounts/#{environment}/",
@@ -48,7 +50,7 @@ module Pangea
             }
           end
 
-          def self.cicd_user(pipeline_name, repository = nil)
+          def cicd_user(pipeline_name, repository = nil)
             {
               name: "#{pipeline_name}-cicd",
               path: '/cicd/',
@@ -63,7 +65,7 @@ module Pangea
             }
           end
 
-          def self.admin_user(name, department = 'infrastructure')
+          def admin_user(name, department = 'infrastructure')
             {
               name: "#{name}.admin",
               path: "/admins/#{department}/",
@@ -77,7 +79,7 @@ module Pangea
             }
           end
 
-          def self.readonly_user(name, purpose = 'monitoring')
+          def readonly_user(name, purpose = 'monitoring')
             {
               name: "#{name}.readonly",
               path: '/readonly/',
@@ -90,7 +92,7 @@ module Pangea
             }
           end
 
-          def self.emergency_user(name)
+          def emergency_user(name)
             {
               name: "#{name}.emergency",
               path: '/emergency/',
@@ -103,7 +105,7 @@ module Pangea
             }
           end
 
-          def self.cross_account_user(name, target_account_id)
+          def cross_account_user(name, target_account_id)
             {
               name: "#{name}.crossaccount",
               path: '/cross-account/',
@@ -126,11 +128,14 @@ module Pangea
           READONLY_BOUNDARY = 'arn:aws:iam::123456789012:policy/ReadOnlyPermissionsBoundary'
           CROSS_ACCOUNT_BOUNDARY = 'arn:aws:iam::123456789012:policy/CrossAccountPermissionsBoundary'
 
-          def self.all_boundaries
-            constants.map { |const| const_get(const) }.select { |val| val.is_a?(String) }
+          module_function
+
+          def all_boundaries
+            [DEVELOPER_BOUNDARY, SERVICE_ACCOUNT_BOUNDARY, CICD_BOUNDARY,
+             ADMIN_BOUNDARY, READONLY_BOUNDARY, CROSS_ACCOUNT_BOUNDARY]
           end
 
-          def self.boundary_for_user_type(user_type)
+          def boundary_for_user_type(user_type)
             case user_type
             when :developer then DEVELOPER_BOUNDARY
             when :service_account then SERVICE_ACCOUNT_BOUNDARY

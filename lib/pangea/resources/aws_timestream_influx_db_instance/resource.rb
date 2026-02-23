@@ -49,7 +49,7 @@ module Pangea
           vpc_subnet_ids attrs.vpc_subnet_ids if attrs.vpc_subnet_ids
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

@@ -47,7 +47,7 @@ module Pangea
           # Network configuration
           port cluster_attrs.port
           cluster_subnet_group_name cluster_attrs.cluster_subnet_group_name if cluster_attrs.cluster_subnet_group_name
-          vpc_security_group_ids cluster_attrs.vpc_security_group_ids if cluster_attrs.vpc_security_group_ids.any?
+          vpc_security_group_ids cluster_attrs.vpc_security_group_ids if cluster_attrs.vpc_security_group_ids&.any?
           availability_zone cluster_attrs.availability_zone if cluster_attrs.availability_zone
           enhanced_vpc_routing cluster_attrs.enhanced_vpc_routing
           publicly_accessible cluster_attrs.publicly_accessible
@@ -79,26 +79,26 @@ module Pangea
           # Logging configuration
           if cluster_attrs.logging
             logging do
-              enable cluster_attrs.logging[:enable]
-              bucket_name cluster_attrs.logging[:bucket_name] if cluster_attrs.logging[:bucket_name]
-              s3_key_prefix cluster_attrs.logging[:s3_key_prefix] if cluster_attrs.logging[:s3_key_prefix]
+              enable cluster_attrs.logging&.dig(:enable)
+              bucket_name cluster_attrs.logging&.dig(:bucket_name) if cluster_attrs.logging&.dig(:bucket_name)
+              s3_key_prefix cluster_attrs.logging&.dig(:s3_key_prefix) if cluster_attrs.logging&.dig(:s3_key_prefix)
             end
           end
           
           # Snapshot copy configuration
           if cluster_attrs.snapshot_copy
             snapshot_copy do
-              destination_region cluster_attrs.snapshot_copy[:destination_region]
-              retention_period cluster_attrs.snapshot_copy[:retention_period] if cluster_attrs.snapshot_copy[:retention_period]
-              grant_name cluster_attrs.snapshot_copy[:grant_name] if cluster_attrs.snapshot_copy[:grant_name]
+              destination_region cluster_attrs.snapshot_copy&.dig(:destination_region)
+              retention_period cluster_attrs.snapshot_copy&.dig(:retention_period) if cluster_attrs.snapshot_copy&.dig(:retention_period)
+              grant_name cluster_attrs.snapshot_copy&.dig(:grant_name) if cluster_attrs.snapshot_copy&.dig(:grant_name)
             end
           end
           
           # IAM roles
-          iam_roles cluster_attrs.iam_roles if cluster_attrs.iam_roles.any?
+          iam_roles cluster_attrs.iam_roles if cluster_attrs.iam_roles&.any?
           
           # Apply tags if present
-          if cluster_attrs.tags.any?
+          if cluster_attrs.tags&.any?
             tags do
               cluster_attrs.tags.each do |key, value|
                 public_send(key, value)

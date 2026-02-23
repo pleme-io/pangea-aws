@@ -21,10 +21,10 @@ module Pangea
       module Types
       # Type-safe attributes for AwsVpcEndpointConnectionNotification resources
       # Manages VPC endpoint connection notifications for monitoring endpoint state changes.
-      class VpcEndpointConnectionNotificationAttributes < Dry::Struct
-        attribute :vpc_endpoint_service_id, Resources::Types::String
-        attribute :connection_notification_arn, Resources::Types::String
-        attribute :connection_events, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['Accept', 'Connect', 'Delete', 'Reject']))
+      class VpcEndpointConnectionNotificationAttributes < Pangea::Resources::BaseAttributes
+        attribute? :vpc_endpoint_service_id, Resources::Types::String.optional
+        attribute? :connection_notification_arn, Resources::Types::String.optional
+        attribute? :connection_events, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['Accept', 'Connect', 'Delete', 'Reject'])).optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

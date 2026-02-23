@@ -56,13 +56,15 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
   
   # Test Fargate service synthesis
   it "synthesizes Fargate service correctly" do
+    _cluster_arn = cluster_arn
+    _task_definition_arn = task_definition_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_ecs_service(:fargate, {
         name: "fargate-service",
-        cluster: cluster_arn,
-        task_definition: task_definition_arn,
+        cluster: _cluster_arn,
+        task_definition: _task_definition_arn,
         launch_type: "FARGATE",
         platform_version: "1.4.0",
         desired_count: 3
@@ -119,6 +121,7 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
   
   # Test service with load balancer
   it "synthesizes load balanced service correctly" do
+    _target_group_arn = target_group_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -130,7 +133,7 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
         desired_count: 3,
         load_balancer: [
           {
-            target_group_arn: target_group_arn,
+            target_group_arn: _target_group_arn,
             container_name: "web",
             container_port: 80
           }
@@ -184,6 +187,7 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
   
   # Test service with service discovery
   it "synthesizes service with service discovery correctly" do
+    _registry_arn = registry_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -195,7 +199,7 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
         desired_count: 2,
         service_registries: [
           {
-            registry_arn: registry_arn,
+            registry_arn: _registry_arn,
             port: 8080,
             container_name: "api"
           }
@@ -217,6 +221,7 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
   
   # Test service with Service Connect
   it "synthesizes service with Service Connect correctly" do
+    _service_connect_namespace = service_connect_namespace
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -228,7 +233,7 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
         desired_count: 2,
         service_connect_configuration: {
           enabled: true,
-          namespace: service_connect_namespace,
+          namespace: _service_connect_namespace,
           services: [
             {
               port_name: "api",
@@ -411,17 +416,20 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
   
   # Test web application service pattern
   it "synthesizes web application service pattern correctly" do
+    _cluster_arn = cluster_arn
+    _task_definition_arn = task_definition_arn
+    _target_group_arn = target_group_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_ecs_service(:web_app, {
         name: "web-app-service",
-        cluster: cluster_arn,
-        task_definition: task_definition_arn,
+        cluster: _cluster_arn,
+        task_definition: _task_definition_arn,
         launch_type: "FARGATE",
         desired_count: 3,
         load_balancer: [
-          { target_group_arn: target_group_arn, container_name: "web", container_port: 80 }
+          { target_group_arn: _target_group_arn, container_name: "web", container_port: 80 }
         ],
         network_configuration: {
           subnets: ["subnet-private-1", "subnet-private-2"],
@@ -473,6 +481,7 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
   
   # Test microservice pattern
   it "synthesizes microservice pattern correctly" do
+    _service_connect_namespace = service_connect_namespace
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -484,7 +493,7 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
         desired_count: 2,
         service_connect_configuration: {
           enabled: true,
-          namespace: service_connect_namespace,
+          namespace: _service_connect_namespace,
           services: [
             {
               port_name: "api",
@@ -578,6 +587,7 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
   
   # Test highly available service pattern
   it "synthesizes highly available service pattern correctly" do
+    _target_group_arn = target_group_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -588,7 +598,7 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
         launch_type: "FARGATE",
         desired_count: 6,
         load_balancer: [
-          { target_group_arn: target_group_arn, container_name: "api", container_port: 8080 }
+          { target_group_arn: _target_group_arn, container_name: "api", container_port: 8080 }
         ],
         network_configuration: {
           subnets: ["subnet-private-1a", "subnet-private-1b", "subnet-private-1c"],
@@ -633,6 +643,7 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
   
   # Test service with Blue/Green deployment
   it "synthesizes Blue/Green deployment service correctly" do
+    _target_group_arn = target_group_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -644,7 +655,7 @@ RSpec.describe "aws_ecs_service terraform synthesis" do
         desired_count: 4,
         deployment_controller: { type: "CODE_DEPLOY" },
         load_balancer: [
-          { target_group_arn: target_group_arn, container_name: "api", container_port: 8080 }
+          { target_group_arn: _target_group_arn, container_name: "api", container_port: 8080 }
         ],
         network_configuration: {
           subnets: ["subnet-private-1", "subnet-private-2"],

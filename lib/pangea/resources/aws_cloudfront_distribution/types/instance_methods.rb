@@ -48,7 +48,7 @@ module Pangea
             factors << 'geo_restricted' if has_geographic_restrictions?
             case factors.size
             when 0..1 then 'basic'
-            when 2..3 then 'enhanced'
+            when 2 then 'enhanced'
             else 'maximum'
             end
           end

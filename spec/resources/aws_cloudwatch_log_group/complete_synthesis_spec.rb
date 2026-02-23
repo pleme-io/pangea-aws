@@ -27,14 +27,14 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test minimal log group synthesis
   it "synthesizes minimal log group correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:app_logs, {
         name: "/aws/lambda/my-function"
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "app_logs")
     
     expect(log_group_config["name"]).to eq("/aws/lambda/my-function")
@@ -47,7 +47,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test log group with retention synthesis
   it "synthesizes log group with retention correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:api_logs, {
         name: "/application/api/access",
@@ -55,7 +55,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "api_logs")
     
     expect(log_group_config["name"]).to eq("/application/api/access")
@@ -68,7 +68,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
     kms_key_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
     
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:secure_logs, {
         name: "/secure/audit-logs",
@@ -77,7 +77,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "secure_logs")
     
     expect(log_group_config["name"]).to eq("/secure/audit-logs")
@@ -89,7 +89,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test infrequent access log group synthesis
   it "synthesizes infrequent access log group correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:archive_logs, {
         name: "/archive/old-data",
@@ -98,7 +98,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "archive_logs")
     
     expect(log_group_config["name"]).to eq("/archive/old-data")
@@ -110,7 +110,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test log group with skip_destroy synthesis
   it "synthesizes log group with skip_destroy correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:critical_logs, {
         name: "/critical/system-logs",
@@ -119,7 +119,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "critical_logs")
     
     expect(log_group_config["name"]).to eq("/critical/system-logs")
@@ -130,7 +130,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test log group with tags synthesis
   it "synthesizes log group with tags correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:tagged_logs, {
         name: "/application/web-service",
@@ -144,7 +144,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "tagged_logs")
     
     expect(log_group_config["name"]).to eq("/application/web-service")
@@ -164,7 +164,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
     kms_key_arn = "arn:aws:kms:us-east-1:123456789012:key/comprehensive-key"
     
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:comprehensive, {
         name: "/comprehensive/test-logs",
@@ -181,7 +181,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "comprehensive")
     
     expect(log_group_config["name"]).to eq("/comprehensive/test-logs")
@@ -202,7 +202,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test Lambda function log group synthesis
   it "synthesizes Lambda function log group correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:lambda_logs, {
         name: "/aws/lambda/data-processor",
@@ -215,7 +215,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "lambda_logs")
     
     expect(log_group_config["name"]).to eq("/aws/lambda/data-processor")
@@ -230,7 +230,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test ECS service log group synthesis
   it "synthesizes ECS service log group correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:ecs_logs, {
         name: "/ecs/web-service",
@@ -244,7 +244,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "ecs_logs")
     
     expect(log_group_config["name"]).to eq("/ecs/web-service")
@@ -260,7 +260,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test API Gateway log group synthesis
   it "synthesizes API Gateway log group correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:apigw_logs, {
         name: "API-Gateway-Execution-Logs_abcdef123/production",
@@ -273,7 +273,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "apigw_logs")
     
     expect(log_group_config["name"]).to eq("API-Gateway-Execution-Logs_abcdef123/production")
@@ -288,7 +288,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test VPC Flow Logs log group synthesis
   it "synthesizes VPC Flow Logs log group correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:vpc_flow_logs, {
         name: "/aws/vpc/flowlogs",
@@ -301,7 +301,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "vpc_flow_logs")
     
     expect(log_group_config["name"]).to eq("/aws/vpc/flowlogs")
@@ -318,7 +318,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
     kms_key_arn = "arn:aws:kms:us-east-1:123456789012:key/audit-compliance"
     
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:audit_logs, {
         name: "/audit/financial-transactions",
@@ -335,7 +335,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "audit_logs")
     
     expect(log_group_config["name"]).to eq("/audit/financial-transactions")
@@ -354,7 +354,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test microservices log group synthesis
   it "synthesizes microservices log group correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:user_service_logs, {
         name: "/microservices/user-service/application",
@@ -369,7 +369,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "user_service_logs")
     
     expect(log_group_config["name"]).to eq("/microservices/user-service/application")
@@ -386,7 +386,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test log group without tags (empty tags block should not appear)
   it "synthesizes log group without tags correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:no_tags, {
         name: "/simple/logs",
@@ -394,7 +394,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "no_tags")
     
     expect(log_group_config["name"]).to eq("/simple/logs")
@@ -405,7 +405,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test cost-optimized log group synthesis
   it "synthesizes cost-optimized log group correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:cost_optimized, {
         name: "/cost-optimized/batch-logs",
@@ -419,7 +419,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "cost_optimized")
     
     expect(log_group_config["name"]).to eq("/cost-optimized/batch-logs")
@@ -435,7 +435,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test development log group synthesis with short retention
   it "synthesizes development log group correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:dev_logs, {
         name: "/development/web-app/debug",
@@ -448,7 +448,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "dev_logs")
     
     expect(log_group_config["name"]).to eq("/development/web-app/debug")
@@ -466,7 +466,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
     kms_key_arn = "arn:aws:kms:us-east-1:123456789012:key/security-logs-key"
     
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:security_logs, {
         name: "/security/auth-events",
@@ -483,7 +483,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "security_logs")
     
     expect(log_group_config["name"]).to eq("/security/auth-events")
@@ -502,7 +502,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test CloudTrail log group synthesis
   it "synthesizes CloudTrail log group correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:cloudtrail_logs, {
         name: "/aws/cloudtrail/management-events",
@@ -516,7 +516,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "cloudtrail_logs")
     
     expect(log_group_config["name"]).to eq("/aws/cloudtrail/management-events")
@@ -532,7 +532,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test batch processing log group synthesis
   it "synthesizes batch processing log group correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:batch_logs, {
         name: "/batch/data-pipeline/processing",
@@ -546,7 +546,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "batch_logs")
     
     expect(log_group_config["name"]).to eq("/batch/data-pipeline/processing")
@@ -562,7 +562,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
   # Test monitoring log group synthesis
   it "synthesizes monitoring log group correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_cloudwatch_log_group(:monitoring_logs, {
         name: "/monitoring/metrics-collector",
@@ -575,7 +575,7 @@ RSpec.describe "aws_cloudwatch_log_group terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     log_group_config = json_output.dig("resource", "aws_cloudwatch_log_group", "monitoring_logs")
     
     expect(log_group_config["name"]).to eq("/monitoring/metrics-collector")

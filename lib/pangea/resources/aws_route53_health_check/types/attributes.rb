@@ -10,11 +10,11 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Route53 Health Check resources
-        class Route53HealthCheckAttributes < Dry::Struct
+        class Route53HealthCheckAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Health check type
-          attribute :type, Pangea::Resources::Types::String.constrained(included_in: %w[HTTP HTTPS HTTP_STR_MATCH HTTPS_STR_MATCH TCP CALCULATED CLOUDWATCH_METRIC])
+          attribute? :type, Pangea::Resources::Types::String.constrained(included_in: %w[HTTP HTTPS HTTP_STR_MATCH HTTPS_STR_MATCH TCP CALCULATED CLOUDWATCH_METRIC]).optional
 
           # FQDN to check (required for HTTP/HTTPS/TCP types)
           attribute? :fqdn, Pangea::Resources::Types::String.optional
@@ -74,10 +74,26 @@ module Pangea
           attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
 
           def self.new(attributes = {})
-            attrs = super(attributes)
-            validate_type_specific!(attrs)
-            validate_formats!(attrs)
-            attrs
+            attrs = attributes.is_a?(::Hash) ? attributes.dup : {}
+
+            # Apply default ports for HTTP/HTTPS if not specified
+            if !attrs.key?(:port) && !attrs.key?('port')
+              case (attrs[:type] || attrs['type'])
+              when 'HTTP', 'HTTP_STR_MATCH' then attrs[:port] = 80
+              when 'HTTPS', 'HTTPS_STR_MATCH' then attrs[:port] = 443
+              end
+            end
+
+            # Normalize resource_path with leading slash
+            path = attrs[:resource_path] || attrs['resource_path']
+            if path.is_a?(::String) && !path.empty? && !path.start_with?('/')
+              attrs[:resource_path] = "/#{path}"
+            end
+
+            result = super(attrs)
+            validate_type_specific!(result)
+            validate_formats!(result)
+            result
           end
 
           def self.validate_type_specific!(attrs)

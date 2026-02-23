@@ -220,11 +220,12 @@ RSpec.describe "aws_internet_gateway terraform synthesis" do
         [:resource, :aws_internet_gateway, :tagged_igw]
       )
       
-      # Verify tags block was called
-      expect(test_synthesizer.method_calls).to include([:tags])
-      expect(test_synthesizer.method_calls).to include([:Name, "main-igw"])
-      expect(test_synthesizer.method_calls).to include([:Environment, "production"])
-      expect(test_synthesizer.method_calls).to include([:ManagedBy, "pangea"])
+      # Verify tags were passed as hash argument
+      tags_call = test_synthesizer.method_calls.find { |c| c[0] == :tags && c[1].is_a?(Hash) }
+      expect(tags_call).not_to be_nil
+      expect(tags_call[1][:Name]).to eq("main-igw")
+      expect(tags_call[1][:Environment]).to eq("production")
+      expect(tags_call[1][:ManagedBy]).to eq("pangea")
       
       # Verify vpc_id was NOT called (since not provided)
       vpc_id_calls = test_synthesizer.method_calls.select { |call| call[0] == :vpc_id }
@@ -267,12 +268,13 @@ RSpec.describe "aws_internet_gateway terraform synthesis" do
         [:vpc_id, vpc_id]
       )
       
-      # Verify all tags were processed
-      expect(test_synthesizer.method_calls).to include([:tags])
-      expect(test_synthesizer.method_calls).to include([:Name, "complete-igw"])
-      expect(test_synthesizer.method_calls).to include([:Environment, "production"])
-      expect(test_synthesizer.method_calls).to include([:Purpose, "internet-access"])
-      expect(test_synthesizer.method_calls).to include([:CostCenter, "infrastructure"])
+      # Verify all tags were passed as hash argument
+      tags_call = test_synthesizer.method_calls.find { |c| c[0] == :tags && c[1].is_a?(Hash) }
+      expect(tags_call).not_to be_nil
+      expect(tags_call[1][:Name]).to eq("complete-igw")
+      expect(tags_call[1][:Environment]).to eq("production")
+      expect(tags_call[1][:Purpose]).to eq("internet-access")
+      expect(tags_call[1][:CostCenter]).to eq("infrastructure")
     end
     
     it "synthesizes internet gateway for multi-environment deployment" do
@@ -314,10 +316,14 @@ RSpec.describe "aws_internet_gateway terraform synthesis" do
         # Verify each environment's synthesis
         expect(test_synthesizer.method_calls).to include(
           [:resource, :aws_internet_gateway, :"#{env[:name]}_igw"],
-          [:vpc_id, env[:vpc]],
-          [:Name, "#{env[:name]}-igw"],
-          [:Environment, env[:name]]
+          [:vpc_id, env[:vpc]]
         )
+        # Verify tags were passed as hash argument
+        tags_call = test_synthesizer.method_calls.find { |c|
+          c[0] == :tags && c[1].is_a?(Hash) && c[1][:Name] == "#{env[:name]}-igw"
+        }
+        expect(tags_call).not_to be_nil
+        expect(tags_call[1][:Environment]).to eq(env[:name])
       end
     end
     
@@ -357,12 +363,12 @@ RSpec.describe "aws_internet_gateway terraform synthesis" do
         [:vpc_id, vpc_id]
       )
       
-      # Verify route table specific tags
-      expect(test_synthesizer.method_calls).to include(
-        [:Type, "public"],
-        [:Role, "internet-access"],
-        [:Usage, "public-subnets"]
-      )
+      # Verify route table specific tags via hash argument
+      tags_call = test_synthesizer.method_calls.find { |c| c[0] == :tags && c[1].is_a?(Hash) }
+      expect(tags_call).not_to be_nil
+      expect(tags_call[1][:Type]).to eq("public")
+      expect(tags_call[1][:Role]).to eq("internet-access")
+      expect(tags_call[1][:Usage]).to eq("public-subnets")
       
       # Verify the returned reference can be used for route configuration
       expect(ref.outputs[:id]).to eq("${aws_internet_gateway.public_igw.id}")

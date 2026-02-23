@@ -109,9 +109,9 @@ RSpec.describe "aws_lb_listener synthesis" do
             redirect: {
               protocol: "HTTPS",
               port: "443",
-              host: "#{host}",
-              path: "/#{path}",
-              query: "#{query}",
+              host: '#{host}',
+              path: '/#{path}',
+              query: '#{query}',
               status_code: "HTTP_301"
             }
           }],
@@ -156,7 +156,7 @@ RSpec.describe "aws_lb_listener synthesis" do
       end
       
       forward_config = result[:resource][:aws_lb_listener][:weighted_listener][:default_action].first[:forward]
-      expect(forward_config[:target_groups]).to have(2).items
+      expect(forward_config[:target_groups].size).to eq(2)
       expect(forward_config[:target_groups].first).to include(
         arn: "arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/blue/123",
         weight: 80
@@ -226,7 +226,7 @@ RSpec.describe "aws_lb_listener synthesis" do
       end
       
       actions = result[:resource][:aws_lb_listener][:cognito_auth_listener][:default_action]
-      expect(actions).to have(2).items
+      expect(actions.size).to eq(2)
       
       auth_action = actions.first
       expect(auth_action[:type]).to eq("authenticate-cognito")
@@ -403,7 +403,7 @@ RSpec.describe "aws_lb_listener synthesis" do
       end
       
       forward_config = result[:resource][:aws_lb_listener][:blue_green_deploy][:default_action].first[:forward]
-      expect(forward_config[:target_groups]).to have(2).items
+      expect(forward_config[:target_groups].size).to eq(2)
       
       # Blue environment at 100% traffic
       expect(forward_config[:target_groups].first[:weight]).to eq(100)
@@ -422,9 +422,9 @@ RSpec.describe "aws_lb_listener synthesis" do
             redirect: {
               protocol: "HTTPS",
               port: "443",
-              host: "#{host}",
-              path: "/#{path}",
-              query: "#{query}",
+              host: '#{host}',
+              path: '/#{path}',
+              query: '#{query}',
               status_code: "HTTP_301"
             }
           }],

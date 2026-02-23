@@ -22,62 +22,62 @@ module Pangea
     module AwsIotanalyticsDatasetTypes
       # Main attributes for IoT Analytics dataset resource
       unless const_defined?(:Attributes)
-      class Attributes < Dry::Struct
+      class Attributes < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # Name of the dataset
-        attribute :dataset_name, Resources::Types::String
+        attribute? :dataset_name, Resources::Types::String.optional
 
         # List of actions for dataset content generation
-        attribute :actions, Resources::Types::Array.of(Action)
+        attribute :actions, Resources::Types::Array.of(Action).default([].freeze)
 
         # Content delivery rules
-        attribute :content_delivery_rules, Resources::Types::Array.of(ContentDeliveryRule).optional
+        attribute :content_delivery_rules, Resources::Types::Array.of(ContentDeliveryRule).default([].freeze)
 
         # Triggers for dataset content generation
-        attribute :triggers, Resources::Types::Array.of(Trigger).optional
+        attribute :triggers, Resources::Types::Array.of(Trigger).default([].freeze)
 
         # Optional data retention period
-        class RetentionPeriod < Dry::Struct
+        class RetentionPeriod < Pangea::Resources::BaseAttributes
           schema schema.strict
 
           # Whether retention is unlimited
-          attribute :unlimited, Resources::Types::Bool.optional
+          attribute? :unlimited, Resources::Types::Bool.optional
 
           # Number of days to retain (if not unlimited)
-          attribute :number_of_days, Resources::Types::Integer.optional
+          attribute? :number_of_days, Resources::Types::Integer.optional
         end
 
         attribute? :retention_period, RetentionPeriod.optional
 
         # Versioning configuration
-        class VersioningConfiguration < Dry::Struct
+        class VersioningConfiguration < Pangea::Resources::BaseAttributes
           schema schema.strict
 
           # Whether versioning is unlimited
-          attribute :unlimited, Resources::Types::Bool.optional
+          attribute? :unlimited, Resources::Types::Bool.optional
 
           # Maximum number of versions to keep
-          attribute :max_versions, Resources::Types::Integer.optional
+          attribute? :max_versions, Resources::Types::Integer.optional
         end
 
         attribute? :versioning_configuration, VersioningConfiguration.optional
 
         # Resource tags
-        attribute :tags, Resources::Types::Hash.map(Types::String, Types::String).optional
+        attribute :tags, Resources::Types::Hash.map(Types::String, Types::String).default({}.freeze)
       end
       end
 
       # Output attributes from dataset resource
       unless const_defined?(:Outputs)
-      class Outputs < Dry::Struct
+      class Outputs < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # The dataset ARN
-        attribute :arn, Resources::Types::String
+        attribute? :arn, Resources::Types::String.optional
 
         # The dataset name
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
       end
       end
     end

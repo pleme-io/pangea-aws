@@ -66,7 +66,7 @@ RSpec.describe 'aws_lb synthesis' do
           name: 'logged-alb',
           load_balancer_type: 'application',
           internal: false,
-          subnet_ids: ['${aws_subnet.a.id}'],
+          subnet_ids: ['${aws_subnet.a.id}', '${aws_subnet.b.id}'],
           access_logs: {
             bucket: 'my-logs-bucket',
             prefix: 'alb-logs',
@@ -89,7 +89,7 @@ RSpec.describe 'aws_lb synthesis' do
           name: 'tagged-alb',
           load_balancer_type: 'application',
           internal: false,
-          subnet_ids: ['${aws_subnet.a.id}'],
+          subnet_ids: ['${aws_subnet.a.id}', '${aws_subnet.b.id}'],
           tags: { Environment: 'production' }
         })
       end
@@ -109,7 +109,7 @@ RSpec.describe 'aws_lb synthesis' do
           name: 'test-alb',
           load_balancer_type: 'application',
           internal: false,
-          subnet_ids: ['subnet-123']
+          subnet_ids: ['subnet-123', 'subnet-456']
         })
       end
 

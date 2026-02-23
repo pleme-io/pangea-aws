@@ -27,7 +27,7 @@ module Pangea
       # @param attributes [Hash] Mount target configuration
       # @return [ResourceReference] Reference to the created mount target
       def aws_efs_mount_target(name, attributes = {})
-        validated_attrs = AWS::Types::Types::EfsMountTargetAttributes.new(attributes)
+        validated_attrs = Types::EfsMountTargetAttributes.new(attributes)
         
         resource_attributes = {
           file_system_id: validated_attrs.file_system_id,

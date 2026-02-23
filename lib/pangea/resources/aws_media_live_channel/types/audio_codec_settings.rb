@@ -25,7 +25,7 @@ module Pangea
               sample_rate?: T::Float.optional,
               spec?: T::String.constrained(included_in: ['MPEG2', 'MPEG4']).optional,
               vbr_quality?: T::String.constrained(included_in: ['HIGH', 'LOW', 'MEDIUM_HIGH', 'MEDIUM_LOW']).optional
-            )
+            ).lax
 
             # AC3 codec settings
             Ac3Settings = T::Hash.schema(
@@ -36,7 +36,7 @@ module Pangea
               drc_profile?: T::String.constrained(included_in: ['FILM_STANDARD', 'NONE']).optional,
               lfe_filter?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional,
               metadata_control?: T::String.constrained(included_in: ['FOLLOW_INPUT', 'USE_CONFIGURED']).optional
-            )
+            ).lax
 
             # EAC3 codec settings
             Eac3Settings = T::Hash.schema(
@@ -60,14 +60,14 @@ module Pangea
               stereo_downmix?: T::String.constrained(included_in: ['DPL2', 'LO_RO', 'LT_RT', 'NOT_INDICATED']).optional,
               surround_ex_mode?: T::String.constrained(included_in: ['DISABLED', 'ENABLED', 'NOT_INDICATED']).optional,
               surround_mode?: T::String.constrained(included_in: ['DISABLED', 'ENABLED', 'NOT_INDICATED']).optional
-            )
+            ).lax
 
             # Codec settings container
             CodecSettings = T::Hash.schema(
               aac_settings?: AacSettings.optional,
               ac3_settings?: Ac3Settings.optional,
               eac3_settings?: Eac3Settings.optional
-            )
+            ).lax
 
             # Remix settings
             ChannelMapping = T::Hash.schema(
@@ -75,7 +75,7 @@ module Pangea
                 T::Hash.schema(
                   gain: T::Integer,
                   input_channel: T::Integer
-                )
+                ).lax
               ),
               output_channel: T::Integer
             )
@@ -84,7 +84,7 @@ module Pangea
               channel_mappings: T::Array.of(ChannelMapping),
               channels_in?: T::Integer.optional,
               channels_out?: T::Integer.optional
-            )
+            ).lax
 
             # Audio description
             AudioDescription = T::Hash.schema(
@@ -97,7 +97,7 @@ module Pangea
               name: T::String,
               remix_settings?: RemixSettings.optional,
               stream_name?: T::String.optional
-            )
+            ).lax
           end
         end
       end

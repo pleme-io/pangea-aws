@@ -21,8 +21,8 @@ module Pangea
     module AwsGameliftAlias
       module Types
         # Routing strategy for the alias
-        class RoutingStrategy < Dry::Struct
-          attribute :type, Pangea::Resources::Types::String.constrained(included_in: ["SIMPLE", "TERMINAL"])
+        class RoutingStrategy < Pangea::Resources::BaseAttributes
+          attribute? :type, Pangea::Resources::Types::String.constrained(included_in: ["SIMPLE", "TERMINAL"]).optional
           attribute :fleet_id?, Pangea::Resources::Types::String
           attribute :message?, Pangea::Resources::Types::String
 

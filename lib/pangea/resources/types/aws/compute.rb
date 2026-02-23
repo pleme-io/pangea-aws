@@ -54,44 +54,45 @@ module Pangea
       LambdaProvisionedConcurrency = Integer.constrained(gteq: 1, lteq: 1000)
       LambdaEventSourcePosition = Resources::Types::String.constrained(included_in: ['TRIM_HORIZON', 'LATEST', 'AT_TIMESTAMP'])
 
-      LambdaDeadLetterConfig = Hash.schema(target_arn: String.constrained(format: /\Aarn:aws:(sqs|sns):/))
+      LambdaDeadLetterConfig = Hash.schema(target_arn: String.constrained(format: /\Aarn:aws:(sqs|sns):/)).lax
 
       LambdaVpcConfig = Hash.schema(
         subnet_ids: Array.of(String).constrained(min_size: 1),
         security_group_ids: Array.of(String).constrained(min_size: 1)
-      )
+      ).lax
 
       LambdaEnvironmentVariables = Hash.map(String.constrained(format: /\A[a-zA-Z_][a-zA-Z0-9_]*\z/), String)
 
       LambdaFileSystemConfig = Hash.schema(
         arn: String.constrained(format: /\Aarn:aws:elasticfilesystem:/),
         local_mount_path: String.constrained(format: /\A\/mnt\/[a-zA-Z0-9_-]+\z/)
-      )
+      ).lax
 
-      LambdaEphemeralStorage = Hash.schema(size: Integer.constrained(gteq: 512, lteq: 10240))
-      LambdaSnapStart = Hash.schema(apply_on: String.default('None').enum('PublishedVersions', 'None'))
+      LambdaEphemeralStorage = Hash.schema(size: Integer.constrained(gteq: 512, lteq: 10240).lax)
+      LambdaSnapStart = Hash.schema(apply_on: String.default('None').lax.enum('PublishedVersions', 'None'))
 
       LambdaImageConfig = Hash.schema(
         entry_point?: Array.of(String).optional,
         command?: Array.of(String).optional,
         working_directory?: String.optional
-      )
+      ).lax
 
       LambdaPermissionAction = Resources::Types::String.constrained(included_in: ['lambda:InvokeFunction', 'lambda:GetFunction', 'lambda:GetFunctionConfiguration',
         'lambda:UpdateFunctionConfiguration', 'lambda:UpdateFunctionCode', 'lambda:DeleteFunction',
         'lambda:PublishVersion', 'lambda:CreateAlias', 'lambda:UpdateAlias', 'lambda:DeleteAlias',
         'lambda:GetAlias', 'lambda:ListVersionsByFunction', 'lambda:GetPolicy',
         'lambda:PutFunctionConcurrency', 'lambda:DeleteFunctionConcurrency',
-        'lambda:GetFunctionConcurrency', 'lambda:ListTags', 'lambda:TagResource', 'lambda:UntagResource'])
+        'lambda:GetFunctionConcurrency', 'lambda:ListTags', 'lambda:TagResource', 'lambda:UntagResource',
+        'lambda:*'])
 
       LambdaEventSourceType = Resources::Types::String.constrained(included_in: ['kinesis', 'dynamodb', 'sqs', 'msk', 'self-managed-kafka', 'rabbitmq'])
-      LambdaDestinationOnFailure = Hash.schema(destination: String.constrained(format: /\Aarn:aws:(sqs|sns|lambda|events):/))
-      LambdaSelfManagedEventSource = Hash.schema(endpoints: Hash.map(Resources::Types::String.constrained(included_in: ['KAFKA_BOOTSTRAP_SERVERS']), Array.of(String)))
+      LambdaDestinationOnFailure = Hash.schema(destination: String.constrained(format: /\Aarn:aws:(sqs|sns|lambda|events):/)).lax
+      LambdaSelfManagedEventSource = Hash.schema(endpoints: Hash.map(Resources::Types::String.constrained(included_in: ['KAFKA_BOOTSTRAP_SERVERS']).lax, Array.of(String)))
 
       LambdaSourceAccessConfiguration = Hash.schema(
         type: Resources::Types::String.constrained(included_in: ['BASIC_AUTH', 'VPC_SUBNET', 'VPC_SECURITY_GROUP', 'SASL_SCRAM_256_AUTH', 'SASL_SCRAM_512_AUTH']),
         uri: String
-      )
+      ).lax
     end
   end
 end

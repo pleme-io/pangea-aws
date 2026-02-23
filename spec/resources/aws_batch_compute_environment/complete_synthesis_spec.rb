@@ -79,6 +79,11 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
 
   # Test SPOT compute environment synthesis
   it "synthesizes MANAGED SPOT compute environment with required configuration" do
+    _service_role_arn = service_role_arn
+    _instance_role_arn = instance_role_arn
+    _spot_fleet_role_arn = spot_fleet_role_arn
+    _subnet_ids = subnet_ids
+    _security_group_ids = security_group_ids
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -86,7 +91,7 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
         compute_environment_name: "spot-compute-environment",
         type: "MANAGED",
         state: "ENABLED",
-        service_role: service_role_arn,
+        service_role: _service_role_arn,
         compute_resources: {
           type: "SPOT",
           allocation_strategy: "SPOT_CAPACITY_OPTIMIZED",
@@ -94,11 +99,11 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
           max_vcpus: 500,
           desired_vcpus: 0,
           instance_types: ["m5.large", "m5.xlarge", "c5.large"],
-          spot_iam_fleet_request_role: spot_fleet_role_arn,
+          spot_iam_fleet_request_role: _spot_fleet_role_arn,
           bid_percentage: 40,
-          instance_role: instance_role_arn,
-          subnets: subnet_ids,
-          security_group_ids: security_group_ids
+          instance_role: _instance_role_arn,
+          subnets: _subnet_ids,
+          security_group_ids: _security_group_ids
         }
       })
     end
@@ -119,18 +124,21 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
 
   # Test FARGATE compute environment synthesis
   it "synthesizes MANAGED FARGATE compute environment with platform capabilities" do
+    _service_role_arn = service_role_arn
+    _subnet_ids = subnet_ids
+    _security_group_ids = security_group_ids
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_batch_compute_environment(:fargate_env, {
         compute_environment_name: "fargate-compute-environment",
         type: "MANAGED",
-        service_role: service_role_arn,
+        service_role: _service_role_arn,
         compute_resources: {
           type: "FARGATE",
           max_vcpus: 200,
-          subnets: subnet_ids,
-          security_group_ids: security_group_ids,
+          subnets: _subnet_ids,
+          security_group_ids: _security_group_ids,
           platform_capabilities: ["FARGATE"]
         }
       })
@@ -150,18 +158,21 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
 
   # Test FARGATE_SPOT compute environment synthesis
   it "synthesizes MANAGED FARGATE_SPOT compute environment" do
+    _service_role_arn = service_role_arn
+    _subnet_ids = subnet_ids
+    _security_group_ids = security_group_ids
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_batch_compute_environment(:fargate_spot_env, {
         compute_environment_name: "fargate-spot-environment",
         type: "MANAGED",
-        service_role: service_role_arn,
+        service_role: _service_role_arn,
         compute_resources: {
           type: "FARGATE_SPOT",
           max_vcpus: 300,
-          subnets: subnet_ids,
-          security_group_ids: security_group_ids,
+          subnets: _subnet_ids,
+          security_group_ids: _security_group_ids,
           platform_capabilities: ["FARGATE"]
         }
       })
@@ -178,6 +189,7 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
 
   # Test UNMANAGED compute environment synthesis
   it "synthesizes UNMANAGED compute environment without compute resources" do
+    _service_role_arn = service_role_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -185,7 +197,7 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
         compute_environment_name: "unmanaged-environment",
         type: "UNMANAGED",
         state: "DISABLED",
-        service_role: service_role_arn
+        service_role: _service_role_arn
       })
     end
     
@@ -201,24 +213,29 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
 
   # Test compute environment with launch template
   it "synthesizes compute environment with launch template configuration" do
+    _service_role_arn = service_role_arn
+    _instance_role_arn = instance_role_arn
+    _subnet_ids = subnet_ids
+    _security_group_ids = security_group_ids
+    _launch_template_id = launch_template_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_batch_compute_environment(:launch_template_env, {
         compute_environment_name: "launch-template-environment",
         type: "MANAGED",
-        service_role: service_role_arn,
+        service_role: _service_role_arn,
         compute_resources: {
           type: "EC2",
           allocation_strategy: "BEST_FIT",
           min_vcpus: 5,
           max_vcpus: 200,
           instance_types: ["m5.large", "m5.xlarge"],
-          instance_role: instance_role_arn,
-          subnets: subnet_ids,
-          security_group_ids: security_group_ids,
+          instance_role: _instance_role_arn,
+          subnets: _subnet_ids,
+          security_group_ids: _security_group_ids,
           launch_template: {
-            launch_template_id: launch_template_id,
+            launch_template_id: _launch_template_id,
             version: "$Latest"
           }
         }
@@ -236,21 +253,26 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
 
   # Test compute environment with launch template name instead of ID
   it "synthesizes compute environment with launch template name" do
+    _service_role_arn = service_role_arn
+    _instance_role_arn = instance_role_arn
+    _subnet_ids = subnet_ids
+    _security_group_ids = security_group_ids
+    _launch_template_name = launch_template_name
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_batch_compute_environment(:launch_template_name_env, {
         compute_environment_name: "launch-template-name-env",
         type: "MANAGED",
-        service_role: service_role_arn,
+        service_role: _service_role_arn,
         compute_resources: {
           type: "EC2",
           max_vcpus: 150,
-          instance_role: instance_role_arn,
-          subnets: subnet_ids,
-          security_group_ids: security_group_ids,
+          instance_role: _instance_role_arn,
+          subnets: _subnet_ids,
+          security_group_ids: _security_group_ids,
           launch_template: {
-            launch_template_name: launch_template_name,
+            launch_template_name: _launch_template_name,
             version: "1"
           }
         }
@@ -268,22 +290,26 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
 
   # Test compute environment with custom AMI and EC2 key pair
   it "synthesizes compute environment with custom AMI and key pair" do
+    _service_role_arn = service_role_arn
+    _instance_role_arn = instance_role_arn
+    _subnet_ids = subnet_ids
+    _security_group_ids = security_group_ids
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_batch_compute_environment(:custom_ami_env, {
         compute_environment_name: "custom-ami-environment",
         type: "MANAGED",
-        service_role: service_role_arn,
+        service_role: _service_role_arn,
         compute_resources: {
           type: "EC2",
           max_vcpus: 100,
           instance_types: ["m5.large"],
-          instance_role: instance_role_arn,
+          instance_role: _instance_role_arn,
           image_id: "ami-12345678",
           ec2_key_pair: "my-batch-key-pair",
-          subnets: subnet_ids,
-          security_group_ids: security_group_ids
+          subnets: _subnet_ids,
+          security_group_ids: _security_group_ids
         }
       })
     end
@@ -298,19 +324,23 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
 
   # Test compute environment with comprehensive tags
   it "synthesizes compute environment with tags at multiple levels" do
+    _service_role_arn = service_role_arn
+    _instance_role_arn = instance_role_arn
+    _subnet_ids = subnet_ids
+    _security_group_ids = security_group_ids
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_batch_compute_environment(:tagged_env, {
         compute_environment_name: "tagged-environment",
         type: "MANAGED",
-        service_role: service_role_arn,
+        service_role: _service_role_arn,
         compute_resources: {
           type: "EC2",
           max_vcpus: 100,
-          instance_role: instance_role_arn,
-          subnets: subnet_ids,
-          security_group_ids: security_group_ids,
+          instance_role: _instance_role_arn,
+          subnets: _subnet_ids,
+          security_group_ids: _security_group_ids,
           tags: {
             "ComputeType" => "EC2",
             "Team" => "data-engineering",
@@ -509,6 +539,11 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
 
   # Test multiple compute environments in single synthesis
   it "synthesizes multiple compute environments correctly" do
+    _service_role_arn = service_role_arn
+    _instance_role_arn = instance_role_arn
+    _spot_fleet_role_arn = spot_fleet_role_arn
+    _subnet_ids = subnet_ids
+    _security_group_ids = security_group_ids
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -516,13 +551,13 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
       aws_batch_compute_environment(:multi_ec2_env, {
         compute_environment_name: "multi-ec2-env",
         type: "MANAGED",
-        service_role: service_role_arn,
+        service_role: _service_role_arn,
         compute_resources: {
           type: "EC2",
           max_vcpus: 100,
-          instance_role: instance_role_arn,
-          subnets: subnet_ids,
-          security_group_ids: security_group_ids
+          instance_role: _instance_role_arn,
+          subnets: _subnet_ids,
+          security_group_ids: _security_group_ids
         }
       })
       
@@ -530,14 +565,14 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
       aws_batch_compute_environment(:multi_spot_env, {
         compute_environment_name: "multi-spot-env",
         type: "MANAGED",
-        service_role: service_role_arn,
+        service_role: _service_role_arn,
         compute_resources: {
           type: "SPOT",
           max_vcpus: 200,
-          spot_iam_fleet_request_role: spot_fleet_role_arn,
-          instance_role: instance_role_arn,
-          subnets: subnet_ids,
-          security_group_ids: security_group_ids
+          spot_iam_fleet_request_role: _spot_fleet_role_arn,
+          instance_role: _instance_role_arn,
+          subnets: _subnet_ids,
+          security_group_ids: _security_group_ids
         }
       })
       
@@ -545,12 +580,12 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
       aws_batch_compute_environment(:multi_fargate_env, {
         compute_environment_name: "multi-fargate-env",
         type: "MANAGED",
-        service_role: service_role_arn,
+        service_role: _service_role_arn,
         compute_resources: {
           type: "FARGATE",
           max_vcpus: 150,
-          subnets: subnet_ids,
-          security_group_ids: security_group_ids,
+          subnets: _subnet_ids,
+          security_group_ids: _security_group_ids,
           platform_capabilities: ["FARGATE"]
         }
       })
@@ -559,7 +594,7 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
       aws_batch_compute_environment(:multi_unmanaged_env, {
         compute_environment_name: "multi-unmanaged-env",
         type: "UNMANAGED",
-        service_role: service_role_arn
+        service_role: _service_role_arn
       })
     end
     
@@ -567,7 +602,7 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
     compute_environments = json_output.dig(:resource, :aws_batch_compute_environment)
     
     expect(compute_environments.keys).to contain_exactly(
-      :multi_ec2_env, :multi_spot_env, :multi_fargate_env, :multi_unmanaged_env
+      "multi_ec2_env", "multi_spot_env", "multi_fargate_env", "multi_unmanaged_env"
     )
     
     # Verify each environment has correct type and properties
@@ -580,6 +615,11 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
 
   # Test synthesis with comprehensive configuration including all optional properties
   it "synthesizes compute environment with comprehensive configuration" do
+    _service_role_arn = service_role_arn
+    _instance_role_arn = instance_role_arn
+    _subnet_ids = subnet_ids
+    _security_group_ids = security_group_ids
+    _launch_template_id = launch_template_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -587,7 +627,7 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
         compute_environment_name: "comprehensive-batch-environment",
         type: "MANAGED",
         state: "ENABLED",
-        service_role: service_role_arn,
+        service_role: _service_role_arn,
         compute_resources: {
           type: "EC2",
           allocation_strategy: "BEST_FIT_PROGRESSIVE",
@@ -595,13 +635,13 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
           max_vcpus: 1000,
           desired_vcpus: 100,
           instance_types: ["m5.large", "m5.xlarge", "c5.large", "c5.xlarge"],
-          instance_role: instance_role_arn,
-          subnets: subnet_ids,
-          security_group_ids: security_group_ids,
+          instance_role: _instance_role_arn,
+          subnets: _subnet_ids,
+          security_group_ids: _security_group_ids,
           ec2_key_pair: "comprehensive-key-pair",
           image_id: "ami-comprehensive",
           launch_template: {
-            launch_template_id: launch_template_id,
+            launch_template_id: _launch_template_id,
             version: "$Latest"
           },
           platform_capabilities: ["EC2"],
@@ -672,7 +712,7 @@ RSpec.describe "aws_batch_compute_environment terraform synthesis" do
     
     expect(env_config[:compute_environment_name]).to eq("minimal-environment")
     expect(env_config[:type]).to eq("UNMANAGED")
-    expect(env_config).not_to have_key(:state)  # Not provided, so not synthesized
+    expect(env_config[:state]).to eq("ENABLED")  # Default state
     expect(env_config).not_to have_key(:service_role)  # Not provided
     expect(env_config).not_to have_key(:compute_resources)  # UNMANAGED type
     expect(env_config).not_to have_key(:tags)  # Not provided

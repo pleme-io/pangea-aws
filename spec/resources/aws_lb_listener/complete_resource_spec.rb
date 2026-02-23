@@ -27,9 +27,9 @@ RSpec.describe "aws_lb_listener resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -75,7 +75,7 @@ RSpec.describe "aws_lb_listener resource function" do
       expect(listener.load_balancer_arn).to eq(alb_arn)
       expect(listener.port).to eq(80)
       expect(listener.protocol).to eq("HTTP")
-      expect(listener.default_action).to have(1).item
+      expect(listener.default_action.size).to eq(1)
     end
     
     it "accepts HTTPS listener with SSL configuration" do
@@ -164,7 +164,7 @@ RSpec.describe "aws_lb_listener resource function" do
           }],
           tags: {}
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "validates at least one default action" do
@@ -176,7 +176,7 @@ RSpec.describe "aws_lb_listener resource function" do
           default_action: [],  # Empty actions
           tags: {}
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "validates forward action requires target or forward config" do
@@ -215,7 +215,7 @@ RSpec.describe "aws_lb_listener resource function" do
         tags: {}
       })
       
-      expect(listener.default_action.first[:forward][:target_groups]).to have(2).items
+      expect(listener.default_action.first[:forward][:target_groups].size).to eq(2)
     end
     
     it "accepts redirect action" do
@@ -279,7 +279,7 @@ RSpec.describe "aws_lb_listener resource function" do
         tags: {}
       })
       
-      expect(listener.default_action).to have(2).items
+      expect(listener.default_action.size).to eq(2)
       expect(listener.default_action.first[:type]).to eq("authenticate-cognito")
     end
     
@@ -309,7 +309,7 @@ RSpec.describe "aws_lb_listener resource function" do
         tags: {}
       })
       
-      expect(listener.default_action).to have(2).items
+      expect(listener.default_action.size).to eq(2)
       expect(listener.default_action.first[:type]).to eq("authenticate-oidc")
     end
     
@@ -394,9 +394,9 @@ RSpec.describe "aws_lb_listener resource function" do
           redirect: {
             protocol: "HTTPS",
             port: "443",
-            host: "#{host}",
-            path: "/#{path}",
-            query: "#{query}",
+            host: '#{host}',
+            path: '/#{path}',
+            query: '#{query}',
             status_code: "HTTP_301"
           }
         }],

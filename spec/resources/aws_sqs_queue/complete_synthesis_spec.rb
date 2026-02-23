@@ -29,14 +29,14 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
   # Test basic standard queue synthesis
   it "synthesizes basic standard queue correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:notifications, {
         name: "app-notifications"
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "notifications")
     
     expect(queue_config["name"]).to eq("app-notifications")
@@ -51,7 +51,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
   # Test FIFO queue synthesis
   it "synthesizes FIFO queue correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:orders, {
         name: "orders.fifo",
@@ -62,7 +62,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "orders")
     
     expect(queue_config["name"]).to eq("orders.fifo")
@@ -74,17 +74,18 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
 
   # Test KMS encrypted queue synthesis
   it "synthesizes KMS encrypted queue correctly" do
+    _kms_key_arn = kms_key_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:secure, {
         name: "secure-queue",
-        kms_master_key_id: kms_key_arn,
+        kms_master_key_id: _kms_key_arn,
         kms_data_key_reuse_period_seconds: 3600
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "secure")
     
     expect(queue_config["name"]).to eq("secure-queue")
@@ -96,7 +97,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
   # Test SQS-managed SSE queue synthesis
   it "synthesizes SQS-managed SSE queue correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:sse, {
         name: "sse-queue",
@@ -104,7 +105,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "sse")
     
     expect(queue_config["name"]).to eq("sse-queue")
@@ -120,7 +121,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
     }
     
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:main, {
         name: "main-processing",
@@ -128,7 +129,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "main")
     
     expect(queue_config["name"]).to eq("main-processing")
@@ -151,7 +152,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
     }
     
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:dlq, {
         name: "restricted-dlq",
@@ -159,7 +160,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "dlq")
     
     expect(queue_config["name"]).to eq("restricted-dlq")
@@ -172,7 +173,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
   # Test long polling configuration synthesis
   it "synthesizes long polling queue correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:polling, {
         name: "long-polling-queue",
@@ -181,7 +182,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "polling")
     
     expect(queue_config["name"]).to eq("long-polling-queue")
@@ -192,7 +193,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
   # Test delay queue synthesis
   it "synthesizes delay queue correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:delayed, {
         name: "delayed-processing",
@@ -201,7 +202,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "delayed")
     
     expect(queue_config["name"]).to eq("delayed-processing")
@@ -222,7 +223,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
     })
     
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:policy_queue, {
         name: "policy-controlled-queue",
@@ -230,7 +231,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "policy_queue")
     
     expect(queue_config["name"]).to eq("policy-controlled-queue")
@@ -244,8 +245,9 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       maxReceiveCount: 3
     }
     
+    _kms_key_arn = kms_key_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:comprehensive, {
         name: "comprehensive-queue.fifo",
@@ -258,7 +260,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
         max_message_size: 65536,
         delay_seconds: 60,
         receive_wait_time_seconds: 20,
-        kms_master_key_id: kms_key_arn,
+        kms_master_key_id: _kms_key_arn,
         kms_data_key_reuse_period_seconds: 3600,
         redrive_policy: redrive_policy,
         tags: {
@@ -269,7 +271,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "comprehensive")
     
     expect(queue_config["name"]).to eq("comprehensive-queue.fifo")
@@ -299,7 +301,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
   # Test high-throughput pattern synthesis
   it "synthesizes high-throughput pattern correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:high_throughput, {
         name: "high-throughput-queue",
@@ -310,7 +312,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "high_throughput")
     
     expect(queue_config["name"]).to eq("high-throughput-queue")
@@ -327,8 +329,9 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       maxReceiveCount: 3
     }
     
+    _kms_key_arn = kms_key_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:batch_processing, {
         name: "batch-processing",
@@ -336,11 +339,11 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
         message_retention_seconds: 1209600,  # 14 days retention
         max_message_size: 262144,            # Large messages
         redrive_policy: redrive_policy,
-        kms_master_key_id: kms_key_arn
+        kms_master_key_id: _kms_key_arn
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "batch_processing")
     
     expect(queue_config["name"]).to eq("batch-processing")
@@ -367,7 +370,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
     }
     
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:restricted_dlq, {
         name: "restricted-dlq",
@@ -375,7 +378,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "restricted_dlq")
     
     expect(queue_config["name"]).to eq("restricted-dlq")
@@ -388,7 +391,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
   # Test delay queue with custom timing synthesis
   it "synthesizes delay queue with custom timing correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:scheduled, {
         name: "scheduled-tasks",
@@ -398,7 +401,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "scheduled")
     
     expect(queue_config["name"]).to eq("scheduled-tasks")
@@ -409,8 +412,9 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
 
   # Test e-commerce order processing pattern synthesis
   it "synthesizes e-commerce order processing pattern correctly" do
+    _kms_key_arn = kms_key_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:ecommerce_orders, {
         name: "ecommerce-orders.fifo",
@@ -419,7 +423,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
         deduplication_scope: "messageGroup",
         fifo_throughput_limit: "perMessageGroupId",
         visibility_timeout_seconds: 300,
-        kms_master_key_id: kms_key_arn,
+        kms_master_key_id: _kms_key_arn,
         tags: {
           Service: "ecommerce",
           DataClassification: "sensitive",
@@ -428,7 +432,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "ecommerce_orders")
     
     expect(queue_config["name"]).to eq("ecommerce-orders.fifo")
@@ -444,7 +448,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
   # Test microservices async communication pattern synthesis
   it "synthesizes microservices async pattern correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:async_events, {
         name: "async-events",
@@ -459,7 +463,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "async_events")
     
     expect(queue_config["name"]).to eq("async-events")
@@ -473,14 +477,14 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
   # Test minimal queue configuration synthesis
   it "synthesizes minimal queue without optional fields" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:minimal, {
         name: "minimal-queue"
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "minimal")
     
     expect(queue_config["name"]).to eq("minimal-queue")
@@ -505,7 +509,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
   # Test high-volume event processing synthesis
   it "synthesizes high-volume event processing correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:high_volume, {
         name: "high-volume-events",
@@ -522,7 +526,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "high_volume")
     
     expect(queue_config["name"]).to eq("high-volume-events")
@@ -541,14 +545,15 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       maxReceiveCount: 3
     }
     
+    _kms_key_arn = kms_key_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:enterprise, {
         name: "enterprise-queue",
         visibility_timeout_seconds: 600,
         message_retention_seconds: 1209600,  # Maximum retention
-        kms_master_key_id: kms_key_arn,
+        kms_master_key_id: _kms_key_arn,
         kms_data_key_reuse_period_seconds: 86400, # 24 hours
         redrive_policy: redrive_policy,
         tags: {
@@ -560,7 +565,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "enterprise")
     
     expect(queue_config["name"]).to eq("enterprise-queue")
@@ -582,7 +587,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
     }
     
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:dlq_only, {
         name: "processing-dlq",
@@ -595,7 +600,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "dlq_only")
     
     expect(queue_config["name"]).to eq("processing-dlq")
@@ -609,7 +614,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
   # Test queue with comprehensive tags synthesis
   it "synthesizes queue with comprehensive tags correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sqs_queue(:tagged, {
         name: "tagged-queue",
@@ -625,7 +630,7 @@ RSpec.describe "aws_sqs_queue terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     queue_config = json_output.dig("resource", "aws_sqs_queue", "tagged")
     
     expect(queue_config["name"]).to eq("tagged-queue")

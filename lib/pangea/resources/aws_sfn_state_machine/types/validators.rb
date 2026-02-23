@@ -18,9 +18,9 @@ module Pangea
 
           def validate_definition(attrs)
             return unless attrs[:definition]
-            parsed = JSON.parse(attrs[:definition])
+            parsed = ::JSON.parse(attrs[:definition])
             validate_asl_definition(parsed)
-          rescue JSON::ParserError => e
+          rescue ::JSON::ParserError => e
             raise Dry::Struct::Error, "Definition must be valid JSON: #{e.message}"
           end
 
@@ -35,16 +35,16 @@ module Pangea
           end
 
           def validate_asl_definition(definition)
-            raise "Definition must be a JSON object" unless definition.is_a?(Hash)
+            raise "Definition must be a JSON object" unless definition.is_a?(::Hash)
             raise "Definition must include 'StartAt' field" unless definition["StartAt"]
             raise "Definition must include 'States' field" unless definition["States"]
-            raise "'States' must be an object" unless definition["States"].is_a?(Hash)
+            raise "'States' must be an object" unless definition["States"].is_a?(::Hash)
             raise "'StartAt' must reference an existing state" unless definition["States"][definition["StartAt"]]
             definition["States"].each { |name, state| validate_state_definition(name, state) }
           end
 
           def validate_state_definition(state_name, state_def)
-            raise "State '#{state_name}' must be an object" unless state_def.is_a?(Hash)
+            raise "State '#{state_name}' must be an object" unless state_def.is_a?(::Hash)
             raise "State '#{state_name}' must have a 'Type' field" unless state_def["Type"]
             valid_types = %w[Task Pass Fail Succeed Choice Wait Parallel Map]
             type = state_def["Type"]
@@ -67,7 +67,7 @@ module Pangea
           end
 
           def validate_logging_configuration(config)
-            raise "Logging configuration must be a hash" unless config.is_a?(Hash)
+            raise "Logging configuration must be a hash" unless config.is_a?(::Hash)
             if config[:level] && !%w[ALL ERROR FATAL OFF].include?(config[:level])
               raise "Logging level must be one of: ALL, ERROR, FATAL, OFF"
             end
@@ -77,7 +77,7 @@ module Pangea
           end
 
           def validate_tracing_configuration(config)
-            raise "Tracing configuration must be a hash" unless config.is_a?(Hash)
+            raise "Tracing configuration must be a hash" unless config.is_a?(::Hash)
           end
         end
       end

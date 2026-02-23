@@ -26,12 +26,12 @@ module Pangea
     module AWS
       module Types
         # Auto Scaling Group resource attributes with validation
-        class AutoScalingGroupAttributes < Dry::Struct
+        class AutoScalingGroupAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Required attributes
-          attribute :min_size, Resources::Types::Integer.constrained(gteq: 0)
-          attribute :max_size, Resources::Types::Integer.constrained(gteq: 0)
+          attribute? :min_size, Resources::Types::Integer.constrained(gteq: 0).optional
+          attribute? :max_size, Resources::Types::Integer.constrained(gteq: 0).optional
 
           # Optional sizing
           attribute :desired_capacity, Resources::Types::Integer.optional.default(nil)
@@ -51,7 +51,7 @@ module Pangea
           attribute :health_check_grace_period, Resources::Types::Integer.default(300)
 
           # Termination policies
-          attribute :termination_policies, Resources::Types::Array.of(
+          attribute? :termination_policies, Resources::Types::Array.of(
             Resources::Types::String.constrained(included_in: ['OldestInstance', 'NewestInstance', 'OldestLaunchConfiguration',
               'OldestLaunchTemplate', 'ClosestToNextInstanceHour', 'Default',
               'AllocationStrategy'])
@@ -79,7 +79,7 @@ module Pangea
 
           # Validate configuration consistency
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes.transform_keys(&:to_sym) : {}
             validate_size_constraints!(attrs)
             validate_launch_configuration!(attrs)
             validate_network_configuration!(attrs)
@@ -87,7 +87,11 @@ module Pangea
           end
 
           def self.validate_size_constraints!(attrs)
-            if attrs[:min_size] && attrs[:max_size] && attrs[:min_size] > attrs[:max_size]
+            unless attrs[:min_size] && attrs[:max_size]
+              raise Dry::Struct::Error, 'Auto Scaling Group requires both min_size and max_size'
+            end
+
+            if attrs[:min_size] > attrs[:max_size]
               raise Dry::Struct::Error,
                     "min_size (#{attrs[:min_size]}) cannot be greater than max_size (#{attrs[:max_size]})"
             end
@@ -172,7 +176,7 @@ module Pangea
               max_instance_lifetime: max_instance_lifetime,
               target_group_arns: target_group_arns.any? ? target_group_arns : nil,
               load_balancers: load_balancers.any? ? load_balancers : nil,
-              tags: tags.any? ? tags.map(&:to_h) : nil,
+              tags: tags.map(&:to_h),
               instance_refresh: instance_refresh&.to_h
             }
           end

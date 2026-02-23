@@ -37,7 +37,7 @@ module Pangea
           resource_type attrs.resource_type if attrs.resource_type
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

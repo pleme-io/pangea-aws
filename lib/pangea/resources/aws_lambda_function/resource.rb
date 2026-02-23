@@ -30,24 +30,26 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_lambda_function(name, attributes = {})
         # Validate attributes using dry-struct
-        lambda_attrs = AWS::Types::Types::LambdaFunctionAttributes.new(attributes)
+        lambda_attrs = Types::LambdaFunctionAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_lambda_function, name) do
           function_name lambda_attrs.function_name
           role lambda_attrs.role
           
+          # Package type
+          package_type lambda_attrs.package_type
+
           # Package type determines code configuration
           if lambda_attrs.package_type == 'Image'
-            package_type 'Image'
             image_uri lambda_attrs.image_uri
             
             # Image config if present
             if lambda_attrs.image_config
               image_config do
-                entry_point lambda_attrs.image_config[:entry_point] if lambda_attrs.image_config[:entry_point]
-                command lambda_attrs.image_config[:command] if lambda_attrs.image_config[:command]
-                working_directory lambda_attrs.image_config[:working_directory] if lambda_attrs.image_config[:working_directory]
+                entry_point lambda_attrs.image_config&.dig(:entry_point) if lambda_attrs.image_config&.dig(:entry_point)
+                command lambda_attrs.image_config&.dig(:command) if lambda_attrs.image_config&.dig(:command)
+                working_directory lambda_attrs.image_config&.dig(:working_directory) if lambda_attrs.image_config&.dig(:working_directory)
               end
             end
           else
@@ -77,7 +79,7 @@ module Pangea
           reserved_concurrent_executions lambda_attrs.reserved_concurrent_executions if lambda_attrs.reserved_concurrent_executions
           
           # Layers
-          layers lambda_attrs.layers if lambda_attrs.layers.any?
+          layers lambda_attrs.layers if lambda_attrs.layers&.any?
           
           # Apply configuration blocks via block builders
           LambdaBlockBuilders.apply_environment(self, lambda_attrs.environment)

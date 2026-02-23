@@ -22,48 +22,48 @@ RSpec.describe 'aws_api_gateway_deployment resource function' do
   let(:test_class) do
     Class.new do
       include Pangea::Resources::AWS
-      
+
       def initialize
         @resources = []
       end
-      
-      def resource(type, name)
+
+      def resource(type, name, &block)
         resource_data = { type: type, name: name, attributes: {} }
         @resources << resource_data
-        yield MockResourceBuilder.new(resource_data[:attributes]) if block_given?
+        MockResourceBuilder.new(resource_data[:attributes]).instance_eval(&block) if block
         resource_data
       end
-      
+
       def get_resources
         @resources
       end
     end
   end
-  
+
   let(:mock_resource_builder) do
     Class.new do
       def initialize(attributes)
         @attributes = attributes
       end
-      
-      def method_missing(method_name, *args)
+
+      def method_missing(method_name, *args, &block)
         if args.any?
           @attributes[method_name] = args.first
         end
-        
-        if block_given?
+
+        if block
           nested_builder = self.class.new({})
-          yield nested_builder
+          nested_builder.instance_eval(&block)
           @attributes[method_name] = nested_builder.instance_variable_get(:@attributes)
         end
       end
-      
+
       def respond_to_missing?(method_name, include_private = false)
         true
       end
     end
   end
-  
+
   before do
     stub_const('MockResourceBuilder', mock_resource_builder)
   end

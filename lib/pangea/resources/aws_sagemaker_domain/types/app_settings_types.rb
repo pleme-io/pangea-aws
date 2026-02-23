@@ -26,13 +26,13 @@ module Pangea
             lifecycle_config_arn?: Resources::Types::String.optional,
             sage_maker_image_arn?: Resources::Types::String.optional,
             sage_maker_image_version_arn?: Resources::Types::String.optional
-          ).optional,
+          ).lax.optional,
           lifecycle_config_arns?: Resources::Types::Array.of(Resources::Types::String).optional,
           code_repositories?: Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               repository_url: Resources::Types::String.constrained(format: /\Ahttps:\/\/github\.com\//),
               default_branch?: Resources::Types::String.default('main')
-            )
+            ).lax
           ).optional
         )
 
@@ -43,14 +43,14 @@ module Pangea
             lifecycle_config_arn?: Resources::Types::String.optional,
             sage_maker_image_arn?: Resources::Types::String.optional,
             sage_maker_image_version_arn?: Resources::Types::String.optional
-          ).optional,
+          ).lax.optional,
           lifecycle_config_arns?: Resources::Types::Array.of(Resources::Types::String).optional,
           custom_images?: Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               app_image_config_name: Resources::Types::String,
               image_name: Resources::Types::String,
               image_version_number?: Resources::Types::Integer.optional
-            )
+            ).lax
           ).optional
         )
 
@@ -61,29 +61,29 @@ module Pangea
             lifecycle_config_arn?: Resources::Types::String.optional,
             sage_maker_image_arn?: Resources::Types::String.optional,
             sage_maker_image_version_arn?: Resources::Types::String.optional
-          ).optional
+          ).lax.optional
         )
 
         # SageMaker Domain RStudio Server Pro app settings
         SageMakerDomainRStudioServerProAppSettings = Resources::Types::Hash.schema(
           access_status?: Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED']).optional,
           user_group?: Resources::Types::String.constrained(included_in: ['R_STUDIO_ADMIN', 'R_STUDIO_USER']).optional
-        )
+        ).lax
 
         # SageMaker Domain Canvas app settings
         SageMakerDomainCanvasAppSettings = Resources::Types::Hash.schema(
           time_series_forecasting_settings?: Resources::Types::Hash.schema(
             status?: Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED']).optional,
             amazon_forecast_role_arn?: Resources::Types::String.optional
-          ).optional,
+          ).lax.optional,
           model_register_settings?: Resources::Types::Hash.schema(
             status?: Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED']).optional,
             cross_account_model_register_role_arn?: Resources::Types::String.optional
-          ).optional,
+          ).lax.optional,
           workspace_settings?: Resources::Types::Hash.schema(
             s3_artifact_path?: Resources::Types::String.optional,
             s3_kms_key_id?: Resources::Types::String.optional
-          ).optional
+          ).lax.optional
         )
       end
     end

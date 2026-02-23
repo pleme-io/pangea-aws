@@ -23,24 +23,24 @@ module Pangea
     module AWS
       module Types
         # SageMaker Domain attributes with extensive ML-specific validation
-        class SageMakerDomainAttributes < Dry::Struct
+        class SageMakerDomainAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Required attributes
-          attribute :domain_name, Resources::Types::String.constrained(
+          attribute? :domain_name, Resources::Types::String.constrained(
             min_size: 1,
             max_size: 63,
             format: /\A[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]\z/
           )
-          attribute :auth_mode, SageMakerDomainAuthMode
-          attribute :default_user_settings, SageMakerDomainDefaultUserSettings
-          attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 16)
-          attribute :vpc_id, Resources::Types::String
+          attribute? :auth_mode, SageMakerDomainAuthMode.optional
+          attribute? :default_user_settings, SageMakerDomainDefaultUserSettings.optional
+          attribute? :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 16).optional
+          attribute? :vpc_id, Resources::Types::String.optional
 
           # Optional attributes
-          attribute :app_network_access_type, SageMakerDomainAppNetworkAccessType
-          attribute :app_security_group_management, SageMakerDomainAppSecurityGroupManagement
-          attribute :domain_settings, Resources::Types::Hash.schema(
+          attribute? :app_network_access_type, SageMakerDomainAppNetworkAccessType.optional
+          attribute? :app_security_group_management, SageMakerDomainAppSecurityGroupManagement.optional
+          attribute? :domain_settings, Resources::Types::Hash.schema(
             security_group_ids?: Resources::Types::Array.of(Resources::Types::String).optional,
             r_studio_server_pro_domain_settings?: Resources::Types::Hash.schema(
               domain_execution_role_arn: Resources::Types::String,
@@ -51,23 +51,23 @@ module Pangea
                 lifecycle_config_arn?: Resources::Types::String.optional,
                 sage_maker_image_arn?: Resources::Types::String.optional,
                 sage_maker_image_version_arn?: Resources::Types::String.optional
-              ).optional
+              ).lax.optional
             ).optional,
             execution_role_identity_config?: Resources::Types::String.constrained(included_in: ['USER_PROFILE_NAME', 'DISABLED']).optional
           ).optional
-          attribute :kms_key_id, Resources::Types::String.optional
-          attribute :tags, Resources::Types::AwsTags
-          attribute :default_space_settings, Resources::Types::Hash.schema(
+          attribute? :kms_key_id, Resources::Types::String.optional
+          attribute? :tags, Resources::Types::AwsTags.optional
+          attribute? :default_space_settings, Resources::Types::Hash.schema(
             execution_role?: Resources::Types::String.optional,
             security_groups?: Resources::Types::Array.of(Resources::Types::String).optional,
             jupyter_server_app_settings?: SageMakerDomainJupyterServerAppSettings.optional,
             kernel_gateway_app_settings?: SageMakerDomainKernelGatewayAppSettings.optional
-          ).optional
-          attribute :retention_policy, SageMakerDomainRetentionPolicy.optional
+          ).lax.optional
+          attribute? :retention_policy, SageMakerDomainRetentionPolicy.optional
 
           # Custom validation for SageMaker Domain
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             validate_vpc_configuration(attrs)
             validate_auth_mode_requirements(attrs)

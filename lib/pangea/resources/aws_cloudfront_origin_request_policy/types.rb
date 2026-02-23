@@ -19,28 +19,28 @@ require 'pangea/resources/types'
 module Pangea
   module Resources
     module AWS
-      class CloudFrontOriginRequestPolicyAttributes < Dry::Struct
+      class CloudFrontOriginRequestPolicyAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
         
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
         attribute :comment, Resources::Types::String.default('')
-        attribute :headers_config, Resources::Types::Hash.schema(
+        attribute? :headers_config, Resources::Types::Hash.schema(
           header_behavior: Resources::Types::String.constrained(included_in: ['none', 'whitelist', 'allViewer', 'allViewerAndWhitelistCloudFront']).default('none'),
           headers?: Resources::Types::Hash.schema(
             items?: Resources::Types::Array.of(Resources::Types::String).optional
-          ).optional
+          ).lax.optional
         ).default({ header_behavior: 'none' })
-        attribute :query_strings_config, Resources::Types::Hash.schema(
+        attribute? :query_strings_config, Resources::Types::Hash.schema(
           query_string_behavior: Resources::Types::String.constrained(included_in: ['none', 'whitelist', 'all']).default('none'),
           query_strings?: Resources::Types::Hash.schema(
             items?: Resources::Types::Array.of(Resources::Types::String).optional
-          ).optional
+          ).lax.optional
         ).default({ query_string_behavior: 'none' })
-        attribute :cookies_config, Resources::Types::Hash.schema(
+        attribute? :cookies_config, Resources::Types::Hash.schema(
           cookie_behavior: Resources::Types::String.constrained(included_in: ['none', 'whitelist', 'all']).default('none'),
           cookies?: Resources::Types::Hash.schema(
             items?: Resources::Types::Array.of(Resources::Types::String).optional
-          ).optional
+          ).lax.optional
         ).default({ cookie_behavior: 'none' })
       end
     end

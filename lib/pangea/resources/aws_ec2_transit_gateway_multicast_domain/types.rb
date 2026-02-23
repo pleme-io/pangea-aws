@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2TransitGatewayMulticastDomain resources
       # Manages aws ec2 transit gateway multicast domain resources.
-      class AwsEc2TransitGatewayMulticastDomainAttributes < Dry::Struct
+      class AwsEc2TransitGatewayMulticastDomainAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_transit_gateway_multicast_domain
         
         # Tags to apply to the resource

@@ -45,11 +45,11 @@ module Pangea
           build_application_configuration(self, analytics_attrs.application_configuration)
 
           # Apply tags if present
-          build_tags(self, analytics_attrs.tags)
+          build_aws_kinesis_analytics_application_tags(self, analytics_attrs.tags)
         end
 
         # Return resource reference with available outputs
-        build_resource_reference(name, analytics_attrs)
+        build_aws_kinesis_analytics_application_resource_reference(name, analytics_attrs)
       end
 
       private
@@ -76,16 +76,13 @@ module Pangea
         return unless env_props
 
         context.environment_properties do
-          env_props[:property_groups].each do |prop_group|
-            property_group do
-              property_group_id prop_group[:property_group_id]
-              property_map do
-                prop_group[:property_map].each do |key, value|
-                  public_send(key, value)
-                end
-              end
-            end
+          groups_array = env_props[:property_groups].map do |prop_group|
+            {
+              property_group_id: prop_group[:property_group_id],
+              property_map: prop_group[:property_map]
+            }
           end
+          property_group groups_array
         end
       end
 
@@ -98,8 +95,8 @@ module Pangea
         end
       end
 
-      def build_tags(context, tags)
-        return unless tags.any?
+      def build_aws_kinesis_analytics_application_tags(context, tags)
+        return unless tags&.any?
 
         context.tags do
           tags.each do |key, value|
@@ -108,7 +105,7 @@ module Pangea
         end
       end
 
-      def build_resource_reference(name, analytics_attrs)
+      def build_aws_kinesis_analytics_application_resource_reference(name, analytics_attrs)
         ResourceReference.new(
           type: 'aws_kinesisanalyticsv2_application',
           name: name,

@@ -45,15 +45,15 @@ module Pangea
           # Set output configuration
           output_configuration do
             s3_configuration do
-              bucket_name query_attrs.output_configuration[:s3_configuration][:bucket_name]
-              key_prefix query_attrs.output_configuration[:s3_configuration][:key_prefix]
+              bucket_name query_attrs.output_configuration&.dig(:s3_configuration)[:bucket_name]
+              key_prefix query_attrs.output_configuration&.dig(:s3_configuration)[:key_prefix]
               
-              if query_attrs.output_configuration[:s3_configuration][:encryption_configuration]
+              if query_attrs.output_configuration&.dig(:s3_configuration)[:encryption_configuration]
                 encryption_configuration do
-                  encryption_option query_attrs.output_configuration[:s3_configuration][:encryption_configuration][:encryption_option]
+                  encryption_option query_attrs.output_configuration&.dig(:s3_configuration)[:encryption_configuration][:encryption_option]
                   
-                  if query_attrs.output_configuration[:s3_configuration][:encryption_configuration][:kms_key]
-                    kms_key query_attrs.output_configuration[:s3_configuration][:encryption_configuration][:kms_key]
+                  if query_attrs.output_configuration&.dig(:s3_configuration)[:encryption_configuration][:kms_key]
+                    kms_key query_attrs.output_configuration&.dig(:s3_configuration)[:encryption_configuration][:kms_key]
                   end
                 end
               end
@@ -73,10 +73,10 @@ module Pangea
           # Set schedule if provided
           if query_attrs.schedule_configuration
             schedule_configuration do
-              schedule_expression query_attrs.schedule_configuration[:schedule_expression]
+              schedule_expression query_attrs.schedule_configuration&.dig(:schedule_expression)
               
-              if query_attrs.schedule_configuration[:timezone]
-                timezone query_attrs.schedule_configuration[:timezone]
+              if query_attrs.schedule_configuration&.dig(:timezone)
+                timezone query_attrs.schedule_configuration&.dig(:timezone)
               end
             end
           end

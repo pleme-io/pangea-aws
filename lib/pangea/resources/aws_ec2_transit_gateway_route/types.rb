@@ -23,20 +23,20 @@ module Pangea
     module AWS
       module Types
         # Transit Gateway Route resource attributes with validation
-        class TransitGatewayRouteAttributes < Dry::Struct
+        class TransitGatewayRouteAttributes < Pangea::Resources::BaseAttributes
           include NetworkAnalysis
           include SecurityAnalysis
 
           transform_keys(&:to_sym)
 
-          attribute :destination_cidr_block, Resources::Types::TransitGatewayCidrBlock
-          attribute :transit_gateway_route_table_id, Resources::Types::String
+          attribute? :destination_cidr_block, Resources::Types::TransitGatewayCidrBlock.optional
+          attribute? :transit_gateway_route_table_id, Resources::Types::String.optional
           attribute? :blackhole, Resources::Types::Bool.default(false)
           attribute? :transit_gateway_attachment_id, Resources::Types::String.optional
 
           # Custom validation for route configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             validate_route_table_id(attrs)
             validate_attachment_id(attrs)
             validate_blackhole_logic(attrs)

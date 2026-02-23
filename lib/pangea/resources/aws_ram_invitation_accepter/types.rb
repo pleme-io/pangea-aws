@@ -21,8 +21,8 @@ module Pangea
       module Types
       # Type-safe attributes for AwsRamInvitationAccepter resources
       # Accepts a Resource Access Manager (RAM) resource share invitation.
-      class RamInvitationAccepterAttributes < Dry::Struct
-        attribute :share_arn, Resources::Types::String
+      class RamInvitationAccepterAttributes < Pangea::Resources::BaseAttributes
+        attribute? :share_arn, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

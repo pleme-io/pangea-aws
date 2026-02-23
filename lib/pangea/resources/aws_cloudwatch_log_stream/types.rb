@@ -21,16 +21,16 @@ module Pangea
     module AWS
       module Types
         # CloudWatch Log Stream resource attributes with validation
-        class CloudWatchLogStreamAttributes < Dry::Struct
+        class CloudWatchLogStreamAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :name, Resources::Types::String
-          attribute :log_group_name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
+          attribute? :log_group_name, Resources::Types::String.optional
           
           # Validate log stream name pattern
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             if attrs[:name]
               # CloudWatch log stream name validation

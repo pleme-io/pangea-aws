@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_sns_topic(name, attributes = {})
         # Validate attributes using dry-struct
-        topic_attrs = AWS::Types::Types::SNSTopicAttributes.new(attributes)
+        topic_attrs = Types::SNSTopicAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_sns_topic, name) do
@@ -86,7 +86,7 @@ module Pangea
           firehose_failure_feedback_role_arn topic_attrs.firehose_failure_feedback_role_arn if topic_attrs.firehose_failure_feedback_role_arn
           
           # Apply tags
-          if topic_attrs.tags.any?
+          if topic_attrs.tags&.any?
             tags topic_attrs.tags
           end
         end

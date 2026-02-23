@@ -25,9 +25,9 @@ RSpec.describe "aws_kms_alias resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -87,7 +87,7 @@ RSpec.describe "aws_kms_alias resource function" do
           name: "alias/aws/s3",
           target_key_id: "12345678-1234-1234-1234-123456789012"
         })
-      }.to raise_error(Dry::Types::ConstraintError, /cannot start with 'alias\/aws\/'/)
+      }.to raise_error(Dry::Struct::Error, /cannot start with 'alias\/aws\/'/)
     end
     
     it "validates alias name length limits" do
@@ -99,7 +99,7 @@ RSpec.describe "aws_kms_alias resource function" do
           name: long_alias + "x",  # 257 characters
           target_key_id: "12345678-1234-1234-1234-123456789012"
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
       
       # Valid at exactly 256
       attrs = Pangea::Resources::AWS::Types::KmsAliasAttributes.new({
@@ -123,7 +123,7 @@ RSpec.describe "aws_kms_alias resource function" do
             name: invalid_name,
             target_key_id: "12345678-1234-1234-1234-123456789012"
           })
-        }.to raise_error(Dry::Types::ConstraintError)
+        }.to raise_error(Dry::Struct::Error)
       end
     end
     

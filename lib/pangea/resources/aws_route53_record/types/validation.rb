@@ -12,6 +12,13 @@ module Pangea
             return false if name.nil? || name.empty?
             return false if name.length > 253
 
+            # Cannot start with a dot or end with a dot
+            return false if name.start_with?('.')
+            return false if name.end_with?('.')
+
+            # Cannot have consecutive dots
+            return false if name.include?('..')
+
             # Allow wildcard at the beginning
             name_to_check = name.start_with?('*.') ? name[2..-1] : name
 
@@ -24,8 +31,9 @@ module Pangea
             return false if label.length > 63
             return false if label.empty?
 
-            # Can contain letters, numbers, hyphens
-            return false unless label.match?(/\A[a-zA-Z0-9\-]+\z/)
+            # Can contain letters, numbers, hyphens, and underscores
+            # Underscores are valid for SRV records (_sip._tcp), DMARC (_dmarc), etc.
+            return false unless label.match?(/\A[a-zA-Z0-9\-_]+\z/)
 
             # Cannot start or end with hyphen
             return false if label.start_with?('-') || label.end_with?('-')
@@ -37,12 +45,14 @@ module Pangea
             case type
             when "A"
               records.each do |record|
+                next if Pangea::Resources::BaseAttributes.terraform_reference?(record)
                 unless valid_ipv4?(record)
                   raise Dry::Struct::Error, "A record must contain valid IPv4 addresses: #{record}"
                 end
               end
             when "AAAA"
               records.each do |record|
+                next if Pangea::Resources::BaseAttributes.terraform_reference?(record)
                 unless valid_ipv6?(record)
                   raise Dry::Struct::Error, "AAAA record must contain valid IPv6 addresses: #{record}"
                 end
@@ -53,12 +63,14 @@ module Pangea
               end
             when "MX"
               records.each do |record|
+                next if Pangea::Resources::BaseAttributes.terraform_reference?(record)
                 unless record.match?(/\A\d+\s+\S+\z/)
                   raise Dry::Struct::Error, "MX record must be in format 'priority hostname': #{record}"
                 end
               end
             when "SRV"
               records.each do |record|
+                next if Pangea::Resources::BaseAttributes.terraform_reference?(record)
                 unless record.match?(/\A\d+\s+\d+\s+\d+\s+\S+\z/)
                   raise Dry::Struct::Error, "SRV record must be in format 'priority weight port target': #{record}"
                 end

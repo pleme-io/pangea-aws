@@ -77,7 +77,7 @@ module Pangea
       #   })
       def aws_config_configuration_recorder(name, attributes = {})
         # Validate attributes using dry-struct
-        recorder_attrs = Types::Types::ConfigConfigurationRecorderAttributes.new(attributes)
+        recorder_attrs = Types::ConfigConfigurationRecorderAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_config_configuration_recorder, name) do
@@ -87,22 +87,22 @@ module Pangea
           # Add recording group configuration if specified
           if recorder_attrs.has_recording_group?
             recording_group do
-              if recorder_attrs.recording_group[:all_supported]
-                all_supported recorder_attrs.recording_group[:all_supported]
+              unless recorder_attrs.recording_group&.dig(:all_supported).nil?
+                all_supported recorder_attrs.recording_group&.dig(:all_supported)
               end
-              
-              if recorder_attrs.recording_group[:include_global_resource_types]
-                include_global_resource_types recorder_attrs.recording_group[:include_global_resource_types]
+
+              unless recorder_attrs.recording_group&.dig(:include_global_resource_types).nil?
+                include_global_resource_types recorder_attrs.recording_group&.dig(:include_global_resource_types)
               end
-              
-              if recorder_attrs.recording_group[:resource_types].is_a?(Array)
-                resource_types recorder_attrs.recording_group[:resource_types]
+
+              if recorder_attrs.recording_group&.dig(:resource_types).is_a?(Array)
+                resource_types recorder_attrs.recording_group&.dig(:resource_types)
               end
             end
           end
           
           # Apply tags if present
-          if recorder_attrs.tags.any?
+          if recorder_attrs.tags&.any?
             tags do
               recorder_attrs.tags.each do |key, value|
                 public_send(key, value)

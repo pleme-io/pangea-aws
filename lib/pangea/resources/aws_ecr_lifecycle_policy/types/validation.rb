@@ -22,7 +22,7 @@ module Pangea
           # Validation methods for ECR lifecycle policy
           module Validation
             def self.validate_lifecycle_rule(rule, idx)
-              unless rule.is_a?(Hash)
+              unless rule.is_a?(::Hash)
                 raise Dry::Struct::Error, "Rule[#{idx}] must be a hash"
               end
 

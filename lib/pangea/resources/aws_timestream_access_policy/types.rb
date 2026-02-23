@@ -21,10 +21,10 @@ module Pangea
       module Types
       # Type-safe attributes for AwsTimestreamAccessPolicy resources
       # Provides a Timestream access policy resource.
-      class TimestreamAccessPolicyAttributes < Dry::Struct
-        attribute :database_name, Resources::Types::String
-        attribute :table_name, Resources::Types::String.optional
-        attribute :policy_document, Resources::Types::String
+      class TimestreamAccessPolicyAttributes < Pangea::Resources::BaseAttributes
+        attribute? :database_name, Resources::Types::String.optional
+        attribute? :table_name, Resources::Types::String.optional
+        attribute? :policy_document, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

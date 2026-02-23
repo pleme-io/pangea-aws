@@ -35,10 +35,10 @@ module Pangea
         end
 
         # S3 Bucket Accelerate Configuration attributes
-        class S3BucketAccelerateConfigurationAttributes < Dry::Struct
+        class S3BucketAccelerateConfigurationAttributes < Pangea::Resources::BaseAttributes
           # Required attributes
-          attribute :bucket, Types::BucketName
-          attribute :status, Types::AccelerationStatus
+          attribute? :bucket, Types::BucketName.optional
+          attribute? :status, Types::AccelerationStatus.optional
           
           # Optional attributes
           attribute? :expected_bucket_owner, Resources::Types::String.constrained(format: /\A\d{12}\z/).optional

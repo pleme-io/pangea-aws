@@ -29,122 +29,38 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_lb_listener(name, attributes = {})
         # Validate attributes using dry-struct
-        listener_attrs = AWS::Types::Types::LoadBalancerListenerAttributes.new(attributes)
+        listener_attrs = Types::LoadBalancerListenerAttributes.new(attributes)
         
-        # Generate terraform resource block via terraform-synthesizer
-        resource(:aws_lb_listener, name) do
-          load_balancer_arn listener_attrs.load_balancer_arn
-          port listener_attrs.port
-          protocol listener_attrs.protocol
-          
-          # SSL configuration for HTTPS/TLS listeners
-          if ['HTTPS', 'TLS'].include?(listener_attrs.protocol)
-            ssl_policy listener_attrs.ssl_policy
-            certificate_arn listener_attrs.certificate_arn
-          end
-          
-          # ALPN policy for HTTP/2 support
-          alpn_policy listener_attrs.alpn_policy if listener_attrs.alpn_policy
-          
-          # Default actions
-          listener_attrs.default_action.each_with_index do |action, index|
-            default_action do
-              type action[:type]
-              order action[:order] if action[:order]
-              
-              case action[:type]
-              when 'forward'
-                if action[:target_group_arn]
-                  target_group_arn action[:target_group_arn]
-                elsif action[:forward]
-                  forward do
-                    action[:forward][:target_groups].each do |tg|
-                      target_group do
-                        arn tg[:arn]
-                        weight tg[:weight] if tg[:weight] != 100
-                      end
-                    end
-                    
-                    if action[:forward][:stickiness]
-                      stickiness do
-                        enabled action[:forward][:stickiness][:enabled]
-                        duration action[:forward][:stickiness][:duration] if action[:forward][:stickiness][:duration]
-                      end
-                    end
-                  end
-                end
-                
-              when 'redirect'
-                redirect do
-                  protocol action[:redirect][:protocol] if action[:redirect][:protocol]
-                  port action[:redirect][:port] if action[:redirect][:port]
-                  host action[:redirect][:host] if action[:redirect][:host]
-                  path action[:redirect][:path] if action[:redirect][:path]
-                  query action[:redirect][:query] if action[:redirect][:query]
-                  status_code action[:redirect][:status_code]
-                end
-                
-              when 'fixed-response'
-                fixed_response do
-                  content_type action[:fixed_response][:content_type] if action[:fixed_response][:content_type]
-                  message_body action[:fixed_response][:message_body] if action[:fixed_response][:message_body]
-                  status_code action[:fixed_response][:status_code]
-                end
-                
-              when 'authenticate-cognito'
-                authenticate_cognito do
-                  user_pool_arn action[:authenticate_cognito][:user_pool_arn]
-                  user_pool_client_id action[:authenticate_cognito][:user_pool_client_id]
-                  user_pool_domain action[:authenticate_cognito][:user_pool_domain]
-                  
-                  if action[:authenticate_cognito][:authentication_request_extra_params]
-                    authentication_request_extra_params do
-                      action[:authenticate_cognito][:authentication_request_extra_params].each do |key, value|
-                        public_send(key, value)
-                      end
-                    end
-                  end
-                  
-                  on_unauthenticated_request action[:authenticate_cognito][:on_unauthenticated_request] if action[:authenticate_cognito][:on_unauthenticated_request]
-                  scope action[:authenticate_cognito][:scope] if action[:authenticate_cognito][:scope]
-                  session_cookie_name action[:authenticate_cognito][:session_cookie_name] if action[:authenticate_cognito][:session_cookie_name]
-                  session_timeout action[:authenticate_cognito][:session_timeout] if action[:authenticate_cognito][:session_timeout]
-                end
-                
-              when 'authenticate-oidc'
-                authenticate_oidc do
-                  authorization_endpoint action[:authenticate_oidc][:authorization_endpoint]
-                  client_id action[:authenticate_oidc][:client_id]
-                  client_secret action[:authenticate_oidc][:client_secret]
-                  issuer action[:authenticate_oidc][:issuer]
-                  token_endpoint action[:authenticate_oidc][:token_endpoint]
-                  user_info_endpoint action[:authenticate_oidc][:user_info_endpoint]
-                  
-                  if action[:authenticate_oidc][:authentication_request_extra_params]
-                    authentication_request_extra_params do
-                      action[:authenticate_oidc][:authentication_request_extra_params].each do |key, value|
-                        public_send(key, value)
-                      end
-                    end
-                  end
-                  
-                  on_unauthenticated_request action[:authenticate_oidc][:on_unauthenticated_request] if action[:authenticate_oidc][:on_unauthenticated_request]
-                  scope action[:authenticate_oidc][:scope] if action[:authenticate_oidc][:scope]
-                  session_cookie_name action[:authenticate_oidc][:session_cookie_name] if action[:authenticate_oidc][:session_cookie_name]
-                  session_timeout action[:authenticate_oidc][:session_timeout] if action[:authenticate_oidc][:session_timeout]
-                end
-              end
-            end
-          end
-          
-          # Apply tags if present
-          if listener_attrs.tags.any?
-            tags do
-              listener_attrs.tags.each do |key, value|
-                public_send(key, value)
-              end
-            end
-          end
+        # Build resource attributes as a hash
+        resource_attrs = {
+          load_balancer_arn: listener_attrs.load_balancer_arn,
+          port: listener_attrs.port,
+          protocol: listener_attrs.protocol
+        }
+
+        # SSL configuration for HTTPS/TLS listeners
+        if %w[HTTPS TLS].include?(listener_attrs.protocol)
+          resource_attrs[:ssl_policy] = listener_attrs.ssl_policy
+          resource_attrs[:certificate_arn] = listener_attrs.certificate_arn
+        end
+
+        resource_attrs[:alpn_policy] = listener_attrs.alpn_policy if listener_attrs.alpn_policy
+
+        # Build default actions as array of hashes
+        resource_attrs[:default_action] = listener_attrs.default_action.map do |action|
+          build_listener_action(action)
+        end
+
+        resource_attrs[:tags] = listener_attrs.tags if listener_attrs.tags&.any?
+
+        # Write to manifest: direct access for synthesizer (supports arrays/hashes),
+        # fall back to resource() for test mocks
+        if is_a?(AbstractSynthesizer)
+          translation[:manifest][:resource] ||= {}
+          translation[:manifest][:resource][:aws_lb_listener] ||= {}
+          translation[:manifest][:resource][:aws_lb_listener][name] = resource_attrs
+        else
+          resource(:aws_lb_listener, name, resource_attrs)
         end
         
         # Create resource reference
@@ -171,13 +87,39 @@ module Pangea
         ref.define_singleton_method(:supports_rules?) { ['HTTP', 'HTTPS'].include?(listener_attrs.protocol) }
         ref.define_singleton_method(:action_count) { listener_attrs.default_action.size }
         ref.define_singleton_method(:has_authentication?) do
-          listener_attrs.default_action.any? { |a| ['authenticate-cognito', 'authenticate-oidc'].include?(a[:type]) }
+          listener_attrs.default_action&.any? { |a| ['authenticate-cognito', 'authenticate-oidc'].include?(a[:type]) }
         end
         ref.define_singleton_method(:has_weighted_routing?) do
-          listener_attrs.default_action.any? { |a| a[:type] == 'forward' && a[:forward] }
+          listener_attrs.default_action&.any? { |a| a[:type] == 'forward' && a[:forward] }
         end
         
         ref
+      end
+
+      private
+
+      def build_listener_action(action)
+        result = { type: action[:type] }
+        result[:order] = action[:order] if action[:order]
+
+        case action[:type]
+        when 'forward'
+          if action[:target_group_arn]
+            result[:target_group_arn] = action[:target_group_arn]
+          elsif action[:forward]
+            result[:forward] = action[:forward].dup
+          end
+        when 'redirect'
+          result[:redirect] = action[:redirect].slice(:protocol, :port, :host, :path, :query, :status_code).compact
+        when 'fixed-response'
+          result[:fixed_response] = action[:fixed_response].slice(:content_type, :message_body, :status_code).compact
+        when 'authenticate-cognito'
+          result[:authenticate_cognito] = action[:authenticate_cognito].dup
+        when 'authenticate-oidc'
+          result[:authenticate_oidc] = action[:authenticate_oidc].dup
+        end
+
+        result
       end
     end
   end

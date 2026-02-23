@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsLbSslNegotiationPolicy resources
       # Manages aws lb ssl negotiation policy resources.
-      class AwsLbSslNegotiationPolicyAttributes < Dry::Struct
+      class AwsLbSslNegotiationPolicyAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_lb_ssl_negotiation_policy
         
         # Tags to apply to the resource

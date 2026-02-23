@@ -10,18 +10,18 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS CloudTrail resources
-        class CloudTrailAttributes < Dry::Struct
-          attribute :name, Resources::Types::String
-          attribute :s3_bucket_name, Resources::Types::String
-          attribute :s3_key_prefix, Resources::Types::String.optional
+        class CloudTrailAttributes < Pangea::Resources::BaseAttributes
+          attribute? :name, Resources::Types::String.optional
+          attribute? :s3_bucket_name, Resources::Types::String.optional
+          attribute? :s3_key_prefix, Resources::Types::String.optional
           attribute :include_global_service_events, Resources::Types::Bool.default(true)
           attribute :is_multi_region_trail, Resources::Types::Bool.default(true)
           attribute :enable_logging, Resources::Types::Bool.default(true)
           attribute :enable_log_file_validation, Resources::Types::Bool.default(true)
-          attribute :kms_key_id, Resources::Types::String.optional
-          attribute :cloud_watch_logs_group_arn, Resources::Types::String.optional
-          attribute :cloud_watch_logs_role_arn, Resources::Types::String.optional
-          attribute :sns_topic_name, Resources::Types::String.optional
+          attribute? :kms_key_id, Resources::Types::String.optional
+          attribute? :cloud_watch_logs_group_arn, Resources::Types::String.optional
+          attribute? :cloud_watch_logs_role_arn, Resources::Types::String.optional
+          attribute? :sns_topic_name, Resources::Types::String.optional
           attribute :event_selector, Resources::Types::Array.of(EventSelector).default([].freeze)
           attribute :insight_selector, Resources::Types::Array.of(InsightSelector).default([].freeze)
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

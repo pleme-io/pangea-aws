@@ -4,5 +4,5 @@
 
 # AWS Cognito Identity Pool types
 require_relative 'types/providers'
-require_relative 'types/attributes'
 require_relative 'types/templates'
+require_relative 'types/attributes'

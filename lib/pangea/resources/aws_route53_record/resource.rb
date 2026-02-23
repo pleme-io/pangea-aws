@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_route53_record(name, attributes = {})
         # Validate attributes using dry-struct
-        record_attrs = AWS::Types::Types::Route53RecordAttributes.new(attributes)
+        record_attrs = Types::Route53RecordAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_route53_record, name) do
@@ -40,13 +40,13 @@ module Pangea
           # Simple record configuration
           if !record_attrs.is_alias_record?
             ttl record_attrs.ttl
-            records record_attrs.records if record_attrs.records.any?
+            records record_attrs.records if record_attrs.records&.any?
           end
           
           # Alias record configuration
           if record_attrs.alias
             alias_block = record_attrs.alias
-            _alias do  # Use _alias since 'alias' is a Ruby keyword
+            send(:alias) do
               name alias_block[:name]
               zone_id alias_block[:zone_id]
               evaluate_target_health alias_block[:evaluate_target_health]
@@ -56,19 +56,19 @@ module Pangea
           # Routing policies
           if record_attrs.weighted_routing_policy
             weighted_routing_policy do
-              weight record_attrs.weighted_routing_policy[:weight]
+              weight record_attrs.weighted_routing_policy&.dig(:weight)
             end
           end
           
           if record_attrs.latency_routing_policy
             latency_routing_policy do
-              region record_attrs.latency_routing_policy[:region]
+              region record_attrs.latency_routing_policy&.dig(:region)
             end
           end
           
           if record_attrs.failover_routing_policy
             failover_routing_policy do
-              type record_attrs.failover_routing_policy[:type]
+              type record_attrs.failover_routing_policy&.dig(:type)
             end
           end
           
@@ -98,7 +98,7 @@ module Pangea
           # Additional configurations
           set_identifier record_attrs.set_identifier if record_attrs.set_identifier
           health_check_id record_attrs.health_check_id if record_attrs.health_check_id
-          multivalue_answer record_attrs.multivalue_answer if record_attrs.multivalue_answer
+          multivalue_answer record_attrs.multivalue_answer unless record_attrs.multivalue_answer.nil?
           allow_overwrite record_attrs.allow_overwrite if record_attrs.allow_overwrite
         end
         

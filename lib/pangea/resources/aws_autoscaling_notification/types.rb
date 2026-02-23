@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsAutoscalingNotification resources
       # Manages aws autoscaling notification resources.
-      class AwsAutoscalingNotificationAttributes < Dry::Struct
+      class AwsAutoscalingNotificationAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_autoscaling_notification
         
         # Tags to apply to the resource

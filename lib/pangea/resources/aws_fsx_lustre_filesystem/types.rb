@@ -22,14 +22,14 @@ module Pangea
     module AWS
       module Types
         # FSx Lustre file system resource attributes with validation
-        class FsxLustreFileSystemAttributes < Dry::Struct
+        class FsxLustreFileSystemAttributes < Pangea::Resources::BaseAttributes
           include FsxLustreHelpers
           transform_keys(&:to_sym)
 
           attribute? :import_path, Resources::Types::String.optional
           attribute? :export_path, Resources::Types::String.optional
-          attribute :storage_capacity, Resources::Types::Integer
-          attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String)
+          attribute? :storage_capacity, Resources::Types::Integer.optional
+          attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
           attribute? :security_group_ids, Resources::Types::Array.of(Resources::Types::String).optional
           attribute :storage_type, Resources::Types::String.default('SSD').constrained(included_in: %w[SSD HDD])
           attribute? :per_unit_storage_throughput, Resources::Types::Integer.optional
@@ -47,7 +47,7 @@ module Pangea
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             instance = super(attrs)
             validate_storage_capacity(instance)
             validate_throughput(instance)

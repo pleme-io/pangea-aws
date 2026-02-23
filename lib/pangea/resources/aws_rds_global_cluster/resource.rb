@@ -67,7 +67,7 @@ module Pangea
           force_destroy global_attrs.force_destroy if global_attrs.force_destroy
           
           # Apply tags if present
-          if global_attrs.tags.any?
+          if global_attrs.tags&.any?
             tags do
               global_attrs.tags.each do |key, value|
                 public_send(key, value)

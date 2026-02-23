@@ -38,14 +38,14 @@ module Pangea
           
           # Set node configuration
           node_configuration do
-            instance_type node_attrs.node_configuration[:instance_type]
+            instance_type node_attrs.node_configuration&.dig(:instance_type)
             
-            if node_attrs.node_configuration[:availability_zone]
-              availability_zone node_attrs.node_configuration[:availability_zone]
+            if node_attrs.node_configuration&.dig(:availability_zone)
+              availability_zone node_attrs.node_configuration&.dig(:availability_zone)
             end
             
-            if node_attrs.node_configuration[:subnet_id]
-              subnet_id node_attrs.node_configuration[:subnet_id]
+            if node_attrs.node_configuration&.dig(:subnet_id)
+              subnet_id node_attrs.node_configuration&.dig(:subnet_id)
             end
           end
           

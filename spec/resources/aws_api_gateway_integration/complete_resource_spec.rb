@@ -22,48 +22,48 @@ RSpec.describe 'aws_api_gateway_integration resource function' do
   let(:test_class) do
     Class.new do
       include Pangea::Resources::AWS
-      
+
       def initialize
         @resources = []
       end
-      
-      def resource(type, name)
+
+      def resource(type, name, &block)
         resource_data = { type: type, name: name, attributes: {} }
         @resources << resource_data
-        yield MockResourceBuilder.new(resource_data[:attributes]) if block_given?
+        MockResourceBuilder.new(resource_data[:attributes]).instance_eval(&block) if block
         resource_data
       end
-      
+
       def get_resources
         @resources
       end
     end
   end
-  
+
   let(:mock_resource_builder) do
     Class.new do
       def initialize(attributes)
         @attributes = attributes
       end
-      
-      def method_missing(method_name, *args)
+
+      def method_missing(method_name, *args, &block)
         if args.any?
           @attributes[method_name] = args.first
         end
-        
-        if block_given?
+
+        if block
           nested_builder = self.class.new({})
-          yield nested_builder
+          nested_builder.instance_eval(&block)
           @attributes[method_name] = nested_builder.instance_variable_get(:@attributes)
         end
       end
-      
+
       def respond_to_missing?(method_name, include_private = false)
         true
       end
     end
   end
-  
+
   before do
     stub_const('MockResourceBuilder', mock_resource_builder)
   end
@@ -128,17 +128,20 @@ RSpec.describe 'aws_api_gateway_integration resource function' do
       
       it 'validates integration type enum' do
         valid_types = ['MOCK', 'HTTP', 'HTTP_PROXY', 'AWS', 'AWS_PROXY']
-        
+
         valid_types.each do |type|
           uri = type == 'MOCK' ? nil : 'https://example.com'
+          integration_http_method = ['HTTP', 'AWS'].include?(type) ? 'GET' : nil
+          attrs = {
+            rest_api_id: 'api-123',
+            resource_id: 'resource-456',
+            http_method: 'GET',
+            type: type,
+            uri: uri
+          }
+          attrs[:integration_http_method] = integration_http_method if integration_http_method
           expect {
-            Pangea::Resources::AWS::Types::ApiGatewayIntegrationAttributes.new({
-              rest_api_id: 'api-123',
-              resource_id: 'resource-456', 
-              http_method: 'GET',
-              type: type,
-              uri: uri
-            })
+            Pangea::Resources::AWS::Types::ApiGatewayIntegrationAttributes.new(attrs)
           }.not_to raise_error
         end
         

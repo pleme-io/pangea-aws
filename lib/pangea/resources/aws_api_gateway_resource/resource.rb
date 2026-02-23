@@ -25,15 +25,24 @@ module Pangea
       # Provides type-safe function for creating API resources/paths
       def aws_api_gateway_resource(name, attributes = {})
         # Validate attributes using dry-struct
-        validated_attrs = Types::Types::ApiGatewayResourceAttributes.new(attributes)
-        
-        # Synthesize the Terraform resource
-        resource :aws_api_gateway_resource, name do
-          rest_api_id validated_attrs.rest_api_id
-          parent_id validated_attrs.parent_id
-          path_part validated_attrs.path_part
+        validated_attrs = Types::ApiGatewayResourceAttributes.new(attributes)
+
+        # Build resource attributes as a hash
+        resource_attrs = {
+          rest_api_id: validated_attrs.rest_api_id,
+          parent_id: validated_attrs.parent_id,
+          path_part: validated_attrs.path_part
+        }
+
+        # Write to manifest: direct access for synthesizer, fall back to resource() for test mocks
+        if is_a?(AbstractSynthesizer)
+          translation[:manifest][:resource] ||= {}
+          translation[:manifest][:resource][:aws_api_gateway_resource] ||= {}
+          translation[:manifest][:resource][:aws_api_gateway_resource][name] = resource_attrs
+        else
+          resource(:aws_api_gateway_resource, name, resource_attrs)
         end
-        
+
         # Create and return ResourceReference
         ref = ResourceReference.new(
           type: 'aws_api_gateway_resource',
@@ -45,13 +54,13 @@ module Pangea
             execution_arn: "${aws_api_gateway_resource.#{name}.execution_arn}"
           }
         )
-        
+
         # Add computed properties via method delegation
         ref.define_singleton_method(:is_path_parameter?) { validated_attrs.is_path_parameter? }
         ref.define_singleton_method(:is_greedy_parameter?) { validated_attrs.is_greedy_parameter? }
         ref.define_singleton_method(:parameter_name) { validated_attrs.parameter_name }
         ref.define_singleton_method(:requires_request_validator?) { validated_attrs.requires_request_validator? }
-        
+
         ref
       end
     end

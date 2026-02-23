@@ -18,11 +18,11 @@ require 'pangea/resources/types'
 module Pangea
   module Resources
     module AWS
-      class IotDeviceDefenderSecurityProfileAttributes < Dry::Struct
-        attribute :security_profile_name, Resources::Types::IotSecurityProfileName
-        attribute :security_profile_description, Resources::Types::String.optional
+      class IotDeviceDefenderSecurityProfileAttributes < Pangea::Resources::BaseAttributes
+        attribute? :security_profile_name, Resources::Types::IotSecurityProfileName.optional
+        attribute? :security_profile_description, Resources::Types::String.optional
         attribute :behaviors, Resources::Types::Array.of(Resources::Types::Hash).default([].freeze)
-        attribute :alert_targets, Resources::Types::Hash.optional
+        attribute :alert_targets, Resources::Types::Hash.default({}.freeze)
         attribute :target_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         

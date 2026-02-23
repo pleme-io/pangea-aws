@@ -38,10 +38,10 @@ module Pangea
           description policy_attrs.description if policy_attrs.description
           
           # Policy document (required)
-          policy JSON.pretty_generate(policy_attrs.policy)
+          policy ::JSON.pretty_generate(policy_attrs.policy)
           
           # Apply tags if present
-          if policy_attrs.tags.any?
+          if policy_attrs.tags&.any?
             tags do
               policy_attrs.tags.each do |key, value|
                 public_send(key, value)

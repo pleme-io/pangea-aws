@@ -46,7 +46,7 @@ module Pangea
           addresses ip_set_attrs.addresses
           
           # Apply tags if present
-          if ip_set_attrs.tags.any?
+          if ip_set_attrs.tags&.any?
             tags do
               ip_set_attrs.tags.each do |key, value|
                 public_send(key, value)

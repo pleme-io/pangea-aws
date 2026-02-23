@@ -190,10 +190,8 @@ RSpec.describe "aws_subnet terraform synthesis" do
         [:map_public_ip_on_launch, true]
       )
       
-      # Verify tags block was called
-      expect(test_synthesizer.method_calls).to include([:tags])
-      expect(test_synthesizer.method_calls).to include([:Name, "public-subnet"])
-      expect(test_synthesizer.method_calls).to include([:Type, "public"])
+      # Verify tags were called with the expected hash
+      expect(test_synthesizer.method_calls).to include([:tags, {Name: "public-subnet", Type: "public"}])
     end
     
     it "synthesizes private subnet correctly" do

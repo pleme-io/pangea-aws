@@ -21,8 +21,8 @@ module Pangea
       module Types
       # Type-safe attributes for AwsDocdbCertificate resources
       # Provides information about a DocumentDB certificate.
-      class DocdbCertificateAttributes < Dry::Struct
-        attribute :certificate_identifier, Resources::Types::String
+      class DocdbCertificateAttributes < Pangea::Resources::BaseAttributes
+        attribute? :certificate_identifier, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

@@ -21,10 +21,10 @@ module Pangea
     module AWS
       module Types
         # KMS Key resource attributes with validation
-        class KmsKeyAttributes < Dry::Struct
+        class KmsKeyAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :description, Pangea::Resources::Types::String
+          attribute? :description, Pangea::Resources::Types::String.optional
           attribute :key_usage?, Pangea::Resources::Types::String.default('ENCRYPT_DECRYPT').enum('ENCRYPT_DECRYPT', 'SIGN_VERIFY')
           attribute :key_spec?, Pangea::Resources::Types::String.default('SYMMETRIC_DEFAULT').enum(
             'SYMMETRIC_DEFAULT',
@@ -40,16 +40,16 @@ module Pangea
           
           # Custom validation logic
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate key usage and spec compatibility
             if attrs[:key_usage] && attrs[:key_spec]
               validate_key_usage_spec_compatibility(attrs[:key_usage], attrs[:key_spec])
             end
             
-            # Validate key rotation compatibility
-            if attrs[:enable_key_rotation] && attrs[:key_spec]
-              validate_rotation_compatibility(attrs[:enable_key_rotation], attrs[:key_spec])
+            # Silently disable key rotation for non-symmetric keys
+            if attrs[:enable_key_rotation] && attrs[:key_spec] && attrs[:key_spec] != 'SYMMETRIC_DEFAULT'
+              attrs = attrs.merge(enable_key_rotation: false)
             end
             
             super(attrs)
@@ -104,6 +104,14 @@ module Pangea
             end
           end
           
+          def multi_region?
+            !!multi_region
+          end
+
+          def enable_key_rotation?
+            !!enable_key_rotation
+          end
+
           def estimated_monthly_cost
             # AWS KMS pricing (approximate)
             base_cost = multi_region? ? 2.00 : 1.00  # Multi-region keys cost more

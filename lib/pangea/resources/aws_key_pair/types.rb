@@ -20,15 +20,15 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS Key Pair resources
-      class KeyPairAttributes < Dry::Struct
+      class KeyPairAttributes < Pangea::Resources::BaseAttributes
         # The name for the key pair (required)
-        attribute :key_name, Resources::Types::String.optional
+        attribute? :key_name, Resources::Types::String.optional
         
         # Creates a unique name beginning with the specified prefix (optional)
-        attribute :key_name_prefix, Resources::Types::String.optional
+        attribute? :key_name_prefix, Resources::Types::String.optional
         
         # The public key material (required)
-        attribute :public_key, Resources::Types::String
+        attribute? :public_key, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

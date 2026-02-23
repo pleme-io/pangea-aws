@@ -32,7 +32,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_vpc_peering_connection(name, attributes = {})
         # Validate attributes using dry-struct
-        attrs = Pangea::Resources::Types::VpcPeeringConnectionAttributes.new(attributes)
+        attrs = Pangea::Resources::VpcPeeringConnectionAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_vpc_peering_connection, name) do
@@ -45,34 +45,34 @@ module Pangea
           peer_region attrs.peer_region if attrs.peer_region
           
           # Auto-accept configuration (same account only)
-          auto_accept attrs.auto_accept if attrs.auto_accept
+          auto_accept attrs.auto_accept
           
           # Accepter configuration block
-          if attrs.accepter.any?
+          if attrs.accepter&.any?
             accepter do
               attrs.accepter.each do |key, value|
                 case key
                 when :allow_remote_vpc_dns_resolution
-                  allow_remote_vpc_dns_resolution value if value != false
+                  allow_remote_vpc_dns_resolution value
                 end
               end
             end
           end
-          
+
           # Requester configuration block
-          if attrs.requester.any?
+          if attrs.requester&.any?
             requester do
               attrs.requester.each do |key, value|
                 case key
                 when :allow_remote_vpc_dns_resolution
-                  allow_remote_vpc_dns_resolution value if value != false
+                  allow_remote_vpc_dns_resolution value
                 end
               end
             end
           end
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)
@@ -82,7 +82,7 @@ module Pangea
         end
         
         # Return resource reference with available outputs
-        Pangea::Resources::ResourceReference.new(
+        ref = Pangea::Resources::ResourceReference.new(
           type: 'aws_vpc_peering_connection',
           name: name,
           resource_attributes: attrs.to_h,
@@ -108,6 +108,19 @@ module Pangea
             connection_type_description: attrs.connection_type_description
           }
         )
+
+        # Delegate computed methods to resource reference
+        ref.define_singleton_method(:is_cross_region?) { attrs.cross_region? }
+        ref.define_singleton_method(:is_cross_account?) { attrs.cross_account? }
+        ref.define_singleton_method(:cross_region?) { attrs.cross_region? }
+        ref.define_singleton_method(:cross_account?) { attrs.cross_account? }
+        ref.define_singleton_method(:connection_type) { attrs.connection_type }
+        ref.define_singleton_method(:connection_type_description) { attrs.connection_type_description }
+        ref.define_singleton_method(:peering_type) { attrs.peering_type }
+        ref.define_singleton_method(:requires_manual_acceptance?) { attrs.requires_manual_acceptance? }
+        ref.define_singleton_method(:supports_dns_resolution?) { attrs.supports_dns_resolution? }
+
+        ref
       end
     end
   end

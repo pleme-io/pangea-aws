@@ -20,7 +20,7 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class OrganizationsOrganizationAttributes < Dry::Struct
+        class OrganizationsOrganizationAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           attribute :aws_service_access_principals, Resources::Types::Array.optional.default([].freeze)
@@ -28,7 +28,7 @@ module Pangea
           attribute :feature_set, Resources::Types::String.default("ALL")
           
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             if attrs[:feature_set]
               valid_features = ["ALL", "CONSOLIDATED_BILLING"]

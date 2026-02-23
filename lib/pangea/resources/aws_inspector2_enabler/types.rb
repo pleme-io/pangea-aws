@@ -21,15 +21,15 @@ module Pangea
     module AWS
       module Types
         # Inspector v2 Enabler attributes with validation
-        class Inspector2EnablerAttributes < Dry::Struct
+        class Inspector2EnablerAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :account_ids, Resources::Types::Array.of(Resources::Types::AwsAccountId).constrained(min_size: 1)
-          attribute :resource_types, Resources::Types::Array.of(Resources::Types::InspectorV2ResourceType).constrained(min_size: 1)
+          attribute? :account_ids, Resources::Types::Array.of(Resources::Types::AwsAccountId).constrained(min_size: 1).optional
+          attribute? :resource_types, Resources::Types::Array.of(Resources::Types::InspectorV2ResourceType).constrained(min_size: 1).optional
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate unique account IDs
             if attrs[:account_ids]

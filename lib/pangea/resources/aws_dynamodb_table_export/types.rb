@@ -44,10 +44,10 @@ module Pangea
         end
 
         # DynamoDB Table Export attributes with comprehensive validation
-        class DynamoDBTableExportAttributes < Dry::Struct
+        class DynamoDBTableExportAttributes < Pangea::Resources::BaseAttributes
           # Required attributes
-          attribute :s3_bucket, Types::S3BucketArn
-          attribute :table_arn, Types::TableArn
+          attribute? :s3_bucket, Types::S3BucketArn.optional
+          attribute? :table_arn, Types::TableArn.optional
           
           # Optional attributes
           attribute? :export_format, Types::ExportFormat.default('DYNAMODB_JSON')

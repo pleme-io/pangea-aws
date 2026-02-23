@@ -38,11 +38,11 @@ module Pangea
           'RIGHTSIZING_TYPE', 'SAVINGS_PLANS_TYPE', 'SAVINGS_PLAN_ARN', 'PAYMENT_OPTION'])
         
         # Anomaly detector resource attributes
-        class AnomalyDetectorAttributes < Dry::Struct
+        class AnomalyDetectorAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9\s\-_\.]{1,128}\z/)
-          attribute :monitor_type, AnomalyMonitorType
+          attribute? :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9\s\-_\.]{1,128}\z/).optional
+          attribute? :monitor_type, AnomalyMonitorType.optional
           attribute :monitor_specification?, Resources::Types::String.optional  # JSON specification for CUSTOM monitors
           
           attribute :dimension_key?, AnomalyDimensionKey.optional

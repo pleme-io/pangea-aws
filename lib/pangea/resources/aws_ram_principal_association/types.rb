@@ -21,9 +21,9 @@ module Pangea
       module Types
       # Type-safe attributes for AwsRamPrincipalAssociation resources
       # Associates a principal with a RAM Resource Share.
-      class RamPrincipalAssociationAttributes < Dry::Struct
-        attribute :principal, Resources::Types::String
-        attribute :resource_share_arn, Resources::Types::String
+      class RamPrincipalAssociationAttributes < Pangea::Resources::BaseAttributes
+        attribute? :principal, Resources::Types::String.optional
+        attribute? :resource_share_arn, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

@@ -29,7 +29,7 @@ module Pangea
         resource(:aws_media_store_container, name) do
           name container_attrs.name
           
-          if container_attrs.tags.any?
+          if container_attrs.tags&.any?
             tags do
               container_attrs.tags.each do |key, value|
                 public_send(key, value)

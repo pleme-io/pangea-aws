@@ -39,7 +39,7 @@ module Pangea
           force_destroy zone_attrs.force_destroy if zone_attrs.force_destroy
           
           # VPC configuration for private hosted zones
-          if zone_attrs.vpc.any?
+          if zone_attrs.vpc&.any?
             zone_attrs.vpc.each do |vpc_config|
               vpc do
                 vpc_id vpc_config[:vpc_id]
@@ -49,7 +49,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if zone_attrs.tags.any?
+          if zone_attrs.tags&.any?
             tags do
               zone_attrs.tags.each do |key, value|
                 public_send(key, value)

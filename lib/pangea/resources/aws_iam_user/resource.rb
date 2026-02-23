@@ -37,15 +37,9 @@ module Pangea
           path user_attrs.path
           permissions_boundary user_attrs.permissions_boundary if user_attrs.permissions_boundary
           force_destroy user_attrs.force_destroy
-          
-          # Apply tags if present
-          if user_attrs.tags.any?
-            tags do
-              user_attrs.tags.each do |key, value|
-                public_send(key, value)
-              end
-            end
-          end
+
+          # Apply tags
+          tags user_attrs.tags if user_attrs.tags&.any?
         end
         
         # Return resource reference with available outputs

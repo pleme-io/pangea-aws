@@ -28,14 +28,14 @@ module Pangea
             def build_single_rule(ctx, rule_attrs)
               builder = self
               ctx.rule do
-                name rule_attrs.name
-                priority rule_attrs.priority
-                builder.build_rule_action(self, rule_attrs.action)
-                statement { builder.build_statement(self, rule_attrs.statement) }
-                builder.build_visibility_config(self, rule_attrs.visibility_config)
-                builder.build_rule_labels(self, rule_attrs.rule_labels)
-                builder.build_captcha_config(self, rule_attrs.captcha_config)
-                builder.build_challenge_config(self, rule_attrs.challenge_config)
+                ctx.name rule_attrs.name
+                ctx.priority rule_attrs.priority
+                builder.build_rule_action(ctx, rule_attrs.action)
+                ctx.statement { builder.build_statement(ctx, rule_attrs.statement) }
+                builder.build_visibility_config(ctx, rule_attrs.visibility_config)
+                builder.build_rule_labels(ctx, rule_attrs.rule_labels)
+                builder.build_captcha_config(ctx, rule_attrs.captcha_config)
+                builder.build_challenge_config(ctx, rule_attrs.challenge_config)
               end
             end
 
@@ -43,43 +43,65 @@ module Pangea
               builder = self
               ctx.action do
                 if action.allow
-                  allow { builder.build_custom_request_handling(self, action.allow[:custom_request_handling]) }
+                  ctx.allow do
+                    builder.build_custom_request_handling(ctx, action.allow[:custom_request_handling])
+                  end
                 elsif action.block
-                  block { builder.build_custom_response(self, action.block[:custom_response]) }
+                  ctx.block do
+                    builder.build_custom_response(ctx, action.block[:custom_response])
+                  end
                 elsif action.count
-                  count { builder.build_custom_request_handling(self, action.count[:custom_request_handling]) }
+                  ctx.count do
+                    builder.build_custom_request_handling(ctx, action.count[:custom_request_handling])
+                  end
                 elsif action.captcha
-                  captcha { builder.build_custom_request_handling(self, action.captcha[:custom_request_handling]) }
+                  ctx.captcha do
+                    builder.build_custom_request_handling(ctx, action.captcha[:custom_request_handling])
+                  end
                 elsif action.challenge
-                  challenge { builder.build_custom_request_handling(self, action.challenge[:custom_request_handling]) }
+                  ctx.challenge do
+                    builder.build_custom_request_handling(ctx, action.challenge[:custom_request_handling])
+                  end
                 end
               end
             end
 
             def build_visibility_config(ctx, config)
               ctx.visibility_config do
-                cloudwatch_metrics_enabled config.cloudwatch_metrics_enabled
-                metric_name config.metric_name
-                sampled_requests_enabled config.sampled_requests_enabled
+                ctx.cloudwatch_metrics_enabled config.cloudwatch_metrics_enabled
+                ctx.metric_name config.metric_name
+                ctx.sampled_requests_enabled config.sampled_requests_enabled
               end
             end
 
             def build_rule_labels(ctx, labels)
               return unless labels.any?
 
-              labels.each { |label| ctx.rule_label { name label[:name] } }
+              labels.each do |label|
+                ctx.rule_label do
+                  ctx.name label[:name]
+                end
+              end
             end
 
             def build_captcha_config(ctx, config)
               return unless config
 
-              ctx.captcha_config { immunity_time_property { immunity_time config[:immunity_time_property][:immunity_time] } }
+              ctx.captcha_config do
+                ctx.immunity_time_property do
+                  ctx.immunity_time config[:immunity_time_property][:immunity_time]
+                end
+              end
             end
 
             def build_challenge_config(ctx, config)
               return unless config
 
-              ctx.challenge_config { immunity_time_property { immunity_time config[:immunity_time_property][:immunity_time] } }
+              ctx.challenge_config do
+                ctx.immunity_time_property do
+                  ctx.immunity_time config[:immunity_time_property][:immunity_time]
+                end
+              end
             end
           end
         end

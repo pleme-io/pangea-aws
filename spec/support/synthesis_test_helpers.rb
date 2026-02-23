@@ -189,7 +189,7 @@ class MockTerraformSynthesizer
     if code
       eval(code)
     elsif block
-      instance_eval(&block)
+      super(&block)
     end
   end
 

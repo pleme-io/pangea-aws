@@ -41,7 +41,7 @@ module Pangea
               teletext_grid_control?: T::String.constrained(included_in: ['FIXED', 'SCALED']).optional,
               x_position?: T::Integer.optional,
               y_position?: T::Integer.optional
-            )
+            ).lax
 
             # DVB-sub destination settings
             DvbSubDestinationSettings = T::Hash.schema(
@@ -62,7 +62,7 @@ module Pangea
               teletext_grid_control?: T::String.constrained(included_in: ['FIXED', 'SCALED']).optional,
               x_position?: T::Integer.optional,
               y_position?: T::Integer.optional
-            )
+            ).lax
 
             # EBU TT-D destination settings
             EbuTtDDestinationSettings = T::Hash.schema(
@@ -70,17 +70,17 @@ module Pangea
               fill_line_gap?: T::String.constrained(included_in: ['DISABLED', 'ENABLED']).optional,
               font_family?: T::String.optional,
               style_control?: T::String.constrained(included_in: ['EXCLUDE', 'INCLUDE']).optional
-            )
+            ).lax
 
             # TTML destination settings
             TtmlDestinationSettings = T::Hash.schema(
               style_control?: T::String.constrained(included_in: ['PASSTHROUGH', 'USE_CONFIGURED']).optional
-            )
+            ).lax
 
             # WebVTT destination settings
             WebvttDestinationSettings = T::Hash.schema(
               style_control?: T::String.constrained(included_in: ['NO_STYLE_DATA', 'PASSTHROUGH']).optional
-            )
+            ).lax
 
             # Caption destination settings container
             DestinationSettings = T::Hash.schema(
@@ -97,7 +97,7 @@ module Pangea
               teletext_destination_settings?: T::Hash.optional,
               ttml_destination_settings?: TtmlDestinationSettings.optional,
               webvtt_destination_settings?: WebvttDestinationSettings.optional
-            )
+            ).lax
 
             # Caption description
             CaptionDescription = T::Hash.schema(
@@ -106,7 +106,7 @@ module Pangea
               language_code?: T::String.optional,
               language_description?: T::String.optional,
               name: T::String
-            )
+            ).lax
 
 
           end

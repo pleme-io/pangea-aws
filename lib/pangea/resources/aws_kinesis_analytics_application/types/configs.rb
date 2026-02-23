@@ -26,44 +26,44 @@ module Pangea
               bucket_arn: String,
               file_key: String,
               object_version?: String.optional
-            )
+            ).lax
 
             CodeContent = Hash.schema(
               text_content?: String.optional,
               zip_file_content?: String.optional,
               s3_content_location?: S3ContentLocation.optional
-            )
+            ).lax
 
             ApplicationCodeConfiguration = Hash.schema(
               code_content: CodeContent,
               code_content_type: String.constrained(included_in: ['PLAINTEXT', 'ZIPFILE'])
-            )
+            ).lax
 
             CheckpointConfiguration = Hash.schema(
               configuration_type: String.constrained(included_in: ['DEFAULT', 'CUSTOM']),
               checkpointing_enabled?: Bool.optional,
               checkpoint_interval?: Integer.constrained(gteq: 1000, lteq: 300_000).optional,
               min_pause_between_checkpoints?: Integer.constrained(gteq: 0, lteq: 300_000).optional
-            )
+            ).lax
 
             MonitoringConfiguration = Hash.schema(
               configuration_type: String.constrained(included_in: ['DEFAULT', 'CUSTOM']),
               log_level?: String.constrained(included_in: ['INFO', 'WARN', 'ERROR', 'DEBUG']).optional,
               metrics_level?: String.constrained(included_in: ['APPLICATION', 'TASK', 'OPERATOR', 'PARALLELISM']).optional
-            )
+            ).lax
 
             ParallelismConfiguration = Hash.schema(
               configuration_type: String.constrained(included_in: ['DEFAULT', 'CUSTOM']),
               parallelism?: Integer.constrained(gteq: 1, lteq: 1000).optional,
               parallelism_per_kpu?: Integer.constrained(gteq: 1, lteq: 4).optional,
               auto_scaling_enabled?: Bool.optional
-            )
+            ).lax
 
             FlinkApplicationConfiguration = Hash.schema(
               checkpoint_configuration?: CheckpointConfiguration.optional,
               monitoring_configuration?: MonitoringConfiguration.optional,
               parallelism_configuration?: ParallelismConfiguration.optional
-            )
+            ).lax
 
             EnvironmentProperties = Hash.schema(
               property_groups: Array.of(Hash.schema(
@@ -72,7 +72,7 @@ module Pangea
                   String.constrained(min_size: 1, max_size: 2048),
                   String.constrained(min_size: 1, max_size: 2048)
                 )
-              ))
+              )).lax
             )
 
 
@@ -80,7 +80,7 @@ module Pangea
             VpcConfiguration = Hash.schema(
               subnet_ids: Array.of(String).constrained(min_size: 2, max_size: 16),
               security_group_ids: Array.of(String).constrained(min_size: 1, max_size: 5)
-            )
+            ).lax
 
             end
           end

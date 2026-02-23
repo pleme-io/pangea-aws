@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsDefaultNetworkAcl resources
       # Manages aws default network acl resources.
-      class AwsDefaultNetworkAclAttributes < Dry::Struct
+      class AwsDefaultNetworkAclAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_default_network_acl
         
         # Tags to apply to the resource

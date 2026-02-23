@@ -28,9 +28,9 @@ RSpec.describe "aws_eks_addon resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -107,7 +107,7 @@ RSpec.describe "aws_eks_addon resource function" do
           cluster_name: "my-cluster",
           addon_name: "invalid-addon"
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "accepts all supported addon names" do
@@ -153,7 +153,7 @@ RSpec.describe "aws_eks_addon resource function" do
           addon_name: "vpc-cni",
           service_account_role_arn: "invalid-arn"
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "validates resolve_conflicts options" do
@@ -163,7 +163,7 @@ RSpec.describe "aws_eks_addon resource function" do
           addon_name: "vpc-cni",
           resolve_conflicts: "INVALID"
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "accepts valid resolve_conflicts options" do

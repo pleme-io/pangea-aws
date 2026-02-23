@@ -46,7 +46,7 @@ module Pangea
           ca_certificate_pem cert_attrs.ca_certificate_pem if cert_attrs.ca_certificate_pem
           
           # Apply tags if present
-          if cert_attrs.tags.any?
+          if cert_attrs.tags&.any?
             tags do
               cert_attrs.tags.each do |key, value|
                 public_send(key, value)

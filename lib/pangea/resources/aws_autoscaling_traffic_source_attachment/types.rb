@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsAutoscalingTrafficSourceAttachment resources
       # Manages aws autoscaling traffic source attachment resources.
-      class AwsAutoscalingTrafficSourceAttachmentAttributes < Dry::Struct
+      class AwsAutoscalingTrafficSourceAttachmentAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_autoscaling_traffic_source_attachment
         
         # Tags to apply to the resource

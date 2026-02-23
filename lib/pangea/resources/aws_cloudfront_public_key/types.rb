@@ -20,15 +20,15 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS CloudFront Public Key resources
-      class CloudFrontPublicKeyAttributes < Dry::Struct
+      class CloudFrontPublicKeyAttributes < Pangea::Resources::BaseAttributes
         # Name for the public key
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
 
         # The public key data (PEM format)
-        attribute :encoded_key, Resources::Types::String
+        attribute? :encoded_key, Resources::Types::String.optional
 
         # Comment/description for the public key
-        attribute :comment, Resources::Types::String.optional
+        attribute? :comment, Resources::Types::String.optional
 
         # Custom validation
         def self.new(attributes = {})
@@ -97,7 +97,7 @@ module Pangea
             warnings << "Very short public key name - consider more descriptive naming"
           end
           
-          if comment && comment.include?(encoded_key[0,20])
+          if comment && comment.include?(encoded_key&.dig(0,20))
             warnings << "Comment contains key data - avoid including sensitive information"
           end
           

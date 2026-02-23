@@ -43,12 +43,12 @@ module Pangea
           # Auto Scaling Group Provider configuration
           if provider_attrs.auto_scaling_group_provider
             auto_scaling_group_provider do
-              auto_scaling_group_arn provider_attrs.auto_scaling_group_provider[:auto_scaling_group_arn]
+              auto_scaling_group_arn provider_attrs.auto_scaling_group_provider&.dig(:auto_scaling_group_arn)
               
               # Managed scaling configuration
-              if provider_attrs.auto_scaling_group_provider[:managed_scaling]
+              if provider_attrs.auto_scaling_group_provider&.dig(:managed_scaling)
                 managed_scaling do
-                  scaling_config = provider_attrs.auto_scaling_group_provider[:managed_scaling]
+                  scaling_config = provider_attrs.auto_scaling_group_provider&.dig(:managed_scaling)
                   
                   instance_warmup_period scaling_config[:instance_warmup_period] if scaling_config[:instance_warmup_period]
                   maximum_scaling_step_size scaling_config[:maximum_scaling_step_size] if scaling_config[:maximum_scaling_step_size]
@@ -59,14 +59,14 @@ module Pangea
               end
               
               # Managed termination protection
-              if provider_attrs.auto_scaling_group_provider[:managed_termination_protection]
-                managed_termination_protection provider_attrs.auto_scaling_group_provider[:managed_termination_protection]
+              if provider_attrs.auto_scaling_group_provider&.dig(:managed_termination_protection)
+                managed_termination_protection provider_attrs.auto_scaling_group_provider&.dig(:managed_termination_protection)
               end
             end
           end
           
           # Apply tags
-          if provider_attrs.tags.any?
+          if provider_attrs.tags&.any?
             tags do
               provider_attrs.tags.each do |key, value|
                 public_send(key, value)

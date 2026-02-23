@@ -15,21 +15,21 @@ module Pangea
             AudioLanguageSelection = T::Hash.schema(
               language_code: T::String,
               language_selection_policy?: T::String.constrained(included_in: ['LOOSE', 'STRICT']).optional
-            )
+            ).lax
 
             AudioPidSelection = T::Hash.schema(
               pid: T::Integer
-            )
+            ).lax
 
             AudioSelectorSettings = T::Hash.schema(
               audio_language_selection?: AudioLanguageSelection.optional,
               audio_pid_selection?: AudioPidSelection.optional
-            )
+            ).lax
 
             AudioSelector = T::Hash.schema(
               name: T::String,
               selector_settings?: AudioSelectorSettings.optional
-            )
+            ).lax
 
             # Caption selector settings
             CaptionSelectorSettings = T::Hash.schema(
@@ -37,33 +37,33 @@ module Pangea
               embedded_source_settings?: T::Hash.optional,
               scte20_source_settings?: T::Hash.optional,
               teletext_source_settings?: T::Hash.optional
-            )
+            ).lax
 
             CaptionSelector = T::Hash.schema(
               name: T::String,
               language_code?: T::String.optional,
               selector_settings?: CaptionSelectorSettings.optional
-            )
+            ).lax
 
             # Video selector settings
             VideoSelectorPid = T::Hash.schema(
               pid: T::Integer
-            )
+            ).lax
 
             VideoSelectorProgramId = T::Hash.schema(
               program_id: T::Integer
-            )
+            ).lax
 
             VideoSelectorSettings = T::Hash.schema(
               video_selector_pid?: VideoSelectorPid.optional,
               video_selector_program_id?: VideoSelectorProgramId.optional
-            )
+            ).lax
 
             VideoSelector = T::Hash.schema(
               color_space?: T::String.constrained(included_in: ['FOLLOW', 'HDR10', 'HLG_2020', 'REC_601', 'REC_709']).optional,
               color_space_usage?: T::String.constrained(included_in: ['FALLBACK', 'FORCE']).optional,
               selector_settings?: VideoSelectorSettings.optional
-            )
+            ).lax
 
             # Network input settings
             HlsInputSettings = T::Hash.schema(
@@ -71,12 +71,12 @@ module Pangea
               buffer_segments?: T::Integer.optional,
               retries?: T::Integer.optional,
               retry_interval?: T::Integer.optional
-            )
+            ).lax
 
             NetworkInputSettings = T::Hash.schema(
               hls_input_settings?: HlsInputSettings.optional,
               server_validation?: T::String.constrained(included_in: ['CHECK_CRYPTOGRAPHY_AND_VALIDATE_NAME', 'CHECK_CRYPTOGRAPHY_ONLY']).optional
-            )
+            ).lax
 
             # Complete input settings
             InputSettingsSchema = T::Hash.schema(
@@ -90,14 +90,14 @@ module Pangea
               smpte2038_data_preference?: T::String.constrained(included_in: ['IGNORE', 'PREFER']).optional,
               source_end_behavior?: T::String.constrained(included_in: ['CONTINUE', 'LOOP']).optional,
               video_selector?: VideoSelector.optional
-            )
+            ).lax
 
             # Input attachment
             InputAttachment = T::Hash.schema(
               input_attachment_name: T::String,
               input_id: T::String,
               input_settings?: InputSettingsSchema.optional
-            )
+            ).lax
           end
         end
       end

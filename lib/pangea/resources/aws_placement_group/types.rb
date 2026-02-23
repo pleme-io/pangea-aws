@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsPlacementGroup resources
       # Manages aws placement group resources.
-      class AwsPlacementGroupAttributes < Dry::Struct
+      class AwsPlacementGroupAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_placement_group
         
         # Tags to apply to the resource

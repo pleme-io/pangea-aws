@@ -21,36 +21,49 @@ module Pangea
     module AWS
       module Types
         # API Gateway Resource attributes with validation
-        class ApiGatewayResourceAttributes < Dry::Struct
+        class ApiGatewayResourceAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Core attributes
-          attribute :rest_api_id, Pangea::Resources::Types::String
-          attribute :parent_id, Pangea::Resources::Types::String
-          attribute :path_part, Pangea::Resources::Types::String
+          attribute? :rest_api_id, Pangea::Resources::Types::String.optional
+          attribute? :parent_id, Pangea::Resources::Types::String.optional
+          attribute? :path_part, Pangea::Resources::Types::String.optional
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
-            
+            attrs = attributes.is_a?(::Hash) ? attributes.transform_keys(&:to_sym) : (attributes.nil? ? {} : attributes.to_h.transform_keys(&:to_sym))
+
+            # Validate required attributes
+            unless attrs[:rest_api_id] && !attrs[:rest_api_id].to_s.empty?
+              raise Dry::Struct::Error, "rest_api_id is required"
+            end
+
+            unless attrs[:parent_id] && !attrs[:parent_id].to_s.empty?
+              raise Dry::Struct::Error, "parent_id is required"
+            end
+
+            unless attrs[:path_part] && !attrs[:path_part].to_s.empty?
+              raise Dry::Struct::Error, "path_part is required"
+            end
+
             # Validate path_part doesn't contain slashes
             if attrs[:path_part]
               if attrs[:path_part].include?('/')
                 raise Dry::Struct::Error, "Path part cannot contain slashes. Use separate resources for nested paths."
               end
-              
+
+              # Check for greedy path variable first (must be the full segment, e.g. {proxy+})
+              if attrs[:path_part].include?('+}') && !attrs[:path_part].match?(/^\{[\w\-]+\+\}$/)
+                raise Dry::Struct::Error, "Greedy path variables (+) must use the full segment: {proxy+}"
+              end
+
               # Validate path_part follows API Gateway constraints
               # Must be alphanumeric, hyphens, underscores, or parameter brackets
               unless attrs[:path_part].match?(/^([\w\-]+|\{[\w\-]+\+?\})$/)
                 raise Dry::Struct::Error, "Path part must be alphanumeric with hyphens/underscores or a parameter in brackets like {id} or {proxy+}"
               end
-              
-              # Check for greedy path variable (must be last segment)
-              if attrs[:path_part].include?('+}') && !attrs[:path_part].match?(/^\{[\w\-]+\+\}$/)
-                raise Dry::Struct::Error, "Greedy path variables (+) must use the full segment: {proxy+}"
-              end
             end
-            
+
             super(attrs)
           end
           

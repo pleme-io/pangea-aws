@@ -22,30 +22,30 @@ module Pangea
     module AWS
       module Types
         # WAF v2 Rule configuration
-        class WafV2Rule < Dry::Struct
+        class WafV2Rule < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
-          attribute :priority, Resources::Types::Integer.constrained(gteq: 0)
-          attribute :action, WafV2RuleAction
-          attribute :statement, WafV2Statement
-          attribute :visibility_config, WafV2VisibilityConfig
-          attribute :rule_labels, Resources::Types::Array.of(Resources::Types::Hash.schema(
+          attribute? :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/).optional
+          attribute? :priority, Resources::Types::Integer.constrained(gteq: 0).optional
+          attribute? :action, WafV2RuleAction.optional
+          attribute? :statement, WafV2Statement.optional
+          attribute? :visibility_config, WafV2VisibilityConfig.optional
+          attribute? :rule_labels, Resources::Types::Array.of(Resources::Types::Hash.schema(
                                              name: Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_:-]{1,1024}\z/)
-                                           )).default([].freeze)
-          attribute :captcha_config, Resources::Types::Hash.schema(
+                                           )).lax.default([].freeze)
+          attribute? :captcha_config, Resources::Types::Hash.schema(
             immunity_time_property: Resources::Types::Hash.schema(
               immunity_time: Resources::Types::Integer.constrained(gteq: 60, lteq: 259_200)
-            )
+            ).lax
           ).optional
-          attribute :challenge_config, Resources::Types::Hash.schema(
+          attribute? :challenge_config, Resources::Types::Hash.schema(
             immunity_time_property: Resources::Types::Hash.schema(
               immunity_time: Resources::Types::Integer.constrained(gteq: 60, lteq: 259_200)
-            )
+            ).lax
           ).optional
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             raise Dry::Struct::Error, 'captcha_config can only be specified with captcha action' if attrs[:captcha_config] && (!attrs[:action] || !attrs[:action][:captcha])
 

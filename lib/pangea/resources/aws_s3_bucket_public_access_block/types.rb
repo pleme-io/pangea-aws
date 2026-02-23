@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS S3 Bucket Public Access Block resources
-      class S3BucketPublicAccessBlockAttributes < Dry::Struct
+      class S3BucketPublicAccessBlockAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Bucket name (required)
-        attribute :bucket, Resources::Types::String
+        attribute? :bucket, Resources::Types::String.optional
 
         # Block public ACLs (optional, default false)
         attribute? :block_public_acls, Resources::Types::Bool.optional

@@ -52,23 +52,23 @@ module Pangea
           destination do
             # Destination bucket
             bucket do
-              bucket_arn inventory_attrs.destination[:bucket]
-              prefix inventory_attrs.destination[:prefix] if inventory_attrs.destination[:prefix]
-              account_id inventory_attrs.destination[:account_id] if inventory_attrs.destination[:account_id]
-              format inventory_attrs.destination[:format] || inventory_attrs.format
+              bucket_arn inventory_attrs.destination&.dig(:bucket)
+              prefix inventory_attrs.destination&.dig(:prefix) if inventory_attrs.destination&.dig(:prefix)
+              account_id inventory_attrs.destination&.dig(:account_id) if inventory_attrs.destination&.dig(:account_id)
+              format inventory_attrs.destination&.dig(:format) || inventory_attrs.format
               
               # Configure encryption if specified
-              if inventory_attrs.destination[:encryption]
+              if inventory_attrs.destination&.dig(:encryption)
                 encryption do
-                  if inventory_attrs.destination[:encryption][:sse_s3]
+                  if inventory_attrs.destination&.dig(:encryption)[:sse_s3]
                     sse_s3 do
                       # SSE-S3 encryption (no additional config needed)
                     end
                   end
                   
-                  if inventory_attrs.destination[:encryption][:sse_kms]
+                  if inventory_attrs.destination&.dig(:encryption)[:sse_kms]
                     sse_kms do
-                      key_id inventory_attrs.destination[:encryption][:sse_kms][:key_id]
+                      key_id inventory_attrs.destination&.dig(:encryption)[:sse_kms][:key_id]
                     end
                   end
                 end
@@ -78,12 +78,12 @@ module Pangea
           
           # Configure schedule
           schedule do
-            frequency inventory_attrs.schedule[:frequency]
-            day_of_week inventory_attrs.schedule[:day_of_week] if inventory_attrs.schedule[:day_of_week]
+            frequency inventory_attrs.schedule&.dig(:frequency)
+            day_of_week inventory_attrs.schedule&.dig(:day_of_week) if inventory_attrs.schedule&.dig(:day_of_week)
           end
           
           # Add optional fields if specified
-          if inventory_attrs.optional_fields.any?
+          if inventory_attrs.optional_fields&.any?
             inventory_attrs.optional_fields.each do |field|
               optional_fields field
             end

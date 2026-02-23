@@ -24,57 +24,57 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Glue Catalog Table resources
-        class GlueCatalogTableAttributes < Dry::Struct
+        class GlueCatalogTableAttributes < Pangea::Resources::BaseAttributes
           extend GlueCatalogTableFormatHelpers
           extend GlueCatalogTableValidators
           include GlueCatalogTableHelpers
 
           # Table name (required)
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Database name (required)
-          attribute :database_name, Resources::Types::String
+          attribute? :database_name, Resources::Types::String.optional
 
           # Catalog ID (optional, defaults to AWS account ID)
-          attribute :catalog_id, Resources::Types::String.optional
+          attribute? :catalog_id, Resources::Types::String.optional
 
           # Table owner
-          attribute :owner, Resources::Types::String.optional
+          attribute? :owner, Resources::Types::String.optional
 
           # Table description
-          attribute :description, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
 
           # Table type
-          attribute :table_type, Resources::Types::String.constrained(included_in: ["EXTERNAL_TABLE", "MANAGED_TABLE", "VIRTUAL_VIEW"]).optional
+          attribute? :table_type, Resources::Types::String.constrained(included_in: ["EXTERNAL_TABLE", "MANAGED_TABLE", "VIRTUAL_VIEW"]).optional
 
           # Parameters for the table
           attribute :parameters, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
 
           # Storage descriptor
-          attribute :storage_descriptor, GlueCatalogTableStorageDescriptor::StorageDescriptorSchema.optional
+          attribute? :storage_descriptor, GlueCatalogTableStorageDescriptor::StorageDescriptorSchema.optional
 
           # Partition keys
-          attribute :partition_keys, Resources::Types::Array.of(
+          attribute? :partition_keys, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               name: Resources::Types::String,
               type: Resources::Types::String,
               comment?: Resources::Types::String.optional
-            )
+            ).lax
           ).default([].freeze)
 
           # Retention period in days
-          attribute :retention, Resources::Types::Integer.optional
+          attribute? :retention, Resources::Types::Integer.optional
 
           # View information for VIRTUAL_VIEW tables
-          attribute :view_original_text, Resources::Types::String.optional
-          attribute :view_expanded_text, Resources::Types::String.optional
+          attribute? :view_original_text, Resources::Types::String.optional
+          attribute? :view_expanded_text, Resources::Types::String.optional
 
           # Targeted column information
-          attribute :target_table, Resources::Types::Hash.schema(
+          attribute? :target_table, Resources::Types::Hash.schema(
             catalog_id?: Resources::Types::String.optional,
             database_name?: Resources::Types::String.optional,
             name?: Resources::Types::String.optional
-          ).optional
+          ).lax.optional
 
           # Custom validation
           def self.new(attributes = {})

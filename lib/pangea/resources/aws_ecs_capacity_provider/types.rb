@@ -48,15 +48,15 @@ module Pangea
               minimum_scaling_step_size?: Resources::Types::Integer.constrained(gteq: 1, lteq: 10000).optional,
               status?: ManagedScalingStatus.optional,
               target_capacity?: Resources::Types::Integer.constrained(gteq: 1, lteq: 100).optional
-            }).optional,
+            }).lax.optional,
             managed_termination_protection?: ManagedTerminationProtection.optional
           })
         end
 
         # ECS Capacity Provider attributes with comprehensive validation
-        class EcsCapacityProviderAttributes < Dry::Struct
+        class EcsCapacityProviderAttributes < Pangea::Resources::BaseAttributes
           # Required attributes
-          attribute :name, Types::CapacityProviderName
+          attribute? :name, Types::CapacityProviderName.optional
           
           # Optional attributes
           attribute? :auto_scaling_group_provider, Types::AutoScalingGroupProvider.optional
@@ -69,30 +69,30 @@ module Pangea
           
           def auto_scaling_group_name
             return nil unless has_auto_scaling_group?
-            auto_scaling_group_provider[:auto_scaling_group_arn].split('/')[-1]
+            auto_scaling_group_provider&.dig(:auto_scaling_group_arn).split('/')[-1]
           end
           
           def managed_scaling_enabled?
             return false unless has_auto_scaling_group?
-            return false unless auto_scaling_group_provider[:managed_scaling]
-            auto_scaling_group_provider[:managed_scaling][:status] == 'ENABLED'
+            return false unless auto_scaling_group_provider&.dig(:managed_scaling)
+            auto_scaling_group_provider&.dig(:managed_scaling)[:status] == 'ENABLED'
           end
           
           def managed_termination_protection_enabled?
             return false unless has_auto_scaling_group?
-            auto_scaling_group_provider[:managed_termination_protection] == 'ENABLED'
+            auto_scaling_group_provider&.dig(:managed_termination_protection) == 'ENABLED'
           end
           
           def target_capacity_percentage
             return nil unless has_auto_scaling_group?
-            return nil unless auto_scaling_group_provider[:managed_scaling]
-            auto_scaling_group_provider[:managed_scaling][:target_capacity]
+            return nil unless auto_scaling_group_provider&.dig(:managed_scaling)
+            auto_scaling_group_provider&.dig(:managed_scaling)[:target_capacity]
           end
           
           def instance_warmup_period
             return nil unless has_auto_scaling_group?
-            return nil unless auto_scaling_group_provider[:managed_scaling]
-            auto_scaling_group_provider[:managed_scaling][:instance_warmup_period] || 300
+            return nil unless auto_scaling_group_provider&.dig(:managed_scaling)
+            auto_scaling_group_provider&.dig(:managed_scaling)[:instance_warmup_period] || 300
           end
           
           def fargate_provider?

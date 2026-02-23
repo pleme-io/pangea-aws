@@ -27,8 +27,8 @@ module Pangea
               return nil if is_terraform_reference?
 
               begin
-                JSON.parse(policy)
-              rescue JSON::ParserError
+                ::JSON.parse(policy)
+              rescue ::JSON::ParserError
                 nil
               end
             end

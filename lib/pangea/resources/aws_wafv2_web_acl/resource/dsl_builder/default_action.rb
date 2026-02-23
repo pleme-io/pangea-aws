@@ -22,11 +22,25 @@ module Pangea
           # Default action building methods
           module DefaultAction
             def build_default_action(ctx)
+              action = attrs.default_action
+              builder = self
               ctx.default_action do
-                if attrs.default_action.allow
-                  allow { build_custom_request_handling(ctx, attrs.default_action.allow[:custom_request_handling]) }
-                elsif attrs.default_action.block
-                  block { build_custom_response(ctx, attrs.default_action.block[:custom_response]) }
+                if action.allow
+                  if action.allow[:custom_request_handling]
+                    ctx.allow do
+                      builder.build_custom_request_handling(ctx, action.allow[:custom_request_handling])
+                    end
+                  else
+                    ctx.allow({})
+                  end
+                elsif action.block
+                  if action.block[:custom_response]
+                    ctx.block do
+                      builder.build_custom_response(ctx, action.block[:custom_response])
+                    end
+                  else
+                    ctx.block({})
+                  end
                 end
               end
             end
@@ -36,7 +50,10 @@ module Pangea
 
               ctx.custom_request_handling do
                 handling[:insert_headers].each do |header|
-                  insert_header { name header[:name]; value header[:value] }
+                  ctx.insert_header do
+                    ctx.name header[:name]
+                    ctx.value header[:value]
+                  end
                 end
               end
             end
@@ -45,10 +62,13 @@ module Pangea
               return unless response
 
               ctx.custom_response do
-                response_code response[:response_code]
-                custom_response_body_key response[:custom_response_body_key] if response[:custom_response_body_key]
+                ctx.response_code response[:response_code]
+                ctx.custom_response_body_key response[:custom_response_body_key] if response[:custom_response_body_key]
                 response[:response_headers]&.each do |header|
-                  response_header { name header[:name]; value header[:value] }
+                  ctx.response_header do
+                    ctx.name header[:name]
+                    ctx.value header[:value]
+                  end
                 end
               end
             end

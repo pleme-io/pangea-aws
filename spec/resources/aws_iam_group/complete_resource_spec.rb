@@ -25,9 +25,9 @@ RSpec.describe "aws_iam_group resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -53,7 +53,7 @@ RSpec.describe "aws_iam_group resource function" do
   
   describe "IamGroupAttributes validation" do
     it "accepts minimal configuration with required name" do
-      attrs = Pangea::Resources::AWS::IamGroupAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({
         name: "developers"
       })
       
@@ -62,7 +62,7 @@ RSpec.describe "aws_iam_group resource function" do
     end
     
     it "accepts custom path" do
-      attrs = Pangea::Resources::AWS::IamGroupAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({
         name: "developers",
         path: "/teams/engineering/"
       })
@@ -72,7 +72,7 @@ RSpec.describe "aws_iam_group resource function" do
     
     it "validates name format" do
       expect {
-        Pangea::Resources::AWS::IamGroupAttributes.new({
+        Pangea::Resources::AWS::Types::IamGroupAttributes.new({
           name: "invalid name with spaces"
         })
       }.to raise_error(Dry::Struct::Error, /must contain only alphanumeric characters/)
@@ -80,7 +80,7 @@ RSpec.describe "aws_iam_group resource function" do
     
     it "validates name length" do
       expect {
-        Pangea::Resources::AWS::IamGroupAttributes.new({
+        Pangea::Resources::AWS::Types::IamGroupAttributes.new({
           name: "a" * 129
         })
       }.to raise_error(Dry::Struct::Error, /cannot exceed 128 characters/)
@@ -88,16 +88,16 @@ RSpec.describe "aws_iam_group resource function" do
     
     it "validates path format" do
       expect {
-        Pangea::Resources::AWS::IamGroupAttributes.new({
+        Pangea::Resources::AWS::Types::IamGroupAttributes.new({
           name: "developers",
           path: "missing-leading-slash"
         })
-      }.to raise_error(Dry::Struct::Error, /must start with '\'/)
+      }.to raise_error(Dry::Struct::Error, /must start with '\/'/)
     end
     
     it "validates path length" do
       expect {
-        Pangea::Resources::AWS::IamGroupAttributes.new({
+        Pangea::Resources::AWS::Types::IamGroupAttributes.new({
           name: "developers",
           path: "/" + "a" * 511 + "/"
         })
@@ -108,7 +108,7 @@ RSpec.describe "aws_iam_group resource function" do
       admin_names = ["platform-admins", "super-users", "root-group", "power-users"]
       
       admin_names.each do |name|
-        attrs = Pangea::Resources::AWS::IamGroupAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({ name: name })
         expect(attrs.administrative_group?).to eq(true)
         expect(attrs.group_category).to eq(:administrative)
         expect(attrs.security_risk_level).to eq(:high)
@@ -119,7 +119,7 @@ RSpec.describe "aws_iam_group resource function" do
       dev_names = ["frontend-developers", "backend-engineers", "mobile-programmers"]
       
       dev_names.each do |name|
-        attrs = Pangea::Resources::AWS::IamGroupAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({ name: name })
         expect(attrs.developer_group?).to eq(true)
         expect(attrs.group_category).to eq(:developer)
         expect(attrs.security_risk_level).to eq(:medium)
@@ -130,7 +130,7 @@ RSpec.describe "aws_iam_group resource function" do
       ops_names = ["platform-ops", "site-sre", "infrastructure-team"]
       
       ops_names.each do |name|
-        attrs = Pangea::Resources::AWS::IamGroupAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({ name: name })
         expect(attrs.operations_group?).to eq(true)
         expect(attrs.group_category).to eq(:operations)
         expect(attrs.security_risk_level).to eq(:high)
@@ -138,7 +138,7 @@ RSpec.describe "aws_iam_group resource function" do
       
       # Special case: platform-engineers contains both "platform" and "engineer"
       # so it's categorized as developer (engineer takes precedence)
-      attrs = Pangea::Resources::AWS::IamGroupAttributes.new({ name: "platform-engineers" })
+      attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({ name: "platform-engineers" })
       expect(attrs.operations_group?).to eq(true)  # Contains "platform"
       expect(attrs.developer_group?).to eq(true)   # Contains "engineer"
       expect(attrs.group_category).to eq(:developer)  # Developer takes precedence
@@ -149,7 +149,7 @@ RSpec.describe "aws_iam_group resource function" do
       readonly_names = ["monitoring-readonly", "audit-viewers", "compliance-auditors"]
       
       readonly_names.each do |name|
-        attrs = Pangea::Resources::AWS::IamGroupAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({ name: name })
         expect(attrs.readonly_group?).to eq(true)
         expect(attrs.group_category).to eq(:readonly)
         expect(attrs.security_risk_level).to eq(:low)
@@ -160,7 +160,7 @@ RSpec.describe "aws_iam_group resource function" do
       dept_names = ["engineering-standard", "finance-elevated", "marketing-team"]
       
       dept_names.each do |name|
-        attrs = Pangea::Resources::AWS::IamGroupAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({ name: name })
         expect(attrs.department_group?).to eq(true)
         expect(attrs.extract_department_from_name).not_to be_nil
       end
@@ -170,7 +170,7 @@ RSpec.describe "aws_iam_group resource function" do
       env_names = ["production-deploy", "staging-admin", "development-users"]
       
       env_names.each do |name|
-        attrs = Pangea::Resources::AWS::IamGroupAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({ name: name })
         expect(attrs.environment_group?).to eq(true)
         expect(attrs.extract_environment_from_name).not_to be_nil
       end
@@ -181,13 +181,13 @@ RSpec.describe "aws_iam_group resource function" do
       bad_names = ["developers", "-developers", "developers-", "dev"]
       
       good_names.each do |name|
-        attrs = Pangea::Resources::AWS::IamGroupAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({ name: name })
         expect(attrs.follows_naming_convention?).to eq(true)
         expect(attrs.naming_convention_score).to be >= 40
       end
       
       bad_names.each do |name|
-        attrs = Pangea::Resources::AWS::IamGroupAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({ name: name })
         expect(attrs.follows_naming_convention?).to eq(false)
       end
     end
@@ -202,7 +202,7 @@ RSpec.describe "aws_iam_group resource function" do
       }
       
       test_cases.each do |name, expected_score|
-        attrs = Pangea::Resources::AWS::IamGroupAttributes.new({ 
+        attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({ 
           name: name,
           path: "/teams/engineering/"
         })
@@ -211,7 +211,7 @@ RSpec.describe "aws_iam_group resource function" do
     end
     
     it "handles organizational paths" do
-      attrs = Pangea::Resources::AWS::IamGroupAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({
         name: "developers",
         path: "/teams/engineering/backend/"
       })
@@ -221,7 +221,7 @@ RSpec.describe "aws_iam_group resource function" do
     end
     
     it "generates group ARN" do
-      attrs = Pangea::Resources::AWS::IamGroupAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({
         name: "developers",
         path: "/teams/"
       })
@@ -274,7 +274,7 @@ RSpec.describe "aws_iam_group resource function" do
       
       expect(ref.administrative_group?).to eq(true)
       expect(ref.developer_group?).to eq(false)
-      expect(ref.operations_group?).to eq(false)
+      expect(ref.operations_group?).to eq(true)  # "platform" in name matches operations
       expect(ref.readonly_group?).to eq(false)
       expect(ref.group_category).to eq(:administrative)
       expect(ref.security_risk_level).to eq(:high)
@@ -286,7 +286,7 @@ RSpec.describe "aws_iam_group resource function" do
   
   describe "GroupPatterns module usage" do
     it "creates development team groups" do
-      pattern = Pangea::Resources::AWS::GroupPatterns.development_team_group("frontend", "engineering")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.development_team_group("frontend", "engineering")
       ref = test_instance.aws_iam_group(:frontend_team, pattern)
       
       attrs = ref.resource_attributes
@@ -296,7 +296,7 @@ RSpec.describe "aws_iam_group resource function" do
     end
     
     it "creates environment access groups" do
-      pattern = Pangea::Resources::AWS::GroupPatterns.environment_access_group("production", "deploy")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.environment_access_group("production", "deploy")
       ref = test_instance.aws_iam_group(:prod_deployers, pattern)
       
       attrs = ref.resource_attributes
@@ -306,7 +306,7 @@ RSpec.describe "aws_iam_group resource function" do
     end
     
     it "creates department groups" do
-      pattern = Pangea::Resources::AWS::GroupPatterns.department_group("finance", "elevated")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.department_group("finance", "elevated")
       ref = test_instance.aws_iam_group(:finance_elevated, pattern)
       
       attrs = ref.resource_attributes
@@ -316,7 +316,7 @@ RSpec.describe "aws_iam_group resource function" do
     end
     
     it "creates admin groups" do
-      pattern = Pangea::Resources::AWS::GroupPatterns.admin_group("security", "platform")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.admin_group("security", "platform")
       ref = test_instance.aws_iam_group(:sec_admins, pattern)
       
       attrs = ref.resource_attributes
@@ -327,7 +327,7 @@ RSpec.describe "aws_iam_group resource function" do
     end
     
     it "creates readonly groups" do
-      pattern = Pangea::Resources::AWS::GroupPatterns.readonly_group("infrastructure", "monitoring")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.readonly_group("infrastructure", "monitoring")
       ref = test_instance.aws_iam_group(:infra_readonly, pattern)
       
       attrs = ref.resource_attributes
@@ -338,7 +338,7 @@ RSpec.describe "aws_iam_group resource function" do
     end
     
     it "creates service groups" do
-      pattern = Pangea::Resources::AWS::GroupPatterns.service_group("user-api", "operator")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.service_group("user-api", "operator")
       ref = test_instance.aws_iam_group(:api_operators, pattern)
       
       attrs = ref.resource_attributes
@@ -347,7 +347,7 @@ RSpec.describe "aws_iam_group resource function" do
     end
     
     it "creates cross-functional groups" do
-      pattern = Pangea::Resources::AWS::GroupPatterns.cross_functional_group("data-platform", ["engineering", "analytics"])
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.cross_functional_group("data-platform", ["engineering", "analytics"])
       ref = test_instance.aws_iam_group(:data_platform_team, pattern)
       
       attrs = ref.resource_attributes
@@ -356,7 +356,7 @@ RSpec.describe "aws_iam_group resource function" do
     end
     
     it "creates compliance groups" do
-      pattern = Pangea::Resources::AWS::GroupPatterns.compliance_group("soc2", "auditor")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.compliance_group("soc2", "auditor")
       ref = test_instance.aws_iam_group(:soc2_auditors, pattern)
       
       attrs = ref.resource_attributes
@@ -365,7 +365,7 @@ RSpec.describe "aws_iam_group resource function" do
     end
     
     it "creates CI/CD groups" do
-      pattern = Pangea::Resources::AWS::GroupPatterns.cicd_group("deployment", "production")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.cicd_group("deployment", "production")
       ref = test_instance.aws_iam_group(:cicd_prod, pattern)
       
       attrs = ref.resource_attributes
@@ -374,7 +374,7 @@ RSpec.describe "aws_iam_group resource function" do
     end
     
     it "creates emergency access groups" do
-      pattern = Pangea::Resources::AWS::GroupPatterns.emergency_group("breakglass")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.emergency_group("breakglass")
       ref = test_instance.aws_iam_group(:emergency, pattern)
       
       attrs = ref.resource_attributes
@@ -425,7 +425,7 @@ RSpec.describe "aws_iam_group resource function" do
       valid_names = ["test_group", "test-group", "test.group", "test@group", "test+group", "test,group", "test=group"]
       
       valid_names.each do |name|
-        attrs = Pangea::Resources::AWS::IamGroupAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({ name: name })
         expect(attrs.name).to eq(name)
       end
     end
@@ -439,7 +439,7 @@ RSpec.describe "aws_iam_group resource function" do
       }
       
       complex_cases.each do |name, expected_category|
-        attrs = Pangea::Resources::AWS::IamGroupAttributes.new({ name: name })
+        attrs = Pangea::Resources::AWS::Types::IamGroupAttributes.new({ name: name })
         expect(attrs.group_category).to eq(expected_category)
       end
     end
@@ -454,7 +454,7 @@ RSpec.describe "aws_iam_group resource function" do
     it "warns about overly broad group names" do
       expect($stdout).to receive(:puts).with(/very broad/)
       
-      Pangea::Resources::AWS::IamGroupAttributes.new({
+      Pangea::Resources::AWS::Types::IamGroupAttributes.new({
         name: "all-users"
       })
     end
@@ -462,7 +462,7 @@ RSpec.describe "aws_iam_group resource function" do
     it "warns about admin groups without path structure" do
       expect($stdout).to receive(:puts).with(/should be in organized path/)
       
-      Pangea::Resources::AWS::IamGroupAttributes.new({
+      Pangea::Resources::AWS::Types::IamGroupAttributes.new({
         name: "platform-admins",
         path: "/"
       })
@@ -471,7 +471,7 @@ RSpec.describe "aws_iam_group resource function" do
     it "warns about environment groups without proper paths" do
       expect($stdout).to receive(:puts).with(/should be in environment-specific path/)
       
-      Pangea::Resources::AWS::IamGroupAttributes.new({
+      Pangea::Resources::AWS::Types::IamGroupAttributes.new({
         name: "production-deploy",
         path: "/generic/"
       })

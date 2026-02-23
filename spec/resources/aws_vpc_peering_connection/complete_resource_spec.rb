@@ -24,12 +24,12 @@ RSpec.describe "aws_vpc_peering_connection resource function" do
   # Create a test class that includes the VpcPeeringConnection module and mocks terraform-synthesizer
   let(:test_class) do
     Class.new do
-      include Pangea::Resources::VpcPeeringConnection
+      include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         

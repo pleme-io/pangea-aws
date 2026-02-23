@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsLbTrustStore resources
       # Manages aws lb trust store resources.
-      class AwsLbTrustStoreAttributes < Dry::Struct
+      class AwsLbTrustStoreAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_lb_trust_store
         
         # Tags to apply to the resource

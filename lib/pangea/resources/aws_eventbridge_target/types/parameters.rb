@@ -20,7 +20,7 @@ module Pangea
       module Types
         # Input transformation validation
         unless const_defined?(:InputTransformer)
-        InputTransformer = Resources::Types::Hash.schema(input_paths?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional, input_template: Resources::Types::String)
+        InputTransformer = Resources::Types::Hash.schema(input_paths?: Resources::Types::Hash.optional, input_template: Resources::Types::String)
           .constructor { |value|
             template = value[:input_template]
             raise Dry::Types::ConstraintError, 'Input template must contain substitution patterns or be empty JSON object' unless template.match?(/\{.*\}/) || template == '"{}"'
@@ -31,23 +31,23 @@ module Pangea
 
         unless const_defined?(:RetryPolicy)
         RetryPolicy = Resources::Types::Hash.schema(maximum_retry_attempts?: Resources::Types::Integer.optional.constrained(gteq: 0, lteq: 185),
-                                         maximum_event_age_in_seconds?: Resources::Types::Integer.optional.constrained(gteq: 60, lteq: 86_400))
+                                         maximum_event_age_in_seconds?: Resources::Types::Integer.optional.constrained(gteq: 60, lteq: 86_400)).lax
 
         end
         unless const_defined?(:DeadLetterConfig)
-        DeadLetterConfig = Resources::Types::Hash.schema(arn?: Resources::Types::String.optional.constrained(format: /\Aarn:aws:sqs:/))
+        DeadLetterConfig = Resources::Types::Hash.schema(arn?: Resources::Types::String.optional.constrained(format: /\Aarn:aws:sqs:/).lax)
         end
         HttpParameters = Resources::Types::Hash.schema(path_parameter_values?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional,
                                             header_parameters?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional,
-                                            query_string_parameters?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional)
-        KinesisParameters = Resources::Types::Hash.schema(partition_key_path?: Resources::Types::String.optional)
-        SqsParameters = Resources::Types::Hash.schema(message_group_id?: Resources::Types::String.optional)
+                                            query_string_parameters?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).lax.optional)
+        KinesisParameters = Resources::Types::Hash.schema(partition_key_path?: Resources::Types::String.optional).lax
+        SqsParameters = Resources::Types::Hash.schema(message_group_id?: Resources::Types::String.optional).lax
 
         EcsParameters = Resources::Types::Hash.schema(
           task_definition_arn: Resources::Types::String.constrained(format: /\Aarn:aws:ecs:/),
           task_count?: Resources::Types::Integer.optional.constrained(gteq: 1, lteq: 10),
           launch_type?: Resources::Types::String.constrained(included_in: ['EC2', 'FARGATE', 'EXTERNAL']).optional,
-          network_configuration?: Resources::Types::Hash.schema(awsvpc_configuration?: Resources::Types::Hash.optional).optional,
+          network_configuration?: Resources::Types::Hash.schema(awsvpc_configuration?: Resources::Types::Hash.optional).lax.optional,
           platform_version?: Resources::Types::String.optional, group?: Resources::Types::String.optional,
           capacity_provider_strategy?: Resources::Types::Array.of(Resources::Types::Hash).optional,
           placement_constraint?: Resources::Types::Array.of(Resources::Types::Hash).optional,
@@ -57,8 +57,8 @@ module Pangea
 
         BatchParameters = Resources::Types::Hash.schema(
           job_definition: Resources::Types::String, job_name: Resources::Types::String,
-          array_properties?: Resources::Types::Hash.schema(size?: Resources::Types::Integer.optional.constrained(gteq: 2, lteq: 10_000)).optional,
-          retry_strategy?: Resources::Types::Hash.schema(attempts?: Resources::Types::Integer.optional.constrained(gteq: 1, lteq: 10)).optional
+          array_properties?: Resources::Types::Hash.schema(size?: Resources::Types::Integer.optional.constrained(gteq: 2, lteq: 10_000).lax).optional,
+          retry_strategy?: Resources::Types::Hash.schema(attempts?: Resources::Types::Integer.optional.constrained(gteq: 1, lteq: 10).lax).optional
         )
       end
     end

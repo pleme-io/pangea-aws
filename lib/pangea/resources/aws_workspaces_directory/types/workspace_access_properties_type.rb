@@ -21,7 +21,7 @@ module Pangea
     module AWS
       module Types
         # Workspace access properties
-        class WorkspaceAccessPropertiesType < Dry::Struct
+        class WorkspaceAccessPropertiesType < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           AllowDeny = Resources::Types::String.constrained(included_in: ['ALLOW', 'DENY'])

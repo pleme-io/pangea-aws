@@ -75,14 +75,14 @@ module Pangea
       #     ]
       #   })
       def aws_autoscaling_tag(name, attributes)
-        validated_attributes = Types::Types::AutoScalingTagAttributes.new(attributes)
+        validated_attributes = Types::AutoScalingTagAttributes.new(attributes)
         
         # Create individual tag resources for each tag
         # AWS requires separate resources for each tag on an ASG
         tag_resources = []
         
         validated_attributes.tags.each_with_index do |tag_spec, index|
-          tag_name = :"#{name}_#{tag_spec.key.downcase.gsub(/[^a-z0-9]/, '_')}"
+          tag_name = :"#{name}_#{tag_spec.key.to_s.downcase.gsub(/[^a-z0-9]/, '_')}"
           
           resource :aws_autoscaling_group_tag, tag_name do
             autoscaling_group_name validated_attributes.autoscaling_group_name

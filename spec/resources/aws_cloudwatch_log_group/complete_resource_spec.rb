@@ -27,9 +27,9 @@ RSpec.describe "aws_cloudwatch_log_group resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -148,7 +148,7 @@ RSpec.describe "aws_cloudwatch_log_group resource function" do
             name: "/test/log",
             retention_in_days: retention
           })
-        }.to raise_error(Dry::Types::ConstraintError)
+        }.to raise_error(Dry::Struct::Error)
       end
     end
     
@@ -170,7 +170,7 @@ RSpec.describe "aws_cloudwatch_log_group resource function" do
           name: "/test/log",
           log_group_class: "INVALID_CLASS"
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "accepts string keys in attributes hash" do
@@ -605,7 +605,7 @@ RSpec.describe "aws_cloudwatch_log_group resource function" do
           name: "/test/log",
           retention_in_days: 15 # Invalid: not in AWS-supported list
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "rejects invalid log group class" do
@@ -614,7 +614,7 @@ RSpec.describe "aws_cloudwatch_log_group resource function" do
           name: "/test/log",
           log_group_class: "PREMIUM" # Invalid: not in AWS-supported list
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "rejects empty log group name" do

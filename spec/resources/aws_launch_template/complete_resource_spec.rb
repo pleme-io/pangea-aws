@@ -25,9 +25,9 @@ RSpec.describe "aws_launch_template resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -186,7 +186,7 @@ RSpec.describe "aws_launch_template resource function" do
   
   describe "TagSpecification validation" do
     it "accepts valid tag specification" do
-      ts = Pangea::Resources::AWS::Types::TagSpecification.new({
+      ts = Pangea::Resources::AWS::Types::LaunchTemplateTagSpecification.new({
         resource_type: "instance",
         tags: { Name: "web-server", Environment: "production" }
       })
@@ -197,7 +197,7 @@ RSpec.describe "aws_launch_template resource function" do
     
     it "validates resource_type enum" do
       expect {
-        Pangea::Resources::AWS::Types::TagSpecification.new({
+        Pangea::Resources::AWS::Types::LaunchTemplateTagSpecification.new({
           resource_type: "invalid",
           tags: {}
         })
@@ -208,7 +208,7 @@ RSpec.describe "aws_launch_template resource function" do
       valid_types = ['instance', 'volume', 'elastic-gpu', 'spot-instances-request', 'network-interface']
       
       valid_types.each do |type|
-        ts = Pangea::Resources::AWS::Types::TagSpecification.new({
+        ts = Pangea::Resources::AWS::Types::LaunchTemplateTagSpecification.new({
           resource_type: type,
           tags: { Name: "test" }
         })

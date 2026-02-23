@@ -49,58 +49,107 @@ module Pangea
           
           # Input transformer
           if target_attrs.input_transformer
+            transformer_data = target_attrs.input_transformer.is_a?(Hash) ? target_attrs.input_transformer : target_attrs.input_transformer.to_h
             input_transformer do
-              input_paths target_attrs.input_transformer[:input_paths] if target_attrs.input_transformer[:input_paths]
-              input_template target_attrs.input_transformer[:input_template]
+              input_paths transformer_data[:input_paths] if transformer_data[:input_paths]
+              input_template transformer_data[:input_template]
             end
           end
           
           # Retry policy
           if target_attrs.retry_policy
+            retry_data = target_attrs.retry_policy.is_a?(Hash) ? target_attrs.retry_policy : target_attrs.retry_policy.to_h
             retry_policy do
-              maximum_retry_attempts target_attrs.retry_policy[:maximum_retry_attempts] if target_attrs.retry_policy[:maximum_retry_attempts]
-              maximum_event_age_in_seconds target_attrs.retry_policy[:maximum_event_age_in_seconds] if target_attrs.retry_policy[:maximum_event_age_in_seconds]
+              maximum_retry_attempts retry_data[:maximum_retry_attempts] if retry_data[:maximum_retry_attempts]
+              maximum_event_age_in_seconds retry_data[:maximum_event_age_in_seconds] if retry_data[:maximum_event_age_in_seconds]
             end
           end
-          
+
           # Dead letter config
           if target_attrs.dead_letter_config
+            dlc_data = target_attrs.dead_letter_config.is_a?(Hash) ? target_attrs.dead_letter_config : target_attrs.dead_letter_config.to_h
             dead_letter_config do
-              arn target_attrs.dead_letter_config[:arn] if target_attrs.dead_letter_config[:arn]
+              arn dlc_data[:arn] if dlc_data[:arn]
             end
           end
           
           # HTTP parameters (for API destinations)
           if target_attrs.http_parameters
+            http_data = target_attrs.http_parameters.is_a?(Hash) ? target_attrs.http_parameters : target_attrs.http_parameters.to_h
             http_parameters do
-              path_parameter_values target_attrs.http_parameters[:path_parameter_values] if target_attrs.http_parameters[:path_parameter_values]
-              header_parameters target_attrs.http_parameters[:header_parameters] if target_attrs.http_parameters[:header_parameters]
-              query_string_parameters target_attrs.http_parameters[:query_string_parameters] if target_attrs.http_parameters[:query_string_parameters]
+              path_parameter_values http_data[:path_parameter_values] if http_data[:path_parameter_values]
+              header_parameters http_data[:header_parameters] if http_data[:header_parameters]
+              query_string_parameters http_data[:query_string_parameters] if http_data[:query_string_parameters]
             end
           end
-          
+
           # Kinesis parameters
           if target_attrs.kinesis_parameters
+            kinesis_data = target_attrs.kinesis_parameters.is_a?(Hash) ? target_attrs.kinesis_parameters : target_attrs.kinesis_parameters.to_h
             kinesis_parameters do
-              partition_key_path target_attrs.kinesis_parameters[:partition_key_path] if target_attrs.kinesis_parameters[:partition_key_path]
+              partition_key_path kinesis_data[:partition_key_path] if kinesis_data[:partition_key_path]
             end
           end
-          
+
           # SQS parameters
           if target_attrs.sqs_parameters
+            sqs_data = target_attrs.sqs_parameters.is_a?(Hash) ? target_attrs.sqs_parameters : target_attrs.sqs_parameters.to_h
             sqs_parameters do
-              message_group_id target_attrs.sqs_parameters[:message_group_id] if target_attrs.sqs_parameters[:message_group_id]
+              message_group_id sqs_data[:message_group_id] if sqs_data[:message_group_id]
             end
           end
           
           # ECS parameters
           if target_attrs.ecs_parameters
-            ecs_parameters(&EcsTargetBuilder.ecs_parameters_block(target_attrs.ecs_parameters))
+            ecs_params = target_attrs.ecs_parameters.is_a?(Hash) ? target_attrs.ecs_parameters : target_attrs.ecs_parameters.to_h
+            ecs_parameters do
+              task_definition_arn ecs_params[:task_definition_arn]
+              task_count ecs_params[:task_count] if ecs_params[:task_count]
+              launch_type ecs_params[:launch_type] if ecs_params[:launch_type]
+              platform_version ecs_params[:platform_version] if ecs_params[:platform_version]
+              group ecs_params[:group] if ecs_params[:group]
+
+              if ecs_params[:network_configuration]
+                net_config = ecs_params[:network_configuration]
+                network_configuration do
+                  if net_config[:awsvpc_configuration]
+                    awsvpc_config = net_config[:awsvpc_configuration]
+                    awsvpc_configuration do
+                      subnets awsvpc_config[:subnets]
+                      security_groups awsvpc_config[:security_groups] if awsvpc_config[:security_groups]
+                      assign_public_ip awsvpc_config[:assign_public_ip] if awsvpc_config[:assign_public_ip]
+                    end
+                  end
+                end
+              end
+
+              if ecs_params[:tags]
+                tags do
+                  ecs_params[:tags].each { |key, value| public_send(key, value) }
+                end
+              end
+            end
           end
-          
+
           # Batch parameters
           if target_attrs.batch_parameters
-            batch_parameters(&BatchTargetBuilder.batch_parameters_block(target_attrs.batch_parameters))
+            batch_params = target_attrs.batch_parameters.is_a?(Hash) ? target_attrs.batch_parameters : target_attrs.batch_parameters.to_h
+            batch_parameters do
+              job_definition batch_params[:job_definition]
+              job_name batch_params[:job_name]
+
+              if batch_params[:array_properties]
+                array_properties do
+                  size batch_params[:array_properties][:size] if batch_params[:array_properties][:size]
+                end
+              end
+
+              if batch_params[:retry_strategy]
+                retry_strategy do
+                  attempts batch_params[:retry_strategy][:attempts] if batch_params[:retry_strategy][:attempts]
+                end
+              end
+            end
           end
         end
         

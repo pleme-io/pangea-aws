@@ -27,12 +27,12 @@ RSpec.describe "aws_efs_file_system resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
-        
+        resource_data = { type: type, name: name, attributes: attrs }
+
         yield if block_given?
-        
+
         @resources["#{type}.#{name}"] = resource_data
         resource_data
       end
@@ -134,7 +134,7 @@ RSpec.describe "aws_efs_file_system resource function" do
         }]
       })
       
-      expect(efs.lifecycle_policy).to have(1).item
+      expect(efs.lifecycle_policy.size).to eq(1)
       expect(efs.lifecycle_policy.first[:transition_to_ia]).to eq("AFTER_7_DAYS")
     end
     
@@ -273,7 +273,7 @@ RSpec.describe "aws_efs_file_system resource function" do
         encrypted: true
       })
       
-      expect(result.resource_attributes[:lifecycle_policy]).to have(2).items
+      expect(result.resource_attributes[:lifecycle_policy].size).to eq(2)
       expect(result.has_lifecycle_policy?).to eq(true)
     end
     
@@ -356,7 +356,7 @@ RSpec.describe "aws_efs_file_system resource function" do
       
       expect(result.is_one_zone?).to eq(true)
       expect(result.has_lifecycle_policy?).to eq(true)
-      expect(result.resource_attributes[:lifecycle_policy]).to have(2).items
+      expect(result.resource_attributes[:lifecycle_policy].size).to eq(2)
     end
     
     it "creates multi-AZ resilient EFS" do
@@ -469,7 +469,7 @@ RSpec.describe "aws_efs_file_system resource function" do
         }
       })
       
-      expect(result.resource_attributes[:lifecycle_policy]).to have(2).items
+      expect(result.resource_attributes[:lifecycle_policy].size).to eq(2)
       expect(result.resource_attributes[:throughput_mode]).to eq("bursting")
     end
   end

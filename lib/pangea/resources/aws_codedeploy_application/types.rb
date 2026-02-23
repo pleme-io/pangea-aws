@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS CodeDeploy Application resources
-      class CodeDeployApplicationAttributes < Dry::Struct
+      class CodeDeployApplicationAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Application name (required)
-        attribute :application_name, Resources::Types::String.constrained(
+        attribute? :application_name, Resources::Types::String.constrained(
           format: /\A[a-zA-Z0-9._-]+\z/,
           min_size: 1,
           max_size: 100

@@ -23,7 +23,7 @@ module Pangea
         # Common EventBridge Rule configurations
         module EventBridgeRuleConfigs
           # Simple scheduled rule (cron-based)
-          def self.scheduled_rule(name, schedule_expression:, description: nil)
+          def scheduled_rule(name, schedule_expression:, description: nil)
             {
               name: name,
               schedule_expression: schedule_expression,
@@ -33,20 +33,20 @@ module Pangea
           end
 
           # Event-driven rule matching specific source
-          def self.event_pattern_rule(name, source:, detail_type: nil, description: nil)
+          def event_pattern_rule(name, source:, detail_type: nil, description: nil)
             pattern = { source: [source] }
             pattern[:"detail-type"] = [detail_type] if detail_type
 
             {
               name: name,
-              event_pattern: JSON.generate(pattern),
+              event_pattern: ::JSON.generate(pattern),
               description: description,
               state: "ENABLED"
             }.compact
           end
 
           # Custom bus rule
-          def self.custom_bus_rule(name, event_bus_name:, event_pattern:, description: nil)
+          def custom_bus_rule(name, event_bus_name:, event_pattern:, description: nil)
             {
               name: name,
               event_bus_name: event_bus_name,
@@ -57,7 +57,7 @@ module Pangea
           end
 
           # High-frequency scheduled rule
-          def self.frequent_schedule_rule(name, minutes: 5, description: "High frequency scheduled rule")
+          def frequent_schedule_rule(name, minutes: 5, description: "High frequency scheduled rule")
             {
               name: name,
               schedule_expression: "rate(#{minutes} minute#{minutes == 1 ? '' : 's'})",
@@ -67,7 +67,7 @@ module Pangea
           end
 
           # Daily batch processing rule
-          def self.daily_batch_rule(name, hour: 2, minute: 0, description: "Daily batch processing")
+          def daily_batch_rule(name, hour: 2, minute: 0, description: "Daily batch processing")
             {
               name: name,
               schedule_expression: "cron(#{minute} #{hour} * * ? *)",
@@ -77,7 +77,7 @@ module Pangea
           end
 
           # AWS service integration rule
-          def self.aws_service_rule(name, service:, detail_type:, description: nil)
+          def aws_service_rule(name, service:, detail_type:, description: nil)
             pattern = {
               source: ["aws.#{service}"],
               "detail-type": [detail_type]
@@ -85,27 +85,27 @@ module Pangea
 
             {
               name: name,
-              event_pattern: JSON.generate(pattern),
+              event_pattern: ::JSON.generate(pattern),
               description: description || "AWS #{service} integration rule",
               state: "ENABLED"
             }
           end
 
           # Multi-source event rule
-          def self.multi_source_rule(name, sources:, detail_types: nil, description: nil)
+          def multi_source_rule(name, sources:, detail_types: nil, description: nil)
             pattern = { source: sources }
             pattern[:"detail-type"] = detail_types if detail_types
 
             {
               name: name,
-              event_pattern: JSON.generate(pattern),
+              event_pattern: ::JSON.generate(pattern),
               description: description,
               state: "ENABLED"
             }.compact
           end
 
           # Disaster recovery rule (cross-region)
-          def self.disaster_recovery_rule(name, primary_region:, description: "Disaster recovery rule")
+          def disaster_recovery_rule(name, primary_region:, description: "Disaster recovery rule")
             pattern = {
               source: ["aws.health"],
               "detail-type": ["AWS Health Event"],
@@ -119,7 +119,7 @@ module Pangea
 
             {
               name: name,
-              event_pattern: JSON.generate(pattern),
+              event_pattern: ::JSON.generate(pattern),
               description: description,
               state: "ENABLED"
             }

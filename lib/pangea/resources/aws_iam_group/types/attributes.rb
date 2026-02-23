@@ -9,13 +9,13 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS IAM Group resources
-        class IamGroupAttributes < Dry::Struct
+        class IamGroupAttributes < Pangea::Resources::BaseAttributes
           include GroupClassification
 
           transform_keys(&:to_sym)
 
           # Group name (required)
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Path for the group (default: "/")
           attribute :path, Resources::Types::String.default("/")

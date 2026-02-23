@@ -21,20 +21,20 @@ module Pangea
     module AWS
       module Types
         # CloudWatch Log Destination resource attributes with validation
-        class CloudWatchLogDestinationAttributes < Dry::Struct
+        class CloudWatchLogDestinationAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :name, Resources::Types::String
-          attribute :role_arn, Resources::Types::String
-          attribute :target_arn, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
+          attribute? :role_arn, Resources::Types::String.optional
+          attribute? :target_arn, Resources::Types::String.optional
           
           # Optional attributes
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Validate ARN formats
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate role_arn format
             if attrs[:role_arn] && !attrs[:role_arn].match?(/^arn:aws[a-z\-]*:iam::\d{12}:role\//)

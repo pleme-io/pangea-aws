@@ -39,7 +39,7 @@ module Pangea
           end
 
           def validate_source(source)
-            return unless source.is_a?(Hash)
+            return unless source.is_a?(::Hash)
 
             raise Dry::Struct::Error, 'source.owner is required' unless source[:owner]
             raise Dry::Struct::Error, "source.owner must be one of: #{VALID_OWNERS.join(', ')}" unless VALID_OWNERS.include?(source[:owner])
@@ -73,7 +73,7 @@ module Pangea
           end
 
           def validate_scope(scope)
-            return unless scope.is_a?(Hash)
+            return unless scope.is_a?(::Hash)
 
             raise Dry::Struct::Error, 'scope.compliance_resource_types must be an array' if scope[:compliance_resource_types] && !scope[:compliance_resource_types].is_a?(Array)
             raise Dry::Struct::Error, 'scope.tag_key must be a string' if scope[:tag_key] && !scope[:tag_key].is_a?(String)

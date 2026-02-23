@@ -72,7 +72,7 @@ module Pangea
       #   })
       def aws_cloudwatch_event_rule(name, attributes = {})
         # Validate attributes using dry-struct
-        rule_attrs = Types::Types::CloudWatchEventRuleAttributes.new(attributes)
+        rule_attrs = Types::CloudWatchEventRuleAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_cloudwatch_event_rule, name) do
@@ -100,7 +100,7 @@ module Pangea
           role_arn rule_attrs.role_arn if rule_attrs.role_arn
           
           # Apply tags if present
-          if rule_attrs.tags.any?
+          if rule_attrs.tags&.any?
             tags do
               rule_attrs.tags.each do |key, value|
                 public_send(key, value)

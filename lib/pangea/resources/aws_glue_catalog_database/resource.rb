@@ -46,7 +46,7 @@ module Pangea
             location_uri database_attrs.location_uri if database_attrs.location_uri
             
             # Parameters
-            if database_attrs.parameters.any?
+            if database_attrs.parameters&.any?
               parameters do
                 database_attrs.parameters.each do |key, value|
                   public_send(key, value)
@@ -71,7 +71,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if database_attrs.tags.any?
+          if database_attrs.tags&.any?
             tags do
               database_attrs.tags.each do |key, value|
                 public_send(key, value)

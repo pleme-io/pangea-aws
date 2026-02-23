@@ -27,14 +27,59 @@ rescue LoadError => e
   puts "Warning: Could not load pangea-aws: #{e.message}"
 end
 
-# TerraformSynthesizer#synthesis returns symbol keys but tests expect string keys.
-# Normalize via JSON roundtrip so all test assertions use string keys consistently.
+# TerraformSynthesizer#synthesis returns symbol keys but tests use both
+# string and symbol keys. Use an indifferent-access hash so both work.
+class IndifferentHash < Hash
+  def [](key)
+    result = super(key.to_s)
+    return result unless result.nil?
+    key.respond_to?(:to_sym) ? super(key.to_sym) : nil
+  end
+
+  def dig(key, *rest)
+    val = self[key]
+    return val if rest.empty? || val.nil?
+    val.respond_to?(:dig) ? val.dig(*rest) : nil
+  end
+
+  def has_key?(key)
+    super(key.to_s) || (key.respond_to?(:to_sym) && super(key.to_sym))
+  end
+  alias_method :key?, :has_key?
+  alias_method :include?, :has_key?
+
+  def fetch(key, *args, &block)
+    if has_key?(key)
+      self[key]
+    elsif args.any?
+      args.first
+    elsif block
+      block.call(key)
+    else
+      raise KeyError, "key not found: #{key.inspect}"
+    end
+  end
+
+  def self.deep_convert(obj)
+    case obj
+    when Hash
+      result = IndifferentHash.new
+      obj.each { |k, v| result[k.to_s] = deep_convert(v) }
+      result
+    when Array
+      obj.map { |v| deep_convert(v) }
+    else
+      obj
+    end
+  end
+end
+
 if defined?(TerraformSynthesizer)
   class TerraformSynthesizer
     alias_method :_original_synthesis, :synthesis
 
     def synthesis
-      JSON.parse(_original_synthesis.to_json)
+      IndifferentHash.deep_convert(_original_synthesis)
     end
   end
 end

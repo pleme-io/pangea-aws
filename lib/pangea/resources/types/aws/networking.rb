@@ -26,10 +26,10 @@ module Pangea
       # Transit Gateway ASN validation
       TransitGatewayAsn = Integer.constructor { |value|
         if (64512..65534).include?(value)
-          return value
+          next value
         end
         if (4200000000..4294967294).include?(value)
-          return value
+          next value
         end
         reserved_asns = [7224, 9059, 10124, 17943]
         if reserved_asns.include?(value)
@@ -64,9 +64,9 @@ module Pangea
           unless (0..32).include?(prefix_int)
             raise Dry::Types::ConstraintError, "Invalid prefix length in CIDR block: #{value}. Must be 0-32."
           end
-          return value
+          next value
         end
-        return value if value == '0.0.0.0/0'
+        next value if value == '0.0.0.0/0'
         raise Dry::Types::ConstraintError, "Transit Gateway CIDR block must be valid CIDR notation or '0.0.0.0/0'"
       }
     end

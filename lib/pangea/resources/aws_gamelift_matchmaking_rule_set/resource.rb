@@ -25,8 +25,8 @@ module Pangea
           # Validate rule_set_body is valid JSON
           if definition[:rule_set_body]
             begin
-              JSON.parse(definition[:rule_set_body])
-            rescue JSON::ParserError
+              ::JSON.parse(definition[:rule_set_body])
+            rescue ::JSON::ParserError
               raise ArgumentError, "rule_set_body must be valid JSON"
             end
           end

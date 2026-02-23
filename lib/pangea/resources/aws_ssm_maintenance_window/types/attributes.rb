@@ -9,18 +9,18 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Systems Manager Maintenance Window resources
-        class SsmMaintenanceWindowAttributes < Dry::Struct
-          attribute :name, Resources::Types::String
-          attribute :schedule, Resources::Types::String
-          attribute :duration, Resources::Types::Integer.constrained(gteq: 1, lteq: 24)
-          attribute :cutoff, Resources::Types::Integer.constrained(gteq: 0, lteq: 23)
+        class SsmMaintenanceWindowAttributes < Pangea::Resources::BaseAttributes
+          attribute? :name, Resources::Types::String.optional
+          attribute? :schedule, Resources::Types::String.optional
+          attribute? :duration, Resources::Types::Integer.constrained(gteq: 1, lteq: 24).optional
+          attribute? :cutoff, Resources::Types::Integer.constrained(gteq: 0, lteq: 23).optional
           attribute :allow_unassociated_targets, Resources::Types::Bool.default(false)
           attribute :enabled, Resources::Types::Bool.default(true)
-          attribute :end_date, Resources::Types::String.optional
-          attribute :start_date, Resources::Types::String.optional
-          attribute :schedule_timezone, Resources::Types::String.optional
-          attribute :schedule_offset, Resources::Types::Integer.optional.constrained(gteq: 1, lteq: 6)
-          attribute :description, Resources::Types::String.optional
+          attribute? :end_date, Resources::Types::String.optional
+          attribute? :start_date, Resources::Types::String.optional
+          attribute? :schedule_timezone, Resources::Types::String.optional
+          attribute? :schedule_offset, Resources::Types::Integer.optional.constrained(gteq: 1, lteq: 6)
+          attribute? :description, Resources::Types::String.optional
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
           def self.new(attributes = {})

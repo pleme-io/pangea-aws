@@ -7,47 +7,47 @@ module Pangea
     module AWS
       module Types
         # AppStream Fleet resource attributes with validation
-        class AppstreamFleetAttributes < Dry::Struct
+        class AppstreamFleetAttributes < Pangea::Resources::BaseAttributes
           include AppstreamFleetCostEstimation
 
           transform_keys(&:to_sym)
 
           # Required attributes
-          attribute :name, Resources::Types::String.constrained(
+          attribute? :name, Resources::Types::String.constrained(
             min_size: 1,
             max_size: 100,
             format: /\A[a-zA-Z0-9][a-zA-Z0-9_-]*\z/
           )
 
-          attribute :compute_capacity, ComputeCapacityType
-          attribute :instance_type, Resources::Types::String.constrained(
+          attribute? :compute_capacity, ComputeCapacityType.optional
+          attribute? :instance_type, Resources::Types::String.constrained(
             format: /\Astream\.[a-z0-9]+\.[a-z0-9]+\z/
           )
 
           # Optional attributes
-          attribute :description, Resources::Types::String.constrained(max_size: 256).optional
-          attribute :display_name, Resources::Types::String.constrained(max_size: 100).optional
-          attribute :vpc_config, VpcConfigType.optional
-          attribute :domain_join_info, DomainJoinInfoType.optional
+          attribute? :description, Resources::Types::String.constrained(max_size: 256).optional
+          attribute? :display_name, Resources::Types::String.constrained(max_size: 100).optional
+          attribute? :vpc_config, VpcConfigType.optional
+          attribute? :domain_join_info, DomainJoinInfoType.optional
           attribute :fleet_type, Resources::Types::String.default('ON_DEMAND').enum('ALWAYS_ON', 'ON_DEMAND')
           attribute :enable_default_internet_access, Resources::Types::Bool.default(true)
-          attribute :image_name, Resources::Types::String.optional
-          attribute :image_arn, Resources::Types::String.optional
-          attribute :idle_disconnect_timeout_in_seconds, Resources::Types::Integer.constrained(
+          attribute? :image_name, Resources::Types::String.optional
+          attribute? :image_arn, Resources::Types::String.optional
+          attribute? :idle_disconnect_timeout_in_seconds, Resources::Types::Integer.constrained(
             gteq: 0, lteq: 3600
           ).default(0)
-          attribute :disconnect_timeout_in_seconds, Resources::Types::Integer.constrained(
+          attribute? :disconnect_timeout_in_seconds, Resources::Types::Integer.constrained(
             gteq: 60, lteq: 360_000
           ).default(900)
-          attribute :max_user_duration_in_seconds, Resources::Types::Integer.constrained(
+          attribute? :max_user_duration_in_seconds, Resources::Types::Integer.constrained(
             gteq: 600, lteq: 360_000
           ).default(57_600) # 16 hours
           attribute :stream_view, Resources::Types::String.default('APP').enum('APP', 'DESKTOP')
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
 
           # Validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Must specify either image_name or image_arn
             unless attrs[:image_name] || attrs[:image_arn]

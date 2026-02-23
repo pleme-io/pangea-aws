@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2SpotFleetRequest resources
       # Manages aws ec2 spot fleet request resources.
-      class AwsEc2SpotFleetRequestAttributes < Dry::Struct
+      class AwsEc2SpotFleetRequestAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_spot_fleet_request
         
         # Tags to apply to the resource

@@ -56,7 +56,7 @@ module Pangea
           enable_global_write_forwarding attrs.enable_global_write_forwarding if attrs.enable_global_write_forwarding
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

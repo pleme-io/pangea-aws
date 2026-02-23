@@ -24,29 +24,29 @@ module Pangea
     module AWS
       module Types
         # WorkSpaces Directory resource attributes with validation
-        class WorkspacesDirectoryAttributes < Dry::Struct
+        class WorkspacesDirectoryAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Required attributes
-          attribute :directory_id, Resources::Types::String.constrained(
+          attribute? :directory_id, Resources::Types::String.constrained(
             format: /\Ad-[a-f0-9]{10}\z/
           )
 
           # Optional attributes
-          attribute :subnet_ids, Resources::Types::Array.of(
+          attribute? :subnet_ids, Resources::Types::Array.of(
             Resources::Types::String
           ).optional
 
-          attribute :self_service_permissions, SelfServicePermissionsType.optional
-          attribute :workspace_creation_properties, WorkspaceCreationPropertiesType.optional
-          attribute :workspace_access_properties, WorkspaceAccessPropertiesType.optional
-          attribute :ip_group_ids, Resources::Types::Array.of(
+          attribute? :self_service_permissions, SelfServicePermissionsType.optional
+          attribute? :workspace_creation_properties, WorkspaceCreationPropertiesType.optional
+          attribute? :workspace_access_properties, WorkspaceAccessPropertiesType.optional
+          attribute? :ip_group_ids, Resources::Types::Array.of(
             Resources::Types::String.constrained(
               format: /\Awsipg-[a-z0-9]{9}\z/
             )
           ).optional
 
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
 
           # Computed properties
           def multi_az?

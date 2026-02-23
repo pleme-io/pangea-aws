@@ -25,7 +25,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Braket Job Queue resources
-        class BraketJobQueueAttributes < Dry::Struct
+        class BraketJobQueueAttributes < Pangea::Resources::BaseAttributes
           extend BraketJobQueueValidators
           include BraketJobQueueHelpers
           include BraketJobQueueCostEstimation
@@ -33,23 +33,23 @@ module Pangea
           transform_keys(&:to_sym)
 
           # Queue name (required)
-          attribute :queue_name, Resources::Types::String
+          attribute? :queue_name, Resources::Types::String.optional
 
           # Device ARN (required)
-          attribute :device_arn, Resources::Types::String
+          attribute? :device_arn, Resources::Types::String.optional
 
           # Priority (required)
-          attribute :priority, Resources::Types::Integer.constrained(gteq: 0, lteq: 1000)
+          attribute? :priority, Resources::Types::Integer.constrained(gteq: 0, lteq: 1000).optional
 
           # State (required)
-          attribute :state, Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED'])
+          attribute? :state, Resources::Types::String.constrained(included_in: ['ENABLED', 'DISABLED']).optional
 
           # Compute environment order (required)
-          attribute :compute_environment_order, Resources::Types::Array.of(
+          attribute? :compute_environment_order, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               order: Resources::Types::Integer.constrained(gteq: 1),
               compute_environment: Resources::Types::String
-            )
+            ).lax
           )
 
           # Job timeout in seconds (optional) - 1 min to 30 days

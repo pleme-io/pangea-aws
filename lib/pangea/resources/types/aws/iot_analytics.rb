@@ -43,15 +43,15 @@ module Pangea
         key?: String.optional,
         role_arn: String.constrained(format: /\Aarn:aws:iam::\d{12}:role\//),
         file_format_configuration?: Hash.schema(
-          json_configuration?: Hash.schema({}).optional,
-          parquet_configuration?: Hash.schema({}).optional
+          json_configuration?: Hash.schema({}).lax.optional,
+          parquet_configuration?: Hash.schema({}).lax.optional
         ).optional
       )
 
       IotAnalyticsLambdaConfiguration = Hash.schema(
         lambda_name: String.constrained(format: /\A[a-zA-Z0-9\-_]{1,64}\z/),
         batch_size?: Integer.constrained(gteq: 1, lteq: 1000).optional
-      )
+      ).lax
     end
   end
 end

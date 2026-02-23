@@ -303,7 +303,7 @@ RSpec.describe "aws_elasticache_cluster terraform synthesis" do
     
     expect(cluster_config[:engine]).to eq("memcached")
     expect(cluster_config[:num_cache_nodes]).to eq(6)
-    expect(cluster_config[:preferred_availability_zones]).to have(6).items
+    expect(cluster_config[:preferred_availability_zones].size).to eq(6)
   end
   
   # Test Redis analytics cache pattern synthesis

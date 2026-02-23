@@ -23,14 +23,14 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS RDS DB Parameter Group resources
-        class DbParameterGroupAttributes < Dry::Struct
+        class DbParameterGroupAttributes < Pangea::Resources::BaseAttributes
           include ParameterValidators
 
           # Parameter group name (required)
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Parameter group family (engine-specific)
-          attribute :family, Resources::Types::String.enum(
+          attribute? :family, Resources::Types::String.enum(
             # MySQL families
             "mysql5.7", "mysql8.0",
             # PostgreSQL families
@@ -51,7 +51,7 @@ module Pangea
           )
 
           # Description for the parameter group
-          attribute :description, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
 
           # Parameters to set
           attribute :parameters, Resources::Types::Array.of(DbParameter).default([].freeze)
@@ -81,6 +81,10 @@ module Pangea
           # Get the database engine from family
           def engine
             case family
+            when /aurora-mysql/
+              "aurora-mysql"
+            when /aurora-postgresql/
+              "aurora-postgresql"
             when /mysql/
               "mysql"
             when /postgres/
@@ -91,10 +95,6 @@ module Pangea
               "oracle"
             when /sqlserver/
               "sqlserver"
-            when /aurora-mysql/
-              "aurora-mysql"
-            when /aurora-postgresql/
-              "aurora-postgresql"
             else
               "unknown"
             end

@@ -41,20 +41,20 @@ module Pangea
         uid: Integer.constrained(gteq: 0, lteq: 4294967295),
         gid: Integer.constrained(gteq: 0, lteq: 4294967295),
         secondary_gids?: Array.of(Integer.constrained(gteq: 0, lteq: 4294967295)).optional
-      )
+      ).lax
 
       # EFS Access Point root directory creation info
       EfsCreationInfo = Hash.schema(
         owner_uid: Integer.constrained(gteq: 0, lteq: 4294967295),
         owner_gid: Integer.constrained(gteq: 0, lteq: 4294967295),
         permissions: String.constrained(format: /\A[0-7]{3,4}\z/)
-      )
+      ).lax
 
       # EFS Access Point root directory
       EfsRootDirectory = Hash.schema(
         path?: String.constrained(format: /\A\/.*/).default("/"),
         creation_info?: EfsCreationInfo.optional
-      )
+      ).lax
     end
   end
 end

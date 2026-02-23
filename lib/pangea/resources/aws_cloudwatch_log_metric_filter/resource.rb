@@ -76,7 +76,7 @@ module Pangea
       #   })
       def aws_cloudwatch_log_metric_filter(name, attributes = {})
         # Validate attributes using dry-struct
-        filter_attrs = Types::Types::CloudWatchLogMetricFilterAttributes.new(attributes)
+        filter_attrs = Types::CloudWatchLogMetricFilterAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_cloudwatch_log_metric_filter, name) do

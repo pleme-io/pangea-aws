@@ -11,13 +11,13 @@ module Pangea
     module AWS
       module Types
         # AWS Step Functions State Machine attributes with validation
-        class SfnStateMachineAttributes < Dry::Struct
+        class SfnStateMachineAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Core attributes
-          attribute :name, Resources::Types::String
-          attribute :definition, Resources::Types::String
-          attribute :role_arn, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
+          attribute? :definition, Resources::Types::String.optional
+          attribute? :role_arn, Resources::Types::String.optional
 
           # Optional attributes
           attribute :type, Resources::Types::String.optional.default("STANDARD")
@@ -27,7 +27,7 @@ module Pangea
 
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             SfnValidators.validate_type(attrs)
             SfnValidators.validate_definition(attrs)
             SfnValidators.validate_logging(attrs)
@@ -38,9 +38,9 @@ module Pangea
           # Computed properties
           def is_express_type? = type == "EXPRESS"
           def is_standard_type? = type == "STANDARD"
-          def has_logging? = !logging_configuration.nil? && logging_configuration[:level] != "OFF"
-          def has_tracing? = !tracing_configuration.nil? && tracing_configuration[:enabled] == true
-          def parsed_definition = @parsed_definition ||= JSON.parse(definition)
+          def has_logging? = !logging_configuration.nil? && logging_configuration&.dig(:level) != "OFF"
+          def has_tracing? = !tracing_configuration.nil? && tracing_configuration&.dig(:enabled) == true
+          def parsed_definition = @parsed_definition ||= ::JSON.parse(definition)
           def start_state = parsed_definition["StartAt"]
           def states = parsed_definition["States"] || {}
           def state_count = states.size

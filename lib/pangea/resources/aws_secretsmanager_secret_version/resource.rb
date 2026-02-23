@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_secretsmanager_secret_version(name, attributes = {})
         # Validate attributes using dry-struct
-        version_attrs = Types::Types::SecretsManagerSecretVersionAttributes.new(attributes)
+        version_attrs = Types::SecretsManagerSecretVersionAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_secretsmanager_secret_version, name) do
@@ -37,7 +37,7 @@ module Pangea
           
           # Set secret value (string or binary)
           if version_attrs.secret_string
-            if version_attrs.secret_string.is_a?(Hash)
+            if version_attrs.secret_string.is_a?(::Hash)
               secret_string version_attrs.secret_string.to_json
             else
               secret_string version_attrs.secret_string

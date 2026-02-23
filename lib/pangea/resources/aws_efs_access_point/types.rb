@@ -21,24 +21,24 @@ module Pangea
     module AWS
       module Types
         # EFS Access Point resource attributes with validation
-        class EfsAccessPointAttributes < Dry::Struct
+        class EfsAccessPointAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :file_system_id, Resources::Types::String
+          attribute? :file_system_id, Resources::Types::String.optional
           
           # Optional POSIX user configuration
-          attribute :posix_user, Resources::Types::EfsPosixUser.optional
+          attribute? :posix_user, Resources::Types::EfsPosixUser.optional
           
           # Optional root directory configuration  
-          attribute :root_directory, Resources::Types::EfsRootDirectory.optional
+          attribute? :root_directory, Resources::Types::EfsRootDirectory.optional
           
           # Tags
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate root directory path if specified
             if attrs[:root_directory] && attrs[:root_directory][:path]
@@ -127,7 +127,7 @@ module Pangea
           end
           
           def has_creation_info?
-            root_directory && root_directory[:creation_info]
+            root_directory && root_directory&.dig(:creation_info)
           end
           
           def effective_root_path
@@ -157,7 +157,7 @@ module Pangea
             
             # Check for overly permissive directory permissions
             if has_creation_info?
-              perms = root_directory[:creation_info][:permissions]
+              perms = root_directory&.dig(:creation_info)[:permissions]
               perm_int = perms.to_i(8)
               
               # Check for world-writable

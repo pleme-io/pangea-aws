@@ -21,18 +21,18 @@ module Pangea
     module AWS
       module Types
         # AWS Step Functions Activity attributes with validation
-        class SfnActivityAttributes < Dry::Struct
+        class SfnActivityAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Core attributes
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
           
           # Optional attributes
           attribute? :tags, Resources::Types::Hash.optional
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate activity name format
             if attrs[:name]

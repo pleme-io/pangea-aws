@@ -24,12 +24,12 @@ module Pangea
     module AWS
       module Types
         # AWS Config Config Rule resource attributes with validation
-        class ConfigConfigRuleAttributes < Dry::Struct
+        class ConfigConfigRuleAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Required attributes
-          attribute :name, Resources::Types::String
-          attribute :source, Resources::Types::Hash
+          attribute? :name, Resources::Types::String.optional
+          attribute :source, Resources::Types::Hash.default({}.freeze)
 
           # Optional attributes
           attribute :description, Resources::Types::String.optional.default(nil)
@@ -39,11 +39,11 @@ module Pangea
           attribute :depends_on, Resources::Types::Array.optional.default([].freeze)
 
           # Tags
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
 
           # Validate config rule name and source configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             ConfigConfigRuleValidators.validate_all(attrs)
             super(attrs)
           end

@@ -21,12 +21,12 @@ module Pangea
     module AWS
       module Types
         # Internet Gateway resource attributes with validation
-        class InternetGatewayAttributes < Dry::Struct
+        class InternetGatewayAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # VPC ID is optional as it can be attached separately
           attribute :vpc_id, Resources::Types::String.optional.default(nil)
-          attribute :tags, Resources::Types::AwsTags
+          attribute :tags, Resources::Types::AwsTags.default({}.freeze)
           
           # Computed properties
           def attached?

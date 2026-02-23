@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2TransitGatewayMulticastGroupMember resources
       # Manages aws ec2 transit gateway multicast group member resources.
-      class AwsEc2TransitGatewayMulticastGroupMemberAttributes < Dry::Struct
+      class AwsEc2TransitGatewayMulticastGroupMemberAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_transit_gateway_multicast_group_member
         
         # Tags to apply to the resource

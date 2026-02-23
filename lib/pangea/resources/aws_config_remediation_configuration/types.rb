@@ -21,26 +21,27 @@ module Pangea
     module AWS
       module Types
         # AWS Config Remediation Configuration resource attributes with validation
-        class ConfigRemediationConfigurationAttributes < Dry::Struct
+        class ConfigRemediationConfigurationAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :config_rule_name, Resources::Types::String
-          attribute :resource_type, Resources::Types::String
-          attribute :target_type, Resources::Types::String
-          attribute :target_id, Resources::Types::String
-          attribute :target_version, Resources::Types::String
+          attribute? :config_rule_name, Resources::Types::String.optional
+          attribute? :resource_type, Resources::Types::String.optional
+          attribute? :target_type, Resources::Types::String.optional
+          attribute? :target_id, Resources::Types::String.optional
+          attribute? :target_version, Resources::Types::String.optional
           
           # Optional attributes
           attribute :parameters, Resources::Types::Hash.optional.default({}.freeze)
           attribute :automatic, Resources::Types::Bool.default(false)
           attribute :maximum_automatic_attempts, Resources::Types::Integer.optional.default(nil)
+          attribute :retry_attempt_seconds, Resources::Types::Integer.optional.default(nil)
           
           # Tags
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate config rule name
             if attrs[:config_rule_name]

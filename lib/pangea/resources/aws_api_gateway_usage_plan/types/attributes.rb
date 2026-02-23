@@ -19,26 +19,26 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS API Gateway Usage Plan resources
-        class ApiGatewayUsagePlanAttributes < Dry::Struct
+        class ApiGatewayUsagePlanAttributes < Pangea::Resources::BaseAttributes
           include ApiGatewayUsagePlanHelpers
 
           # Name for the usage plan
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Description of the usage plan
-          attribute :description, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
 
           # API stages this usage plan applies to
-          attribute :api_stages, ApiStagesType
+          attribute? :api_stages, ApiStagesType.optional
 
           # Throttling settings
-          attribute :throttle_settings, ThrottleSettingsType
+          attribute? :throttle_settings, ThrottleSettingsType.optional
 
           # Quota settings
-          attribute :quota_settings, QuotaSettingsType
+          attribute? :quota_settings, QuotaSettingsType.optional
 
           # Product code for billing
-          attribute :product_code, Resources::Types::String.optional
+          attribute? :product_code, Resources::Types::String.optional
 
           # Tags to apply to the usage plan
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

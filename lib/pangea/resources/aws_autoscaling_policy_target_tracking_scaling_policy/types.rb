@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsAutoscalingPolicyTargetTrackingScalingPolicy resources
       # Manages aws autoscaling policy target tracking scaling policy resources.
-      class AwsAutoscalingPolicyTargetTrackingScalingPolicyAttributes < Dry::Struct
+      class AwsAutoscalingPolicyTargetTrackingScalingPolicyAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_autoscaling_policy_target_tracking_scaling_policy
         
         # Tags to apply to the resource

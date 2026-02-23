@@ -24,59 +24,59 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS CloudFormation Stack Set resources
-        class CloudFormationStackSetAttributes < Dry::Struct
+        class CloudFormationStackSetAttributes < Pangea::Resources::BaseAttributes
           include CloudFormationStackSetHelpers
 
           # Stack set name (required)
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Template body or URL
-          attribute :template_body, Resources::Types::String.optional
-          attribute :template_url, Resources::Types::String.optional
+          attribute? :template_body, Resources::Types::String.optional
+          attribute? :template_url, Resources::Types::String.optional
 
           # Stack set description
-          attribute :description, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
 
           # Stack set parameters
-          attribute :parameters, Resources::Types::Hash.map(
+          attribute? :parameters, Resources::Types::Hash.map(
             Resources::Types::String,
             Resources::Types::String
           ).default({}.freeze)
 
           # Stack set capabilities (for IAM resources)
-          attribute :capabilities, Resources::Types::Array.of(
+          attribute? :capabilities, Resources::Types::Array.of(
             Resources::Types::String.constrained(included_in: ['CAPABILITY_IAM',
               'CAPABILITY_NAMED_IAM',
               'CAPABILITY_AUTO_EXPAND'])
           ).default([].freeze)
 
           # Permission model
-          attribute :permission_model, Resources::Types::String.constrained(included_in: ['SERVICE_MANAGED',
+          attribute? :permission_model, Resources::Types::String.constrained(included_in: ['SERVICE_MANAGED',
             'SELF_MANAGED'])
 
           # Auto deployment configuration (for SERVICE_MANAGED)
-          attribute :auto_deployment, Resources::Types::Hash.schema(
+          attribute? :auto_deployment, Resources::Types::Hash.schema(
             enabled?: Resources::Types::Bool.default(false),
             retain_stacks_on_account_removal?: Resources::Types::Bool.default(false)
-          ).optional
+          ).lax.optional
 
           # Administration role ARN (for SELF_MANAGED)
-          attribute :administration_role_arn, Resources::Types::String.optional
+          attribute? :administration_role_arn, Resources::Types::String.optional
 
           # Execution role name (for SELF_MANAGED)
-          attribute :execution_role_name, Resources::Types::String.optional
+          attribute? :execution_role_name, Resources::Types::String.optional
 
           # Operation preferences
-          attribute :operation_preferences, Resources::Types::Hash.schema(
+          attribute? :operation_preferences, Resources::Types::Hash.schema(
             region_concurrency_type?: Resources::Types::String.constrained(included_in: ['SEQUENTIAL', 'PARALLEL']).optional,
             max_concurrent_percentage?: Resources::Types::Integer.optional.constrained(gteq: 1, lteq: 100),
             max_concurrent_count?: Resources::Types::Integer.optional.constrained(gteq: 1),
             failure_tolerance_percentage?: Resources::Types::Integer.optional.constrained(gteq: 0, lteq: 100),
             failure_tolerance_count?: Resources::Types::Integer.optional.constrained(gteq: 0)
-          ).optional
+          ).lax.optional
 
           # Call as operation (immediate deployment)
-          attribute :call_as, Resources::Types::String.constrained(included_in: ['SELF',
+          attribute? :call_as, Resources::Types::String.constrained(included_in: ['SELF',
             'DELEGATED_ADMIN']).default('SELF')
 
           # Stack set tags

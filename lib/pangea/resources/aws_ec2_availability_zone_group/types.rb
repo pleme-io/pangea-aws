@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2AvailabilityZoneGroup resources
       # Manages aws ec2 availability zone group resources.
-      class AwsEc2AvailabilityZoneGroupAttributes < Dry::Struct
+      class AwsEc2AvailabilityZoneGroupAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_availability_zone_group
         
         # Tags to apply to the resource

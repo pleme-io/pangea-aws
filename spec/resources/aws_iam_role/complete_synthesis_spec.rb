@@ -145,7 +145,7 @@ RSpec.describe "aws_iam_role terraform synthesis" do
       
       # Call aws_iam_role function with minimal configuration
       ref = test_instance.aws_iam_role(:basic_role, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       # Verify the function returned correct ResourceReference
@@ -197,7 +197,7 @@ RSpec.describe "aws_iam_role terraform synthesis" do
       # Call aws_iam_role function with custom name
       ref = test_instance.aws_iam_role(:named_role, {
         name: "MyCustomRoleName",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.lambda_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.lambda_service
       })
       
       # Verify name synthesis
@@ -236,7 +236,7 @@ RSpec.describe "aws_iam_role terraform synthesis" do
       # Call aws_iam_role function with name prefix
       ref = test_instance.aws_iam_role(:prefixed_role, {
         name_prefix: "app-role-",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ecs_task_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ecs_task_service
       })
       
       # Verify name_prefix synthesis
@@ -276,7 +276,7 @@ RSpec.describe "aws_iam_role terraform synthesis" do
       ref = test_instance.aws_iam_role(:described_role, {
         path: "/application/backend/",
         description: "Backend service role for data processing",
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       # Verify description and path synthesis
@@ -311,7 +311,7 @@ RSpec.describe "aws_iam_role terraform synthesis" do
       
       # Call aws_iam_role function with inline policies
       ref = test_instance.aws_iam_role(:inline_policy_role, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.lambda_service,
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.lambda_service,
         inline_policies: {
           "CloudWatchLogs" => {
             Version: "2012-10-17",
@@ -425,7 +425,7 @@ RSpec.describe "aws_iam_role terraform synthesis" do
       
       # Call aws_iam_role function with permissions boundary
       ref = test_instance.aws_iam_role(:bounded_role, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service,
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service,
         permissions_boundary: "arn:aws:iam::123456789012:policy/DeveloperBoundary"
       })
       
@@ -460,7 +460,7 @@ RSpec.describe "aws_iam_role terraform synthesis" do
       
       # Call aws_iam_role function with tags
       ref = test_instance.aws_iam_role(:tagged_role, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.lambda_service,
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.lambda_service,
         tags: {
           Name: "LambdaExecutionRole",
           Environment: "production",
@@ -504,7 +504,7 @@ RSpec.describe "aws_iam_role terraform synthesis" do
       
       # Call aws_iam_role function with SAML trust policy
       ref = test_instance.aws_iam_role(:saml_role, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.saml_federated(
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.saml_federated(
           "arn:aws:iam::123456789012:saml-provider/CompanySAML"
         ),
         max_session_duration: 28800  # 8 hours
@@ -626,7 +626,7 @@ RSpec.describe "aws_iam_role terraform synthesis" do
       
       # Call with minimal config (no optional attributes)
       ref = test_instance.aws_iam_role(:minimal, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.ec2_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.ec2_service
       })
       
       # Verify optional attributes were not synthesized
@@ -665,7 +665,7 @@ RSpec.describe "aws_iam_role terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       ref = test_instance.aws_iam_role(:output_test, {
-        assume_role_policy: Pangea::Resources::AWS::TrustPolicies.lambda_service
+        assume_role_policy: Pangea::Resources::AWS::Types::TrustPolicies.lambda_service
       })
       
       # Verify all outputs have correct terraform reference format

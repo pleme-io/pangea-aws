@@ -42,29 +42,29 @@ module Pangea
           # Set member configuration
           member_configuration do
             # Basic member info
-            name member_attrs.member_configuration[:name]
-            description member_attrs.member_configuration[:description] if member_attrs.member_configuration[:description]
+            name member_attrs.member_configuration&.dig(:name)
+            description member_attrs.member_configuration&.dig(:description) if member_attrs.member_configuration&.dig(:description)
             
             # Framework configuration
             framework_configuration do
-              if member_attrs.member_configuration[:framework_configuration][:member_fabric_configuration]
+              if member_attrs.member_configuration&.dig(:framework_configuration)[:member_fabric_configuration]
                 member_fabric_configuration do
-                  admin_username member_attrs.member_configuration[:framework_configuration][:member_fabric_configuration][:admin_username]
-                  admin_password member_attrs.member_configuration[:framework_configuration][:member_fabric_configuration][:admin_password]
+                  admin_username member_attrs.member_configuration&.dig(:framework_configuration)[:member_fabric_configuration][:admin_username]
+                  admin_password member_attrs.member_configuration&.dig(:framework_configuration)[:member_fabric_configuration][:admin_password]
                 end
               end
             end
             
             # Log publishing configuration
-            if member_attrs.member_configuration[:log_publishing_configuration]
+            if member_attrs.member_configuration&.dig(:log_publishing_configuration)
               log_publishing_configuration do
-                if member_attrs.member_configuration[:log_publishing_configuration][:fabric]
+                if member_attrs.member_configuration&.dig(:log_publishing_configuration)[:fabric]
                   fabric do
-                    if member_attrs.member_configuration[:log_publishing_configuration][:fabric][:ca_logs]
+                    if member_attrs.member_configuration&.dig(:log_publishing_configuration)[:fabric][:ca_logs]
                       ca_logs do
-                        if member_attrs.member_configuration[:log_publishing_configuration][:fabric][:ca_logs][:cloudwatch]
+                        if member_attrs.member_configuration&.dig(:log_publishing_configuration)[:fabric][:ca_logs][:cloudwatch]
                           cloudwatch do
-                            enabled member_attrs.member_configuration[:log_publishing_configuration][:fabric][:ca_logs][:cloudwatch][:enabled]
+                            enabled member_attrs.member_configuration&.dig(:log_publishing_configuration)[:fabric][:ca_logs][:cloudwatch][:enabled]
                           end
                         end
                       end
@@ -75,8 +75,8 @@ module Pangea
             end
             
             # Member-level tags
-            if member_attrs.member_configuration[:tags] && !member_attrs.member_configuration[:tags].empty?
-              tags member_attrs.member_configuration[:tags]
+            if member_attrs.member_configuration&.dig(:tags) && !member_attrs.member_configuration&.dig(:tags).empty?
+              tags member_attrs.member_configuration&.dig(:tags)
             end
           end
           

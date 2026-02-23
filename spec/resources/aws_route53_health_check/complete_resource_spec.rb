@@ -27,9 +27,9 @@ RSpec.describe "aws_route53_health_check resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -167,7 +167,7 @@ RSpec.describe "aws_route53_health_check resource function" do
       })
       
       expect(health_check.type).to eq("CALCULATED")
-      expect(health_check.child_health_checks).to have(3).items
+      expect(health_check.child_health_checks.size).to eq(3)
       expect(health_check.child_health_threshold).to eq(2)
       expect(health_check.is_calculated_health_check?).to eq(true)
     end
@@ -302,7 +302,7 @@ RSpec.describe "aws_route53_health_check resource function" do
         fqdn: "example.com",
         regions: ["us-east-1", "us-west-2", "eu-west-1"]
       })
-      expect(health_check.regions).to have(3).items
+      expect(health_check.regions.size).to eq(3)
     end
     
     it "validates AWS regions" do
@@ -422,7 +422,7 @@ RSpec.describe "aws_route53_health_check resource function" do
       })
       
       expect(result.resource_attributes[:type]).to eq("CALCULATED")
-      expect(result.resource_attributes[:child_health_checks]).to have(3).items
+      expect(result.resource_attributes[:child_health_checks].size).to eq(3)
       expect(result.is_calculated_health_check?).to eq(true)
     end
     
@@ -447,11 +447,11 @@ RSpec.describe "aws_route53_health_check resource function" do
         port: 80,
         resource_path: "/health"
       })
-      
+
       expect(result.id).to eq("${aws_route53_health_check.test.id}")
       expect(result.arn).to eq("${aws_route53_health_check.test.arn}")
       expect(result.reference_name).to eq("${aws_route53_health_check.test.reference_name}")
-      expect(result.type).to eq("${aws_route53_health_check.test.type}")
+      expect(result.outputs[:type]).to eq("${aws_route53_health_check.test.type}")
       expect(result.fqdn).to eq("${aws_route53_health_check.test.fqdn}")
       expect(result.port).to eq("${aws_route53_health_check.test.port}")
       expect(result.failure_threshold).to eq("${aws_route53_health_check.test.failure_threshold}")
@@ -532,7 +532,7 @@ RSpec.describe "aws_route53_health_check resource function" do
       )
       
       expect(config[:type]).to eq("CALCULATED")
-      expect(config[:child_health_checks]).to have(3).items
+      expect(config[:child_health_checks].size).to eq(3)
       expect(config[:child_health_threshold]).to eq(2)
     end
     
@@ -567,7 +567,7 @@ RSpec.describe "aws_route53_health_check resource function" do
         }
       })
       
-      expect(result.resource_attributes[:regions]).to have(3).items
+      expect(result.resource_attributes[:regions].size).to eq(3)
       expect(result.supports_ssl?).to eq(true)
     end
     
@@ -621,7 +621,7 @@ RSpec.describe "aws_route53_health_check resource function" do
       })
       
       expect(result.is_calculated_health_check?).to eq(true)
-      expect(result.resource_attributes[:child_health_checks]).to have(3).items
+      expect(result.resource_attributes[:child_health_checks].size).to eq(3)
     end
   end
 end

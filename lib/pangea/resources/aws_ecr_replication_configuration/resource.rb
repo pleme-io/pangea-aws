@@ -96,13 +96,13 @@ module Pangea
       #   })
       def aws_ecr_replication_configuration(name, attributes = {})
         # Validate attributes using dry-struct
-        replication_attrs = Types::Types::ECRReplicationConfigurationAttributes.new(attributes)
+        replication_attrs = Types::ECRReplicationConfigurationAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_ecr_replication_configuration, name) do
           replication_configuration do
             # Process each rule
-            replication_attrs.replication_configuration[:rule].each do |rule_config|
+            replication_attrs.replication_configuration&.dig(:rule).each do |rule_config|
               rule do
                 # Process each destination
                 rule_config[:destination].each do |dest_config|

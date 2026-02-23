@@ -20,7 +20,7 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS EC2 Instance resources
-      class InstanceAttributes < Dry::Struct
+      class InstanceAttributes < Pangea::Resources::BaseAttributes
         # AMI ID (required)
         attribute :ami, Resources::Types::String
 
@@ -28,19 +28,19 @@ module Pangea
         attribute :instance_type, Resources::Types::String
 
         # Network configuration
-        attribute :subnet_id, Resources::Types::String.optional
+        attribute? :subnet_id, Resources::Types::String.optional
         attribute :vpc_security_group_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
-        attribute :availability_zone, Resources::Types::String.optional
-        attribute :associate_public_ip_address, Resources::Types::Bool.optional
+        attribute? :availability_zone, Resources::Types::String.optional
+        attribute? :associate_public_ip_address, Resources::Types::Bool.optional
 
         # Instance configuration
-        attribute :key_name, Resources::Types::String.optional
-        attribute :user_data, Resources::Types::String.optional
-        attribute :user_data_base64, Resources::Types::String.optional
-        attribute :iam_instance_profile, Resources::Types::String.optional
+        attribute? :key_name, Resources::Types::String.optional
+        attribute? :user_data, Resources::Types::String.optional
+        attribute? :user_data_base64, Resources::Types::String.optional
+        attribute? :iam_instance_profile, Resources::Types::String.optional
 
         # Storage configuration
-        attribute :root_block_device, Resources::Types::Hash.schema(
+        attribute? :root_block_device, Resources::Types::Hash.schema(
           volume_type?: Resources::Types::String.constrained(included_in: ["standard", "gp2", "gp3", "io1", "io2"]).optional,
           volume_size?: Resources::Types::Integer.optional,
           iops?: Resources::Types::Integer.optional,
@@ -48,10 +48,10 @@ module Pangea
           delete_on_termination?: Resources::Types::Bool.optional,
           encrypted?: Resources::Types::Bool.optional,
           kms_key_id?: Resources::Types::String.optional
-        ).optional
+        ).lax.optional
 
         # Additional block devices
-        attribute :ebs_block_device, Resources::Types::Array.of(
+        attribute? :ebs_block_device, Resources::Types::Array.of(
           Resources::Types::Hash.schema(
             device_name: Resources::Types::String,
             volume_type?: Resources::Types::String.constrained(included_in: ["standard", "gp2", "gp3", "io1", "io2"]).optional,
@@ -62,14 +62,14 @@ module Pangea
             encrypted?: Resources::Types::Bool.optional,
             kms_key_id?: Resources::Types::String.optional,
             snapshot_id?: Resources::Types::String.optional
-          )
+          ).lax
         ).default([].freeze)
 
         # Instance behavior
-        attribute :instance_initiated_shutdown_behavior, Resources::Types::String.constrained(included_in: ["stop", "terminate"]).optional
+        attribute? :instance_initiated_shutdown_behavior, Resources::Types::String.constrained(included_in: ["stop", "terminate"]).optional
         attribute :monitoring, Resources::Types::Bool.default(false)
         attribute :ebs_optimized, Resources::Types::Bool.default(false)
-        attribute :source_dest_check, Resources::Types::Bool.optional
+        attribute? :source_dest_check, Resources::Types::Bool.optional
         attribute :disable_api_termination, Resources::Types::Bool.default(false)
 
         # Tags

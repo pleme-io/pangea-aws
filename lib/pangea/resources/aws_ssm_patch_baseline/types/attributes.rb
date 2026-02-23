@@ -9,30 +9,30 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class SsmPatchBaselineAttributes < Dry::Struct
+        class SsmPatchBaselineAttributes < Pangea::Resources::BaseAttributes
           extend SsmPatchBaselineValidation
           include SsmPatchBaselineInstanceMethods
 
-          attribute :name, Resources::Types::String
-          attribute :operating_system, Resources::Types::String.constrained(included_in: ['WINDOWS', 'AMAZON_LINUX', 'AMAZON_LINUX_2', 'UBUNTU', 'REDHAT_ENTERPRISE_LINUX', 'SUSE', 'CENTOS',
+          attribute? :name, Resources::Types::String.optional
+          attribute? :operating_system, Resources::Types::String.constrained(included_in: ['WINDOWS', 'AMAZON_LINUX', 'AMAZON_LINUX_2', 'UBUNTU', 'REDHAT_ENTERPRISE_LINUX', 'SUSE', 'CENTOS',
             'ORACLE_LINUX', 'DEBIAN', 'MACOS', 'RASPBIAN', 'ROCKY_LINUX', 'ALMA_LINUX'])
-          attribute :description, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
           attribute :approved_patches, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
           attribute :rejected_patches, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
           attribute :approved_patches_compliance_level, Resources::Types::String.constrained(included_in: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFORMATIONAL', 'UNSPECIFIED']).default('UNSPECIFIED')
           attribute :approved_patches_enable_non_security, Resources::Types::Bool.default(false)
           attribute :rejected_patches_action, Resources::Types::String.constrained(included_in: ['ALLOW_AS_DEPENDENCY', 'BLOCK']).default('ALLOW_AS_DEPENDENCY')
 
-          attribute :global_filter, Resources::Types::Array.of(
+          attribute? :global_filter, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               key: Resources::Types::String.constrained(included_in: ['PATCH_SET', 'PRODUCT', 'PRODUCT_FAMILY', 'CLASSIFICATION', 'MSRC_SEVERITY', 'PATCH_ID',
                                       'SECTION', 'PRIORITY', 'REPOSITORY', 'SEVERITY', 'ARCH', 'EPOCH', 'RELEASE', 'VERSION',
                                       'NAME', 'BUGZILLA_ID', 'CVE_ID', 'ADVISORY_ID']),
               values: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
-            )
+            ).lax
           ).default([].freeze)
 
-          attribute :approval_rule, Resources::Types::Array.of(
+          attribute? :approval_rule, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               approve_after_days?: Resources::Types::Integer.optional.constrained(gteq: 0, lteq: 360),
               approve_until_date?: Resources::Types::String.optional,
@@ -44,13 +44,13 @@ module Pangea
                                           'SECTION', 'PRIORITY', 'REPOSITORY', 'SEVERITY', 'ARCH', 'EPOCH', 'RELEASE', 'VERSION',
                                           'NAME', 'BUGZILLA_ID', 'CVE_ID', 'ADVISORY_ID']),
                   values: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
-                )
+                ).lax
               ).constrained(min_size: 1)
             )
           ).default([].freeze)
 
-          attribute :source, Resources::Types::Array.of(
-            Resources::Types::Hash.schema(name: Resources::Types::String, products: Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1), configuration: Resources::Types::String)
+          attribute? :source, Resources::Types::Array.of(
+            Resources::Types::Hash.schema(name: Resources::Types::String, products: Resources::Types::Array.of(Resources::Types::String).lax.constrained(min_size: 1), configuration: Resources::Types::String)
           ).default([].freeze)
 
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

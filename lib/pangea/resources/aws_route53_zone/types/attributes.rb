@@ -10,14 +10,14 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Route53 Hosted Zone resources
-        class Route53ZoneAttributes < Dry::Struct
+        class Route53ZoneAttributes < Pangea::Resources::BaseAttributes
           include Route53ZoneValidation
           include Route53ZoneInstanceMethods
 
           transform_keys(&:to_sym)
 
           # Domain name for the hosted zone
-          attribute :name, Pangea::Resources::Types::String
+          attribute? :name, Pangea::Resources::Types::String.optional
 
           # Comment/description for the hosted zone
           attribute :comment?, Pangea::Resources::Types::String.optional
@@ -33,7 +33,7 @@ module Pangea
             Pangea::Resources::Types::Hash.schema(
               vpc_id: Pangea::Resources::Types::String,
               vpc_region?: Pangea::Resources::Types::String.optional
-            )
+            ).lax
           ).optional.default(proc { [] }.freeze)
 
           # Tags to apply to the hosted zone
@@ -56,9 +56,13 @@ module Pangea
             # Validate VPC configuration for private zones
             if attrs.vpc.any?
               attrs.vpc.each do |vpc_config|
-                # Validate VPC ID format
-                unless vpc_config[:vpc_id].match?(/\Avpc-[a-f0-9]{8,17}\z/)
-                  raise Dry::Struct::Error, "Invalid VPC ID format: #{vpc_config[:vpc_id]}"
+                vpc_id = vpc_config[:vpc_id]
+                # Accept Terraform interpolation references
+                next if vpc_id.start_with?('${') && vpc_id.end_with?('}')
+
+                # Validate VPC ID format (require vpc- prefix + at least 8 alphanumeric/hyphen chars)
+                unless vpc_id.match?(/\Avpc-[a-zA-Z0-9-]{8,17}\z/)
+                  raise Dry::Struct::Error, "Invalid VPC ID format: #{vpc_id}"
                 end
               end
             end

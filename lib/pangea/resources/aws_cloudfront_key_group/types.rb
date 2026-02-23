@@ -20,15 +20,15 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS CloudFront Key Group resources
-      class CloudFrontKeyGroupAttributes < Dry::Struct
+      class CloudFrontKeyGroupAttributes < Pangea::Resources::BaseAttributes
         # Name for the key group
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
 
         # List of public key IDs in this group
-        attribute :items, Resources::Types::Array.of(Resources::Types::String)
+        attribute :items, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
         # Comment/description for the key group
-        attribute :comment, Resources::Types::String.optional
+        attribute? :comment, Resources::Types::String.optional
 
         # Custom validation
         def self.new(attributes = {})

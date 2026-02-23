@@ -21,10 +21,10 @@ module Pangea
     module AwsGameliftBuild
       module Types
         # Storage location for game build files
-        class StorageLocation < Dry::Struct
-          attribute :bucket, Pangea::Resources::Types::String
-          attribute :key, Pangea::Resources::Types::String
-          attribute :role_arn, Pangea::Resources::Types::String
+        class StorageLocation < Pangea::Resources::BaseAttributes
+          attribute? :bucket, Pangea::Resources::Types::String.optional
+          attribute? :key, Pangea::Resources::Types::String.optional
+          attribute? :role_arn, Pangea::Resources::Types::String.optional
           attribute :object_version?, Pangea::Resources::Types::String
         end
 

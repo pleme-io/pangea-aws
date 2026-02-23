@@ -25,7 +25,7 @@ module Pangea
       # Provides type-safe function for creating HTTP methods on API resources
       def aws_api_gateway_method(name, attributes = {})
         # Validate attributes using dry-struct
-        validated_attrs = Types::Types::ApiGatewayMethodAttributes.new(attributes)
+        validated_attrs = Types::ApiGatewayMethodAttributes.new(attributes)
         
         # Synthesize the Terraform resource
         resource :aws_api_gateway_method, name do

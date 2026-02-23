@@ -21,23 +21,23 @@ module Pangea
     module AWS
       module Types
         # CodeStar Connection resource attributes with validation
-        class CodeStarConnectionAttributes < Dry::Struct
+        class CodeStarConnectionAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :name, Resources::Types::String
-          attribute :provider_type, Resources::Types::String.constrained(included_in: ['Bitbucket', 
+          attribute? :name, Resources::Types::String.optional
+          attribute? :provider_type, Resources::Types::String.constrained(included_in: ['Bitbucket', 
             'GitHub', 
             'GitHubEnterpriseServer',
             'GitLab'])
           
           # Optional attributes
           attribute :host_arn, Resources::Types::String.optional.default(nil)
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Validate attributes
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate connection name
             if attrs[:name]

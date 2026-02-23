@@ -7,10 +7,10 @@ module Pangea
     module AWS
       module Types
         # Compute capacity configuration
-        class ComputeCapacityType < Dry::Struct
+        class ComputeCapacityType < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :desired_instances, Resources::Types::Integer.constrained(gteq: 1)
+          attribute? :desired_instances, Resources::Types::Integer.constrained(gteq: 1).optional
 
           # Computed based on fleet type
           def min_instances
@@ -23,20 +23,20 @@ module Pangea
         end
 
         # VPC configuration
-        class VpcConfigType < Dry::Struct
+        class VpcConfigType < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :subnet_ids, Resources::Types::Array.of(
+          attribute? :subnet_ids, Resources::Types::Array.of(
             Resources::Types::String
           ).constrained(min_size: 1)
 
-          attribute :security_group_ids, Resources::Types::Array.of(
+          attribute? :security_group_ids, Resources::Types::Array.of(
             Resources::Types::String
           ).constrained(min_size: 1).optional
 
           # Validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate subnet count for high availability
             if attrs[:subnet_ids] && attrs[:subnet_ids].length == 1
@@ -53,18 +53,18 @@ module Pangea
         end
 
         # Domain join configuration
-        class DomainJoinInfoType < Dry::Struct
+        class DomainJoinInfoType < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :directory_name, Resources::Types::String.constrained(
+          attribute? :directory_name, Resources::Types::String.constrained(
             format: /\A[a-zA-Z0-9.-]+\z/
           )
 
-          attribute :organizational_unit_distinguished_name, Resources::Types::String.optional
+          attribute? :organizational_unit_distinguished_name, Resources::Types::String.optional
 
           # Validation for OU format
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             if attrs[:organizational_unit_distinguished_name]
               ou = attrs[:organizational_unit_distinguished_name]

@@ -26,22 +26,22 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS S3 Bucket Notification Configuration resources
-        class S3BucketNotificationAttributes < Dry::Struct
+        class S3BucketNotificationAttributes < Pangea::Resources::BaseAttributes
           include NotificationHelpers
 
           transform_keys(&:to_sym)
 
           # The name of the bucket to configure notifications for
-          attribute :bucket, Resources::Types::String
+          attribute? :bucket, Resources::Types::String.optional
 
           # CloudWatch topic configuration for object creation events
-          attribute :cloudwatch_configuration, NotificationConfig::TopicConfigArray
+          attribute? :cloudwatch_configuration, NotificationConfig::TopicConfigArray.optional
 
           # Lambda function configurations for event processing
-          attribute :lambda_function, NotificationConfig::LambdaConfigArray
+          attribute? :lambda_function, NotificationConfig::LambdaConfigArray.optional
 
           # SQS queue configurations for event queuing
-          attribute :queue, NotificationConfig::QueueConfigArray
+          attribute? :queue, NotificationConfig::QueueConfigArray.optional
 
           # EventBridge configuration for advanced event routing
           attribute :eventbridge, Resources::Types::Bool.default(false)

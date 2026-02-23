@@ -75,20 +75,20 @@ module Pangea
           # Server-side encryption
           if global_table_attrs.server_side_encryption
             server_side_encryption do
-              enabled global_table_attrs.server_side_encryption[:enabled]
-              kms_key_id global_table_attrs.server_side_encryption[:kms_key_id] if global_table_attrs.server_side_encryption[:kms_key_id]
+              enabled global_table_attrs.server_side_encryption&.dig(:enabled)
+              kms_key_id global_table_attrs.server_side_encryption&.dig(:kms_key_id) if global_table_attrs.server_side_encryption&.dig(:kms_key_id)
             end
           end
 
           # Point-in-time recovery
           if global_table_attrs.point_in_time_recovery
             point_in_time_recovery do
-              enabled global_table_attrs.point_in_time_recovery[:enabled]
+              enabled global_table_attrs.point_in_time_recovery&.dig(:enabled)
             end
           end
 
           # Apply global tags if present
-          if global_table_attrs.tags.any?
+          if global_table_attrs.tags&.any?
             tags do
               global_table_attrs.tags.each do |key, value|
                 public_send(key, value)

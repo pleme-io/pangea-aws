@@ -21,12 +21,12 @@ module Pangea
     module AWS
       module Types
         # Step adjustment for step scaling
-        class StepAdjustment < Dry::Struct
+        class StepAdjustment < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :metric_interval_lower_bound, Resources::Types::Float.optional.default(nil)
-          attribute :metric_interval_upper_bound, Resources::Types::Float.optional.default(nil)
-          attribute :scaling_adjustment, Resources::Types::Integer
+          attribute :metric_interval_lower_bound, Resources::Types::Coercible::Float.optional.default(nil)
+          attribute :metric_interval_upper_bound, Resources::Types::Coercible::Float.optional.default(nil)
+          attribute? :scaling_adjustment, Resources::Types::Integer.optional
 
           def to_h
             attributes.compact

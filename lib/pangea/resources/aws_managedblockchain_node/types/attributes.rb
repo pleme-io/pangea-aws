@@ -19,7 +19,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Managed Blockchain Node resources
-        class ManagedBlockchainNodeAttributes < Dry::Struct
+        class ManagedBlockchainNodeAttributes < Pangea::Resources::BaseAttributes
           extend ManagedBlockchainNodeValidation
           include ManagedBlockchainNodeInstanceMethods
           include ManagedBlockchainNodeCostAndSpecs
@@ -27,13 +27,13 @@ module Pangea
           transform_keys(&:to_sym)
 
           # Network ID (required)
-          attribute :network_id, Resources::Types::String
+          attribute? :network_id, Resources::Types::String.optional
 
           # Member ID (required for Hyperledger Fabric)
           attribute? :member_id, Resources::Types::String.optional
 
           # Node configuration (required)
-          attribute :node_configuration, Resources::Types::Hash.schema(
+          attribute? :node_configuration, Resources::Types::Hash.schema(
             availability_zone: Resources::Types::String,
             instance_type: Resources::Types::String.constrained(included_in: ['bc.t3.small',
               'bc.t3.medium',
@@ -52,12 +52,12 @@ module Pangea
                 chaincode_logs?: Resources::Types::Hash.schema(
                   cloudwatch?: Resources::Types::Hash.schema(
                     enabled?: Resources::Types::Bool.optional
-                  ).optional
+                  ).lax.optional
                 ).optional,
                 peer_logs?: Resources::Types::Hash.schema(
                   cloudwatch?: Resources::Types::Hash.schema(
                     enabled?: Resources::Types::Bool.optional
-                  ).optional
+                  ).lax.optional
                 ).optional
               ).optional
             ).optional,
@@ -73,7 +73,7 @@ module Pangea
 
             validate_network_id(attrs.network_id)
             validate_member_id(attrs.member_id)
-            validate_availability_zone(attrs.node_configuration[:availability_zone])
+            validate_availability_zone(attrs.node_configuration&.dig(:availability_zone))
             validate_instance_type_for_workload(attrs)
 
             attrs

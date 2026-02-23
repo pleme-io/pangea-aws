@@ -48,17 +48,17 @@ module Pangea
           policy bucket_attrs.policy if bucket_attrs.policy
         end
 
-        build_public_access_block(name, bucket_attrs)
-        build_resource_reference(name, bucket_attrs)
+        build_aws_s3_bucket_public_access_block(name, bucket_attrs)
+        build_aws_s3_bucket_resource_reference(name, bucket_attrs)
       end
 
       private
 
-      def build_public_access_block(name, bucket_attrs)
+      def build_aws_s3_bucket_public_access_block(name, bucket_attrs)
         config = bucket_attrs.public_access_block_configuration
-        return unless config.any?
+        return unless config&.any?
 
-        resource(:aws_s3_bucket_public_access_block, "#{name}_public_access_block") do
+        resource(:aws_s3_bucket_public_access_block, :"#{name}_public_access_block") do
           bucket ref(:aws_s3_bucket, name, :id)
           block_public_acls config[:block_public_acls] if config.key?(:block_public_acls)
           block_public_policy config[:block_public_policy] if config.key?(:block_public_policy)
@@ -67,7 +67,7 @@ module Pangea
         end
       end
 
-      def build_resource_reference(name, bucket_attrs)
+      def build_aws_s3_bucket_resource_reference(name, bucket_attrs)
         ref = ResourceReference.new(
           type: 'aws_s3_bucket',
           name: name,

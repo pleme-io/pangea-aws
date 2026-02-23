@@ -50,7 +50,7 @@ module Pangea
           vpc_id igw_attrs.vpc_id if igw_attrs.vpc_id
 
           # Apply tags if present
-          tags igw_attrs.tags if igw_attrs.tags.any?
+          tags igw_attrs.tags if igw_attrs.tags&.any?
         end
         
         # Return resource reference with available outputs

@@ -71,7 +71,7 @@ module Pangea
           expected_bucket_owner object_attrs.expected_bucket_owner if object_attrs.expected_bucket_owner
           
           # Set metadata
-          if object_attrs.metadata.any?
+          if object_attrs.metadata&.any?
             metadata do
               object_attrs.metadata.each do |key, value|
                 public_send(key, value)
@@ -80,7 +80,7 @@ module Pangea
           end
           
           # Set tags
-          if object_attrs.tags.any?
+          if object_attrs.tags&.any?
             tags do
               object_attrs.tags.each do |key, value|
                 public_send(key, value)

@@ -121,9 +121,10 @@ RSpec.describe "aws_ecs_service synthesis" do
 
       expect(service_config).to have_key("load_balancer")
       lb_config = service_config["load_balancer"]
-      expect(lb_config["target_group_arn"]).to eq("arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/test-tg/1234567890")
-      expect(lb_config["container_name"]).to eq("web")
-      expect(lb_config["container_port"]).to eq(8080)
+      lb_entry = lb_config.is_a?(Array) ? lb_config[0] : lb_config
+      expect(lb_entry["target_group_arn"]).to eq("arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/test-tg/1234567890")
+      expect(lb_entry["container_name"]).to eq("web")
+      expect(lb_entry["container_port"]).to eq(8080)
       expect(service_config["health_check_grace_period_seconds"]).to eq(60)
     end
 
@@ -235,8 +236,8 @@ RSpec.describe "aws_ecs_service synthesis" do
 
       expect(ref).to be_a(Pangea::Resources::ResourceReference)
       expect(ref.id).to eq("${aws_ecs_service.test.id}")
-      expect(ref.name).to eq("${aws_ecs_service.test.name}")
-      expect(ref.cluster).to eq("${aws_ecs_service.test.cluster}")
+      expect(ref.outputs[:name]).to eq("${aws_ecs_service.test.name}")
+      expect(ref.outputs[:cluster]).to eq("${aws_ecs_service.test.cluster}")
     end
 
     it "provides computed properties" do

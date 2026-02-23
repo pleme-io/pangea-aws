@@ -58,7 +58,7 @@ module Pangea
               timed_metadata_id3_period?: T::Integer.optional,
               timestamp_delta_milliseconds?: T::Integer.optional,
               ts_file_mode?: T::String.constrained(included_in: ['SEGMENTED_FILES', 'SINGLE_FILE']).optional
-            )
+            ).lax
 
             # MS Smooth group settings
             MsSmoothSettings = T::Hash.schema(
@@ -81,7 +81,7 @@ module Pangea
               stream_manifest_behavior?: T::String.constrained(included_in: ['DO_NOT_SEND', 'SEND']).optional,
               timestamp_offset?: T::String.optional,
               timestamp_offset_mode?: T::String.constrained(included_in: ['USE_CONFIGURED_OFFSET', 'USE_EVENT_START_DATE']).optional
-            )
+            ).lax
 
             # RTMP group settings
             RtmpSettings = T::Hash.schema(
@@ -92,19 +92,19 @@ module Pangea
               caption_data?: T::String.constrained(included_in: ['ALL', 'FIELD1_608', 'FIELD1_AND_FIELD2_608']).optional,
               input_loss_action?: T::String.constrained(included_in: ['EMIT_OUTPUT', 'PAUSE_OUTPUT']).optional,
               restart_delay?: T::Integer.optional
-            )
+            ).lax
 
             # UDP group settings
             UdpSettings = T::Hash.schema(
               input_loss_action?: T::String.constrained(included_in: ['DROP_PROGRAM', 'DROP_TS', 'EMIT_PROGRAM']).optional,
               timed_metadata_id3_frame?: T::String.constrained(included_in: ['NONE', 'PRIV', 'TDRL']).optional,
               timed_metadata_id3_period?: T::Integer.optional
-            )
+            ).lax
 
             # Media package group settings
             MediaPackageSettings = T::Hash.schema(
               destination: OGS::DestinationRef
-            )
+            ).lax
           end
         end
       end

@@ -30,14 +30,14 @@ module Pangea
               multiplex_group_settings?: T::Hash.optional,
               rtmp_group_settings?: HGS::RtmpSettings.optional,
               udp_group_settings?: HGS::UdpSettings.optional
-            )
+            ).lax
 
             # Output group
             OutputGroup = T::Hash.schema(
               name?: T::String.optional,
               output_group_settings: GroupSettings,
               outputs: T::Array.of(OS::Output)
-            )
+            ).lax
 
 
           end

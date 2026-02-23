@@ -21,12 +21,12 @@ module Pangea
     module AWS
       module Types
         # Transit Gateway VPC Attachment resource attributes with validation
-        class TransitGatewayVpcAttachmentAttributes < Dry::Struct
+        class TransitGatewayVpcAttachmentAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :transit_gateway_id, Resources::Types::String
-          attribute :vpc_id, Resources::Types::String
-          attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
+          attribute? :transit_gateway_id, Resources::Types::String.optional
+          attribute? :vpc_id, Resources::Types::String.optional
+          attribute? :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1).optional
           attribute? :appliance_mode_support, Resources::Types::TransitGatewayVpcAttachmentApplianceModeSupport
           attribute? :dns_support, Resources::Types::TransitGatewayVpcAttachmentDnsSupport
           attribute? :ipv6_support, Resources::Types::TransitGatewayVpcAttachmentIpv6Support
@@ -36,7 +36,7 @@ module Pangea
           
           # Custom validation for VPC attachment configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate subnet IDs format (basic validation)
             if attrs[:subnet_ids]

@@ -40,19 +40,19 @@ module Pangea
             base_table_ttl?: Resources::Types::Integer.constrained(gteq: 60, lteq: 31536000).optional,
             delta_sync_table_name?: Resources::Types::String.optional,
             delta_sync_table_ttl?: Resources::Types::Integer.constrained(gteq: 60, lteq: 31536000).optional
-          ).optional
+          ).lax.optional
         )
 
         # Lambda config for AppSync data source
         AppSyncLambdaConfig = Resources::Types::Hash.schema(
           function_arn: Resources::Types::String.constrained(format: /\Aarn:aws:lambda:/)
-        )
+        ).lax
 
         # Elasticsearch/OpenSearch config for AppSync data source
         AppSyncElasticsearchConfig = Resources::Types::Hash.schema(
           endpoint: Resources::Types::String.constrained(format: /\Ahttps?:\/\//),
           region?: Resources::Types::AwsRegion.optional
-        )
+        ).lax
 
         # HTTP config for AppSync data source  
         AppSyncHttpConfig = Resources::Types::Hash.schema(
@@ -62,7 +62,7 @@ module Pangea
             aws_iam_config?: Resources::Types::Hash.schema(
               signing_region?: Resources::Types::AwsRegion.optional,
               signing_service_name?: Resources::Types::String.optional
-            ).optional
+            ).lax.optional
           ).optional
         )
 
@@ -75,27 +75,27 @@ module Pangea
             db_cluster_identifier: Resources::Types::String,
             region?: Resources::Types::AwsRegion.optional,
             schema?: Resources::Types::String.optional
-          ).optional,
+          ).lax.optional,
           source_type?: Resources::Types::String.constrained(included_in: ['RDS_HTTP_ENDPOINT']).optional
         )
 
         # EventBridge config for AppSync data source
         AppSyncEventBridgeConfig = Resources::Types::Hash.schema(
           event_bus_arn: Resources::Types::String.constrained(format: /\Aarn:aws:events:/)
-        )
+        ).lax
 
         # AppSync DataSource resource attributes
-        class AppSyncDatasourceAttributes < Dry::Struct
+        class AppSyncDatasourceAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :api_id, Resources::Types::String
+          attribute? :api_id, Resources::Types::String.optional
           
-          attribute :name, Resources::Types::String.constrained(
+          attribute? :name, Resources::Types::String.constrained(
             format: /\A[a-zA-Z][a-zA-Z0-9_]{0,64}\z/,
             size: 1..65
           )
           
-          attribute :type, AppSyncDataSourceType
+          attribute? :type, AppSyncDataSourceType.optional
           
           attribute? :description, Resources::Types::String.optional
           
@@ -117,7 +117,7 @@ module Pangea
 
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate that the appropriate config is provided for the data source type
             case attrs[:type]

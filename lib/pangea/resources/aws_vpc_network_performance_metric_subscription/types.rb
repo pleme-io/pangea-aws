@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsVpcNetworkPerformanceMetricSubscription resources
       # Manages aws vpc network performance metric subscription resources.
-      class AwsVpcNetworkPerformanceMetricSubscriptionAttributes < Dry::Struct
+      class AwsVpcNetworkPerformanceMetricSubscriptionAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_vpc_network_performance_metric_subscription
         
         # Tags to apply to the resource

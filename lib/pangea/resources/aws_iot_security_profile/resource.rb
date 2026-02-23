@@ -55,7 +55,7 @@ module Pangea
             end
           end
           
-          if profile_attrs.tags.any?
+          if profile_attrs.tags&.any?
             tags do
               profile_attrs.tags.each { |k, v| public_send(k, v) }
             end

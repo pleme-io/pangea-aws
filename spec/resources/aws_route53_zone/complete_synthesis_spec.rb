@@ -162,9 +162,9 @@ RSpec.describe "aws_route53_zone terraform synthesis" do
       # Verify resource was created in synthesizer
       expect(test_synthesizer.resources).to have_key("aws_route53_zone.basic_zone")
       
-      # Verify resource attributes
-      resource = test_synthesizer.resources["aws_route53_zone.basic_zone"]
-      expect(resource.attributes[:name]).to eq("example.com")
+      # Verify attributes were set via method calls (blocks execute in caller context)
+      name_call = test_synthesizer.method_calls.find { |c| c[0] == :name && c[1] == "example.com" }
+      expect(name_call).not_to be_nil
     end
     
     it "synthesizes private zone with VPC configuration" do
@@ -203,13 +203,12 @@ RSpec.describe "aws_route53_zone terraform synthesis" do
       # Verify VPC synthesis
       expect(test_synthesizer.method_calls).to include(
         [:name, "internal.company.com"],
-        [:comment, "Internal services zone"],
-        [:vpc]
+        [:comment, "Internal services zone"]
       )
-      
-      # Verify VPC block was created
-      resource = test_synthesizer.resources["aws_route53_zone.private_zone"]
-      expect(resource.attributes).to have_key(:vpc)
+
+      # Verify VPC block was synthesized via method calls
+      vpc_calls = test_synthesizer.method_calls.select { |c| c[0] == :vpc }
+      expect(vpc_calls).not_to be_empty
     end
     
     it "synthesizes multi-VPC private zone" do
@@ -320,18 +319,14 @@ RSpec.describe "aws_route53_zone terraform synthesis" do
         }
       })
       
-      # Verify tags synthesis
-      expect(test_synthesizer.method_calls).to include([:tags])
-      
-      # Find the tags resource context
-      resource = test_synthesizer.resources["aws_route53_zone.tagged_zone"]
-      expect(resource.attributes).to have_key(:tags)
-      tags_context = resource.attributes[:tags]
-      expect(tags_context.attributes).to eq({
-        Environment: "production",
-        Application: "web-app",
-        ManagedBy: "terraform"
-      })
+      # Verify tags synthesis via method calls
+      tags_calls = test_synthesizer.method_calls.select { |c| c[0] == :tags }
+      expect(tags_calls).not_to be_empty
+
+      # Verify individual tag values were set
+      expect(test_synthesizer.method_calls).to include([:Environment, "production"])
+      expect(test_synthesizer.method_calls).to include([:Application, "web-app"])
+      expect(test_synthesizer.method_calls).to include([:ManagedBy, "terraform"])
     end
     
     it "synthesizes common Route53 patterns" do
@@ -377,8 +372,8 @@ RSpec.describe "aws_route53_zone terraform synthesis" do
       multi_ref = test_instance.aws_route53_zone(:multi_region, {
         name: "global.internal.com",
         vpc: [
-          { vpc_id: "vpc-east", vpc_region: "us-east-1" },
-          { vpc_id: "vpc-west", vpc_region: "us-west-2" }
+          { vpc_id: "vpc-east1234", vpc_region: "us-east-1" },
+          { vpc_id: "vpc-west1234", vpc_region: "us-west-2" }
         ]
       })
       

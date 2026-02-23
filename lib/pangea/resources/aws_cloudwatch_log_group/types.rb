@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
         # CloudWatch Log Group resource attributes with validation
-        class CloudWatchLogGroupAttributes < Dry::Struct
+        class CloudWatchLogGroupAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :name, Pangea::Resources::Types::String
+          attribute? :name, Pangea::Resources::Types::String.optional
           
           # Optional attributes
           attribute :retention_in_days?, Pangea::Resources::Types::Integer.optional.default(nil).constrained(
@@ -42,7 +42,7 @@ module Pangea
           
           # Validate log group name pattern
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             if attrs[:name]
               # CloudWatch log group name validation

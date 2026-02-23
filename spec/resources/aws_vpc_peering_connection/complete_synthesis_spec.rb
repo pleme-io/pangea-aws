@@ -26,7 +26,7 @@ RSpec.describe "aws_vpc_peering_connection synthesis" do
 
   # Extend the synthesizer with our VpcPeeringConnection module for resource access
   before do
-    synthesizer.extend(Pangea::Resources::VpcPeeringConnection)
+    synthesizer.extend(Pangea::Resources::AWS)
   end
 
   describe "basic peering synthesis" do

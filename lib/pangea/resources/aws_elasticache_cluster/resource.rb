@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_elasticache_cluster(name, attributes = {})
         # Validate attributes using dry-struct
-        cluster_attrs = AWS::Types::Types::ElastiCacheClusterAttributes.new(attributes)
+        cluster_attrs = Types::ElastiCacheClusterAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_elasticache_cluster, name) do
@@ -45,11 +45,11 @@ module Pangea
           
           # Network configuration
           subnet_group_name cluster_attrs.subnet_group_name if cluster_attrs.subnet_group_name
-          security_group_ids cluster_attrs.security_group_ids if cluster_attrs.security_group_ids.any?
+          security_group_ids cluster_attrs.security_group_ids if cluster_attrs.security_group_ids&.any?
           
           # Availability zone configuration
           availability_zone cluster_attrs.availability_zone if cluster_attrs.availability_zone
-          if cluster_attrs.preferred_availability_zones.any?
+          if cluster_attrs.preferred_availability_zones&.any?
             preferred_availability_zones cluster_attrs.preferred_availability_zones
           end
           
@@ -75,7 +75,7 @@ module Pangea
           end
           
           # Log delivery configuration
-          if cluster_attrs.log_delivery_configuration.any?
+          if cluster_attrs.log_delivery_configuration&.any?
             cluster_attrs.log_delivery_configuration.each_with_index do |log_config, index|
               log_delivery_configuration do
                 destination log_config[:destination]
@@ -87,7 +87,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if cluster_attrs.tags.any?
+          if cluster_attrs.tags&.any?
             tags do
               cluster_attrs.tags.each do |key, value|
                 public_send(key, value)

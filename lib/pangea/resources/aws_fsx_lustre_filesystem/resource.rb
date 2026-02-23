@@ -58,7 +58,7 @@ module Pangea
       #   })
       def aws_fsx_lustre_filesystem(name, attributes = {})
         # Validate and transform attributes
-        fsx_attrs = AWS::Types::Types::FsxLustreFileSystemAttributes.new(attributes)
+        fsx_attrs = Types::FsxLustreFileSystemAttributes.new(attributes)
         
         # Create FSx Lustre resource
         resource(:aws_fsx_lustre_file_system, name) do
@@ -97,7 +97,7 @@ module Pangea
           weekly_maintenance_start_time fsx_attrs.weekly_maintenance_start_time if fsx_attrs.weekly_maintenance_start_time
           
           # Tags
-          if fsx_attrs.tags.any?
+          if fsx_attrs.tags&.any?
             tags do
               fsx_attrs.tags.each { |key, value| public_send(key, value) }
             end

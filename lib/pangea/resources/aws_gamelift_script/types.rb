@@ -22,9 +22,9 @@ module Pangea
         include Dry::Types()
 
         # S3 location configuration for script storage
-        class S3Location < Dry::Struct
-          attribute :bucket, Resources::Types::String
-          attribute :key, Resources::Types::String
+        class S3Location < Pangea::Resources::BaseAttributes
+          attribute? :bucket, Resources::Types::String.optional
+          attribute? :key, Resources::Types::String.optional
           attribute? :object_version, Resources::Types::String
           attribute? :role_arn, Resources::Types::String
         end

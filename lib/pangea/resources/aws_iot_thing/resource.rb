@@ -42,16 +42,16 @@ module Pangea
           # Attribute payload configuration
           attribute_payload do
             # Set attributes if provided
-            if thing_attrs.attribute_payload[:attributes]&.any?
+            if thing_attrs.attribute_payload&.dig(:attributes)&.any?
               attributes do
-                thing_attrs.attribute_payload[:attributes].each do |key, value|
+                thing_attrs.attribute_payload&.dig(:attributes).each do |key, value|
                   public_send(key, value)
                 end
               end
             end
             
             # Set merge behavior
-            merge thing_attrs.attribute_payload[:merge] unless thing_attrs.attribute_payload[:merge].nil?
+            merge thing_attrs.attribute_payload&.dig(:merge) unless thing_attrs.attribute_payload&.dig(:merge).nil?
           end
         end
         

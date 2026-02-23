@@ -4,5 +4,5 @@
 
 require 'pangea/resources/types'
 require_relative 'types/validation'
-require_relative 'types/attributes'
 require_relative 'types/templates'
+require_relative 'types/attributes'

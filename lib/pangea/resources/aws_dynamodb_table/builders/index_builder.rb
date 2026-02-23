@@ -30,17 +30,17 @@ module Pangea
           def build_global_secondary_indexes(context, attrs)
             attrs.global_secondary_index.each do |gsi|
               context.global_secondary_index do
-                name gsi[:name]
-                hash_key gsi[:hash_key]
-                range_key gsi[:range_key] if gsi[:range_key]
+                context.name gsi[:name]
+                context.hash_key gsi[:hash_key]
+                context.range_key gsi[:range_key] if gsi[:range_key]
 
                 if attrs.is_provisioned?
-                  read_capacity gsi[:read_capacity]
-                  write_capacity gsi[:write_capacity]
+                  context.read_capacity gsi[:read_capacity]
+                  context.write_capacity gsi[:write_capacity]
                 end
 
-                projection_type gsi[:projection_type]
-                non_key_attributes gsi[:non_key_attributes] if gsi[:non_key_attributes]
+                context.projection_type gsi[:projection_type]
+                context.non_key_attributes gsi[:non_key_attributes] if gsi[:non_key_attributes]
               end
             end
           end
@@ -48,10 +48,10 @@ module Pangea
           def build_local_secondary_indexes(context, attrs)
             attrs.local_secondary_index.each do |lsi|
               context.local_secondary_index do
-                name lsi[:name]
-                range_key lsi[:range_key]
-                projection_type lsi[:projection_type]
-                non_key_attributes lsi[:non_key_attributes] if lsi[:non_key_attributes]
+                context.name lsi[:name]
+                context.range_key lsi[:range_key]
+                context.projection_type lsi[:projection_type]
+                context.non_key_attributes lsi[:non_key_attributes] if lsi[:non_key_attributes]
               end
             end
           end

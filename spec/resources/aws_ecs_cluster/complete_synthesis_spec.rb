@@ -66,12 +66,13 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
 
   # Test cluster with multiple capacity providers synthesis
   it "synthesizes cluster with multiple capacity providers correctly" do
+    _custom_provider_arn = custom_provider_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_ecs_cluster(:multi_provider, {
         name: "multi-provider-cluster",
-        capacity_providers: ["FARGATE", "FARGATE_SPOT", custom_provider_arn]
+        capacity_providers: ["FARGATE", "FARGATE_SPOT", _custom_provider_arn]
       })
     end
     
@@ -121,13 +122,16 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
     cluster_config = json_output.dig(:resource, :aws_ecs_cluster, :settings)
     
     expect(cluster_config[:name]).to eq("settings-cluster")
-    expect(cluster_config[:setting]).to eq([
-      { name: "containerInsights", value: "disabled" }
-    ])
+    expect(cluster_config[:setting]).to be_an(Array)
+    expect(cluster_config[:setting].length).to eq(1)
+    insights_setting = cluster_config[:setting][0]
+    expect(insights_setting[:name]).to eq("containerInsights")
+    expect(insights_setting[:value]).to eq("disabled")
   end
 
   # Test cluster with execute command configuration synthesis
   it "synthesizes cluster with execute command configuration correctly" do
+    _kms_key_arn = kms_key_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -135,7 +139,7 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
         name: "exec-command-cluster",
         configuration: {
           execute_command_configuration: {
-            kms_key_id: kms_key_arn,
+            kms_key_id: _kms_key_arn,
             logging: "OVERRIDE",
             log_configuration: {
               cloud_watch_encryption_enabled: true,
@@ -169,13 +173,14 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
 
   # Test cluster with Service Connect defaults synthesis
   it "synthesizes cluster with Service Connect defaults correctly" do
+    _service_connect_namespace = service_connect_namespace
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_ecs_cluster(:service_connect, {
         name: "service-connect-cluster",
         service_connect_defaults: {
-          namespace: service_connect_namespace
+          namespace: _service_connect_namespace
         }
       })
     end
@@ -190,6 +195,8 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
 
   # Test cluster with comprehensive configuration synthesis
   it "synthesizes comprehensive cluster configuration correctly" do
+    _kms_key_arn = kms_key_arn
+    _service_connect_namespace = service_connect_namespace
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -199,7 +206,7 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
         container_insights_enabled: true,
         configuration: {
           execute_command_configuration: {
-            kms_key_id: kms_key_arn,
+            kms_key_id: _kms_key_arn,
             logging: "OVERRIDE",
             log_configuration: {
               cloud_watch_encryption_enabled: true,
@@ -208,7 +215,7 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
           }
         },
         service_connect_defaults: {
-          namespace: service_connect_namespace
+          namespace: _service_connect_namespace
         },
         tags: {
           Environment: "production",
@@ -237,11 +244,9 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
     expect(cluster_config[:service_connect_defaults][:namespace]).to eq(service_connect_namespace)
     
     # Verify tags
-    expect(cluster_config[:tags]).to eq({
-      Environment: "production",
-      Team: "platform",
-      Security: "high"
-    })
+    expect(cluster_config[:tags][:Environment]).to eq("production")
+    expect(cluster_config[:tags][:Team]).to eq("platform")
+    expect(cluster_config[:tags][:Security]).to eq("high")
   end
 
   # Test development cluster pattern synthesis
@@ -277,6 +282,8 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
 
   # Test production cluster pattern synthesis
   it "synthesizes production cluster pattern correctly" do
+    _kms_key_arn = kms_key_arn
+    _service_connect_namespace = service_connect_namespace
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -286,7 +293,7 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
         container_insights_enabled: true,
         configuration: {
           execute_command_configuration: {
-            kms_key_id: kms_key_arn,
+            kms_key_id: _kms_key_arn,
             logging: "OVERRIDE",
             log_configuration: {
               cloud_watch_encryption_enabled: true,
@@ -297,7 +304,7 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
           }
         },
         service_connect_defaults: {
-          namespace: service_connect_namespace
+          namespace: _service_connect_namespace
         },
         tags: {
           Environment: "production",
@@ -333,6 +340,7 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
 
   # Test microservices platform synthesis
   it "synthesizes microservices platform correctly" do
+    _service_connect_namespace = service_connect_namespace
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -350,7 +358,7 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
           }
         },
         service_connect_defaults: {
-          namespace: service_connect_namespace
+          namespace: _service_connect_namespace
         },
         tags: {
           Environment: "production",
@@ -377,12 +385,13 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
 
   # Test hybrid cluster synthesis
   it "synthesizes hybrid cluster correctly" do
+    _custom_provider_arn = custom_provider_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
       aws_ecs_cluster(:hybrid, {
         name: "hybrid-cluster",
-        capacity_providers: ["FARGATE", custom_provider_arn],
+        capacity_providers: ["FARGATE", _custom_provider_arn],
         container_insights_enabled: true,
         tags: {
           Environment: "production",
@@ -402,6 +411,7 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
 
   # Test security-focused cluster synthesis
   it "synthesizes security-focused cluster correctly" do
+    _kms_key_arn = kms_key_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -411,7 +421,7 @@ RSpec.describe "aws_ecs_cluster terraform synthesis" do
         container_insights_enabled: true,
         configuration: {
           execute_command_configuration: {
-            kms_key_id: kms_key_arn,
+            kms_key_id: _kms_key_arn,
             logging: "OVERRIDE",
             log_configuration: {
               cloud_watch_encryption_enabled: true,

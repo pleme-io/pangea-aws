@@ -61,7 +61,7 @@ module Pangea
       #   })
       def aws_cloudwatch_log_subscription_filter(name, attributes = {})
         # Validate attributes using dry-struct
-        filter_attrs = Types::Types::CloudWatchLogSubscriptionFilterAttributes.new(attributes)
+        filter_attrs = Types::CloudWatchLogSubscriptionFilterAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_cloudwatch_log_subscription_filter, name) do

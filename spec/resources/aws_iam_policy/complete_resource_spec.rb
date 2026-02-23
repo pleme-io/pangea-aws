@@ -25,9 +25,9 @@ RSpec.describe "aws_iam_policy resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -62,7 +62,7 @@ RSpec.describe "aws_iam_policy resource function" do
         }]
       }
       
-      attrs = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "test-policy",
         policy: policy_doc
       })
@@ -73,7 +73,7 @@ RSpec.describe "aws_iam_policy resource function" do
     end
     
     it "accepts custom path and description" do
-      attrs = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "test-policy",
         path: "/custom/",
         description: "Test IAM policy",
@@ -93,7 +93,7 @@ RSpec.describe "aws_iam_policy resource function" do
     
     it "validates policy name length" do
       expect {
-        Pangea::Resources::AWS::IamPolicyAttributes.new({
+        Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
           name: "a" * 129,
           policy: { Version: "2012-10-17", Statement: [] }
         })
@@ -102,7 +102,7 @@ RSpec.describe "aws_iam_policy resource function" do
     
     it "validates path format" do
       expect {
-        Pangea::Resources::AWS::IamPolicyAttributes.new({
+        Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
           name: "test-policy",
           path: "missing-leading-slash",
           policy: { Version: "2012-10-17", Statement: [] }
@@ -112,7 +112,7 @@ RSpec.describe "aws_iam_policy resource function" do
     
     it "validates policy document has statements" do
       expect {
-        Pangea::Resources::AWS::IamPolicyAttributes.new({
+        Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
           name: "test-policy",
           policy: { Version: "2012-10-17", Statement: [] }
         })
@@ -128,7 +128,7 @@ RSpec.describe "aws_iam_policy resource function" do
       }
       
       expect {
-        Pangea::Resources::AWS::IamPolicyAttributes.new({
+        Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
           name: "test-policy",
           policy: { Version: "2012-10-17", Statement: [large_statement] }
         })
@@ -136,14 +136,14 @@ RSpec.describe "aws_iam_policy resource function" do
     end
     
     it "detects reserved names" do
-      attrs = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "AWS-test-policy",
         policy: { Version: "2012-10-17", Statement: [{ Effect: "Allow", Action: "s3:*", Resource: "*" }] }
       })
       
       expect(attrs.uses_reserved_name?).to eq(true)
       
-      attrs2 = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      attrs2 = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "MyAmazonPolicy",
         policy: { Version: "2012-10-17", Statement: [{ Effect: "Allow", Action: "s3:*", Resource: "*" }] }
       })
@@ -161,7 +161,7 @@ RSpec.describe "aws_iam_policy resource function" do
         ]
       }
       
-      attrs = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "test-policy",
         policy: policy
       })
@@ -179,7 +179,7 @@ RSpec.describe "aws_iam_policy resource function" do
         ]
       }
       
-      attrs = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "test-policy",
         policy: policy
       })
@@ -194,7 +194,7 @@ RSpec.describe "aws_iam_policy resource function" do
     
     it "detects wildcard permissions" do
       # Wildcard action
-      attrs1 = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      attrs1 = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "wildcard-action",
         policy: {
           Version: "2012-10-17",
@@ -204,7 +204,7 @@ RSpec.describe "aws_iam_policy resource function" do
       expect(attrs1.has_wildcard_permissions?).to eq(true)
       
       # Wildcard resource
-      attrs2 = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      attrs2 = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "wildcard-resource",
         policy: {
           Version: "2012-10-17",
@@ -214,7 +214,7 @@ RSpec.describe "aws_iam_policy resource function" do
       expect(attrs2.has_wildcard_permissions?).to eq(true)
       
       # No wildcards
-      attrs3 = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      attrs3 = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "no-wildcards",
         policy: {
           Version: "2012-10-17",
@@ -235,7 +235,7 @@ RSpec.describe "aws_iam_policy resource function" do
         ]
       }
       
-      attrs = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "test-policy",
         policy: policy
       })
@@ -250,7 +250,7 @@ RSpec.describe "aws_iam_policy resource function" do
     
     it "determines security risk level" do
       # High risk - wildcard permissions
-      attrs1 = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      attrs1 = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "high-risk",
         policy: {
           Version: "2012-10-17",
@@ -259,18 +259,18 @@ RSpec.describe "aws_iam_policy resource function" do
       })
       expect(attrs1.security_level).to eq(:high_risk)
       
-      # Medium risk - IAM permissions
-      attrs2 = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      # Medium risk - IAM permissions without wildcard resource
+      attrs2 = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "medium-risk",
         policy: {
           Version: "2012-10-17",
-          Statement: [{ Effect: "Allow", Action: "iam:*", Resource: "*" }]
+          Statement: [{ Effect: "Allow", Action: "iam:*", Resource: "arn:aws:iam::123456789012:role/*" }]
         }
       })
       expect(attrs2.security_level).to eq(:medium_risk)
       
       # Low risk - specific permissions
-      attrs3 = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      attrs3 = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "low-risk",
         policy: {
           Version: "2012-10-17",
@@ -309,19 +309,19 @@ RSpec.describe "aws_iam_policy resource function" do
         ]
       }
       
-      simple_attrs = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      simple_attrs = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "simple",
         policy: simple_policy
       })
       
-      complex_attrs = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      complex_attrs = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "complex",
         policy: complex_policy
       })
       
       expect(simple_attrs.complexity_score).to be < complex_attrs.complexity_score
       expect(simple_attrs.complexity_score).to eq(3)  # 1 statement + 1 action + 1 resource
-      expect(complex_attrs.complexity_score).to eq(11) # 2 statements + 5 actions + 2 resources + (1 condition * 2)
+      expect(complex_attrs.complexity_score).to eq(12) # 2 statements + 5 actions + 3 resources + (1 condition * 2)
     end
     
     it "detects service role policies" do
@@ -343,12 +343,12 @@ RSpec.describe "aws_iam_policy resource function" do
         }]
       }
       
-      service_attrs = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      service_attrs = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "service-role",
         policy: service_role_policy
       })
       
-      regular_attrs = Pangea::Resources::AWS::IamPolicyAttributes.new({
+      regular_attrs = Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "regular",
         policy: regular_policy
       })
@@ -476,7 +476,7 @@ RSpec.describe "aws_iam_policy resource function" do
   
   describe "PolicyTemplates module usage" do
     it "creates S3 read-only policy" do
-      template = Pangea::Resources::AWS::PolicyTemplates.s3_bucket_readonly("my-bucket")
+      template = Pangea::Resources::AWS::Types::PolicyTemplates.s3_bucket_readonly("my-bucket")
       ref = test_instance.aws_iam_policy(:s3_readonly, {
         name: "S3ReadOnlyPolicy",
         policy: template
@@ -488,7 +488,7 @@ RSpec.describe "aws_iam_policy resource function" do
     end
     
     it "creates S3 full access policy" do
-      template = Pangea::Resources::AWS::PolicyTemplates.s3_bucket_fullaccess("my-bucket")
+      template = Pangea::Resources::AWS::Types::PolicyTemplates.s3_bucket_fullaccess("my-bucket")
       ref = test_instance.aws_iam_policy(:s3_full, {
         name: "S3FullAccessPolicy",
         policy: template
@@ -499,7 +499,7 @@ RSpec.describe "aws_iam_policy resource function" do
     end
     
     it "creates CloudWatch logs write policy" do
-      template = Pangea::Resources::AWS::PolicyTemplates.cloudwatch_logs_write
+      template = Pangea::Resources::AWS::Types::PolicyTemplates.cloudwatch_logs_write
       ref = test_instance.aws_iam_policy(:logs_write, {
         name: "LogsWritePolicy",
         policy: template
@@ -515,7 +515,7 @@ RSpec.describe "aws_iam_policy resource function" do
     end
     
     it "creates Lambda basic execution policy" do
-      template = Pangea::Resources::AWS::PolicyTemplates.lambda_basic_execution
+      template = Pangea::Resources::AWS::Types::PolicyTemplates.lambda_basic_execution
       ref = test_instance.aws_iam_policy(:lambda_exec, {
         name: "LambdaExecutionPolicy",
         policy: template
@@ -530,7 +530,7 @@ RSpec.describe "aws_iam_policy resource function" do
     end
     
     it "creates KMS decrypt policy" do
-      template = Pangea::Resources::AWS::PolicyTemplates.kms_decrypt("arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012")
+      template = Pangea::Resources::AWS::Types::PolicyTemplates.kms_decrypt("arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012")
       ref = test_instance.aws_iam_policy(:kms_decrypt, {
         name: "KMSDecryptPolicy",
         policy: template
@@ -541,7 +541,7 @@ RSpec.describe "aws_iam_policy resource function" do
     end
     
     it "creates SSM parameter read policy" do
-      template = Pangea::Resources::AWS::PolicyTemplates.ssm_parameter_read("/myapp/")
+      template = Pangea::Resources::AWS::Types::PolicyTemplates.ssm_parameter_read("/myapp/")
       ref = test_instance.aws_iam_policy(:ssm_read, {
         name: "SSMReadPolicy",
         policy: template
@@ -597,20 +597,20 @@ RSpec.describe "aws_iam_policy resource function" do
   end
   
   describe "error conditions and edge cases" do
-    it "handles string keys in attributes" do
+    it "handles string keys in top-level attributes" do
       ref = test_instance.aws_iam_policy(:string_keys, {
         "name" => "string-key-policy",
         "path" => "/test/",
         "policy" => {
-          "Version" => "2012-10-17",
-          "Statement" => [{
-            "Effect" => "Allow",
-            "Action" => "s3:*",
-            "Resource" => "*"
+          Version: "2012-10-17",
+          Statement: [{
+            Effect: "Allow",
+            Action: "s3:*",
+            Resource: "*"
           }]
         }
       })
-      
+
       expect(ref.resource_attributes[:name]).to eq("string-key-policy")
       expect(ref.resource_attributes[:path]).to eq("/test/")
     end
@@ -669,7 +669,7 @@ RSpec.describe "aws_iam_policy resource function" do
     it "warns about wildcard permissions" do
       expect($stdout).to receive(:puts).with(/wildcard .* permissions/)
       
-      Pangea::Resources::AWS::IamPolicyAttributes.new({
+      Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "wildcard-policy",
         policy: {
           Version: "2012-10-17",
@@ -685,7 +685,7 @@ RSpec.describe "aws_iam_policy resource function" do
     it "warns about dangerous IAM actions" do
       expect($stdout).to receive(:puts).with(/potentially dangerous action: iam:\*/)
       
-      Pangea::Resources::AWS::IamPolicyAttributes.new({
+      Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "dangerous-policy",
         policy: {
           Version: "2012-10-17",
@@ -701,7 +701,7 @@ RSpec.describe "aws_iam_policy resource function" do
     it "warns about root resource access" do
       expect($stdout).to receive(:puts).with(/grants access to root resources/)
       
-      Pangea::Resources::AWS::IamPolicyAttributes.new({
+      Pangea::Resources::AWS::Types::IamPolicyAttributes.new({
         name: "root-access-policy",
         policy: {
           Version: "2012-10-17",

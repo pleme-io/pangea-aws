@@ -21,14 +21,14 @@ module Pangea
     module AWS
       module Types
         # SES Email Identity resource attributes
-        class SesEmailIdentityAttributes < Dry::Struct
+        class SesEmailIdentityAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :email, Resources::Types::EmailAddress
+          attribute? :email, Resources::Types::EmailAddress.optional
 
           # Custom validation for email format
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Additional email validation beyond basic format
             if attrs[:email]

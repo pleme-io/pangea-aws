@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsAutoscalingPolicyStepAdjustment resources
       # Manages aws autoscaling policy step adjustment resources.
-      class AwsAutoscalingPolicyStepAdjustmentAttributes < Dry::Struct
+      class AwsAutoscalingPolicyStepAdjustmentAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_autoscaling_policy_step_adjustment
         
         # Tags to apply to the resource

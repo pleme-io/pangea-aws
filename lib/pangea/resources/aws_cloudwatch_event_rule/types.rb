@@ -22,7 +22,7 @@ module Pangea
     module AWS
       module Types
         # CloudWatch Event Rule resource attributes with validation
-        class CloudWatchEventRuleAttributes < Dry::Struct
+        class CloudWatchEventRuleAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes (at least one of event_pattern or schedule_expression)
@@ -35,11 +35,11 @@ module Pangea
           attribute :state, Resources::Types::String.default('ENABLED').enum('ENABLED', 'DISABLED')
           attribute :role_arn, Resources::Types::String.optional.default(nil)
           attribute :is_enabled, Resources::Types::Bool.default(true)
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Validate rule configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate name XOR name_prefix
             if attrs[:name] && attrs[:name_prefix]
@@ -67,11 +67,11 @@ module Pangea
             # Validate event_pattern JSON if provided
             if attrs[:event_pattern]
               begin
-                pattern = JSON.parse(attrs[:event_pattern])
-                unless pattern.is_a?(Hash)
+                pattern = ::JSON.parse(attrs[:event_pattern])
+                unless pattern.is_a?(::Hash)
                   raise Dry::Struct::Error, "event_pattern must be a valid JSON object"
                 end
-              rescue JSON::ParserError => e
+              rescue ::JSON::ParserError => e
                 raise Dry::Struct::Error, "event_pattern must be valid JSON: #{e.message}"
               end
             end
@@ -127,9 +127,9 @@ module Pangea
             return [] unless event_pattern
             
             begin
-              pattern = JSON.parse(event_pattern)
+              pattern = ::JSON.parse(event_pattern)
               Array(pattern['source']).compact
-            rescue JSON::ParserError
+            rescue ::JSON::ParserError
               []
             end
           end
@@ -138,9 +138,9 @@ module Pangea
             return [] unless event_pattern
             
             begin
-              pattern = JSON.parse(event_pattern)
+              pattern = ::JSON.parse(event_pattern)
               Array(pattern['detail-type']).compact
-            rescue JSON::ParserError
+            rescue ::JSON::ParserError
               []
             end
           end

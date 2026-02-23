@@ -23,18 +23,18 @@ module Pangea
     module AWS
       module Types
         # Kinesis Firehose Delivery Stream resource attributes with validation
-        class KinesisFirehoseDeliveryStreamAttributes < Dry::Struct
+        class KinesisFirehoseDeliveryStreamAttributes < Pangea::Resources::BaseAttributes
           include FirehoseComputedProperties
           transform_keys(&:to_sym)
 
           T = Resources::Types
 
-          attribute :name, T::String
-          attribute :destination, T::String.constrained(included_in: ['extended_s3', 's3', 'redshift', 'elasticsearch', 'amazonopensearch',
+          attribute? :name, T::String.optional
+          attribute? :destination, T::String.constrained(included_in: ['extended_s3', 's3', 'redshift', 'elasticsearch', 'amazonopensearch',
             'splunk', 'http_endpoint', 'snowflake'])
 
           # S3 destination configuration
-          attribute :s3_configuration, T::Hash.schema(
+          attribute? :s3_configuration, T::Hash.schema(
             role_arn: T::String, bucket_arn: T::String,
             prefix?: T::String.optional, error_output_prefix?: T::String.optional,
             buffer_size?: T::Integer.constrained(gteq: 1, lteq: 128).optional,
@@ -42,16 +42,16 @@ module Pangea
             compression_format?: T::String.constrained(included_in: ['UNCOMPRESSED', 'GZIP', 'ZIP', 'Snappy', 'HADOOP_SNAPPY']).optional,
             encryption_configuration?: T::Hash.schema(
               no_encryption_config?: T::String.constrained(included_in: ['NoEncryption']).optional,
-              kms_encryption_config?: T::Hash.schema(aws_kms_key_arn: T::String).optional
+              kms_encryption_config?: T::Hash.schema(aws_kms_key_arn: T::String).lax.optional
             ).optional,
             cloudwatch_logging_options?: T::Hash.schema(
               enabled?: T::Bool.optional, log_group_name?: T::String.optional,
               log_stream_name?: T::String.optional
-            ).optional
+            ).lax.optional
           ).optional
 
           # Extended S3 destination configuration
-          attribute :extended_s3_configuration, T::Hash.schema(
+          attribute? :extended_s3_configuration, T::Hash.schema(
             role_arn: T::String, bucket_arn: T::String,
             prefix?: T::String.optional, error_output_prefix?: T::String.optional,
             buffer_size?: T::Integer.constrained(gteq: 1, lteq: 128).optional,
@@ -62,13 +62,13 @@ module Pangea
               output_format_configuration?: T::Hash.schema(
                 serializer?: T::Hash.schema(
                   parquet_ser_de?: T::Hash.optional, orc_ser_de?: T::Hash.optional
-                ).optional
+                ).lax.optional
               ).optional,
               schema_configuration?: T::Hash.schema(
                 database_name: T::String, table_name: T::String, role_arn: T::String,
                 region?: T::String.optional, catalog_id?: T::String.optional,
                 version_id?: T::String.optional
-              ).optional
+              ).lax.optional
             ).optional,
             processing_configuration?: T::Hash.schema(
               enabled: T::Bool,
@@ -76,29 +76,29 @@ module Pangea
                 type: T::String.constrained(included_in: ['Lambda']),
                 parameters?: T::Array.of(T::Hash.schema(
                   parameter_name: T::String, parameter_value: T::String
-                )).optional
+                )).lax.optional
               )).optional
             ).optional,
             cloudwatch_logging_options?: T::Hash.schema(
               enabled?: T::Bool.optional, log_group_name?: T::String.optional,
               log_stream_name?: T::String.optional
-            ).optional,
+            ).lax.optional,
             s3_backup_mode?: T::String.constrained(included_in: ['Disabled', 'Enabled']).optional,
             s3_backup_configuration?: T::Hash.optional
           ).optional
 
           # Redshift destination configuration
-          attribute :redshift_configuration, T::Hash.schema(
+          attribute? :redshift_configuration, T::Hash.schema(
             role_arn: T::String, cluster_jdbcurl: T::String, username: T::String,
             password: T::String, data_table_name: T::String,
             copy_options?: T::String.optional, data_table_columns?: T::String.optional,
             s3_backup_mode?: T::String.constrained(included_in: ['Disabled', 'Enabled']).optional,
             s3_backup_configuration?: T::Hash.optional, processing_configuration?: T::Hash.optional,
             cloudwatch_logging_options?: T::Hash.optional
-          ).optional
+          ).lax.optional
 
           # Elasticsearch destination configuration
-          attribute :elasticsearch_configuration, T::Hash.schema(
+          attribute? :elasticsearch_configuration, T::Hash.schema(
             role_arn: T::String, domain_arn: T::String, index_name: T::String,
             type_name?: T::String.optional,
             index_rotation_period?: T::String.constrained(included_in: ['NoRotation', 'OneHour', 'OneDay', 'OneWeek', 'OneMonth']).optional,
@@ -107,10 +107,10 @@ module Pangea
             retry_duration?: T::Integer.constrained(gteq: 0, lteq: 7200).optional,
             s3_backup_mode?: T::String.constrained(included_in: ['FailedDocumentsOnly', 'AllDocuments']).optional,
             processing_configuration?: T::Hash.optional, cloudwatch_logging_options?: T::Hash.optional
-          ).optional
+          ).lax.optional
 
           # OpenSearch destination configuration
-          attribute :amazonopensearch_configuration, T::Hash.schema(
+          attribute? :amazonopensearch_configuration, T::Hash.schema(
             role_arn: T::String, domain_arn: T::String, index_name: T::String,
             type_name?: T::String.optional,
             index_rotation_period?: T::String.constrained(included_in: ['NoRotation', 'OneHour', 'OneDay', 'OneWeek', 'OneMonth']).optional,
@@ -119,20 +119,20 @@ module Pangea
             retry_duration?: T::Integer.constrained(gteq: 0, lteq: 7200).optional,
             s3_backup_mode?: T::String.constrained(included_in: ['FailedDocumentsOnly', 'AllDocuments']).optional,
             processing_configuration?: T::Hash.optional, cloudwatch_logging_options?: T::Hash.optional
-          ).optional
+          ).lax.optional
 
           # Splunk destination configuration
-          attribute :splunk_configuration, T::Hash.schema(
+          attribute? :splunk_configuration, T::Hash.schema(
             hec_endpoint: T::String, hec_token: T::String,
             hec_acknowledgment_timeout?: T::Integer.constrained(gteq: 180, lteq: 600).optional,
             hec_endpoint_type?: T::String.constrained(included_in: ['Raw', 'Event']).optional,
             retry_duration?: T::Integer.constrained(gteq: 0, lteq: 7200).optional,
             s3_backup_mode?: T::String.constrained(included_in: ['FailedEventsOnly', 'AllEvents']).optional,
             processing_configuration?: T::Hash.optional, cloudwatch_logging_options?: T::Hash.optional
-          ).optional
+          ).lax.optional
 
           # HTTP endpoint destination configuration
-          attribute :http_endpoint_configuration, T::Hash.schema(
+          attribute? :http_endpoint_configuration, T::Hash.schema(
             url: T::String, name?: T::String.optional, access_key?: T::String.optional,
             buffering_size?: T::Integer.constrained(gteq: 1, lteq: 64).optional,
             buffering_interval?: T::Integer.constrained(gteq: 60, lteq: 900).optional,
@@ -141,23 +141,23 @@ module Pangea
             request_configuration?: T::Hash.schema(
               content_encoding?: T::String.constrained(included_in: ['NONE', 'GZIP']).optional,
               common_attributes?: T::Hash.map(T::String, T::String).optional
-            ).optional,
+            ).lax.optional,
             processing_configuration?: T::Hash.optional, cloudwatch_logging_options?: T::Hash.optional
           ).optional
 
           # Kinesis source configuration
-          attribute :kinesis_source_configuration, T::Hash.schema(
+          attribute? :kinesis_source_configuration, T::Hash.schema(
             kinesis_stream_arn: T::String, role_arn: T::String
-          ).optional
+          ).lax.optional
 
           # Server-side encryption
-          attribute :server_side_encryption, T::Hash.schema(
+          attribute? :server_side_encryption, T::Hash.schema(
             enabled?: T::Bool.default(false),
             key_type?: T::String.constrained(included_in: ['AWS_OWNED_CMK', 'CUSTOMER_MANAGED_CMK']).optional,
             key_arn?: T::String.optional
-          ).optional
+          ).lax.optional
 
-          attribute :tags, T::AwsTags
+          attribute? :tags, T::AwsTags.optional
 
           # Custom validation
           def self.new(attributes)

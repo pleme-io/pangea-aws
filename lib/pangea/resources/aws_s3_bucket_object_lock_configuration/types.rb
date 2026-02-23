@@ -22,7 +22,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS S3 Bucket Object Lock Configuration resources
-        class S3BucketObjectLockConfigurationAttributes < Dry::Struct
+        class S3BucketObjectLockConfigurationAttributes < Pangea::Resources::BaseAttributes
           require_relative 'types/validation'
           require_relative 'types/instance_methods'
 
@@ -31,7 +31,7 @@ module Pangea
           transform_keys(&:to_sym)
 
           # The name of the bucket for which object lock configuration is set
-          attribute :bucket, Resources::Types::String
+          attribute? :bucket, Resources::Types::String.optional
 
           # Expected bucket owner (optional for cross-account scenarios)
           attribute? :expected_bucket_owner, Resources::Types::String.optional
@@ -52,7 +52,7 @@ module Pangea
               # Retention period - must specify either days OR years, not both
               days?: Resources::Types::Integer.constrained(gteq: 1, lteq: 36_500).optional,
               years?: Resources::Types::Integer.constrained(gteq: 1, lteq: 100).optional
-            )
+            ).lax
           ).optional
 
           # Custom validation

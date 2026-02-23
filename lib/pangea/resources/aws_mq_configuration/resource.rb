@@ -36,7 +36,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs
       def aws_mq_configuration(name, attributes = {})
         # Validate attributes using dry-struct
-        config_attrs = Types::Types::MqConfigurationAttributes.new(attributes)
+        config_attrs = Types::MqConfigurationAttributes.new(attributes)
         
         # Generate terraform resource block
         resource(:aws_mq_configuration, name) do

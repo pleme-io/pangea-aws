@@ -22,7 +22,7 @@ module Pangea
     module AWS
       module Types
         # Kinesis Analytics Application resource attributes with validation
-        class KinesisAnalyticsApplicationAttributes < Dry::Struct
+        class KinesisAnalyticsApplicationAttributes < Pangea::Resources::BaseAttributes
           require_relative 'types/configs'
           require_relative 'types/sql_configs'
           require_relative 'types/validation'
@@ -35,25 +35,25 @@ module Pangea
           RUNTIME_ENVIRONMENTS = %w[SQL-1_0 FLINK-1_6 FLINK-1_8 FLINK-1_11 FLINK-1_13 FLINK-1_15 FLINK-1_18].freeze
 
           # Core attributes
-          attribute :name, Resources::Types::String
-          attribute :description, Resources::Types::String.optional
-          attribute :service_execution_role, Resources::Types::String
-          attribute :runtime_environment, Resources::Types::String.enum(*RUNTIME_ENVIRONMENTS)
+          attribute? :name, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
+          attribute? :service_execution_role, Resources::Types::String.optional
+          attribute? :runtime_environment, Resources::Types::String.enum(*RUNTIME_ENVIRONMENTS).optional
           attribute :start_application, Resources::Types::Bool.default(false)
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
 
           # Application configuration with nested types from sub-modules
-          attribute :application_configuration, Resources::Types::Hash.schema(
+          attribute? :application_configuration, Resources::Types::Hash.schema(
             application_code_configuration?: Configs::ApplicationCodeConfiguration.optional,
             flink_application_configuration?: Configs::FlinkApplicationConfiguration.optional,
             sql_application_configuration?: SqlConfigs::SqlApplicationConfiguration.optional,
             environment_properties?: Configs::EnvironmentProperties.optional,
             vpc_configuration?: Configs::VpcConfiguration.optional
-          ).optional
+          ).lax.optional
 
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             Validation.validate_attributes(attrs)
             super(attrs)
           end

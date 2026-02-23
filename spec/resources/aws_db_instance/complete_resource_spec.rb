@@ -25,9 +25,9 @@ RSpec.describe "aws_db_instance resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -53,7 +53,7 @@ RSpec.describe "aws_db_instance resource function" do
   
   describe "DbInstanceAttributes validation" do
     it "accepts minimal configuration with required attributes" do
-      attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
         engine: "postgres",
         instance_class: "db.t3.micro",
         allocated_storage: 20
@@ -67,7 +67,7 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "accepts custom identifier" do
-      attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
         identifier: "my-database-instance",
         engine: "mysql",
         instance_class: "db.t3.small",
@@ -78,7 +78,7 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "accepts identifier prefix instead of identifier" do
-      attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
         identifier_prefix: "myapp-db-",
         engine: "postgres",
         instance_class: "db.t3.medium",
@@ -97,7 +97,7 @@ RSpec.describe "aws_db_instance resource function" do
         # Aurora doesn't need allocated_storage
         allocated_storage = engine.start_with?("aurora") ? nil : 20
         
-        attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+        attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
           engine: engine,
           instance_class: "db.t3.micro",
           allocated_storage: allocated_storage
@@ -108,7 +108,7 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "accepts engine version" do
-      attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
         engine: "postgres",
         engine_version: "15.3",
         instance_class: "db.t3.medium",
@@ -120,7 +120,7 @@ RSpec.describe "aws_db_instance resource function" do
     
     it "validates identifier and identifier_prefix are mutually exclusive" do
       expect {
-        Pangea::Resources::AWS::DbInstanceAttributes.new({
+        Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
           identifier: "my-db",
           identifier_prefix: "my-db-",
           engine: "mysql",
@@ -134,7 +134,7 @@ RSpec.describe "aws_db_instance resource function" do
       storage_types = ["standard", "gp2", "gp3", "io1", "io2"]
       
       storage_types.each do |storage_type|
-        attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+        attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
           engine: "mysql",
           instance_class: "db.t3.micro",
           allocated_storage: 100,
@@ -147,7 +147,7 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "accepts IOPS for io1 and io2 storage types" do
-      attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
         engine: "mysql",
         instance_class: "db.t3.large",
         allocated_storage: 100,
@@ -160,7 +160,7 @@ RSpec.describe "aws_db_instance resource function" do
     
     it "validates IOPS only allowed for io1/io2" do
       expect {
-        Pangea::Resources::AWS::DbInstanceAttributes.new({
+        Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
           engine: "mysql",
           instance_class: "db.t3.micro",
           allocated_storage: 100,
@@ -171,7 +171,7 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "accepts database configuration" do
-      attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
         engine: "postgres",
         instance_class: "db.t3.medium",
         allocated_storage: 100,
@@ -184,7 +184,7 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "accepts password configuration" do
-      attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
         engine: "mysql",
         instance_class: "db.t3.micro",
         allocated_storage: 20,
@@ -198,7 +198,7 @@ RSpec.describe "aws_db_instance resource function" do
     
     it "validates password and manage_master_user_password are mutually exclusive" do
       expect {
-        Pangea::Resources::AWS::DbInstanceAttributes.new({
+        Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
           engine: "mysql",
           instance_class: "db.t3.micro",
           allocated_storage: 20,
@@ -209,7 +209,7 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "accepts network configuration" do
-      attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
         engine: "postgres",
         instance_class: "db.t3.medium",
         allocated_storage: 100,
@@ -228,7 +228,7 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "accepts backup configuration" do
-      attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
         engine: "mysql",
         instance_class: "db.t3.large",
         allocated_storage: 500,
@@ -243,7 +243,7 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "accepts performance monitoring configuration" do
-      attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
         engine: "postgres",
         instance_class: "db.r5.large",
         allocated_storage: 1000,
@@ -259,7 +259,7 @@ RSpec.describe "aws_db_instance resource function" do
     
     it "validates Aurora doesn't use allocated_storage" do
       expect {
-        Pangea::Resources::AWS::DbInstanceAttributes.new({
+        Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
           engine: "aurora-mysql",
           instance_class: "db.t3.small",
           allocated_storage: 100
@@ -269,7 +269,7 @@ RSpec.describe "aws_db_instance resource function" do
     
     it "validates Aurora doesn't use multi_az at instance level" do
       expect {
-        Pangea::Resources::AWS::DbInstanceAttributes.new({
+        Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
           engine: "aurora-postgresql",
           instance_class: "db.r5.large",
           multi_az: true
@@ -279,7 +279,7 @@ RSpec.describe "aws_db_instance resource function" do
     
     it "validates SQL Server doesn't support db_name" do
       expect {
-        Pangea::Resources::AWS::DbInstanceAttributes.new({
+        Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
           engine: "sqlserver-ex",
           instance_class: "db.t3.micro",
           allocated_storage: 20,
@@ -289,7 +289,7 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "accepts encryption configuration" do
-      attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
         engine: "mysql",
         instance_class: "db.t3.medium",
         allocated_storage: 200,
@@ -302,7 +302,7 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "accepts deletion protection settings" do
-      attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
         engine: "postgres",
         instance_class: "db.t3.large",
         allocated_storage: 500,
@@ -317,7 +317,7 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "accepts tags" do
-      attrs = Pangea::Resources::AWS::DbInstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::DbInstanceAttributes.new({
         engine: "mysql",
         instance_class: "db.t3.micro",
         allocated_storage: 20,
@@ -471,7 +471,7 @@ RSpec.describe "aws_db_instance resource function" do
   
   describe "RdsEngineConfigs helper module" do
     it "provides MySQL configuration" do
-      config = Pangea::Resources::AWS::RdsEngineConfigs.mysql(version: "8.0.35")
+      config = Pangea::Resources::AWS::Types::RdsEngineConfigs.mysql(version: "8.0.35")
       
       expect(config[:engine]).to eq("mysql")
       expect(config[:engine_version]).to eq("8.0.35")
@@ -479,7 +479,7 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "provides PostgreSQL configuration" do
-      config = Pangea::Resources::AWS::RdsEngineConfigs.postgresql(version: "15.3")
+      config = Pangea::Resources::AWS::Types::RdsEngineConfigs.postgresql(version: "15.3")
       
       expect(config[:engine]).to eq("postgres")
       expect(config[:engine_version]).to eq("15.3")
@@ -487,21 +487,21 @@ RSpec.describe "aws_db_instance resource function" do
     end
     
     it "provides Aurora MySQL configuration" do
-      config = Pangea::Resources::AWS::RdsEngineConfigs.aurora_mysql(version: "8.0.mysql_aurora.3.04.0")
+      config = Pangea::Resources::AWS::Types::RdsEngineConfigs.aurora_mysql(version: "8.0.mysql_aurora.3.04.0")
       
       expect(config[:engine]).to eq("aurora-mysql")
       expect(config[:engine_version]).to eq("8.0.mysql_aurora.3.04.0")
     end
     
     it "provides Aurora PostgreSQL configuration" do
-      config = Pangea::Resources::AWS::RdsEngineConfigs.aurora_postgresql(version: "15.3")
+      config = Pangea::Resources::AWS::Types::RdsEngineConfigs.aurora_postgresql(version: "15.3")
       
       expect(config[:engine]).to eq("aurora-postgresql")
       expect(config[:engine_version]).to eq("15.3")
     end
     
     it "provides MariaDB configuration" do
-      config = Pangea::Resources::AWS::RdsEngineConfigs.mariadb(version: "10.11.4")
+      config = Pangea::Resources::AWS::Types::RdsEngineConfigs.mariadb(version: "10.11.4")
       
       expect(config[:engine]).to eq("mariadb")
       expect(config[:engine_version]).to eq("10.11.4")

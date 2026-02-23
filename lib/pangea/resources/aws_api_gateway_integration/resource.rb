@@ -25,7 +25,7 @@ module Pangea
       # Creates backend integrations for API Gateway methods
       def aws_api_gateway_integration(name, attributes = {})
         # Validate and coerce attributes
-        integration_attrs = AWS::Types::Types::ApiGatewayIntegrationAttributes.new(attributes)
+        integration_attrs = Types::ApiGatewayIntegrationAttributes.new(attributes)
         
         # Generate Terraform resource block
         resource(:aws_api_gateway_integration, name) do
@@ -56,7 +56,7 @@ module Pangea
           end
           
           # Caching configuration
-          if integration_attrs.cache_key_parameters.any?
+          if integration_attrs.cache_key_parameters&.any?
             cache_key_parameters integration_attrs.cache_key_parameters
           end
           
@@ -65,21 +65,13 @@ module Pangea
           end
           
           # Request templates
-          if integration_attrs.request_templates.any?
-            request_templates do
-              integration_attrs.request_templates.each do |content_type, template|
-                send(content_type.tr('/', '_').tr('-', '_'), template)
-              end
-            end
+          if integration_attrs.request_templates&.any?
+            request_templates integration_attrs.request_templates
           end
-          
+
           # Request parameter mapping
-          if integration_attrs.request_parameters.any?
-            request_parameters do
-              integration_attrs.request_parameters.each do |integration_param, method_param|
-                send(integration_param.tr('.', '_').tr('-', '_'), method_param)
-              end
-            end
+          if integration_attrs.request_parameters&.any?
+            request_parameters integration_attrs.request_parameters
           end
           
           # Passthrough behavior

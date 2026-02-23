@@ -49,7 +49,7 @@ module Pangea
           vpc_peering_connection_id attrs.vpc_peering_connection_id if attrs.vpc_peering_connection_id
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

@@ -6,49 +6,49 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class RdsClusterAttributes < Dry::Struct
-          attribute :cluster_identifier, Resources::Types::String.optional
-          attribute :cluster_identifier_prefix, Resources::Types::String.optional
-          attribute :engine, Resources::Types::String.constrained(included_in: %w[aurora aurora-mysql aurora-postgresql])
-          attribute :engine_version, Resources::Types::String.optional
+        class RdsClusterAttributes < Pangea::Resources::BaseAttributes
+          attribute? :cluster_identifier, Resources::Types::String.optional
+          attribute? :cluster_identifier_prefix, Resources::Types::String.optional
+          attribute? :engine, Resources::Types::String.constrained(included_in: %w[aurora aurora-mysql aurora-postgresql]).optional
+          attribute? :engine_version, Resources::Types::String.optional
           attribute :engine_mode, Resources::Types::String.default('provisioned').constrained(included_in: %w[provisioned serverless parallelquery global])
-          attribute :database_name, Resources::Types::String.optional
-          attribute :master_username, Resources::Types::String.optional
-          attribute :master_password, Resources::Types::String.optional
+          attribute? :database_name, Resources::Types::String.optional
+          attribute? :master_username, Resources::Types::String.optional
+          attribute? :master_password, Resources::Types::String.optional
           attribute :manage_master_user_password, Resources::Types::Bool.default(true)
-          attribute :master_user_secret_kms_key_id, Resources::Types::String.optional
-          attribute :db_subnet_group_name, Resources::Types::String.optional
+          attribute? :master_user_secret_kms_key_id, Resources::Types::String.optional
+          attribute? :db_subnet_group_name, Resources::Types::String.optional
           attribute :vpc_security_group_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
-          attribute :availability_zones, Resources::Types::Array.of(Resources::Types::String).optional
-          attribute :db_cluster_parameter_group_name, Resources::Types::String.optional
-          attribute :port, Resources::Types::Integer.optional
+          attribute :availability_zones, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
+          attribute? :db_cluster_parameter_group_name, Resources::Types::String.optional
+          attribute? :port, Resources::Types::Integer.optional
           attribute :backup_retention_period, Resources::Types::Integer.default(7).constrained(gteq: 1, lteq: 35)
-          attribute :preferred_backup_window, Resources::Types::String.optional
-          attribute :preferred_maintenance_window, Resources::Types::String.optional
+          attribute? :preferred_backup_window, Resources::Types::String.optional
+          attribute? :preferred_maintenance_window, Resources::Types::String.optional
           attribute :copy_tags_to_snapshot, Resources::Types::Bool.default(true)
           attribute :storage_encrypted, Resources::Types::Bool.default(true)
-          attribute :kms_key_id, Resources::Types::String.optional
-          attribute :storage_type, Resources::Types::String.optional
-          attribute :allocated_storage, Resources::Types::Integer.optional
-          attribute :iops, Resources::Types::Integer.optional
-          attribute :global_cluster_identifier, Resources::Types::String.optional
-          attribute :scaling_configuration, Resources::Types::Hash.optional
+          attribute? :kms_key_id, Resources::Types::String.optional
+          attribute? :storage_type, Resources::Types::String.optional
+          attribute? :allocated_storage, Resources::Types::Integer.optional
+          attribute? :iops, Resources::Types::Integer.optional
+          attribute? :global_cluster_identifier, Resources::Types::String.optional
+          attribute :scaling_configuration, Resources::Types::Hash.default({}.freeze)
           attribute? :serverless_v2_scaling_configuration, ServerlessV2Scaling.optional
           attribute? :restore_to_point_in_time, RestoreToPointInTime.optional
-          attribute :snapshot_identifier, Resources::Types::String.optional
-          attribute :source_region, Resources::Types::String.optional
+          attribute? :snapshot_identifier, Resources::Types::String.optional
+          attribute? :source_region, Resources::Types::String.optional
           attribute :enabled_cloudwatch_logs_exports, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
           attribute :monitoring_interval, Resources::Types::Integer.default(0).constrained(gteq: 0, lteq: 60)
-          attribute :monitoring_role_arn, Resources::Types::String.optional
+          attribute? :monitoring_role_arn, Resources::Types::String.optional
           attribute :performance_insights_enabled, Resources::Types::Bool.default(false)
-          attribute :performance_insights_kms_key_id, Resources::Types::String.optional
+          attribute? :performance_insights_kms_key_id, Resources::Types::String.optional
           attribute :performance_insights_retention_period, Resources::Types::Integer.default(7).constrained(gteq: 7, lteq: 731)
-          attribute :backtrack_window, Resources::Types::Integer.optional.constrained(gteq: 0, lteq: 259_200)
+          attribute? :backtrack_window, Resources::Types::Integer.optional.constrained(gteq: 0, lteq: 259_200)
           attribute :apply_immediately, Resources::Types::Bool.default(false)
           attribute :auto_minor_version_upgrade, Resources::Types::Bool.default(true)
           attribute :deletion_protection, Resources::Types::Bool.default(false)
           attribute :skip_final_snapshot, Resources::Types::Bool.default(false)
-          attribute :final_snapshot_identifier, Resources::Types::String.optional
+          attribute? :final_snapshot_identifier, Resources::Types::String.optional
           attribute :enable_http_endpoint, Resources::Types::Bool.default(false)
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 

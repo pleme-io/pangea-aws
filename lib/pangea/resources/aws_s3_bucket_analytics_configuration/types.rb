@@ -47,7 +47,7 @@ module Pangea
                   bucket_account_id?: Resources::Types::String.constrained(format: /\A\d{12}\z/).optional,
                   format: Resources::Types::String.constrained(included_in: ['CSV']),
                   prefix?: Resources::Types::String.optional
-                })
+                }).lax
               })
             })
           })
@@ -56,14 +56,14 @@ module Pangea
           AnalyticsFilter = Resources::Types::Hash.schema({
             prefix?: Resources::Types::String.optional,
             tags?: Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).optional
-          })
+          }).lax
         end
 
         # S3 Bucket Analytics Configuration attributes
-        class S3BucketAnalyticsConfigurationAttributes < Dry::Struct
+        class S3BucketAnalyticsConfigurationAttributes < Pangea::Resources::BaseAttributes
           # Required attributes
-          attribute :bucket, Types::BucketName
-          attribute :name, Types::ConfigurationName
+          attribute? :bucket, Types::BucketName.optional
+          attribute? :name, Types::ConfigurationName.optional
           
           # Optional attributes
           attribute? :filter, Types::AnalyticsFilter.optional
@@ -83,16 +83,16 @@ module Pangea
           end
           
           def filter_by_prefix?
-            has_filter? && filter[:prefix]
+            has_filter? && filter&.dig(:prefix)
           end
           
           def filter_by_tags?
-            has_filter? && filter[:tags]
+            has_filter? && filter&.dig(:tags)
           end
           
           def export_bucket_arn
             return nil unless exports_data?
-            storage_class_analysis[:data_export][:destination][:s3_bucket_destination][:bucket_arn]
+            storage_class_analysis&.dig(:data_export)[:destination][:s3_bucket_destination][:bucket_arn]
           end
           
           def export_bucket_name
@@ -102,7 +102,7 @@ module Pangea
           
           def cross_account_export?
             return false unless exports_data?
-            destination = storage_class_analysis[:data_export][:destination][:s3_bucket_destination]
+            destination = storage_class_analysis&.dig(:data_export)[:destination][:s3_bucket_destination]
             destination[:bucket_account_id] != nil
           end
         end

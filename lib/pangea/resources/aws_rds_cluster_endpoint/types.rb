@@ -22,15 +22,15 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS RDS Cluster Endpoint resources
-        class RdsClusterEndpointAttributes < Dry::Struct
+        class RdsClusterEndpointAttributes < Pangea::Resources::BaseAttributes
           # Cluster identifier that the endpoint will belong to
-          attribute :cluster_identifier, Resources::Types::String
+          attribute? :cluster_identifier, Resources::Types::String.optional
 
           # Cluster endpoint identifier (unique within the cluster)
-          attribute :cluster_endpoint_identifier, Resources::Types::String
+          attribute? :cluster_endpoint_identifier, Resources::Types::String.optional
 
           # Custom endpoint type (READER, WRITER, ANY)
-          attribute :custom_endpoint_type, Resources::Types::String.constrained(included_in: ["READER", "WRITER", "ANY"])
+          attribute? :custom_endpoint_type, Resources::Types::String.constrained(included_in: ["READER", "WRITER", "ANY"]).optional
 
           # List of static cluster members to include in the endpoint
           # These members will always be included regardless of their role

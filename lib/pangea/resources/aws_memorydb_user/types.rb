@@ -21,9 +21,9 @@ module Pangea
       module Types
       # Type-safe attributes for AwsMemorydbUser resources
       # Provides a MemoryDB User resource.
-      class MemorydbUserAttributes < Dry::Struct
-        attribute :user_name, Resources::Types::String
-        attribute :access_string, Resources::Types::String
+      class MemorydbUserAttributes < Pangea::Resources::BaseAttributes
+        attribute? :user_name, Resources::Types::String.optional
+        attribute? :access_string, Resources::Types::String.optional
         attribute :authentication_mode, Resources::Types::Hash.default({}.freeze)
         
         # Tags to apply to the resource

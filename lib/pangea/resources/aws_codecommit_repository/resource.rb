@@ -46,7 +46,7 @@ module Pangea
           kms_key_id repo_attrs.kms_key_id if repo_attrs.kms_key_id
           
           # Apply tags
-          if repo_attrs.tags.any?
+          if repo_attrs.tags&.any?
             tags do
               repo_attrs.tags.each do |key, value|
                 public_send(key, value)

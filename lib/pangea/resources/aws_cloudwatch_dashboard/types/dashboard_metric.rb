@@ -22,11 +22,11 @@ module Pangea
     module AWS
       module Types
         # Widget metric configuration
-        class DashboardMetric < Dry::Struct
+        class DashboardMetric < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :namespace, Resources::Types::String
-          attribute :metric_name, Resources::Types::String
+          attribute? :namespace, Resources::Types::String.optional
+          attribute? :metric_name, Resources::Types::String.optional
           attribute :dimensions, Resources::Types::Hash.default({}.freeze)
           attribute :stat, Resources::Types::String.default('Average').enum(
             'Average', 'Maximum', 'Minimum', 'SampleCount', 'Sum',

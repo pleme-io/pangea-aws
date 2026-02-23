@@ -44,7 +44,7 @@ module Pangea
       #   })
       def aws_autoscaling_attachment(name, attributes = {})
         # Validate attributes using dry-struct
-        attach_attrs = Types::Types::AutoScalingAttachmentAttributes.new(attributes)
+        attach_attrs = Types::AutoScalingAttachmentAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_autoscaling_attachment, name) do

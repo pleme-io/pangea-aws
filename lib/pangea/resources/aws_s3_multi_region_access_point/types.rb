@@ -38,7 +38,7 @@ module Pangea
             bucket: Resources::Types::String,
             region: Resources::Types::AwsRegion,
             bucket_account_id?: Resources::Types::String.constrained(format: /\A\d{12}\z/)
-          })
+          }).lax
           
           # Public Access Block Configuration
           unless const_defined?(:PublicAccessBlockConfiguration)
@@ -47,29 +47,29 @@ module Pangea
             block_public_policy?: Resources::Types::Bool,
             ignore_public_acls?: Resources::Types::Bool,
             restrict_public_buckets?: Resources::Types::Bool
-          })
+          }).lax
           end
         end
 
         # S3 Multi-Region Access Point attributes with comprehensive validation
-        class S3MultiRegionAccessPointAttributes < Dry::Struct
+        class S3MultiRegionAccessPointAttributes < Pangea::Resources::BaseAttributes
           # Required attributes
-          attribute :details, Resources::Types::Hash.schema({
+          attribute? :details, Resources::Types::Hash.schema({
             name: Types::MultiRegionAccessPointName,
             public_access_block_configuration?: Types::PublicAccessBlockConfiguration.default({}.freeze),
             region: Resources::Types::Array.of(Types::RegionConfiguration).constrained(min_size: 1, max_size: 20)
-          })
+          }).lax
           
           # Optional attributes
           attribute? :account_id, Resources::Types::String.constrained(format: /\A\d{12}\z/).optional
           
           # Computed properties
           def access_point_name
-            details[:name]
+            details&.dig(:name)
           end
           
           def regions
-            details[:region]
+            details&.dig(:region)
           end
           
           def region_count
@@ -77,7 +77,7 @@ module Pangea
           end
           
           def has_public_access_block?
-            details[:public_access_block_configuration].any?
+            details&.dig(:public_access_block_configuration).any?
           end
           
           def cross_account_buckets?

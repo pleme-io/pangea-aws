@@ -21,19 +21,19 @@ module Pangea
     module AWS
       module Types
         # CodeArtifact Domain resource attributes with validation
-        class CodeArtifactDomainAttributes < Dry::Struct
+        class CodeArtifactDomainAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :domain, Resources::Types::String
+          attribute? :domain, Resources::Types::String.optional
           
           # Optional attributes
           attribute :encryption_key, Resources::Types::String.optional.default(nil)
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Validate attributes
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate domain name
             if attrs[:domain]

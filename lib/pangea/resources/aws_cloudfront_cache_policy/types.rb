@@ -19,36 +19,38 @@ require 'pangea/resources/types'
 module Pangea
   module Resources
     module AWS
-      class CloudFrontCachePolicyAttributes < Dry::Struct
+      module Types
+      class CloudFrontCachePolicyAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
         
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
         attribute :comment, Resources::Types::String.default('')
         attribute :default_ttl, Resources::Types::Integer.constrained(gteq: 0).default(86400)
         attribute :max_ttl, Resources::Types::Integer.constrained(gteq: 0).default(31536000)
         attribute :min_ttl, Resources::Types::Integer.constrained(gteq: 0).default(0)
-        attribute :parameters_in_cache_key_and_forwarded_to_origin, Resources::Types::Hash.schema(
+        attribute? :parameters_in_cache_key_and_forwarded_to_origin, Resources::Types::Hash.schema(
           enable_accept_encoding_brotli: Resources::Types::Bool.default(false),
           enable_accept_encoding_gzip: Resources::Types::Bool.default(false),
           headers_config: Resources::Types::Hash.schema(
             header_behavior: Resources::Types::String.constrained(included_in: ['none', 'whitelist']).default('none'),
             headers?: Resources::Types::Hash.schema(
               items?: Resources::Types::Array.of(Resources::Types::String).optional
-            ).optional
+            ).lax.optional
           ).default({ header_behavior: 'none' }),
           query_strings_config: Resources::Types::Hash.schema(
             query_string_behavior: Resources::Types::String.constrained(included_in: ['none', 'whitelist', 'allExcept', 'all']).default('none'),
             query_strings?: Resources::Types::Hash.schema(
               items?: Resources::Types::Array.of(Resources::Types::String).optional
-            ).optional
+            ).lax.optional
           ).default({ query_string_behavior: 'none' }),
           cookies_config: Resources::Types::Hash.schema(
             cookie_behavior: Resources::Types::String.constrained(included_in: ['none', 'whitelist', 'allExcept', 'all']).default('none'),
             cookies?: Resources::Types::Hash.schema(
               items?: Resources::Types::Array.of(Resources::Types::String).optional
-            ).optional
+            ).lax.optional
           ).default({ cookie_behavior: 'none' })
         )
+      end
       end
     end
   end

@@ -74,40 +74,32 @@ module Pangea
       #   })
       def aws_ecr_repository(name, attributes = {})
         # Validate attributes using dry-struct
-        repo_attrs = AWS::Types::Types::ECRRepositoryAttributes.new(attributes)
-        
+        repo_attrs = Types::ECRRepositoryAttributes.new(attributes)
+
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_ecr_repository, name) do
           # Repository name
           name repo_attrs.name
-          
+
           # Image tag mutability
           image_tag_mutability repo_attrs.image_tag_mutability
-          
-          # Image scanning configuration
-          image_scanning_configuration do
-            scan_on_push repo_attrs.scan_on_push_enabled?
-          end
-          
-          # Encryption configuration if specified
+
+          # Image scanning configuration (pass as hash, not block)
+          image_scanning_configuration({ scan_on_push: repo_attrs.scan_on_push_enabled? })
+
+          # Encryption configuration if specified (wrap in array for Terraform)
           if repo_attrs.encryption_configuration
-            encryption_configuration do
-              encryption_type repo_attrs.encryption_configuration[:encryption_type]
-              kms_key repo_attrs.encryption_configuration[:kms_key] if repo_attrs.encryption_configuration[:kms_key]
-            end
+            enc = repo_attrs.encryption_configuration
+            enc_hash = { encryption_type: enc[:encryption_type] }
+            enc_hash[:kms_key] = enc[:kms_key] if enc[:kms_key]
+            encryption_configuration [enc_hash]
           end
-          
+
           # Force delete
           force_delete repo_attrs.force_delete
-          
-          # Apply tags if present
-          if repo_attrs.tags.any?
-            tags do
-              repo_attrs.tags.each do |key, value|
-                public_send(key, value)
-              end
-            end
-          end
+
+          # Apply tags if present (pass as hash, not block)
+          tags repo_attrs.tags if repo_attrs.tags&.any?
         end
         
         # Return resource reference with available outputs

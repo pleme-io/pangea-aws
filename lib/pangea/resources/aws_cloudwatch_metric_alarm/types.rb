@@ -23,7 +23,7 @@ module Pangea
     module AWS
       module Types
         # CloudWatch Metric Alarm resource attributes with validation
-        class CloudWatchMetricAlarmAttributes < Dry::Struct
+        class CloudWatchMetricAlarmAttributes < Pangea::Resources::BaseAttributes
           require_relative 'types/metric_query'
           require_relative 'types/validation'
           require_relative 'types/instance_methods'
@@ -35,7 +35,7 @@ module Pangea
           # Required for traditional alarms
           attribute :alarm_name?, Pangea::Resources::Types::String.optional
           attribute :alarm_description?, Pangea::Resources::Types::String.optional
-          attribute :comparison_operator, Pangea::Resources::Types::String.constrained(
+          attribute? :comparison_operator, Pangea::Resources::Types::String.constrained(
             included_in: %w[
               GreaterThanOrEqualToThreshold
               GreaterThanThreshold
@@ -46,8 +46,8 @@ module Pangea
               GreaterThanUpperThreshold
             ]
           )
-          attribute :evaluation_periods, Pangea::Resources::Types::Integer.constrained(gteq: 1)
-          attribute :threshold?, Pangea::Resources::Types::Float.optional
+          attribute? :evaluation_periods, Pangea::Resources::Types::Integer.constrained(gteq: 1).optional
+          attribute :threshold?, Pangea::Resources::Types::Coercible::Float.optional
           attribute :threshold_metric_id?, Pangea::Resources::Types::String.optional
 
           # Traditional metric alarm attributes
@@ -89,7 +89,11 @@ module Pangea
           attribute :tags?, Pangea::Resources::Types::AwsTags.optional.default(proc { {} }.freeze)
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes.transform_keys(&:to_sym) : {}
+            # Symbolize tag keys to satisfy AwsTags type (Hash.map(Symbol, String))
+            if attrs[:tags].is_a?(::Hash)
+              attrs[:tags] = attrs[:tags].transform_keys(&:to_sym)
+            end
             Validation.validate_all(attrs)
             super(attrs)
           end

@@ -183,7 +183,7 @@ RSpec.describe "aws_api_gateway_rest_api terraform synthesis" do
     api_config = json_output.dig(:resource, :aws_api_gateway_rest_api, :binary_api)
     
     expect(api_config[:binary_media_types]).to be_a(Array)
-    expect(api_config[:binary_media_types]).to have(6).items
+    expect(api_config[:binary_media_types].size).to eq(6)
     expect(api_config[:binary_media_types]).to include("image/png", "multipart/form-data")
     expect(api_config[:minimum_compression_size]).to eq(5120)
   end
@@ -302,7 +302,7 @@ RSpec.describe "aws_api_gateway_rest_api terraform synthesis" do
     api_config = json_output.dig(:resource, :aws_api_gateway_rest_api, :tagged_api)
     
     expect(api_config[:tags]).to be_a(Hash)
-    expect(api_config[:tags]).to have(7).items
+    expect(api_config[:tags].size).to eq(7)
     expect(api_config[:tags][:Environment]).to eq("production")
     expect(api_config[:tags][:Owner]).to eq("platform-team@example.com")
   end
@@ -421,7 +421,7 @@ RSpec.describe "aws_api_gateway_rest_api terraform synthesis" do
     json_output = synthesizer.synthesis
     api_config = json_output.dig(:resource, :aws_api_gateway_rest_api, :document_upload_api)
     
-    expect(api_config[:binary_media_types]).to have(6).items
+    expect(api_config[:binary_media_types].size).to eq(6)
     expect(api_config[:binary_media_types]).to include("application/pdf", "multipart/form-data")
     expect(api_config[:minimum_compression_size]).to eq(10240)
   end
@@ -466,7 +466,7 @@ RSpec.describe "aws_api_gateway_rest_api terraform synthesis" do
     api_config = json_output.dig(:resource, :aws_api_gateway_rest_api, :internal_admin_api)
     
     expect(api_config[:endpoint_configuration][:types]).to eq(["PRIVATE"])
-    expect(api_config[:endpoint_configuration][:vpc_endpoint_ids]).to have(2).items
+    expect(api_config[:endpoint_configuration][:vpc_endpoint_ids].size).to eq(2)
     expect(api_config[:disable_execute_api_endpoint]).to eq(true)
     expect(api_config[:policy]).to include("aws:SourceVpce")
     expect(api_config[:tags][:Compliance]).to eq("pci-dss")

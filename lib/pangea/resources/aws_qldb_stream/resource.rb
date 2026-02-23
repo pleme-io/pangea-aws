@@ -50,8 +50,8 @@ module Pangea
           
           # Set Kinesis configuration
           kinesis_configuration do
-            stream_arn stream_attrs.kinesis_configuration[:stream_arn]
-            aggregation_enabled stream_attrs.kinesis_configuration[:aggregation_enabled]
+            stream_arn stream_attrs.kinesis_configuration&.dig(:stream_arn)
+            aggregation_enabled stream_attrs.kinesis_configuration&.dig(:aggregation_enabled)
           end
           
           # Set tags if provided

@@ -10,19 +10,19 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Route53 Record resources
-        class Route53RecordAttributes < Dry::Struct
+        class Route53RecordAttributes < Pangea::Resources::BaseAttributes
           include Route53RecordValidation
           include Route53RecordInstanceMethods
 
           transform_keys(&:to_sym)
           # Hosted zone ID where the record will be created
-          attribute :zone_id, Pangea::Resources::Types::String
+          attribute? :zone_id, Pangea::Resources::Types::String.optional
 
           # DNS record name (FQDN)
-          attribute :name, Pangea::Resources::Types::String
+          attribute? :name, Pangea::Resources::Types::String.optional
 
           # DNS record type
-          attribute :type, Pangea::Resources::Types::String.constrained(included_in: ["A", "AAAA", "CNAME", "MX", "NS", "PTR", "SOA", "SPF", "SRV", "TXT"])
+          attribute? :type, Pangea::Resources::Types::String.constrained(included_in: ["A", "AAAA", "CNAME", "MX", "NS", "PTR", "SOA", "SPF", "SRV", "TXT"]).optional
 
           # Time To Live (TTL) in seconds (required for simple records)
           attribute :ttl?, Pangea::Resources::Types::Integer.optional.constrained(gteq: 0, lteq: 2147483647)
@@ -45,24 +45,24 @@ module Pangea
           # Weighted routing policy
           attribute :weighted_routing_policy?, Pangea::Resources::Types::Hash.schema(
             weight: Pangea::Resources::Types::Integer.constrained(gteq: 0, lteq: 255)
-          ).optional
+          ).lax.optional
 
           # Latency routing policy
           attribute :latency_routing_policy?, Pangea::Resources::Types::Hash.schema(
             region: Pangea::Resources::Types::String
-          ).optional
+          ).lax.optional
 
           # Failover routing policy
           attribute :failover_routing_policy?, Pangea::Resources::Types::Hash.schema(
             type: Pangea::Resources::Types::String.constrained(included_in: ["PRIMARY", "SECONDARY"])
-          ).optional
+          ).lax.optional
 
           # Geolocation routing policy
           attribute :geolocation_routing_policy?, Pangea::Resources::Types::Hash.schema(
             continent?: Pangea::Resources::Types::String.optional,
             country?: Pangea::Resources::Types::String.optional,
             subdivision?: Pangea::Resources::Types::String.optional
-          ).optional
+          ).lax.optional
 
           # Geoproximity routing policy (requires Route53 Traffic Flow)
           attribute :geoproximity_routing_policy?, Pangea::Resources::Types::Hash.schema(
@@ -71,7 +71,7 @@ module Pangea
             coordinates?: Pangea::Resources::Types::Hash.schema(
               latitude: Pangea::Resources::Types::String,
               longitude: Pangea::Resources::Types::String
-            ).optional
+            ).lax.optional
           ).optional
 
           # Alias record configuration
@@ -79,19 +79,19 @@ module Pangea
             name: Pangea::Resources::Types::String,
             zone_id: Pangea::Resources::Types::String,
             evaluate_target_health: Pangea::Resources::Types::Bool.default(false)
-          ).optional
+          ).lax.optional
 
           # Custom validation
           def self.new(attributes = {})
             attrs = super(attributes)
 
-            # Validate zone ID format
-            unless attrs.zone_id.match?(/\A[A-Z0-9]+\z/)
+            # Validate zone ID format (skip for terraform references)
+            unless Pangea::Resources::BaseAttributes.terraform_reference?(attrs.zone_id) || attrs.zone_id.match?(/\A[A-Z0-9]+\z/)
               raise Dry::Struct::Error, "Invalid hosted zone ID format: #{attrs.zone_id}"
             end
 
-            # Validate record name format
-            unless attrs.valid_record_name?
+            # Validate record name format (skip for terraform references)
+            unless Pangea::Resources::BaseAttributes.terraform_reference?(attrs.name) || attrs.valid_record_name?
               raise Dry::Struct::Error, "Invalid DNS record name format: #{attrs.name}"
             end
 
@@ -131,9 +131,17 @@ module Pangea
               raise Dry::Struct::Error, "set_identifier is required when using routing policies"
             end
 
-            # Health check validation
+            # Validate weight range (lax schema doesn't enforce constraints)
+            if attrs.weighted_routing_policy
+              weight = attrs.weighted_routing_policy[:weight]
+              if weight && (weight < 0 || weight > 255)
+                raise Dry::Struct::Error, "Weighted routing policy weight must be between 0 and 255, got: #{weight}"
+              end
+            end
+
+            # Health check validation (skip for terraform references)
             if attrs.health_check_id
-              unless attrs.health_check_id.match?(/\A[a-f0-9\-]+\z/)
+              unless Pangea::Resources::BaseAttributes.terraform_reference?(attrs.health_check_id) || attrs.health_check_id.match?(/\A[a-z0-9\-]+\z/)
                 raise Dry::Struct::Error, "Invalid health check ID format: #{attrs.health_check_id}"
               end
             end

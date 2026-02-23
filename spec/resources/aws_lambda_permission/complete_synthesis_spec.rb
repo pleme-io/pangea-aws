@@ -29,19 +29,20 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
 
   # Test API Gateway permission synthesis
   it "synthesizes API Gateway permission correctly" do
+    _api_execution_arn = api_execution_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:api_permission, {
         action: "lambda:InvokeFunction",
         function_name: "api-handler",
         principal: "apigateway.amazonaws.com",
-        source_arn: api_execution_arn,
+        source_arn: _api_execution_arn,
         statement_id: "AllowAPIGatewayInvoke"
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "api_permission")
     
     expect(permission_config["action"]).to eq("lambda:InvokeFunction")
@@ -53,20 +54,22 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
 
   # Test S3 trigger permission synthesis
   it "synthesizes S3 trigger permission correctly" do
+    _function_arn = function_arn
+    _s3_bucket_arn = s3_bucket_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:s3_permission, {
         action: "lambda:InvokeFunction",
-        function_name: function_arn,
+        function_name: _function_arn,
         principal: "s3.amazonaws.com",
-        source_arn: s3_bucket_arn,
+        source_arn: _s3_bucket_arn,
         source_account: "123456789012",
         statement_id: "AllowS3BucketInvoke"
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "s3_permission")
     
     expect(permission_config["function_name"]).to eq(function_arn)
@@ -80,7 +83,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   it "synthesizes EventBridge rule permission correctly" do
     event_rule_arn = "arn:aws:events:us-east-1:123456789012:rule/scheduled-job"
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:event_permission, {
         action: "lambda:InvokeFunction",
@@ -91,7 +94,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "event_permission")
     
     expect(permission_config["function_name"]).to eq("scheduled-processor")
@@ -104,7 +107,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   it "synthesizes SNS topic permission correctly" do
     sns_topic_arn = "arn:aws:sns:us-east-1:123456789012:notification-topic"
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:sns_permission, {
         action: "lambda:InvokeFunction",
@@ -114,7 +117,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "sns_permission")
     
     expect(permission_config["function_name"]).to eq("notification-handler")
@@ -125,7 +128,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   # Test cross-account permission synthesis
   it "synthesizes cross-account permission correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:cross_account_permission, {
         action: "lambda:InvokeFunction",
@@ -135,7 +138,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "cross_account_permission")
     
     expect(permission_config["function_name"]).to eq("shared-api-function")
@@ -148,7 +151,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   it "synthesizes IAM role principal permission correctly" do
     iam_role_arn = "arn:aws:iam::987654321098:role/LambdaInvokerRole"
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:iam_permission, {
         action: "lambda:InvokeFunction",
@@ -158,7 +161,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "iam_permission")
     
     expect(permission_config["function_name"]).to eq("restricted-function")
@@ -168,20 +171,21 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
 
   # Test versioned function permission synthesis
   it "synthesizes versioned function permission correctly" do
+    _api_execution_arn = api_execution_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:versioned_permission, {
         action: "lambda:InvokeFunction",
         function_name: "versioned-api",
         principal: "apigateway.amazonaws.com",
         qualifier: "LIVE",
-        source_arn: api_execution_arn,
+        source_arn: _api_execution_arn,
         statement_id: "AllowAPIGatewayLiveInvoke"
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "versioned_permission")
     
     expect(permission_config["function_name"]).to eq("versioned-api")
@@ -194,7 +198,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   it "synthesizes CloudWatch Logs permission correctly" do
     log_group_arn = "arn:aws:logs:us-east-1:123456789012:log-group:/aws/apigateway/my-api"
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:logs_permission, {
         action: "lambda:InvokeFunction",
@@ -205,7 +209,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "logs_permission")
     
     expect(permission_config["function_name"]).to eq("log-processor")
@@ -217,7 +221,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   it "synthesizes Cognito trigger permission correctly" do
     user_pool_arn = "arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_abcdef123"
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:cognito_permission, {
         action: "lambda:InvokeFunction",
@@ -228,7 +232,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "cognito_permission")
     
     expect(permission_config["function_name"]).to eq("user-verification")
@@ -240,7 +244,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   it "synthesizes Lex bot permission correctly" do
     lex_bot_arn = "arn:aws:lex:us-east-1:123456789012:bot/customer-service"
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:lex_permission, {
         action: "lambda:InvokeFunction",
@@ -251,7 +255,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "lex_permission")
     
     expect(permission_config["function_name"]).to eq("lex-fulfillment")
@@ -263,7 +267,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   # Test organizational permission synthesis
   it "synthesizes organizational permission correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:org_permission, {
         action: "lambda:InvokeFunction",
@@ -274,7 +278,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "org_permission")
     
     expect(permission_config["function_name"]).to eq("org-shared-function")
@@ -286,7 +290,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   # Test ALB function URL permission synthesis
   it "synthesizes ALB function URL permission correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:alb_permission, {
         action: "lambda:InvokeFunction",
@@ -297,7 +301,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "alb_permission")
     
     expect(permission_config["function_name"]).to eq("web-app-function")
@@ -310,7 +314,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   it "synthesizes Step Functions permission correctly" do
     state_machine_arn = "arn:aws:states:us-east-1:123456789012:stateMachine:order-processing"
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:stepfunctions_permission, {
         action: "lambda:InvokeFunction",
@@ -320,7 +324,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "stepfunctions_permission")
     
     expect(permission_config["function_name"]).to eq("order-validator")
@@ -332,7 +336,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   it "synthesizes IoT rule permission correctly" do
     iot_rule_arn = "arn:aws:iot:us-east-1:123456789012:rule/device-telemetry"
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:iot_permission, {
         action: "lambda:InvokeFunction",
@@ -343,7 +347,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "iot_permission")
     
     expect(permission_config["function_name"]).to eq("iot-data-processor")
@@ -355,7 +359,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   # Test Config rule permission synthesis
   it "synthesizes Config rule permission correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:config_permission, {
         action: "lambda:InvokeFunction",
@@ -366,7 +370,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "config_permission")
     
     expect(permission_config["function_name"]).to eq("compliance-checker")
@@ -378,7 +382,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   # Test minimal permission synthesis (only required fields)
   it "synthesizes minimal permission without optional fields" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:minimal_permission, {
         action: "lambda:InvokeFunction",
@@ -387,7 +391,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "minimal_permission")
     
     # Required fields should be present
@@ -409,7 +413,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   it "synthesizes SQS queue permission correctly" do
     sqs_queue_arn = "arn:aws:sqs:us-east-1:123456789012:processing-queue"
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:sqs_permission, {
         action: "lambda:InvokeFunction",
@@ -420,7 +424,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "sqs_permission")
     
     expect(permission_config["function_name"]).to eq("queue-processor")
@@ -431,7 +435,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   # Test ALB target group permission synthesis
   it "synthesizes ALB target group permission correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:alb_target_permission, {
         action: "lambda:InvokeFunction",
@@ -441,7 +445,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "alb_target_permission")
     
     expect(permission_config["function_name"]).to eq("web-backend")
@@ -452,7 +456,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   # Test MSK (Kafka) permission synthesis
   it "synthesizes MSK permission correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:kafka_permission, {
         action: "lambda:InvokeFunction",
@@ -462,7 +466,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "kafka_permission")
     
     expect(permission_config["function_name"]).to eq("kafka-consumer")
@@ -473,7 +477,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   # Test wildcard action permission synthesis
   it "synthesizes wildcard action permission correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:admin_permission, {
         action: "lambda:*",
@@ -483,7 +487,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "admin_permission")
     
     expect(permission_config["action"]).to eq("lambda:*")
@@ -495,7 +499,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   # Test AWS Backup permission synthesis
   it "synthesizes AWS Backup permission correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:backup_permission, {
         action: "lambda:InvokeFunction",
@@ -505,7 +509,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "backup_permission")
     
     expect(permission_config["function_name"]).to eq("backup-notification")
@@ -516,7 +520,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
   # Test MediaConvert job permission synthesis
   it "synthesizes MediaConvert permission correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_lambda_permission(:mediaconvert_permission, {
         action: "lambda:InvokeFunction",
@@ -526,7 +530,7 @@ RSpec.describe "aws_lambda_permission terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     permission_config = json_output.dig("resource", "aws_lambda_permission", "mediaconvert_permission")
     
     expect(permission_config["function_name"]).to eq("video-processor")

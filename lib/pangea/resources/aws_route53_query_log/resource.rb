@@ -38,7 +38,7 @@ module Pangea
           destination_arn query_log_attrs.destination_arn
           
           # Apply tags if present
-          if query_log_attrs.tags.any?
+          if query_log_attrs.tags&.any?
             tags do
               query_log_attrs.tags.each do |key, value|
                 public_send(key, value)

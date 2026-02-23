@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsLaunchConfiguration resources
       # Manages aws launch configuration resources.
-      class AwsLaunchConfigurationAttributes < Dry::Struct
+      class AwsLaunchConfigurationAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_launch_configuration
         
         # Tags to apply to the resource

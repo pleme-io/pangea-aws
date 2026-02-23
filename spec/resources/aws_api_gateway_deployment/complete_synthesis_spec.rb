@@ -15,87 +15,9 @@
 
 
 require 'spec_helper'
+require 'terraform-synthesizer'
 require 'json'
 
-# Mock TerraformSynthesizer for testing
-class MockTerraformSynthesizer
-  def initialize
-    @resources = {}
-    @data_sources = {}
-    @variables = {}
-    @outputs = {}
-  end
-
-  def resource(type, name)
-    @resources["#{type}.#{name}"] = { type: type, name: name, attributes: {} }
-    resource_builder = MockResourceBuilder.new(@resources["#{type}.#{name}"][:attributes])
-    yield resource_builder if block_given?
-  end
-  
-  def data(type, name)
-    @data_sources["#{type}.#{name}"] = { type: type, name: name, attributes: {} }
-    data_builder = MockResourceBuilder.new(@data_sources["#{type}.#{name}"][:attributes])
-    yield data_builder if block_given?
-  end
-  
-  def variable(name)
-    @variables[name.to_s] = { name: name, attributes: {} }
-    variable_builder = MockResourceBuilder.new(@variables[name.to_s][:attributes])
-    yield variable_builder if block_given?
-  end
-  
-  def output(name)
-    @outputs[name.to_s] = { name: name, attributes: {} }
-    output_builder = MockResourceBuilder.new(@outputs[name.to_s][:attributes])
-    yield output_builder if block_given?
-  end
-
-  def synthesis
-    result = {}
-    
-    if @resources.any?
-      result["resource"] = {}
-      @resources.each do |key, resource_data|
-        type = resource_data[:type].to_s
-        name = resource_data[:name].to_s
-        result["resource"][type] ||= {}
-        result["resource"][type][name] = resource_data[:attributes]
-      end
-    end
-    
-    if @data_sources.any?
-      result["data"] = {}
-      @data_sources.each do |key, data_source|
-        type = data_source[:type].to_s
-        name = data_source[:name].to_s
-        result["data"][type] ||= {}
-        result["data"][type][name] = data_source[:attributes]
-      end
-    end
-    
-    if @variables.any?
-      result["variable"] = {}
-      @variables.each do |key, variable|
-        name = variable[:name].to_s
-        result["variable"][name] = variable[:attributes]
-      end
-    end
-    
-    if @outputs.any?
-      result["output"] = {}
-      @outputs.each do |key, output|
-        name = output[:name].to_s
-        result["output"][name] = output[:attributes]
-      end
-    end
-    
-    result
-  end
-  
-  def get_resources
-    @resources
-  end
-end
 
 class MockResourceBuilder
   def initialize(attributes)
@@ -122,16 +44,12 @@ end
 RSpec.describe 'aws_api_gateway_deployment synthesis' do
   include Pangea::Resources::AWS
   
-  let(:synthesizer) { MockTerraformSynthesizer.new }
-
-  before do
-    # Stub the TerraformSynthesizer constant to use our mock
-    stub_const('TerraformSynthesizer', MockTerraformSynthesizer)
-  end
+  let(:synthesizer) { TerraformSynthesizer.new }
 
   describe 'basic synthesis' do
     it 'synthesizes basic deployment correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:basic, {
           rest_api_id: 'api-abc123',
           description: 'Basic deployment'
@@ -152,6 +70,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
 
     it 'synthesizes deployment with stage correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:with_stage, {
           rest_api_id: 'api-abc123',
           stage_name: 'production',
@@ -171,6 +90,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
 
     it 'synthesizes deployment with variables correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:with_vars, {
           rest_api_id: 'api-abc123',
           stage_name: 'production',
@@ -193,6 +113,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
 
     it 'synthesizes deployment with triggers correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:with_triggers, {
           rest_api_id: 'api-abc123',
           triggers: {
@@ -216,6 +137,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
   describe 'canary deployment synthesis' do
     it 'synthesizes basic canary deployment correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:canary_basic, {
           rest_api_id: 'api-abc123',
           stage_name: 'production',
@@ -234,6 +156,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
 
     it 'synthesizes canary deployment with variable overrides correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:canary_overrides, {
           rest_api_id: 'api-abc123',
           stage_name: 'production',
@@ -258,6 +181,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
 
     it 'synthesizes canary deployment with cache settings correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:canary_cache, {
           rest_api_id: 'api-abc123',
           stage_name: 'production',
@@ -277,6 +201,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
 
     it 'synthesizes comprehensive canary deployment correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:comprehensive_canary, {
           rest_api_id: 'api-abc123',
           stage_name: 'production',
@@ -332,6 +257,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
   describe 'environment-specific deployments' do
     it 'synthesizes development deployment correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:development, {
           rest_api_id: 'api-abc123',
           stage_name: 'dev',
@@ -355,6 +281,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
 
     it 'synthesizes staging deployment correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:staging, {
           rest_api_id: 'api-abc123',
           stage_name: 'staging',
@@ -381,6 +308,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
 
     it 'synthesizes production deployment correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:production, {
           rest_api_id: 'api-abc123',
           stage_name: 'prod',
@@ -406,6 +334,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
   describe 'blue-green deployment synthesis' do
     it 'synthesizes blue-green deployment correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:blue_green, {
           rest_api_id: 'api-abc123',
           stage_name: 'production',
@@ -432,6 +361,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
   describe 'deployment without stage synthesis' do
     it 'synthesizes deployment-only resource correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:deployment_only, {
           rest_api_id: 'api-abc123',
           description: 'Deployment snapshot without stage creation'
@@ -453,6 +383,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
   describe 'complex trigger scenarios' do
     it 'synthesizes deployment with complex triggers correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:complex_triggers, {
           rest_api_id: 'api-abc123',
           stage_name: 'production',
@@ -485,6 +416,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
   describe 'template structure validation' do
     it 'creates valid Terraform JSON structure' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:structure_test, {
           rest_api_id: 'api-abc123'
         })
@@ -520,6 +452,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
 
     it 'serializes to valid JSON' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_deployment(:json_test, {
           rest_api_id: 'api-abc123',
           stage_name: 'production',
@@ -545,6 +478,7 @@ RSpec.describe 'aws_api_gateway_deployment synthesis' do
   describe 'multi-deployment scenarios' do
     it 'synthesizes multiple deployments correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         # Development deployment
         aws_api_gateway_deployment(:dev, {
           rest_api_id: 'api-abc123',

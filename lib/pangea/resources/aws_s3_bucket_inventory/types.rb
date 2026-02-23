@@ -22,15 +22,15 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS S3 Bucket Inventory Configuration resources
-      class S3BucketInventoryAttributes < Dry::Struct
+      class S3BucketInventoryAttributes < Pangea::Resources::BaseAttributes
         include S3BucketInventory::Helpers
         transform_keys(&:to_sym)
 
         # The name of the bucket to configure inventory for
-        attribute :bucket, Resources::Types::String
+        attribute? :bucket, Resources::Types::String.optional
 
         # Unique name for the inventory configuration
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
 
         # Whether the inventory configuration is enabled
         attribute :enabled, Resources::Types::Bool.default(true)
@@ -48,7 +48,7 @@ module Pangea
         attribute? :prefix, Resources::Types::String.optional
 
         # Destination bucket configuration for inventory reports
-        attribute :destination, Resources::Types::Hash.schema(
+        attribute? :destination, Resources::Types::Hash.schema(
           bucket: Resources::Types::String,
           prefix?: Resources::Types::String.optional,
           account_id?: Resources::Types::String.optional,
@@ -56,15 +56,15 @@ module Pangea
           encryption?: Resources::Types::Hash.schema(
             sse_s3?: Resources::Types::Hash.schema(
               enabled: Resources::Types::Bool.default(true)
-            ).optional,
+            ).lax.optional,
             sse_kms?: Resources::Types::Hash.schema(
               key_id: Resources::Types::String
-            ).optional
+            ).lax.optional
           ).optional
         )
 
         # Optional fields to include in inventory reports
-        attribute :optional_fields, Resources::Types::Array.of(
+        attribute? :optional_fields, Resources::Types::Array.of(
           Resources::Types::String.constrained(included_in: ['Size',
             'LastModifiedDate', 
             'StorageClass',
@@ -81,34 +81,34 @@ module Pangea
         ).default([].freeze)
 
         # Schedule configuration for inventory generation
-        attribute :schedule, Resources::Types::Hash.schema(
+        attribute? :schedule, Resources::Types::Hash.schema(
           frequency: Resources::Types::String.constrained(included_in: ['Daily', 'Weekly']).default('Weekly'),
           day_of_week?: Resources::Types::String.constrained(included_in: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 
             'Thursday', 'Friday', 'Saturday']).optional
-        ).default({ frequency: 'Weekly' })
+        ).lax.default({ frequency: 'Weekly' })
 
         # Custom validation
         def self.new(attributes = {})
           attrs = super(attributes)
 
           # Validate destination bucket format matches top-level format
-          if attrs.destination[:format] && attrs.destination[:format] != attrs.format
-            raise Dry::Struct::Error, "Destination format (#{attrs.destination[:format]}) must match inventory format (#{attrs.format})"
+          if attrs.destination&.dig(:format) && attrs.destination&.dig(:format) != attrs.format
+            raise Dry::Struct::Error, "Destination format (#{attrs.destination&.dig(:format)}) must match inventory format (#{attrs.format})"
           end
 
           # Validate KMS encryption has key_id
-          if attrs.destination[:encryption]&.dig(:sse_kms) && 
-             !attrs.destination[:encryption][:sse_kms][:key_id]
+          if attrs.destination&.dig(:encryption)&.dig(:sse_kms) && 
+             !attrs.destination&.dig(:encryption)[:sse_kms][:key_id]
             raise Dry::Struct::Error, "KMS encryption requires key_id"
           end
 
           # Validate schedule consistency
-          if attrs.schedule[:frequency] != attrs.frequency
+          if attrs.schedule&.dig(:frequency) != attrs.frequency
             raise Dry::Struct::Error, "Schedule frequency must match top-level frequency"
           end
 
           # Validate day_of_week only for Weekly frequency
-          if attrs.frequency == 'Daily' && attrs.schedule[:day_of_week]
+          if attrs.frequency == 'Daily' && attrs.schedule&.dig(:day_of_week)
             raise Dry::Struct::Error, "day_of_week cannot be specified for Daily frequency"
           end
 
@@ -120,7 +120,7 @@ module Pangea
           end
 
           # Validate destination bucket ARN format if it looks like an ARN
-          dest_bucket = attrs.destination[:bucket]
+          dest_bucket = attrs.destination&.dig(:bucket)
           if dest_bucket.start_with?('arn:')
             unless dest_bucket.match?(/^arn:aws:s3:::[\w\-\.]+$/)
               raise Dry::Struct::Error, "Invalid destination S3 bucket ARN format"

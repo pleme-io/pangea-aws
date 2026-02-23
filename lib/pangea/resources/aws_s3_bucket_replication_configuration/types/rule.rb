@@ -35,28 +35,28 @@ module Pangea
           # Delete marker replication
           DeleteMarkerReplication = Resources::Types::Hash.schema(
             status: StatusDefaultDisabled
-          )
+          ).lax
 
           # Existing object replication
           ExistingObjectReplication = Resources::Types::Hash.schema(
             status: StatusDefaultDisabled
-          )
+          ).lax
 
           # Replica modifications in source selection
           ReplicaModifications = Resources::Types::Hash.schema(
             status: StatusDefaultDisabled
-          )
+          ).lax
 
           # SSE KMS encrypted objects in source selection
           SseKmsEncryptedObjects = Resources::Types::Hash.schema(
             status: StatusDefaultDisabled
-          )
+          ).lax
 
           # Source selection criteria
           SourceSelectionCriteria = Resources::Types::Hash.schema(
             replica_modifications?: ReplicaModifications.optional,
             sse_kms_encrypted_objects?: SseKmsEncryptedObjects.optional
-          )
+          ).lax
 
           # Complete rule schema
           Rule = Resources::Types::Hash.schema(
@@ -68,7 +68,7 @@ module Pangea
             delete_marker_replication?: DeleteMarkerReplication.optional,
             existing_object_replication?: ExistingObjectReplication.optional,
             source_selection_criteria?: SourceSelectionCriteria.optional
-          )
+          ).lax
 
           # Array of rules type
           Rules = Resources::Types::Array.of(Rule).constrained(min_size: 1)

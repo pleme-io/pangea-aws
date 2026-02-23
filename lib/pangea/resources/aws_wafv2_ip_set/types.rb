@@ -21,19 +21,19 @@ module Pangea
     module AWS
       module Types
         # WAF v2 IP Set attributes with validation
-        class WafV2IpSetAttributes < Dry::Struct
+        class WafV2IpSetAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
-          attribute :scope, Resources::Types::WafV2Scope
-          attribute :ip_address_version, Resources::Types::WafV2IpAddressVersion
-          attribute :description, Resources::Types::String.constrained(max_size: 256).optional
-          attribute :addresses, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 10000)
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/).optional
+          attribute? :scope, Resources::Types::WafV2Scope.optional
+          attribute? :ip_address_version, Resources::Types::WafV2IpAddressVersion.optional
+          attribute? :description, Resources::Types::String.constrained(max_size: 256).optional
+          attribute? :addresses, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 10000).optional
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate IP addresses match the specified version
             if attrs[:addresses] && attrs[:ip_address_version]
@@ -67,7 +67,7 @@ module Pangea
           end
           
           def has_individual_ips?
-            addresses.any? { |addr| !addr.include?('/') }
+            addresses.any? { |addr| !addr.include?('/') || addr.end_with?('/32') || addr.end_with?('/128') }
           end
           
           def estimated_ip_count

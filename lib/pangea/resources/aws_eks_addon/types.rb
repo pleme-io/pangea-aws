@@ -21,7 +21,7 @@ module Pangea
     module AWS
       module Types
         # EKS addon attributes with validation
-        class EksAddonAttributes < Dry::Struct
+        class EksAddonAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Supported EKS add-ons and their configuration
@@ -85,8 +85,8 @@ module Pangea
           RESOLVE_CONFLICTS_OPTIONS = %w[OVERWRITE NONE PRESERVE].freeze
           
           # Required attributes
-          attribute :cluster_name, Pangea::Resources::Types::String
-          attribute :addon_name, Pangea::Resources::Types::String.constrained(included_in: SUPPORTED_ADDONS.keys)
+          attribute? :cluster_name, Pangea::Resources::Types::String.optional
+          attribute? :addon_name, Pangea::Resources::Types::String.constrained(included_in: SUPPORTED_ADDONS.keys).optional
           
           # Optional attributes
           attribute :addon_version, Pangea::Resources::Types::String.optional.default(nil)
@@ -102,7 +102,7 @@ module Pangea
           
           # Validate version if specified
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate addon version if specified
             if attrs[:addon_version] && attrs[:addon_name]
@@ -117,8 +117,8 @@ module Pangea
             if attrs[:configuration_values]
               begin
                 require 'json'
-                JSON.parse(attrs[:configuration_values])
-              rescue JSON::ParserError => e
+                ::JSON.parse(attrs[:configuration_values])
+              rescue ::JSON::ParserError => e
                 raise Dry::Struct::Error, "configuration_values must be valid JSON: #{e.message}"
               end
             end

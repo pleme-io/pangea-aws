@@ -21,9 +21,9 @@ module Pangea
       module Types
       # Type-safe attributes for AwsTimestreamTable resources
       # Provides a Timestream table resource for storing time series data.
-      class TimestreamTableAttributes < Dry::Struct
-        attribute :database_name, Resources::Types::String
-        attribute :table_name, Resources::Types::String
+      class TimestreamTableAttributes < Pangea::Resources::BaseAttributes
+        attribute? :database_name, Resources::Types::String.optional
+        attribute? :table_name, Resources::Types::String.optional
         attribute :retention_properties, Resources::Types::Hash.default({}.freeze).optional
         attribute :magnetic_store_write_properties, Resources::Types::Hash.default({}.freeze).optional
         attribute :schema, Resources::Types::Hash.default({}.freeze).optional

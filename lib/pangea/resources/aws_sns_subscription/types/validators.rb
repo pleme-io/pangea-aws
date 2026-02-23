@@ -28,24 +28,24 @@ module Pangea
           end
 
           def self.validate_filter_policy(policy)
-            filter_doc = JSON.parse(policy)
-            raise Dry::Struct::Error, 'filter_policy must be a JSON object' unless filter_doc.is_a?(Hash)
-          rescue JSON::ParserError => e
+            filter_doc = ::JSON.parse(policy)
+            raise Dry::Struct::Error, 'filter_policy must be a JSON object' unless filter_doc.is_a?(::Hash)
+          rescue ::JSON::ParserError => e
             raise Dry::Struct::Error, "filter_policy must be valid JSON: #{e.message}"
           end
 
           def self.validate_redrive_policy(policy)
-            redrive_doc = JSON.parse(policy)
-            unless redrive_doc.is_a?(Hash) && redrive_doc['deadLetterTargetArn']
+            redrive_doc = ::JSON.parse(policy)
+            unless redrive_doc.is_a?(::Hash) && redrive_doc['deadLetterTargetArn']
               raise Dry::Struct::Error, 'redrive_policy must contain deadLetterTargetArn'
             end
-          rescue JSON::ParserError => e
+          rescue ::JSON::ParserError => e
             raise Dry::Struct::Error, "redrive_policy must be valid JSON: #{e.message}"
           end
 
           def self.validate_delivery_policy(policy)
-            JSON.parse(policy)
-          rescue JSON::ParserError => e
+            ::JSON.parse(policy)
+          rescue ::JSON::ParserError => e
             raise Dry::Struct::Error, "delivery_policy must be valid JSON: #{e.message}"
           end
 

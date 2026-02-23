@@ -42,7 +42,7 @@ module Pangea
           target_table_name attrs.target_table_name if attrs.target_table_name
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

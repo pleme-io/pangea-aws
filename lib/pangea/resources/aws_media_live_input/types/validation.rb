@@ -56,8 +56,8 @@ module Pangea
             end
 
             def self.validate_vpc_config(attrs)
-              return unless attrs.vpc[:subnet_ids] && attrs.vpc[:subnet_ids].any?
-              return if attrs.vpc[:security_group_ids] && attrs.vpc[:security_group_ids].any?
+              return unless attrs.vpc&.dig(:subnet_ids) && attrs.vpc&.dig(:subnet_ids).any?
+              return if attrs.vpc&.dig(:security_group_ids) && attrs.vpc&.dig(:security_group_ids).any?
 
               raise Dry::Struct::Error, 'VPC inputs require security group IDs'
             end

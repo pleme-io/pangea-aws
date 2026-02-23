@@ -38,7 +38,7 @@ module Pangea
     #     allow_auto_registration: true,
     #     ca_certificate_pem: ca_cert_content,
     #     registration_config: {
-    #       template_body: JSON.generate({
+    #       template_body: ::JSON.generate({
     #         "templateBody": policy_template,
     #         "deviceTemplate": device_template,
     #         "roleArn": provisioning_role_arn

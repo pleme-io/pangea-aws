@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
         # NAT Gateway resource attributes with validation
-        class NatGatewayAttributes < Dry::Struct
+        class NatGatewayAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required: Must be in a public subnet
-          attribute :subnet_id, Resources::Types::String
+          attribute? :subnet_id, Resources::Types::String.optional
           
           # Optional: Elastic IP allocation ID for public NAT gateway
           # If not provided, AWS will create a private NAT gateway
@@ -34,20 +34,25 @@ module Pangea
           # Optional: Connectivity type (public or private)
           attribute :connectivity_type, Resources::Types::String.default('public').enum('public', 'private')
           
-          attribute :tags, Resources::Types::AwsTags
-          
+          attribute :tags, Resources::Types::AwsTags.default({}.freeze)
+
           # Validate consistency between allocation_id and connectivity_type
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
-            
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
+
+            # Require subnet_id
+            unless attrs.key?(:subnet_id) || attrs.key?('subnet_id')
+              raise Dry::Struct::Error, "subnet_id is required for NAT gateway"
+            end
+
             # If allocation_id is provided, connectivity_type must be public
             if attrs[:allocation_id] && attrs[:connectivity_type] == 'private'
               raise Dry::Struct::Error, "allocation_id can only be used with public NAT gateways"
             end
-            
+
             # If connectivity_type is public but no allocation_id, that's ok (AWS will allocate)
             # But we should warn in computed properties
-            
+
             super(attrs)
           end
           

@@ -41,7 +41,7 @@ module Pangea
           engine_version attrs.engine_version if attrs.engine_version
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

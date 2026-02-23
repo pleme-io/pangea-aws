@@ -24,15 +24,15 @@ module Pangea
     module AWS
       module Types
         # API Gateway Stage attributes with validation
-        class ApiGatewayStageAttributes < Dry::Struct
+        class ApiGatewayStageAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           VALID_CACHE_SIZES = %w[0.5 1.6 6.1 13.5 28.4 58.2 118 237].freeze
 
           # Core attributes
-          attribute :rest_api_id, Pangea::Resources::Types::String
-          attribute :deployment_id, Pangea::Resources::Types::String
-          attribute :stage_name, Pangea::Resources::Types::String
+          attribute? :rest_api_id, Pangea::Resources::Types::String.optional
+          attribute? :deployment_id, Pangea::Resources::Types::String.optional
+          attribute? :stage_name, Pangea::Resources::Types::String.optional
 
           # Stage configuration
           attribute :description, Pangea::Resources::Types::String.optional.default(nil)
@@ -40,11 +40,11 @@ module Pangea
 
           # Caching
           attribute :cache_cluster_enabled, Pangea::Resources::Types::Bool.default(false)
-          attribute :cache_cluster_size, Pangea::Resources::Types::String
+          attribute? :cache_cluster_size, Pangea::Resources::Types::String.optional
             .constrained(included_in: VALID_CACHE_SIZES).optional.default(nil)
 
           # Stage variables
-          attribute :variables, Pangea::Resources::Types::Hash.map(
+          attribute? :variables, Pangea::Resources::Types::Hash.map(
             Pangea::Resources::Types::String, Pangea::Resources::Types::String
           ).default({}.freeze)
 
@@ -68,11 +68,11 @@ module Pangea
           attribute :client_certificate_id, Pangea::Resources::Types::String.optional.default(nil)
 
           # Tags
-          attribute :tags, Pangea::Resources::Types::AwsTags
+          attribute? :tags, Pangea::Resources::Types::AwsTags.optional
 
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             ApiGatewayStageValidators.validate!(attrs)
             super(attrs)
           end

@@ -21,25 +21,25 @@ module Pangea
   module Resources
     module AwsIotanalyticsDatasetTypes
       # Trigger configuration for dataset content generation
-      class Trigger < Dry::Struct
+      class Trigger < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # Schedule trigger configuration
-        class Schedule < Dry::Struct
+        class Schedule < Pangea::Resources::BaseAttributes
           schema schema.strict
 
           # Schedule expression (cron or rate)
-          attribute :schedule_expression, Resources::Types::String
+          attribute? :schedule_expression, Resources::Types::String.optional
         end
 
         attribute? :schedule, Schedule.optional
 
         # Triggering dataset configuration
-        class TriggeringDataset < Dry::Struct
+        class TriggeringDataset < Pangea::Resources::BaseAttributes
           schema schema.strict
 
           # Name of triggering dataset
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
         end
 
         attribute? :triggering_dataset, TriggeringDataset.optional

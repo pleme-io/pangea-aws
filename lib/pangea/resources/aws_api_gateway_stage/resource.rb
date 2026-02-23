@@ -29,7 +29,7 @@ module Pangea
         extend ApiGatewayStageResource::Helpers
 
         # Validate attributes using dry-struct
-        stage_attrs = Types::Types::ApiGatewayStageAttributes.new(attributes)
+        stage_attrs = Types::ApiGatewayStageAttributes.new(attributes)
 
         # Generate the Terraform resource
         generate_stage_resource(name, stage_attrs)

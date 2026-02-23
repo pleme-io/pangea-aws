@@ -27,13 +27,13 @@ module Pangea
           TagFilter = Resources::Types::Hash.schema(
             key: Resources::Types::String,
             value: Resources::Types::String
-          )
+          ).lax
 
           # And condition filter schema
           AndFilter = Resources::Types::Hash.schema(
             prefix?: Resources::Types::String.optional,
             tags?: Resources::Types::Hash.optional
-          )
+          ).lax
 
           # Complete filter schema
           unless const_defined?(:Filter)
@@ -41,7 +41,7 @@ module Pangea
             prefix?: Resources::Types::String.optional,
             tag?: TagFilter.optional,
             and?: AndFilter.optional
-          )
+          ).lax
           end
 
 

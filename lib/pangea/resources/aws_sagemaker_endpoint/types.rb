@@ -25,27 +25,27 @@ module Pangea
     module AWS
       module Types
         # SageMaker Endpoint attributes with deployment and monitoring validation
-        class SageMakerEndpointAttributes < Dry::Struct
+        class SageMakerEndpointAttributes < Pangea::Resources::BaseAttributes
           include SageMakerEndpointComputedProperties
           include SageMakerEndpointDeploymentAnalysis
 
           transform_keys(&:to_sym)
 
           # Required attributes
-          attribute :endpoint_name, Resources::Types::String.constrained(
+          attribute? :endpoint_name, Resources::Types::String.constrained(
             min_size: 1,
             max_size: 63,
             format: /\A[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]\z/
           )
-          attribute :endpoint_config_name, Resources::Types::String
+          attribute? :endpoint_config_name, Resources::Types::String.optional
 
           # Optional attributes
-          attribute :deployment_config, SageMakerDeploymentConfig.optional
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :deployment_config, SageMakerDeploymentConfig.optional
+          attribute? :tags, Resources::Types::AwsTags.optional
 
           # Custom validation for SageMaker Endpoint
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate endpoint name doesn't conflict with reserved names
             if attrs[:endpoint_name]

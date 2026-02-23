@@ -39,7 +39,7 @@ module Pangea
           description pg_attrs.description
           
           # Parameters configuration
-          if pg_attrs.parameter.any?
+          if pg_attrs.parameter&.any?
             pg_attrs.parameter.each do |param|
               parameter do
                 name param.name
@@ -50,7 +50,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if pg_attrs.tags.any?
+          if pg_attrs.tags&.any?
             tags do
               pg_attrs.tags.each do |key, value|
                 public_send(key, value)

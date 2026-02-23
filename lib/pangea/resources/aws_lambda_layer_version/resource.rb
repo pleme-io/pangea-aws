@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_lambda_layer_version(name, attributes = {})
         # Validate attributes using dry-struct
-        layer_attrs = Types::Types::LambdaLayerVersionAttributes.new(attributes)
+        layer_attrs = Types::LambdaLayerVersionAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_lambda_layer_version, name) do
@@ -45,8 +45,8 @@ module Pangea
           end
           
           # Optional attributes
-          compatible_runtimes layer_attrs.compatible_runtimes if layer_attrs.compatible_runtimes.any?
-          compatible_architectures layer_attrs.compatible_architectures if layer_attrs.compatible_architectures.any?
+          compatible_runtimes layer_attrs.compatible_runtimes if layer_attrs.compatible_runtimes&.any?
+          compatible_architectures layer_attrs.compatible_architectures if layer_attrs.compatible_architectures&.any?
           description layer_attrs.description if layer_attrs.description
           license_info layer_attrs.license_info if layer_attrs.license_info
           source_code_hash layer_attrs.source_code_hash if layer_attrs.source_code_hash

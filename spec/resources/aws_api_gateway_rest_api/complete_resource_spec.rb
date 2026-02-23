@@ -27,9 +27,9 @@ RSpec.describe "aws_api_gateway_rest_api resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -89,7 +89,7 @@ RSpec.describe "aws_api_gateway_rest_api resource function" do
       
       expect(api.description).to eq("A complex REST API")
       expect(api.version).to eq("v1.0")
-      expect(api.binary_media_types).to have(2).items
+      expect(api.binary_media_types.size).to eq(2)
       expect(api.minimum_compression_size).to eq(1024)
       expect(api.api_key_source).to eq("AUTHORIZER")
       expect(api.disable_execute_api_endpoint).to eq(true)
@@ -115,7 +115,7 @@ RSpec.describe "aws_api_gateway_rest_api resource function" do
           },
           tags: {}
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "validates private API requires VPC endpoints" do
@@ -172,7 +172,7 @@ RSpec.describe "aws_api_gateway_rest_api resource function" do
         tags: {}
       })
       
-      expect(api.binary_media_types).to have(3).items
+      expect(api.binary_media_types.size).to eq(3)
       expect(api.binary_media_types).to include("image/png", "application/pdf", "multipart/form-data")
     end
     
@@ -183,7 +183,7 @@ RSpec.describe "aws_api_gateway_rest_api resource function" do
           minimum_tls_version: "SSL_3_0",
           tags: {}
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "validates API key source" do
@@ -193,7 +193,7 @@ RSpec.describe "aws_api_gateway_rest_api resource function" do
           api_key_source: "QUERY_STRING",
           tags: {}
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
   end
   
@@ -336,7 +336,7 @@ RSpec.describe "aws_api_gateway_rest_api resource function" do
       })
       
       expect(result.is_private?).to eq(true)
-      expect(result.resource_attributes[:endpoint_configuration][:vpc_endpoint_ids]).to have(2).items
+      expect(result.resource_attributes[:endpoint_configuration][:vpc_endpoint_ids].size).to eq(2)
     end
     
     it "creates API with binary media types" do
@@ -347,7 +347,7 @@ RSpec.describe "aws_api_gateway_rest_api resource function" do
       })
       
       expect(result.supports_binary_content?).to eq(true)
-      expect(result.resource_attributes[:binary_media_types]).to have(3).items
+      expect(result.resource_attributes[:binary_media_types].size).to eq(3)
     end
     
     it "creates API with compression" do
@@ -421,7 +421,7 @@ RSpec.describe "aws_api_gateway_rest_api resource function" do
         }
       })
       
-      expect(result.resource_attributes[:tags]).to have(4).items
+      expect(result.resource_attributes[:tags].size).to eq(4)
       expect(result.resource_attributes[:tags][:Environment]).to eq("production")
       expect(result.resource_attributes[:tags][:Team]).to eq("platform")
     end
@@ -509,7 +509,7 @@ RSpec.describe "aws_api_gateway_rest_api resource function" do
       })
       
       expect(result.supports_binary_content?).to eq(true)
-      expect(result.resource_attributes[:binary_media_types]).to have(5).items
+      expect(result.resource_attributes[:binary_media_types].size).to eq(5)
       expect(result.resource_attributes[:minimum_compression_size]).to eq(10240)
     end
     

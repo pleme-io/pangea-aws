@@ -21,19 +21,19 @@ module Pangea
       module Types
       # Type-safe attributes for AwsTimestreamInfluxDbInstance resources
       # Provides a Timestream for InfluxDB instance resource.
-      class TimestreamInfluxDbInstanceAttributes < Dry::Struct
-        attribute :allocated_storage, Resources::Types::Integer
-        attribute :bucket, Resources::Types::String.optional
-        attribute :db_instance_type, Resources::Types::String
-        attribute :db_name, Resources::Types::String
-        attribute :db_parameter_group_identifier, Resources::Types::String.optional
-        attribute :deployment_type, Resources::Types::String.optional
+      class TimestreamInfluxDbInstanceAttributes < Pangea::Resources::BaseAttributes
+        attribute? :allocated_storage, Resources::Types::Integer.optional
+        attribute? :bucket, Resources::Types::String.optional
+        attribute? :db_instance_type, Resources::Types::String.optional
+        attribute? :db_name, Resources::Types::String.optional
+        attribute? :db_parameter_group_identifier, Resources::Types::String.optional
+        attribute? :deployment_type, Resources::Types::String.optional
         attribute :log_delivery_configuration, Resources::Types::Array.of(Resources::Types::Hash).default([].freeze).optional
-        attribute :name, Resources::Types::String
-        attribute :organization, Resources::Types::String.optional
-        attribute :password, Resources::Types::String
-        attribute :publicly_accessible, Resources::Types::Bool.optional
-        attribute :username, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
+        attribute? :organization, Resources::Types::String.optional
+        attribute? :password, Resources::Types::String.optional
+        attribute? :publicly_accessible, Resources::Types::Bool.optional
+        attribute? :username, Resources::Types::String.optional
         attribute :vpc_security_group_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         attribute :vpc_subnet_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         

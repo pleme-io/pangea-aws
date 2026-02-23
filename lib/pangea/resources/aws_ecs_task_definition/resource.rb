@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 # Copyright 2025 The Pangea Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +17,6 @@ require 'pangea/resources/base'
 require 'pangea/resources/reference'
 require 'pangea/resources/aws_ecs_task_definition/types'
 require 'pangea/resources/aws_ecs_task_definition/container_definitions'
-require 'pangea/resources/aws_ecs_task_definition/volumes'
 require 'pangea/resource_registry'
 require 'json'
 
@@ -31,27 +29,91 @@ module Pangea
       # @param attributes [Hash] ECS task definition attributes
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_ecs_task_definition(name, attributes = {})
-        task_attrs = AWS::Types::Types::EcsTaskDefinitionAttributes.new(attributes)
+        task_attrs = Types::EcsTaskDefinitionAttributes.new(attributes)
 
-        resource(:aws_ecs_task_definition, name) do
-          family task_attrs.family
-          container_definitions JSON.pretty_generate(
+        resource_attrs = {
+          family: task_attrs.family,
+          container_definitions: ::JSON.pretty_generate(
             EcsTaskDefinition::ContainerDefinitions.build(task_attrs.container_definitions)
-          )
+          ),
+          network_mode: task_attrs.network_mode,
+          requires_compatibilities: task_attrs.requires_compatibilities
+        }
 
-          configure_task_roles(self, task_attrs)
-          configure_networking(self, task_attrs)
-          configure_compute(self, task_attrs)
+        # Task roles
+        resource_attrs[:task_role_arn] = task_attrs.task_role_arn if task_attrs.task_role_arn
+        resource_attrs[:execution_role_arn] = task_attrs.execution_role_arn if task_attrs.execution_role_arn
 
-          EcsTaskDefinition::Volumes.configure(self, task_attrs.volumes)
+        # Compute
+        resource_attrs[:cpu] = task_attrs.cpu if task_attrs.cpu
+        resource_attrs[:memory] = task_attrs.memory if task_attrs.memory
 
-          configure_placement_constraints(self, task_attrs)
-          configure_process_modes(self, task_attrs)
-          configure_inference_accelerators(self, task_attrs)
-          configure_proxy(self, task_attrs)
-          configure_runtime_platform(self, task_attrs)
-          configure_ephemeral_storage(self, task_attrs)
-          configure_tags(self, task_attrs)
+        # Volumes
+        if task_attrs.volumes.any?
+          resource_attrs[:volume] = task_attrs.volumes.map { |vol| build_volume(vol) }
+        end
+
+        # Placement constraints
+        if task_attrs.placement_constraints.any?
+          resource_attrs[:placement_constraints] = task_attrs.placement_constraints.map do |constraint|
+            pc = { type: constraint[:type] }
+            pc[:expression] = constraint[:expression] if constraint[:expression]
+            pc
+          end
+        end
+
+        # Process modes
+        resource_attrs[:ipc_mode] = task_attrs.ipc_mode if task_attrs.ipc_mode
+        resource_attrs[:pid_mode] = task_attrs.pid_mode if task_attrs.pid_mode
+
+        # Inference accelerators
+        if task_attrs.inference_accelerators.any?
+          resource_attrs[:inference_accelerator] = task_attrs.inference_accelerators.map do |acc|
+            { device_name: acc[:device_name], device_type: acc[:device_type] }
+          end
+        end
+
+        # Proxy configuration
+        if task_attrs.proxy_configuration
+          proxy = {
+            container_name: task_attrs.proxy_configuration[:container_name]
+          }
+          proxy[:type] = task_attrs.proxy_configuration[:type] if task_attrs.proxy_configuration[:type]
+          if task_attrs.proxy_configuration[:properties]
+            props = {}
+            task_attrs.proxy_configuration[:properties].each do |prop|
+              props[prop[:name]] = prop[:value]
+            end
+            proxy[:properties] = props
+          end
+          resource_attrs[:proxy_configuration] = proxy
+        end
+
+        # Runtime platform
+        if task_attrs.runtime_platform
+          rp = {}
+          rp[:operating_system_family] = task_attrs.runtime_platform[:operating_system_family] if task_attrs.runtime_platform[:operating_system_family]
+          rp[:cpu_architecture] = task_attrs.runtime_platform[:cpu_architecture] if task_attrs.runtime_platform[:cpu_architecture]
+          resource_attrs[:runtime_platform] = rp
+        end
+
+        # Ephemeral storage
+        if task_attrs.ephemeral_storage
+          resource_attrs[:ephemeral_storage] = {
+            size_in_gib: task_attrs.ephemeral_storage[:size_in_gib]
+          }
+        end
+
+        # Tags
+        resource_attrs[:tags] = task_attrs.tags if task_attrs.tags&.any?
+
+        # Write to manifest
+        if is_a?(AbstractSynthesizer)
+          translation[:manifest][:resource] ||= {}
+          translation[:manifest][:resource][:aws_ecs_task_definition] ||= {}
+          translation[:manifest][:resource][:aws_ecs_task_definition][name] = resource_attrs
+        else
+          resource(:aws_ecs_task_definition, name, resource_attrs)
         end
 
         create_resource_reference(name, task_attrs)
@@ -59,79 +121,55 @@ module Pangea
 
       private
 
-      def configure_task_roles(context, attrs)
-        context.task_role_arn attrs.task_role_arn if attrs.task_role_arn
-        context.execution_role_arn attrs.execution_role_arn if attrs.execution_role_arn
-      end
+      def build_volume(vol)
+        v = { name: vol[:name] }
 
-      def configure_networking(context, attrs)
-        context.network_mode attrs.network_mode
-        context.requires_compatibilities attrs.requires_compatibilities
-      end
+        if vol[:host]
+          host = {}
+          host[:source_path] = vol[:host][:source_path] if vol[:host][:source_path]
+          v[:host] = host
+        end
 
-      def configure_compute(context, attrs)
-        context.cpu attrs.cpu if attrs.cpu
-        context.memory attrs.memory if attrs.memory
-      end
+        if vol[:docker_volume_configuration]
+          dvc = vol[:docker_volume_configuration]
+          docker = {}
+          docker[:scope] = dvc[:scope] if dvc[:scope]
+          docker[:autoprovision] = dvc[:autoprovision] unless dvc[:autoprovision].nil?
+          docker[:driver] = dvc[:driver] if dvc[:driver]
+          docker[:driver_opts] = dvc[:driver_opts] if dvc[:driver_opts]
+          docker[:labels] = dvc[:labels] if dvc[:labels]
+          v[:docker_volume_configuration] = docker
+        end
 
-      def configure_placement_constraints(context, attrs)
-        attrs.placement_constraints.each do |constraint|
-          context.placement_constraints do
-            type constraint[:type]
-            expression constraint[:expression] if constraint[:expression]
+        if vol[:efs_volume_configuration]
+          evc = vol[:efs_volume_configuration]
+          efs = { file_system_id: evc[:file_system_id] }
+          efs[:root_directory] = evc[:root_directory] if evc[:root_directory]
+          efs[:transit_encryption] = evc[:transit_encryption] if evc[:transit_encryption]
+          efs[:transit_encryption_port] = evc[:transit_encryption_port] if evc[:transit_encryption_port]
+          if evc[:authorization_config]
+            auth = {}
+            auth[:access_point_id] = evc[:authorization_config][:access_point_id] if evc[:authorization_config][:access_point_id]
+            auth[:iam] = evc[:authorization_config][:iam] if evc[:authorization_config][:iam]
+            efs[:authorization_config] = auth
           end
+          v[:efs_volume_configuration] = efs
         end
-      end
 
-      def configure_process_modes(context, attrs)
-        context.ipc_mode attrs.ipc_mode if attrs.ipc_mode
-        context.pid_mode attrs.pid_mode if attrs.pid_mode
-      end
-
-      def configure_inference_accelerators(context, attrs)
-        attrs.inference_accelerators.each do |accelerator|
-          context.inference_accelerators do
-            device_name accelerator[:device_name]
-            device_type accelerator[:device_type]
-          end
+        if vol[:fsx_windows_file_server_volume_configuration]
+          fsx = vol[:fsx_windows_file_server_volume_configuration]
+          fsx_config = {
+            file_system_id: fsx[:file_system_id],
+            root_directory: fsx[:root_directory],
+            authorization_config: {
+              credentials_parameter: fsx[:authorization_config][:credentials_parameter],
+              domain: fsx[:authorization_config][:domain]
+            }
+          }
+          v[:fsx_windows_file_server_volume_configuration] = fsx_config
         end
-      end
 
-      def configure_proxy(context, attrs)
-        return unless attrs.proxy_configuration
-
-        context.proxy_configuration do
-          type attrs.proxy_configuration[:type] if attrs.proxy_configuration[:type]
-          container_name attrs.proxy_configuration[:container_name]
-          properties attrs.proxy_configuration[:properties] if attrs.proxy_configuration[:properties]
-        end
-      end
-
-      def configure_runtime_platform(context, attrs)
-        return unless attrs.runtime_platform
-
-        context.runtime_platform do
-          operating_system_family attrs.runtime_platform[:operating_system_family] if attrs.runtime_platform[:operating_system_family]
-          cpu_architecture attrs.runtime_platform[:cpu_architecture] if attrs.runtime_platform[:cpu_architecture]
-        end
-      end
-
-      def configure_ephemeral_storage(context, attrs)
-        return unless attrs.ephemeral_storage
-
-        context.ephemeral_storage do
-          size_in_gib attrs.ephemeral_storage[:size_in_gib]
-        end
-      end
-
-      def configure_tags(context, attrs)
-        return unless attrs.tags.any?
-
-        context.tags do
-          attrs.tags.each do |key, value|
-            public_send(key, value)
-          end
-        end
+        v
       end
 
       def create_resource_reference(name, task_attrs)

@@ -21,10 +21,10 @@ module Pangea
     module AWS
       module Types
         # Compute type configuration
-        class ComputeTypeConfigurationType < Dry::Struct
+        class ComputeTypeConfigurationType < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :name, Resources::Types::String.constrained(included_in: ['VALUE', 'STANDARD', 'PERFORMANCE', 'POWER', 'POWERPRO', 'GRAPHICS', 'GRAPHICSPRO'])
+          attribute? :name, Resources::Types::String.constrained(included_in: ['VALUE', 'STANDARD', 'PERFORMANCE', 'POWER', 'POWERPRO', 'GRAPHICS', 'GRAPHICSPRO']).optional
 
           def vcpus
             case name

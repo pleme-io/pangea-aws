@@ -11,7 +11,7 @@ module Pangea
             raise Dry::Struct::Error, "Cannot specify both 'cluster_identifier' and 'cluster_identifier_prefix'" if attrs.cluster_identifier && attrs.cluster_identifier_prefix
             raise Dry::Struct::Error, "Cannot specify both 'master_password' and 'manage_master_user_password'" if attrs.master_password && attrs.manage_master_user_password
             raise Dry::Struct::Error, "Cannot specify both 'scaling_configuration' and 'serverless_v2_scaling_configuration'" if attrs.scaling_configuration && attrs.serverless_v2_scaling_configuration
-            raise Dry::Struct::Error, "Serverless configurations only valid when engine_mode is 'serverless'" if attrs.engine_mode != 'serverless' && (attrs.scaling_configuration || attrs.enable_http_endpoint)
+            raise Dry::Struct::Error, "Serverless configurations only valid when engine_mode is 'serverless'" if attrs.engine_mode != 'serverless' && (attrs.scaling_configuration.is_a?(Hash) && !attrs.scaling_configuration.empty? || attrs.enable_http_endpoint)
             raise Dry::Struct::Error, 'Backtrack is only supported by Aurora MySQL clusters' if attrs.backtrack_window && !attrs.engine.include?('mysql')
             raise Dry::Struct::Error, "global_cluster_identifier can only be used with engine_mode 'global'" if attrs.global_cluster_identifier && attrs.engine_mode != 'global'
             raise Dry::Struct::Error, 'monitoring_role_arn is required when monitoring_interval > 0' if attrs.monitoring_interval.positive? && !attrs.monitoring_role_arn

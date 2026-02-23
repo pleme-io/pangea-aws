@@ -15,87 +15,9 @@
 
 
 require 'spec_helper'
+require 'terraform-synthesizer'
 require 'json'
 
-# Mock TerraformSynthesizer for testing
-class MockTerraformSynthesizer
-  def initialize
-    @resources = {}
-    @data_sources = {}
-    @variables = {}
-    @outputs = {}
-  end
-
-  def resource(type, name)
-    @resources["#{type}.#{name}"] = { type: type, name: name, attributes: {} }
-    resource_builder = MockResourceBuilder.new(@resources["#{type}.#{name}"][:attributes])
-    yield resource_builder if block_given?
-  end
-  
-  def data(type, name)
-    @data_sources["#{type}.#{name}"] = { type: type, name: name, attributes: {} }
-    data_builder = MockResourceBuilder.new(@data_sources["#{type}.#{name}"][:attributes])
-    yield data_builder if block_given?
-  end
-  
-  def variable(name)
-    @variables[name.to_s] = { name: name, attributes: {} }
-    variable_builder = MockResourceBuilder.new(@variables[name.to_s][:attributes])
-    yield variable_builder if block_given?
-  end
-  
-  def output(name)
-    @outputs[name.to_s] = { name: name, attributes: {} }
-    output_builder = MockResourceBuilder.new(@outputs[name.to_s][:attributes])
-    yield output_builder if block_given?
-  end
-
-  def synthesis
-    result = {}
-    
-    if @resources.any?
-      result["resource"] = {}
-      @resources.each do |key, resource_data|
-        type = resource_data[:type].to_s
-        name = resource_data[:name].to_s
-        result["resource"][type] ||= {}
-        result["resource"][type][name] = resource_data[:attributes]
-      end
-    end
-    
-    if @data_sources.any?
-      result["data"] = {}
-      @data_sources.each do |key, data_source|
-        type = data_source[:type].to_s
-        name = data_source[:name].to_s
-        result["data"][type] ||= {}
-        result["data"][type][name] = data_source[:attributes]
-      end
-    end
-    
-    if @variables.any?
-      result["variable"] = {}
-      @variables.each do |key, variable|
-        name = variable[:name].to_s
-        result["variable"][name] = variable[:attributes]
-      end
-    end
-    
-    if @outputs.any?
-      result["output"] = {}
-      @outputs.each do |key, output|
-        name = output[:name].to_s
-        result["output"][name] = output[:attributes]
-      end
-    end
-    
-    result
-  end
-  
-  def get_resources
-    @resources
-  end
-end
 
 class MockResourceBuilder
   def initialize(attributes)
@@ -122,16 +44,12 @@ end
 RSpec.describe 'aws_api_gateway_integration synthesis' do
   include Pangea::Resources::AWS
   
-  let(:synthesizer) { MockTerraformSynthesizer.new }
-
-  before do
-    # Stub the TerraformSynthesizer constant to use our mock
-    stub_const('TerraformSynthesizer', MockTerraformSynthesizer)
-  end
+  let(:synthesizer) { TerraformSynthesizer.new }
 
   describe 'basic synthesis' do
     it 'synthesizes MOCK integration correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:mock_test, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -158,6 +76,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
 
     it 'synthesizes Lambda proxy integration correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:lambda_proxy, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -178,6 +97,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
 
     it 'synthesizes Lambda custom integration correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:lambda_custom, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -201,6 +121,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
 
     it 'synthesizes HTTP proxy integration correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:http_proxy, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -219,6 +140,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
 
     it 'synthesizes HTTP integration correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:http_custom, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -245,6 +167,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
   describe 'connection configuration synthesis' do
     it 'synthesizes VPC Link integration correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:vpc_link, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -265,6 +188,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
 
     it 'synthesizes internet connection correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:internet, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -285,6 +209,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
   describe 'request configuration synthesis' do
     it 'synthesizes request templates correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:request_templates, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -308,6 +233,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
 
     it 'synthesizes request parameters correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:request_params, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -332,6 +258,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
     it 'synthesizes passthrough behavior correctly' do
       ['WHEN_NO_MATCH', 'WHEN_NO_TEMPLATES', 'NEVER'].each do |behavior|
         synthesizer.instance_eval do
+          extend Pangea::Resources::AWS
           aws_api_gateway_integration(:"passthrough_#{behavior.downcase}", {
             rest_api_id: 'api-abc123',
             resource_id: 'resource-def456',
@@ -351,6 +278,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
   describe 'caching configuration synthesis' do
     it 'synthesizes cache key parameters correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:cached, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -374,6 +302,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
 
     it 'synthesizes cache namespace correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:cache_namespace, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -393,6 +322,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
   describe 'timeout and content handling synthesis' do
     it 'synthesizes custom timeout correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:custom_timeout, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -411,6 +341,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
     it 'synthesizes content handling correctly' do
       ['CONVERT_TO_BINARY', 'CONVERT_TO_TEXT'].each do |handling|
         synthesizer.instance_eval do
+          extend Pangea::Resources::AWS
           aws_api_gateway_integration(:"content_#{handling.downcase}", {
             rest_api_id: 'api-abc123',
             resource_id: 'resource-def456',
@@ -430,6 +361,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
   describe 'AWS service integration synthesis' do
     it 'synthesizes DynamoDB integration correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:dynamodb, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -455,6 +387,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
 
     it 'synthesizes S3 integration correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:s3, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -482,6 +415,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
   describe 'complex integration scenarios' do
     it 'synthesizes multi-region Lambda integration correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:multi_region_lambda, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -501,6 +435,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
 
     it 'synthesizes comprehensive HTTP integration correctly' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:comprehensive_http, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -547,6 +482,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
   describe 'template structure validation' do
     it 'creates valid Terraform JSON structure' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:structure_test, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',
@@ -586,6 +522,7 @@ RSpec.describe 'aws_api_gateway_integration synthesis' do
 
     it 'serializes to valid JSON' do
       synthesizer.instance_eval do
+        extend Pangea::Resources::AWS
         aws_api_gateway_integration(:json_test, {
           rest_api_id: 'api-abc123',
           resource_id: 'resource-def456',

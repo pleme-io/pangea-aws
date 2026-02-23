@@ -21,9 +21,9 @@ module Pangea
       module Types
       # Type-safe attributes for AwsLicensemanagerAssociation resources
       # Provides a License Manager association between a license configuration and a resource.
-      class LicensemanagerAssociationAttributes < Dry::Struct
-        attribute :license_configuration_arn, Resources::Types::String
-        attribute :resource_arn, Resources::Types::String
+      class LicensemanagerAssociationAttributes < Pangea::Resources::BaseAttributes
+        attribute? :license_configuration_arn, Resources::Types::String.optional
+        attribute? :resource_arn, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

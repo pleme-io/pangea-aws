@@ -21,17 +21,17 @@ module Pangea
     module AWS
       module Types
         # Security Hub Account attributes with validation
-        class SecurityHubAccountAttributes < Dry::Struct
+        class SecurityHubAccountAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           attribute :enable_default_standards, Resources::Types::Bool.default(true)
           attribute :control_finding_generator, Resources::Types::String.constrained(included_in: ['STANDARD_CONTROL', 'SECURITY_CONTROL']).default('STANDARD_CONTROL')
           attribute :auto_enable_controls, Resources::Types::Bool.default(true)
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Custom validation  
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # If default standards are disabled, auto enable controls might not be relevant
             if attrs[:enable_default_standards] == false && attrs[:auto_enable_controls] == true

@@ -37,7 +37,7 @@ module Pangea
           kms_key_id attrs.kms_key_id if attrs.kms_key_id
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

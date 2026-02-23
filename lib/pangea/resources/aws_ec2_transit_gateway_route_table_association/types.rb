@@ -21,16 +21,16 @@ module Pangea
     module AWS
       module Types
         # Transit Gateway Route Table Association resource attributes with validation
-        class TransitGatewayRouteTableAssociationAttributes < Dry::Struct
+        class TransitGatewayRouteTableAssociationAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :transit_gateway_attachment_id, Resources::Types::String
-          attribute :transit_gateway_route_table_id, Resources::Types::String
+          attribute? :transit_gateway_attachment_id, Resources::Types::String.optional
+          attribute? :transit_gateway_route_table_id, Resources::Types::String.optional
           attribute? :replace_existing_association, Resources::Types::Bool.default(false)
           
           # Custom validation for association configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate attachment ID format
             if attrs[:transit_gateway_attachment_id] && !attrs[:transit_gateway_attachment_id].match?(/\Atgw-attach-[0-9a-f]{8,17}\z/)
@@ -46,6 +46,10 @@ module Pangea
           end
           
           # Computed properties
+          def replace_existing_association?
+            !!replace_existing_association
+          end
+
           def association_purpose
             # Associations control which route table an attachment uses for outbound traffic
             "Associates attachment #{transit_gateway_attachment_id} with route table #{transit_gateway_route_table_id} for outbound routing"

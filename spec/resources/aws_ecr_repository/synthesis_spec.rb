@@ -108,8 +108,9 @@ RSpec.describe "aws_ecr_repository synthesis" do
 
       expect(repo_config).to have_key("encryption_configuration")
       encryption_config = repo_config["encryption_configuration"]
-      expect(encryption_config["encryption_type"]).to eq("KMS")
-      expect(encryption_config["kms_key"]).to eq("arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012")
+      expect(encryption_config).to be_an(Array)
+      expect(encryption_config[0]["encryption_type"]).to eq("KMS")
+      expect(encryption_config[0]["kms_key"]).to eq("arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012")
     end
 
     it "supports AES256 encryption configuration" do
@@ -127,7 +128,7 @@ RSpec.describe "aws_ecr_repository synthesis" do
       repo_config = result["resource"]["aws_ecr_repository"]["test"]
 
       expect(repo_config).to have_key("encryption_configuration")
-      expect(repo_config["encryption_configuration"]["encryption_type"]).to eq("AES256")
+      expect(repo_config["encryption_configuration"][0]["encryption_type"]).to eq("AES256")
     end
 
     it "supports force delete option" do
@@ -187,7 +188,7 @@ RSpec.describe "aws_ecr_repository synthesis" do
       expect(repo_config["name"]).to eq("production-app")
       expect(repo_config["image_tag_mutability"]).to eq("IMMUTABLE")
       expect(repo_config["image_scanning_configuration"]["scan_on_push"]).to eq(true)
-      expect(repo_config["encryption_configuration"]["encryption_type"]).to eq("KMS")
+      expect(repo_config["encryption_configuration"][0]["encryption_type"]).to eq("KMS")
       expect(repo_config["force_delete"]).to eq(false)
       expect(repo_config["tags"]["Environment"]).to eq("production")
     end
@@ -225,7 +226,7 @@ RSpec.describe "aws_ecr_repository synthesis" do
 
       expect(ref).to be_a(Pangea::Resources::ResourceReference)
       expect(ref.arn).to eq("${aws_ecr_repository.test.arn}")
-      expect(ref.name).to eq("${aws_ecr_repository.test.name}")
+      expect(ref.outputs[:name]).to eq("${aws_ecr_repository.test.name}")
       expect(ref.registry_id).to eq("${aws_ecr_repository.test.registry_id}")
       expect(ref.repository_url).to eq("${aws_ecr_repository.test.repository_url}")
     end

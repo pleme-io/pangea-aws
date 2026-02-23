@@ -25,7 +25,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Braket Device Capabilities data source
-        class BraketDeviceCapabilitiesAttributes < Dry::Struct
+        class BraketDeviceCapabilitiesAttributes < Pangea::Resources::BaseAttributes
           include DeviceClassification
           include CapabilitySupport
           include ExecutionParams
@@ -34,7 +34,7 @@ module Pangea
           transform_keys(&:to_sym)
 
           # Device ARN (required)
-          attribute :device_arn, Resources::Types::String
+          attribute? :device_arn, Resources::Types::String.optional
 
           # Capability filters (optional)
           attribute? :capability_filters, Resources::Types::Array.of(
@@ -47,7 +47,7 @@ module Pangea
                 'connectivity',
                 'execution-windows']),
               values: Resources::Types::Array.of(Resources::Types::String)
-            )
+            ).lax
           ).optional
 
           # Custom validation

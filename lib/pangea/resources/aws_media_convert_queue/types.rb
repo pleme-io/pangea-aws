@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS MediaConvert Queue resources
-      class MediaConvertQueueAttributes < Dry::Struct
+      class MediaConvertQueueAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Queue name (required)
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
 
         # Queue description
         attribute :description, Resources::Types::String.default("")
@@ -34,11 +34,11 @@ module Pangea
         attribute :pricing_plan, Resources::Types::String.constrained(included_in: ['ON_DEMAND', 'RESERVED']).default('ON_DEMAND')
 
         # Reservation plan settings (for RESERVED pricing)
-        attribute :reservation_plan_settings, Resources::Types::Hash.schema(
+        attribute? :reservation_plan_settings, Resources::Types::Hash.schema(
           commitment: Resources::Types::String.constrained(included_in: ['ONE_YEAR']),
           renewal_type: Resources::Types::String.constrained(included_in: ['AUTO_RENEW', 'EXPIRE']),
           reserved_slots: Resources::Types::Integer
-        ).optional
+        ).lax.optional
 
         # Status
         attribute :status, Resources::Types::String.constrained(included_in: ['ACTIVE', 'PAUSED']).default('ACTIVE')

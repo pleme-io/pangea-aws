@@ -22,12 +22,12 @@ module Pangea
     module AWS
       module Types
         # WAF v2 Web ACL visibility configuration
-        class WafV2VisibilityConfig < Dry::Struct
+        class WafV2VisibilityConfig < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :cloudwatch_metrics_enabled, Resources::Types::Bool
-          attribute :metric_name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
-          attribute :sampled_requests_enabled, Resources::Types::Bool
+          attribute? :cloudwatch_metrics_enabled, Resources::Types::Bool.optional
+          attribute? :metric_name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/).optional
+          attribute? :sampled_requests_enabled, Resources::Types::Bool.optional
         end
       end
     end

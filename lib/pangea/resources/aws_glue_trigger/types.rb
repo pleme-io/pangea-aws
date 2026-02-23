@@ -23,7 +23,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Glue Trigger resources
-        class GlueTriggerAttributes < Dry::Struct
+        class GlueTriggerAttributes < Pangea::Resources::BaseAttributes
           include GlueTriggerTypes::Attributes
           include GlueTriggerTypes::Validation
           include GlueTriggerTypes::Helpers

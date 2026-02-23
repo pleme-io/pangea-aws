@@ -21,19 +21,19 @@ module Pangea
       module Types
       # Type-safe attributes for AWS EBS Volume Attachment resources
       # Provides an AWS EBS Volume Attachment as a top level resource, to attach and detach EBS volumes from EC2 instances.
-      class VolumeAttachmentAttributes < Dry::Struct
+      class VolumeAttachmentAttributes < Pangea::Resources::BaseAttributes
         # Device name to expose to the instance (required)
         # Linux: /dev/sdf through /dev/sdp, /dev/xvdf through /dev/xvdp
         # Windows: xvdf through xvdp
-        attribute :device_name, Resources::Types::String.constrained(
+        attribute? :device_name, Resources::Types::String.constrained(
           format: /\A(?:\/dev\/(?:sd[f-p]|xvd[f-p])|xvd[f-p])\z/
         )
         
         # ID of the instance to attach the volume to (required)
-        attribute :instance_id, Resources::Types::String
+        attribute? :instance_id, Resources::Types::String.optional
         
         # ID of the volume to attach (required)
-        attribute :volume_id, Resources::Types::String
+        attribute? :volume_id, Resources::Types::String.optional
         
         # Force detach on destroy (optional, default false)
         attribute :force_detach, Resources::Types::Bool.default(false)

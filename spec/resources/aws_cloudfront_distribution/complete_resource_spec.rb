@@ -27,9 +27,9 @@ RSpec.describe "aws_cloudfront_distribution resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -168,7 +168,7 @@ RSpec.describe "aws_cloudfront_distribution resource function" do
         enabled: true
       })
       
-      expect(distribution.origin).to have(2).items
+      expect(distribution.origin.size).to eq(2)
       expect(distribution.s3_origins_count).to eq(1)
       expect(distribution.custom_origins_count).to eq(1)
     end
@@ -223,7 +223,7 @@ RSpec.describe "aws_cloudfront_distribution resource function" do
         enabled: true
       })
       
-      expect(distribution.ordered_cache_behavior).to have(2).items
+      expect(distribution.ordered_cache_behavior.size).to eq(2)
       expect(distribution.total_behaviors_count).to eq(3) # default + 2 ordered
       expect(distribution.ordered_cache_behavior.first[:path_pattern]).to eq("/api/*")
     end
@@ -317,7 +317,7 @@ RSpec.describe "aws_cloudfront_distribution resource function" do
       })
       
       expect(distribution.has_custom_error_pages?).to eq(true)
-      expect(distribution.custom_error_response).to have(2).items
+      expect(distribution.custom_error_response.size).to eq(2)
     end
     
     it "validates unique error codes" do
@@ -587,8 +587,8 @@ RSpec.describe "aws_cloudfront_distribution resource function" do
         enabled: true
       })
       
-      expect(result.resource_attributes[:origin]).to have(2).items
-      expect(result.resource_attributes[:ordered_cache_behavior]).to have(1).item
+      expect(result.resource_attributes[:origin].size).to eq(2)
+      expect(result.resource_attributes[:ordered_cache_behavior].size).to eq(1)
       expect(result.total_origins_count).to eq(2)
       expect(result.total_behaviors_count).to eq(2)
       expect(result.s3_origins_count).to eq(1)
@@ -701,7 +701,7 @@ RSpec.describe "aws_cloudfront_distribution resource function" do
       })
       
       expect(result.has_custom_error_pages?).to eq(true)
-      expect(result.resource_attributes[:custom_error_response]).to have(2).items
+      expect(result.resource_attributes[:custom_error_response].size).to eq(2)
     end
     
     it "creates distribution with origin shield" do

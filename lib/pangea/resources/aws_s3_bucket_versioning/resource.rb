@@ -41,8 +41,8 @@ module Pangea
           
           # Configure versioning
           versioning_configuration do
-            status versioning_attrs.versioning_configuration[:status]
-            mfa_delete versioning_attrs.versioning_configuration[:mfa_delete] if versioning_attrs.versioning_configuration[:mfa_delete]
+            status versioning_attrs.versioning_configuration&.dig(:status)
+            mfa_delete versioning_attrs.versioning_configuration&.dig(:mfa_delete) if versioning_attrs.versioning_configuration&.dig(:mfa_delete)
           end
         end
         

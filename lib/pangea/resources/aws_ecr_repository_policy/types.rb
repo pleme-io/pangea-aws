@@ -22,16 +22,16 @@ module Pangea
     module AWS
       module Types
         # ECR Repository Policy resource attributes with validation
-        class ECRRepositoryPolicyAttributes < Dry::Struct
+        class ECRRepositoryPolicyAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :repository, Resources::Types::String
-          attribute :policy, Resources::Types::String
+          attribute? :repository, Resources::Types::String.optional
+          attribute? :policy, Resources::Types::String.optional
           
           # Validate attributes
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate repository name format
             if attrs[:repository]
@@ -49,10 +49,10 @@ module Pangea
               # Skip validation if it's a terraform function call
               unless policy_str.match?(/^\$\{/) || policy_str.match?(/^data\.aws_iam_policy_document\./)
                 begin
-                  policy_doc = JSON.parse(policy_str)
+                  policy_doc = ::JSON.parse(policy_str)
                   
                   # Validate basic policy structure
-                  unless policy_doc.is_a?(Hash) && policy_doc['Statement']
+                  unless policy_doc.is_a?(::Hash) && policy_doc['Statement']
                     raise Dry::Struct::Error, "policy must contain a Statement array"
                   end
                   
@@ -62,7 +62,7 @@ module Pangea
                   
                   # Validate each statement has required fields
                   policy_doc['Statement'].each_with_index do |stmt, idx|
-                    unless stmt.is_a?(Hash)
+                    unless stmt.is_a?(::Hash)
                       raise Dry::Struct::Error, "Statement[#{idx}] must be a hash"
                     end
                     
@@ -79,7 +79,7 @@ module Pangea
                     end
                   end
                   
-                rescue JSON::ParserError => e
+                rescue ::JSON::ParserError => e
                   raise Dry::Struct::Error, "policy must be valid JSON: #{e.message}"
                 end
               end
@@ -93,8 +93,8 @@ module Pangea
             return nil if policy.match?(/^\$\{/) || policy.match?(/^data\.aws_iam_policy_document\./)
             
             begin
-              JSON.parse(policy)
-            rescue JSON::ParserError
+              ::JSON.parse(policy)
+            rescue ::JSON::ParserError
               nil
             end
           end

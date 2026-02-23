@@ -21,14 +21,14 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS SQS Queue Policy resources
-      class SQSQueuePolicyAttributes < Dry::Struct
+      class SQSQueuePolicyAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Queue URL to attach the policy to
-        attribute :queue_url, Resources::Types::String
+        attribute? :queue_url, Resources::Types::String.optional
 
         # Policy document as JSON string
-        attribute :policy, Resources::Types::String
+        attribute? :policy, Resources::Types::String.optional
 
         # Custom validation
         def self.new(attributes = {})
@@ -36,10 +36,10 @@ module Pangea
 
           # Validate policy is valid JSON
           begin
-            policy_doc = JSON.parse(attrs.policy)
+            policy_doc = ::JSON.parse(attrs.policy)
             
             # Basic policy structure validation
-            unless policy_doc.is_a?(Hash) && policy_doc['Statement'].is_a?(Array)
+            unless policy_doc.is_a?(::Hash) && policy_doc['Statement'].is_a?(Array)
               raise Dry::Struct::Error, "Policy must be a valid IAM policy document with Statement array"
             end
 
@@ -53,7 +53,7 @@ module Pangea
                 raise Dry::Struct::Error, "Policy statement #{index} Effect must be Allow or Deny"
               end
             end
-          rescue JSON::ParserError => e
+          rescue ::JSON::ParserError => e
             raise Dry::Struct::Error, "Policy must be valid JSON: #{e.message}"
           end
 
@@ -62,7 +62,7 @@ module Pangea
 
         # Helper methods
         def policy_document
-          @policy_document ||= JSON.parse(policy)
+          @policy_document ||= ::JSON.parse(policy)
         end
 
         def statement_count
@@ -74,7 +74,7 @@ module Pangea
             principal = statement['Principal']
             next false unless principal
             
-            if principal.is_a?(Hash) && principal['AWS']
+            if principal.is_a?(::Hash) && principal['AWS']
               aws_principals = Array(principal['AWS'])
               aws_principals.any? { |p| p.include?(':root') && !p.include?('*') }
             elsif principal.is_a?(String)
@@ -89,7 +89,7 @@ module Pangea
           policy_document['Statement'].any? do |statement|
             statement['Effect'] == 'Allow' && 
             (statement['Principal'] == '*' || 
-             (statement['Principal'].is_a?(Hash) && statement['Principal']['AWS'] == '*'))
+             (statement['Principal'].is_a?(::Hash) && statement['Principal']['AWS'] == '*'))
           end
         end
 

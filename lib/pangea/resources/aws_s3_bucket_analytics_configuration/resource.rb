@@ -44,10 +44,10 @@ module Pangea
           # Optional filter configuration
           if analytics_attrs.filter
             filter do
-              prefix analytics_attrs.filter[:prefix] if analytics_attrs.filter[:prefix]
+              prefix analytics_attrs.filter&.dig(:prefix) if analytics_attrs.filter&.dig(:prefix)
               
-              if analytics_attrs.filter[:tags]
-                analytics_attrs.filter[:tags].each do |key, value|
+              if analytics_attrs.filter&.dig(:tags)
+                analytics_attrs.filter&.dig(:tags).each do |key, value|
                   tag do
                     key key
                     value value
@@ -61,11 +61,11 @@ module Pangea
           if analytics_attrs.storage_class_analysis
             storage_class_analysis do
               data_export do
-                output_schema_version analytics_attrs.storage_class_analysis[:data_export][:output_schema_version]
+                output_schema_version analytics_attrs.storage_class_analysis&.dig(:data_export)[:output_schema_version]
                 
                 destination do
                   s3_bucket_destination do
-                    bucket_destination = analytics_attrs.storage_class_analysis[:data_export][:destination][:s3_bucket_destination]
+                    bucket_destination = analytics_attrs.storage_class_analysis&.dig(:data_export)[:destination][:s3_bucket_destination]
                     
                     bucket_arn bucket_destination[:bucket_arn]
                     bucket_account_id bucket_destination[:bucket_account_id] if bucket_destination[:bucket_account_id]

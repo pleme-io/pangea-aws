@@ -32,15 +32,15 @@ module Pangea
           pricing_plan queue_attrs.pricing_plan
           status queue_attrs.status
           
-          if queue_attrs.reserved_pricing? && queue_attrs.reservation_plan_settings.any?
+          if queue_attrs.reserved_pricing? && queue_attrs.reservation_plan_settings&.any?
             reservation_plan_settings do
-              commitment queue_attrs.reservation_plan_settings[:commitment]
-              renewal_type queue_attrs.reservation_plan_settings[:renewal_type]
-              reserved_slots queue_attrs.reservation_plan_settings[:reserved_slots]
+              commitment queue_attrs.reservation_plan_settings&.dig(:commitment)
+              renewal_type queue_attrs.reservation_plan_settings&.dig(:renewal_type)
+              reserved_slots queue_attrs.reservation_plan_settings&.dig(:reserved_slots)
             end
           end
           
-          if queue_attrs.tags.any?
+          if queue_attrs.tags&.any?
             tags do
               queue_attrs.tags.each do |key, value|
                 public_send(key, value)

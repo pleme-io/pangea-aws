@@ -21,30 +21,30 @@ module Pangea
     module AWS
       module Types
         # CodeArtifact Repository resource attributes with validation
-        class CodeArtifactRepositoryAttributes < Dry::Struct
+        class CodeArtifactRepositoryAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :repository, Resources::Types::String
-          attribute :domain, Resources::Types::String
-          attribute :format, Resources::Types::String.constrained(included_in: ['npm', 'pypi', 'maven', 'nuget'])
+          attribute? :repository, Resources::Types::String.optional
+          attribute? :domain, Resources::Types::String.optional
+          attribute? :format, Resources::Types::String.constrained(included_in: ['npm', 'pypi', 'maven', 'nuget']).optional
           
           # Optional attributes
           attribute :domain_owner, Resources::Types::String.optional.default(nil)
           attribute :description, Resources::Types::String.optional.default(nil)
-          attribute :upstream, Resources::Types::Array.of(
+          attribute? :upstream, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               repository_name: Resources::Types::String
-            )
+            ).lax
           ).default([].freeze)
-          attribute :external_connections, Resources::Types::Hash.schema(
+          attribute? :external_connections, Resources::Types::Hash.schema(
             external_connection_name?: Resources::Types::String.optional
-          ).optional.default(nil)
-          attribute :tags, Resources::Types::AwsTags
+          ).lax.optional.default(nil)
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Validate attributes
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate repository name
             if attrs[:repository]
@@ -121,13 +121,13 @@ module Pangea
           end
           
           def has_external_connection?
-            external_connections && external_connections[:external_connection_name] && !external_connections[:external_connection_name].empty?
+            external_connections && external_connections&.dig(:external_connection_name) && !external_connections&.dig(:external_connection_name).empty?
           end
           
           def external_connection_type
             return nil unless has_external_connection?
             
-            conn = external_connections[:external_connection_name]
+            conn = external_connections&.dig(:external_connection_name)
             case conn
             when 'public:npmjs' then :npm_public
             when 'public:pypi' then :pypi_public  

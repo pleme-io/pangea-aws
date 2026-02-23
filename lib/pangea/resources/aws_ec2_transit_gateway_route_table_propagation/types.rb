@@ -25,19 +25,19 @@ module Pangea
     module AWS
       module Types
         # Transit Gateway Route Table Propagation resource attributes with validation
-        class TransitGatewayRouteTablePropagationAttributes < Dry::Struct
+        class TransitGatewayRouteTablePropagationAttributes < Pangea::Resources::BaseAttributes
           include PropagationInsights
           include SecurityConcerns
           include TroubleshootingSupport
 
           transform_keys(&:to_sym)
 
-          attribute :transit_gateway_attachment_id, Resources::Types::String
-          attribute :transit_gateway_route_table_id, Resources::Types::String
+          attribute? :transit_gateway_attachment_id, Resources::Types::String.optional
+          attribute? :transit_gateway_route_table_id, Resources::Types::String.optional
 
           # Custom validation for propagation configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate attachment ID format
             if attrs[:transit_gateway_attachment_id] && !attrs[:transit_gateway_attachment_id].match?(/\Atgw-attach-[0-9a-f]{8,17}\z/)

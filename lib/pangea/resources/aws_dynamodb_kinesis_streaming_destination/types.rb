@@ -25,44 +25,42 @@ module Pangea
           StreamArn = Resources::Types::String.constrained(
             format: /\Aarn:aws:kinesis:[a-z0-9\-]*:[0-9]{12}:stream\/[a-zA-Z0-9_.-]+\z/
           )
-          
+
           # DynamoDB Table name constraint
           TableName = Resources::Types::String.constrained(
             min_size: 3,
             max_size: 255,
             format: /\A[a-zA-Z0-9_.-]+\z/
           )
-        end
 
-        # DynamoDB Kinesis Streaming Destination attributes with comprehensive validation
-        class DynamoDBKinesisStreamingDestinationAttributes < Dry::Struct
-          # Required attributes
-          attribute :stream_arn, Types::StreamArn
-          attribute :table_name, Types::TableName
-          
-          # Computed properties
-          def stream_name
-            stream_arn.split('/')[-1]
-          end
-          
-          def stream_region
-            stream_arn.split(':')[3]
-          end
-          
-          def stream_account_id
-            stream_arn.split(':')[4]
-          end
-          
-          def cross_region_streaming?
-            # This would need to be compared with the DynamoDB table region
-            # For now, return false as we don't have access to table details
-            false
-          end
-          
-          def cross_account_streaming?
-            # This would need to be compared with the DynamoDB table account
-            # For now, return false as we don't have access to table details
-            false
+          # DynamoDB Kinesis Streaming Destination attributes with comprehensive validation
+          class DynamoDBKinesisStreamingDestinationAttributes < Pangea::Resources::BaseAttributes
+            transform_keys(&:to_sym)
+
+            # Required attributes
+            attribute? :stream_arn, StreamArn.optional
+            attribute? :table_name, TableName.optional
+
+            # Computed properties
+            def stream_name
+              stream_arn.split('/')[-1]
+            end
+
+            def stream_region
+              stream_arn.split(':')[3]
+            end
+
+            def stream_account_id
+              stream_arn.split(':')[4]
+            end
+
+            def cross_region_streaming?
+              false
+            end
+
+            def cross_account_streaming?
+              false
+            end
           end
         end
       end

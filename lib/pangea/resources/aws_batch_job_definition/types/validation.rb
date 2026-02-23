@@ -30,7 +30,7 @@ module Pangea
             end
 
             def self.validate_container_properties(properties)
-              raise Dry::Struct::Error, 'Container properties must be a hash' unless properties.is_a?(Hash)
+              raise Dry::Struct::Error, 'Container properties must be a hash' unless properties.is_a?(::Hash)
 
               raise Dry::Struct::Error, "Container properties must include a non-empty 'image' field" unless properties[:image] && properties[:image].is_a?(String) && !properties[:image].empty?
 
@@ -59,7 +59,7 @@ module Pangea
             end
 
             def self.validate_node_properties(properties)
-              raise Dry::Struct::Error, 'Node properties must be a hash' unless properties.is_a?(Hash)
+              raise Dry::Struct::Error, 'Node properties must be a hash' unless properties.is_a?(::Hash)
 
               raise Dry::Struct::Error, 'Node properties must include a non-negative main_node index' unless properties[:main_node] && properties[:main_node].is_a?(Integer) && properties[:main_node] >= 0
 
@@ -74,7 +74,7 @@ module Pangea
 
             def self.validate_node_range_properties(node_ranges)
               node_ranges.each_with_index do |node_range, index|
-                raise Dry::Struct::Error, "Node range property #{index} must be a hash" unless node_range.is_a?(Hash)
+                raise Dry::Struct::Error, "Node range property #{index} must be a hash" unless node_range.is_a?(::Hash)
 
                 raise Dry::Struct::Error, "Node range property #{index} must include target_nodes string" unless node_range[:target_nodes] && node_range[:target_nodes].is_a?(String)
 
@@ -86,7 +86,7 @@ module Pangea
               raise Dry::Struct::Error, 'Environment variables must be an array' unless env_vars.is_a?(Array)
 
               env_vars.each_with_index do |env_var, index|
-                raise Dry::Struct::Error, "Environment variable #{index} must have 'name' and 'value' fields" unless env_var.is_a?(Hash) && env_var[:name] && env_var.key?(:value)
+                raise Dry::Struct::Error, "Environment variable #{index} must have 'name' and 'value' fields" unless env_var.is_a?(::Hash) && env_var[:name] && env_var.key?(:value)
               end
 
               true
@@ -96,7 +96,7 @@ module Pangea
               raise Dry::Struct::Error, 'Mount points must be an array' unless mount_points.is_a?(Array)
 
               mount_points.each_with_index do |mount_point, index|
-                raise Dry::Struct::Error, "Mount point #{index} must be a hash" unless mount_point.is_a?(Hash)
+                raise Dry::Struct::Error, "Mount point #{index} must be a hash" unless mount_point.is_a?(::Hash)
 
                 %i[source_volume container_path].each do |field|
                   raise Dry::Struct::Error, "Mount point #{index} must include non-empty '#{field}'" unless mount_point[field] && mount_point[field].is_a?(String) && !mount_point[field].empty?
@@ -110,14 +110,14 @@ module Pangea
               raise Dry::Struct::Error, 'Volumes must be an array' unless volumes.is_a?(Array)
 
               volumes.each_with_index do |volume, index|
-                raise Dry::Struct::Error, "Volume #{index} must have a 'name' field" unless volume.is_a?(Hash) && volume[:name] && volume[:name].is_a?(String)
+                raise Dry::Struct::Error, "Volume #{index} must have a 'name' field" unless volume.is_a?(::Hash) && volume[:name] && volume[:name].is_a?(String)
               end
 
               true
             end
 
             def self.validate_retry_strategy(retry_strategy)
-              raise Dry::Struct::Error, 'Retry strategy must be a hash' unless retry_strategy.is_a?(Hash)
+              raise Dry::Struct::Error, 'Retry strategy must be a hash' unless retry_strategy.is_a?(::Hash)
 
               if retry_strategy[:attempts]
                 raise Dry::Struct::Error, 'Retry attempts must be between 1 and 10' unless retry_strategy[:attempts].is_a?(Integer) && retry_strategy[:attempts] >= 1 && retry_strategy[:attempts] <= 10
@@ -127,7 +127,7 @@ module Pangea
             end
 
             def self.validate_timeout(timeout)
-              raise Dry::Struct::Error, 'Timeout must be a hash' unless timeout.is_a?(Hash)
+              raise Dry::Struct::Error, 'Timeout must be a hash' unless timeout.is_a?(::Hash)
 
               if timeout[:attempt_duration_seconds]
                 raise Dry::Struct::Error, 'Timeout duration must be at least 60 seconds' unless timeout[:attempt_duration_seconds].is_a?(Integer) && timeout[:attempt_duration_seconds] >= 60

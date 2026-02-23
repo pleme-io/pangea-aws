@@ -82,10 +82,10 @@ module Pangea
             return unless attrs.template_body
 
             begin
-              JSON.parse(attrs.template_body)
-            rescue JSON::ParserError
+              ::JSON.parse(attrs.template_body)
+            rescue ::JSON::ParserError
               begin
-                YAML.safe_load(attrs.template_body)
+                ::YAML.safe_load(attrs.template_body)
               rescue Psych::SyntaxError
                 raise Dry::Struct::Error, 'template_body must be valid JSON or YAML'
               end

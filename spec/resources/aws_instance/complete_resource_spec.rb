@@ -25,9 +25,9 @@ RSpec.describe "aws_instance resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -56,7 +56,7 @@ RSpec.describe "aws_instance resource function" do
   describe "InstanceAttributes validation" do
     it "validates required ami attribute" do
       expect {
-        Pangea::Resources::AWS::InstanceAttributes.new({
+        Pangea::Resources::AWS::Types::InstanceAttributes.new({
           instance_type: "t3.micro"
         })
       }.to raise_error(Dry::Struct::Error)
@@ -64,14 +64,14 @@ RSpec.describe "aws_instance resource function" do
     
     it "validates required instance_type attribute" do
       expect {
-        Pangea::Resources::AWS::InstanceAttributes.new({
+        Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id
         })
       }.to raise_error(Dry::Struct::Error)
     end
     
     it "accepts minimal valid instance attributes" do
-      attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
         ami: ami_id,
         instance_type: "t3.micro"
       })
@@ -81,7 +81,7 @@ RSpec.describe "aws_instance resource function" do
     end
     
     it "applies default values for optional attributes" do
-      attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
         ami: ami_id,
         instance_type: "t3.micro"
       })
@@ -95,7 +95,7 @@ RSpec.describe "aws_instance resource function" do
     end
     
     it "accepts network configuration attributes" do
-      attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
         ami: ami_id,
         instance_type: "t3.micro",
         subnet_id: subnet_id,
@@ -116,7 +116,7 @@ RSpec.describe "aws_instance resource function" do
         yum update -y
       USERDATA
       
-      attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
         ami: ami_id,
         instance_type: "m5.large",
         key_name: "my-key-pair",
@@ -130,7 +130,7 @@ RSpec.describe "aws_instance resource function" do
     end
     
     it "accepts root block device configuration" do
-      attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
         ami: ami_id,
         instance_type: "t3.micro",
         root_block_device: {
@@ -151,7 +151,7 @@ RSpec.describe "aws_instance resource function" do
     end
     
     it "accepts EBS block device configuration" do
-      attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
         ami: ami_id,
         instance_type: "r5.large",
         ebs_block_device: [
@@ -176,7 +176,7 @@ RSpec.describe "aws_instance resource function" do
     end
     
     it "accepts instance behavior attributes" do
-      attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
         ami: ami_id,
         instance_type: "c5.xlarge",
         instance_initiated_shutdown_behavior: "terminate",
@@ -194,7 +194,7 @@ RSpec.describe "aws_instance resource function" do
     end
     
     it "accepts tags" do
-      attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
         ami: ami_id,
         instance_type: "t3.micro",
         tags: { Name: "web-server", Environment: "production" }
@@ -209,7 +209,7 @@ RSpec.describe "aws_instance resource function" do
     describe "user data validation" do
       it "validates user_data exclusivity" do
         expect {
-          Pangea::Resources::AWS::InstanceAttributes.new({
+          Pangea::Resources::AWS::Types::InstanceAttributes.new({
             ami: ami_id,
             instance_type: "t3.micro",
             user_data: "#!/bin/bash\necho hello",
@@ -219,7 +219,7 @@ RSpec.describe "aws_instance resource function" do
       end
       
       it "accepts user_data alone" do
-        attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+        attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "t3.micro",
           user_data: "#!/bin/bash\necho hello"
@@ -230,7 +230,7 @@ RSpec.describe "aws_instance resource function" do
       end
       
       it "accepts user_data_base64 alone" do
-        attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+        attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "t3.micro",
           user_data_base64: "IyEvYmluL2Jhc2gK"
@@ -244,7 +244,7 @@ RSpec.describe "aws_instance resource function" do
     describe "storage validation" do
       it "validates IOPS only for io1/io2 volumes" do
         expect {
-          Pangea::Resources::AWS::InstanceAttributes.new({
+          Pangea::Resources::AWS::Types::InstanceAttributes.new({
             ami: ami_id,
             instance_type: "t3.micro",
             root_block_device: {
@@ -256,7 +256,7 @@ RSpec.describe "aws_instance resource function" do
       end
       
       it "accepts IOPS for io1 volumes" do
-        attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+        attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "t3.micro",
           root_block_device: {
@@ -270,7 +270,7 @@ RSpec.describe "aws_instance resource function" do
       end
       
       it "accepts IOPS for io2 volumes" do
-        attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+        attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "t3.micro",
           root_block_device: {
@@ -285,7 +285,7 @@ RSpec.describe "aws_instance resource function" do
       
       it "validates throughput only for gp3 volumes" do
         expect {
-          Pangea::Resources::AWS::InstanceAttributes.new({
+          Pangea::Resources::AWS::Types::InstanceAttributes.new({
             ami: ami_id,
             instance_type: "t3.micro",
             root_block_device: {
@@ -297,7 +297,7 @@ RSpec.describe "aws_instance resource function" do
       end
       
       it "accepts throughput for gp3 volumes" do
-        attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+        attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "t3.micro",
           root_block_device: {
@@ -313,7 +313,7 @@ RSpec.describe "aws_instance resource function" do
     
     describe "helper methods" do
       it "extracts instance family correctly" do
-        attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+        attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "m5.2xlarge"
         })
@@ -322,7 +322,7 @@ RSpec.describe "aws_instance resource function" do
       end
       
       it "extracts instance size correctly" do
-        attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+        attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "c5.xlarge"
         })
@@ -332,14 +332,14 @@ RSpec.describe "aws_instance resource function" do
       
       it "detects EBS optimization support" do
         # t3 family should not support EBS optimization
-        t3_attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+        t3_attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "t3.micro"
         })
         expect(t3_attrs.supports_ebs_optimization?).to eq(false)
         
         # m5 family should support EBS optimization
-        m5_attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+        m5_attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "m5.large"
         })
@@ -348,7 +348,7 @@ RSpec.describe "aws_instance resource function" do
       
       it "predicts public IP assignment" do
         # Explicitly set to true
-        public_attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+        public_attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "t3.micro",
           associate_public_ip_address: true
@@ -356,7 +356,7 @@ RSpec.describe "aws_instance resource function" do
         expect(public_attrs.will_have_public_ip?).to eq(true)
         
         # Explicitly set to false
-        private_attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+        private_attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "t3.micro",
           associate_public_ip_address: false
@@ -364,7 +364,7 @@ RSpec.describe "aws_instance resource function" do
         expect(private_attrs.will_have_public_ip?).to eq(false)
         
         # Not set - depends on subnet
-        unset_attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+        unset_attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "t3.micro"
         })
@@ -373,14 +373,14 @@ RSpec.describe "aws_instance resource function" do
       
       it "estimates hourly costs" do
         # Known instance type
-        t3_micro = Pangea::Resources::AWS::InstanceAttributes.new({
+        t3_micro = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "t3.micro"
         })
         expect(t3_micro.estimated_hourly_cost).to eq(0.0104)
         
         # Unknown instance type should use default
-        unknown_attrs = Pangea::Resources::AWS::InstanceAttributes.new({
+        unknown_attrs = Pangea::Resources::AWS::Types::InstanceAttributes.new({
           ami: ami_id,
           instance_type: "x1e.32xlarge"
         })

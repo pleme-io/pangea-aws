@@ -101,7 +101,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if workgroup_attrs.tags.any?
+          if workgroup_attrs.tags&.any?
             tags do
               workgroup_attrs.tags.each do |key, value|
                 public_send(key, value)

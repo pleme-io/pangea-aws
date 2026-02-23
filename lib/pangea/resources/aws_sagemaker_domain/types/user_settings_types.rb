@@ -27,7 +27,7 @@ module Pangea
             notebook_output_option?: Resources::Types::String.constrained(included_in: ['Allowed', 'Disabled']).optional,
             s3_output_path?: Resources::Types::String.optional,
             s3_kms_key_id?: Resources::Types::String.optional
-          ).optional,
+          ).lax.optional,
           jupyter_server_app_settings?: SageMakerDomainJupyterServerAppSettings.optional,
           kernel_gateway_app_settings?: SageMakerDomainKernelGatewayAppSettings.optional,
           tensor_board_app_settings?: SageMakerDomainTensorBoardAppSettings.optional,
@@ -38,7 +38,7 @@ module Pangea
         # SageMaker Domain retention policy
         SageMakerDomainRetentionPolicy = Resources::Types::Hash.schema(
           home_efs_file_system?: Resources::Types::String.default('Retain').enum('Retain', 'Delete')
-        )
+        ).lax
       end
     end
   end

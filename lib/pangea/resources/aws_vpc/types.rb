@@ -21,18 +21,18 @@ module Pangea
     module AWS
       module Types
         # VPC resource attributes with validation
-        class VpcAttributes < Dry::Struct
+        class VpcAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :cidr_block, Resources::Types::CidrBlock
+          attribute? :cidr_block, Resources::Types::CidrBlock.optional
           attribute :enable_dns_hostnames, Resources::Types::Bool.default(true)
           attribute :enable_dns_support, Resources::Types::Bool.default(true)
-          attribute :instance_tenancy, Resources::Types::InstanceTenancy
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :instance_tenancy, Resources::Types::InstanceTenancy.optional
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Custom validation for CIDR block subnet size
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate CIDR block is not too small for practical use
             if attrs[:cidr_block]

@@ -27,9 +27,9 @@ RSpec.describe "aws_dynamodb_table resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -629,7 +629,7 @@ RSpec.describe "aws_dynamodb_table resource function" do
       
       expect(result.id).to eq("${aws_dynamodb_table.orders.id}")
       expect(result.arn).to eq("${aws_dynamodb_table.orders.arn}")
-      expect(result.name).to eq("${aws_dynamodb_table.orders.name}")
+      expect(result.outputs[:name]).to eq("${aws_dynamodb_table.orders.name}")
       expect(result.hash_key).to eq("${aws_dynamodb_table.orders.hash_key}")
       expect(result.range_key).to eq("${aws_dynamodb_table.orders.range_key}")
       expect(result.billing_mode).to eq("${aws_dynamodb_table.orders.billing_mode}")

@@ -46,7 +46,7 @@ module Pangea
           neptune_parameter_group_name attrs.neptune_parameter_group_name if attrs.neptune_parameter_group_name
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

@@ -26,13 +26,13 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Redshift Cluster resources
-        class RedshiftClusterAttributes < Dry::Struct
+        class RedshiftClusterAttributes < Pangea::Resources::BaseAttributes
           include RedshiftCapacityCalculator
           include RedshiftCostEstimator
           include RedshiftFeatureChecks
 
           # Cluster identifier (required)
-          attribute :cluster_identifier, Resources::Types::String
+          attribute? :cluster_identifier, Resources::Types::String.optional
 
           # Database name
           attribute :database_name, Resources::Types::String.default('dev')
@@ -41,10 +41,10 @@ module Pangea
           attribute :master_username, Resources::Types::String.default('awsuser')
 
           # Master password (required for new clusters)
-          attribute :master_password, Resources::Types::String.optional
+          attribute? :master_password, Resources::Types::String.optional
 
           # Node type (required)
-          attribute :node_type, Resources::Types::String.constrained(included_in: ['dc2.large', 'dc2.8xlarge',
+          attribute? :node_type, Resources::Types::String.constrained(included_in: ['dc2.large', 'dc2.8xlarge',
             'ra3.xlplus', 'ra3.4xlarge', 'ra3.16xlarge'])
 
           # Cluster type
@@ -57,16 +57,16 @@ module Pangea
           attribute :port, Resources::Types::Integer.default(5439)
 
           # Cluster subnet group name
-          attribute :cluster_subnet_group_name, Resources::Types::String.optional
+          attribute? :cluster_subnet_group_name, Resources::Types::String.optional
 
           # Cluster parameter group name
-          attribute :cluster_parameter_group_name, Resources::Types::String.optional
+          attribute? :cluster_parameter_group_name, Resources::Types::String.optional
 
           # VPC security group IDs
           attribute :vpc_security_group_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
           # Availability zone
-          attribute :availability_zone, Resources::Types::String.optional
+          attribute? :availability_zone, Resources::Types::String.optional
 
           # Preferred maintenance window
           attribute :preferred_maintenance_window, Resources::Types::String.default('sun:05:00-sun:06:00')
@@ -81,7 +81,7 @@ module Pangea
           attribute :encrypted, Resources::Types::Bool.default(false)
 
           # KMS key ID for encryption
-          attribute :kms_key_id, Resources::Types::String.optional
+          attribute? :kms_key_id, Resources::Types::String.optional
 
           # Enhanced VPC routing
           attribute :enhanced_vpc_routing, Resources::Types::Bool.default(false)
@@ -90,22 +90,22 @@ module Pangea
           attribute :publicly_accessible, Resources::Types::Bool.default(false)
 
           # Elastic IP
-          attribute :elastic_ip, Resources::Types::String.optional
+          attribute? :elastic_ip, Resources::Types::String.optional
 
           # Skip final snapshot
           attribute :skip_final_snapshot, Resources::Types::Bool.default(true)
 
           # Final snapshot identifier
-          attribute :final_snapshot_identifier, Resources::Types::String.optional
+          attribute? :final_snapshot_identifier, Resources::Types::String.optional
 
           # Snapshot identifier to restore from
-          attribute :snapshot_identifier, Resources::Types::String.optional
+          attribute? :snapshot_identifier, Resources::Types::String.optional
 
           # Snapshot cluster identifier
-          attribute :snapshot_cluster_identifier, Resources::Types::String.optional
+          attribute? :snapshot_cluster_identifier, Resources::Types::String.optional
 
           # Owner account for snapshot
-          attribute :owner_account, Resources::Types::String.optional
+          attribute? :owner_account, Resources::Types::String.optional
 
           # Allow version upgrade
           attribute :allow_version_upgrade, Resources::Types::Bool.default(true)
@@ -114,18 +114,18 @@ module Pangea
           attribute :cluster_version, Resources::Types::String.default('1.0')
 
           # Logging configuration
-          attribute :logging, Resources::Types::Hash.schema(
+          attribute? :logging, Resources::Types::Hash.schema(
             enable: Resources::Types::Bool.default(false),
             bucket_name?: Resources::Types::String.optional,
             s3_key_prefix?: Resources::Types::String.optional
-          ).optional
+          ).lax.optional
 
           # Snapshot copy configuration
-          attribute :snapshot_copy, Resources::Types::Hash.schema(
+          attribute? :snapshot_copy, Resources::Types::Hash.schema(
             destination_region: Resources::Types::String,
             retention_period?: Resources::Types::Integer.optional,
             grant_name?: Resources::Types::String.optional
-          ).optional
+          ).lax.optional
 
           # IAM roles
           attribute :iam_roles, Resources::Types::Array.of(Resources::Types::String).default([].freeze)

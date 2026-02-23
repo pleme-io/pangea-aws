@@ -27,12 +27,12 @@ module Pangea
           # @param volumes [Array] Array of volume configurations
           def configure(context, volumes)
             volumes.each do |vol|
-              context.volume do
-                name vol[:name]
-                configure_host_volume(self, vol)
-                configure_docker_volume(self, vol)
-                configure_efs_volume(self, vol)
-                configure_fsx_volume(self, vol)
+              context.volume do |v|
+                v.name vol[:name]
+                configure_host_volume(v, vol)
+                configure_docker_volume(v, vol)
+                configure_efs_volume(v, vol)
+                configure_fsx_volume(v, vol)
               end
             end
           end
@@ -42,8 +42,8 @@ module Pangea
           def configure_host_volume(context, vol)
             return unless vol[:host]
 
-            context.host do
-              source_path vol[:host][:source_path] if vol[:host][:source_path]
+            context.host do |h|
+              h.source_path vol[:host][:source_path] if vol[:host][:source_path]
             end
           end
 
@@ -51,12 +51,12 @@ module Pangea
             dvc = vol[:docker_volume_configuration]
             return unless dvc
 
-            context.docker_volume_configuration do
-              scope dvc[:scope] if dvc[:scope]
-              autoprovision dvc[:autoprovision] unless dvc[:autoprovision].nil?
-              driver dvc[:driver] if dvc[:driver]
-              driver_opts dvc[:driver_opts] if dvc[:driver_opts]
-              labels dvc[:labels] if dvc[:labels]
+            context.docker_volume_configuration do |d|
+              d.scope dvc[:scope] if dvc[:scope]
+              d.autoprovision dvc[:autoprovision] unless dvc[:autoprovision].nil?
+              d.driver dvc[:driver] if dvc[:driver]
+              d.driver_opts dvc[:driver_opts] if dvc[:driver_opts]
+              d.labels dvc[:labels] if dvc[:labels]
             end
           end
 
@@ -64,13 +64,13 @@ module Pangea
             evc = vol[:efs_volume_configuration]
             return unless evc
 
-            context.efs_volume_configuration do
-              file_system_id evc[:file_system_id]
-              root_directory evc[:root_directory] if evc[:root_directory]
-              transit_encryption evc[:transit_encryption] if evc[:transit_encryption]
-              transit_encryption_port evc[:transit_encryption_port] if evc[:transit_encryption_port]
+            context.efs_volume_configuration do |e|
+              e.file_system_id evc[:file_system_id]
+              e.root_directory evc[:root_directory] if evc[:root_directory]
+              e.transit_encryption evc[:transit_encryption] if evc[:transit_encryption]
+              e.transit_encryption_port evc[:transit_encryption_port] if evc[:transit_encryption_port]
 
-              configure_efs_authorization(self, evc)
+              configure_efs_authorization(e, evc)
             end
           end
 
@@ -78,9 +78,9 @@ module Pangea
             auth = evc[:authorization_config]
             return unless auth
 
-            context.authorization_config do
-              access_point_id auth[:access_point_id] if auth[:access_point_id]
-              iam auth[:iam] if auth[:iam]
+            context.authorization_config do |a|
+              a.access_point_id auth[:access_point_id] if auth[:access_point_id]
+              a.iam auth[:iam] if auth[:iam]
             end
           end
 
@@ -88,13 +88,13 @@ module Pangea
             fsx = vol[:fsx_windows_file_server_volume_configuration]
             return unless fsx
 
-            context.fsx_windows_file_server_volume_configuration do
-              file_system_id fsx[:file_system_id]
-              root_directory fsx[:root_directory]
+            context.fsx_windows_file_server_volume_configuration do |f|
+              f.file_system_id fsx[:file_system_id]
+              f.root_directory fsx[:root_directory]
 
-              authorization_config do
-                credentials_parameter fsx[:authorization_config][:credentials_parameter]
-                domain fsx[:authorization_config][:domain]
+              f.authorization_config do |a|
+                a.credentials_parameter fsx[:authorization_config][:credentials_parameter]
+                a.domain fsx[:authorization_config][:domain]
               end
             end
           end

@@ -25,16 +25,16 @@ module Pangea
     module AWS
       module Types
         # AWS Batch Compute Environment attributes with validation
-        class BatchComputeEnvironmentAttributes < Dry::Struct
+        class BatchComputeEnvironmentAttributes < Pangea::Resources::BaseAttributes
           include BatchComputeEnvironmentHelpers
-          extend BatchComputeEnvironmentTemplates
+          extend Pangea::Resources::AWS::Types::BatchComputeEnvironmentTemplates
           extend BatchInstanceTypes
 
           transform_keys(&:to_sym)
 
           # Core attributes
-          attribute :compute_environment_name, Resources::Types::String
-          attribute :type, Resources::Types::String
+          attribute? :compute_environment_name, Resources::Types::String.optional
+          attribute? :type, Resources::Types::String.optional
 
           # Optional attributes
           attribute? :state, Resources::Types::String.optional.default("ENABLED")
@@ -44,7 +44,7 @@ module Pangea
 
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             if attrs[:compute_environment_name]
               BatchComputeEnvironmentValidators.validate_compute_environment_name(

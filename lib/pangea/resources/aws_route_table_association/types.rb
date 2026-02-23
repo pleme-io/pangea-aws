@@ -21,9 +21,9 @@ module Pangea
       module Types
         # Type-safe attributes for AWS Route Table Association resources
         # Associates a route table with either a subnet or internet/vpn gateway
-        class RouteTableAssociationAttributes < Dry::Struct
+        class RouteTableAssociationAttributes < Pangea::Resources::BaseAttributes
           # Required: The ID of the routing table to associate
-          attribute :route_table_id, Resources::Types::String
+          attribute? :route_table_id, Resources::Types::String.optional
           
           # Optional: The subnet ID to associate (mutually exclusive with gateway_id)
           attribute? :subnet_id, Resources::Types::String.optional

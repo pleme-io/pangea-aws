@@ -21,15 +21,17 @@ module Pangea
     module AWS
       module Types
         # Block device mapping for launch template
-        class BlockDeviceMapping < Dry::Struct
+        class BlockDeviceMapping < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :device_name, Resources::Types::String
+          attribute? :device_name, Resources::Types::String.optional
           attribute :no_device, Resources::Types::String.optional.default(nil)
           attribute :virtual_name, Resources::Types::String.optional.default(nil)
 
+          VALID_VOLUME_TYPES = %w[gp2 gp3 io1 io2 st1 sc1 standard].freeze
+
           # EBS block device settings
-          attribute :ebs, Resources::Types::Hash.schema(
+          attribute? :ebs, Resources::Types::Hash.schema(
             delete_on_termination: Resources::Types::Bool.default(true),
             encrypted: Resources::Types::Bool.default(false),
             iops: Resources::Types::Integer.optional,
@@ -38,7 +40,22 @@ module Pangea
             throughput: Resources::Types::Integer.optional,
             volume_size: Resources::Types::Integer.optional,
             volume_type: Resources::Types::String.default('gp3').constrained(included_in: ['gp2', 'gp3', 'io1', 'io2', 'st1', 'sc1', 'standard'])
-          ).optional.default(nil)
+          ).lax.optional.default(nil)
+
+          def self.new(attributes = {})
+            attrs = attributes.is_a?(::Hash) ? attributes.transform_keys(&:to_sym) : {}
+
+            # Validate EBS volume_type explicitly (bypasses .lax)
+            if attrs[:ebs].is_a?(::Hash)
+              ebs = attrs[:ebs].transform_keys(&:to_sym)
+              vol_type = ebs[:volume_type]
+              if vol_type && !VALID_VOLUME_TYPES.include?(vol_type)
+                raise Dry::Struct::Error, "Invalid EBS volume_type: #{vol_type}. Must be one of: #{VALID_VOLUME_TYPES.join(', ')}"
+              end
+            end
+
+            super(attrs)
+          end
 
           def to_h
             hash = {

@@ -67,6 +67,8 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
   
   # Test Fargate task definition synthesis
   it "synthesizes Fargate task definition correctly" do
+    _task_role_arn = task_role_arn
+    _execution_role_arn = execution_role_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -97,8 +99,8 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
         network_mode: "awsvpc",
         cpu: "256",
         memory: "512",
-        execution_role_arn: execution_role_arn,
-        task_role_arn: task_role_arn
+        execution_role_arn: _execution_role_arn,
+        task_role_arn: _task_role_arn
       })
     end
     
@@ -132,6 +134,7 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
   
   # Test task definition with environment variables and secrets
   it "synthesizes task definition with environment and secrets correctly" do
+    _execution_role_arn = execution_role_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -153,7 +156,7 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
             ]
           }
         ],
-        execution_role_arn: execution_role_arn
+        execution_role_arn: _execution_role_arn
       })
     end
     
@@ -180,6 +183,7 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
   
   # Test task definition with logging configuration
   it "synthesizes task definition with logging correctly" do
+    _execution_role_arn = execution_role_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -203,7 +207,7 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
             }
           }
         ],
-        execution_role_arn: execution_role_arn
+        execution_role_arn: _execution_role_arn
       })
     end
     
@@ -267,6 +271,8 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
   
   # Test task definition with EFS volumes
   it "synthesizes task definition with EFS volumes correctly" do
+    _efs_file_system_id = efs_file_system_id
+    _efs_access_point_id = efs_access_point_id
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -286,12 +292,12 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
           {
             name: "shared-storage",
             efs_volume_configuration: {
-              file_system_id: efs_file_system_id,
+              file_system_id: _efs_file_system_id,
               root_directory: "/data",
               transit_encryption: "ENABLED",
               transit_encryption_port: 2999,
               authorization_config: {
-                access_point_id: efs_access_point_id,
+                access_point_id: _efs_access_point_id,
                 iam: "ENABLED"
               }
             }
@@ -366,6 +372,8 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
   
   # Test task definition with proxy configuration (App Mesh)
   it "synthesizes task definition with proxy configuration correctly" do
+    _task_role_arn = task_role_arn
+    _execution_role_arn = execution_role_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -404,8 +412,8 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
         network_mode: "awsvpc",
         cpu: "512",
         memory: "1024",
-        execution_role_arn: execution_role_arn,
-        task_role_arn: task_role_arn
+        execution_role_arn: _execution_role_arn,
+        task_role_arn: _task_role_arn
       })
     end
     
@@ -551,6 +559,7 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
   
   # Test task definition with FireLens logging
   it "synthesizes task definition with FireLens correctly" do
+    _execution_role_arn = execution_role_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -586,7 +595,7 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
             }
           }
         ],
-        execution_role_arn: execution_role_arn
+        execution_role_arn: _execution_role_arn
       })
     end
     
@@ -607,6 +616,7 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
   
   # Test task definition with runtime platform
   it "synthesizes task definition with runtime platform correctly" do
+    _execution_role_arn = execution_role_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -623,7 +633,7 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
         network_mode: "awsvpc",
         cpu: "256",
         memory: "512",
-        execution_role_arn: execution_role_arn,
+        execution_role_arn: _execution_role_arn,
         runtime_platform: {
           operating_system_family: "LINUX",
           cpu_architecture: "ARM64"
@@ -641,6 +651,7 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
   
   # Test task definition with ephemeral storage
   it "synthesizes task definition with ephemeral storage correctly" do
+    _execution_role_arn = execution_role_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -657,7 +668,7 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
         network_mode: "awsvpc",
         cpu: "512",
         memory: "1024",
-        execution_role_arn: execution_role_arn,
+        execution_role_arn: _execution_role_arn,
         ephemeral_storage: {
           size_in_gib: 50
         }
@@ -673,6 +684,8 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
   
   # Test comprehensive web application task definition
   it "synthesizes comprehensive web application task definition correctly" do
+    _task_role_arn = task_role_arn
+    _execution_role_arn = execution_role_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -739,8 +752,8 @@ RSpec.describe "aws_ecs_task_definition terraform synthesis" do
         network_mode: "awsvpc",
         cpu: "512",
         memory: "1024",
-        execution_role_arn: execution_role_arn,
-        task_role_arn: task_role_arn,
+        execution_role_arn: _execution_role_arn,
+        task_role_arn: _task_role_arn,
         tags: {
           Application: "web-app",
           Environment: "production",

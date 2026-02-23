@@ -24,7 +24,7 @@ module Pangea
     module AWS
       # Create an AWS Config Remediation Configuration with type-safe attributes
       def aws_config_remediation_configuration(name, attributes = {})
-        remediation_attrs = Types::Types::ConfigRemediationConfigurationAttributes.new(attributes)
+        remediation_attrs = Types::ConfigRemediationConfigurationAttributes.new(attributes)
         
         resource(:aws_config_remediation_configuration, name) do
           config_rule_name remediation_attrs.config_rule_name
@@ -35,6 +35,7 @@ module Pangea
           automatic remediation_attrs.automatic
           
           maximum_automatic_attempts remediation_attrs.maximum_automatic_attempts if remediation_attrs.has_max_attempts?
+          retry_attempt_seconds remediation_attrs.retry_attempt_seconds if remediation_attrs.retry_attempt_seconds
           
           if remediation_attrs.has_parameters?
             parameters do
@@ -44,7 +45,7 @@ module Pangea
             end
           end
           
-          if remediation_attrs.tags.any?
+          if remediation_attrs.tags&.any?
             tags do
               remediation_attrs.tags.each do |key, value|
                 public_send(key, value)
@@ -58,6 +59,7 @@ module Pangea
           name: name,
           resource_attributes: remediation_attrs.to_h,
           outputs: {
+            id: "${aws_config_remediation_configuration.#{name}.id}",
             arn: "${aws_config_remediation_configuration.#{name}.arn}",
             config_rule_name: "${aws_config_remediation_configuration.#{name}.config_rule_name}",
             tags_all: "${aws_config_remediation_configuration.#{name}.tags_all}"

@@ -27,9 +27,9 @@ RSpec.describe "aws_elasticache_cluster resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -88,7 +88,7 @@ RSpec.describe "aws_elasticache_cluster resource function" do
           engine: "invalid",
           node_type: "cache.t4g.micro"
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "validates node type" do
@@ -98,7 +98,7 @@ RSpec.describe "aws_elasticache_cluster resource function" do
           engine: "redis",
           node_type: "invalid.instance"
         })
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
     
     it "validates Redis single node constraint" do
@@ -303,7 +303,7 @@ RSpec.describe "aws_elasticache_cluster resource function" do
       })
       
       expect(result.resource_attributes[:num_cache_nodes]).to eq(4)
-      expect(result.resource_attributes[:preferred_availability_zones]).to have(4).items
+      expect(result.resource_attributes[:preferred_availability_zones].size).to eq(4)
     end
     
     it "creates cluster with custom configuration" do
@@ -321,7 +321,7 @@ RSpec.describe "aws_elasticache_cluster resource function" do
       
       expect(result.resource_attributes[:engine_version]).to eq("6.2")
       expect(result.resource_attributes[:parameter_group_name]).to eq("custom-redis62-params")
-      expect(result.resource_attributes[:security_group_ids]).to have(2).items
+      expect(result.resource_attributes[:security_group_ids].size).to eq(2)
       expect(result.resource_attributes[:auto_minor_version_upgrade]).to eq(false)
     end
     
@@ -340,7 +340,7 @@ RSpec.describe "aws_elasticache_cluster resource function" do
         ]
       })
       
-      expect(result.resource_attributes[:log_delivery_configuration]).to have(1).item
+      expect(result.resource_attributes[:log_delivery_configuration].size).to eq(1)
       expect(result.resource_attributes[:log_delivery_configuration].first[:log_type]).to eq("slow-log")
     end
     
@@ -356,7 +356,7 @@ RSpec.describe "aws_elasticache_cluster resource function" do
         }
       })
       
-      expect(result.resource_attributes[:tags]).to have(3).items
+      expect(result.resource_attributes[:tags].size).to eq(3)
       expect(result.resource_attributes[:tags][:Environment]).to eq("production")
     end
     

@@ -10,26 +10,26 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS DynamoDB Table resources
-        class DynamoDbTableAttributes < Dry::Struct
+        class DynamoDbTableAttributes < Pangea::Resources::BaseAttributes
           include DynamoDbTableInstanceMethods
 
           transform_keys(&:to_sym)
           # Table name (required)
-          attribute :name, Pangea::Resources::Types::String
+          attribute? :name, Pangea::Resources::Types::String.optional
 
           # Billing mode
           attribute :billing_mode, Pangea::Resources::Types::String.constrained(included_in: ["PAY_PER_REQUEST", "PROVISIONED"]).default("PAY_PER_REQUEST")
 
           # Attribute definitions
-          attribute :attribute, Pangea::Resources::Types::Array.of(
+          attribute? :attribute, Pangea::Resources::Types::Array.of(
             Pangea::Resources::Types::Hash.schema(
               name: Pangea::Resources::Types::String,
               type: Pangea::Resources::Types::String.constrained(included_in: ["S", "N", "B"])
-            )
+            ).lax
           ).constrained(min_size: 1)
 
           # Hash key (partition key) - required
-          attribute :hash_key, Pangea::Resources::Types::String
+          attribute? :hash_key, Pangea::Resources::Types::String.optional
 
           # Range key (sort key) - optional
           attribute? :range_key, Pangea::Resources::Types::String.optional
@@ -39,7 +39,7 @@ module Pangea
           attribute? :write_capacity, Pangea::Resources::Types::Integer.optional.constrained(gteq: 1, lteq: 40000)
 
           # Global Secondary Indexes
-          attribute :global_secondary_index, Pangea::Resources::Types::Array.of(
+          attribute? :global_secondary_index, Pangea::Resources::Types::Array.of(
             Pangea::Resources::Types::Hash.schema(
               name: Pangea::Resources::Types::String,
               hash_key: Pangea::Resources::Types::String,
@@ -48,24 +48,24 @@ module Pangea
               read_capacity?: Pangea::Resources::Types::Integer.optional.constrained(gteq: 1, lteq: 40000),
               projection_type?: Pangea::Resources::Types::String.constrained(included_in: ["ALL", "KEYS_ONLY", "INCLUDE"]).default("ALL"),
               non_key_attributes?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).optional
-            )
+            ).lax
           ).default([].freeze)
 
           # Local Secondary Indexes
-          attribute :local_secondary_index, Pangea::Resources::Types::Array.of(
+          attribute? :local_secondary_index, Pangea::Resources::Types::Array.of(
             Pangea::Resources::Types::Hash.schema(
               name: Pangea::Resources::Types::String,
               range_key: Pangea::Resources::Types::String,
               projection_type?: Pangea::Resources::Types::String.constrained(included_in: ["ALL", "KEYS_ONLY", "INCLUDE"]).default("ALL"),
               non_key_attributes?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).optional
-            )
+            ).lax
           ).default([].freeze)
 
           # TTL configuration
           attribute? :ttl, Pangea::Resources::Types::Hash.schema(
             attribute_name: Pangea::Resources::Types::String,
             enabled?: Pangea::Resources::Types::Bool.default(true)
-          ).optional
+          ).lax.optional
 
           # Stream configuration
           attribute? :stream_enabled, Pangea::Resources::Types::Bool.optional
@@ -78,7 +78,7 @@ module Pangea
           attribute? :server_side_encryption, Pangea::Resources::Types::Hash.schema(
             enabled: Pangea::Resources::Types::Bool.default(true),
             kms_key_id?: Pangea::Resources::Types::String.optional
-          ).optional
+          ).lax.optional
 
           # Deletion protection
           attribute :deletion_protection_enabled, Pangea::Resources::Types::Bool.default(false)
@@ -104,13 +104,13 @@ module Pangea
               csv?: Pangea::Resources::Types::Hash.schema(
                 delimiter?: Pangea::Resources::Types::String.optional,
                 header_list?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).optional
-              ).optional
+              ).lax.optional
             ).optional,
             input_compression_type?: Pangea::Resources::Types::String.constrained(included_in: ["GZIP", "ZSTD", "NONE"]).optional
           ).optional
 
           # Replica configuration for Global Tables
-          attribute :replica, Pangea::Resources::Types::Array.of(
+          attribute? :replica, Pangea::Resources::Types::Array.of(
             Pangea::Resources::Types::Hash.schema(
               region_name: Pangea::Resources::Types::String,
               kms_key_id?: Pangea::Resources::Types::String.optional,
@@ -120,7 +120,7 @@ module Pangea
                   name: Pangea::Resources::Types::String,
                   read_capacity?: Pangea::Resources::Types::Integer.optional.constrained(gteq: 1),
                   write_capacity?: Pangea::Resources::Types::Integer.optional.constrained(gteq: 1)
-                )
+                ).lax
               ).optional,
               table_class?: Pangea::Resources::Types::String.constrained(included_in: ["STANDARD", "STANDARD_INFREQUENT_ACCESS"]).optional
             )

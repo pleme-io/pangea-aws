@@ -109,7 +109,7 @@ module Pangea
                       if cwad[:dimensions]&.any?
                         dimensions do
                           cwad[:dimensions].each do |dim_key, dim_value|
-                            public_send(dim_key.gsub(/[^a-zA-Z0-9_]/, '_').downcase, dim_value)
+                            public_send(dim_key.to_s.gsub(/[^a-zA-Z0-9_]/, '_').downcase, dim_value)
                           end
                         end
                       end
@@ -133,7 +133,7 @@ module Pangea
                     if sub_config[:properties]&.any?
                       properties do
                         sub_config[:properties].each do |key, value|
-                          public_send(key.gsub(/[^a-zA-Z0-9_]/, '_').downcase, value)
+                          public_send(key.to_s.gsub(/[^a-zA-Z0-9_]/, '_').downcase, value)
                         end
                       end
                     end
@@ -144,7 +144,7 @@ module Pangea
               if config[:properties]&.any?
                 properties do
                   config[:properties].each do |key, value|
-                    public_send(key.gsub(/[^a-zA-Z0-9_]/, '_').downcase, value)
+                    public_send(key.to_s.gsub(/[^a-zA-Z0-9_]/, '_').downcase, value)
                   end
                 end
               end

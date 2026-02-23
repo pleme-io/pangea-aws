@@ -45,32 +45,32 @@ module Pangea
           
           # Command configuration
           command do
-            script_location job_attrs.command[:script_location]
-            name job_attrs.command[:name] if job_attrs.command[:name]
-            python_version job_attrs.command[:python_version] if job_attrs.command[:python_version]
-            runtime job_attrs.command[:runtime] if job_attrs.command[:runtime]
+            script_location job_attrs.command&.dig(:script_location)
+            name job_attrs.command&.dig(:name) if job_attrs.command&.dig(:name)
+            python_version job_attrs.command&.dig(:python_version) if job_attrs.command&.dig(:python_version)
+            runtime job_attrs.command&.dig(:runtime) if job_attrs.command&.dig(:runtime)
           end
           
           # Default arguments
-          if job_attrs.default_arguments.any?
+          if job_attrs.default_arguments&.any?
             default_arguments do
               job_attrs.default_arguments.each do |key, value|
-                public_send(key.gsub(/[^a-zA-Z0-9_]/, '_').downcase, value)
+                public_send(key.to_s.gsub(/[^a-zA-Z0-9_]/, '_').downcase, value)
               end
             end
           end
           
           # Non-overridable arguments
-          if job_attrs.non_overridable_arguments.any?
+          if job_attrs.non_overridable_arguments&.any?
             non_overridable_arguments do
               job_attrs.non_overridable_arguments.each do |key, value|
-                public_send(key.gsub(/[^a-zA-Z0-9_]/, '_').downcase, value)
+                public_send(key.to_s.gsub(/[^a-zA-Z0-9_]/, '_').downcase, value)
               end
             end
           end
           
           # Connections
-          if job_attrs.connections.any?
+          if job_attrs.connections&.any?
             connections job_attrs.connections
           end
           
@@ -96,7 +96,7 @@ module Pangea
           end
           
           # Execution properties
-          if job_attrs.execution_property.any?
+          if job_attrs.execution_property&.any?
             execution_property do
               ep = job_attrs.execution_property
               max_concurrent_runs ep[:max_concurrent_runs] if ep[:max_concurrent_runs]
@@ -104,7 +104,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if job_attrs.tags.any?
+          if job_attrs.tags&.any?
             tags do
               job_attrs.tags.each do |key, value|
                 public_send(key, value)

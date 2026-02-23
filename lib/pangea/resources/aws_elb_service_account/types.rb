@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsElbServiceAccount resources
       # Manages aws elb service account resources.
-      class AwsElbServiceAccountAttributes < Dry::Struct
+      class AwsElbServiceAccountAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_elb_service_account
         
         # Tags to apply to the resource

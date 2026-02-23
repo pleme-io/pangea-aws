@@ -38,7 +38,7 @@ module Pangea
           kms_key_id bus_attrs.kms_key_id if bus_attrs.kms_key_id
 
           # Apply tags if present
-          if bus_attrs.tags.any?
+          if bus_attrs.tags&.any?
             tags do
               bus_attrs.tags.each do |key, value|
                 public_send(key, value)

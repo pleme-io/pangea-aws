@@ -42,18 +42,18 @@ module Pangea
 
           def build_scaling_config(context, scaling_config)
             context.scaling_config do
-              desired_size scaling_config.desired_size
-              max_size scaling_config.max_size
-              min_size scaling_config.min_size
+              context.desired_size scaling_config.desired_size
+              context.max_size scaling_config.max_size
+              context.min_size scaling_config.min_size
             end
           end
 
           def build_update_config(context, update_config)
             context.update_config do
               if update_config.max_unavailable
-                max_unavailable update_config.max_unavailable
+                context.max_unavailable update_config.max_unavailable
               elsif update_config.max_unavailable_percentage
-                max_unavailable_percentage update_config.max_unavailable_percentage
+                context.max_unavailable_percentage update_config.max_unavailable_percentage
               end
             end
           end
@@ -73,16 +73,16 @@ module Pangea
 
           def build_remote_access(context, remote_access)
             context.remote_access do
-              ec2_ssh_key remote_access.ec2_ssh_key if remote_access.ec2_ssh_key
-              source_security_group_ids remote_access.source_security_group_ids if remote_access.source_security_group_ids.any?
+              context.ec2_ssh_key remote_access.ec2_ssh_key if remote_access.ec2_ssh_key
+              context.source_security_group_ids remote_access.source_security_group_ids if remote_access.source_security_group_ids.any?
             end
           end
 
           def build_launch_template(context, launch_template)
             context.launch_template do
-              id launch_template.id if launch_template.id
-              __send__(:name, launch_template.name) if launch_template.name
-              version launch_template.version if launch_template.version
+              context.id launch_template.id if launch_template.id
+              context.__send__(:name, launch_template.name) if launch_template.name
+              context.version launch_template.version if launch_template.version
             end
           end
 
@@ -93,13 +93,12 @@ module Pangea
           end
 
           def build_taints(context, taints)
-            taints.each do |taint_config|
-              context.taint do
-                key taint_config.key
-                value taint_config.value if taint_config.value
-                effect taint_config.effect
-              end
+            taint_array = taints.map do |taint_config|
+              taint_hash = { key: taint_config.key, effect: taint_config.effect }
+              taint_hash[:value] = taint_config.value if taint_config.value
+              taint_hash
             end
+            context.taint taint_array
           end
         end
       end

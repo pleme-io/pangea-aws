@@ -166,8 +166,8 @@ module Pangea
 
           def add_container_attributes(hash, container)
             hash[:user] = container.user if container.user
-            hash[:privileged] = container.privileged if container.privileged
-            hash[:readonlyRootFilesystem] = container.readonly_root_filesystem if container.readonly_root_filesystem
+            hash[:privileged] = container.privileged unless container.privileged.nil?
+            hash[:readonlyRootFilesystem] = container.readonly_root_filesystem unless container.readonly_root_filesystem.nil?
             hash[:dnsServers] = container.dns_servers if container.dns_servers.any?
             hash[:dnsSearchDomains] = container.dns_search_domains if container.dns_search_domains.any?
             hash[:extraHosts] = container.extra_hosts.map { |eh| { hostname: eh[:hostname], ipAddress: eh[:ip_address] } } if container.extra_hosts.any?

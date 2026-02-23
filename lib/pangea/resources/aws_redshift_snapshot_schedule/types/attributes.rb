@@ -11,20 +11,20 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Redshift Snapshot Schedule resources
-        class RedshiftSnapshotScheduleAttributes < Dry::Struct
+        class RedshiftSnapshotScheduleAttributes < Pangea::Resources::BaseAttributes
           extend RedshiftSnapshotScheduleValidation
-          extend RedshiftSnapshotScheduleTemplates
+          extend Pangea::Resources::AWS::Types::RedshiftSnapshotScheduleTemplates
           include RedshiftSnapshotScheduleInstanceMethods
 
           # Schedule identifier (required)
-          attribute :identifier, Resources::Types::String
+          attribute? :identifier, Resources::Types::String.optional
 
           # Schedule description
-          attribute :description, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
 
           # Schedule definitions (required)
           # Format: "rate(12 hours)" or "cron(0 12 * * ? *)"
-          attribute :definitions, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
+          attribute? :definitions, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1).optional
 
           # Force destroy
           attribute :force_destroy, Resources::Types::Bool.default(false)

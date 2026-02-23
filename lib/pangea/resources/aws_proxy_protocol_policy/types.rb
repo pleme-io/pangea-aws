@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsProxyProtocolPolicy resources
       # Manages aws proxy protocol policy resources.
-      class AwsProxyProtocolPolicyAttributes < Dry::Struct
+      class AwsProxyProtocolPolicyAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_proxy_protocol_policy
         
         # Tags to apply to the resource

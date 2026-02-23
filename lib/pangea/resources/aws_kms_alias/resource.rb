@@ -29,14 +29,23 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_kms_alias(name, attributes = {})
         # Validate attributes using dry-struct
-        alias_attrs = AWS::Types::Types::KmsAliasAttributes.new(attributes)
-        
-        # Generate terraform resource block via terraform-synthesizer
-        resource(:aws_kms_alias, name) do
-          name alias_attrs.name
-          target_key_id alias_attrs.target_key_id
+        alias_attrs = Types::KmsAliasAttributes.new(attributes)
+
+        # Build resource attributes as a hash
+        resource_attrs = {
+          name: alias_attrs.name,
+          target_key_id: alias_attrs.target_key_id
+        }
+
+        # Write to manifest: direct access for synthesizer, fall back to resource() for test mocks
+        if is_a?(AbstractSynthesizer)
+          translation[:manifest][:resource] ||= {}
+          translation[:manifest][:resource][:aws_kms_alias] ||= {}
+          translation[:manifest][:resource][:aws_kms_alias][name] = resource_attrs
+        else
+          resource(:aws_kms_alias, name, resource_attrs)
         end
-        
+
         # Return resource reference with available outputs
         ref = ResourceReference.new(
           type: 'aws_kms_alias',
@@ -50,14 +59,14 @@ module Pangea
             target_key_id: "${aws_kms_alias.#{name}.target_key_id}"
           }
         )
-        
+
         # Add computed properties via method delegation
         ref.define_singleton_method(:alias_suffix) { alias_attrs.alias_suffix }
         ref.define_singleton_method(:is_service_alias?) { alias_attrs.is_service_alias? }
         ref.define_singleton_method(:estimated_alias_purpose) { alias_attrs.estimated_alias_purpose }
         ref.define_singleton_method(:uses_key_id?) { alias_attrs.uses_key_id? }
         ref.define_singleton_method(:uses_key_arn?) { alias_attrs.uses_key_arn? }
-        
+
         ref
       end
     end

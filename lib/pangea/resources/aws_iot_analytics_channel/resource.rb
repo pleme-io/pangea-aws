@@ -47,15 +47,15 @@ module Pangea
           
           if channel_attrs.retention_period
             retention_period do
-              if channel_attrs.retention_period[:unlimited]
-                unlimited channel_attrs.retention_period[:unlimited]
+              if channel_attrs.retention_period&.dig(:unlimited)
+                unlimited channel_attrs.retention_period&.dig(:unlimited)
               else
-                number_of_days channel_attrs.retention_period[:number_of_days]
+                number_of_days channel_attrs.retention_period&.dig(:number_of_days)
               end
             end
           end
           
-          if channel_attrs.tags.any?
+          if channel_attrs.tags&.any?
             tags do
               channel_attrs.tags.each { |k, v| public_send(k, v) }
             end

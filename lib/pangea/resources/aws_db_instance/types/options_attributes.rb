@@ -20,7 +20,7 @@ module Pangea
     module AWS
       module Types
         # Additional options and tags for AWS RDS Database Instance
-        class OptionsAttributes < Dry::Struct
+        class OptionsAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Auto minor version upgrade
@@ -33,7 +33,7 @@ module Pangea
           attribute :skip_final_snapshot, Resources::Types::Bool.default(true)
 
           # Final snapshot identifier
-          attribute :final_snapshot_identifier, Resources::Types::String.optional
+          attribute? :final_snapshot_identifier, Resources::Types::String.optional
 
           # Tags to apply to the database
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

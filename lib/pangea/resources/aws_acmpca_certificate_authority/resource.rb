@@ -35,11 +35,11 @@ module Pangea
         resource(:aws_acmpca_certificate_authority, name) do
           # Configure certificate authority
           certificate_authority_configuration do
-            key_algorithm ca_attrs.certificate_authority_configuration[:key_algorithm]
-            signing_algorithm ca_attrs.certificate_authority_configuration[:signing_algorithm]
+            key_algorithm ca_attrs.certificate_authority_configuration&.dig(:key_algorithm)
+            signing_algorithm ca_attrs.certificate_authority_configuration&.dig(:signing_algorithm)
             
             subject do
-              ca_attrs.certificate_authority_configuration[:subject].each do |key, value|
+              ca_attrs.certificate_authority_configuration&.dig(:subject).each do |key, value|
                 public_send(key, value) if value
               end
             end
@@ -52,20 +52,20 @@ module Pangea
           # Configure revocation if specified
           if ca_attrs.revocation_configuration
             revocation_configuration do
-              if ca_attrs.revocation_configuration[:crl_configuration]
+              if ca_attrs.revocation_configuration&.dig(:crl_configuration)
                 crl_configuration do
-                  enabled ca_attrs.revocation_configuration[:crl_configuration][:enabled]
-                  expiration_in_days ca_attrs.revocation_configuration[:crl_configuration][:expiration_in_days] if ca_attrs.revocation_configuration[:crl_configuration][:expiration_in_days]
-                  custom_cname ca_attrs.revocation_configuration[:crl_configuration][:custom_cname] if ca_attrs.revocation_configuration[:crl_configuration][:custom_cname]
-                  s3_bucket_name ca_attrs.revocation_configuration[:crl_configuration][:s3_bucket_name] if ca_attrs.revocation_configuration[:crl_configuration][:s3_bucket_name]
-                  s3_object_acl ca_attrs.revocation_configuration[:crl_configuration][:s3_object_acl] if ca_attrs.revocation_configuration[:crl_configuration][:s3_object_acl]
+                  enabled ca_attrs.revocation_configuration&.dig(:crl_configuration)[:enabled]
+                  expiration_in_days ca_attrs.revocation_configuration&.dig(:crl_configuration)[:expiration_in_days] if ca_attrs.revocation_configuration&.dig(:crl_configuration)[:expiration_in_days]
+                  custom_cname ca_attrs.revocation_configuration&.dig(:crl_configuration)[:custom_cname] if ca_attrs.revocation_configuration&.dig(:crl_configuration)[:custom_cname]
+                  s3_bucket_name ca_attrs.revocation_configuration&.dig(:crl_configuration)[:s3_bucket_name] if ca_attrs.revocation_configuration&.dig(:crl_configuration)[:s3_bucket_name]
+                  s3_object_acl ca_attrs.revocation_configuration&.dig(:crl_configuration)[:s3_object_acl] if ca_attrs.revocation_configuration&.dig(:crl_configuration)[:s3_object_acl]
                 end
               end
               
-              if ca_attrs.revocation_configuration[:ocsp_configuration]
+              if ca_attrs.revocation_configuration&.dig(:ocsp_configuration)
                 ocsp_configuration do
-                  enabled ca_attrs.revocation_configuration[:ocsp_configuration][:enabled]
-                  ocsp_custom_cname ca_attrs.revocation_configuration[:ocsp_configuration][:ocsp_custom_cname] if ca_attrs.revocation_configuration[:ocsp_configuration][:ocsp_custom_cname]
+                  enabled ca_attrs.revocation_configuration&.dig(:ocsp_configuration)[:enabled]
+                  ocsp_custom_cname ca_attrs.revocation_configuration&.dig(:ocsp_configuration)[:ocsp_custom_cname] if ca_attrs.revocation_configuration&.dig(:ocsp_configuration)[:ocsp_custom_cname]
                 end
               end
             end
@@ -76,7 +76,7 @@ module Pangea
           key_storage_security_standard ca_attrs.key_storage_security_standard if ca_attrs.key_storage_security_standard
           
           # Apply tags if present
-          if ca_attrs.tags.any?
+          if ca_attrs.tags&.any?
             tags do
               ca_attrs.tags.each do |key, value|
                 public_send(key, value)

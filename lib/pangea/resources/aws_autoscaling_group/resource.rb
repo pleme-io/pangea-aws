@@ -64,7 +64,7 @@ module Pangea
       #   })
       def aws_autoscaling_group(name, attributes = {})
         # Validate attributes using dry-struct
-        asg_attrs = Types::Types::AutoScalingGroupAttributes.new(attributes)
+        asg_attrs = Types::AutoScalingGroupAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_autoscaling_group, name) do
@@ -90,18 +90,18 @@ module Pangea
           end
           
           # Network configuration
-          vpc_zone_identifier asg_attrs.vpc_zone_identifier if asg_attrs.vpc_zone_identifier.any?
-          availability_zones asg_attrs.availability_zones if asg_attrs.availability_zones.any?
+          vpc_zone_identifier asg_attrs.vpc_zone_identifier if asg_attrs.vpc_zone_identifier&.any?
+          availability_zones asg_attrs.availability_zones if asg_attrs.availability_zones&.any?
           
           # Health check configuration
           health_check_type asg_attrs.health_check_type
           health_check_grace_period asg_attrs.health_check_grace_period
           
           # Termination policies
-          termination_policies asg_attrs.termination_policies if asg_attrs.termination_policies.any?
+          termination_policies asg_attrs.termination_policies if asg_attrs.termination_policies&.any?
           
           # Metrics
-          if asg_attrs.enabled_metrics.any?
+          if asg_attrs.enabled_metrics&.any?
             enabled_metrics asg_attrs.enabled_metrics
             metrics_granularity asg_attrs.metrics_granularity
           end
@@ -115,11 +115,11 @@ module Pangea
           capacity_rebalance asg_attrs.capacity_rebalance if asg_attrs.capacity_rebalance
           
           # Load balancing
-          target_group_arns asg_attrs.target_group_arns if asg_attrs.target_group_arns.any?
-          load_balancers asg_attrs.load_balancers if asg_attrs.load_balancers.any?
+          target_group_arns asg_attrs.target_group_arns if asg_attrs.target_group_arns&.any?
+          load_balancers asg_attrs.load_balancers if asg_attrs.load_balancers&.any?
           
           # Tags - handle as array of hashes
-          if asg_attrs.tags.any?
+          if asg_attrs.tags&.any?
             # Convert our AutoScalingTag objects to hash format expected by Terraform
             tag asg_attrs.tags.map(&:to_h)
           end

@@ -24,31 +24,31 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Managed Blockchain Member resources
-        class ManagedBlockchainMemberAttributes < Dry::Struct
+        class ManagedBlockchainMemberAttributes < Pangea::Resources::BaseAttributes
           extend ManagedBlockchainMemberValidation
           include ManagedBlockchainMemberInstanceMethods
 
           transform_keys(&:to_sym)
 
           # Network ID (required)
-          attribute :network_id, Resources::Types::String
+          attribute? :network_id, Resources::Types::String.optional
 
           # Member configuration (required)
-          attribute :member_configuration, Resources::Types::Hash.schema(
+          attribute? :member_configuration, Resources::Types::Hash.schema(
             name: Resources::Types::String,
             description?: Resources::Types::String.optional,
             framework_configuration: Resources::Types::Hash.schema(
               member_fabric_configuration?: Resources::Types::Hash.schema(
                 admin_username: Resources::Types::String,
                 admin_password: Resources::Types::String
-              ).optional
+              ).lax.optional
             ),
             log_publishing_configuration?: Resources::Types::Hash.schema(
               fabric?: Resources::Types::Hash.schema(
                 ca_logs?: Resources::Types::Hash.schema(
                   cloudwatch?: Resources::Types::Hash.schema(
                     enabled?: Resources::Types::Bool.optional
-                  ).optional
+                  ).lax.optional
                 ).optional
               ).optional
             ).optional,
@@ -67,9 +67,9 @@ module Pangea
 
             validate_network_id(attrs.network_id)
             validate_invitation_id(attrs.invitation_id)
-            validate_member_name(attrs.member_configuration[:name])
+            validate_member_name(attrs.member_configuration&.dig(:name))
 
-            fabric_config = attrs.member_configuration[:framework_configuration][:member_fabric_configuration]
+            fabric_config = attrs.member_configuration&.dig(:framework_configuration)[:member_fabric_configuration]
             validate_fabric_configuration(fabric_config) if fabric_config
 
             attrs

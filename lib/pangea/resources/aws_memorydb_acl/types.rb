@@ -21,8 +21,8 @@ module Pangea
       module Types
       # Type-safe attributes for AwsMemorydbAcl resources
       # Provides a MemoryDB ACL resource.
-      class MemorydbAclAttributes < Dry::Struct
-        attribute :name, Resources::Types::String
+      class MemorydbAclAttributes < Pangea::Resources::BaseAttributes
+        attribute? :name, Resources::Types::String.optional
         attribute :user_names, Resources::Types::Array.of(Resources::Types::String).default([].freeze).optional
         
         # Tags to apply to the resource

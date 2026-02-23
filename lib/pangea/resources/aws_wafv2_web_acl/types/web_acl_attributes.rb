@@ -22,33 +22,33 @@ module Pangea
     module AWS
       module Types
         # Main WAF v2 Web ACL attributes
-        class WafV2WebAclAttributes < Dry::Struct
+        class WafV2WebAclAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/)
-          attribute :scope, Resources::Types::WafV2Scope
-          attribute :default_action, Resources::Types::WafV2DefaultAction
-          attribute :description, Resources::Types::String.constrained(max_size: 256).optional
+          attribute? :name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/).optional
+          attribute? :scope, Resources::Types::WafV2Scope.optional
+          attribute? :default_action, WafV2DefaultAction.optional
+          attribute? :description, Resources::Types::String.constrained(max_size: 256).optional
           attribute :rules, Resources::Types::Array.of(WafV2Rule).default([].freeze)
-          attribute :visibility_config, WafV2VisibilityConfig
-          attribute :tags, Resources::Types::AwsTags
-          attribute :custom_response_bodies, Resources::Types::Hash.map(
+          attribute? :visibility_config, WafV2VisibilityConfig.optional
+          attribute? :tags, Resources::Types::AwsTags.optional
+          attribute? :custom_response_bodies, Resources::Types::Hash.map(
             Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,64}\z/),
             Resources::Types::Hash.schema(
               content: Resources::Types::String.constrained(max_size: 10_240),
               content_type: Resources::Types::String.constrained(included_in: ['TEXT_PLAIN', 'TEXT_HTML', 'APPLICATION_JSON'])
-            )
+            ).lax
           ).default({}.freeze)
           attribute :token_domains, Resources::Types::Array.of(Resources::Types::String.constrained(format: /\A[a-zA-Z0-9.-]+\z/)).default([].freeze)
-          attribute :challenge_config, Resources::Types::Hash.schema(
-            immunity_time_property: Resources::Types::Hash.schema(immunity_time: Resources::Types::Integer.constrained(gteq: 60, lteq: 259_200))
+          attribute? :challenge_config, Resources::Types::Hash.schema(
+            immunity_time_property: Resources::Types::Hash.schema(immunity_time: Resources::Types::Integer.constrained(gteq: 60, lteq: 259_200).lax)
           ).optional
-          attribute :captcha_config, Resources::Types::Hash.schema(
-            immunity_time_property: Resources::Types::Hash.schema(immunity_time: Resources::Types::Integer.constrained(gteq: 60, lteq: 259_200))
+          attribute? :captcha_config, Resources::Types::Hash.schema(
+            immunity_time_property: Resources::Types::Hash.schema(immunity_time: Resources::Types::Integer.constrained(gteq: 60, lteq: 259_200).lax)
           ).optional
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             validate_rule_priorities(attrs)
             validate_custom_response_bodies(attrs)

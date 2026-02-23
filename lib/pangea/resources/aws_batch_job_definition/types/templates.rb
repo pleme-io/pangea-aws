@@ -21,7 +21,7 @@ module Pangea
         class BatchJobDefinitionAttributes
           # Job definition templates
           module Templates
-            def self.simple_container_job(name, image, options = {})
+            def simple_container_job(name, image, options = {})
               {
                 job_definition_name: name,
                 type: 'container',
@@ -38,7 +38,7 @@ module Pangea
               }.compact
             end
 
-            def self.fargate_container_job(name, image, options = {})
+            def fargate_container_job(name, image, options = {})
               {
                 job_definition_name: name,
                 type: 'container',
@@ -58,7 +58,7 @@ module Pangea
               }.compact
             end
 
-            def self.gpu_container_job(name, image, options = {})
+            def gpu_container_job(name, image, options = {})
               {
                 job_definition_name: name,
                 type: 'container',
@@ -76,7 +76,7 @@ module Pangea
               }.compact
             end
 
-            def self.multinode_job(name, image, num_nodes, options = {})
+            def multinode_job(name, image, num_nodes, options = {})
               {
                 job_definition_name: name,
                 type: 'multinode',
@@ -100,7 +100,7 @@ module Pangea
               }.compact
             end
 
-            def self.data_processing_job(name, image, options = {})
+            def data_processing_job(name, image, options = {})
               simple_container_job(name, image, {
                                      vcpus: options[:vcpus] || 2,
                                      memory: options[:memory] || 4096,
@@ -112,7 +112,7 @@ module Pangea
                                    })
             end
 
-            def self.ml_training_job(name, image, options = {})
+            def ml_training_job(name, image, options = {})
               gpu_container_job(name, image, {
                                   vcpus: options[:vcpus] || 8,
                                   memory: options[:memory] || 16_384,
@@ -124,7 +124,7 @@ module Pangea
                                 })
             end
 
-            def self.batch_processing_job(name, image, options = {})
+            def batch_processing_job(name, image, options = {})
               simple_container_job(name, image, {
                                      vcpus: options[:vcpus] || 1,
                                      memory: options[:memory] || 1024,
@@ -136,7 +136,7 @@ module Pangea
                                    })
             end
 
-            def self.real_time_job(name, image, options = {})
+            def real_time_job(name, image, options = {})
               fargate_container_job(name, image, {
                                       vcpus: options[:vcpus] || 2,
                                       memory: options[:memory] || 2048,

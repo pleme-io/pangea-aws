@@ -46,9 +46,10 @@ RSpec.describe "aws_dynamodb_table terraform synthesis" do
     expect(table_config[:table_name]).to eq("users")
     expect(table_config[:billing_mode]).to eq("PAY_PER_REQUEST")
     expect(table_config[:hash_key]).to eq("id")
-    expect(table_config[:attribute]).to be_a(Hash)
-    expect(table_config[:attribute][:name]).to eq("id")
-    expect(table_config[:attribute][:type]).to eq("S")
+    expect(table_config[:attribute]).to be_an(Array)
+    expect(table_config[:attribute].size).to eq(1)
+    expect(table_config[:attribute].first[:name]).to eq("id")
+    expect(table_config[:attribute].first[:type]).to eq("S")
     expect(table_config[:point_in_time_recovery][:enabled]).to eq(false)
     expect(table_config[:deletion_protection_enabled]).to eq(false)
     expect(table_config[:table_class]).to eq("STANDARD")
@@ -238,6 +239,7 @@ RSpec.describe "aws_dynamodb_table terraform synthesis" do
 
   # Test encryption configuration synthesis
   it "synthesizes table with encryption correctly" do
+    _kms_key_arn = kms_key_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -250,7 +252,7 @@ RSpec.describe "aws_dynamodb_table terraform synthesis" do
         hash_key: "id",
         server_side_encryption: {
           enabled: true,
-          kms_key_id: kms_key_arn
+          kms_key_id: _kms_key_arn
         }
       })
     end
@@ -287,6 +289,7 @@ RSpec.describe "aws_dynamodb_table terraform synthesis" do
 
   # Test Global Table replica synthesis
   it "synthesizes global table with replicas correctly" do
+    _kms_key_arn = kms_key_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -300,7 +303,7 @@ RSpec.describe "aws_dynamodb_table terraform synthesis" do
         replica: [
           {
             region_name: "us-west-2",
-            kms_key_id: kms_key_arn,
+            kms_key_id: _kms_key_arn,
             point_in_time_recovery: true
           },
           {
@@ -329,6 +332,7 @@ RSpec.describe "aws_dynamodb_table terraform synthesis" do
 
   # Test comprehensive table configuration synthesis
   it "synthesizes comprehensive table configuration correctly" do
+    _kms_key_arn = kms_key_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -367,7 +371,7 @@ RSpec.describe "aws_dynamodb_table terraform synthesis" do
         point_in_time_recovery_enabled: true,
         server_side_encryption: {
           enabled: true,
-          kms_key_id: kms_key_arn
+          kms_key_id: _kms_key_arn
         },
         deletion_protection_enabled: true,
         table_class: "STANDARD_INFREQUENT_ACCESS",
@@ -690,6 +694,7 @@ RSpec.describe "aws_dynamodb_table terraform synthesis" do
 
   # Test multi-tenant SaaS pattern synthesis
   it "synthesizes multi-tenant SaaS pattern correctly" do
+    _kms_key_arn = kms_key_arn
     synthesizer.instance_eval do
       extend Pangea::Resources::AWS
       
@@ -728,7 +733,7 @@ RSpec.describe "aws_dynamodb_table terraform synthesis" do
         ],
         server_side_encryption: {
           enabled: true,
-          kms_key_id: kms_key_arn
+          kms_key_id: _kms_key_arn
         },
         point_in_time_recovery_enabled: true
       })

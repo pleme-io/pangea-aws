@@ -7,7 +7,7 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class SageMakerUserProfileAttributes < Dry::Struct
+        class SageMakerUserProfileAttributes < Pangea::Resources::BaseAttributes
           def estimated_monthly_cost = 20.0 + get_storage_cost
 
           def get_storage_cost

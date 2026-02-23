@@ -67,7 +67,7 @@ module Pangea
       #   })
       def aws_launch_template(name, attributes = {})
         # Validate attributes using dry-struct
-        lt_attrs = Types::Types::LaunchTemplateAttributes.new(attributes)
+        lt_attrs = Types::LaunchTemplateAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_launch_template, name) do
@@ -167,7 +167,7 @@ module Pangea
           end
           
           # Apply template-level tags
-          if lt_attrs.tags.any?
+          if lt_attrs.tags&.any?
             tags do
               lt_attrs.tags.each do |key, value|
                 public_send(key, value)

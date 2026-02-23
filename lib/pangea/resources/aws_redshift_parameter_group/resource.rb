@@ -49,7 +49,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if param_group_attrs.tags.any?
+          if param_group_attrs.tags&.any?
             tags do
               param_group_attrs.tags.each do |key, value|
                 public_send(key, value)

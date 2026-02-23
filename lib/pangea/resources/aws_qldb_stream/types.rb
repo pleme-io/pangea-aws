@@ -23,28 +23,28 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS QLDB Stream resources
-        class QldbStreamAttributes < Dry::Struct
+        class QldbStreamAttributes < Pangea::Resources::BaseAttributes
           include QldbStreamHelpers
 
           transform_keys(&:to_sym)
 
           # Stream name (required)
-          attribute :stream_name, Resources::Types::String
+          attribute? :stream_name, Resources::Types::String.optional
 
           # Ledger name (required)
-          attribute :ledger_name, Resources::Types::String
+          attribute? :ledger_name, Resources::Types::String.optional
 
           # Role ARN for stream to assume (required)
-          attribute :role_arn, Resources::Types::String
+          attribute? :role_arn, Resources::Types::String.optional
 
           # Kinesis configuration (required)
-          attribute :kinesis_configuration, Resources::Types::Hash.schema(
+          attribute? :kinesis_configuration, Resources::Types::Hash.schema(
             stream_arn: Resources::Types::String,
             aggregation_enabled?: Resources::Types::Bool.default(true)
-          )
+          ).lax
 
           # Inclusive start time (required)
-          attribute :inclusive_start_time, Resources::Types::String
+          attribute? :inclusive_start_time, Resources::Types::String.optional
 
           # Exclusive end time (optional)
           attribute? :exclusive_end_time, Resources::Types::String.optional
@@ -77,7 +77,7 @@ module Pangea
             end
 
             # Validate Kinesis stream ARN
-            unless attrs.kinesis_configuration[:stream_arn].match?(/\Aarn:aws[a-z\-]*:kinesis:[a-z0-9\-]+:\d{12}:stream\/[\w-]+\z/)
+            unless attrs.kinesis_configuration&.dig(:stream_arn).match?(/\Aarn:aws[a-z\-]*:kinesis:[a-z0-9\-]+:\d{12}:stream\/[\w-]+\z/)
               raise Dry::Struct::Error, 'kinesis stream_arn must be a valid Kinesis stream ARN'
             end
 

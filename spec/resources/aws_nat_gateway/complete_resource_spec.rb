@@ -25,9 +25,9 @@ RSpec.describe "aws_nat_gateway resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -364,9 +364,9 @@ RSpec.describe "aws_nat_gateway resource function" do
       nat_gateways = {}
       
       azs.each do |az|
-        nat_gateways[az] = test_instance.aws_nat_gateway(:"nat_#{az.last}", {
-          subnet_id: "${aws_subnet.public_#{az.last}.id}",
-          allocation_id: "${aws_eip.nat_#{az.last}.id}",
+        nat_gateways[az] = test_instance.aws_nat_gateway(:"nat_#{az[-1]}", {
+          subnet_id: "${aws_subnet.public_#{az[-1]}.id}",
+          allocation_id: "${aws_eip.nat_#{az[-1]}.id}",
           tags: {
             Name: "nat-gateway-#{az}",
             AvailabilityZone: az,

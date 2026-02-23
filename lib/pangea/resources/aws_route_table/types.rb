@@ -21,7 +21,7 @@ module Pangea
     module AWS
       module Types
         # Route attributes for route table
-        class RouteAttributes < Dry::Struct
+        class RouteAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Destination CIDR block for the route
@@ -39,7 +39,7 @@ module Pangea
           
           # Validate that at least one destination and one target are specified
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Check for at least one destination
             destinations = [:cidr_block, :ipv6_cidr_block]
@@ -72,12 +72,12 @@ module Pangea
         end
         
         # Route Table resource attributes with validation
-        class RouteTableAttributes < Dry::Struct
+        class RouteTableAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           attribute :vpc_id, Resources::Types::String
           attribute :routes, Resources::Types::Array.of(RouteAttributes).default([].freeze)
-          attribute :tags, Resources::Types::AwsTags
+          attribute :tags, Resources::Types::AwsTags.default({}.freeze)
           
           # Computed properties
           def route_count

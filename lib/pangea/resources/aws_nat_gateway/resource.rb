@@ -49,7 +49,7 @@ module Pangea
       #   })
       def aws_nat_gateway(name, attributes = {})
         # Validate attributes using dry-struct
-        nat_attrs = Types::Types::NatGatewayAttributes.new(attributes)
+        nat_attrs = Types::NatGatewayAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_nat_gateway, name) do
@@ -58,7 +58,7 @@ module Pangea
           connectivity_type nat_attrs.connectivity_type if nat_attrs.connectivity_type != 'public'
           
           # Apply tags if present
-          if nat_attrs.tags.any?
+          if nat_attrs.tags&.any?
             tags do
               nat_attrs.tags.each do |key, value|
                 public_send(key, value)

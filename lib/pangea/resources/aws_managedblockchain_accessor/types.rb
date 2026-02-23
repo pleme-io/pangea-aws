@@ -24,7 +24,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Managed Blockchain Accessor resources
-        class ManagedBlockchainAccessorAttributes < Dry::Struct
+        class ManagedBlockchainAccessorAttributes < Pangea::Resources::BaseAttributes
           include NetworkHelpers
           include BlockchainHelpers
           include CostHelpers
@@ -32,7 +32,7 @@ module Pangea
           transform_keys(&:to_sym)
 
           # Accessor type (required)
-          attribute :accessor_type, Resources::Types::String.enum(
+          attribute? :accessor_type, Resources::Types::String.enum(
             'BILLING_TOKEN'  # Current supported type for Ethereum
           )
 

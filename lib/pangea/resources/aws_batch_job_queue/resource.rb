@@ -24,7 +24,7 @@ module Pangea
       # Provides type-safe function for creating job queues
       def aws_batch_job_queue(name, attributes = {})
         # Validate attributes using dry-struct
-        validated_attrs = Types::Types::BatchJobQueueAttributes.new(attributes)
+        validated_attrs = Types::BatchJobQueueAttributes.new(attributes)
         
         # Create reference that will be returned
         ref = ResourceReference.new(

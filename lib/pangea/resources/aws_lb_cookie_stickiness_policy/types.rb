@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsLbCookieStickinessPolicy resources
       # Manages aws lb cookie stickiness policy resources.
-      class AwsLbCookieStickinessPolicyAttributes < Dry::Struct
+      class AwsLbCookieStickinessPolicyAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_lb_cookie_stickiness_policy
         
         # Tags to apply to the resource

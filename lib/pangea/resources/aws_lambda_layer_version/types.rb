@@ -21,33 +21,33 @@ module Pangea
     module AWS
       module Types
         # Lambda layer version attributes with validation
-        class LambdaLayerVersionAttributes < Dry::Struct
+        class LambdaLayerVersionAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :layer_name, Resources::Types::String.constrained(
+          attribute? :layer_name, Resources::Types::String.constrained(
             min_size: 1,
             max_size: 140,
             format: /\A[a-zA-Z0-9_-]+\z/
           )
           
           # Code source - either filename or s3
-          attribute :filename, Resources::Types::String.optional
-          attribute :s3_bucket, Resources::Types::String.optional
-          attribute :s3_key, Resources::Types::String.optional
-          attribute :s3_object_version, Resources::Types::String.optional
+          attribute? :filename, Resources::Types::String.optional
+          attribute? :s3_bucket, Resources::Types::String.optional
+          attribute? :s3_key, Resources::Types::String.optional
+          attribute? :s3_object_version, Resources::Types::String.optional
           
           # Optional attributes
           attribute :compatible_runtimes, Resources::Types::Array.of(Resources::Types::LambdaRuntime).default([].freeze)
           attribute :compatible_architectures, Resources::Types::Array.of(Resources::Types::LambdaArchitecture).default([].freeze)
           attribute :description, Resources::Types::String.optional.default(nil)
-          attribute :license_info, Resources::Types::String.constrained(max_size: 512).optional
-          attribute :source_code_hash, Resources::Types::String.optional
+          attribute? :license_info, Resources::Types::String.constrained(max_size: 512).optional
+          attribute? :source_code_hash, Resources::Types::String.optional
           attribute :skip_destroy, Resources::Types::Bool.default(false)
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate code source
             if attrs[:filename].nil? && attrs[:s3_bucket].nil?

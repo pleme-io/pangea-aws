@@ -19,30 +19,30 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Glue Job resources
-        class GlueJobAttributes < Dry::Struct
+        class GlueJobAttributes < Pangea::Resources::BaseAttributes
           extend GlueJobClassMethods
           extend GlueJobValidation
           include GlueJobInstanceMethods
 
           # Job name (required)
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # IAM role ARN (required)
-          attribute :role_arn, Resources::Types::String
+          attribute? :role_arn, Resources::Types::String.optional
 
           # Job description
-          attribute :description, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
 
           # Glue version
-          attribute :glue_version, Resources::Types::String.constrained(included_in: ['0.9', '1.0', '2.0', '3.0', '4.0']).optional
+          attribute? :glue_version, Resources::Types::String.constrained(included_in: ['0.9', '1.0', '2.0', '3.0', '4.0']).optional
 
           # Job command
-          attribute :command, Resources::Types::Hash.schema(
+          attribute? :command, Resources::Types::Hash.schema(
             script_location: Resources::Types::String,
             name?: Resources::Types::String.constrained(included_in: ['glueetl', 'gluestreaming', 'pythonshell']).optional,
             python_version?: Resources::Types::String.constrained(included_in: ['2', '3', '3.6', '3.9']).optional,
             runtime?: Resources::Types::String.optional
-          )
+          ).lax
 
           # Default job arguments
           attribute :default_arguments, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
@@ -54,30 +54,30 @@ module Pangea
           attribute :connections, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
           # Maximum capacity (DPUs)
-          attribute :max_capacity, Resources::Types::Float.optional
+          attribute? :max_capacity, Resources::Types::Float.optional
 
           # Worker configuration for Glue 2.0+
-          attribute :worker_type, Resources::Types::String.constrained(included_in: ['Standard', 'G.1X', 'G.2X', 'G.025X', 'G.4X', 'G.8X', 'Z.2X']).optional
-          attribute :number_of_workers, Resources::Types::Integer.optional
+          attribute? :worker_type, Resources::Types::String.constrained(included_in: ['Standard', 'G.1X', 'G.2X', 'G.025X', 'G.4X', 'G.8X', 'Z.2X']).optional
+          attribute? :number_of_workers, Resources::Types::Integer.optional
 
           # Job timeout in minutes
-          attribute :timeout, Resources::Types::Integer.optional
+          attribute? :timeout, Resources::Types::Integer.optional
 
           # Maximum retries
-          attribute :max_retries, Resources::Types::Integer.optional
+          attribute? :max_retries, Resources::Types::Integer.optional
 
           # Security configuration
-          attribute :security_configuration, Resources::Types::String.optional
+          attribute? :security_configuration, Resources::Types::String.optional
 
           # Notification properties
-          attribute :notification_property, Resources::Types::Hash.schema(
+          attribute? :notification_property, Resources::Types::Hash.schema(
             notify_delay_after?: Resources::Types::Integer.optional
-          ).optional
+          ).lax.optional
 
           # Execution properties
-          attribute :execution_property, Resources::Types::Hash.schema(
+          attribute? :execution_property, Resources::Types::Hash.schema(
             max_concurrent_runs?: Resources::Types::Integer.constrained(gteq: 1, lteq: 1000).optional
-          ).optional
+          ).lax.optional
 
           # Tags
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

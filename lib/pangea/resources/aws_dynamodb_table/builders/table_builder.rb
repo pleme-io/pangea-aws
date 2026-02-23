@@ -36,23 +36,21 @@ module Pangea
           end
 
           def build_basic_settings(context, attrs)
-            context.instance_eval do
-              table_name attrs.name
-              billing_mode attrs.billing_mode
-              hash_key attrs.hash_key
-              range_key attrs.range_key if attrs.range_key
+            context.table_name attrs.name
+            context.billing_mode attrs.billing_mode
+            context.hash_key attrs.hash_key
+            context.range_key attrs.range_key if attrs.range_key
 
-              attrs.attribute.each do |attr_def|
-                attribute do
-                  name attr_def[:name]
-                  type attr_def[:type]
-                end
+            attrs.attribute.each do |attr_def|
+              context.attribute do
+                context.name attr_def[:name]
+                context.type attr_def[:type]
               end
+            end
 
-              if attrs.is_provisioned?
-                read_capacity attrs.read_capacity
-                write_capacity attrs.write_capacity
-              end
+            if attrs.is_provisioned?
+              context.read_capacity attrs.read_capacity
+              context.write_capacity attrs.write_capacity
             end
           end
         end

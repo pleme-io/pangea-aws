@@ -27,7 +27,7 @@ module Pangea
     module AWS
       module Types
         # Launch template data attributes
-        class LaunchTemplateData < Dry::Struct
+        class LaunchTemplateData < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Core instance configuration
@@ -46,9 +46,9 @@ module Pangea
           attribute :disable_api_termination, Resources::Types::Bool.default(false)
 
           # Monitoring and placement
-          attribute :monitoring, Resources::Types::Hash.schema(
+          attribute? :monitoring, Resources::Types::Hash.schema(
             enabled: Resources::Types::Bool
-          ).optional.default(nil)
+          ).lax.optional.default(nil)
 
           # Block devices
           attribute :block_device_mappings, Resources::Types::Array.of(BlockDeviceMapping).default([].freeze)
@@ -57,7 +57,7 @@ module Pangea
           attribute :network_interfaces, Resources::Types::Array.of(NetworkInterface).default([].freeze)
 
           # Tag specifications
-          attribute :tag_specifications, Resources::Types::Array.of(TagSpecification).default([].freeze)
+          attribute :tag_specifications, Resources::Types::Array.of(LaunchTemplateTagSpecification).default([].freeze)
 
           def to_h
             hash = {}
@@ -84,18 +84,18 @@ module Pangea
         end
 
         # Launch Template resource attributes with validation
-        class LaunchTemplateAttributes < Dry::Struct
+        class LaunchTemplateAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           attribute :name, Resources::Types::String.optional.default(nil)
           attribute :name_prefix, Resources::Types::String.optional.default(nil)
           attribute :description, Resources::Types::String.optional.default(nil)
-          attribute :launch_template_data, LaunchTemplateData
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :launch_template_data, LaunchTemplateData.optional
+          attribute? :tags, Resources::Types::AwsTags.optional
 
           # Validate name/name_prefix exclusivity
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes.transform_keys(&:to_sym) : {}
 
             if attrs[:name] && attrs[:name_prefix]
               raise Dry::Struct::Error, "Cannot specify both 'name' and 'name_prefix'"
@@ -104,6 +104,8 @@ module Pangea
             # Ensure launch_template_data is properly structured
             if attrs[:launch_template_data].nil?
               attrs[:launch_template_data] = {}
+            elsif attrs[:launch_template_data].is_a?(::Hash)
+              attrs[:launch_template_data] = attrs[:launch_template_data].transform_keys(&:to_sym)
             end
 
             super(attrs)

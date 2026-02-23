@@ -9,7 +9,7 @@ module Pangea
         module CloudFrontDistributionValidation
           def self.validate_origin_references(attrs)
             origin_ids = attrs.origin.map { |o| o[:origin_id] }
-            raise Dry::Struct::Error, "Default cache behavior references non-existent origin: #{attrs.default_cache_behavior[:target_origin_id]}" unless origin_ids.include?(attrs.default_cache_behavior[:target_origin_id])
+            raise Dry::Struct::Error, "Default cache behavior references non-existent origin: #{attrs.default_cache_behavior&.dig(:target_origin_id)}" unless origin_ids.include?(attrs.default_cache_behavior&.dig(:target_origin_id))
             attrs.ordered_cache_behavior.each_with_index do |behavior, index|
               raise Dry::Struct::Error, "Ordered cache behavior #{index} references non-existent origin: #{behavior[:target_origin_id]}" unless origin_ids.include?(behavior[:target_origin_id])
             end

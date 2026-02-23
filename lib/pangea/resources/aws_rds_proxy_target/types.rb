@@ -20,18 +20,18 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS RDS Proxy Target resources
-      class RdsProxyTargetAttributes < Dry::Struct
+      class RdsProxyTargetAttributes < Pangea::Resources::BaseAttributes
         # DB proxy name this target belongs to
-        attribute :db_proxy_name, Resources::Types::String
+        attribute? :db_proxy_name, Resources::Types::String.optional
 
         # Target group name within the proxy
-        attribute :target_group_name, Resources::Types::String
+        attribute? :target_group_name, Resources::Types::String.optional
 
         # DB instance identifier (for RDS instances)
-        attribute :db_instance_identifier, Resources::Types::String.optional
+        attribute? :db_instance_identifier, Resources::Types::String.optional
 
         # DB cluster identifier (for Aurora clusters)
-        attribute :db_cluster_identifier, Resources::Types::String.optional
+        attribute? :db_cluster_identifier, Resources::Types::String.optional
 
         def self.new(attributes = {})
           attrs = super(attributes)

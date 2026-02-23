@@ -91,7 +91,7 @@ module Pangea
           end
 
           # Apply tags if present
-          if baseline_attrs.tags.any?
+          if baseline_attrs.tags&.any?
             tags do
               baseline_attrs.tags.each do |key, value|
                 public_send(key, value)

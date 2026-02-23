@@ -29,7 +29,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
   # Test basic standard topic synthesis
   it "synthesizes basic standard topic correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:notifications, {
         name: "app-notifications",
@@ -37,7 +37,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "notifications")
     
     expect(topic_config["name"]).to eq("app-notifications")
@@ -49,7 +49,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
   # Test FIFO topic synthesis
   it "synthesizes FIFO topic correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:orders, {
         name: "orders.fifo",
@@ -58,7 +58,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "orders")
     
     expect(topic_config["name"]).to eq("orders.fifo")
@@ -68,16 +68,17 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
 
   # Test encrypted topic synthesis
   it "synthesizes encrypted topic correctly" do
+    _kms_key_arn = kms_key_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:secure, {
         name: "secure-notifications",
-        kms_master_key_id: kms_key_arn
+        kms_master_key_id: _kms_key_arn
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "secure")
     
     expect(topic_config["name"]).to eq("secure-notifications")
@@ -97,7 +98,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
     })
     
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:reliable, {
         name: "reliable-notifications",
@@ -105,7 +106,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "reliable")
     
     expect(topic_config["name"]).to eq("reliable-notifications")
@@ -125,7 +126,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
     })
     
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:public, {
         name: "public-topic",
@@ -133,7 +134,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "public")
     
     expect(topic_config["name"]).to eq("public-topic")
@@ -155,7 +156,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
     })
     
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:protected, {
         name: "protected-topic",
@@ -163,7 +164,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "protected")
     
     expect(topic_config["name"]).to eq("protected-topic")
@@ -172,18 +173,19 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
 
   # Test mobile push topic with application feedback synthesis
   it "synthesizes mobile push topic with application feedback correctly" do
+    _feedback_role_arn = feedback_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:mobile_push, {
         name: "mobile-notifications",
-        application_success_feedback_role_arn: feedback_role_arn,
+        application_success_feedback_role_arn: _feedback_role_arn,
         application_success_feedback_sample_rate: 100,
-        application_failure_feedback_role_arn: feedback_role_arn
+        application_failure_feedback_role_arn: _feedback_role_arn
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "mobile_push")
     
     expect(topic_config["name"]).to eq("mobile-notifications")
@@ -194,18 +196,19 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
 
   # Test webhook topic with HTTP feedback synthesis
   it "synthesizes webhook topic with HTTP feedback correctly" do
+    _feedback_role_arn = feedback_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:webhooks, {
         name: "webhook-notifications",
-        http_success_feedback_role_arn: feedback_role_arn,
+        http_success_feedback_role_arn: _feedback_role_arn,
         http_success_feedback_sample_rate: 50,
-        http_failure_feedback_role_arn: feedback_role_arn
+        http_failure_feedback_role_arn: _feedback_role_arn
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "webhooks")
     
     expect(topic_config["name"]).to eq("webhook-notifications")
@@ -216,18 +219,19 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
 
   # Test Lambda trigger topic synthesis
   it "synthesizes Lambda trigger topic correctly" do
+    _feedback_role_arn = feedback_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:lambda_triggers, {
         name: "lambda-notifications",
-        lambda_success_feedback_role_arn: feedback_role_arn,
+        lambda_success_feedback_role_arn: _feedback_role_arn,
         lambda_success_feedback_sample_rate: 25,
-        lambda_failure_feedback_role_arn: feedback_role_arn
+        lambda_failure_feedback_role_arn: _feedback_role_arn
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "lambda_triggers")
     
     expect(topic_config["name"]).to eq("lambda-notifications")
@@ -238,17 +242,18 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
 
   # Test SQS fan-out topic synthesis
   it "synthesizes SQS fan-out topic correctly" do
+    _feedback_role_arn = feedback_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:fanout, {
         name: "event-fanout",
-        sqs_success_feedback_role_arn: feedback_role_arn,
-        sqs_failure_feedback_role_arn: feedback_role_arn
+        sqs_success_feedback_role_arn: _feedback_role_arn,
+        sqs_failure_feedback_role_arn: _feedback_role_arn
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "fanout")
     
     expect(topic_config["name"]).to eq("event-fanout")
@@ -258,18 +263,19 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
 
   # Test analytics streaming topic synthesis
   it "synthesizes analytics streaming topic correctly" do
+    _feedback_role_arn = feedback_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:analytics, {
         name: "analytics-events",
-        firehose_success_feedback_role_arn: feedback_role_arn,
+        firehose_success_feedback_role_arn: _feedback_role_arn,
         firehose_success_feedback_sample_rate: 100,
-        firehose_failure_feedback_role_arn: feedback_role_arn
+        firehose_failure_feedback_role_arn: _feedback_role_arn
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "analytics")
     
     expect(topic_config["name"]).to eq("analytics-events")
@@ -281,7 +287,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
   # Test X-Ray tracing topic synthesis
   it "synthesizes X-Ray tracing topic correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:traced, {
         name: "traced-notifications",
@@ -289,7 +295,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "traced")
     
     expect(topic_config["name"]).to eq("traced-notifications")
@@ -301,19 +307,21 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
     delivery_policy = JSON.generate({ "http" => { "defaultHealthyRetryPolicy" => { "numRetries" => 5 } } })
     access_policy = JSON.generate({ "Version" => "2012-10-17", "Statement" => [] })
     
+    _feedback_role_arn = feedback_role_arn
+    _kms_key_arn = kms_key_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:comprehensive, {
         name: "comprehensive-topic",
         display_name: "Comprehensive Topic Configuration",
-        kms_master_key_id: kms_key_arn,
+        kms_master_key_id: _kms_key_arn,
         delivery_policy: delivery_policy,
         policy: access_policy,
         tracing_config: "Active",
-        lambda_success_feedback_role_arn: feedback_role_arn,
-        lambda_failure_feedback_role_arn: feedback_role_arn,
-        sqs_success_feedback_role_arn: feedback_role_arn,
+        lambda_success_feedback_role_arn: _feedback_role_arn,
+        lambda_failure_feedback_role_arn: _feedback_role_arn,
+        sqs_success_feedback_role_arn: _feedback_role_arn,
         tags: {
           Environment: "production",
           Service: "messaging",
@@ -322,7 +330,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "comprehensive")
     
     expect(topic_config["name"]).to eq("comprehensive-topic")
@@ -344,12 +352,12 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
   # Test auto-generated topic name synthesis
   it "synthesizes topic without name correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:auto_generated, {})
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "auto_generated")
     
     expect(topic_config["fifo_topic"]).to eq(false)
@@ -359,21 +367,22 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
 
   # Test multi-protocol feedback synthesis
   it "synthesizes multi-protocol feedback correctly" do
+    _feedback_role_arn = feedback_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:multi_feedback, {
         name: "multi-protocol-feedback",
-        lambda_success_feedback_role_arn: feedback_role_arn,
-        lambda_failure_feedback_role_arn: feedback_role_arn,
-        http_success_feedback_role_arn: feedback_role_arn,
-        sqs_failure_feedback_role_arn: feedback_role_arn,
+        lambda_success_feedback_role_arn: _feedback_role_arn,
+        lambda_failure_feedback_role_arn: _feedback_role_arn,
+        http_success_feedback_role_arn: _feedback_role_arn,
+        sqs_failure_feedback_role_arn: _feedback_role_arn,
         firehose_success_feedback_sample_rate: 75,
-        firehose_success_feedback_role_arn: feedback_role_arn
+        firehose_success_feedback_role_arn: _feedback_role_arn
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "multi_feedback")
     
     expect(topic_config["name"]).to eq("multi-protocol-feedback")
@@ -387,19 +396,20 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
 
   # Test FIFO topic with encryption and tracing synthesis
   it "synthesizes secure FIFO topic correctly" do
+    _kms_key_arn = kms_key_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:secure_fifo, {
         name: "secure-orders.fifo",
         fifo_topic: true,
         content_based_deduplication: true,
-        kms_master_key_id: kms_key_arn,
+        kms_master_key_id: _kms_key_arn,
         tracing_config: "Active"
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "secure_fifo")
     
     expect(topic_config["name"]).to eq("secure-orders.fifo")
@@ -412,7 +422,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
   # Test topic with comprehensive tags synthesis
   it "synthesizes topic with comprehensive tags correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:tagged, {
         name: "tagged-topic",
@@ -427,7 +437,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "tagged")
     
     expect(topic_config["name"]).to eq("tagged-topic")
@@ -444,7 +454,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
   # Test topic with PassThrough tracing synthesis
   it "synthesizes topic with PassThrough tracing correctly" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:passthrough, {
         name: "passthrough-topic",
@@ -452,7 +462,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "passthrough")
     
     expect(topic_config["name"]).to eq("passthrough-topic")
@@ -462,14 +472,14 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
   # Test minimal topic synthesis (only required fields)
   it "synthesizes minimal topic without optional fields" do
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:minimal, {
         name: "minimal-topic"
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "minimal")
     
     expect(topic_config["name"]).to eq("minimal-topic")
@@ -491,19 +501,21 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
 
   # Test enterprise messaging pattern synthesis
   it "synthesizes enterprise messaging pattern correctly" do
+    _feedback_role_arn = feedback_role_arn
+    _kms_key_arn = kms_key_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:enterprise, {
         name: "enterprise-events.fifo",
         display_name: "Enterprise Event Bus",
         fifo_topic: true,
         content_based_deduplication: true,
-        kms_master_key_id: kms_key_arn,
-        lambda_success_feedback_role_arn: feedback_role_arn,
-        lambda_failure_feedback_role_arn: feedback_role_arn,
-        sqs_success_feedback_role_arn: feedback_role_arn,
-        sqs_failure_feedback_role_arn: feedback_role_arn,
+        kms_master_key_id: _kms_key_arn,
+        lambda_success_feedback_role_arn: _feedback_role_arn,
+        lambda_failure_feedback_role_arn: _feedback_role_arn,
+        sqs_success_feedback_role_arn: _feedback_role_arn,
+        sqs_failure_feedback_role_arn: _feedback_role_arn,
         tracing_config: "Active",
         tags: {
           Environment: "production",
@@ -513,7 +525,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "enterprise")
     
     expect(topic_config["name"]).to eq("enterprise-events.fifo")
@@ -533,19 +545,21 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
 
   # Test high-volume monitoring pattern synthesis
   it "synthesizes high-volume monitoring pattern correctly" do
+    _feedback_role_arn = feedback_role_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:monitoring, {
         name: "system-monitoring",
         display_name: "System Health Monitoring",
-        http_failure_feedback_role_arn: feedback_role_arn,
-        lambda_failure_feedback_role_arn: feedback_role_arn,
+        http_failure_feedback_role_arn: _feedback_role_arn,
+        lambda_failure_feedback_role_arn: _feedback_role_arn,
+        lambda_success_feedback_role_arn: _feedback_role_arn,
         lambda_success_feedback_sample_rate: 10  # Low sample rate for high volume
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "monitoring")
     
     expect(topic_config["name"]).to eq("system-monitoring")
@@ -574,13 +588,14 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
       ]
     })
     
+    _kms_key_arn = kms_key_arn
     terraform_output = synthesizer.synthesize do
-      include Pangea::Resources::AWS
+      extend Pangea::Resources::AWS
       
       aws_sns_topic(:compliance, {
         name: "compliance-notifications",
         display_name: "Compliance Audit Events",
-        kms_master_key_id: kms_key_arn,
+        kms_master_key_id: _kms_key_arn,
         message_data_protection_policy: data_protection,
         tracing_config: "Active",
         tags: {
@@ -591,7 +606,7 @@ RSpec.describe "aws_sns_topic terraform synthesis" do
       })
     end
     
-    json_output = JSON.parse(terraform_output)
+    json_output = JSON.parse(synthesizer.synthesis.to_json)
     topic_config = json_output.dig("resource", "aws_sns_topic", "compliance")
     
     expect(topic_config["name"]).to eq("compliance-notifications")

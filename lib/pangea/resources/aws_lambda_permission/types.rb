@@ -21,26 +21,26 @@ module Pangea
     module AWS
       module Types
         # Lambda permission attributes with validation
-        class LambdaPermissionAttributes < Dry::Struct
+        class LambdaPermissionAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :action, Pangea::Resources::Types::LambdaPermissionAction
-          attribute :function_name, Pangea::Resources::Types::String
-          attribute :principal, Pangea::Resources::Types::String
+          attribute? :action, Pangea::Resources::Types::LambdaPermissionAction.optional
+          attribute? :function_name, Pangea::Resources::Types::String.optional
+          attribute? :principal, Pangea::Resources::Types::String.optional
           
           # Optional attributes
-          attribute :statement_id, Pangea::Resources::Types::String.optional.default { "AllowExecutionFrom#{Time.now.to_i}" }
-          attribute :qualifier, Pangea::Resources::Types::String.optional
-          attribute :source_arn, Pangea::Resources::Types::String.optional
-          attribute :source_account, Pangea::Resources::Types::String.optional
-          attribute :event_source_token, Pangea::Resources::Types::String.optional
-          attribute :principal_org_id, Pangea::Resources::Types::String.optional
-          attribute :function_url_auth_type, Pangea::Resources::Types::String.constrained(included_in: ['AWS_IAM', 'NONE']).optional
+          attribute? :statement_id, Pangea::Resources::Types::String.optional.default { "AllowExecutionFrom#{Time.now.to_i}" }
+          attribute? :qualifier, Pangea::Resources::Types::String.optional
+          attribute? :source_arn, Pangea::Resources::Types::String.optional
+          attribute? :source_account, Pangea::Resources::Types::String.optional
+          attribute? :event_source_token, Pangea::Resources::Types::String.optional
+          attribute? :principal_org_id, Pangea::Resources::Types::String.optional
+          attribute? :function_url_auth_type, Pangea::Resources::Types::String.constrained(included_in: ['AWS_IAM', 'NONE']).optional
           
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate principal format
             if attrs[:principal]
@@ -49,12 +49,12 @@ module Pangea
               # Check for service principals
               if principal.include?('.amazonaws.com')
                 valid_services = %w[
-                  apigateway events s3 sns sqs logs 
-                  cognito-idp elasticloadbalancing 
+                  apigateway events s3 sns sqs logs
+                  cognito-idp elasticloadbalancing
                   iot lex states kafka config
-                  backup datasync mediaconvert
+                  backup datasync mediaconvert lambda
                 ]
-                
+
                 service = principal.split('.').first
                 unless valid_services.include?(service)
                   raise Dry::Struct::Error, "Unknown AWS service principal: #{principal}"

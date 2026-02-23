@@ -21,12 +21,12 @@ module Pangea
     module AWS
       module Types
         # Metric transformation configuration
-        class MetricTransformation < Dry::Struct
+        class MetricTransformation < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :name, Resources::Types::String
-          attribute :namespace, Resources::Types::String
-          attribute :value, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
+          attribute? :namespace, Resources::Types::String.optional
+          attribute? :value, Resources::Types::String.optional
           attribute :default_value, Resources::Types::Float.optional.default(nil)
           attribute :dimensions, Resources::Types::Hash.default({}.freeze)
           attribute :unit, Resources::Types::String.optional.default(nil).enum(
@@ -54,18 +54,18 @@ module Pangea
         end
         
         # CloudWatch Log Metric Filter resource attributes with validation
-        class CloudWatchLogMetricFilterAttributes < Dry::Struct
+        class CloudWatchLogMetricFilterAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :name, Resources::Types::String
-          attribute :log_group_name, Resources::Types::String
-          attribute :pattern, Resources::Types::String
-          attribute :metric_transformation, MetricTransformation
+          attribute? :name, Resources::Types::String.optional
+          attribute? :log_group_name, Resources::Types::String.optional
+          attribute? :pattern, Resources::Types::String.optional
+          attribute? :metric_transformation, MetricTransformation.optional
           
           # Validate filter pattern and metric configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate name format
             if attrs[:name] && !attrs[:name].match?(/^[\.\-_#A-Za-z0-9]+$/)

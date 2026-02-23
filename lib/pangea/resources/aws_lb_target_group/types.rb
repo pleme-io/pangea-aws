@@ -21,7 +21,7 @@ module Pangea
     module AWS
       module Types
         # Health check configuration for target group
-        class TargetGroupHealthCheck < Dry::Struct
+        class TargetGroupHealthCheck < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           attribute :enabled, Resources::Types::Bool.default(true)
@@ -36,7 +36,7 @@ module Pangea
           
           # Validate timeout is less than interval
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             if attrs[:timeout] && attrs[:interval] && attrs[:timeout] >= attrs[:interval]
               raise Dry::Struct::Error, "Health check timeout (#{attrs[:timeout]}) must be less than interval (#{attrs[:interval]})"
@@ -61,7 +61,7 @@ module Pangea
         end
         
         # Stickiness configuration
-        class TargetGroupStickiness < Dry::Struct
+        class TargetGroupStickiness < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           attribute :enabled, Resources::Types::Bool.default(false)
@@ -71,7 +71,7 @@ module Pangea
           
           # Validate app_cookie requires cookie_name
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             if attrs[:type] == 'app_cookie' && !attrs[:cookie_name]
               raise Dry::Struct::Error, "cookie_name is required when stickiness type is 'app_cookie'"
@@ -94,13 +94,13 @@ module Pangea
         end
         
         # Target group resource attributes with validation
-        class TargetGroupAttributes < Dry::Struct
+        class TargetGroupAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :port, Resources::Types::Port
-          attribute :protocol, Resources::Types::String.constrained(included_in: ['HTTP', 'HTTPS', 'TCP', 'TLS', 'UDP', 'TCP_UDP', 'GENEVE'])
-          attribute :vpc_id, Resources::Types::String
+          attribute? :port, Resources::Types::Port.optional
+          attribute? :protocol, Resources::Types::String.constrained(included_in: ['HTTP', 'HTTPS', 'TCP', 'TLS', 'UDP', 'TCP_UDP', 'GENEVE']).optional
+          attribute? :vpc_id, Resources::Types::String.optional
           
           # Optional attributes
           attribute :name, Resources::Types::String.optional.default(nil)
@@ -120,20 +120,25 @@ module Pangea
           attribute :stickiness, TargetGroupStickiness.optional.default(nil)
           
           # Tags
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Validate configuration consistency
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Name/name_prefix exclusivity
             if attrs[:name] && attrs[:name_prefix]
               raise Dry::Struct::Error, "Cannot specify both 'name' and 'name_prefix'"
             end
             
+            # Port is required for non-lambda target groups
+            if attrs[:protocol] && !attrs[:port] && attrs.fetch(:target_type, 'instance') != 'lambda'
+              raise Dry::Struct::Error, "port is required when protocol is specified"
+            end
+
             # Protocol-specific validations
             protocol = attrs[:protocol]
-            
+
             # GENEVE requires UDP and specific port
             if protocol == 'GENEVE' && attrs[:port] != 6081
               raise Dry::Struct::Error, "GENEVE protocol requires port 6081"
@@ -150,7 +155,8 @@ module Pangea
             end
             
             # Health check path only valid for HTTP/HTTPS
-            if attrs[:health_check] && attrs[:health_check][:path] != '/' && !%w[HTTP HTTPS].include?(protocol)
+            hc_path = attrs[:health_check] && attrs[:health_check][:path]
+            if hc_path && hc_path != '/' && !%w[HTTP HTTPS].include?(protocol)
               raise Dry::Struct::Error, "Health check path can only be set for HTTP/HTTPS target groups"
             end
             

@@ -21,7 +21,7 @@ module Pangea
     module AWS
       module Types
         # Launch template specification for ASG
-        class LaunchTemplateSpecification < Dry::Struct
+        class LaunchTemplateSpecification < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           attribute :id, Resources::Types::String.optional.default(nil)
@@ -30,7 +30,7 @@ module Pangea
 
           # Validate that either id or name is specified
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes.transform_keys(&:to_sym) : {}
 
             unless attrs[:id] || attrs[:name]
               raise Dry::Struct::Error, "Launch template must specify either 'id' or 'name'"

@@ -21,7 +21,7 @@ module Pangea
     module AWS
       module Types
         # Instance refresh preferences
-        class InstanceRefreshPreferences < Dry::Struct
+        class InstanceRefreshPreferences < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           attribute :min_healthy_percentage, Resources::Types::Integer.default(90).constrained(gteq: 0, lteq: 100)

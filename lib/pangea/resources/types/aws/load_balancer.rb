@@ -43,7 +43,7 @@ module Pangea
           arn: String,
           weight?: Integer.constrained(gteq: 0, lteq: 999).default(100)
         )).constrained(min_size: 1),
-        stickiness?: Hash.schema(enabled: Bool, duration?: Integer.constrained(gteq: 1, lteq: 604800).optional).optional
+        stickiness?: Hash.schema(enabled: Bool, duration?: Integer.constrained(gteq: 1, lteq: 604800).lax.optional).optional
       )
 
       ListenerRedirectAction = Hash.schema(
@@ -53,13 +53,13 @@ module Pangea
         path?: String.optional,
         query?: String.optional,
         status_code: Resources::Types::String.constrained(included_in: ['HTTP_301', 'HTTP_302'])
-      )
+      ).lax
 
       ListenerFixedResponseAction = Hash.schema(
         content_type?: Resources::Types::String.constrained(included_in: ['text/plain', 'text/css', 'text/html', 'application/javascript', 'application/json']).optional,
         message_body?: String.optional,
         status_code: String.constrained(format: /\A[1-5][0-9]{2}\z/)
-      )
+      ).lax
 
       ListenerAuthenticateCognitoAction = Hash.schema(
         user_pool_arn: String.constrained(format: /\Aarn:aws:cognito-idp:/),
@@ -70,7 +70,7 @@ module Pangea
         scope?: String.optional,
         session_cookie_name?: String.optional,
         session_timeout?: Integer.constrained(gteq: 1, lteq: 604800).optional
-      )
+      ).lax
 
       ListenerAuthenticateOidcAction = Hash.schema(
         authorization_endpoint: String,
@@ -84,14 +84,14 @@ module Pangea
         scope?: String.optional,
         session_cookie_name?: String.optional,
         session_timeout?: Integer.constrained(gteq: 1, lteq: 604800).optional
-      )
+      ).lax
 
-      ListenerConditionHostHeader = Hash.schema(values: Array.of(String).constrained(min_size: 1))
-      ListenerConditionPathPattern = Hash.schema(values: Array.of(String).constrained(min_size: 1))
-      ListenerConditionHttpMethod = Hash.schema(values: Array.of(HttpMethod).constrained(min_size: 1))
-      ListenerConditionQueryString = Hash.schema(values: Array.of(Hash.schema(key?: String.optional, value: String)).constrained(min_size: 1))
-      ListenerConditionHttpHeader = Hash.schema(http_header_name: String, values: Array.of(String).constrained(min_size: 1))
-      ListenerConditionSourceIp = Hash.schema(values: Array.of(CidrBlock).constrained(min_size: 1))
+      ListenerConditionHostHeader = Hash.schema(values: Array.of(String).lax.constrained(min_size: 1))
+      ListenerConditionPathPattern = Hash.schema(values: Array.of(String).lax.constrained(min_size: 1))
+      ListenerConditionHttpMethod = Hash.schema(values: Array.of(HttpMethod).lax.constrained(min_size: 1))
+      ListenerConditionQueryString = Hash.schema(values: Array.of(Hash.schema(key?: String.optional, value: String).lax).constrained(min_size: 1))
+      ListenerConditionHttpHeader = Hash.schema(http_header_name: String, values: Array.of(String).lax.constrained(min_size: 1))
+      ListenerConditionSourceIp = Hash.schema(values: Array.of(CidrBlock).lax.constrained(min_size: 1))
     end
   end
 end

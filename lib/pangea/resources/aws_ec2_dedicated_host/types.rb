@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2DedicatedHost resources
       # Manages aws ec2 dedicated host resources.
-      class AwsEc2DedicatedHostAttributes < Dry::Struct
+      class AwsEc2DedicatedHostAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_dedicated_host
         
         # Tags to apply to the resource

@@ -24,13 +24,13 @@ module Pangea
       AcmKeyAlgorithm = Resources::Types::String.constrained(included_in: ['RSA-2048', 'RSA-1024', 'RSA-4096', 'EC-prime256v1', 'EC-secp384r1', 'EC-secp521r1'])
       CertificateTransparencyLogging = String.default('ENABLED').enum('ENABLED', 'DISABLED')
 
-      AcmValidationOption = Hash.schema(domain_name: DomainName, validation_domain?: DomainName.optional)
+      AcmValidationOption = Hash.schema(domain_name: DomainName, validation_domain?: DomainName.optional).lax
       AcmDomainValidationOption = Hash.schema(
         domain_name: DomainName,
         resource_record_name?: String.optional,
         resource_record_type?: Resources::Types::String.constrained(included_in: ['CNAME', 'A', 'AAAA', 'TXT']).optional,
         resource_record_value?: String.optional
-      )
+      ).lax
 
       # KMS key types
       KmsKeyUsage = Resources::Types::String.constrained(included_in: ['SIGN_VERIFY', 'ENCRYPT_DECRYPT'])
@@ -41,9 +41,9 @@ module Pangea
 
       KmsKeyPolicy = String.constrained(format: /\A\{.*\}\z/).constructor { |value|
         begin
-          JSON.parse(value)
+          ::JSON.parse(value)
           value
-        rescue JSON::ParserError
+        rescue ::JSON::ParserError
           raise Dry::Types::ConstraintError, "KMS key policy must be valid JSON"
         end
       }
@@ -63,17 +63,15 @@ module Pangea
       }
 
       SecretArn = String.constrained(format: /\Aarn:aws:secretsmanager:[a-z0-9-]+:\d{12}:secret:[a-zA-Z0-9\/_+=.@-]+-[a-zA-Z0-9]{6}\z/)
-      SecretVersionStage = Resources::Types::String.constrained(included_in: ['AWSCURRENT', 'AWSPENDING']).constructor { |value|
-        if !['AWSCURRENT', 'AWSPENDING'].include?(value)
-          unless value.match?(/\A[a-zA-Z0-9_]{1,256}\z/)
-            raise Dry::Types::ConstraintError, "Custom version stage must be alphanumeric with underscores, max 256 characters"
-          end
+      SecretVersionStage = Resources::Types::String.constructor { |value|
+        unless value.is_a?(::String) && value.match?(/\A[a-zA-Z0-9_]{1,256}\z/)
+          raise Dry::Types::ConstraintError, "Version stage must be alphanumeric with underscores, max 256 characters"
         end
         value
       }
 
-      SecretsManagerReplicaRegion = Hash.schema(region: AwsRegion, kms_key_id?: String.optional)
-      SecretValue = String | Hash.map(String, String)
+      SecretsManagerReplicaRegion = Hash.schema(region: AwsRegion, kms_key_id?: String.optional).lax
+      SecretValue = String | Hash
       SecretBinary = String.constructor { |value|
         unless value.match?(/\A[A-Za-z0-9+\/]*={0,2}\z/)
           raise Dry::Types::ConstraintError, "Secret binary must be base64 encoded"
@@ -112,7 +110,7 @@ module Pangea
         'HEADERS', 'COOKIES'])
 
       WafV2JsonBodyMatchPattern = Hash.schema(
-        all?: Hash.schema({}).optional,
+        all?: Hash.schema({}).lax.optional,
         included_paths?: Array.of(String).optional
       ).constructor { |value|
         has_all = value.key?(:all)

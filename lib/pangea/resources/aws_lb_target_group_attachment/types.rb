@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsLbTargetGroupAttachment resources
       # Manages aws lb target group attachment resources.
-      class AwsLbTargetGroupAttachmentAttributes < Dry::Struct
+      class AwsLbTargetGroupAttachmentAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_lb_target_group_attachment
         
         # Tags to apply to the resource

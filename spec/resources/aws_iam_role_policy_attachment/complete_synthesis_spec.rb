@@ -164,10 +164,11 @@ RSpec.describe "aws_iam_role_policy_attachment terraform synthesis" do
       # Verify resource was created in synthesizer
       expect(test_synthesizer.resources).to have_key("aws_iam_role_policy_attachment.basic_attachment")
       
-      # Verify resource attributes
-      resource = test_synthesizer.resources["aws_iam_role_policy_attachment.basic_attachment"]
-      expect(resource.attributes[:role]).to eq("test-role")
-      expect(resource.attributes[:policy_arn]).to eq("arn:aws:iam::aws:policy/ReadOnlyAccess")
+      # Verify attributes were set via method calls (blocks execute in caller context)
+      role_call = test_synthesizer.method_calls.find { |c| c[0] == :role && c[1] == "test-role" }
+      expect(role_call).not_to be_nil
+      policy_call = test_synthesizer.method_calls.find { |c| c[0] == :policy_arn && c[1] == "arn:aws:iam::aws:policy/ReadOnlyAccess" }
+      expect(policy_call).not_to be_nil
     end
     
     it "synthesizes attachment with role ARN correctly" do
@@ -232,7 +233,7 @@ RSpec.describe "aws_iam_role_policy_attachment terraform synthesis" do
       # Use AWS managed policy constant
       ref = test_instance.aws_iam_role_policy_attachment(:lambda_exec, {
         role: "lambda-execution-role",
-        policy_arn: Pangea::Resources::AWS::AwsManagedPolicies::Lambda::BASIC_EXECUTION_ROLE
+        policy_arn: Pangea::Resources::AWS::Types::AwsManagedPolicies::Lambda::BASIC_EXECUTION_ROLE
       })
       
       # Verify correct policy ARN synthesis
@@ -270,12 +271,12 @@ RSpec.describe "aws_iam_role_policy_attachment terraform synthesis" do
       
       ref1 = test_instance.aws_iam_role_policy_attachment(:multi_1, {
         role: role_name,
-        policy_arn: Pangea::Resources::AWS::AwsManagedPolicies::S3::READ_ONLY
+        policy_arn: Pangea::Resources::AWS::Types::AwsManagedPolicies::S3::READ_ONLY
       })
       
       ref2 = test_instance.aws_iam_role_policy_attachment(:multi_2, {
         role: role_name,
-        policy_arn: Pangea::Resources::AWS::AwsManagedPolicies::CloudWatch::READ_ONLY
+        policy_arn: Pangea::Resources::AWS::Types::AwsManagedPolicies::CloudWatch::READ_ONLY
       })
       
       ref3 = test_instance.aws_iam_role_policy_attachment(:multi_3, {
@@ -288,10 +289,9 @@ RSpec.describe "aws_iam_role_policy_attachment terraform synthesis" do
       expect(test_synthesizer.resources).to have_key("aws_iam_role_policy_attachment.multi_2")
       expect(test_synthesizer.resources).to have_key("aws_iam_role_policy_attachment.multi_3")
       
-      # Verify all attachments reference the same role
-      expect(test_synthesizer.resources["aws_iam_role_policy_attachment.multi_1"].attributes[:role]).to eq(role_name)
-      expect(test_synthesizer.resources["aws_iam_role_policy_attachment.multi_2"].attributes[:role]).to eq(role_name)
-      expect(test_synthesizer.resources["aws_iam_role_policy_attachment.multi_3"].attributes[:role]).to eq(role_name)
+      # Verify all attachments reference the same role via method calls
+      role_calls = test_synthesizer.method_calls.select { |c| c[0] == :role && c[1] == role_name }
+      expect(role_calls.length).to eq(3)
     end
     
     it "synthesizes attachment pattern collections" do
@@ -318,7 +318,7 @@ RSpec.describe "aws_iam_role_policy_attachment terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use attachment pattern for Lambda VPC execution
-      policies = Pangea::Resources::AWS::AttachmentPatterns.lambda_vpc_execution_role_policies
+      policies = Pangea::Resources::AWS::Types::AttachmentPatterns.lambda_vpc_execution_role_policies
       
       policies.each_with_index do |policy_arn, index|
         test_instance.aws_iam_role_policy_attachment(:"lambda_vpc_#{index}", {
@@ -331,12 +331,13 @@ RSpec.describe "aws_iam_role_policy_attachment terraform synthesis" do
       expect(test_synthesizer.resources).to have_key("aws_iam_role_policy_attachment.lambda_vpc_0")
       expect(test_synthesizer.resources).to have_key("aws_iam_role_policy_attachment.lambda_vpc_1")
       
-      # Verify correct policy ARNs
-      expect(test_synthesizer.resources["aws_iam_role_policy_attachment.lambda_vpc_0"].attributes[:policy_arn])
-        .to eq("arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole")
-      
-      expect(test_synthesizer.resources["aws_iam_role_policy_attachment.lambda_vpc_1"].attributes[:policy_arn])
-        .to eq("arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole")
+      # Verify correct policy ARNs via method calls
+      expect(test_synthesizer.method_calls).to include(
+        [:policy_arn, "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"]
+      )
+      expect(test_synthesizer.method_calls).to include(
+        [:policy_arn, "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"]
+      )
     end
     
     it "synthesizes ECS task execution pattern" do
@@ -363,7 +364,7 @@ RSpec.describe "aws_iam_role_policy_attachment terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use ECS task execution pattern
-      policies = Pangea::Resources::AWS::AttachmentPatterns.ecs_task_execution_policies
+      policies = Pangea::Resources::AWS::Types::AttachmentPatterns.ecs_task_execution_policies
       
       policies.each_with_index do |policy_arn, index|
         test_instance.aws_iam_role_policy_attachment(:"ecs_task_#{index}", {
@@ -372,9 +373,10 @@ RSpec.describe "aws_iam_role_policy_attachment terraform synthesis" do
         })
       end
       
-      # Verify ECS task execution policy attachment
-      expect(test_synthesizer.resources["aws_iam_role_policy_attachment.ecs_task_0"].attributes[:policy_arn])
-        .to eq("arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy")
+      # Verify ECS task execution policy attachment via method calls
+      expect(test_synthesizer.method_calls).to include(
+        [:policy_arn, "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"]
+      )
     end
     
     it "validates terraform reference outputs" do
@@ -447,10 +449,13 @@ RSpec.describe "aws_iam_role_policy_attachment terraform synthesis" do
         policy_arn: "arn:aws:iam::222222222222:policy/shared-policy"
       })
       
-      # Verify cross-account synthesis
-      resource = test_synthesizer.resources["aws_iam_role_policy_attachment.cross_account"]
-      expect(resource.attributes[:role]).to eq("arn:aws:iam::111111111111:role/cross-account-role")
-      expect(resource.attributes[:policy_arn]).to eq("arn:aws:iam::222222222222:policy/shared-policy")
+      # Verify cross-account synthesis via method calls
+      expect(test_synthesizer.method_calls).to include(
+        [:role, "arn:aws:iam::111111111111:role/cross-account-role"]
+      )
+      expect(test_synthesizer.method_calls).to include(
+        [:policy_arn, "arn:aws:iam::222222222222:policy/shared-policy"]
+      )
     end
     
     it "synthesizes environment-specific policy patterns" do
@@ -477,7 +482,7 @@ RSpec.describe "aws_iam_role_policy_attachment terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Development environment (more permissive)
-      dev_policies = Pangea::Resources::AWS::AttachmentPatterns.development_policies
+      dev_policies = Pangea::Resources::AWS::Types::AttachmentPatterns.development_policies
       dev_policies.each_with_index do |policy_arn, index|
         test_instance.aws_iam_role_policy_attachment(:"dev_policy_#{index}", {
           role: "dev-role",
@@ -485,22 +490,24 @@ RSpec.describe "aws_iam_role_policy_attachment terraform synthesis" do
         })
       end
       
-      # Verify development policies
-      expect(test_synthesizer.resources["aws_iam_role_policy_attachment.dev_policy_0"].attributes[:policy_arn])
-        .to eq("arn:aws:iam::aws:policy/AmazonS3FullAccess")
-      
+      # Verify development policies via method calls
+      expect(test_synthesizer.method_calls).to include(
+        [:policy_arn, "arn:aws:iam::aws:policy/AmazonS3FullAccess"]
+      )
+
       # Production environment (restrictive)
-      prod_policies = Pangea::Resources::AWS::AttachmentPatterns.production_read_only_policies
+      prod_policies = Pangea::Resources::AWS::Types::AttachmentPatterns.production_read_only_policies
       prod_policies.each_with_index do |policy_arn, index|
         test_instance.aws_iam_role_policy_attachment(:"prod_policy_#{index}", {
           role: "prod-readonly-role",
           policy_arn: policy_arn
         })
       end
-      
-      # Verify production policies
-      expect(test_synthesizer.resources["aws_iam_role_policy_attachment.prod_policy_0"].attributes[:policy_arn])
-        .to eq("arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess")
+
+      # Verify production policies via method calls
+      expect(test_synthesizer.method_calls).to include(
+        [:policy_arn, "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"]
+      )
     end
     
     it "synthesizes administrative policy attachments with proper identification" do
@@ -527,7 +534,7 @@ RSpec.describe "aws_iam_role_policy_attachment terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Attach administrative policies
-      admin_policies = Pangea::Resources::AWS::AwsManagedPolicies.administrative_policies
+      admin_policies = Pangea::Resources::AWS::Types::AwsManagedPolicies.administrative_policies
       
       # Should contain dangerous policies
       expect(admin_policies).to include("arn:aws:iam::aws:policy/AdministratorAccess")

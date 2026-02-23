@@ -21,7 +21,7 @@ module Pangea
     module AWS
       module Types
         # Network interface specification
-        class NetworkInterface < Dry::Struct
+        class NetworkInterface < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           attribute :associate_public_ip_address, Resources::Types::Bool.optional.default(nil)

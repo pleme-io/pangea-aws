@@ -20,7 +20,7 @@ module Pangea
             Hdr10Settings = T::Hash.schema(
               max_cll?: T::Integer.optional,
               max_fall?: T::Integer.optional
-            )
+            ).lax
 
             ColorSpaceSettings = T::Hash.schema(
               colorspace_passthrough_settings?: T::Hash.optional,
@@ -28,7 +28,7 @@ module Pangea
               hdr10_settings?: Hdr10Settings.optional,
               rec601_settings?: T::Hash.optional,
               rec709_settings?: T::Hash.optional
-            )
+            ).lax
 
             # H265 settings
             H265Settings = T::Hash.schema(
@@ -64,7 +64,7 @@ module Pangea
               tier?: T::String.constrained(included_in: ['HIGH', 'MAIN']).optional,
               timecode_insertion?: T::String.constrained(included_in: ['DISABLED', 'PIC_TIMING_SEI']).optional,
               timecode_burnin_settings?: VCS::TimecodeBurninSettings.optional
-            )
+            ).lax
 
             # MPEG2 settings
             Mpeg2Settings = T::Hash.schema(
@@ -86,7 +86,7 @@ module Pangea
               subgop_length?: T::String.constrained(included_in: ['DYNAMIC', 'FIXED']).optional,
               timecode_insertion?: T::String.constrained(included_in: ['DISABLED', 'GOP_TIMECODE']).optional,
               timecode_burnin_settings?: VCS::TimecodeBurninSettings.optional
-            )
+            ).lax
 
             # Video codec settings container
             CodecSettings = T::Hash.schema(
@@ -94,7 +94,7 @@ module Pangea
               h264_settings?: VCS::H264Settings.optional,
               h265_settings?: H265Settings.optional,
               mpeg2_settings?: Mpeg2Settings.optional
-            )
+            ).lax
 
             # Video description
             VideoDescription = T::Hash.schema(
@@ -105,7 +105,7 @@ module Pangea
               scaling_behavior?: T::String.constrained(included_in: ['DEFAULT', 'STRETCH_TO_OUTPUT']).optional,
               sharpness?: T::Integer.optional,
               width?: T::Integer.optional
-            )
+            ).lax
 
 
           end

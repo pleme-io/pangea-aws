@@ -9,15 +9,16 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Cognito Identity Pool resources
-        class CognitoIdentityPoolAttributes < Dry::Struct
-          attribute :identity_pool_name, Resources::Types::String
+        class CognitoIdentityPoolAttributes < Pangea::Resources::BaseAttributes
+          extend Pangea::Resources::AWS::Types::IdentityPoolTemplates
+          attribute? :identity_pool_name, Resources::Types::String.optional
           attribute :allow_unauthenticated_identities, Resources::Types::Bool.default(false)
           attribute :allow_classic_flow, Resources::Types::Bool.default(false)
-          attribute :cognito_identity_providers, Resources::Types::Array.of(CognitoIdentityPoolProvider).optional
-          attribute :supported_login_providers, Resources::Types::Hash.optional
-          attribute :openid_connect_provider_arns, Resources::Types::Array.of(Resources::Types::String).optional
-          attribute :saml_provider_arns, Resources::Types::Array.of(Resources::Types::String).optional
-          attribute :developer_provider_name, Resources::Types::String.optional
+          attribute :cognito_identity_providers, Resources::Types::Array.of(CognitoIdentityPoolProvider).default([].freeze)
+          attribute :supported_login_providers, Resources::Types::Hash.default({}.freeze)
+          attribute :openid_connect_provider_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
+          attribute :saml_provider_arns, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
+          attribute? :developer_provider_name, Resources::Types::String.optional
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
           def self.new(attributes = {})

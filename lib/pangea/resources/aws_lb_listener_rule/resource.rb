@@ -95,7 +95,7 @@ module Pangea
           end
           
           # Apply tags if present
-          if rule_attrs.tags.any?
+          if rule_attrs.tags&.any?
             tags do
               rule_attrs.tags.each do |key, value|
                 public_send(key, value)

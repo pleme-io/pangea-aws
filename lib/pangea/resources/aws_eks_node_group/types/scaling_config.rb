@@ -22,7 +22,7 @@ module Pangea
     module AWS
       module Types
         # Scaling configuration for node group
-        class ScalingConfig < Dry::Struct
+        class ScalingConfig < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           attribute :desired_size, Pangea::Resources::Types::Integer.constrained(gteq: 0).default(2)
@@ -30,7 +30,7 @@ module Pangea
           attribute :min_size, Pangea::Resources::Types::Integer.constrained(gteq: 0).default(1)
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate size relationships
             min = attrs[:min_size] || 1

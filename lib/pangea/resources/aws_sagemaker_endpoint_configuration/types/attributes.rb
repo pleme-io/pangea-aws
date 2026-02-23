@@ -10,25 +10,25 @@ module Pangea
     module AWS
       module Types
         # SageMaker Endpoint Configuration attributes with comprehensive validation
-        class SageMakerEndpointConfigurationAttributes < Dry::Struct
+        class SageMakerEndpointConfigurationAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :name, Resources::Types::String.constrained(min_size: 1, max_size: 63, format: /\A[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]\z/)
-          attribute :production_variants, Resources::Types::Array.of(SageMakerProductionVariant).constrained(min_size: 1, max_size: 10)
-          attribute :data_capture_config, SageMakerDataCaptureConfig.optional
-          attribute :kms_key_id, Resources::Types::String.optional
-          attribute :async_inference_config, Resources::Types::Hash.schema(
+          attribute? :name, Resources::Types::String.constrained(min_size: 1, max_size: 63, format: /\A[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]\z/).optional
+          attribute? :production_variants, Resources::Types::Array.of(SageMakerProductionVariant).constrained(min_size: 1, max_size: 10).optional
+          attribute? :data_capture_config, SageMakerDataCaptureConfig.optional
+          attribute? :kms_key_id, Resources::Types::String.optional
+          attribute? :async_inference_config, Resources::Types::Hash.schema(
             output_config: Resources::Types::Hash.schema(
               s3_output_path: Resources::Types::String.constrained(format: /\As3:\/\//),
-              notification_config?: Resources::Types::Hash.schema(success_topic?: Resources::Types::String.optional, error_topic?: Resources::Types::String.optional, include_inference_response_in?: Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['SUCCESS_NOTIFICATION_TOPIC', 'ERROR_NOTIFICATION_TOPIC'])).optional).optional,
+              notification_config?: Resources::Types::Hash.schema(success_topic?: Resources::Types::String.optional, error_topic?: Resources::Types::String.optional, include_inference_response_in?: Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['SUCCESS_NOTIFICATION_TOPIC', 'ERROR_NOTIFICATION_TOPIC']).lax).optional).optional,
               s3_failure_path?: Resources::Types::String.optional, kms_key_id?: Resources::Types::String.optional
             ),
-            client_config?: Resources::Types::Hash.schema(max_concurrent_invocations_per_instance?: Resources::Types::Integer.constrained(gteq: 1, lteq: 1000).optional).optional
+            client_config?: Resources::Types::Hash.schema(max_concurrent_invocations_per_instance?: Resources::Types::Integer.constrained(gteq: 1, lteq: 1000).lax.optional).optional
           ).optional
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             validate_variants!(attrs)
             validate_data_capture!(attrs)
             validate_async_inference!(attrs)
@@ -110,7 +110,7 @@ module Pangea
           def get_data_capture_cost
             return 0.0 unless data_capture_config&.dig(:enable_capture)
 
-            sampling = data_capture_config[:initial_sampling_percentage] / 100.0
+            sampling = data_capture_config&.dig(:initial_sampling_percentage) / 100.0
             100_000 * sampling * 0.001
           end
 
@@ -132,10 +132,10 @@ module Pangea
           def security_score
             score = 0
             score += 20 if uses_kms_encryption?
-            score += 15 if has_data_capture? && data_capture_config[:kms_key_id]
+            score += 15 if has_data_capture? && data_capture_config&.dig(:kms_key_id)
             score += 10 if has_async_inference? && async_inference_config.dig(:output_config, :kms_key_id)
             score += 10 if production_variants.all? { |v| v[:core_dump_config]&.dig(:kms_key_id) }
-            score += 15 if has_data_capture? && data_capture_config[:capture_options].size == 2
+            score += 15 if has_data_capture? && data_capture_config&.dig(:capture_options).size == 2
             score += 10 if is_serverless_configuration?
             [score, 100].min
           end
@@ -143,7 +143,7 @@ module Pangea
           def compliance_status
             issues = []
             issues << 'No KMS encryption for endpoint configuration' unless uses_kms_encryption?
-            issues << 'Data capture enabled but not encrypted' if has_data_capture? && !data_capture_config[:kms_key_id]
+            issues << 'Data capture enabled but not encrypted' if has_data_capture? && !data_capture_config&.dig(:kms_key_id)
             issues << 'Async inference output not encrypted' if has_async_inference? && !async_inference_config.dig(:output_config, :kms_key_id)
             issues << 'Core dump configuration missing KMS encryption' if production_variants.any? { |v| v[:core_dump_config] && !v[:core_dump_config][:kms_key_id] }
             { status: issues.empty? ? 'compliant' : 'needs_attention', issues: issues }

@@ -49,24 +49,24 @@ module Pangea
           # VPC Configuration for VPC-based access points
           if access_point_attrs.vpc_configuration
             vpc_configuration do
-              vpc_id access_point_attrs.vpc_configuration[:vpc_id]
+              vpc_id access_point_attrs.vpc_configuration&.dig(:vpc_id)
             end
           end
           
           # Public access block configuration
-          if access_point_attrs.public_access_block_configuration.any?
+          if access_point_attrs.public_access_block_configuration&.any?
             public_access_block_configuration do
               if access_point_attrs.public_access_block_configuration.key?(:block_public_acls)
-                block_public_acls access_point_attrs.public_access_block_configuration[:block_public_acls]
+                block_public_acls access_point_attrs.public_access_block_configuration&.dig(:block_public_acls)
               end
               if access_point_attrs.public_access_block_configuration.key?(:block_public_policy)
-                block_public_policy access_point_attrs.public_access_block_configuration[:block_public_policy]
+                block_public_policy access_point_attrs.public_access_block_configuration&.dig(:block_public_policy)
               end
               if access_point_attrs.public_access_block_configuration.key?(:ignore_public_acls)
-                ignore_public_acls access_point_attrs.public_access_block_configuration[:ignore_public_acls]
+                ignore_public_acls access_point_attrs.public_access_block_configuration&.dig(:ignore_public_acls)
               end
               if access_point_attrs.public_access_block_configuration.key?(:restrict_public_buckets)
-                restrict_public_buckets access_point_attrs.public_access_block_configuration[:restrict_public_buckets]
+                restrict_public_buckets access_point_attrs.public_access_block_configuration&.dig(:restrict_public_buckets)
               end
             end
           end

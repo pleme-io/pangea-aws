@@ -21,15 +21,15 @@ module Pangea
     module AWS
       module Types
         # Transit Gateway Route Table resource attributes with validation
-        class TransitGatewayRouteTableAttributes < Dry::Struct
+        class TransitGatewayRouteTableAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :transit_gateway_id, Resources::Types::String
+          attribute? :transit_gateway_id, Resources::Types::String.optional
           attribute? :tags, Resources::Types::AwsTags
           
           # Custom validation for route table configuration
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate Transit Gateway ID format
             if attrs[:transit_gateway_id] && !attrs[:transit_gateway_id].match?(/\Atgw-[0-9a-f]{8,17}\z/)
@@ -62,7 +62,7 @@ module Pangea
           
           def route_table_purpose_analysis
             # Analyze common route table naming patterns to infer purpose
-            tags_hash = tags.is_a?(Hash) ? tags : {}
+            tags_hash = tags.is_a?(::Hash) ? tags : {}
             name = tags_hash[:Name] || tags_hash[:name] || ''
             
             purposes = []
@@ -110,7 +110,7 @@ module Pangea
             considerations << "Association and propagation must be configured for each attachment"
             
             # Analyze tags for security context
-            if tags[:Environment] == 'production' || tags[:environment] == 'production'
+            if tags&.dig(:Environment) == 'production' || tags&.dig(:environment) == 'production'
               considerations << "Production route table - ensure strict route policies and monitoring"
             end
             

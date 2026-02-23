@@ -18,10 +18,10 @@ require 'pangea/resources/types'
 module Pangea
   module Resources
     module AWS
-      class IotAnalyticsChannelAttributes < Dry::Struct
-        attribute :channel_name, Resources::Types::IotAnalyticsChannelName
-        attribute :channel_storage, Resources::Types::Hash.optional
-        attribute :retention_period, Resources::Types::Hash.optional
+      class IotAnalyticsChannelAttributes < Pangea::Resources::BaseAttributes
+        attribute? :channel_name, Resources::Types::IotAnalyticsChannelName.optional
+        attribute :channel_storage, Resources::Types::Hash.default({}.freeze)
+        attribute :retention_period, Resources::Types::Hash.default({}.freeze)
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         def has_custom_storage?

@@ -21,11 +21,11 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS CodeDeploy Deployment Configuration resources
-      class CodeDeployDeploymentConfigAttributes < Dry::Struct
+      class CodeDeployDeploymentConfigAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
 
         # Deployment config name (required)
-        attribute :deployment_config_name, Resources::Types::String.constrained(
+        attribute? :deployment_config_name, Resources::Types::String.constrained(
           format: /\A[a-zA-Z0-9._-]+\z/,
           min_size: 1,
           max_size: 100
@@ -35,22 +35,22 @@ module Pangea
         attribute :compute_platform, Resources::Types::String.constrained(included_in: ['Server', 'Lambda', 'ECS']).default('Server')
 
         # Minimum healthy hosts (for Server platform)
-        attribute :minimum_healthy_hosts, Resources::Types::Hash.schema(
+        attribute? :minimum_healthy_hosts, Resources::Types::Hash.schema(
           type: Resources::Types::String.constrained(included_in: ['HOST_COUNT', 'FLEET_PERCENT']),
           value: Resources::Types::Integer.constrained(gteq: 0)
-        ).default({ type: 'FLEET_PERCENT', value: 75 })
+        ).lax.default({ type: 'FLEET_PERCENT', value: 75 })
 
         # Traffic routing config (for Lambda/ECS platforms)
-        attribute :traffic_routing_config, Resources::Types::Hash.schema(
+        attribute? :traffic_routing_config, Resources::Types::Hash.schema(
           type?: Resources::Types::String.constrained(included_in: ['TimeBasedCanary', 'TimeBasedLinear', 'AllAtOnceTrafficShift']).optional,
           time_based_canary?: Resources::Types::Hash.schema(
             canary_percentage: Resources::Types::Integer.constrained(gteq: 0, lteq: 100),
             canary_interval: Resources::Types::Integer.constrained(gteq: 0)
-          ).optional,
+          ).lax.optional,
           time_based_linear?: Resources::Types::Hash.schema(
             linear_percentage: Resources::Types::Integer.constrained(gteq: 0, lteq: 100),
             linear_interval: Resources::Types::Integer.constrained(gteq: 0)
-          ).optional
+          ).lax.optional
         ).default({}.freeze)
 
         # Custom validation
@@ -59,7 +59,7 @@ module Pangea
 
           # Validate minimum healthy hosts for Server platform
           if attrs.compute_platform == 'Server'
-            if attrs.minimum_healthy_hosts[:type] == 'FLEET_PERCENT' && attrs.minimum_healthy_hosts[:value] > 100
+            if attrs.minimum_healthy_hosts&.dig(:type) == 'FLEET_PERCENT' && attrs.minimum_healthy_hosts&.dig(:value) > 100
               raise Dry::Struct::Error, "Fleet percent cannot exceed 100"
             end
           end
@@ -74,11 +74,11 @@ module Pangea
           end
 
           # Validate traffic routing configuration
-          if attrs.traffic_routing_config[:type] == 'TimeBasedCanary' && !attrs.traffic_routing_config[:time_based_canary]
+          if attrs.traffic_routing_config&.dig(:type) == 'TimeBasedCanary' && !attrs.traffic_routing_config&.dig(:time_based_canary)
             raise Dry::Struct::Error, "TimeBasedCanary requires time_based_canary configuration"
           end
 
-          if attrs.traffic_routing_config[:type] == 'TimeBasedLinear' && !attrs.traffic_routing_config[:time_based_linear]
+          if attrs.traffic_routing_config&.dig(:type) == 'TimeBasedLinear' && !attrs.traffic_routing_config&.dig(:time_based_linear)
             raise Dry::Struct::Error, "TimeBasedLinear requires time_based_linear configuration"
           end
 
@@ -99,34 +99,34 @@ module Pangea
         end
 
         def uses_traffic_routing?
-          traffic_routing_config[:type].present?
+          traffic_routing_config&.dig(:type).present?
         end
 
         def canary_deployment?
-          traffic_routing_config[:type] == 'TimeBasedCanary'
+          traffic_routing_config&.dig(:type) == 'TimeBasedCanary'
         end
 
         def linear_deployment?
-          traffic_routing_config[:type] == 'TimeBasedLinear'
+          traffic_routing_config&.dig(:type) == 'TimeBasedLinear'
         end
 
         def all_at_once_deployment?
-          traffic_routing_config[:type] == 'AllAtOnceTrafficShift'
+          traffic_routing_config&.dig(:type) == 'AllAtOnceTrafficShift'
         end
 
         def deployment_description
           if server_platform?
-            case minimum_healthy_hosts[:type]
+            case minimum_healthy_hosts&.dig(:type)
             when 'HOST_COUNT'
-              "Keep #{minimum_healthy_hosts[:value]} hosts healthy"
+              "Keep #{minimum_healthy_hosts&.dig(:value)} hosts healthy"
             when 'FLEET_PERCENT'
-              "Keep #{minimum_healthy_hosts[:value]}% of fleet healthy"
+              "Keep #{minimum_healthy_hosts&.dig(:value)}% of fleet healthy"
             end
           elsif canary_deployment?
-            canary = traffic_routing_config[:time_based_canary]
+            canary = traffic_routing_config&.dig(:time_based_canary)
             "Canary: #{canary[:canary_percentage]}% for #{canary[:canary_interval]} minutes"
           elsif linear_deployment?
-            linear = traffic_routing_config[:time_based_linear]
+            linear = traffic_routing_config&.dig(:time_based_linear)
             "Linear: #{linear[:linear_percentage]}% every #{linear[:linear_interval]} minutes"
           elsif all_at_once_deployment?
             "All at once traffic shift"

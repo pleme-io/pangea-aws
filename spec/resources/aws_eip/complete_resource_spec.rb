@@ -25,9 +25,9 @@ RSpec.describe "aws_eip resource function" do
       include Pangea::Resources::AWS
       
       # Mock the terraform-synthesizer resource method
-      def resource(type, name)
+      def resource(type, name, attrs = {})
         @resources ||= {}
-        resource_data = { type: type, name: name, attributes: {} }
+        resource_data = { type: type, name: name, attributes: attrs }
         
         yield if block_given?
         
@@ -53,7 +53,7 @@ RSpec.describe "aws_eip resource function" do
   
   describe "EipAttributes validation" do
     it "accepts minimal configuration with default VPC domain" do
-      attrs = Pangea::Resources::AWS::EipAttributes.new({})
+      attrs = Pangea::Resources::AWS::Types::EipAttributes.new({})
       
       expect(attrs.domain).to eq('vpc')
       expect(attrs.tags).to eq({})
@@ -64,7 +64,7 @@ RSpec.describe "aws_eip resource function" do
     end
     
     it "accepts domain specification" do
-      attrs = Pangea::Resources::AWS::EipAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::EipAttributes.new({
         domain: "standard"
       })
       
@@ -73,7 +73,7 @@ RSpec.describe "aws_eip resource function" do
     end
     
     it "accepts instance association" do
-      attrs = Pangea::Resources::AWS::EipAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::EipAttributes.new({
         instance: "i-1234567890abcdef0"
       })
       
@@ -83,7 +83,7 @@ RSpec.describe "aws_eip resource function" do
     end
     
     it "accepts network interface association" do
-      attrs = Pangea::Resources::AWS::EipAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::EipAttributes.new({
         network_interface: "eni-1234567890abcdef0"
       })
       
@@ -94,7 +94,7 @@ RSpec.describe "aws_eip resource function" do
     
     it "validates instance and network_interface are mutually exclusive" do
       expect {
-        Pangea::Resources::AWS::EipAttributes.new({
+        Pangea::Resources::AWS::Types::EipAttributes.new({
           instance: "i-1234567890abcdef0",
           network_interface: "eni-1234567890abcdef0"
         })
@@ -102,7 +102,7 @@ RSpec.describe "aws_eip resource function" do
     end
     
     it "accepts private IP association with network interface" do
-      attrs = Pangea::Resources::AWS::EipAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::EipAttributes.new({
         network_interface: "eni-1234567890abcdef0",
         associate_with_private_ip: "10.0.1.50"
       })
@@ -112,14 +112,14 @@ RSpec.describe "aws_eip resource function" do
     
     it "validates private IP requires network interface" do
       expect {
-        Pangea::Resources::AWS::EipAttributes.new({
+        Pangea::Resources::AWS::Types::EipAttributes.new({
           associate_with_private_ip: "10.0.1.50"
         })
       }.to raise_error(Dry::Struct::Error, /'associate_with_private_ip' requires 'network_interface'/)
     end
     
     it "accepts customer-owned IP pool" do
-      attrs = Pangea::Resources::AWS::EipAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::EipAttributes.new({
         customer_owned_ipv4_pool: "ipv4pool-coip-12345678"
       })
       
@@ -128,7 +128,7 @@ RSpec.describe "aws_eip resource function" do
     end
     
     it "accepts public IPv4 pool" do
-      attrs = Pangea::Resources::AWS::EipAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::EipAttributes.new({
         public_ipv4_pool: "amazon"
       })
       
@@ -137,7 +137,7 @@ RSpec.describe "aws_eip resource function" do
     
     it "validates customer and public pools are mutually exclusive" do
       expect {
-        Pangea::Resources::AWS::EipAttributes.new({
+        Pangea::Resources::AWS::Types::EipAttributes.new({
           customer_owned_ipv4_pool: "ipv4pool-coip-12345678",
           public_ipv4_pool: "amazon"
         })
@@ -145,7 +145,7 @@ RSpec.describe "aws_eip resource function" do
     end
     
     it "accepts network border group" do
-      attrs = Pangea::Resources::AWS::EipAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::EipAttributes.new({
         network_border_group: "us-east-1-wl1-bos-wlz-1"
       })
       
@@ -153,7 +153,7 @@ RSpec.describe "aws_eip resource function" do
     end
     
     it "accepts tags" do
-      attrs = Pangea::Resources::AWS::EipAttributes.new({
+      attrs = Pangea::Resources::AWS::Types::EipAttributes.new({
         tags: {
           Name: "web-server-eip",
           Environment: "production",

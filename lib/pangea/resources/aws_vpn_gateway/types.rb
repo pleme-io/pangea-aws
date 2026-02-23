@@ -21,19 +21,19 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AwsVpnGateway resources
-      class VpnGatewayAttributes < Dry::Struct
+      class VpnGatewayAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
         
         # Optional attributes
-        attribute :vpc_id, Resources::Types::String.optional
-        attribute :availability_zone, Resources::Types::AwsAvailabilityZone.optional
+        attribute? :vpc_id, Resources::Types::String.optional
+        attribute? :availability_zone, Resources::Types::AwsAvailabilityZone.optional
         attribute :type, Resources::Types::VpnGatewayType.default('ipsec.1')
-        attribute :amazon_side_asn, Resources::Types::BgpAsn.optional
+        attribute? :amazon_side_asn, Resources::Types::BgpAsn.optional
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})
-          attrs = attributes.is_a?(Hash) ? attributes : {}
+          attrs = attributes.is_a?(::Hash) ? attributes : {}
           
           # Validate VPC ID format if provided
           if attrs[:vpc_id]

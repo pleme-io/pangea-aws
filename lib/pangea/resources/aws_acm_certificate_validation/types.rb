@@ -42,16 +42,16 @@ module Pangea
         CertificateArn = Resources::Types::String.constrained(
           format: /\Aarn:aws:acm:[a-z0-9-]+:\d{12}:certificate\/[a-f0-9-]{36}\z/
         )
-        class AcmCertificateValidationAttributes < Dry::Struct
+        class AcmCertificateValidationAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :certificate_arn, CertificateArn
+          attribute? :certificate_arn, CertificateArn.optional
           attribute :validation_record_fqdns?, Resources::Types::Array.of(Resources::Types::String).optional
           attribute :timeouts?, AcmCertificateValidationTimeouts.optional
           
           # Custom validation logic
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate certificate ARN format
             if attrs[:certificate_arn]
@@ -78,7 +78,7 @@ module Pangea
           # FQDN validation helper
           def self.validate_fqdn(fqdn)
             # Basic FQDN validation
-            unless fqdn.match?(/\A[a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?)*\.?\z/)
+            unless fqdn.match?(/\A[a-zA-Z0-9_]([a-zA-Z0-9\-_]*[a-zA-Z0-9_])?(\.[a-zA-Z0-9_]([a-zA-Z0-9\-_]*[a-zA-Z0-9_])?)*\.?\z/)
               raise Dry::Struct::Error, "Invalid FQDN format: #{fqdn}"
             end
             

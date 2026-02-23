@@ -21,21 +21,21 @@ module Pangea
     module AWS
       module Types
         # CloudWatch Composite Alarm resource attributes with validation
-        class CloudWatchCompositeAlarmAttributes < Dry::Struct
+        class CloudWatchCompositeAlarmAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Required attributes
-          attribute :alarm_name, Resources::Types::String
-          attribute :alarm_rule, Resources::Types::String
+          attribute? :alarm_name, Resources::Types::String.optional
+          attribute? :alarm_rule, Resources::Types::String.optional
           
           # Optional attributes
           attribute :alarm_description, Resources::Types::String.optional.default(nil)
           attribute :actions_enabled, Resources::Types::Bool.default(true)
-          attribute :actions_suppressor, Resources::Types::Hash.schema(
+          attribute? :actions_suppressor, Resources::Types::Hash.schema(
             alarm: Resources::Types::String,
             extension_period: Resources::Types::Integer.optional,
             wait_period: Resources::Types::Integer.optional
-          ).optional.default(nil)
+          ).lax.optional.default(nil)
           
           # Alarm actions
           attribute :alarm_actions, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
@@ -43,11 +43,11 @@ module Pangea
           attribute :insufficient_data_actions, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
           
           # Tags
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :tags, Resources::Types::AwsTags.optional
           
           # Validate alarm rule syntax (basic validation)
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate alarm_rule contains valid operators
             if attrs[:alarm_rule]
@@ -113,10 +113,10 @@ module Pangea
             # Actions suppressor
             if actions_suppressor
               hash[:actions_suppressor] = {
-                alarm: actions_suppressor[:alarm]
+                alarm: actions_suppressor&.dig(:alarm)
               }
-              hash[:actions_suppressor][:extension_period] = actions_suppressor[:extension_period] if actions_suppressor[:extension_period]
-              hash[:actions_suppressor][:wait_period] = actions_suppressor[:wait_period] if actions_suppressor[:wait_period]
+              hash[:actions_suppressor][:extension_period] = actions_suppressor&.dig(:extension_period) if actions_suppressor&.dig(:extension_period)
+              hash[:actions_suppressor][:wait_period] = actions_suppressor&.dig(:wait_period) if actions_suppressor&.dig(:wait_period)
             end
             
             # Actions

@@ -33,7 +33,7 @@ module Pangea
               events: S3Events::EventsArray,
               filter_prefix?: Resources::Types::String.optional,
               filter_suffix?: Resources::Types::String.optional
-            )
+            ).lax
           end
 
           # CloudWatch/SNS topic configuration schema
@@ -43,7 +43,7 @@ module Pangea
             events: S3Events::EventsArray,
             filter_prefix?: Resources::Types::String.optional,
             filter_suffix?: Resources::Types::String.optional
-          )
+          ).lax
 
           # Lambda function configuration schema
           LambdaConfigSchema = Resources::Types::Hash.schema(
@@ -52,7 +52,7 @@ module Pangea
             events: S3Events::EventsArray,
             filter_prefix?: Resources::Types::String.optional,
             filter_suffix?: Resources::Types::String.optional
-          )
+          ).lax
 
           # SQS queue configuration schema
           QueueConfigSchema = Resources::Types::Hash.schema(
@@ -61,7 +61,7 @@ module Pangea
             events: S3Events::EventsArray,
             filter_prefix?: Resources::Types::String.optional,
             filter_suffix?: Resources::Types::String.optional
-          )
+          ).lax
 
           # Array types for each configuration
           TopicConfigArray = Resources::Types::Array.of(TopicConfigSchema).default([].freeze)

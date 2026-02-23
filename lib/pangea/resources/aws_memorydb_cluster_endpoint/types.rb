@@ -21,8 +21,8 @@ module Pangea
       module Types
       # Type-safe attributes for AwsMemorydbClusterEndpoint resources
       # Provides a MemoryDB Cluster Endpoint resource.
-      class MemorydbClusterEndpointAttributes < Dry::Struct
-        attribute :cluster_name, Resources::Types::String
+      class MemorydbClusterEndpointAttributes < Pangea::Resources::BaseAttributes
+        attribute? :cluster_name, Resources::Types::String.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

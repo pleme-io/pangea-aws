@@ -40,10 +40,10 @@ module Pangea
           build_token_domains(self, web_acl_attrs.token_domains)
           builder.build_challenge_config(self, web_acl_attrs.challenge_config)
           builder.build_captcha_config(self, web_acl_attrs.captcha_config)
-          build_tags(self, web_acl_attrs.tags)
+          build_aws_wafv2_web_acl_tags(self, web_acl_attrs.tags)
         end
 
-        build_resource_reference(name, web_acl_attrs)
+        build_aws_wafv2_web_acl_resource_reference(name, web_acl_attrs)
       end
 
       private
@@ -55,18 +55,18 @@ module Pangea
       end
 
       def build_token_domains(ctx, domains)
-        return unless domains.any?
+        return unless domains&.any?
 
         domains.each { |domain| ctx.token_domains domain }
       end
 
-      def build_tags(ctx, tags)
-        return unless tags.any?
+      def build_aws_wafv2_web_acl_tags(ctx, tags)
+        return unless tags&.any?
 
         ctx.tags { tags.each { |key, value| public_send(key, value) } }
       end
 
-      def build_resource_reference(name, attrs)
+      def build_aws_wafv2_web_acl_resource_reference(name, attrs)
         ResourceReference.new(
           type: 'aws_wafv2_web_acl',
           name: name,

@@ -20,7 +20,7 @@ module Pangea
     module AWS
       module Types
         # Performance and monitoring attributes for AWS RDS Database Instance
-        class MonitoringAttributes < Dry::Struct
+        class MonitoringAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # CloudWatch log exports

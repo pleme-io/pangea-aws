@@ -41,8 +41,8 @@ module Pangea
           # Kinesis source configuration
           if firehose_attrs.has_kinesis_source?
             kinesis_source_configuration do
-              kinesis_stream_arn firehose_attrs.kinesis_source_configuration[:kinesis_stream_arn]
-              role_arn firehose_attrs.kinesis_source_configuration[:role_arn]
+              kinesis_stream_arn firehose_attrs.kinesis_source_configuration&.dig(:kinesis_stream_arn)
+              role_arn firehose_attrs.kinesis_source_configuration&.dig(:role_arn)
             end
           end
 
@@ -66,7 +66,7 @@ module Pangea
           end
 
           # Apply tags if present
-          if firehose_attrs.tags.any?
+          if firehose_attrs.tags&.any?
             tags do
               firehose_attrs.tags.each do |key, value|
                 public_send(key, value)

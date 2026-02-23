@@ -10,24 +10,25 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Cognito User Pool resources
-        class CognitoUserPoolAttributes < Dry::Struct
-          attribute :name, Resources::Types::String.optional
-          attribute :alias_attributes, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['phone_number', 'email', 'preferred_username'])).optional
-          attribute :auto_verified_attributes, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['phone_number', 'email'])).optional
-          attribute :username_attributes, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['phone_number', 'email'])).optional
-          attribute :username_configuration, Resources::Types::Hash.schema(case_sensitive: Resources::Types::Bool).optional
+        class CognitoUserPoolAttributes < Pangea::Resources::BaseAttributes
+          extend Pangea::Resources::AWS::Types::UserPoolTemplates
+          attribute? :name, Resources::Types::String.optional
+          attribute? :alias_attributes, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['phone_number', 'email', 'preferred_username'])).optional
+          attribute? :auto_verified_attributes, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['phone_number', 'email'])).optional
+          attribute? :username_attributes, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['phone_number', 'email'])).optional
+          attribute? :username_configuration, Resources::Types::Hash.schema(case_sensitive: Resources::Types::Bool).lax.optional
           attribute? :password_policy, CognitoUserPoolPasswordPolicy.optional
           attribute :mfa_configuration, Resources::Types::String.constrained(included_in: ['ON', 'OFF', 'OPTIONAL']).default('OFF')
-          attribute :sms_authentication_message, Resources::Types::String.optional
+          attribute? :sms_authentication_message, Resources::Types::String.optional
           attribute? :sms_configuration, CognitoUserPoolSmsConfiguration.optional
-          attribute :software_token_mfa_configuration, Resources::Types::Hash.schema(enabled: Resources::Types::Bool).optional
+          attribute? :software_token_mfa_configuration, Resources::Types::Hash.schema(enabled: Resources::Types::Bool).lax.optional
           attribute? :device_configuration, CognitoUserPoolDeviceConfiguration.optional
           attribute? :email_configuration, CognitoUserPoolEmailConfiguration.optional
-          attribute :email_verification_message, Resources::Types::String.optional
-          attribute :email_verification_subject, Resources::Types::String.optional
-          attribute :sms_verification_message, Resources::Types::String.optional
+          attribute? :email_verification_message, Resources::Types::String.optional
+          attribute? :email_verification_subject, Resources::Types::String.optional
+          attribute? :sms_verification_message, Resources::Types::String.optional
           attribute? :lambda_config, CognitoUserPoolLambdaConfig.optional
-          attribute :schema, Resources::Types::Array.of(CognitoUserPoolSchemaAttribute).optional
+          attribute :schema, Resources::Types::Array.of(CognitoUserPoolSchemaAttribute).default([].freeze)
           attribute? :user_attribute_update_settings, CognitoUserPoolUserAttributeUpdateSettings.optional
           attribute? :verification_message_template, CognitoUserPoolVerificationMessageTemplate.optional
           attribute? :account_recovery_setting, CognitoUserPoolAccountRecoverySetting.optional

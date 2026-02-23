@@ -21,10 +21,10 @@ module Pangea
       module Types
       # Type-safe attributes for AwsRamPermissionAssociation resources
       # Associates a permission with a Resource Access Manager (RAM) resource share.
-      class RamPermissionAssociationAttributes < Dry::Struct
-        attribute :permission_arn, Resources::Types::String
-        attribute :resource_share_arn, Resources::Types::String
-        attribute :replace, Resources::Types::Bool.optional
+      class RamPermissionAssociationAttributes < Pangea::Resources::BaseAttributes
+        attribute? :permission_arn, Resources::Types::String.optional
+        attribute? :resource_share_arn, Resources::Types::String.optional
+        attribute? :replace, Resources::Types::Bool.optional
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

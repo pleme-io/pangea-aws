@@ -21,10 +21,10 @@ module Pangea
     module AWS
       module Types
         # KMS Alias resource attributes with validation
-        class KmsAliasAttributes < Dry::Struct
+        class KmsAliasAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :name, Pangea::Resources::Types::String.constrained(
+          attribute? :name, Pangea::Resources::Types::String.constrained(
             format: /\Aalias\/[a-zA-Z0-9\/_-]{1,256}\z/
           ).constructor { |value|
             # Additional validation beyond regex
@@ -36,11 +36,11 @@ module Pangea
             
             value
           }
-          attribute :target_key_id, Pangea::Resources::Types::String
+          attribute? :target_key_id, Pangea::Resources::Types::String.optional
           
           # Custom validation logic
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             
             # Validate alias name format
             if attrs[:name]
@@ -83,12 +83,15 @@ module Pangea
           
           # Target key ID validation helper
           def self.validate_target_key_id(key_id)
+            # Accept Terraform interpolation references
+            return if key_id.start_with?('${') && key_id.end_with?('}')
+
             # Can be key ID or key ARN
             valid_formats = [
               /\A[a-f0-9-]{36}\z/,  # Key ID format
               /\Aarn:aws:kms:[a-z0-9-]+:\d{12}:key\/[a-f0-9-]{36}\z/  # Key ARN format
             ]
-            
+
             unless valid_formats.any? { |format| key_id.match?(format) }
               raise Dry::Struct::Error, "Invalid target key ID format: #{key_id}"
             end

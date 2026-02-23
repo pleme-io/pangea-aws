@@ -24,29 +24,29 @@ module Pangea
     module AWS
       module Types
         # Kinesis Video Stream resource attributes with validation
-        class KinesisVideoStreamAttributes < Dry::Struct
+        class KinesisVideoStreamAttributes < Pangea::Resources::BaseAttributes
           include KmsValidation
           include MediaTypeHelpers
           include StorageEstimation
 
           transform_keys(&:to_sym)
 
-          attribute :name, Resources::Types::String.constrained(
+          attribute? :name, Resources::Types::String.constrained(
             min_size: 1,
             max_size: 256,
             format: /\A[a-zA-Z0-9_\.\-]+\z/
           )
           attribute :data_retention_in_hours, Resources::Types::Integer.constrained(gteq: 0, lteq: 87600).default(0)
-          attribute :device_name, Resources::Types::String.constrained(min_size: 1, max_size: 128).optional
-          attribute :media_type, Resources::Types::String.constrained(
-            format: /\Avideo\/[a-zA-Z0-9\-\+\.]+\z/
+          attribute? :device_name, Resources::Types::String.constrained(min_size: 1, max_size: 128).optional
+          attribute? :media_type, Resources::Types::String.constrained(
+            format: /\A[a-zA-Z]+\/[a-zA-Z0-9\-\+\.]+\z/
           ).default("video/h264")
-          attribute :kms_key_id, Resources::Types::String.optional
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :kms_key_id, Resources::Types::String.optional
+          attribute? :tags, Resources::Types::AwsTags.optional
 
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             validate_stream_name(attrs[:name]) if attrs[:name]
             validate_kms_key(attrs[:kms_key_id]) if attrs[:kms_key_id]

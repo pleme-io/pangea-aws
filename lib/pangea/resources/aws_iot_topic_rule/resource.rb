@@ -48,7 +48,7 @@ module Pangea
             end
           end
           
-          if rule_attrs.tags.any?
+          if rule_attrs.tags&.any?
             tags do
               rule_attrs.tags.each { |k, v| public_send(k, v) }
             end

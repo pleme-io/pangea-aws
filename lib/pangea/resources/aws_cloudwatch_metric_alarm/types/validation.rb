@@ -37,9 +37,11 @@ module Pangea
             end
 
             def self.validate_traditional_alarm(attrs)
-              required = %i[period statistic]
-              required.each do |attr|
-                raise Dry::Struct::Error, "Traditional alarm requires #{attr}" unless attrs[attr]
+              raise Dry::Struct::Error, 'Traditional alarm requires period' unless attrs[:period]
+
+              # Traditional alarm requires either statistic or extended_statistic
+              unless attrs[:statistic] || attrs[:extended_statistic]
+                raise Dry::Struct::Error, 'Traditional alarm requires statistic or extended_statistic'
               end
 
               raise Dry::Struct::Error, 'Traditional alarm requires threshold' unless attrs[:threshold]

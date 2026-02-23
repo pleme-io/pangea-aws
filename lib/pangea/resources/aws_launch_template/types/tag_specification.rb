@@ -20,13 +20,12 @@ module Pangea
   module Resources
     module AWS
       module Types
-        # Tag specification for launch template
-        unless const_defined?(:TagSpecification)
-        class TagSpecification < Dry::Struct
+        # Tag specification for launch template (distinct from AutoScaling TagSpecification)
+        class LaunchTemplateTagSpecification < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :resource_type, Resources::Types::String.constrained(included_in: ['instance', 'volume', 'elastic-gpu', 'spot-instances-request', 'network-interface'])
-          attribute :tags, Resources::Types::AwsTags
+          attribute? :resource_type, Resources::Types::String.constrained(included_in: ['instance', 'volume', 'elastic-gpu', 'spot-instances-request', 'network-interface']).optional
+          attribute? :tags, Resources::Types::AwsTags.optional
 
           def to_h
             {
@@ -36,7 +35,6 @@ module Pangea
           end
         end
       end
-        end
     end
   end
 end

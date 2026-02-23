@@ -19,10 +19,10 @@ module Pangea
 
         # S3 lifecycle rule transition
         unless const_defined?(:LifecycleTransition)
-        class LifecycleTransition < Dry::Struct
-          attribute :date, Resources::Types::String.optional
-          attribute :days, Resources::Types::Integer.optional
-          attribute :storage_class, Resources::Types::String.enum(*LIFECYCLE_STORAGE_CLASSES)
+        class LifecycleTransition < Pangea::Resources::BaseAttributes
+          attribute? :date, Resources::Types::String.optional
+          attribute? :days, Resources::Types::Integer.optional
+          attribute? :storage_class, Resources::Types::String.enum(*LIFECYCLE_STORAGE_CLASSES).optional
 
           def self.new(attributes = {})
             attrs = super(attributes)
@@ -42,10 +42,10 @@ module Pangea
         end
 
         # S3 lifecycle rule noncurrent version transition
-        class LifecycleNoncurrentVersionTransition < Dry::Struct
-          attribute :noncurrent_days, Resources::Types::Integer.optional
-          attribute :newer_noncurrent_versions, Resources::Types::Integer.optional
-          attribute :storage_class, Resources::Types::String.enum(*LIFECYCLE_STORAGE_CLASSES)
+        class LifecycleNoncurrentVersionTransition < Pangea::Resources::BaseAttributes
+          attribute? :noncurrent_days, Resources::Types::Integer.optional
+          attribute? :newer_noncurrent_versions, Resources::Types::Integer.optional
+          attribute? :storage_class, Resources::Types::String.enum(*LIFECYCLE_STORAGE_CLASSES).optional
         end
       end
     end

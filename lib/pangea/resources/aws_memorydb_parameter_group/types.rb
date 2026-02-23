@@ -21,10 +21,10 @@ module Pangea
       module Types
       # Type-safe attributes for AwsMemorydbParameterGroup resources
       # Provides a MemoryDB Parameter Group resource.
-      class MemorydbParameterGroupAttributes < Dry::Struct
-        attribute :name, Resources::Types::String
-        attribute :family, Resources::Types::String
-        attribute :description, Resources::Types::String.optional
+      class MemorydbParameterGroupAttributes < Pangea::Resources::BaseAttributes
+        attribute? :name, Resources::Types::String.optional
+        attribute? :family, Resources::Types::String.optional
+        attribute? :description, Resources::Types::String.optional
         attribute :parameter, Resources::Types::Array.of(Resources::Types::Hash).default([].freeze).optional
         
         # Tags to apply to the resource

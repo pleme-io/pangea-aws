@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsVpcPeeringConnectionOptions resources
       # Manages aws vpc peering connection options resources.
-      class AwsVpcPeeringConnectionOptionsAttributes < Dry::Struct
+      class AwsVpcPeeringConnectionOptionsAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_vpc_peering_connection_options
         
         # Tags to apply to the resource

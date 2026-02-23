@@ -26,7 +26,7 @@ module Pangea
     # with automated policy assignment, certificate creation, and resource allocation.
     #
     # @example Basic fleet provisioning template
-    #   template_body = JSON.generate({
+    #   template_body = ::JSON.generate({
     #     "Parameters" => {
     #       "ThingName" => { "Type" => "String" },
     #       "SerialNumber" => { "Type" => "String" }

@@ -35,16 +35,16 @@ module Pangea
         # Additional schema elements
         CurSchemaElement = Resources::Types::String.constrained(included_in: ['RESOURCES', 'SPLIT_COST_ALLOCATION_DATA', 'MANUAL_DISCOUNT_COMPATIBILITY'])
         
-        class CurReportDefinitionAttributes < Dry::Struct
+        class CurReportDefinitionAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
-          attribute :report_name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_\-\.]{1,256}\z/)
-          attribute :time_unit, CurTimeUnit
-          attribute :format, CurFormat
-          attribute :compression, CurCompression
-          attribute :s3_bucket, Resources::Types::String.constrained(format: /\A[a-z0-9][a-z0-9\-\.]{1,61}[a-z0-9]\z/)
+          attribute? :report_name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_\-\.]{1,256}\z/).optional
+          attribute? :time_unit, CurTimeUnit.optional
+          attribute? :format, CurFormat.optional
+          attribute? :compression, CurCompression.optional
+          attribute? :s3_bucket, Resources::Types::String.constrained(format: /\A[a-z0-9][a-z0-9\-\.]{1,61}[a-z0-9]\z/).optional
           attribute :s3_prefix?, Resources::Types::String.constrained(max_size: 256).optional
-          attribute :s3_region, Resources::Types::AwsRegion
+          attribute? :s3_region, Resources::Types::AwsRegion.optional
           attribute :additional_schema_elements?, Resources::Types::Array.of(CurSchemaElement).optional
           attribute :additional_artifacts?, Resources::Types::Array.of(Resources::Types::String.constrained(included_in: ['REDSHIFT', 'QUICKSIGHT', 'ATHENA'])).optional
           attribute :refresh_closed_reports?, Resources::Types::Bool.default(true).optional

@@ -22,7 +22,7 @@ module Pangea
       module Types
         # Retry policy configuration for CloudWatch Event targets
         unless const_defined?(:RetryPolicy)
-        class RetryPolicy < Dry::Struct
+        class RetryPolicy < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           attribute :maximum_event_age_in_seconds, Resources::Types::Integer.optional.default(nil)

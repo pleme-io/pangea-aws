@@ -60,7 +60,7 @@ module Pangea
           def validate_external_table_location(attrs)
             return unless attrs.table_type == "EXTERNAL_TABLE" && attrs.storage_descriptor
 
-            location = attrs.storage_descriptor[:location]
+            location = attrs.storage_descriptor&.dig(:location)
             return unless location && !location.match(VALID_LOCATION_PREFIXES)
 
             raise Dry::Struct::Error, "External table location must start with s3://, hdfs://, or file://"

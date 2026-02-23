@@ -43,46 +43,46 @@ module Pangea
           configuration do
             # Set backend configuration
             backend_configuration do
-              device_name simulator_attrs.configuration[:backend_configuration][:device_name]
+              device_name simulator_attrs.configuration&.dig(:backend_configuration)[:device_name]
               
-              if simulator_attrs.configuration[:backend_configuration][:shots]
-                shots simulator_attrs.configuration[:backend_configuration][:shots]
+              if simulator_attrs.configuration&.dig(:backend_configuration)[:shots]
+                shots simulator_attrs.configuration&.dig(:backend_configuration)[:shots]
               end
               
-              if simulator_attrs.configuration[:backend_configuration][:max_parallel_shots]
-                max_parallel_shots simulator_attrs.configuration[:backend_configuration][:max_parallel_shots]
+              if simulator_attrs.configuration&.dig(:backend_configuration)[:max_parallel_shots]
+                max_parallel_shots simulator_attrs.configuration&.dig(:backend_configuration)[:max_parallel_shots]
               end
               
-              if simulator_attrs.configuration[:backend_configuration][:seed]
-                seed simulator_attrs.configuration[:backend_configuration][:seed]
+              if simulator_attrs.configuration&.dig(:backend_configuration)[:seed]
+                seed simulator_attrs.configuration&.dig(:backend_configuration)[:seed]
               end
             end
             
             # Set resource configuration if provided
-            if simulator_attrs.configuration[:resource_configuration]
+            if simulator_attrs.configuration&.dig(:resource_configuration)
               resource_configuration do
-                cpu_count simulator_attrs.configuration[:resource_configuration][:cpu_count]
-                memory_size_mb simulator_attrs.configuration[:resource_configuration][:memory_size_mb]
+                cpu_count simulator_attrs.configuration&.dig(:resource_configuration)[:cpu_count]
+                memory_size_mb simulator_attrs.configuration&.dig(:resource_configuration)[:memory_size_mb]
                 
-                if simulator_attrs.configuration[:resource_configuration][:gpu_count]
-                  gpu_count simulator_attrs.configuration[:resource_configuration][:gpu_count]
+                if simulator_attrs.configuration&.dig(:resource_configuration)[:gpu_count]
+                  gpu_count simulator_attrs.configuration&.dig(:resource_configuration)[:gpu_count]
                 end
               end
             end
             
             # Set advanced configuration if provided
-            if simulator_attrs.configuration[:advanced_configuration]
+            if simulator_attrs.configuration&.dig(:advanced_configuration)
               advanced_configuration do
-                if simulator_attrs.configuration[:advanced_configuration][:enable_parallelization]
-                  enable_parallelization simulator_attrs.configuration[:advanced_configuration][:enable_parallelization]
+                if simulator_attrs.configuration&.dig(:advanced_configuration)[:enable_parallelization]
+                  enable_parallelization simulator_attrs.configuration&.dig(:advanced_configuration)[:enable_parallelization]
                 end
                 
-                if simulator_attrs.configuration[:advanced_configuration][:optimization_level]
-                  optimization_level simulator_attrs.configuration[:advanced_configuration][:optimization_level]
+                if simulator_attrs.configuration&.dig(:advanced_configuration)[:optimization_level]
+                  optimization_level simulator_attrs.configuration&.dig(:advanced_configuration)[:optimization_level]
                 end
                 
-                if simulator_attrs.configuration[:advanced_configuration][:precision]
-                  precision simulator_attrs.configuration[:advanced_configuration][:precision]
+                if simulator_attrs.configuration&.dig(:advanced_configuration)[:precision]
+                  precision simulator_attrs.configuration&.dig(:advanced_configuration)[:precision]
                 end
               end
             end
@@ -91,16 +91,16 @@ module Pangea
           # Set execution environment if provided
           if simulator_attrs.execution_environment
             execution_environment do
-              if simulator_attrs.execution_environment[:docker_image]
-                docker_image simulator_attrs.execution_environment[:docker_image]
+              if simulator_attrs.execution_environment&.dig(:docker_image)
+                docker_image simulator_attrs.execution_environment&.dig(:docker_image)
               end
               
-              if simulator_attrs.execution_environment[:python_version]
-                python_version simulator_attrs.execution_environment[:python_version]
+              if simulator_attrs.execution_environment&.dig(:python_version)
+                python_version simulator_attrs.execution_environment&.dig(:python_version)
               end
               
-              if simulator_attrs.execution_environment[:environment_variables] && !simulator_attrs.execution_environment[:environment_variables].empty?
-                environment_variables simulator_attrs.execution_environment[:environment_variables]
+              if simulator_attrs.execution_environment&.dig(:environment_variables) && !simulator_attrs.execution_environment&.dig(:environment_variables).empty?
+                environment_variables simulator_attrs.execution_environment&.dig(:environment_variables)
               end
             end
           end

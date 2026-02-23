@@ -40,7 +40,7 @@ module Pangea
           instance_tenancy vpc_attrs.instance_tenancy
           
           # Apply tags if present
-          if vpc_attrs.tags.any?
+          if vpc_attrs.tags&.any?
             tags do
               vpc_attrs.tags.each do |key, value|
                 public_send(key, value)

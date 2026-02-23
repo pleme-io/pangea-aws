@@ -19,7 +19,7 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS Blockchain Token Balance data source
-        class BlockchainTokenBalanceAttributes < Dry::Struct
+        class BlockchainTokenBalanceAttributes < Pangea::Resources::BaseAttributes
           extend BlockchainTokenBalanceValidation
           include BlockchainTokenBalanceTokenHelpers
           include BlockchainTokenBalanceNetworkHelpers
@@ -28,7 +28,7 @@ module Pangea
           transform_keys(&:to_sym)
 
           # Blockchain network (required)
-          attribute :blockchain_network, Resources::Types::String.constrained(included_in: ['ETHEREUM_MAINNET',
+          attribute? :blockchain_network, Resources::Types::String.constrained(included_in: ['ETHEREUM_MAINNET',
             'ETHEREUM_GOERLI_TESTNET',
             'BITCOIN_MAINNET',
             'BITCOIN_TESTNET',

@@ -27,7 +27,7 @@ module Pangea
       # @param attributes [Hash] Access point configuration
       # @return [ResourceReference] Reference to the created access point
       def aws_efs_access_point(name, attributes = {})
-        validated_attrs = AWS::Types::Types::EfsAccessPointAttributes.new(attributes)
+        validated_attrs = Types::EfsAccessPointAttributes.new(attributes)
         
         resource_attributes = {
           file_system_id: validated_attrs.file_system_id,

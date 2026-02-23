@@ -56,10 +56,10 @@ module Pangea
           # Permissions
           if document_attrs.is_shared?
             permissions do
-              type document_attrs.permissions[:type]
-              account_ids document_attrs.permissions[:account_ids]
-              if document_attrs.permissions[:shared_document_version]
-                shared_document_version document_attrs.permissions[:shared_document_version]
+              type document_attrs.permissions&.dig(:type)
+              account_ids document_attrs.permissions&.dig(:account_ids)
+              if document_attrs.permissions&.dig(:shared_document_version)
+                shared_document_version document_attrs.permissions&.dig(:shared_document_version)
               end
             end
           end
@@ -82,7 +82,7 @@ module Pangea
           end
 
           # Apply tags if present
-          if document_attrs.tags.any?
+          if document_attrs.tags&.any?
             tags do
               document_attrs.tags.each do |key, value|
                 public_send(key, value)

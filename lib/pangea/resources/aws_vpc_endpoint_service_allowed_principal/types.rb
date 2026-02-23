@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsVpcEndpointServiceAllowedPrincipal resources
       # Manages aws vpc endpoint service allowed principal resources.
-      class AwsVpcEndpointServiceAllowedPrincipalAttributes < Dry::Struct
+      class AwsVpcEndpointServiceAllowedPrincipalAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_vpc_endpoint_service_allowed_principal
         
         # Tags to apply to the resource

@@ -24,7 +24,7 @@ module Pangea
       # Provides type-safe function for creating state machines
       def aws_sfn_state_machine(name, attributes = {})
         # Validate attributes using dry-struct
-        validated_attrs = Types::Types::SfnStateMachineAttributes.new(attributes)
+        validated_attrs = Types::SfnStateMachineAttributes.new(attributes)
         
         # Create reference that will be returned
         ref = ResourceReference.new(
@@ -51,11 +51,11 @@ module Pangea
           # Optional logging configuration
           if validated_attrs.logging_configuration
             logging_configuration do
-              level validated_attrs.logging_configuration[:level] if validated_attrs.logging_configuration[:level]
-              include_execution_data validated_attrs.logging_configuration[:include_execution_data] if validated_attrs.logging_configuration.key?(:include_execution_data)
+              level validated_attrs.logging_configuration&.dig(:level) if validated_attrs.logging_configuration&.dig(:level)
+              include_execution_data validated_attrs.logging_configuration&.dig(:include_execution_data) if validated_attrs.logging_configuration.key?(:include_execution_data)
               
-              if validated_attrs.logging_configuration[:destinations]
-                validated_attrs.logging_configuration[:destinations].each do |destination|
+              if validated_attrs.logging_configuration&.dig(:destinations)
+                validated_attrs.logging_configuration&.dig(:destinations).each do |destination|
                   destination do
                     if destination[:cloud_watch_logs_log_group]
                       cloud_watch_logs_log_group do
@@ -71,7 +71,7 @@ module Pangea
           # Optional tracing configuration
           if validated_attrs.tracing_configuration
             tracing_configuration do
-              enabled validated_attrs.tracing_configuration[:enabled] if validated_attrs.tracing_configuration.key?(:enabled)
+              enabled validated_attrs.tracing_configuration&.dig(:enabled) if validated_attrs.tracing_configuration.key?(:enabled)
             end
           end
           

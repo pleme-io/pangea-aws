@@ -36,7 +36,7 @@ module Pangea
           enable attrs.enable if attrs.enable
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

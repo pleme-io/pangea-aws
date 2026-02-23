@@ -29,44 +29,44 @@ module Pangea
           HeaderSchema = Resources::Types::Hash.schema(
             name: Resources::Types::String,
             value: Resources::Types::String
-          )
+          ).lax
 
           # Custom request handling with header insertion
           CustomRequestHandlingSchema = Resources::Types::Hash.schema(
             insert_headers: Resources::Types::Array.of(HeaderSchema)
-          ).optional
+          ).lax.optional
 
           # Custom response configuration for block actions
           CustomResponseSchema = Resources::Types::Hash.schema(
             response_code: Resources::Types::Integer.constrained(gteq: 200, lteq: 599),
             custom_response_body_key?: Resources::Types::String.optional,
             response_headers?: Resources::Types::Array.of(HeaderSchema).optional
-          ).optional
+          ).lax.optional
 
           # Visibility config for CloudWatch metrics
           VisibilityConfigSchema = Resources::Types::Hash.schema(
             cloudwatch_metrics_enabled: Resources::Types::Bool,
             metric_name: Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_-]{1,128}\z/),
             sampled_requests_enabled: Resources::Types::Bool
-          )
+          ).lax
 
           # Immunity time configuration for captcha/challenge
           ImmunityTimeSchema = Resources::Types::Hash.schema(
             immunity_time_property: Resources::Types::Hash.schema(
               immunity_time: Resources::Types::Integer.constrained(gteq: 60, lteq: 259_200)
-            )
+            ).lax
           ).optional
 
           # Rule label schema
           RuleLabelSchema = Resources::Types::Hash.schema(
             name: Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_:-]{1,1024}\z/)
-          )
+          ).lax
 
           # Custom response body definition
           CustomResponseBodySchema = Resources::Types::Hash.schema(
             content: Resources::Types::String.constrained(max_size: 10_240),
             content_type: Resources::Types::String.constrained(included_in: ['TEXT_PLAIN', 'TEXT_HTML', 'APPLICATION_JSON'])
-          )
+          ).lax
         end
       end
     end

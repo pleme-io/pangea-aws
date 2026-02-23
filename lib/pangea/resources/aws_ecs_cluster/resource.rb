@@ -29,73 +29,61 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_ecs_cluster(name, attributes = {})
         # Validate attributes using dry-struct
-        cluster_attrs = AWS::Types::Types::EcsClusterAttributes.new(attributes)
-        
+        cluster_attrs = Types::EcsClusterAttributes.new(attributes)
+
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_ecs_cluster, name) do
           # Cluster name
           name cluster_attrs.name
-          
+
           # Capacity providers
-          capacity_providers cluster_attrs.capacity_providers if cluster_attrs.capacity_providers.any?
-          
-          # Settings
-          cluster_attrs.setting.each do |setting_config|
-            setting do
-              name setting_config[:name]
-              value setting_config[:value]
-            end
-          end
-          
+          capacity_providers cluster_attrs.capacity_providers if cluster_attrs.capacity_providers&.any?
+
+          # Build settings array (pass as array of hashes, not repeated blocks)
+          settings_array = cluster_attrs.setting.map { |s| { name: s[:name], value: s[:value] } }
+
           # Container Insights shorthand
           if !cluster_attrs.container_insights_enabled.nil? && cluster_attrs.setting.none? { |s| s[:name] == "containerInsights" }
-            setting do
-              name "containerInsights"
-              value cluster_attrs.container_insights_enabled ? "enabled" : "disabled"
-            end
+            settings_array << {
+              name: "containerInsights",
+              value: cluster_attrs.container_insights_enabled ? "enabled" : "disabled"
+            }
           end
-          
-          # Execute command configuration
+
+          setting settings_array if settings_array.any?
+
+          # Execute command configuration (pass as nested hash, not nested blocks)
           if cluster_attrs.configuration
-            configuration do
-              if cluster_attrs.configuration[:execute_command_configuration]
-                execute_command_configuration do
-                  exec_config = cluster_attrs.configuration[:execute_command_configuration]
-                  kms_key_id exec_config[:kms_key_id] if exec_config[:kms_key_id]
-                  logging exec_config[:logging] if exec_config[:logging]
-                  
-                  if exec_config[:log_configuration]
-                    log_configuration do
-                      log_config = exec_config[:log_configuration]
-                      cloud_watch_encryption_enabled log_config[:cloud_watch_encryption_enabled] unless log_config[:cloud_watch_encryption_enabled].nil?
-                      cloud_watch_log_group_name log_config[:cloud_watch_log_group_name] if log_config[:cloud_watch_log_group_name]
-                      s3_bucket_name log_config[:s3_bucket_name] if log_config[:s3_bucket_name]
-                      s3_bucket_encryption_enabled log_config[:s3_bucket_encryption_enabled] unless log_config[:s3_bucket_encryption_enabled].nil?
-                      s3_key_prefix log_config[:s3_key_prefix] if log_config[:s3_key_prefix]
-                    end
-                  end
-                end
+            exec_cmd = cluster_attrs.configuration[:execute_command_configuration]
+            if exec_cmd
+              exec_hash = {}
+              exec_hash[:kms_key_id] = exec_cmd[:kms_key_id] if exec_cmd[:kms_key_id]
+              exec_hash[:logging] = exec_cmd[:logging] if exec_cmd[:logging]
+
+              if exec_cmd[:log_configuration]
+                log_cfg = exec_cmd[:log_configuration]
+                log_hash = {}
+                log_hash[:cloud_watch_encryption_enabled] = log_cfg[:cloud_watch_encryption_enabled] unless log_cfg[:cloud_watch_encryption_enabled].nil?
+                log_hash[:cloud_watch_log_group_name] = log_cfg[:cloud_watch_log_group_name] if log_cfg[:cloud_watch_log_group_name]
+                log_hash[:s3_bucket_name] = log_cfg[:s3_bucket_name] if log_cfg[:s3_bucket_name]
+                log_hash[:s3_bucket_encryption_enabled] = log_cfg[:s3_bucket_encryption_enabled] unless log_cfg[:s3_bucket_encryption_enabled].nil?
+                log_hash[:s3_key_prefix] = log_cfg[:s3_key_prefix] if log_cfg[:s3_key_prefix]
+                exec_hash[:log_configuration] = log_hash
               end
+
+              configuration({ execute_command_configuration: exec_hash })
             end
           end
-          
-          # Service Connect defaults
+
+          # Service Connect defaults (pass as hash, not block)
           if cluster_attrs.service_connect_defaults
-            service_connect_defaults do
-              namespace cluster_attrs.service_connect_defaults[:namespace]
-            end
+            service_connect_defaults({ namespace: cluster_attrs.service_connect_defaults[:namespace] })
           end
-          
-          # Apply tags if present
-          if cluster_attrs.tags.any?
-            tags do
-              cluster_attrs.tags.each do |key, value|
-                public_send(key, value)
-              end
-            end
-          end
+
+          # Apply tags if present (pass as hash, not block)
+          tags cluster_attrs.tags if cluster_attrs.tags&.any?
         end
-        
+
         # Return resource reference with available outputs
         ref = ResourceReference.new(
           type: 'aws_ecs_cluster',
@@ -112,14 +100,14 @@ module Pangea
             service_connect_defaults: "${aws_ecs_cluster.#{name}.service_connect_defaults}"
           }
         )
-        
+
         # Add computed properties via method delegation
         ref.define_singleton_method(:using_fargate?) { cluster_attrs.using_fargate? }
         ref.define_singleton_method(:using_ec2?) { cluster_attrs.using_ec2? }
         ref.define_singleton_method(:insights_enabled?) { cluster_attrs.insights_enabled? }
         ref.define_singleton_method(:estimated_monthly_cost) { cluster_attrs.estimated_monthly_cost }
         ref.define_singleton_method(:arn_pattern) { |region = "*", account_id = "*"| cluster_attrs.arn_pattern(region, account_id) }
-        
+
         ref
       end
     end

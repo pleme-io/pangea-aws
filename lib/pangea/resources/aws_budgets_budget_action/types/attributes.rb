@@ -8,22 +8,22 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class BudgetActionAttributes < Dry::Struct
+        class BudgetActionAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :budget_name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_\-. ]{1,100}\z/)
-          attribute :action_type, BudgetActionType
-          attribute :approval_model, BudgetActionApprovalModel
-          attribute :notification_type, ActionNotificationType
-          attribute :action_threshold, Resources::Types::Float
+          attribute? :budget_name, Resources::Types::String.constrained(format: /\A[a-zA-Z0-9_\-. ]{1,100}\z/).optional
+          attribute? :action_type, BudgetActionType.optional
+          attribute? :approval_model, BudgetActionApprovalModel.optional
+          attribute? :notification_type, ActionNotificationType.optional
+          attribute? :action_threshold, Resources::Types::Float.optional
           attribute :action_threshold_type, Resources::Types::String.constrained(included_in: ['PERCENTAGE', 'ABSOLUTE_VALUE']).default('PERCENTAGE')
-          attribute :definition, BudgetActionDefinition
-          attribute :execution_role_arn, BudgetActionExecutionRole
+          attribute? :definition, BudgetActionDefinition.optional
+          attribute? :execution_role_arn, BudgetActionExecutionRole.optional
           attribute :subscribers?, Resources::Types::Array.of(ActionSubscriber).constrained(max_size: 11).optional
           attribute :tags?, Resources::Types::AwsTags.optional
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
             validate_action_definition_match(attrs) if attrs[:action_type] && attrs[:definition]
             validate_automatic_thresholds(attrs) if attrs[:approval_model] == 'AUTOMATIC'
             super(attrs)
@@ -32,9 +32,9 @@ module Pangea
           def self.validate_action_definition_match(attrs)
             definition = attrs[:definition]
             case attrs[:action_type]
-            when 'APPLY_IAM_POLICY' then raise Dry::Struct::Error, 'IAM policy action type requires iam_action_definition' unless definition[:iam_action_definition]
-            when 'APPLY_SCP_POLICY' then raise Dry::Struct::Error, 'SCP policy action type requires scp_action_definition' unless definition[:scp_action_definition]
-            when 'RUN_SSM_DOCUMENTS' then raise Dry::Struct::Error, 'SSM document action type requires ssm_action_definition' unless definition[:ssm_action_definition]
+            when 'APPLY_IAM_POLICY' then raise Dry::Struct::Error, 'IAM policy action type requires iam_action_definition' unless definition&.dig(:iam_action_definition)
+            when 'APPLY_SCP_POLICY' then raise Dry::Struct::Error, 'SCP policy action type requires scp_action_definition' unless definition&.dig(:scp_action_definition)
+            when 'RUN_SSM_DOCUMENTS' then raise Dry::Struct::Error, 'SSM document action type requires ssm_action_definition' unless definition&.dig(:ssm_action_definition)
             end
           end
 
@@ -56,13 +56,13 @@ module Pangea
 
           def target_count
             return 0 unless definition
-            if definition[:iam_action_definition]
-              iam_def = definition[:iam_action_definition]
+            if definition&.dig(:iam_action_definition)
+              iam_def = definition&.dig(:iam_action_definition)
               (iam_def[:roles]&.size || 0) + (iam_def[:groups]&.size || 0) + (iam_def[:users]&.size || 0)
-            elsif definition[:scp_action_definition]
-              definition[:scp_action_definition][:target_ids].size
-            elsif definition[:ssm_action_definition]
-              definition[:ssm_action_definition][:instance_ids]&.size || 0
+            elsif definition&.dig(:scp_action_definition)
+              definition&.dig(:scp_action_definition)[:target_ids].size
+            elsif definition&.dig(:ssm_action_definition)
+              definition&.dig(:ssm_action_definition)[:instance_ids]&.size || 0
             else
               0
             end

@@ -224,7 +224,7 @@ RSpec.describe "aws_iam_group terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use GroupPatterns helper
-      pattern = Pangea::Resources::AWS::GroupPatterns.development_team_group("frontend", "engineering")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.development_team_group("frontend", "engineering")
       ref = test_instance.aws_iam_group(:frontend_devs, pattern)
       
       # Verify pattern synthesis
@@ -258,7 +258,7 @@ RSpec.describe "aws_iam_group terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use GroupPatterns for admin group
-      pattern = Pangea::Resources::AWS::GroupPatterns.admin_group("infrastructure", "platform")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.admin_group("infrastructure", "platform")
       ref = test_instance.aws_iam_group(:infra_admins, pattern)
       
       # Verify admin group synthesis
@@ -292,7 +292,7 @@ RSpec.describe "aws_iam_group terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use GroupPatterns for environment group
-      pattern = Pangea::Resources::AWS::GroupPatterns.environment_access_group("production", "deploy")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.environment_access_group("production", "deploy")
       ref = test_instance.aws_iam_group(:prod_deploy, pattern)
       
       # Verify environment group synthesis
@@ -326,7 +326,7 @@ RSpec.describe "aws_iam_group terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use GroupPatterns for service group
-      pattern = Pangea::Resources::AWS::GroupPatterns.service_group("user-api", "operator")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.service_group("user-api", "operator")
       ref = test_instance.aws_iam_group(:api_operators, pattern)
       
       # Verify service group synthesis
@@ -360,7 +360,7 @@ RSpec.describe "aws_iam_group terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use GroupPatterns for readonly group
-      pattern = Pangea::Resources::AWS::GroupPatterns.readonly_group("infrastructure", "monitoring")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.readonly_group("infrastructure", "monitoring")
       ref = test_instance.aws_iam_group(:infra_readonly, pattern)
       
       # Verify readonly group synthesis
@@ -394,7 +394,7 @@ RSpec.describe "aws_iam_group terraform synthesis" do
       test_instance = test_class.new(test_synthesizer)
       
       # Use GroupPatterns for emergency group
-      pattern = Pangea::Resources::AWS::GroupPatterns.emergency_group("breakglass")
+      pattern = Pangea::Resources::AWS::Types::GroupPatterns.emergency_group("breakglass")
       ref = test_instance.aws_iam_group(:emergency, pattern)
       
       # Verify emergency group synthesis
@@ -473,18 +473,18 @@ RSpec.describe "aws_iam_group terraform synthesis" do
       
       # Department groups
       groups << test_instance.aws_iam_group(:eng_standard, 
-        Pangea::Resources::AWS::GroupPatterns.department_group("engineering", "standard"))
+        Pangea::Resources::AWS::Types::GroupPatterns.department_group("engineering", "standard"))
       
       groups << test_instance.aws_iam_group(:finance_elevated,
-        Pangea::Resources::AWS::GroupPatterns.department_group("finance", "elevated"))
+        Pangea::Resources::AWS::Types::GroupPatterns.department_group("finance", "elevated"))
       
       # Environment groups
       groups << test_instance.aws_iam_group(:prod_deploy,
-        Pangea::Resources::AWS::GroupPatterns.environment_access_group("production", "deploy"))
+        Pangea::Resources::AWS::Types::GroupPatterns.environment_access_group("production", "deploy"))
       
       # Cross-functional groups
       groups << test_instance.aws_iam_group(:data_platform,
-        Pangea::Resources::AWS::GroupPatterns.cross_functional_group("data-platform", ["engineering", "analytics"]))
+        Pangea::Resources::AWS::Types::GroupPatterns.cross_functional_group("data-platform", ["engineering", "analytics"]))
       
       # Verify all groups were synthesized
       expect(test_synthesizer.resources.keys).to include(

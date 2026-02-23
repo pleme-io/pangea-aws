@@ -88,7 +88,7 @@ module Pangea
           on_failure stack_attrs.on_failure
 
           # Apply tags if present
-          if stack_attrs.tags.any?
+          if stack_attrs.tags&.any?
             tags do
               stack_attrs.tags.each do |key, value|
                 public_send(key, value)

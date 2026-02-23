@@ -32,11 +32,11 @@ RSpec.describe "aws_kms_key terraform synthesis" do
           @method_calls = []
         end
         
-        def resource(type, name)
+        def resource(type, name, &block)
           @method_calls << [:resource, type, name]
           resource_context = ResourceContext.new(self, type, name)
           @resources["#{type}.#{name}"] = resource_context
-          yield resource_context if block_given?
+          resource_context.instance_eval(&block) if block
           resource_context
         end
         
@@ -71,45 +71,45 @@ RSpec.describe "aws_kms_key terraform synthesis" do
           def method_missing(method_name, *args, &block)
             @synthesizer.method_calls << [method_name, *args]
             @attributes[method_name] = args.first if args.any?
-            
-            if block_given?
-              # For nested blocks
+
+            if block
+              # For nested blocks - instance_eval so self is the nested context
               nested_context = NestedContext.new(@synthesizer, method_name)
               @attributes[method_name] = nested_context
-              yield nested_context
+              nested_context.instance_eval(&block)
             end
-            
+
             args.first if args.any?
           end
-          
+
           def respond_to_missing?(method_name, include_private = false)
             true
           end
         end
-        
+
         class NestedContext
           attr_reader :synthesizer, :context_name, :attributes
-          
+
           def initialize(synthesizer, context_name)
             @synthesizer = synthesizer
             @context_name = context_name
             @attributes = {}
           end
-          
+
           def method_missing(method_name, *args, &block)
             @synthesizer.method_calls << [method_name, *args]
             @attributes[method_name] = args.first if args.any?
-            
-            if block_given?
+
+            if block
               # For deeply nested blocks
               nested = NestedContext.new(@synthesizer, method_name)
               @attributes[method_name] = nested
-              yield nested
+              nested.instance_eval(&block)
             end
-            
+
             args.first if args.any?
           end
-          
+
           def respond_to_missing?(method_name, include_private = false)
             true
           end

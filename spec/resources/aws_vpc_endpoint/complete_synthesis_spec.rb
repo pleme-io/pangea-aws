@@ -101,7 +101,7 @@ RSpec.describe "aws_vpc_endpoint synthesis" do
       
       endpoint = result["resource"]["aws_vpc_endpoint"]["s3_multi_route"]
       
-      expect(endpoint["route_table_ids"]).to have(4).items
+      expect(endpoint["route_table_ids"].size).to eq(4)
       expect(endpoint["route_table_ids"]).to include("rtb-public-1a", "rtb-public-1b")
       expect(endpoint["route_table_ids"]).to include("rtb-private-1a", "rtb-private-1b")
     end
@@ -126,7 +126,7 @@ RSpec.describe "aws_vpc_endpoint synthesis" do
       
       expect(endpoint["service_name"]).to eq("com.amazonaws.us-west-2.dynamodb")
       expect(endpoint["vpc_endpoint_type"]).to eq("Gateway")
-      expect(endpoint["route_table_ids"]).to have(2).items
+      expect(endpoint["route_table_ids"].size).to eq(2)
     end
     
     it "synthesizes Gateway endpoint with custom policy" do
@@ -184,8 +184,8 @@ RSpec.describe "aws_vpc_endpoint synthesis" do
       
       endpoint = result["resource"]["aws_vpc_endpoint"]["ec2_secure"]
       
-      expect(endpoint["subnet_ids"]).to have(2).items
-      expect(endpoint["security_group_ids"]).to have(2).items
+      expect(endpoint["subnet_ids"].size).to eq(2)
+      expect(endpoint["security_group_ids"].size).to eq(2)
       expect(endpoint["security_group_ids"]).to include("sg-endpoint-12345")
       expect(endpoint["private_dns_enabled"]).to eq(true)
     end
@@ -399,7 +399,7 @@ RSpec.describe "aws_vpc_endpoint synthesis" do
       
       endpoint = result["resource"]["aws_vpc_endpoint"]["rds_multi_az"]
       
-      expect(endpoint["subnet_ids"]).to have(3).items
+      expect(endpoint["subnet_ids"].size).to eq(3)
       expect(endpoint["tags"]["Pattern"]).to eq("multi-az-ha")
     end
     
@@ -457,7 +457,7 @@ RSpec.describe "aws_vpc_endpoint synthesis" do
       endpoint = result["resource"]["aws_vpc_endpoint"]["s3_secure"]
       policy = JSON.parse(endpoint["policy"])
       
-      expect(policy["Statement"]).to have(2).items
+      expect(policy["Statement"].size).to eq(2)
       expect(policy["Statement"][0]["Sid"]).to eq("RestrictBucketAccess")
       expect(policy["Statement"][1]["Sid"]).to eq("DenyUnencryptedObjectUploads")
       expect(endpoint["tags"]["Security"]).to eq("restricted")

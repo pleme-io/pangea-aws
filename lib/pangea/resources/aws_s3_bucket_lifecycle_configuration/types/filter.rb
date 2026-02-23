@@ -7,25 +7,25 @@ module Pangea
     module AWS
       module Types
         # S3 lifecycle rule filter tag
-        class LifecycleFilterTag < Dry::Struct
-          attribute :key, Resources::Types::String
-          attribute :value, Resources::Types::String
+        class LifecycleFilterTag < Pangea::Resources::BaseAttributes
+          attribute? :key, Resources::Types::String.optional
+          attribute? :value, Resources::Types::String.optional
         end
 
         # S3 lifecycle rule filter and block
-        class LifecycleFilterAnd < Dry::Struct
-          attribute :object_size_greater_than, Resources::Types::Integer.optional
-          attribute :object_size_less_than, Resources::Types::Integer.optional
-          attribute :prefix, Resources::Types::String.optional
-          attribute :tags, Resources::Types::Array.of(LifecycleFilterTag).optional
+        class LifecycleFilterAnd < Pangea::Resources::BaseAttributes
+          attribute? :object_size_greater_than, Resources::Types::Integer.optional
+          attribute? :object_size_less_than, Resources::Types::Integer.optional
+          attribute? :prefix, Resources::Types::String.optional
+          attribute :tags, Resources::Types::Array.of(LifecycleFilterTag).default([].freeze)
         end
 
         # S3 lifecycle rule filter
-        class LifecycleFilter < Dry::Struct
+        class LifecycleFilter < Pangea::Resources::BaseAttributes
           attribute? :and_condition, LifecycleFilterAnd.optional
-          attribute :object_size_greater_than, Resources::Types::Integer.optional
-          attribute :object_size_less_than, Resources::Types::Integer.optional
-          attribute :prefix, Resources::Types::String.optional
+          attribute? :object_size_greater_than, Resources::Types::Integer.optional
+          attribute? :object_size_less_than, Resources::Types::Integer.optional
+          attribute? :prefix, Resources::Types::String.optional
           attribute? :tag, LifecycleFilterTag.optional
 
           def self.new(attributes = {})

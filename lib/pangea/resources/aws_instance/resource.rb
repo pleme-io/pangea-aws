@@ -39,7 +39,7 @@ module Pangea
           
           # Network configuration
           subnet_id instance_attrs.subnet_id if instance_attrs.subnet_id
-          vpc_security_group_ids instance_attrs.vpc_security_group_ids if instance_attrs.vpc_security_group_ids.any?
+          vpc_security_group_ids instance_attrs.vpc_security_group_ids if instance_attrs.vpc_security_group_ids&.any?
           availability_zone instance_attrs.availability_zone if instance_attrs.availability_zone
           associate_public_ip_address instance_attrs.associate_public_ip_address unless instance_attrs.associate_public_ip_address.nil?
           
@@ -86,7 +86,7 @@ module Pangea
           disable_api_termination instance_attrs.disable_api_termination
           
           # Apply tags if present
-          if instance_attrs.tags.any?
+          if instance_attrs.tags&.any?
             tags do
               instance_attrs.tags.each do |key, value|
                 public_send(key, value)

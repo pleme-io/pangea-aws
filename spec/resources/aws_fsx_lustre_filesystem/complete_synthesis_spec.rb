@@ -27,6 +27,7 @@ RSpec.describe 'aws_fsx_lustre_filesystem synthesis' do
     context 'minimal SCRATCH configuration' do
       it 'generates correct terraform JSON' do
         synthesizer.synthesize do
+          extend Pangea::Resources::AWS
           aws_fsx_lustre_filesystem(:scratch_fs, {
             storage_capacity: 1200,
             subnet_ids: ["subnet-12345678"]
@@ -51,6 +52,7 @@ RSpec.describe 'aws_fsx_lustre_filesystem synthesis' do
     context 'PERSISTENT with full configuration' do
       it 'generates comprehensive terraform configuration' do
         synthesizer.synthesize do
+          extend Pangea::Resources::AWS
           aws_fsx_lustre_filesystem(:persistent_fs, {
             storage_capacity: 9600,
             subnet_ids: ["subnet-12345678", "subnet-87654321"],
@@ -113,6 +115,7 @@ RSpec.describe 'aws_fsx_lustre_filesystem synthesis' do
     context 'HDD with drive cache' do
       it 'generates HDD-specific configuration' do
         synthesizer.synthesize do
+          extend Pangea::Resources::AWS
           aws_fsx_lustre_filesystem(:hdd_fs, {
             storage_capacity: 12000,
             subnet_ids: ["subnet-12345678"],
@@ -136,6 +139,7 @@ RSpec.describe 'aws_fsx_lustre_filesystem synthesis' do
     context 'conditional field inclusion' do
       it 'excludes PERSISTENT-only fields for SCRATCH' do
         synthesizer.synthesize do
+          extend Pangea::Resources::AWS
           aws_fsx_lustre_filesystem(:scratch_test, {
             storage_capacity: 2400,
             subnet_ids: ["subnet-12345678"],
@@ -155,6 +159,7 @@ RSpec.describe 'aws_fsx_lustre_filesystem synthesis' do
       
       it 'excludes drive cache for SSD storage' do
         synthesizer.synthesize do
+          extend Pangea::Resources::AWS
           aws_fsx_lustre_filesystem(:ssd_test, {
             storage_capacity: 1200,
             subnet_ids: ["subnet-12345678"],
@@ -170,6 +175,7 @@ RSpec.describe 'aws_fsx_lustre_filesystem synthesis' do
       
       it 'excludes default values from output' do
         synthesizer.synthesize do
+          extend Pangea::Resources::AWS
           aws_fsx_lustre_filesystem(:defaults_test, {
             storage_capacity: 1200,
             subnet_ids: ["subnet-12345678"],
@@ -188,6 +194,7 @@ RSpec.describe 'aws_fsx_lustre_filesystem synthesis' do
     context 'reference integration' do
       it 'supports references to other resources' do
         synthesizer.synthesize do
+          extend Pangea::Resources::AWS
           # Simulate VPC and subnet references
           vpc_id = "${aws_vpc.main.id}"
           subnet_id = "${aws_subnet.private.id}"
@@ -214,6 +221,7 @@ RSpec.describe 'aws_fsx_lustre_filesystem synthesis' do
     context 'complex deployment scenarios' do
       it 'generates HPC scratch configuration' do
         synthesizer.synthesize do
+          extend Pangea::Resources::AWS
           aws_fsx_lustre_filesystem(:hpc_scratch, {
             storage_capacity: 57600,  # 57.6 TB
             subnet_ids: ["subnet-hpc-1", "subnet-hpc-2"],
@@ -238,6 +246,7 @@ RSpec.describe 'aws_fsx_lustre_filesystem synthesis' do
       
       it 'generates ML training pipeline configuration' do
         synthesizer.synthesize do
+          extend Pangea::Resources::AWS
           aws_fsx_lustre_filesystem(:ml_training, {
             storage_capacity: 19200,
             subnet_ids: ["subnet-ml-1"],
@@ -262,6 +271,7 @@ RSpec.describe 'aws_fsx_lustre_filesystem synthesis' do
       
       it 'generates media processing configuration' do
         synthesizer.synthesize do
+          extend Pangea::Resources::AWS
           aws_fsx_lustre_filesystem(:render_storage, {
             storage_capacity: 72000,  # 72 TB HDD
             subnet_ids: ["subnet-render-1", "subnet-render-2"],
@@ -290,6 +300,7 @@ RSpec.describe 'aws_fsx_lustre_filesystem synthesis' do
     it 'prevents invalid terraform generation' do
       expect {
         synthesizer.synthesize do
+          extend Pangea::Resources::AWS
           aws_fsx_lustre_filesystem(:invalid, {
             storage_capacity: 5000,  # Invalid
             subnet_ids: ["subnet-12345678"],

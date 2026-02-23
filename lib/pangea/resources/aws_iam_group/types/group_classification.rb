@@ -48,20 +48,23 @@ module Pangea
 
           # Check if group is environment-specific
           def environment_group?
-            environments = ['dev', 'test', 'staging', 'prod', 'development', 'production']
-            environments.any? { |env| name.downcase.include?(env) }
+            environments = ['development', 'production', 'staging', 'test']
+            tokens = name.downcase.split(/[-_.]/)
+            environments.any? { |env| tokens.include?(env) } ||
+              tokens.include?('prod') || tokens.include?('dev') ||
+              tokens.include?('stage')
           end
 
           # Categorize group by purpose
           def group_category
             if administrative_group?
               :administrative
+            elsif readonly_group?
+              :readonly
             elsif developer_group?
               :developer
             elsif operations_group?
               :operations
-            elsif readonly_group?
-              :readonly
             elsif department_group?
               :department
             elsif environment_group?
@@ -119,10 +122,11 @@ module Pangea
           def naming_convention_score
             score = 0
             score += 20 if environment_group?
-            score += 20 if department_group? || developer_group? || operations_group?
+            # Only score function/department if the name has multiple segments
+            score += 20 if follows_naming_convention? && (department_group? || developer_group? || operations_group?)
             score += 20 if follows_naming_convention?
-            score += 20 if name.length.between?(5, 30)
-            score += 20 if organizational_path?
+            score += 20 if name.length.between?(5, 64)
+            score += 20 if department_group? && environment_group?
             score
           end
         end

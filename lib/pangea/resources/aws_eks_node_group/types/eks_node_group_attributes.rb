@@ -22,7 +22,7 @@ module Pangea
     module AWS
       module Types
         # EKS node group attributes with validation
-        class EksNodeGroupAttributes < Dry::Struct
+        class EksNodeGroupAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           AMI_TYPES = %w[
@@ -35,11 +35,11 @@ module Pangea
           CAPACITY_TYPES = %w[ON_DEMAND SPOT].freeze
 
           # Required attributes
-          attribute :cluster_name, Pangea::Resources::Types::String
-          attribute :node_role_arn, Pangea::Resources::Types::String.constrained(
+          attribute? :cluster_name, Pangea::Resources::Types::String.optional
+          attribute? :node_role_arn, Pangea::Resources::Types::String.constrained(
             format: /\Aarn:aws:iam::\d{12}:role\/.+\z/
           )
-          attribute :subnet_ids, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).constrained(min_size: 1)
+          attribute? :subnet_ids, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).constrained(min_size: 1).optional
 
           # Optional attributes
           attribute :node_group_name, Pangea::Resources::Types::String.optional.default(nil)
@@ -60,7 +60,7 @@ module Pangea
 
           # Validate instance types match AMI type
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate ARM instance types with ARM AMIs
             if attrs[:ami_type] && attrs[:instance_types]

@@ -33,7 +33,7 @@ module Pangea
         #       cidr_blocks: ["0.0.0.0/0"]
         #     }]
         #   })
-        class SecurityGroupAttributes < Dry::Struct
+        class SecurityGroupAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
           
           # Optional attributes with defaults
@@ -62,7 +62,7 @@ module Pangea
           
           # Validate individual security group rule
           def self.validate_rule(rule, rule_type)
-          return unless rule.is_a?(Hash)
+          return unless rule.is_a?(::Hash)
           
           # Validate required fields
           required_fields = [:from_port, :to_port, :protocol]

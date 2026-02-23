@@ -22,7 +22,7 @@ module Pangea
     module AWS
       module Types
         # Widget properties for different widget types
-        class DashboardWidgetProperties < Dry::Struct
+        class DashboardWidgetProperties < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Metric widget properties

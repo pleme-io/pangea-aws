@@ -27,19 +27,19 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS ElastiCache Cluster resources
-        class ElastiCacheClusterAttributes < Dry::Struct
+        class ElastiCacheClusterAttributes < Pangea::Resources::BaseAttributes
           include ElastiCacheHelpers
 
           transform_keys(&:to_sym)
 
           # Cluster identifier (required)
-          attribute :cluster_id, Pangea::Resources::Types::String
+          attribute? :cluster_id, Pangea::Resources::Types::String.optional
 
           # Engine type
-          attribute :engine, Pangea::Resources::Types::String.constrained(included_in: %w[redis memcached])
+          attribute? :engine, Pangea::Resources::Types::String.constrained(included_in: %w[redis memcached]).optional
 
           # Node type (instance class)
-          attribute :node_type, Pangea::Resources::Types::String.constrained(
+          attribute? :node_type, Pangea::Resources::Types::String.constrained(
             included_in: ElastiCacheNodeTypes::ALL
           )
 
@@ -59,14 +59,14 @@ module Pangea
           attribute? :subnet_group_name, Pangea::Resources::Types::String.optional
 
           # Security group IDs
-          attribute :security_group_ids,
+          attribute? :security_group_ids,
                     Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([].freeze)
 
           # Availability zone (single AZ placement)
           attribute? :availability_zone, Pangea::Resources::Types::String.optional
 
           # Preferred availability zones (for multi-AZ)
-          attribute :preferred_availability_zones,
+          attribute? :preferred_availability_zones,
                     Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([].freeze)
 
           # Maintenance window (Format: "ddd:hh24:mi-ddd:hh24:mi")
@@ -85,7 +85,7 @@ module Pangea
           attribute :snapshot_retention_limit, Pangea::Resources::Types::Integer.default(0).constrained(gteq: 0, lteq: 35)
 
           # Log delivery configuration
-          attribute :log_delivery_configuration, Pangea::Resources::Types::Array.of(
+          attribute? :log_delivery_configuration, Pangea::Resources::Types::Array.of(
             Pangea::Resources::Types::Hash
           ).default([].freeze)
 

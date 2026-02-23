@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsLbTrustStoreRevocation resources
       # Manages aws lb trust store revocation resources.
-      class AwsLbTrustStoreRevocationAttributes < Dry::Struct
+      class AwsLbTrustStoreRevocationAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_lb_trust_store_revocation
         
         # Tags to apply to the resource

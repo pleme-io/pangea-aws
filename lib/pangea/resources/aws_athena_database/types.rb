@@ -20,35 +20,35 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS Athena Database resources
-      class AthenaDatabaseAttributes < Dry::Struct
+      class AthenaDatabaseAttributes < Pangea::Resources::BaseAttributes
         # Database name (required)
-        attribute :name, Resources::Types::String
+        attribute? :name, Resources::Types::String.optional
         
         # S3 bucket location for database storage
-        attribute :bucket, Resources::Types::String
+        attribute? :bucket, Resources::Types::String.optional
         
         # Comment/description for the database
-        attribute :comment, Resources::Types::String.optional
+        attribute? :comment, Resources::Types::String.optional
         
         # Database properties
         attribute :properties, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
         
         # Encryption configuration
-        attribute :encryption_configuration, Resources::Types::Hash.schema(
+        attribute? :encryption_configuration, Resources::Types::Hash.schema(
           encryption_option: Resources::Types::String.constrained(included_in: ["SSE_S3", "SSE_KMS", "CSE_KMS"]),
           kms_key?: Resources::Types::String.optional
-        ).optional
+        ).lax.optional
         
         # Expected bucket owner for S3 access
-        attribute :expected_bucket_owner, Resources::Types::String.optional
+        attribute? :expected_bucket_owner, Resources::Types::String.optional
         
         # Force destroy database and tables when resource is destroyed
         attribute :force_destroy, Resources::Types::Bool.default(false)
         
         # ACL configuration for database
-        attribute :acl_configuration, Resources::Types::Hash.schema(
+        attribute? :acl_configuration, Resources::Types::Hash.schema(
           s3_acl_option: Resources::Types::String.constrained(included_in: ["BUCKET_OWNER_FULL_CONTROL"])
-        ).optional
+        ).lax.optional
         
         # Tags
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)
@@ -74,8 +74,8 @@ module Pangea
           
           # Validate KMS key if encryption is KMS
           if attrs.encryption_configuration
-            if ["SSE_KMS", "CSE_KMS"].include?(attrs.encryption_configuration[:encryption_option]) && 
-               attrs.encryption_configuration[:kms_key].nil?
+            if ["SSE_KMS", "CSE_KMS"].include?(attrs.encryption_configuration&.dig(:encryption_option)) && 
+               attrs.encryption_configuration&.dig(:kms_key).nil?
               raise Dry::Struct::Error, "KMS key must be provided when using KMS encryption"
             end
           end
@@ -91,7 +91,7 @@ module Pangea
         # Get encryption type
         def encryption_type
           return nil unless encrypted?
-          encryption_configuration[:encryption_option]
+          encryption_configuration&.dig(:encryption_option)
         end
 
         # Check if using KMS encryption

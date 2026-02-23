@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsVpcEndpointConnectionAccepter resources
       # Manages aws vpc endpoint connection accepter resources.
-      class AwsVpcEndpointConnectionAccepterAttributes < Dry::Struct
+      class AwsVpcEndpointConnectionAccepterAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_vpc_endpoint_connection_accepter
         
         # Tags to apply to the resource

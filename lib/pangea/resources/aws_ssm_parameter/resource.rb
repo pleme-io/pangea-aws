@@ -30,49 +30,31 @@ module Pangea
       def aws_ssm_parameter(name, attributes = {})
         # Validate attributes using dry-struct
         parameter_attrs = Types::SsmParameterAttributes.new(attributes)
-        
-        # Generate terraform resource block via terraform-synthesizer
-        resource(:aws_ssm_parameter, name) do
-          parameter_name parameter_attrs.name
-          type parameter_attrs.type
-          value parameter_attrs.value
 
-          # Description
-          if parameter_attrs.description
-            description parameter_attrs.description
-          end
+        # Build resource attributes as a hash
+        resource_attrs = {
+          name: parameter_attrs.name,
+          type: parameter_attrs.type,
+          value: parameter_attrs.value
+        }
 
-          # KMS Key ID for SecureString
-          if parameter_attrs.key_id
-            key_id parameter_attrs.key_id
-          end
+        resource_attrs[:description] = parameter_attrs.description if parameter_attrs.description
+        resource_attrs[:key_id] = parameter_attrs.key_id if parameter_attrs.key_id
+        resource_attrs[:tier] = parameter_attrs.tier
+        resource_attrs[:allowed_pattern] = parameter_attrs.allowed_pattern if parameter_attrs.allowed_pattern
+        resource_attrs[:data_type] = parameter_attrs.data_type if parameter_attrs.data_type
+        resource_attrs[:overwrite] = parameter_attrs.overwrite
+        resource_attrs[:tags] = parameter_attrs.tags if parameter_attrs.tags&.any?
 
-          # Parameter tier
-          tier parameter_attrs.tier
-
-          # Allowed pattern
-          if parameter_attrs.allowed_pattern
-            allowed_pattern parameter_attrs.allowed_pattern
-          end
-
-          # Data type
-          if parameter_attrs.data_type
-            data_type parameter_attrs.data_type
-          end
-
-          # Overwrite setting
-          overwrite parameter_attrs.overwrite
-
-          # Apply tags if present
-          if parameter_attrs.tags.any?
-            tags do
-              parameter_attrs.tags.each do |key, value|
-                public_send(key, value)
-              end
-            end
-          end
+        # Write to manifest: direct access for synthesizer, fall back to resource() for test mocks
+        if is_a?(AbstractSynthesizer)
+          translation[:manifest][:resource] ||= {}
+          translation[:manifest][:resource][:aws_ssm_parameter] ||= {}
+          translation[:manifest][:resource][:aws_ssm_parameter][name] = resource_attrs
+        else
+          resource(:aws_ssm_parameter, name, resource_attrs)
         end
-        
+
         # Return resource reference with available outputs
         ResourceReference.new(
           type: 'aws_ssm_parameter',

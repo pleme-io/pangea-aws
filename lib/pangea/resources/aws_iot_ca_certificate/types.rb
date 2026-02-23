@@ -25,17 +25,17 @@ module Pangea
     # certificates and enable automated device onboarding.
     module AwsIotCaCertificateTypes
       # Registration configuration for just-in-time registration
-      class RegistrationConfig < Dry::Struct
+      class RegistrationConfig < Pangea::Resources::BaseAttributes
         schema schema.strict
 
         # IoT policy template for JITR devices
-        attribute :template_body, Resources::Types::String.optional
+        attribute? :template_body, Resources::Types::String.optional
 
         # Template name for the registration template
-        attribute :template_name, Resources::Types::String.optional
+        attribute? :template_name, Resources::Types::String.optional
 
         # IAM role ARN for provisioning operations
-        attribute :role_arn, Resources::Types::String.optional
+        attribute? :role_arn, Resources::Types::String.optional
       end
 
       # Main attributes for IoT CA certificate resource

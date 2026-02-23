@@ -305,9 +305,9 @@ RSpec.describe "aws_nat_gateway terraform synthesis" do
       azs = ["us-east-1a", "us-east-1b", "us-east-1c"]
       
       azs.each do |az|
-        ref = test_instance.aws_nat_gateway(:"nat_#{az.last}", {
-          subnet_id: "${aws_subnet.public_#{az.last}.id}",
-          allocation_id: "${aws_eip.nat_#{az.last}.id}",
+        ref = test_instance.aws_nat_gateway(:"nat_#{az[-1]}", {
+          subnet_id: "${aws_subnet.public_#{az[-1]}.id}",
+          allocation_id: "${aws_eip.nat_#{az[-1]}.id}",
           tags: {
             Name: "nat-gateway-#{az}",
             AvailabilityZone: az,
@@ -317,9 +317,9 @@ RSpec.describe "aws_nat_gateway terraform synthesis" do
         
         # Verify each AZ's synthesis
         expect(test_synthesizer.method_calls).to include(
-          [:resource, :aws_nat_gateway, :"nat_#{az.last}"],
-          [:subnet_id, "${aws_subnet.public_#{az.last}.id}"],
-          [:allocation_id, "${aws_eip.nat_#{az.last}.id}"],
+          [:resource, :aws_nat_gateway, :"nat_#{az[-1]}"],
+          [:subnet_id, "${aws_subnet.public_#{az[-1]}.id}"],
+          [:allocation_id, "${aws_eip.nat_#{az[-1]}.id}"],
           [:Name, "nat-gateway-#{az}"],
           [:AvailabilityZone, az]
         )

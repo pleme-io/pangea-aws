@@ -21,15 +21,15 @@ module Pangea
       module Types
         # Individual parameter definition for DB parameter groups
         unless const_defined?(:DbParameter)
-        class DbParameter < Dry::Struct
+        class DbParameter < Pangea::Resources::BaseAttributes
           # Parameter name
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Parameter value
-          attribute :value, Resources::Types::String
+          attribute? :value, Resources::Types::String.optional
 
           # Apply method for parameter application
-          attribute :apply_method, Resources::Types::String.constrained(included_in: ["immediate", "pending-reboot"]).optional
+          attribute? :apply_method, Resources::Types::String.constrained(included_in: ["immediate", "pending-reboot"]).optional
 
           def self.new(attributes = {})
             attrs = super(attributes)

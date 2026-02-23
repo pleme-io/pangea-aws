@@ -57,7 +57,7 @@ module Pangea
           data_tiering attrs.data_tiering if attrs.data_tiering
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

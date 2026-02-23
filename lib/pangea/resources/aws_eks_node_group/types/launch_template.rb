@@ -22,7 +22,7 @@ module Pangea
     module AWS
       module Types
         # Launch template specification
-        class LaunchTemplate < Dry::Struct
+        class LaunchTemplate < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           attribute :id, Pangea::Resources::Types::String.optional.default(nil)
@@ -30,7 +30,7 @@ module Pangea
           attribute :version, Pangea::Resources::Types::String.optional.default(nil)
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate that either id or name is specified
             unless attrs[:id] || attrs[:name]

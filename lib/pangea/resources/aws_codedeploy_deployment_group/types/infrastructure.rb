@@ -21,43 +21,43 @@ module Pangea
     module AWS
       module Types
         # Infrastructure attributes for CodeDeploy deployment groups
-        class InfrastructureAttributes < Dry::Struct
+        class InfrastructureAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           # Auto Scaling Groups
           attribute :auto_scaling_groups, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
           # Load balancer info
-          attribute :load_balancer_info, Resources::Types::Hash.schema(
+          attribute? :load_balancer_info, Resources::Types::Hash.schema(
             elb_info?: Resources::Types::Array.of(
-              Resources::Types::Hash.schema(name?: Resources::Types::String.optional)
+              Resources::Types::Hash.schema(name?: Resources::Types::String.optional).lax
             ).optional,
             target_group_info?: Resources::Types::Array.of(
-              Resources::Types::Hash.schema(name?: Resources::Types::String.optional)
+              Resources::Types::Hash.schema(name?: Resources::Types::String.optional).lax
             ).optional,
             target_group_pair_info?: Resources::Types::Array.of(
               Resources::Types::Hash.schema(
                 prod_traffic_route?: Resources::Types::Hash.schema(
                   listener_arns?: Resources::Types::Array.of(Resources::Types::String).optional
-                ).optional,
+                ).lax.optional,
                 test_traffic_route?: Resources::Types::Hash.schema(
                   listener_arns?: Resources::Types::Array.of(Resources::Types::String).optional
-                ).optional,
+                ).lax.optional,
                 target_groups?: Resources::Types::Array.of(
-                  Resources::Types::Hash.schema(name?: Resources::Types::String.optional)
+                  Resources::Types::Hash.schema(name?: Resources::Types::String.optional).lax
                 ).optional
               )
             ).optional
           ).default({}.freeze)
 
           # ECS service configuration
-          attribute :ecs_service, Resources::Types::Hash.schema(
+          attribute? :ecs_service, Resources::Types::Hash.schema(
             cluster_name?: Resources::Types::String.optional,
             service_name?: Resources::Types::String.optional
-          ).optional
+          ).lax.optional
 
           # Trigger configurations
-          attribute :trigger_configurations, Resources::Types::Array.of(
+          attribute? :trigger_configurations, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               trigger_name: Resources::Types::String,
               trigger_target_arn: Resources::Types::String,
@@ -67,7 +67,7 @@ module Pangea
                   'InstanceStart', 'InstanceSuccess', 'InstanceFailure',
                   'InstanceReady'])
               )
-            )
+            ).lax
           ).default([].freeze)
         end
       end

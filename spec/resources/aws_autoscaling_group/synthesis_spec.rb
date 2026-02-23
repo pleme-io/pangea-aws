@@ -27,6 +27,7 @@ RSpec.describe 'aws_autoscaling_group synthesis' do
         aws_autoscaling_group(:web, {
           min_size: 1,
           max_size: 5,
+          vpc_zone_identifier: ['${aws_subnet.a.id}', '${aws_subnet.b.id}'],
           launch_template: {
             id: '${aws_launch_template.web.id}',
             version: '$Latest'
@@ -49,6 +50,7 @@ RSpec.describe 'aws_autoscaling_group synthesis' do
           min_size: 2,
           max_size: 10,
           desired_capacity: 4,
+          vpc_zone_identifier: ['${aws_subnet.a.id}', '${aws_subnet.b.id}'],
           launch_template: { id: 'lt-123', version: '$Latest' }
         })
       end
@@ -84,6 +86,7 @@ RSpec.describe 'aws_autoscaling_group synthesis' do
           max_size: 3,
           health_check_type: 'ELB',
           health_check_grace_period: 300,
+          vpc_zone_identifier: ['${aws_subnet.a.id}', '${aws_subnet.b.id}'],
           launch_template: { id: 'lt-123', version: '$Latest' }
         })
       end
@@ -102,6 +105,7 @@ RSpec.describe 'aws_autoscaling_group synthesis' do
           min_size: 1,
           max_size: 5,
           target_group_arns: ['${aws_lb_target_group.main.arn}'],
+          vpc_zone_identifier: ['${aws_subnet.a.id}', '${aws_subnet.b.id}'],
           launch_template: { id: 'lt-123', version: '$Latest' }
         })
       end
@@ -120,6 +124,7 @@ RSpec.describe 'aws_autoscaling_group synthesis' do
         aws_autoscaling_group(:test, {
           min_size: 1,
           max_size: 3,
+          vpc_zone_identifier: ['${aws_subnet.a.id}', '${aws_subnet.b.id}'],
           launch_template: { id: 'lt-123', version: '$Latest' }
         })
       end

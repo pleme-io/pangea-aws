@@ -19,17 +19,17 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS ElastiCache Parameter Group resources
-        class ElastiCacheParameterGroupAttributes < Dry::Struct
+        class ElastiCacheParameterGroupAttributes < Pangea::Resources::BaseAttributes
           include ElastiCacheParameterHelpers
 
           # Name of the parameter group
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Description of the parameter group
-          attribute :description, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
 
           # Cache parameter group family (e.g., "redis7.x", "memcached1.6")
-          attribute :family, Resources::Types::String.enum(
+          attribute? :family, Resources::Types::String.enum(
             # Redis families
             'redis2.6', 'redis2.8', 'redis3.2', 'redis4.0', 'redis5.0', 'redis6.x', 'redis7.x',
             # Memcached families
@@ -37,11 +37,11 @@ module Pangea
           )
 
           # Parameters to apply to the parameter group
-          attribute :parameters, Resources::Types::Array.of(
+          attribute? :parameters, Resources::Types::Array.of(
             Resources::Types::Hash.schema(
               name: Resources::Types::String,
               value: Resources::Types::String
-            )
+            ).lax
           ).default([].freeze)
 
           # Tags to apply to the parameter group

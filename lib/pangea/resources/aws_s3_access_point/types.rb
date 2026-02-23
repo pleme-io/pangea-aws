@@ -34,7 +34,7 @@ module Pangea
           unless const_defined?(:VpcConfiguration)
           VpcConfiguration = Resources::Types::Hash.schema({
             vpc_id: Resources::Types::String
-          })
+          }).lax
           end
           
           # Public Access Block Configuration
@@ -44,16 +44,16 @@ module Pangea
             block_public_policy?: Resources::Types::Bool,
             ignore_public_acls?: Resources::Types::Bool,
             restrict_public_buckets?: Resources::Types::Bool
-          })
+          }).lax
           end
         end
 
         # S3 Access Point attributes with comprehensive validation
-        class S3AccessPointAttributes < Dry::Struct
+        class S3AccessPointAttributes < Pangea::Resources::BaseAttributes
           # Required attributes
-          attribute :account_id, Types::AccessPointAccountId
-          attribute :bucket, Resources::Types::String
-          attribute :name, Types::AccessPointName
+          attribute? :account_id, Types::AccessPointAccountId.optional
+          attribute? :bucket, Resources::Types::String.optional
+          attribute? :name, Types::AccessPointName.optional
           
           # Optional attributes
           attribute? :bucket_account_id, Types::AccessPointAccountId

@@ -32,34 +32,34 @@ module Pangea
           # Access control translation for cross-account replication
           AccessControlTranslation = Resources::Types::Hash.schema(
             owner: Resources::Types::String.default('Destination').enum('Destination')
-          )
+          ).lax
 
           # Encryption configuration for replicated objects
           EncryptionConfiguration = Resources::Types::Hash.schema(
             replica_kms_key_id: Resources::Types::String
-          )
+          ).lax
 
           # Event threshold configuration
           EventThreshold = Resources::Types::Hash.schema(
             minutes: Resources::Types::Integer.constrained(gteq: 15)
-          )
+          ).lax
 
           # Metrics configuration
           Metrics = Resources::Types::Hash.schema(
             status: StatusDefaultDisabled,
             event_threshold?: EventThreshold.optional
-          )
+          ).lax
 
           # Time configuration for replication time control
           TimeConfig = Resources::Types::Hash.schema(
             minutes: Resources::Types::Integer.constrained(gteq: 15)
-          )
+          ).lax
 
           # Replication time control
           ReplicationTime = Resources::Types::Hash.schema(
             status: StatusDefaultDisabled,
             time?: TimeConfig.optional
-          )
+          ).lax
 
           # Storage class enum
           StorageClass = Resources::Types::String.constrained(included_in: ['STANDARD', 'REDUCED_REDUNDANCY', 'STANDARD_IA', 'ONEZONE_IA',
@@ -76,7 +76,7 @@ module Pangea
             encryption_configuration?: EncryptionConfiguration.optional,
             metrics?: Metrics.optional,
             replication_time?: ReplicationTime.optional
-          )
+          ).lax
           end
 
 

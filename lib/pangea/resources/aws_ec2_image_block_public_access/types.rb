@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2ImageBlockPublicAccess resources
       # Manages aws ec2 image block public access resources.
-      class AwsEc2ImageBlockPublicAccessAttributes < Dry::Struct
+      class AwsEc2ImageBlockPublicAccessAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_image_block_public_access
         
         # Tags to apply to the resource

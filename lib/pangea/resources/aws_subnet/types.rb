@@ -28,13 +28,13 @@ module Pangea
         #     cidr_block: "10.0.1.0/24",
         #     availability_zone: "us-east-1a"
         #   })
-        class SubnetAttributes < Dry::Struct
+        class SubnetAttributes < Pangea::Resources::BaseAttributes
         transform_keys(&:to_sym)
         
         # Required attributes
-        attribute :vpc_id, Resources::Types::String
-        attribute :cidr_block, Resources::Types::CidrBlock
-        attribute :availability_zone, Resources::Types::AwsAvailabilityZone
+        attribute? :vpc_id, Resources::Types::String.optional
+        attribute? :cidr_block, Resources::Types::CidrBlock.optional
+        attribute? :availability_zone, Resources::Types::AwsAvailabilityZone.optional
         
         # Optional attributes with defaults
         attribute :map_public_ip_on_launch, Resources::Types::Bool.default(false)
@@ -42,12 +42,27 @@ module Pangea
         
         # Custom validation
         def self.new(attributes)
+          attrs = attributes.is_a?(::Hash) ? attributes.transform_keys(&:to_sym) : attributes.to_h.transform_keys(&:to_sym)
+
+          # Validate required attributes
+          unless attrs[:vpc_id] && !attrs[:vpc_id].to_s.empty?
+            raise Dry::Struct::Error, "vpc_id is required for subnet"
+          end
+
+          unless attrs[:cidr_block] && !attrs[:cidr_block].to_s.empty?
+            raise Dry::Struct::Error, "cidr_block is required for subnet"
+          end
+
+          unless attrs[:availability_zone] && !attrs[:availability_zone].to_s.empty?
+            raise Dry::Struct::Error, "availability_zone is required for subnet"
+          end
+
           # Validate CIDR block is a valid subnet size (typically /16 to /28)
-          if attributes[:cidr_block] && !valid_subnet_cidr?(attributes[:cidr_block])
+          if attrs[:cidr_block] && !Pangea::Resources::BaseAttributes.terraform_reference?(attrs[:cidr_block]) && !valid_subnet_cidr?(attrs[:cidr_block])
             raise Dry::Struct::Error, "Subnet CIDR block must be between /16 and /28"
           end
-          
-          super
+
+          super(attrs)
         end
         
         private

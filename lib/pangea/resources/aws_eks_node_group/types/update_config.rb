@@ -22,7 +22,7 @@ module Pangea
     module AWS
       module Types
         # Update configuration for managed node group
-        class UpdateConfig < Dry::Struct
+        class UpdateConfig < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           attribute :max_unavailable, Pangea::Resources::Types::Integer.optional.default(nil).constrained(gteq: 1)
@@ -31,7 +31,7 @@ module Pangea
           )
 
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate that only one type of max_unavailable is specified
             if attrs[:max_unavailable] && attrs[:max_unavailable_percentage]

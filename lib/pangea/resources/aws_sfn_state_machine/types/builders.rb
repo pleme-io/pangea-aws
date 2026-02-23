@@ -8,14 +8,14 @@ module Pangea
   module Resources
     module AWS
       module Types
-        class SfnStateMachineAttributes < Dry::Struct          # Common state machine pattern builders
+        class SfnStateMachineAttributes < Pangea::Resources::BaseAttributes          # Common state machine pattern builders
           module Builders
             extend self
 
             def simple_task_definition(task_arn, next_state = nil)
               state = { "Type" => "Task", "Resource" => task_arn }
               state[next_state ? "Next" : "End"] = next_state || true
-              JSON.pretty_generate({
+              ::JSON.pretty_generate({
                 "Comment" => "Simple task state machine",
                 "StartAt" => "Task",
                 "States" => { "Task" => state }
@@ -33,7 +33,7 @@ module Pangea
                 end
                 states[name] = state
               end
-              JSON.pretty_generate({
+              ::JSON.pretty_generate({
                 "Comment" => "Sequential tasks state machine",
                 "StartAt" => tasks.first[0],
                 "States" => states
@@ -49,7 +49,7 @@ module Pangea
                   end
                 }
               end
-              JSON.pretty_generate({
+              ::JSON.pretty_generate({
                 "Comment" => "Parallel tasks state machine",
                 "StartAt" => "Parallel",
                 "States" => {
@@ -62,7 +62,7 @@ module Pangea
               choice_rules = choices.map do |condition, next_state|
                 { "Variable" => condition[:variable], condition[:operator] => condition[:value], "Next" => next_state }
               end
-              JSON.pretty_generate({
+              ::JSON.pretty_generate({
                 "Comment" => "Choice state machine",
                 "StartAt" => "Choice",
                 "States" => { "Choice" => { "Type" => "Choice", "Choices" => choice_rules, "Default" => default_state } }

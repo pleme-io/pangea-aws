@@ -38,7 +38,7 @@ module Pangea
           description channel_attrs.description if channel_attrs.description && !channel_attrs.description.empty?
           
           # Apply tags
-          if channel_attrs.tags.any?
+          if channel_attrs.tags&.any?
             tags do
               channel_attrs.tags.each do |key, value|
                 public_send(key, value)

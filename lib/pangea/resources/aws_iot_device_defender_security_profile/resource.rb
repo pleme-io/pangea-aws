@@ -28,7 +28,7 @@ module Pangea
         resource(:aws_iot_device_defender_security_profile, name) do
           security_profile_name defender_attrs.security_profile_name
           security_profile_description defender_attrs.security_profile_description if defender_attrs.security_profile_description
-          target_arns defender_attrs.target_arns if defender_attrs.target_arns.any?
+          target_arns defender_attrs.target_arns if defender_attrs.target_arns&.any?
           
           defender_attrs.behaviors.each do |behavior|
             behaviors do
@@ -45,7 +45,7 @@ module Pangea
             end
           end
           
-          if defender_attrs.tags.any?
+          if defender_attrs.tags&.any?
             tags do
               defender_attrs.tags.each { |k, v| public_send(k, v) }
             end

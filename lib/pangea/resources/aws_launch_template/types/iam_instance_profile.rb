@@ -21,14 +21,14 @@ module Pangea
     module AWS
       module Types
         # IAM instance profile configuration
-        class IamInstanceProfile < Dry::Struct
+        class IamInstanceProfile < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
           attribute :arn, Resources::Types::String.optional.default(nil)
           attribute :name, Resources::Types::String.optional.default(nil)
 
           def self.new(attributes)
-            return super if attributes.is_a?(Hash)
+            return super if attributes.is_a?(::Hash)
 
             # Allow string input for name
             if attributes.is_a?(String)

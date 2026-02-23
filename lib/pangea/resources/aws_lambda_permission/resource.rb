@@ -29,7 +29,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_lambda_permission(name, attributes = {})
         # Validate attributes using dry-struct
-        permission_attrs = AWS::Types::Types::LambdaPermissionAttributes.new(attributes)
+        permission_attrs = Types::LambdaPermissionAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_lambda_permission, name) do

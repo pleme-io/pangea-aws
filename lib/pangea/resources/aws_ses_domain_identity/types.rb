@@ -21,14 +21,14 @@ module Pangea
     module AWS
       module Types
         # SES Domain Identity resource attributes
-        class SesDomainIdentityAttributes < Dry::Struct
+        class SesDomainIdentityAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
-          attribute :domain, Resources::Types::DomainName
+          attribute? :domain, Resources::Types::DomainName.optional
 
           # Custom validation
           def self.new(attributes)
-            attrs = attributes.is_a?(Hash) ? attributes : {}
+            attrs = attributes.is_a?(::Hash) ? attributes : {}
 
             # Validate domain is not a wildcard domain for SES
             if attrs[:domain]&.start_with?('*.')

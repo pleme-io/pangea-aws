@@ -22,18 +22,18 @@ module Pangea
     module AWS
       module Types
         # Type-safe attributes for AWS API Gateway API Key resources
-        class ApiGatewayApiKeyAttributes < Dry::Struct
+        class ApiGatewayApiKeyAttributes < Pangea::Resources::BaseAttributes
           # Name for the API key
-          attribute :name, Resources::Types::String
+          attribute? :name, Resources::Types::String.optional
 
           # Description of the API key
-          attribute :description, Resources::Types::String.optional
+          attribute? :description, Resources::Types::String.optional
 
           # Whether the API key is enabled
           attribute :enabled, Resources::Types::Bool.default(true)
 
           # API key value (if provided, otherwise auto-generated)
-          attribute :value, Resources::Types::String.optional
+          attribute? :value, Resources::Types::String.optional
 
           # Tags to apply to the API key
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

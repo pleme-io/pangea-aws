@@ -41,7 +41,7 @@ module Pangea
           public_ip attrs.public_ip if attrs.public_ip
           
           # Apply tags if present
-          if attrs.tags.any?
+          if attrs.tags&.any?
             tags do
               attrs.tags.each do |key, value|
                 public_send(key, value)

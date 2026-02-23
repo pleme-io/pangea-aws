@@ -20,42 +20,42 @@ module Pangea
     module AWS
       module Types
       # Type-safe attributes for AWS Network ACL Rule resources
-      class NetworkAclRuleAttributes < Dry::Struct
+      class NetworkAclRuleAttributes < Pangea::Resources::BaseAttributes
         # The ID of the network ACL (required)
-        attribute :network_acl_id, Resources::Types::String
+        attribute? :network_acl_id, Resources::Types::String.optional
         
         # The rule number for ordering (required, 1-32766)
-        attribute :rule_number, Resources::Types::Integer.constrained(gteq: 1, lteq: 32766)
+        attribute? :rule_number, Resources::Types::Integer.constrained(gteq: 1, lteq: 32766).optional
         
         # Protocol (required) - can be protocol number or name
         # Common values: "tcp", "udp", "icmp", "-1" (all)
-        attribute :protocol, Resources::Types::String
+        attribute? :protocol, Resources::Types::String.optional
         
         # Rule action (required) - "allow" or "deny"
-        attribute :rule_action, Resources::Types::String.constrained(included_in: ["allow", "deny"])
+        attribute? :rule_action, Resources::Types::String.constrained(included_in: ["allow", "deny"]).optional
         
         # Direction of traffic (optional, default false = ingress)
         attribute :egress, Resources::Types::Bool.default(false)
         
         # IPv4 CIDR block (optional)
-        attribute :cidr_block, Resources::Types::CidrBlock.optional
+        attribute? :cidr_block, Resources::Types::CidrBlock.optional
         
         # IPv6 CIDR block (optional)
-        attribute :ipv6_cidr_block, Resources::Types::String.optional.constrained(
+        attribute? :ipv6_cidr_block, Resources::Types::String.optional.constrained(
           format: /\A(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\/\d{1,3}\z/
         )
         
         # Starting port for TCP/UDP (optional)
-        attribute :from_port, Resources::Types::Port.optional
+        attribute? :from_port, Resources::Types::Port.optional
         
         # Ending port for TCP/UDP (optional)
-        attribute :to_port, Resources::Types::Port.optional
+        attribute? :to_port, Resources::Types::Port.optional
         
         # ICMP type (optional, -1 for all)
-        attribute :icmp_type, Resources::Types::Integer.optional.constrained(gteq: -1, lteq: 255)
+        attribute? :icmp_type, Resources::Types::Integer.optional.constrained(gteq: -1, lteq: 255)
         
         # ICMP code (optional, -1 for all)
-        attribute :icmp_code, Resources::Types::Integer.optional.constrained(gteq: -1, lteq: 255)
+        attribute? :icmp_code, Resources::Types::Integer.optional.constrained(gteq: -1, lteq: 255)
         
         # Tags to apply to the resource
         attribute :tags, Resources::Types::AwsTags.default({}.freeze)

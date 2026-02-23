@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsAlbTargetGroupAttachment resources
       # Manages aws alb target group attachment resources.
-      class AwsAlbTargetGroupAttachmentAttributes < Dry::Struct
+      class AwsAlbTargetGroupAttachmentAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_alb_target_group_attachment
         
         # Tags to apply to the resource

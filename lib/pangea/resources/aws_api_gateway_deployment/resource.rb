@@ -25,7 +25,7 @@ module Pangea
       # Creates deployments and optionally stages for API configurations
       def aws_api_gateway_deployment(name, attributes = {})
         # Validate and coerce attributes
-        deployment_attrs = AWS::Types::Types::ApiGatewayDeploymentAttributes.new(attributes)
+        deployment_attrs = Types::ApiGatewayDeploymentAttributes.new(attributes)
         
         # Generate Terraform resource block
         resource(:aws_api_gateway_deployment, name) do
@@ -46,42 +46,30 @@ module Pangea
           end
           
           # Stage variables
-          if deployment_attrs.variables.any?
-            variables do
-              deployment_attrs.variables.each do |key, value|
-                send(key.tr('-', '_'), value)
-              end
-            end
+          if deployment_attrs.variables&.any?
+            variables deployment_attrs.variables
           end
-          
+
           # Canary settings
           if deployment_attrs.canary_settings
             canary_settings do
-              if deployment_attrs.canary_settings[:percent_traffic]
-                percent_traffic deployment_attrs.canary_settings[:percent_traffic]
+              if deployment_attrs.canary_settings&.dig(:percent_traffic)
+                percent_traffic deployment_attrs.canary_settings&.dig(:percent_traffic)
               end
-              
-              if deployment_attrs.canary_settings[:stage_variable_overrides]
-                stage_variable_overrides do
-                  deployment_attrs.canary_settings[:stage_variable_overrides].each do |key, value|
-                    send(key.tr('-', '_'), value)
-                  end
-                end
+
+              if deployment_attrs.canary_settings&.dig(:stage_variable_overrides)
+                stage_variable_overrides deployment_attrs.canary_settings[:stage_variable_overrides]
               end
-              
+
               if deployment_attrs.canary_settings.key?(:use_stage_cache)
-                use_stage_cache deployment_attrs.canary_settings[:use_stage_cache]
+                use_stage_cache deployment_attrs.canary_settings&.dig(:use_stage_cache)
               end
             end
           end
-          
+
           # Triggers for redeployment
-          if deployment_attrs.triggers.any?
-            triggers do
-              deployment_attrs.triggers.each do |key, value|
-                send(key.tr('-', '_'), value)
-              end
-            end
+          if deployment_attrs.triggers&.any?
+            triggers deployment_attrs.triggers
           end
           
           # Lifecycle management
@@ -145,8 +133,8 @@ module Pangea
             {
               enabled: true,
               percent_traffic: deployment_attrs.canary_percentage,
-              variable_overrides: deployment_attrs.canary_settings[:stage_variable_overrides] || {},
-              use_stage_cache: deployment_attrs.canary_settings[:use_stage_cache]
+              variable_overrides: deployment_attrs.canary_settings&.dig(:stage_variable_overrides) || {},
+              use_stage_cache: deployment_attrs.canary_settings&.dig(:use_stage_cache)
             }
           else
             { enabled: false }

@@ -21,7 +21,7 @@ module Pangea
       module Types
       # Type-safe attributes for AwsEc2SpotInstanceRequest resources
       # Manages aws ec2 spot instance request resources.
-      class AwsEc2SpotInstanceRequestAttributes < Dry::Struct
+      class AwsEc2SpotInstanceRequestAttributes < Pangea::Resources::BaseAttributes
         # TODO: Define specific attributes for aws_ec2_spot_instance_request
         
         # Tags to apply to the resource

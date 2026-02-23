@@ -31,11 +31,11 @@ module Pangea
               canary_size?: Resources::Types::Hash.schema(
                 type: Resources::Types::String.constrained(included_in: ['INSTANCE_COUNT', 'CAPACITY_PERCENT']),
                 value: Resources::Types::Integer.constrained(gteq: 1, lteq: 100)
-              ).optional,
+              ).lax.optional,
               linear_step_size?: Resources::Types::Hash.schema(
                 type: Resources::Types::String.constrained(included_in: ['INSTANCE_COUNT', 'CAPACITY_PERCENT']),
                 value: Resources::Types::Integer.constrained(gteq: 1, lteq: 100)
-              ).optional
+              ).lax.optional
             ),
             termination_wait_in_seconds?: Resources::Types::Integer.constrained(gteq: 0, lteq: 3600).optional,
             maximum_execution_timeout_in_seconds?: Resources::Types::Integer.constrained(gteq: 600, lteq: 14400).optional
@@ -44,7 +44,7 @@ module Pangea
             alarms?: Resources::Types::Array.of(
               Resources::Types::Hash.schema(
                 alarm_name: Resources::Types::String
-              )
+              ).lax
             ).optional
           ).optional
         )

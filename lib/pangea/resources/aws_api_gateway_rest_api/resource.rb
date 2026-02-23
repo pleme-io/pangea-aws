@@ -26,7 +26,7 @@ module Pangea
       # Provides type-safe function for creating REST APIs with API Gateway
       def aws_api_gateway_rest_api(name, attributes = {})
         # Validate attributes using dry-struct
-        validated_attrs = AWS::Types::Types::ApiGatewayRestApiAttributes.new(attributes)
+        validated_attrs = Types::ApiGatewayRestApiAttributes.new(attributes)
         
         # Synthesize the Terraform resource
         resource :aws_api_gateway_rest_api, name do
@@ -37,8 +37,8 @@ module Pangea
           # Endpoint configuration
           if validated_attrs.endpoint_configuration
             endpoint_configuration do
-              types validated_attrs.endpoint_configuration[:types]
-              vpc_endpoint_ids validated_attrs.endpoint_configuration[:vpc_endpoint_ids] if validated_attrs.endpoint_configuration[:vpc_endpoint_ids]
+              types validated_attrs.endpoint_configuration.types
+              vpc_endpoint_ids validated_attrs.endpoint_configuration.vpc_endpoint_ids if validated_attrs.endpoint_configuration.vpc_endpoint_ids
             end
           end
           
@@ -58,7 +58,7 @@ module Pangea
           body validated_attrs.body if validated_attrs.body
           
           # Tags
-          tags validated_attrs.tags unless validated_attrs.tags.empty?
+          tags validated_attrs.tags
         end
         
         # Create reference that will be returned

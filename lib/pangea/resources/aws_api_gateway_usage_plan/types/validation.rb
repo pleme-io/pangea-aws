@@ -28,12 +28,15 @@ module Pangea
 
           def self.validate_api_stages(api_stages)
             api_stages.each do |stage|
-              unless stage[:api_id].match?(/\A[a-z0-9]{10}\z/)
-                raise Dry::Struct::Error, "Invalid API ID format: #{stage[:api_id]}"
+              api_id = stage[:api_id]
+              # Accept Terraform interpolation references and simple alphanumeric identifiers
+              unless (api_id.start_with?('${') && api_id.end_with?('}')) || api_id.match?(/\A[a-zA-Z0-9\-_]+\z/)
+                raise Dry::Struct::Error, "Invalid API ID format: #{api_id}"
               end
 
-              unless stage[:stage].match?(/\A[a-zA-Z0-9\-_]{1,128}\z/)
-                raise Dry::Struct::Error, "Invalid stage name: #{stage[:stage]}"
+              stage_name = stage[:stage]
+              unless (stage_name.start_with?('${') && stage_name.end_with?('}')) || stage_name.match?(/\A[a-zA-Z0-9\-_]{1,128}\z/)
+                raise Dry::Struct::Error, "Invalid stage name: #{stage_name}"
               end
             end
           end
