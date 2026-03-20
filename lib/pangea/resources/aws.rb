@@ -453,7 +453,23 @@ module Pangea
   module Resources
     # Aggregated AWS module — all resource methods are available here
     # via direct definition or include from individual AwsXxx modules.
+    #
+    # This module serves as the single entry point for all AWS resources.
+    # Architectures extend their synthesizer with this module to gain
+    # access to every aws_* resource function:
+    #
+    #   synth.extend(Pangea::Resources::AWS)
+    #   synth.aws_vpc(:main, cidr_block: '10.0.0.0/16')
+    #
+    # Provider metadata is available via the class method:
+    #
+    #   Pangea::Resources::AWS.provider_prefix  # => 'aws_'
+    #
     module AWS
+      # Provider metadata for introspection
+      def self.provider_prefix
+        'aws_'
+      end
       include AwsDeviceFarmProject
       include AwsGameliftAlias
       include AwsGameliftBuild
