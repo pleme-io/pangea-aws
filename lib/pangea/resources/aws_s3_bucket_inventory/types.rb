@@ -85,7 +85,7 @@ module Pangea
           frequency: Resources::Types::String.constrained(included_in: ['Daily', 'Weekly']).default('Weekly'),
           day_of_week?: Resources::Types::String.constrained(included_in: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 
             'Thursday', 'Friday', 'Saturday']).optional
-        ).lax.default({ frequency: 'Weekly' })
+        ).lax.default({ frequency: 'Weekly' }.freeze)
 
         # Custom validation
         def self.new(attributes = {})

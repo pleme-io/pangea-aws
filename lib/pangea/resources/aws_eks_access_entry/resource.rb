@@ -33,7 +33,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_eks_access_entry(name, attributes = {})
         # Validate attributes using dry-struct
-        entry_attrs = EksAccessEntry::Types::EksAccessEntryAttributes.new(attributes)
+        entry_attrs = EksAccessEntry::EksAccessEntryAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_eks_access_entry, name) do

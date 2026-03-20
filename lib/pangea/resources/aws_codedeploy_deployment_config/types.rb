@@ -38,7 +38,7 @@ module Pangea
         attribute? :minimum_healthy_hosts, Resources::Types::Hash.schema(
           type: Resources::Types::String.constrained(included_in: ['HOST_COUNT', 'FLEET_PERCENT']),
           value: Resources::Types::Integer.constrained(gteq: 0)
-        ).lax.default({ type: 'FLEET_PERCENT', value: 75 })
+        ).lax.default({ type: 'FLEET_PERCENT', value: 75 }.freeze)
 
         # Traffic routing config (for Lambda/ECS platforms)
         attribute? :traffic_routing_config, Resources::Types::Hash.schema(

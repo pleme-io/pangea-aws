@@ -36,7 +36,7 @@ module Pangea
         class EcsDeploymentConfiguration < Pangea::Resources::BaseAttributes
           attribute? :deployment_circuit_breaker, Pangea::Resources::Types::Hash.schema(
             enable: Pangea::Resources::Types::Bool, rollback: Pangea::Resources::Types::Bool
-          ).lax.default({ enable: false, rollback: false })
+          ).lax.default({ enable: false, rollback: false }.freeze)
           attribute :maximum_percent, Pangea::Resources::Types::Integer.constrained(gteq: 100).default(200)
           attribute :minimum_healthy_percent, Pangea::Resources::Types::Integer.constrained(gteq: 0, lteq: 100).default(100)
         end

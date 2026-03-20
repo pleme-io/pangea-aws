@@ -16,7 +16,7 @@ module Pangea
           attribute? :target_type, Resources::Types::String.optional
           attribute? :schema_version, Resources::Types::String.optional
           attribute? :version_name, Resources::Types::String.optional
-          attribute :permissions, Resources::Types::Hash.default({ type: 'Private' })
+          attribute :permissions, Resources::Types::Hash.default({ type: 'Private' }.freeze)
           attribute :requires, Resources::Types::Array.of(Resources::Types::Hash).default([].freeze)
           attribute :attachments_source, Resources::Types::Array.of(Resources::Types::Hash).default([].freeze)
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

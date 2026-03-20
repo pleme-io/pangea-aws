@@ -36,19 +36,19 @@ module Pangea
             headers?: Resources::Types::Hash.schema(
               items?: Resources::Types::Array.of(Resources::Types::String).optional
             ).lax.optional
-          ).default({ header_behavior: 'none' }),
+          ).default({ header_behavior: 'none' }.freeze),
           query_strings_config: Resources::Types::Hash.schema(
             query_string_behavior: Resources::Types::String.constrained(included_in: ['none', 'whitelist', 'allExcept', 'all']).default('none'),
             query_strings?: Resources::Types::Hash.schema(
               items?: Resources::Types::Array.of(Resources::Types::String).optional
             ).lax.optional
-          ).default({ query_string_behavior: 'none' }),
+          ).default({ query_string_behavior: 'none' }.freeze),
           cookies_config: Resources::Types::Hash.schema(
             cookie_behavior: Resources::Types::String.constrained(included_in: ['none', 'whitelist', 'allExcept', 'all']).default('none'),
             cookies?: Resources::Types::Hash.schema(
               items?: Resources::Types::Array.of(Resources::Types::String).optional
             ).lax.optional
-          ).default({ cookie_behavior: 'none' })
+          ).default({ cookie_behavior: 'none' }.freeze)
         )
       end
       end

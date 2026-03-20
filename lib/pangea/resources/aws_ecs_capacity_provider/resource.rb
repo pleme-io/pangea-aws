@@ -33,7 +33,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_ecs_capacity_provider(name, attributes = {})
         # Validate attributes using dry-struct
-        provider_attrs = EcsCapacityProvider::Types::EcsCapacityProviderAttributes.new(attributes)
+        provider_attrs = EcsCapacityProvider::EcsCapacityProviderAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_ecs_capacity_provider, name) do

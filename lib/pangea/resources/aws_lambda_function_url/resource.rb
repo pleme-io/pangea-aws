@@ -33,7 +33,7 @@ module Pangea
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_lambda_function_url(name, attributes = {})
         # Validate attributes using dry-struct
-        url_attrs = LambdaFunctionUrl::Types::LambdaFunctionUrlAttributes.new(attributes)
+        url_attrs = LambdaFunctionUrl::LambdaFunctionUrlAttributes.new(attributes)
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_lambda_function_url, name) do

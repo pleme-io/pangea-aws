@@ -69,6 +69,9 @@ module Pangea
           # Tags to apply to the role
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
+          # Terraform lifecycle meta-argument
+          attribute :lifecycle, Resources::Types::Hash.default({}.freeze)
+
           # Custom validation
           def self.new(attributes = {})
             attrs = super(attributes)

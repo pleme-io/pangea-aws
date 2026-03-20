@@ -40,7 +40,7 @@ module Pangea
           attribute? :versioning, Resources::Types::Hash.schema(
             enabled: Resources::Types::Bool.default(false),
             mfa_delete?: Resources::Types::Bool.optional
-          ).lax.default({ enabled: false })
+          ).lax.default({ enabled: false }.freeze)
 
           # Server-side encryption configuration
           attribute? :server_side_encryption_configuration,

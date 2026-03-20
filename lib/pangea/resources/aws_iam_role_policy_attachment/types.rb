@@ -36,16 +36,19 @@ module Pangea
           def self.new(attributes = {})
             attrs = super(attributes)
 
-            # Validate policy ARN format
-            unless attrs.policy_arn.match?(/\Aarn:aws:iam::[0-9]{12}:policy\/.*\z/) ||
-                   attrs.policy_arn.match?(/\Aarn:aws:iam::aws:policy\/.*\z/)
-              raise Dry::Struct::Error, "policy_arn must be a valid IAM policy ARN"
+            # Skip validation for Terraform references (${...})
+            unless terraform_reference?(attrs.policy_arn)
+              unless attrs.policy_arn.match?(/\Aarn:aws:iam::[0-9]{12}:policy\/.*\z/) ||
+                     attrs.policy_arn.match?(/\Aarn:aws:iam::aws:policy\/.*\z/)
+                raise Dry::Struct::Error, "policy_arn must be a valid IAM policy ARN"
+              end
             end
 
-            # Validate role name/ARN format
-            unless attrs.role.match?(/\A[a-zA-Z0-9+=,.@_-]+\z/) || # Role name format
-                   attrs.role.match?(/\Aarn:aws:iam::[0-9]{12}:role\/.*\z/) # Role ARN format
-              raise Dry::Struct::Error, "role must be a valid IAM role name or ARN"
+            unless terraform_reference?(attrs.role)
+              unless attrs.role.match?(/\A[a-zA-Z0-9+=,.@_-]+\z/) || # Role name format
+                     attrs.role.match?(/\Aarn:aws:iam::[0-9]{12}:role\/.*\z/) # Role ARN format
+                raise Dry::Struct::Error, "role must be a valid IAM role name or ARN"
+              end
             end
 
             attrs

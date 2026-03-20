@@ -66,6 +66,15 @@ module Pangea
               end
             end
           end
+
+          # Apply lifecycle meta-argument if present
+          if role_attrs.lifecycle&.any?
+            lifecycle do
+              role_attrs.lifecycle.each do |key, value|
+                public_send(key, value)
+              end
+            end
+          end
         end
         
         # Return resource reference with available outputs

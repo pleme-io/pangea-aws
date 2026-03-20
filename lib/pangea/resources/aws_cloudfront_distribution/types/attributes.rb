@@ -23,7 +23,7 @@ module Pangea
           attribute :is_ipv6_enabled, Pangea::Resources::Types::Bool.default(true)
           attribute :price_class, Pangea::Resources::Types::String.constrained(included_in: %w[PriceClass_All PriceClass_200 PriceClass_100]).default('PriceClass_All')
           attribute :custom_error_response, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::Hash).default([].freeze)
-          attribute :restrictions, Pangea::Resources::Types::Hash.default({ geo_restriction: { restriction_type: 'none', locations: [] } })
+          attribute :restrictions, Pangea::Resources::Types::Hash.default({ geo_restriction: { restriction_type: 'none', locations: [].freeze }.freeze }.freeze)
           attribute :viewer_certificate, Pangea::Resources::Types::Hash.default({}.freeze)
           attribute :aliases, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([].freeze)
           attribute? :web_acl_id, Pangea::Resources::Types::String.optional

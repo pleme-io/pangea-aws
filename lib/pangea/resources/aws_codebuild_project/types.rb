@@ -70,7 +70,7 @@ module Pangea
           attribute? :environment, Schemas::ENVIRONMENT.optional
 
           # Cache configuration
-          attribute :cache, Schemas::CACHE.default({ type: 'NO_CACHE' })
+          attribute :cache, Schemas::CACHE.default({ type: 'NO_CACHE' }.freeze)
 
           # VPC configuration
           attribute? :vpc_config, Schemas::VPC_CONFIG.optional

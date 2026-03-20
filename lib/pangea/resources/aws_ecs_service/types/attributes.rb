@@ -29,7 +29,7 @@ module Pangea
           attribute :enable_ecs_managed_tags, Pangea::Resources::Types::Bool.default(true)
           attribute :enable_execute_command, Pangea::Resources::Types::Bool.default(false)
           attribute :propagate_tags, Pangea::Resources::Types::String.constrained(included_in: ["TASK_DEFINITION", "SERVICE", "NONE"]).default("NONE")
-          attribute :deployment_controller, Pangea::Resources::Types::Hash.schema(type: Pangea::Resources::Types::String.constrained(included_in: ["ECS", "CODE_DEPLOY", "EXTERNAL"]).lax).default({ type: "ECS" })
+          attribute :deployment_controller, Pangea::Resources::Types::Hash.schema(type: Pangea::Resources::Types::String.constrained(included_in: ["ECS", "CODE_DEPLOY", "EXTERNAL"]).lax).default({ type: "ECS" }.freeze)
           attribute? :service_connect_configuration, Pangea::Resources::Types::Hash.optional
           attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
           attribute :wait_for_steady_state, Pangea::Resources::Types::Bool.default(false)
