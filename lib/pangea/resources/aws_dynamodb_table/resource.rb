@@ -34,7 +34,7 @@ module Pangea
 
         resource(:aws_dynamodb_table, name) do
           # Basic settings
-          table_name table_attrs.name
+          name table_attrs.name
           billing_mode table_attrs.billing_mode
           hash_key table_attrs.hash_key
           range_key table_attrs.range_key if table_attrs.range_key

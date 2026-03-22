@@ -36,7 +36,7 @@ module Pangea
           end
 
           def build_basic_settings(context, attrs)
-            context.table_name attrs.name
+            context.name attrs.name
             context.billing_mode attrs.billing_mode
             context.hash_key attrs.hash_key
             context.range_key attrs.range_key if attrs.range_key
