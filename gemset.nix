@@ -141,7 +141,7 @@
       path = ./.;
       type = "path";
     };
-    version = "0.1.0";
+    version = "0.2.0";
   };
   pangea-core = {
     dependencies = ["base64" "dry-struct" "dry-types" "terraform-synthesizer"];
@@ -151,7 +151,7 @@
       path = ../pangea-core;
       type = "path";
     };
-    version = "0.1.0";
+    version = "0.3.0";
   };
   rake = {
     groups = ["development"];
