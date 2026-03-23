@@ -114,6 +114,16 @@ module Pangea
                 end
               end
               
+              # Metadata options (IMDSv2)
+              if data.metadata_options
+                metadata_options do
+                  http_endpoint data.metadata_options.http_endpoint
+                  http_tokens data.metadata_options.http_tokens
+                  http_put_response_hop_limit data.metadata_options.http_put_response_hop_limit
+                  instance_metadata_tags data.metadata_options.instance_metadata_tags
+                end
+              end
+
               # Block device mappings
               data.block_device_mappings.each do |bdm|
                 block_device_mappings do

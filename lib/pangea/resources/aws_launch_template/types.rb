@@ -21,6 +21,7 @@ require_relative 'types/iam_instance_profile'
 require_relative 'types/block_device_mapping'
 require_relative 'types/network_interface'
 require_relative 'types/tag_specification'
+require_relative 'types/metadata_options'
 
 module Pangea
   module Resources
@@ -56,6 +57,9 @@ module Pangea
           # Network interfaces
           attribute :network_interfaces, Resources::Types::Array.of(NetworkInterface).default([].freeze)
 
+          # Metadata options (IMDSv2)
+          attribute :metadata_options, MetadataOptions.optional.default(nil)
+
           # Tag specifications
           attribute :tag_specifications, Resources::Types::Array.of(LaunchTemplateTagSpecification).default([].freeze)
 
@@ -75,6 +79,7 @@ module Pangea
             hash[:security_group_ids] = security_group_ids if security_group_ids.any?
             hash[:vpc_security_group_ids] = vpc_security_group_ids if vpc_security_group_ids.any?
             hash[:monitoring] = monitoring if monitoring
+            hash[:metadata_options] = metadata_options.to_h if metadata_options
             hash[:block_device_mappings] = block_device_mappings.map(&:to_h) if block_device_mappings.any?
             hash[:network_interfaces] = network_interfaces.map(&:to_h) if network_interfaces.any?
             hash[:tag_specifications] = tag_specifications.map(&:to_h) if tag_specifications.any?
