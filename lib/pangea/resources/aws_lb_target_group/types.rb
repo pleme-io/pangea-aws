@@ -27,7 +27,7 @@ module Pangea
           attribute :enabled, Resources::Types::Bool.default(true)
           attribute :interval, Resources::Types::Integer.default(30).constrained(gteq: 5, lteq: 300)
           attribute :path, Resources::Types::String.default('/')
-          attribute :port, Resources::Types::String.default('traffic-port')
+          attribute :port, Resources::Types::Coercible::String.default('traffic-port')
           attribute :protocol, Resources::Types::String.default('HTTP').enum('HTTP', 'HTTPS', 'TCP', 'TLS', 'UDP', 'TCP_UDP', 'GENEVE')
           attribute :timeout, Resources::Types::Integer.default(5).constrained(gteq: 2, lteq: 120)
           attribute :healthy_threshold, Resources::Types::Integer.default(5).constrained(gteq: 2, lteq: 10)
