@@ -1,507 +1,1535 @@
 # frozen_string_literal: true
-
-# AWS module aggregator — requires all AWS resource modules and composes them
-# into a single Pangea::Resources::AWS module.
-
-require 'pangea/resources/base'
-require 'pangea/resources/reference'
-require 'pangea/resource_registry'
-
-# AWS types
-require_relative 'types/aws/core'
-require_relative 'types/aws/compute'
-require_relative 'types/aws/networking'
-require_relative 'types/aws/storage'
-require_relative 'types/aws/database'
-require_relative 'types/aws/security'
-require_relative 'types/aws/monitoring'
-require_relative 'types/aws/load_balancer'
-require_relative 'types/aws/iot'
-require_relative 'types/aws/iot_analytics'
-
-# AWS resources
-require_relative 'aws_acm_certificate/resource'
-require_relative 'aws_acm_certificate_validation/resource'
-require_relative 'aws_acmpca_certificate_authority/resource'
-require_relative 'aws_alb_target_group_attachment/resource'
-require_relative 'aws_ami/resource'
-require_relative 'aws_api_gateway_api_key/resource'
-require_relative 'aws_api_gateway_deployment/resource'
-require_relative 'aws_api_gateway_integration/resource'
-require_relative 'aws_api_gateway_method/resource'
-require_relative 'aws_api_gateway_resource/resource'
-require_relative 'aws_api_gateway_rest_api/resource'
-require_relative 'aws_api_gateway_stage/resource'
-require_relative 'aws_api_gateway_usage_plan/resource'
-require_relative 'aws_appstream_fleet/resource'
-require_relative 'aws_appstream_image_builder/resource'
-require_relative 'aws_appstream_stack/resource'
-require_relative 'aws_appsync_datasource/resource'
-require_relative 'aws_appsync_graphql_api/resource'
-require_relative 'aws_appsync_resolver/resource'
-require_relative 'aws_athena_database/resource'
-require_relative 'aws_athena_named_query/resource'
-require_relative 'aws_athena_workgroup/resource'
-require_relative 'aws_autoscaling_attachment/resource'
-require_relative 'aws_autoscaling_group/resource'
-require_relative 'aws_autoscaling_group_tag/resource'
-require_relative 'aws_autoscaling_lifecycle_hook/resource'
-require_relative 'aws_autoscaling_notification/resource'
-require_relative 'aws_autoscaling_policy/resource'
-require_relative 'aws_autoscaling_policy_step_adjustment/resource'
-require_relative 'aws_autoscaling_policy_target_tracking_scaling_policy/resource'
-require_relative 'aws_autoscaling_schedule/resource'
-require_relative 'aws_autoscaling_tag/resource'
-require_relative 'aws_autoscaling_traffic_source_attachment/resource'
-require_relative 'aws_autoscaling_warm_pool/resource'
-require_relative 'aws_batch_compute_environment/resource'
-require_relative 'aws_batch_job_definition/resource'
-require_relative 'aws_batch_job_queue/resource'
-require_relative 'aws_billing_service_account/resource'
-require_relative 'aws_blockchain_query/resource'
-require_relative 'aws_blockchain_token_balance/resource'
-require_relative 'aws_braket_device/resource'
-require_relative 'aws_braket_device_capabilities/resource'
-require_relative 'aws_braket_job/resource'
-require_relative 'aws_braket_job_queue/resource'
-require_relative 'aws_braket_local_simulator/resource'
-require_relative 'aws_braket_quantum_task/resource'
-require_relative 'aws_budgets_budget/resource'
-require_relative 'aws_budgets_budget_action/resource'
-require_relative 'aws_ce_anomaly_detector/resource'
-require_relative 'aws_ce_anomaly_subscription/resource'
-require_relative 'aws_ce_cost_category/resource'
-require_relative 'aws_cloudformation_stack/resource'
-require_relative 'aws_cloudformation_stack_set/resource'
-require_relative 'aws_cloudfront_cache_policy/resource'
-require_relative 'aws_cloudfront_distribution/resource'
-require_relative 'aws_cloudfront_key_group/resource'
-require_relative 'aws_cloudfront_origin_access_control/resource'
-require_relative 'aws_cloudfront_origin_request_policy/resource'
-require_relative 'aws_cloudfront_public_key/resource'
-require_relative 'aws_cloudfront_response_headers_policy/resource'
-require_relative 'aws_cloudtrail/resource'
-require_relative 'aws_cloudtrail_event_data_store/resource'
-require_relative 'aws_cloudwatch_anomaly_detector/resource'
-require_relative 'aws_cloudwatch_composite_alarm/resource'
-require_relative 'aws_cloudwatch_dashboard/resource'
-require_relative 'aws_cloudwatch_event_rule/resource'
-require_relative 'aws_cloudwatch_event_target/resource'
-require_relative 'aws_cloudwatch_insight_rule/resource'
-require_relative 'aws_cloudwatch_log_data_protection_policy/resource'
-require_relative 'aws_cloudwatch_log_destination/resource'
-require_relative 'aws_cloudwatch_log_destination_policy/resource'
-require_relative 'aws_cloudwatch_log_group/resource'
-require_relative 'aws_cloudwatch_log_metric_filter/resource'
-require_relative 'aws_cloudwatch_log_resource_policy/resource'
-require_relative 'aws_cloudwatch_log_stream/resource'
-require_relative 'aws_cloudwatch_log_subscription_filter/resource'
-require_relative 'aws_cloudwatch_metric_alarm/resource'
-require_relative 'aws_cloudwatch_query_definition/resource'
-require_relative 'aws_codeartifact_domain/resource'
-require_relative 'aws_codeartifact_repository/resource'
-require_relative 'aws_codebuild_project/resource'
-require_relative 'aws_codecommit_repository/resource'
-require_relative 'aws_codedeploy_application/resource'
-require_relative 'aws_codedeploy_deployment_config/resource'
-require_relative 'aws_codedeploy_deployment_group/resource'
-require_relative 'aws_codepipeline/resource'
-require_relative 'aws_codepipeline_webhook/resource'
-require_relative 'aws_codestar_connection/resource'
-require_relative 'aws_cognito_identity_pool/resource'
-require_relative 'aws_cognito_identity_provider/resource'
-require_relative 'aws_cognito_user/resource'
-require_relative 'aws_cognito_user_group/resource'
-require_relative 'aws_cognito_user_pool/resource'
-require_relative 'aws_cognito_user_pool_client/resource'
-require_relative 'aws_cognito_user_pool_domain/resource'
-require_relative 'aws_config_config_rule/resource'
-require_relative 'aws_config_configuration_recorder/resource'
-require_relative 'aws_config_delivery_channel/resource'
-require_relative 'aws_config_remediation_configuration/resource'
-require_relative 'aws_cur_report_definition/resource'
-require_relative 'aws_customer_gateway/resource'
-require_relative 'aws_db_cluster_snapshot/resource'
-require_relative 'aws_db_instance/resource'
-require_relative 'aws_db_parameter_group/resource'
-require_relative 'aws_db_snapshot/resource'
-require_relative 'aws_db_subnet_group/resource'
-require_relative 'aws_default_network_acl/resource'
-require_relative 'aws_default_route_table/resource'
-require_relative 'aws_default_security_group/resource'
-require_relative 'aws_default_vpc_dhcp_options/resource'
-require_relative 'aws_device_farm_project/resource'
-require_relative 'aws_directory_service_directory/resource'
-require_relative 'aws_docdb_certificate/resource'
-require_relative 'aws_docdb_cluster/resource'
-require_relative 'aws_docdb_cluster_endpoint/resource'
-require_relative 'aws_docdb_cluster_instance/resource'
-require_relative 'aws_docdb_cluster_parameter_group/resource'
-require_relative 'aws_docdb_cluster_snapshot/resource'
-require_relative 'aws_docdb_event_subscription/resource'
-require_relative 'aws_docdb_global_cluster/resource'
-require_relative 'aws_docdb_subnet_group/resource'
-require_relative 'aws_drs_launch_configuration_template/resource'
-require_relative 'aws_drs_replication_configuration_template/resource'
-require_relative 'aws_dynamodb_global_table/resource'
-require_relative 'aws_dynamodb_kinesis_streaming_destination/resource'
-require_relative 'aws_dynamodb_table/resource'
-require_relative 'aws_dynamodb_table_export/resource'
-require_relative 'aws_ebs_volume/resource'
-require_relative 'aws_ec2_ami_launch_permission/resource'
-require_relative 'aws_ec2_availability_zone_group/resource'
-require_relative 'aws_ec2_capacity_block_reservation/resource'
-require_relative 'aws_ec2_capacity_reservation/resource'
-require_relative 'aws_ec2_dedicated_host/resource'
-require_relative 'aws_ec2_fleet/resource'
-require_relative 'aws_ec2_host_resource_group_association/resource'
-require_relative 'aws_ec2_image_block_public_access/resource'
-require_relative 'aws_ec2_instance_metadata_defaults/resource'
-require_relative 'aws_ec2_serial_console_access/resource'
-require_relative 'aws_ec2_snapshot_block_public_access/resource'
-require_relative 'aws_ec2_spot_datafeed_subscription/resource'
-require_relative 'aws_ec2_spot_fleet_request/resource'
-require_relative 'aws_ec2_spot_instance_request/resource'
-require_relative 'aws_ec2_tag/resource'
-require_relative 'aws_ec2_transit_gateway/resource'
-require_relative 'aws_ec2_transit_gateway_multicast_domain/resource'
-require_relative 'aws_ec2_transit_gateway_multicast_domain_association/resource'
-require_relative 'aws_ec2_transit_gateway_multicast_group_member/resource'
-require_relative 'aws_ec2_transit_gateway_route/resource'
-require_relative 'aws_ec2_transit_gateway_route_table/resource'
-require_relative 'aws_ec2_transit_gateway_route_table_association/resource'
-require_relative 'aws_ec2_transit_gateway_route_table_propagation/resource'
-require_relative 'aws_ec2_transit_gateway_vpc_attachment/resource'
-require_relative 'aws_ecr_lifecycle_policy/resource'
-require_relative 'aws_ecr_replication_configuration/resource'
-require_relative 'aws_ecr_repository/resource'
-require_relative 'aws_ecr_repository_policy/resource'
-require_relative 'aws_ecs_capacity_provider/resource'
-require_relative 'aws_ecs_cluster/resource'
-require_relative 'aws_ecs_cluster_capacity_providers/resource'
-require_relative 'aws_ecs_service/resource'
-require_relative 'aws_ecs_task_definition/resource'
-require_relative 'aws_efs_access_point/resource'
-require_relative 'aws_efs_file_system/resource'
-require_relative 'aws_efs_mount_target/resource'
-require_relative 'aws_eip/resource'
-require_relative 'aws_eip_association/resource'
-require_relative 'aws_eks_access_entry/resource'
-require_relative 'aws_eks_addon/resource'
-require_relative 'aws_eks_cluster/resource'
-require_relative 'aws_eks_fargate_profile/resource'
-require_relative 'aws_eks_node_group/resource'
-require_relative 'aws_elasticache_cluster/resource'
-require_relative 'aws_elasticache_parameter_group/resource'
-require_relative 'aws_elasticache_subnet_group/resource'
-require_relative 'aws_elb_attachment/resource'
-require_relative 'aws_elb_service_account/resource'
-require_relative 'aws_elemental_data_plane_channel/resource'
-require_relative 'aws_emr_cluster/resource'
-require_relative 'aws_emr_instance_group/resource'
-require_relative 'aws_emr_step/resource'
-require_relative 'aws_eventbridge_bus/resource'
-require_relative 'aws_eventbridge_rule/resource'
-require_relative 'aws_eventbridge_target/resource'
-require_relative 'aws_fsx_lustre_filesystem/resource'
-require_relative 'aws_gamelift_alias/resource'
-require_relative 'aws_gamelift_build/resource'
-require_relative 'aws_gamelift_compute/resource'
-require_relative 'aws_gamelift_fleet/resource'
-require_relative 'aws_gamelift_game_session/resource'
-require_relative 'aws_gamelift_game_session_queue/resource'
-require_relative 'aws_gamelift_matchmaking_configuration/resource'
-require_relative 'aws_gamelift_matchmaking_rule_set/resource'
-require_relative 'aws_gamelift_player_session/resource'
-require_relative 'aws_gamelift_script/resource'
-require_relative 'aws_gamesparks_game/resource'
-require_relative 'aws_glue_catalog_database/resource'
-require_relative 'aws_glue_catalog_table/resource'
-require_relative 'aws_glue_job/resource'
-require_relative 'aws_glue_trigger/resource'
-require_relative 'aws_guardduty_detector/resource'
-require_relative 'aws_guardduty_member/resource'
-require_relative 'aws_iam_group/resource'
-require_relative 'aws_iam_policy/resource'
-require_relative 'aws_iam_role/resource'
-require_relative 'aws_iam_role_policy_attachment/resource'
-require_relative 'aws_iam_user/resource'
-require_relative 'aws_inspector2_enabler/resource'
-require_relative 'aws_instance/resource'
-require_relative 'aws_internet_gateway/resource'
-require_relative 'aws_iot_analytics_channel/resource'
-require_relative 'aws_iot_analytics_datastore/resource'
-require_relative 'aws_iot_authorizer/resource'
-require_relative 'aws_iot_billing_group/resource'
-require_relative 'aws_iot_ca_certificate/resource'
-require_relative 'aws_iot_certificate/resource'
-require_relative 'aws_iot_device_defender_security_profile/resource'
-require_relative 'aws_iot_domain_configuration/resource'
-require_relative 'aws_iot_job_template/resource'
-require_relative 'aws_iot_policy/resource'
-require_relative 'aws_iot_policy_attachment/resource'
-require_relative 'aws_iot_provisioning_template/resource'
-require_relative 'aws_iot_role_alias/resource'
-require_relative 'aws_iot_security_profile/resource'
-require_relative 'aws_iot_thing/resource'
-require_relative 'aws_iot_thing_group/resource'
-require_relative 'aws_iot_thing_group_membership/resource'
-require_relative 'aws_iot_thing_principal_attachment/resource'
-require_relative 'aws_iot_thing_type/resource'
-require_relative 'aws_iot_topic_rule/resource'
-require_relative 'aws_iot_topic_rule_destination/resource'
-require_relative 'aws_iot_wireless_destination/resource'
-require_relative 'aws_iotanalytics_dataset/resource'
-require_relative 'aws_key_pair/resource'
-require_relative 'aws_kinesis_analytics_application/resource'
-require_relative 'aws_kinesis_firehose_delivery_stream/resource'
-require_relative 'aws_kinesis_stream/resource'
-require_relative 'aws_kinesis_video_stream/resource'
-require_relative 'aws_kms_alias/resource'
-require_relative 'aws_kms_key/resource'
-require_relative 'aws_lambda_event_source_mapping/resource'
-require_relative 'aws_lambda_function/resource'
-require_relative 'aws_lambda_function_url/resource'
-require_relative 'aws_lambda_layer_version/resource'
-require_relative 'aws_lambda_permission/resource'
-require_relative 'aws_launch_configuration/resource'
-require_relative 'aws_launch_template/resource'
-require_relative 'aws_lb/resource'
-require_relative 'aws_lb_cookie_stickiness_policy/resource'
-require_relative 'aws_lb_listener/resource'
-require_relative 'aws_lb_listener_certificate/resource'
-require_relative 'aws_lb_listener_rule/resource'
-require_relative 'aws_lb_ssl_negotiation_policy/resource'
-require_relative 'aws_lb_target_group/resource'
-require_relative 'aws_lb_target_group_attachment/resource'
-require_relative 'aws_lb_trust_store/resource'
-require_relative 'aws_lb_trust_store_revocation/resource'
-require_relative 'aws_licensemanager_association/resource'
-require_relative 'aws_licensemanager_grant/resource'
-require_relative 'aws_licensemanager_grant_accepter/resource'
-require_relative 'aws_licensemanager_license_configuration/resource'
-require_relative 'aws_licensemanager_license_grant_accepter/resource'
-require_relative 'aws_licensemanager_report_generator/resource'
-require_relative 'aws_licensemanager_token/resource'
-require_relative 'aws_load_balancer_backend_server_policy/resource'
-require_relative 'aws_load_balancer_listener_policy/resource'
-require_relative 'aws_load_balancer_policy/resource'
-require_relative 'aws_managedblockchain_accessor/resource'
-require_relative 'aws_managedblockchain_ethereum_node/resource'
-require_relative 'aws_managedblockchain_member/resource'
-require_relative 'aws_managedblockchain_network/resource'
-require_relative 'aws_managedblockchain_node/resource'
-require_relative 'aws_media_convert_queue/resource'
-require_relative 'aws_media_live_channel/resource'
-require_relative 'aws_media_live_input/resource'
-require_relative 'aws_media_package_channel/resource'
-require_relative 'aws_media_package_origin_endpoint/resource'
-require_relative 'aws_media_store_container/resource'
-require_relative 'aws_memorydb_acl/resource'
-require_relative 'aws_memorydb_cluster/resource'
-require_relative 'aws_memorydb_cluster_endpoint/resource'
-require_relative 'aws_memorydb_multi_region_cluster/resource'
-require_relative 'aws_memorydb_parameter_group/resource'
-require_relative 'aws_memorydb_snapshot/resource'
-require_relative 'aws_memorydb_subnet_group/resource'
-require_relative 'aws_memorydb_user/resource'
-require_relative 'aws_mobile_analytics_app/resource'
-require_relative 'aws_mq_broker/resource'
-require_relative 'aws_mq_configuration/resource'
-require_relative 'aws_nat_gateway/resource'
-require_relative 'aws_neptune_cluster/resource'
-require_relative 'aws_neptune_cluster_endpoint/resource'
-require_relative 'aws_neptune_cluster_instance/resource'
-require_relative 'aws_neptune_cluster_parameter_group/resource'
-require_relative 'aws_neptune_cluster_snapshot/resource'
-require_relative 'aws_neptune_event_subscription/resource'
-require_relative 'aws_neptune_parameter_group/resource'
-require_relative 'aws_neptune_subnet_group/resource'
-require_relative 'aws_network_acl/resource'
-require_relative 'aws_network_acl_rule/resource'
-require_relative 'aws_network_interface/resource'
-require_relative 'aws_organizations_account/resource'
-require_relative 'aws_organizations_delegated_administrator/resource'
-require_relative 'aws_organizations_organization/resource'
-require_relative 'aws_organizations_resource_policy/resource'
-require_relative 'aws_pinpoint_app/resource'
-require_relative 'aws_placement_group/resource'
-require_relative 'aws_proxy_protocol_policy/resource'
-require_relative 'aws_qldb_ledger/resource'
-require_relative 'aws_qldb_stream/resource'
-require_relative 'aws_ram_invitation_accepter/resource'
-require_relative 'aws_ram_managed_permission/resource'
-require_relative 'aws_ram_permission/resource'
-require_relative 'aws_ram_permission_association/resource'
-require_relative 'aws_ram_principal_association/resource'
-require_relative 'aws_ram_resource_association/resource'
-require_relative 'aws_ram_resource_share/resource'
-require_relative 'aws_ram_resource_share_accepter/resource'
-require_relative 'aws_ram_resource_share_invitation/resource'
-require_relative 'aws_ram_sharing_with_organization/resource'
-require_relative 'aws_rds_cluster/resource'
-require_relative 'aws_rds_cluster_endpoint/resource'
-require_relative 'aws_rds_cluster_instance/resource'
-require_relative 'aws_rds_cluster_parameter_group/resource'
-require_relative 'aws_rds_global_cluster/resource'
-require_relative 'aws_rds_proxy/resource'
-require_relative 'aws_rds_proxy_default_target_group/resource'
-require_relative 'aws_rds_proxy_target/resource'
-require_relative 'aws_redshift_cluster/resource'
-require_relative 'aws_redshift_parameter_group/resource'
-require_relative 'aws_redshift_snapshot_schedule/resource'
-require_relative 'aws_redshift_subnet_group/resource'
-require_relative 'aws_resource_explorer_index/resource'
-require_relative 'aws_resource_explorer_view/resource'
-require_relative 'aws_resourcegroups_group/resource'
-require_relative 'aws_route/resource'
-require_relative 'aws_route53_delegation_set/resource'
-require_relative 'aws_route53_health_check/resource'
-require_relative 'aws_route53_query_log/resource'
-require_relative 'aws_route53_record/resource'
-require_relative 'aws_route53_zone/resource'
-require_relative 'aws_route_table/resource'
-require_relative 'aws_route_table_association/resource'
-require_relative 'aws_s3_access_point/resource'
-require_relative 'aws_s3_access_point_policy/resource'
-require_relative 'aws_s3_bucket/resource'
-require_relative 'aws_s3_bucket_accelerate_configuration/resource'
-require_relative 'aws_s3_bucket_analytics_configuration/resource'
-require_relative 'aws_s3_bucket_cors_configuration/resource'
-require_relative 'aws_s3_bucket_encryption/resource'
-require_relative 'aws_s3_bucket_inventory/resource'
-require_relative 'aws_s3_bucket_lifecycle_configuration/resource'
-require_relative 'aws_s3_bucket_notification/resource'
-require_relative 'aws_s3_bucket_object_lock_configuration/resource'
-require_relative 'aws_s3_bucket_policy/resource'
-require_relative 'aws_s3_bucket_public_access_block/resource'
-require_relative 'aws_s3_bucket_replication_configuration/resource'
-require_relative 'aws_s3_bucket_versioning/resource'
-require_relative 'aws_s3_bucket_website_configuration/resource'
-require_relative 'aws_s3_multi_region_access_point/resource'
-require_relative 'aws_s3_object/resource'
-require_relative 'aws_s3_object_lambda_access_point/resource'
-require_relative 'aws_sagemaker_domain/resource'
-require_relative 'aws_sagemaker_endpoint/resource'
-require_relative 'aws_sagemaker_endpoint_configuration/resource'
-require_relative 'aws_sagemaker_feature_group/resource'
-require_relative 'aws_sagemaker_model/resource'
-require_relative 'aws_sagemaker_notebook_instance/resource'
-require_relative 'aws_sagemaker_pipeline/resource'
-require_relative 'aws_sagemaker_processing_job/resource'
-require_relative 'aws_sagemaker_training_job/resource'
-require_relative 'aws_sagemaker_user_profile/resource'
-require_relative 'aws_secretsmanager_secret/resource'
-require_relative 'aws_secretsmanager_secret_version/resource'
-require_relative 'aws_security_group/resource'
-require_relative 'aws_securityhub_account/resource'
-require_relative 'aws_ses_configuration_set/resource'
-require_relative 'aws_ses_domain_identity/resource'
-require_relative 'aws_ses_email_identity/resource'
-require_relative 'aws_sfn_activity/resource'
-require_relative 'aws_sfn_state_machine/resource'
-require_relative 'aws_sns_subscription/resource'
-require_relative 'aws_sns_topic/resource'
-require_relative 'aws_sqs_queue/resource'
-require_relative 'aws_sqs_queue_policy/resource'
-require_relative 'aws_ssm_document/resource'
-require_relative 'aws_ssm_maintenance_window/resource'
-require_relative 'aws_ssm_parameter/resource'
-require_relative 'aws_ssm_patch_baseline/resource'
-require_relative 'aws_subnet/resource'
-require_relative 'aws_sumerian_project/resource'
-require_relative 'aws_support_app_slack_channel_configuration/resource'
-require_relative 'aws_support_app_slack_workspace_configuration/resource'
-require_relative 'aws_timestream_access_policy/resource'
-require_relative 'aws_timestream_batch_load_task/resource'
-require_relative 'aws_timestream_database/resource'
-require_relative 'aws_timestream_influx_db_instance/resource'
-require_relative 'aws_timestream_scheduled_query/resource'
-require_relative 'aws_timestream_table/resource'
-require_relative 'aws_timestream_table_retention_properties/resource'
-require_relative 'aws_volume_attachment/resource'
-require_relative 'aws_vpc/resource'
-require_relative 'aws_vpc_dhcp_options_association/resource'
-require_relative 'aws_vpc_endpoint/resource'
-require_relative 'aws_vpc_endpoint_connection_accepter/resource'
-require_relative 'aws_vpc_endpoint_connection_notification/resource'
-require_relative 'aws_vpc_endpoint_route_table_association/resource'
-require_relative 'aws_vpc_endpoint_service/resource'
-require_relative 'aws_vpc_endpoint_service_allowed_principal/resource'
-require_relative 'aws_vpc_endpoint_subnet_association/resource'
-require_relative 'aws_vpc_network_performance_metric_subscription/resource'
-require_relative 'aws_vpc_peering_connection/resource'
-require_relative 'aws_vpc_peering_connection_accepter/resource'
-require_relative 'aws_vpc_peering_connection_options/resource'
-require_relative 'aws_vpc_security_group_egress_rule/resource'
-require_relative 'aws_vpc_security_group_ingress_rule/resource'
-require_relative 'aws_vpn_connection/resource'
-require_relative 'aws_vpn_gateway/resource'
-require_relative 'aws_wafv2_ip_set/resource'
-require_relative 'aws_wafv2_regex_pattern_set/resource'
-require_relative 'aws_wafv2_rule_group/resource'
-require_relative 'aws_wafv2_web_acl/resource'
-require_relative 'aws_workspaces_bundle/resource'
-require_relative 'aws_workspaces_directory/resource'
-require_relative 'aws_workspaces_ip_group/resource'
-require_relative 'aws_workspaces_workspace/resource'
-require_relative 'aws_xray_encryption_config/resource'
-require_relative 'aws_xray_group/resource'
-require_relative 'aws_xray_sampling_rule/resource'
+# Code generated by pangea-forge. DO NOT EDIT.
 
 module Pangea
   module Resources
-    # Aggregated AWS module — all resource methods are available here
-    # via direct definition or include from individual AwsXxx modules.
-    #
-    # This module serves as the single entry point for all AWS resources.
-    # Architectures extend their synthesizer with this module to gain
-    # access to every aws_* resource function:
-    #
-    #   synth.extend(Pangea::Resources::AWS)
-    #   synth.aws_vpc(:main, cidr_block: '10.0.0.0/16')
-    #
-    # Provider metadata is available via the class method:
-    #
-    #   Pangea::Resources::AWS.provider_prefix  # => 'aws_'
-    #
     module AWS
-      # Provider metadata for introspection
-      def self.provider_prefix
-        'aws_'
-      end
-      include AwsDeviceFarmProject
-      include AwsGameliftAlias
-      include AwsGameliftBuild
-      include AwsGameliftCompute
-      include AwsGameliftFleet
-      include AwsGameliftGameSession
-      include AwsGameliftGameSessionQueue
-      include AwsGameliftMatchmakingConfiguration
-      include AwsGameliftMatchmakingRuleSet
-      include AwsGameliftPlayerSession
-      include AwsGameliftScript
-      include AwsGamesparksGame
-      include AwsInternetGateway
-      include AwsIotAuthorizer
-      include AwsIotBillingGroup
-      include AwsIotCaCertificate
-      include AwsIotDomainConfiguration
-      include AwsIotJobTemplate
-      include AwsIotPolicyAttachment
-      include AwsIotProvisioningTemplate
-      include AwsIotRoleAlias
-      include AwsIotThingGroup
-      include AwsIotThingGroupMembership
-      include AwsIotThingPrincipalAttachment
-      include AwsIotWirelessDestination
-      include AwsIotanalyticsDataset
-      include AwsMobileAnalyticsApp
-      include AwsPinpointApp
-      include AwsSubnet
-      include AwsSumerianProject
-      include AwsVpc
-      include AwsVpcEndpoint
+      include AWSAccessanalyzerAnalyzer
+      include AWSAccessanalyzerArchiveRule
+      include AWSAccountAlternateContact
+      include AWSAccountPrimaryContact
+      include AWSAccountRegion
+      include AWSAcmCertificate
+      include AWSAcmCertificateValidation
+      include AWSAcmpcaCertificate
+      include AWSAcmpcaCertificateAuthority
+      include AWSAcmpcaCertificateAuthorityCertificate
+      include AWSAcmpcaPermission
+      include AWSAcmpcaPolicy
+      include AWSAlb
+      include AWSAlbListener
+      include AWSAlbListenerCertificate
+      include AWSAlbListenerRule
+      include AWSAlbTargetGroup
+      include AWSAlbTargetGroupAttachment
+      include AWSAmi
+      include AWSAmiCopy
+      include AWSAmiFromInstance
+      include AWSAmiLaunchPermission
+      include AWSAmplifyApp
+      include AWSAmplifyBackendEnvironment
+      include AWSAmplifyBranch
+      include AWSAmplifyDomainAssociation
+      include AWSAmplifyWebhook
+      include AWSApiGatewayAccount
+      include AWSApiGatewayApiKey
+      include AWSApiGatewayAuthorizer
+      include AWSApiGatewayBasePathMapping
+      include AWSApiGatewayClientCertificate
+      include AWSApiGatewayDeployment
+      include AWSApiGatewayDocumentationPart
+      include AWSApiGatewayDocumentationVersion
+      include AWSApiGatewayDomainName
+      include AWSApiGatewayDomainNameAccessAssociation
+      include AWSApiGatewayGatewayResponse
+      include AWSApiGatewayIntegration
+      include AWSApiGatewayIntegrationResponse
+      include AWSApiGatewayMethod
+      include AWSApiGatewayMethodResponse
+      include AWSApiGatewayMethodSettings
+      include AWSApiGatewayModel
+      include AWSApiGatewayRequestValidator
+      include AWSApiGatewayResource
+      include AWSApiGatewayRestApi
+      include AWSApiGatewayRestApiPolicy
+      include AWSApiGatewayRestApiPut
+      include AWSApiGatewayStage
+      include AWSApiGatewayUsagePlan
+      include AWSApiGatewayUsagePlanKey
+      include AWSApiGatewayVpcLink
+      include AWSApigatewayv2Api
+      include AWSApigatewayv2ApiMapping
+      include AWSApigatewayv2Authorizer
+      include AWSApigatewayv2Deployment
+      include AWSApigatewayv2DomainName
+      include AWSApigatewayv2Integration
+      include AWSApigatewayv2IntegrationResponse
+      include AWSApigatewayv2Model
+      include AWSApigatewayv2Route
+      include AWSApigatewayv2RouteResponse
+      include AWSApigatewayv2Stage
+      include AWSApigatewayv2VpcLink
+      include AWSAppCookieStickinessPolicy
+      include AWSAppautoscalingPolicy
+      include AWSAppautoscalingScheduledAction
+      include AWSAppautoscalingTarget
+      include AWSAppconfigApplication
+      include AWSAppconfigConfigurationProfile
+      include AWSAppconfigDeployment
+      include AWSAppconfigDeploymentStrategy
+      include AWSAppconfigEnvironment
+      include AWSAppconfigExtension
+      include AWSAppconfigExtensionAssociation
+      include AWSAppconfigHostedConfigurationVersion
+      include AWSAppfabricAppAuthorization
+      include AWSAppfabricAppAuthorizationConnection
+      include AWSAppfabricAppBundle
+      include AWSAppfabricIngestion
+      include AWSAppfabricIngestionDestination
+      include AWSAppflowConnectorProfile
+      include AWSAppflowFlow
+      include AWSAppintegrationsDataIntegration
+      include AWSAppintegrationsEventIntegration
+      include AWSApplicationinsightsApplication
+      include AWSAppmeshGatewayRoute
+      include AWSAppmeshMesh
+      include AWSAppmeshRoute
+      include AWSAppmeshVirtualGateway
+      include AWSAppmeshVirtualNode
+      include AWSAppmeshVirtualRouter
+      include AWSAppmeshVirtualService
+      include AWSApprunnerAutoScalingConfigurationVersion
+      include AWSApprunnerConnection
+      include AWSApprunnerCustomDomainAssociation
+      include AWSApprunnerDefaultAutoScalingConfigurationVersion
+      include AWSApprunnerDeployment
+      include AWSApprunnerObservabilityConfiguration
+      include AWSApprunnerService
+      include AWSApprunnerVpcConnector
+      include AWSApprunnerVpcIngressConnection
+      include AWSAppstreamDirectoryConfig
+      include AWSAppstreamFleet
+      include AWSAppstreamFleetStackAssociation
+      include AWSAppstreamImageBuilder
+      include AWSAppstreamStack
+      include AWSAppstreamUser
+      include AWSAppstreamUserStackAssociation
+      include AWSAppsyncApiCache
+      include AWSAppsyncApiKey
+      include AWSAppsyncDatasource
+      include AWSAppsyncDomainName
+      include AWSAppsyncDomainNameApiAssociation
+      include AWSAppsyncFunction
+      include AWSAppsyncGraphqlApi
+      include AWSAppsyncResolver
+      include AWSAppsyncSourceApiAssociation
+      include AWSAppsyncType
+      include AWSAthenaCapacityReservation
+      include AWSAthenaDataCatalog
+      include AWSAthenaDatabase
+      include AWSAthenaNamedQuery
+      include AWSAthenaPreparedStatement
+      include AWSAthenaWorkgroup
+      include AWSAuditmanagerAccountRegistration
+      include AWSAuditmanagerAssessment
+      include AWSAuditmanagerAssessmentDelegation
+      include AWSAuditmanagerAssessmentReport
+      include AWSAuditmanagerControl
+      include AWSAuditmanagerFramework
+      include AWSAuditmanagerFrameworkShare
+      include AWSAuditmanagerOrganizationAdminAccountRegistration
+      include AWSAutoscalingAttachment
+      include AWSAutoscalingGroup
+      include AWSAutoscalingGroupTag
+      include AWSAutoscalingLifecycleHook
+      include AWSAutoscalingNotification
+      include AWSAutoscalingPolicy
+      include AWSAutoscalingSchedule
+      include AWSAutoscalingTrafficSourceAttachment
+      include AWSAutoscalingplansScalingPlan
+      include AWSBackupFramework
+      include AWSBackupGlobalSettings
+      include AWSBackupLogicallyAirGappedVault
+      include AWSBackupPlan
+      include AWSBackupRegionSettings
+      include AWSBackupReportPlan
+      include AWSBackupRestoreTestingPlan
+      include AWSBackupRestoreTestingSelection
+      include AWSBackupSelection
+      include AWSBackupVault
+      include AWSBackupVaultLockConfiguration
+      include AWSBackupVaultNotifications
+      include AWSBackupVaultPolicy
+      include AWSBatchComputeEnvironment
+      include AWSBatchJobDefinition
+      include AWSBatchJobQueue
+      include AWSBatchSchedulingPolicy
+      include AWSBcmdataexportsExport
+      include AWSBedrockCustomModel
+      include AWSBedrockGuardrail
+      include AWSBedrockGuardrailVersion
+      include AWSBedrockInferenceProfile
+      include AWSBedrockModelInvocationLoggingConfiguration
+      include AWSBedrockProvisionedModelThroughput
+      include AWSBedrockagentAgent
+      include AWSBedrockagentAgentActionGroup
+      include AWSBedrockagentAgentAlias
+      include AWSBedrockagentAgentCollaborator
+      include AWSBedrockagentAgentKnowledgeBaseAssociation
+      include AWSBedrockagentDataSource
+      include AWSBedrockagentKnowledgeBase
+      include AWSBedrockagentPrompt
+      include AWSBudgetsBudget
+      include AWSBudgetsBudgetAction
+      include AWSCeAnomalyMonitor
+      include AWSCeAnomalySubscription
+      include AWSCeCostAllocationTag
+      include AWSCeCostCategory
+      include AWSChatbotSlackChannelConfiguration
+      include AWSChatbotTeamsChannelConfiguration
+      include AWSChimeVoiceConnector
+      include AWSChimeVoiceConnectorGroup
+      include AWSChimeVoiceConnectorLogging
+      include AWSChimeVoiceConnectorOrigination
+      include AWSChimeVoiceConnectorStreaming
+      include AWSChimeVoiceConnectorTermination
+      include AWSChimeVoiceConnectorTerminationCredentials
+      include AWSChimesdkmediapipelinesMediaInsightsPipelineConfiguration
+      include AWSChimesdkvoiceGlobalSettings
+      include AWSChimesdkvoiceSipMediaApplication
+      include AWSChimesdkvoiceSipRule
+      include AWSChimesdkvoiceVoiceProfileDomain
+      include AWSCleanroomsCollaboration
+      include AWSCleanroomsConfiguredTable
+      include AWSCleanroomsMembership
+      include AWSCloud9EnvironmentEc2
+      include AWSCloud9EnvironmentMembership
+      include AWSCloudcontrolapiResource
+      include AWSCloudformationStack
+      include AWSCloudformationStackInstances
+      include AWSCloudformationStackSet
+      include AWSCloudformationStackSetInstance
+      include AWSCloudformationType
+      include AWSCloudfrontCachePolicy
+      include AWSCloudfrontContinuousDeploymentPolicy
+      include AWSCloudfrontDistribution
+      include AWSCloudfrontFieldLevelEncryptionConfig
+      include AWSCloudfrontFieldLevelEncryptionProfile
+      include AWSCloudfrontFunction
+      include AWSCloudfrontKeyGroup
+      include AWSCloudfrontKeyValueStore
+      include AWSCloudfrontMonitoringSubscription
+      include AWSCloudfrontOriginAccessControl
+      include AWSCloudfrontOriginAccessIdentity
+      include AWSCloudfrontOriginRequestPolicy
+      include AWSCloudfrontPublicKey
+      include AWSCloudfrontRealtimeLogConfig
+      include AWSCloudfrontResponseHeadersPolicy
+      include AWSCloudfrontVpcOrigin
+      include AWSCloudfrontkeyvaluestoreKey
+      include AWSCloudfrontkeyvaluestoreKeysExclusive
+      include AWSCloudhsmV2Cluster
+      include AWSCloudhsmV2Hsm
+      include AWSCloudsearchDomain
+      include AWSCloudsearchDomainServiceAccessPolicy
+      include AWSCloudtrail
+      include AWSCloudtrailEventDataStore
+      include AWSCloudtrailOrganizationDelegatedAdminAccount
+      include AWSCloudwatchCompositeAlarm
+      include AWSCloudwatchContributorInsightRule
+      include AWSCloudwatchContributorManagedInsightRule
+      include AWSCloudwatchDashboard
+      include AWSCloudwatchEventApiDestination
+      include AWSCloudwatchEventArchive
+      include AWSCloudwatchEventBus
+      include AWSCloudwatchEventBusPolicy
+      include AWSCloudwatchEventConnection
+      include AWSCloudwatchEventEndpoint
+      include AWSCloudwatchEventPermission
+      include AWSCloudwatchEventRule
+      include AWSCloudwatchEventTarget
+      include AWSCloudwatchLogAccountPolicy
+      include AWSCloudwatchLogAnomalyDetector
+      include AWSCloudwatchLogDataProtectionPolicy
+      include AWSCloudwatchLogDelivery
+      include AWSCloudwatchLogDeliveryDestination
+      include AWSCloudwatchLogDeliveryDestinationPolicy
+      include AWSCloudwatchLogDeliverySource
+      include AWSCloudwatchLogDestination
+      include AWSCloudwatchLogDestinationPolicy
+      include AWSCloudwatchLogGroup
+      include AWSCloudwatchLogIndexPolicy
+      include AWSCloudwatchLogMetricFilter
+      include AWSCloudwatchLogResourcePolicy
+      include AWSCloudwatchLogStream
+      include AWSCloudwatchLogSubscriptionFilter
+      include AWSCloudwatchMetricAlarm
+      include AWSCloudwatchMetricStream
+      include AWSCloudwatchQueryDefinition
+      include AWSCodeartifactDomain
+      include AWSCodeartifactDomainPermissionsPolicy
+      include AWSCodeartifactRepository
+      include AWSCodeartifactRepositoryPermissionsPolicy
+      include AWSCodebuildFleet
+      include AWSCodebuildProject
+      include AWSCodebuildReportGroup
+      include AWSCodebuildResourcePolicy
+      include AWSCodebuildSourceCredential
+      include AWSCodebuildWebhook
+      include AWSCodecatalystDevEnvironment
+      include AWSCodecatalystProject
+      include AWSCodecatalystSourceRepository
+      include AWSCodecommitApprovalRuleTemplate
+      include AWSCodecommitApprovalRuleTemplateAssociation
+      include AWSCodecommitRepository
+      include AWSCodecommitTrigger
+      include AWSCodeconnectionsConnection
+      include AWSCodeconnectionsHost
+      include AWSCodedeployApp
+      include AWSCodedeployDeploymentConfig
+      include AWSCodedeployDeploymentGroup
+      include AWSCodeguruprofilerProfilingGroup
+      include AWSCodegurureviewerRepositoryAssociation
+      include AWSCodepipeline
+      include AWSCodepipelineCustomActionType
+      include AWSCodepipelineWebhook
+      include AWSCodestarconnectionsConnection
+      include AWSCodestarconnectionsHost
+      include AWSCodestarnotificationsNotificationRule
+      include AWSCognitoIdentityPool
+      include AWSCognitoIdentityPoolProviderPrincipalTag
+      include AWSCognitoIdentityPoolRolesAttachment
+      include AWSCognitoIdentityProvider
+      include AWSCognitoManagedUserPoolClient
+      include AWSCognitoResourceServer
+      include AWSCognitoRiskConfiguration
+      include AWSCognitoUser
+      include AWSCognitoUserGroup
+      include AWSCognitoUserInGroup
+      include AWSCognitoUserPool
+      include AWSCognitoUserPoolClient
+      include AWSCognitoUserPoolDomain
+      include AWSCognitoUserPoolUiCustomization
+      include AWSComprehendDocumentClassifier
+      include AWSComprehendEntityRecognizer
+      include AWSComputeoptimizerEnrollmentStatus
+      include AWSComputeoptimizerRecommendationPreferences
+      include AWSConfigAggregateAuthorization
+      include AWSConfigConfigRule
+      include AWSConfigConfigurationAggregator
+      include AWSConfigConfigurationRecorder
+      include AWSConfigConfigurationRecorderStatus
+      include AWSConfigConformancePack
+      include AWSConfigDeliveryChannel
+      include AWSConfigOrganizationConformancePack
+      include AWSConfigOrganizationCustomPolicyRule
+      include AWSConfigOrganizationCustomRule
+      include AWSConfigOrganizationManagedRule
+      include AWSConfigRemediationConfiguration
+      include AWSConfigRetentionConfiguration
+      include AWSConnectBotAssociation
+      include AWSConnectContactFlow
+      include AWSConnectContactFlowModule
+      include AWSConnectHoursOfOperation
+      include AWSConnectInstance
+      include AWSConnectInstanceStorageConfig
+      include AWSConnectLambdaFunctionAssociation
+      include AWSConnectPhoneNumber
+      include AWSConnectQueue
+      include AWSConnectQuickConnect
+      include AWSConnectRoutingProfile
+      include AWSConnectSecurityProfile
+      include AWSConnectUser
+      include AWSConnectUserHierarchyGroup
+      include AWSConnectUserHierarchyStructure
+      include AWSConnectVocabulary
+      include AWSControltowerControl
+      include AWSControltowerLandingZone
+      include AWSCostoptimizationhubEnrollmentStatus
+      include AWSCostoptimizationhubPreferences
+      include AWSCurReportDefinition
+      include AWSCustomerGateway
+      include AWSCustomerprofilesDomain
+      include AWSCustomerprofilesProfile
+      include AWSDataexchangeDataSet
+      include AWSDataexchangeEventAction
+      include AWSDataexchangeRevision
+      include AWSDataexchangeRevisionAssets
+      include AWSDatapipelinePipeline
+      include AWSDatapipelinePipelineDefinition
+      include AWSDatasyncAgent
+      include AWSDatasyncLocationAzureBlob
+      include AWSDatasyncLocationEfs
+      include AWSDatasyncLocationFsxLustreFileSystem
+      include AWSDatasyncLocationFsxOntapFileSystem
+      include AWSDatasyncLocationFsxOpenzfsFileSystem
+      include AWSDatasyncLocationFsxWindowsFileSystem
+      include AWSDatasyncLocationHdfs
+      include AWSDatasyncLocationNfs
+      include AWSDatasyncLocationObjectStorage
+      include AWSDatasyncLocationS3
+      include AWSDatasyncLocationSmb
+      include AWSDatasyncTask
+      include AWSDatazoneAssetType
+      include AWSDatazoneDomain
+      include AWSDatazoneEnvironment
+      include AWSDatazoneEnvironmentBlueprintConfiguration
+      include AWSDatazoneEnvironmentProfile
+      include AWSDatazoneFormType
+      include AWSDatazoneGlossary
+      include AWSDatazoneGlossaryTerm
+      include AWSDatazoneProject
+      include AWSDatazoneUserProfile
+      include AWSDaxCluster
+      include AWSDaxParameterGroup
+      include AWSDaxSubnetGroup
+      include AWSDbClusterSnapshot
+      include AWSDbEventSubscription
+      include AWSDbInstance
+      include AWSDbInstanceAutomatedBackupsReplication
+      include AWSDbInstanceRoleAssociation
+      include AWSDbOptionGroup
+      include AWSDbParameterGroup
+      include AWSDbProxy
+      include AWSDbProxyDefaultTargetGroup
+      include AWSDbProxyEndpoint
+      include AWSDbProxyTarget
+      include AWSDbSnapshot
+      include AWSDbSnapshotCopy
+      include AWSDbSubnetGroup
+      include AWSDefaultNetworkAcl
+      include AWSDefaultRouteTable
+      include AWSDefaultSecurityGroup
+      include AWSDefaultSubnet
+      include AWSDefaultVpc
+      include AWSDefaultVpcDhcpOptions
+      include AWSDetectiveGraph
+      include AWSDetectiveInvitationAccepter
+      include AWSDetectiveMember
+      include AWSDetectiveOrganizationAdminAccount
+      include AWSDetectiveOrganizationConfiguration
+      include AWSDevicefarmDevicePool
+      include AWSDevicefarmInstanceProfile
+      include AWSDevicefarmNetworkProfile
+      include AWSDevicefarmProject
+      include AWSDevicefarmTestGridProject
+      include AWSDevicefarmUpload
+      include AWSDevopsguruEventSourcesConfig
+      include AWSDevopsguruNotificationChannel
+      include AWSDevopsguruResourceCollection
+      include AWSDevopsguruServiceIntegration
+      include AWSDirectoryServiceConditionalForwarder
+      include AWSDirectoryServiceDirectory
+      include AWSDirectoryServiceLogSubscription
+      include AWSDirectoryServiceRadiusSettings
+      include AWSDirectoryServiceRegion
+      include AWSDirectoryServiceSharedDirectory
+      include AWSDirectoryServiceSharedDirectoryAccepter
+      include AWSDirectoryServiceTrust
+      include AWSDlmLifecyclePolicy
+      include AWSDmsCertificate
+      include AWSDmsEndpoint
+      include AWSDmsEventSubscription
+      include AWSDmsReplicationConfig
+      include AWSDmsReplicationInstance
+      include AWSDmsReplicationSubnetGroup
+      include AWSDmsReplicationTask
+      include AWSDmsS3Endpoint
+      include AWSDocdbCluster
+      include AWSDocdbClusterInstance
+      include AWSDocdbClusterParameterGroup
+      include AWSDocdbClusterSnapshot
+      include AWSDocdbEventSubscription
+      include AWSDocdbGlobalCluster
+      include AWSDocdbSubnetGroup
+      include AWSDocdbelasticCluster
+      include AWSDrsReplicationConfigurationTemplate
+      include AWSDsqlCluster
+      include AWSDsqlClusterPeering
+      include AWSDxBgpPeer
+      include AWSDxConnection
+      include AWSDxConnectionAssociation
+      include AWSDxConnectionConfirmation
+      include AWSDxGateway
+      include AWSDxGatewayAssociation
+      include AWSDxGatewayAssociationProposal
+      include AWSDxHostedConnection
+      include AWSDxHostedPrivateVirtualInterface
+      include AWSDxHostedPrivateVirtualInterfaceAccepter
+      include AWSDxHostedPublicVirtualInterface
+      include AWSDxHostedPublicVirtualInterfaceAccepter
+      include AWSDxHostedTransitVirtualInterface
+      include AWSDxHostedTransitVirtualInterfaceAccepter
+      include AWSDxLag
+      include AWSDxMacsecKeyAssociation
+      include AWSDxPrivateVirtualInterface
+      include AWSDxPublicVirtualInterface
+      include AWSDxTransitVirtualInterface
+      include AWSDynamodbContributorInsights
+      include AWSDynamodbGlobalTable
+      include AWSDynamodbKinesisStreamingDestination
+      include AWSDynamodbResourcePolicy
+      include AWSDynamodbTable
+      include AWSDynamodbTableExport
+      include AWSDynamodbTableItem
+      include AWSDynamodbTableReplica
+      include AWSDynamodbTag
+      include AWSEbsDefaultKmsKey
+      include AWSEbsEncryptionByDefault
+      include AWSEbsFastSnapshotRestore
+      include AWSEbsSnapshot
+      include AWSEbsSnapshotBlockPublicAccess
+      include AWSEbsSnapshotCopy
+      include AWSEbsSnapshotImport
+      include AWSEbsVolume
+      include AWSEc2AvailabilityZoneGroup
+      include AWSEc2CapacityBlockReservation
+      include AWSEc2CapacityReservation
+      include AWSEc2CarrierGateway
+      include AWSEc2ClientVpnAuthorizationRule
+      include AWSEc2ClientVpnEndpoint
+      include AWSEc2ClientVpnNetworkAssociation
+      include AWSEc2ClientVpnRoute
+      include AWSEc2DefaultCreditSpecification
+      include AWSEc2Fleet
+      include AWSEc2Host
+      include AWSEc2ImageBlockPublicAccess
+      include AWSEc2InstanceConnectEndpoint
+      include AWSEc2InstanceMetadataDefaults
+      include AWSEc2InstanceState
+      include AWSEc2LocalGatewayRoute
+      include AWSEc2LocalGatewayRouteTableVpcAssociation
+      include AWSEc2ManagedPrefixList
+      include AWSEc2ManagedPrefixListEntry
+      include AWSEc2NetworkInsightsAnalysis
+      include AWSEc2NetworkInsightsPath
+      include AWSEc2SerialConsoleAccess
+      include AWSEc2SubnetCidrReservation
+      include AWSEc2Tag
+      include AWSEc2TrafficMirrorFilter
+      include AWSEc2TrafficMirrorFilterRule
+      include AWSEc2TrafficMirrorSession
+      include AWSEc2TrafficMirrorTarget
+      include AWSEc2TransitGateway
+      include AWSEc2TransitGatewayConnect
+      include AWSEc2TransitGatewayConnectPeer
+      include AWSEc2TransitGatewayDefaultRouteTableAssociation
+      include AWSEc2TransitGatewayDefaultRouteTablePropagation
+      include AWSEc2TransitGatewayMulticastDomain
+      include AWSEc2TransitGatewayMulticastDomainAssociation
+      include AWSEc2TransitGatewayMulticastGroupMember
+      include AWSEc2TransitGatewayMulticastGroupSource
+      include AWSEc2TransitGatewayPeeringAttachment
+      include AWSEc2TransitGatewayPeeringAttachmentAccepter
+      include AWSEc2TransitGatewayPolicyTable
+      include AWSEc2TransitGatewayPolicyTableAssociation
+      include AWSEc2TransitGatewayPrefixListReference
+      include AWSEc2TransitGatewayRoute
+      include AWSEc2TransitGatewayRouteTable
+      include AWSEc2TransitGatewayRouteTableAssociation
+      include AWSEc2TransitGatewayRouteTablePropagation
+      include AWSEc2TransitGatewayVpcAttachment
+      include AWSEc2TransitGatewayVpcAttachmentAccepter
+      include AWSEcrAccountSetting
+      include AWSEcrLifecyclePolicy
+      include AWSEcrPullThroughCacheRule
+      include AWSEcrRegistryPolicy
+      include AWSEcrRegistryScanningConfiguration
+      include AWSEcrReplicationConfiguration
+      include AWSEcrRepository
+      include AWSEcrRepositoryCreationTemplate
+      include AWSEcrRepositoryPolicy
+      include AWSEcrpublicRepository
+      include AWSEcrpublicRepositoryPolicy
+      include AWSEcsAccountSettingDefault
+      include AWSEcsCapacityProvider
+      include AWSEcsCluster
+      include AWSEcsClusterCapacityProviders
+      include AWSEcsService
+      include AWSEcsTag
+      include AWSEcsTaskDefinition
+      include AWSEcsTaskSet
+      include AWSEfsAccessPoint
+      include AWSEfsBackupPolicy
+      include AWSEfsFileSystem
+      include AWSEfsFileSystemPolicy
+      include AWSEfsMountTarget
+      include AWSEfsReplicationConfiguration
+      include AWSEgressOnlyInternetGateway
+      include AWSEip
+      include AWSEipAssociation
+      include AWSEipDomainName
+      include AWSEksAccessEntry
+      include AWSEksAccessPolicyAssociation
+      include AWSEksAddon
+      include AWSEksCluster
+      include AWSEksFargateProfile
+      include AWSEksIdentityProviderConfig
+      include AWSEksNodeGroup
+      include AWSEksPodIdentityAssociation
+      include AWSElasticBeanstalkApplication
+      include AWSElasticBeanstalkApplicationVersion
+      include AWSElasticBeanstalkConfigurationTemplate
+      include AWSElasticBeanstalkEnvironment
+      include AWSElasticacheCluster
+      include AWSElasticacheGlobalReplicationGroup
+      include AWSElasticacheParameterGroup
+      include AWSElasticacheReplicationGroup
+      include AWSElasticacheReservedCacheNode
+      include AWSElasticacheServerlessCache
+      include AWSElasticacheSubnetGroup
+      include AWSElasticacheUser
+      include AWSElasticacheUserGroup
+      include AWSElasticacheUserGroupAssociation
+      include AWSElasticsearchDomain
+      include AWSElasticsearchDomainPolicy
+      include AWSElasticsearchDomainSamlOptions
+      include AWSElasticsearchVpcEndpoint
+      include AWSElastictranscoderPipeline
+      include AWSElastictranscoderPreset
+      include AWSElb
+      include AWSElbAttachment
+      include AWSEmrBlockPublicAccessConfiguration
+      include AWSEmrCluster
+      include AWSEmrInstanceFleet
+      include AWSEmrInstanceGroup
+      include AWSEmrManagedScalingPolicy
+      include AWSEmrSecurityConfiguration
+      include AWSEmrStudio
+      include AWSEmrStudioSessionMapping
+      include AWSEmrcontainersJobTemplate
+      include AWSEmrcontainersVirtualCluster
+      include AWSEmrserverlessApplication
+      include AWSEvidentlyFeature
+      include AWSEvidentlyLaunch
+      include AWSEvidentlyProject
+      include AWSEvidentlySegment
+      include AWSFinspaceKxCluster
+      include AWSFinspaceKxDatabase
+      include AWSFinspaceKxDataview
+      include AWSFinspaceKxEnvironment
+      include AWSFinspaceKxScalingGroup
+      include AWSFinspaceKxUser
+      include AWSFinspaceKxVolume
+      include AWSFisExperimentTemplate
+      include AWSFlowLog
+      include AWSFmsAdminAccount
+      include AWSFmsPolicy
+      include AWSFmsResourceSet
+      include AWSFsxBackup
+      include AWSFsxDataRepositoryAssociation
+      include AWSFsxFileCache
+      include AWSFsxLustreFileSystem
+      include AWSFsxOntapFileSystem
+      include AWSFsxOntapStorageVirtualMachine
+      include AWSFsxOntapVolume
+      include AWSFsxOpenzfsFileSystem
+      include AWSFsxOpenzfsSnapshot
+      include AWSFsxOpenzfsVolume
+      include AWSFsxWindowsFileSystem
+      include AWSGameliftAlias
+      include AWSGameliftBuild
+      include AWSGameliftFleet
+      include AWSGameliftGameServerGroup
+      include AWSGameliftGameSessionQueue
+      include AWSGameliftScript
+      include AWSGlacierVault
+      include AWSGlacierVaultLock
+      include AWSGlobalacceleratorAccelerator
+      include AWSGlobalacceleratorCrossAccountAttachment
+      include AWSGlobalacceleratorCustomRoutingAccelerator
+      include AWSGlobalacceleratorCustomRoutingEndpointGroup
+      include AWSGlobalacceleratorCustomRoutingListener
+      include AWSGlobalacceleratorEndpointGroup
+      include AWSGlobalacceleratorListener
+      include AWSGlueCatalogDatabase
+      include AWSGlueCatalogTable
+      include AWSGlueCatalogTableOptimizer
+      include AWSGlueClassifier
+      include AWSGlueConnection
+      include AWSGlueCrawler
+      include AWSGlueDataCatalogEncryptionSettings
+      include AWSGlueDataQualityRuleset
+      include AWSGlueDevEndpoint
+      include AWSGlueJob
+      include AWSGlueMlTransform
+      include AWSGluePartition
+      include AWSGluePartitionIndex
+      include AWSGlueRegistry
+      include AWSGlueResourcePolicy
+      include AWSGlueSchema
+      include AWSGlueSecurityConfiguration
+      include AWSGlueTrigger
+      include AWSGlueUserDefinedFunction
+      include AWSGlueWorkflow
+      include AWSGrafanaLicenseAssociation
+      include AWSGrafanaRoleAssociation
+      include AWSGrafanaWorkspace
+      include AWSGrafanaWorkspaceApiKey
+      include AWSGrafanaWorkspaceSamlConfiguration
+      include AWSGrafanaWorkspaceServiceAccount
+      include AWSGrafanaWorkspaceServiceAccountToken
+      include AWSGuarddutyDetector
+      include AWSGuarddutyDetectorFeature
+      include AWSGuarddutyFilter
+      include AWSGuarddutyInviteAccepter
+      include AWSGuarddutyIpset
+      include AWSGuarddutyMalwareProtectionPlan
+      include AWSGuarddutyMember
+      include AWSGuarddutyMemberDetectorFeature
+      include AWSGuarddutyOrganizationAdminAccount
+      include AWSGuarddutyOrganizationConfiguration
+      include AWSGuarddutyOrganizationConfigurationFeature
+      include AWSGuarddutyPublishingDestination
+      include AWSGuarddutyThreatintelset
+      include AWSIamAccessKey
+      include AWSIamAccountAlias
+      include AWSIamAccountPasswordPolicy
+      include AWSIamGroup
+      include AWSIamGroupMembership
+      include AWSIamGroupPoliciesExclusive
+      include AWSIamGroupPolicy
+      include AWSIamGroupPolicyAttachment
+      include AWSIamGroupPolicyAttachmentsExclusive
+      include AWSIamInstanceProfile
+      include AWSIamOpenidConnectProvider
+      include AWSIamOrganizationsFeatures
+      include AWSIamPolicy
+      include AWSIamPolicyAttachment
+      include AWSIamRole
+      include AWSIamRolePoliciesExclusive
+      include AWSIamRolePolicy
+      include AWSIamRolePolicyAttachment
+      include AWSIamRolePolicyAttachmentsExclusive
+      include AWSIamSamlProvider
+      include AWSIamSecurityTokenServicePreferences
+      include AWSIamServerCertificate
+      include AWSIamServiceLinkedRole
+      include AWSIamServiceSpecificCredential
+      include AWSIamSigningCertificate
+      include AWSIamUser
+      include AWSIamUserGroupMembership
+      include AWSIamUserLoginProfile
+      include AWSIamUserPoliciesExclusive
+      include AWSIamUserPolicy
+      include AWSIamUserPolicyAttachment
+      include AWSIamUserPolicyAttachmentsExclusive
+      include AWSIamUserSshKey
+      include AWSIamVirtualMfaDevice
+      include AWSIdentitystoreGroup
+      include AWSIdentitystoreGroupMembership
+      include AWSIdentitystoreUser
+      include AWSImagebuilderComponent
+      include AWSImagebuilderContainerRecipe
+      include AWSImagebuilderDistributionConfiguration
+      include AWSImagebuilderImage
+      include AWSImagebuilderImagePipeline
+      include AWSImagebuilderImageRecipe
+      include AWSImagebuilderInfrastructureConfiguration
+      include AWSImagebuilderLifecyclePolicy
+      include AWSImagebuilderWorkflow
+      include AWSInspector2DelegatedAdminAccount
+      include AWSInspector2Enabler
+      include AWSInspector2Filter
+      include AWSInspector2MemberAssociation
+      include AWSInspector2OrganizationConfiguration
+      include AWSInspectorAssessmentTarget
+      include AWSInspectorAssessmentTemplate
+      include AWSInspectorResourceGroup
+      include AWSInstance
+      include AWSInternetGateway
+      include AWSInternetGatewayAttachment
+      include AWSInternetmonitorMonitor
+      include AWSIotAuthorizer
+      include AWSIotBillingGroup
+      include AWSIotCaCertificate
+      include AWSIotCertificate
+      include AWSIotDomainConfiguration
+      include AWSIotEventConfigurations
+      include AWSIotIndexingConfiguration
+      include AWSIotLoggingOptions
+      include AWSIotPolicy
+      include AWSIotPolicyAttachment
+      include AWSIotProvisioningTemplate
+      include AWSIotRoleAlias
+      include AWSIotThing
+      include AWSIotThingGroup
+      include AWSIotThingGroupMembership
+      include AWSIotThingPrincipalAttachment
+      include AWSIotThingType
+      include AWSIotTopicRule
+      include AWSIotTopicRuleDestination
+      include AWSIvsChannel
+      include AWSIvsPlaybackKeyPair
+      include AWSIvsRecordingConfiguration
+      include AWSIvschatLoggingConfiguration
+      include AWSIvschatRoom
+      include AWSKendraDataSource
+      include AWSKendraExperience
+      include AWSKendraFaq
+      include AWSKendraIndex
+      include AWSKendraQuerySuggestionsBlockList
+      include AWSKendraThesaurus
+      include AWSKeyPair
+      include AWSKeyspacesKeyspace
+      include AWSKeyspacesTable
+      include AWSKinesisAnalyticsApplication
+      include AWSKinesisFirehoseDeliveryStream
+      include AWSKinesisResourcePolicy
+      include AWSKinesisStream
+      include AWSKinesisStreamConsumer
+      include AWSKinesisVideoStream
+      include AWSKinesisanalyticsv2Application
+      include AWSKinesisanalyticsv2ApplicationSnapshot
+      include AWSKmsAlias
+      include AWSKmsCiphertext
+      include AWSKmsCustomKeyStore
+      include AWSKmsExternalKey
+      include AWSKmsGrant
+      include AWSKmsKey
+      include AWSKmsKeyPolicy
+      include AWSKmsReplicaExternalKey
+      include AWSKmsReplicaKey
+      include AWSLakeformationDataCellsFilter
+      include AWSLakeformationDataLakeSettings
+      include AWSLakeformationLfTag
+      include AWSLakeformationOptIn
+      include AWSLakeformationPermissions
+      include AWSLakeformationResource
+      include AWSLakeformationResourceLfTag
+      include AWSLakeformationResourceLfTags
+      include AWSLambdaAlias
+      include AWSLambdaCodeSigningConfig
+      include AWSLambdaEventSourceMapping
+      include AWSLambdaFunction
+      include AWSLambdaFunctionEventInvokeConfig
+      include AWSLambdaFunctionRecursionConfig
+      include AWSLambdaFunctionUrl
+      include AWSLambdaInvocation
+      include AWSLambdaLayerVersion
+      include AWSLambdaLayerVersionPermission
+      include AWSLambdaPermission
+      include AWSLambdaProvisionedConcurrencyConfig
+      include AWSLambdaRuntimeManagementConfig
+      include AWSLaunchConfiguration
+      include AWSLaunchTemplate
+      include AWSLb
+      include AWSLbCookieStickinessPolicy
+      include AWSLbListener
+      include AWSLbListenerCertificate
+      include AWSLbListenerRule
+      include AWSLbSslNegotiationPolicy
+      include AWSLbTargetGroup
+      include AWSLbTargetGroupAttachment
+      include AWSLbTrustStore
+      include AWSLbTrustStoreRevocation
+      include AWSLexBot
+      include AWSLexBotAlias
+      include AWSLexIntent
+      include AWSLexSlotType
+      include AWSLexv2modelsBot
+      include AWSLexv2modelsBotLocale
+      include AWSLexv2modelsBotVersion
+      include AWSLexv2modelsIntent
+      include AWSLexv2modelsSlot
+      include AWSLexv2modelsSlotType
+      include AWSLicensemanagerAssociation
+      include AWSLicensemanagerGrant
+      include AWSLicensemanagerGrantAccepter
+      include AWSLicensemanagerLicenseConfiguration
+      include AWSLightsailBucket
+      include AWSLightsailBucketAccessKey
+      include AWSLightsailBucketResourceAccess
+      include AWSLightsailCertificate
+      include AWSLightsailContainerService
+      include AWSLightsailContainerServiceDeploymentVersion
+      include AWSLightsailDatabase
+      include AWSLightsailDisk
+      include AWSLightsailDiskAttachment
+      include AWSLightsailDistribution
+      include AWSLightsailDomain
+      include AWSLightsailDomainEntry
+      include AWSLightsailInstance
+      include AWSLightsailInstancePublicPorts
+      include AWSLightsailKeyPair
+      include AWSLightsailLb
+      include AWSLightsailLbAttachment
+      include AWSLightsailLbCertificate
+      include AWSLightsailLbCertificateAttachment
+      include AWSLightsailLbHttpsRedirectionPolicy
+      include AWSLightsailLbStickinessPolicy
+      include AWSLightsailStaticIp
+      include AWSLightsailStaticIpAttachment
+      include AWSLoadBalancerBackendServerPolicy
+      include AWSLoadBalancerListenerPolicy
+      include AWSLoadBalancerPolicy
+      include AWSLocationGeofenceCollection
+      include AWSLocationMap
+      include AWSLocationPlaceIndex
+      include AWSLocationRouteCalculator
+      include AWSLocationTracker
+      include AWSLocationTrackerAssociation
+      include AWSM2Application
+      include AWSM2Deployment
+      include AWSM2Environment
+      include AWSMacie2Account
+      include AWSMacie2ClassificationExportConfiguration
+      include AWSMacie2ClassificationJob
+      include AWSMacie2CustomDataIdentifier
+      include AWSMacie2FindingsFilter
+      include AWSMacie2InvitationAccepter
+      include AWSMacie2Member
+      include AWSMacie2OrganizationAdminAccount
+      include AWSMacie2OrganizationConfiguration
+      include AWSMainRouteTableAssociation
+      include AWSMediaConvertQueue
+      include AWSMediaPackageChannel
+      include AWSMediaPackagev2ChannelGroup
+      include AWSMediaStoreContainer
+      include AWSMediaStoreContainerPolicy
+      include AWSMedialiveChannel
+      include AWSMedialiveInput
+      include AWSMedialiveInputSecurityGroup
+      include AWSMedialiveMultiplex
+      include AWSMedialiveMultiplexProgram
+      include AWSMemorydbAcl
+      include AWSMemorydbCluster
+      include AWSMemorydbMultiRegionCluster
+      include AWSMemorydbParameterGroup
+      include AWSMemorydbSnapshot
+      include AWSMemorydbSubnetGroup
+      include AWSMemorydbUser
+      include AWSMqBroker
+      include AWSMqConfiguration
+      include AWSMskCluster
+      include AWSMskClusterPolicy
+      include AWSMskConfiguration
+      include AWSMskReplicator
+      include AWSMskScramSecretAssociation
+      include AWSMskServerlessCluster
+      include AWSMskSingleScramSecretAssociation
+      include AWSMskVpcConnection
+      include AWSMskconnectConnector
+      include AWSMskconnectCustomPlugin
+      include AWSMskconnectWorkerConfiguration
+      include AWSMwaaEnvironment
+      include AWSNatGateway
+      include AWSNeptuneCluster
+      include AWSNeptuneClusterEndpoint
+      include AWSNeptuneClusterInstance
+      include AWSNeptuneClusterParameterGroup
+      include AWSNeptuneClusterSnapshot
+      include AWSNeptuneEventSubscription
+      include AWSNeptuneGlobalCluster
+      include AWSNeptuneParameterGroup
+      include AWSNeptuneSubnetGroup
+      include AWSNeptunegraphGraph
+      include AWSNetworkAcl
+      include AWSNetworkAclAssociation
+      include AWSNetworkAclRule
+      include AWSNetworkInterface
+      include AWSNetworkInterfaceAttachment
+      include AWSNetworkInterfacePermission
+      include AWSNetworkInterfaceSgAttachment
+      include AWSNetworkfirewallFirewall
+      include AWSNetworkfirewallFirewallPolicy
+      include AWSNetworkfirewallLoggingConfiguration
+      include AWSNetworkfirewallResourcePolicy
+      include AWSNetworkfirewallRuleGroup
+      include AWSNetworkfirewallTlsInspectionConfiguration
+      include AWSNetworkmanagerAttachmentAccepter
+      include AWSNetworkmanagerConnectAttachment
+      include AWSNetworkmanagerConnectPeer
+      include AWSNetworkmanagerConnection
+      include AWSNetworkmanagerCoreNetwork
+      include AWSNetworkmanagerCoreNetworkPolicyAttachment
+      include AWSNetworkmanagerCustomerGatewayAssociation
+      include AWSNetworkmanagerDevice
+      include AWSNetworkmanagerDxGatewayAttachment
+      include AWSNetworkmanagerGlobalNetwork
+      include AWSNetworkmanagerLink
+      include AWSNetworkmanagerLinkAssociation
+      include AWSNetworkmanagerSite
+      include AWSNetworkmanagerSiteToSiteVpnAttachment
+      include AWSNetworkmanagerTransitGatewayConnectPeerAssociation
+      include AWSNetworkmanagerTransitGatewayPeering
+      include AWSNetworkmanagerTransitGatewayRegistration
+      include AWSNetworkmanagerTransitGatewayRouteTableAttachment
+      include AWSNetworkmanagerVpcAttachment
+      include AWSNetworkmonitorMonitor
+      include AWSNetworkmonitorProbe
+      include AWSNotificationsChannelAssociation
+      include AWSNotificationsEventRule
+      include AWSNotificationsNotificationConfiguration
+      include AWSNotificationsNotificationHub
+      include AWSNotificationscontactsEmailContact
+      include AWSOamLink
+      include AWSOamSink
+      include AWSOamSinkPolicy
+      include AWSOpensearchAuthorizeVpcEndpointAccess
+      include AWSOpensearchDomain
+      include AWSOpensearchDomainPolicy
+      include AWSOpensearchDomainSamlOptions
+      include AWSOpensearchInboundConnectionAccepter
+      include AWSOpensearchOutboundConnection
+      include AWSOpensearchPackage
+      include AWSOpensearchPackageAssociation
+      include AWSOpensearchVpcEndpoint
+      include AWSOpensearchserverlessAccessPolicy
+      include AWSOpensearchserverlessCollection
+      include AWSOpensearchserverlessLifecyclePolicy
+      include AWSOpensearchserverlessSecurityConfig
+      include AWSOpensearchserverlessSecurityPolicy
+      include AWSOpensearchserverlessVpcEndpoint
+      include AWSOpsworksApplication
+      include AWSOpsworksCustomLayer
+      include AWSOpsworksEcsClusterLayer
+      include AWSOpsworksGangliaLayer
+      include AWSOpsworksHaproxyLayer
+      include AWSOpsworksInstance
+      include AWSOpsworksJavaAppLayer
+      include AWSOpsworksMemcachedLayer
+      include AWSOpsworksMysqlLayer
+      include AWSOpsworksNodejsAppLayer
+      include AWSOpsworksPermission
+      include AWSOpsworksPhpAppLayer
+      include AWSOpsworksRailsAppLayer
+      include AWSOpsworksRdsDbInstance
+      include AWSOpsworksStack
+      include AWSOpsworksStaticWebLayer
+      include AWSOpsworksUserProfile
+      include AWSOrganizationsAccount
+      include AWSOrganizationsDelegatedAdministrator
+      include AWSOrganizationsOrganization
+      include AWSOrganizationsOrganizationalUnit
+      include AWSOrganizationsPolicy
+      include AWSOrganizationsPolicyAttachment
+      include AWSOrganizationsResourcePolicy
+      include AWSOsisPipeline
+      include AWSPaymentcryptographyKey
+      include AWSPaymentcryptographyKeyAlias
+      include AWSPinpointAdmChannel
+      include AWSPinpointApnsChannel
+      include AWSPinpointApnsSandboxChannel
+      include AWSPinpointApnsVoipChannel
+      include AWSPinpointApnsVoipSandboxChannel
+      include AWSPinpointApp
+      include AWSPinpointBaiduChannel
+      include AWSPinpointEmailChannel
+      include AWSPinpointEmailTemplate
+      include AWSPinpointEventStream
+      include AWSPinpointGcmChannel
+      include AWSPinpointSmsChannel
+      include AWSPinpointsmsvoicev2ConfigurationSet
+      include AWSPinpointsmsvoicev2OptOutList
+      include AWSPinpointsmsvoicev2PhoneNumber
+      include AWSPipesPipe
+      include AWSPlacementGroup
+      include AWSPrometheusAlertManagerDefinition
+      include AWSPrometheusRuleGroupNamespace
+      include AWSPrometheusScraper
+      include AWSPrometheusWorkspace
+      include AWSPrometheusWorkspaceConfiguration
+      include AWSProxyProtocolPolicy
+      include AWSQbusinessApplication
+      include AWSQldbLedger
+      include AWSQldbStream
+      include AWSQuicksightAccountSettings
+      include AWSQuicksightAccountSubscription
+      include AWSQuicksightAnalysis
+      include AWSQuicksightDashboard
+      include AWSQuicksightDataSet
+      include AWSQuicksightDataSource
+      include AWSQuicksightFolder
+      include AWSQuicksightFolderMembership
+      include AWSQuicksightGroup
+      include AWSQuicksightGroupMembership
+      include AWSQuicksightIamPolicyAssignment
+      include AWSQuicksightIngestion
+      include AWSQuicksightNamespace
+      include AWSQuicksightRefreshSchedule
+      include AWSQuicksightRoleMembership
+      include AWSQuicksightTemplate
+      include AWSQuicksightTemplateAlias
+      include AWSQuicksightTheme
+      include AWSQuicksightUser
+      include AWSQuicksightVpcConnection
+      include AWSRamPrincipalAssociation
+      include AWSRamResourceAssociation
+      include AWSRamResourceShare
+      include AWSRamResourceShareAccepter
+      include AWSRamSharingWithOrganization
+      include AWSRbinRule
+      include AWSRdsCertificate
+      include AWSRdsCluster
+      include AWSRdsClusterActivityStream
+      include AWSRdsClusterEndpoint
+      include AWSRdsClusterInstance
+      include AWSRdsClusterParameterGroup
+      include AWSRdsClusterRoleAssociation
+      include AWSRdsClusterSnapshotCopy
+      include AWSRdsCustomDbEngineVersion
+      include AWSRdsExportTask
+      include AWSRdsGlobalCluster
+      include AWSRdsInstanceState
+      include AWSRdsIntegration
+      include AWSRdsReservedInstance
+      include AWSRdsShardGroup
+      include AWSRedshiftAuthenticationProfile
+      include AWSRedshiftCluster
+      include AWSRedshiftClusterIamRoles
+      include AWSRedshiftClusterSnapshot
+      include AWSRedshiftDataShareAuthorization
+      include AWSRedshiftDataShareConsumerAssociation
+      include AWSRedshiftEndpointAccess
+      include AWSRedshiftEndpointAuthorization
+      include AWSRedshiftEventSubscription
+      include AWSRedshiftHsmClientCertificate
+      include AWSRedshiftHsmConfiguration
+      include AWSRedshiftIntegration
+      include AWSRedshiftLogging
+      include AWSRedshiftParameterGroup
+      include AWSRedshiftPartner
+      include AWSRedshiftResourcePolicy
+      include AWSRedshiftScheduledAction
+      include AWSRedshiftSnapshotCopy
+      include AWSRedshiftSnapshotCopyGrant
+      include AWSRedshiftSnapshotSchedule
+      include AWSRedshiftSnapshotScheduleAssociation
+      include AWSRedshiftSubnetGroup
+      include AWSRedshiftUsageLimit
+      include AWSRedshiftdataStatement
+      include AWSRedshiftserverlessCustomDomainAssociation
+      include AWSRedshiftserverlessEndpointAccess
+      include AWSRedshiftserverlessNamespace
+      include AWSRedshiftserverlessResourcePolicy
+      include AWSRedshiftserverlessSnapshot
+      include AWSRedshiftserverlessUsageLimit
+      include AWSRedshiftserverlessWorkgroup
+      include AWSRekognitionCollection
+      include AWSRekognitionProject
+      include AWSRekognitionStreamProcessor
+      include AWSResiliencehubResiliencyPolicy
+      include AWSResourceexplorer2Index
+      include AWSResourceexplorer2View
+      include AWSResourcegroupsGroup
+      include AWSResourcegroupsResource
+      include AWSRolesanywhereProfile
+      include AWSRolesanywhereTrustAnchor
+      include AWSRoute
+      include AWSRoute53CidrCollection
+      include AWSRoute53CidrLocation
+      include AWSRoute53DelegationSet
+      include AWSRoute53HealthCheck
+      include AWSRoute53HostedZoneDnssec
+      include AWSRoute53KeySigningKey
+      include AWSRoute53QueryLog
+      include AWSRoute53Record
+      include AWSRoute53RecordsExclusive
+      include AWSRoute53ResolverConfig
+      include AWSRoute53ResolverDnssecConfig
+      include AWSRoute53ResolverEndpoint
+      include AWSRoute53ResolverFirewallConfig
+      include AWSRoute53ResolverFirewallDomainList
+      include AWSRoute53ResolverFirewallRule
+      include AWSRoute53ResolverFirewallRuleGroup
+      include AWSRoute53ResolverFirewallRuleGroupAssociation
+      include AWSRoute53ResolverQueryLogConfig
+      include AWSRoute53ResolverQueryLogConfigAssociation
+      include AWSRoute53ResolverRule
+      include AWSRoute53ResolverRuleAssociation
+      include AWSRoute53TrafficPolicy
+      include AWSRoute53TrafficPolicyInstance
+      include AWSRoute53VpcAssociationAuthorization
+      include AWSRoute53Zone
+      include AWSRoute53ZoneAssociation
+      include AWSRoute53domainsDelegationSignerRecord
+      include AWSRoute53domainsDomain
+      include AWSRoute53domainsRegisteredDomain
+      include AWSRoute53profilesAssociation
+      include AWSRoute53profilesProfile
+      include AWSRoute53profilesResourceAssociation
+      include AWSRoute53recoverycontrolconfigCluster
+      include AWSRoute53recoverycontrolconfigControlPanel
+      include AWSRoute53recoverycontrolconfigRoutingControl
+      include AWSRoute53recoverycontrolconfigSafetyRule
+      include AWSRoute53recoveryreadinessCell
+      include AWSRoute53recoveryreadinessReadinessCheck
+      include AWSRoute53recoveryreadinessRecoveryGroup
+      include AWSRoute53recoveryreadinessResourceSet
+      include AWSRouteTable
+      include AWSRouteTableAssociation
+      include AWSRumAppMonitor
+      include AWSRumMetricsDestination
+      include AWSS3AccessPoint
+      include AWSS3AccountPublicAccessBlock
+      include AWSS3Bucket
+      include AWSS3BucketAccelerateConfiguration
+      include AWSS3BucketAcl
+      include AWSS3BucketAnalyticsConfiguration
+      include AWSS3BucketCorsConfiguration
+      include AWSS3BucketIntelligentTieringConfiguration
+      include AWSS3BucketInventory
+      include AWSS3BucketLifecycleConfiguration
+      include AWSS3BucketLogging
+      include AWSS3BucketMetric
+      include AWSS3BucketNotification
+      include AWSS3BucketObject
+      include AWSS3BucketObjectLockConfiguration
+      include AWSS3BucketOwnershipControls
+      include AWSS3BucketPolicy
+      include AWSS3BucketPublicAccessBlock
+      include AWSS3BucketReplicationConfiguration
+      include AWSS3BucketRequestPaymentConfiguration
+      include AWSS3BucketServerSideEncryptionConfiguration
+      include AWSS3BucketVersioning
+      include AWSS3BucketWebsiteConfiguration
+      include AWSS3DirectoryBucket
+      include AWSS3Object
+      include AWSS3ObjectCopy
+      include AWSS3controlAccessGrant
+      include AWSS3controlAccessGrantsInstance
+      include AWSS3controlAccessGrantsInstanceResourcePolicy
+      include AWSS3controlAccessGrantsLocation
+      include AWSS3controlAccessPointPolicy
+      include AWSS3controlBucket
+      include AWSS3controlBucketLifecycleConfiguration
+      include AWSS3controlBucketPolicy
+      include AWSS3controlDirectoryBucketAccessPointScope
+      include AWSS3controlMultiRegionAccessPoint
+      include AWSS3controlMultiRegionAccessPointPolicy
+      include AWSS3controlObjectLambdaAccessPoint
+      include AWSS3controlObjectLambdaAccessPointPolicy
+      include AWSS3controlStorageLensConfiguration
+      include AWSS3outpostsEndpoint
+      include AWSS3tablesNamespace
+      include AWSS3tablesTable
+      include AWSS3tablesTableBucket
+      include AWSS3tablesTableBucketPolicy
+      include AWSS3tablesTablePolicy
+      include AWSSagemakerApp
+      include AWSSagemakerAppImageConfig
+      include AWSSagemakerCodeRepository
+      include AWSSagemakerDataQualityJobDefinition
+      include AWSSagemakerDevice
+      include AWSSagemakerDeviceFleet
+      include AWSSagemakerDomain
+      include AWSSagemakerEndpoint
+      include AWSSagemakerEndpointConfiguration
+      include AWSSagemakerFeatureGroup
+      include AWSSagemakerFlowDefinition
+      include AWSSagemakerHub
+      include AWSSagemakerHumanTaskUi
+      include AWSSagemakerImage
+      include AWSSagemakerImageVersion
+      include AWSSagemakerMlflowTrackingServer
+      include AWSSagemakerModel
+      include AWSSagemakerModelPackageGroup
+      include AWSSagemakerModelPackageGroupPolicy
+      include AWSSagemakerMonitoringSchedule
+      include AWSSagemakerNotebookInstance
+      include AWSSagemakerNotebookInstanceLifecycleConfiguration
+      include AWSSagemakerPipeline
+      include AWSSagemakerProject
+      include AWSSagemakerServicecatalogPortfolioStatus
+      include AWSSagemakerSpace
+      include AWSSagemakerStudioLifecycleConfig
+      include AWSSagemakerUserProfile
+      include AWSSagemakerWorkforce
+      include AWSSagemakerWorkteam
+      include AWSSchedulerSchedule
+      include AWSSchedulerScheduleGroup
+      include AWSSchemasDiscoverer
+      include AWSSchemasRegistry
+      include AWSSchemasRegistryPolicy
+      include AWSSchemasSchema
+      include AWSSecretsmanagerSecret
+      include AWSSecretsmanagerSecretPolicy
+      include AWSSecretsmanagerSecretRotation
+      include AWSSecretsmanagerSecretVersion
+      include AWSSecurityGroup
+      include AWSSecurityGroupRule
+      include AWSSecurityhubAccount
+      include AWSSecurityhubActionTarget
+      include AWSSecurityhubAutomationRule
+      include AWSSecurityhubConfigurationPolicy
+      include AWSSecurityhubConfigurationPolicyAssociation
+      include AWSSecurityhubFindingAggregator
+      include AWSSecurityhubInsight
+      include AWSSecurityhubInviteAccepter
+      include AWSSecurityhubMember
+      include AWSSecurityhubOrganizationAdminAccount
+      include AWSSecurityhubOrganizationConfiguration
+      include AWSSecurityhubProductSubscription
+      include AWSSecurityhubStandardsControl
+      include AWSSecurityhubStandardsControlAssociation
+      include AWSSecurityhubStandardsSubscription
+      include AWSSecuritylakeAwsLogSource
+      include AWSSecuritylakeCustomLogSource
+      include AWSSecuritylakeDataLake
+      include AWSSecuritylakeSubscriber
+      include AWSSecuritylakeSubscriberNotification
+      include AWSServerlessapplicationrepositoryCloudformationStack
+      include AWSServiceDiscoveryHttpNamespace
+      include AWSServiceDiscoveryInstance
+      include AWSServiceDiscoveryPrivateDnsNamespace
+      include AWSServiceDiscoveryPublicDnsNamespace
+      include AWSServiceDiscoveryService
+      include AWSServicecatalogBudgetResourceAssociation
+      include AWSServicecatalogConstraint
+      include AWSServicecatalogOrganizationsAccess
+      include AWSServicecatalogPortfolio
+      include AWSServicecatalogPortfolioShare
+      include AWSServicecatalogPrincipalPortfolioAssociation
+      include AWSServicecatalogProduct
+      include AWSServicecatalogProductPortfolioAssociation
+      include AWSServicecatalogProvisionedProduct
+      include AWSServicecatalogProvisioningArtifact
+      include AWSServicecatalogServiceAction
+      include AWSServicecatalogTagOption
+      include AWSServicecatalogTagOptionResourceAssociation
+      include AWSServicecatalogappregistryApplication
+      include AWSServicecatalogappregistryAttributeGroup
+      include AWSServicecatalogappregistryAttributeGroupAssociation
+      include AWSServicequotasServiceQuota
+      include AWSServicequotasTemplate
+      include AWSServicequotasTemplateAssociation
+      include AWSSesActiveReceiptRuleSet
+      include AWSSesConfigurationSet
+      include AWSSesDomainDkim
+      include AWSSesDomainIdentity
+      include AWSSesDomainIdentityVerification
+      include AWSSesDomainMailFrom
+      include AWSSesEmailIdentity
+      include AWSSesEventDestination
+      include AWSSesIdentityNotificationTopic
+      include AWSSesIdentityPolicy
+      include AWSSesReceiptFilter
+      include AWSSesReceiptRule
+      include AWSSesReceiptRuleSet
+      include AWSSesTemplate
+      include AWSSesv2AccountSuppressionAttributes
+      include AWSSesv2AccountVdmAttributes
+      include AWSSesv2ConfigurationSet
+      include AWSSesv2ConfigurationSetEventDestination
+      include AWSSesv2ContactList
+      include AWSSesv2DedicatedIpAssignment
+      include AWSSesv2DedicatedIpPool
+      include AWSSesv2EmailIdentity
+      include AWSSesv2EmailIdentityFeedbackAttributes
+      include AWSSesv2EmailIdentityMailFromAttributes
+      include AWSSesv2EmailIdentityPolicy
+      include AWSSfnActivity
+      include AWSSfnAlias
+      include AWSSfnStateMachine
+      include AWSShieldApplicationLayerAutomaticResponse
+      include AWSShieldDrtAccessLogBucketAssociation
+      include AWSShieldDrtAccessRoleArnAssociation
+      include AWSShieldProactiveEngagement
+      include AWSShieldProtection
+      include AWSShieldProtectionGroup
+      include AWSShieldProtectionHealthCheckAssociation
+      include AWSShieldSubscription
+      include AWSSignerSigningJob
+      include AWSSignerSigningProfile
+      include AWSSignerSigningProfilePermission
+      include AWSSimpledbDomain
+      include AWSSnapshotCreateVolumePermission
+      include AWSSnsPlatformApplication
+      include AWSSnsSmsPreferences
+      include AWSSnsTopic
+      include AWSSnsTopicDataProtectionPolicy
+      include AWSSnsTopicPolicy
+      include AWSSnsTopicSubscription
+      include AWSSpotDatafeedSubscription
+      include AWSSpotFleetRequest
+      include AWSSpotInstanceRequest
+      include AWSSqsQueue
+      include AWSSqsQueuePolicy
+      include AWSSqsQueueRedriveAllowPolicy
+      include AWSSqsQueueRedrivePolicy
+      include AWSSsmActivation
+      include AWSSsmAssociation
+      include AWSSsmDefaultPatchBaseline
+      include AWSSsmDocument
+      include AWSSsmMaintenanceWindow
+      include AWSSsmMaintenanceWindowTarget
+      include AWSSsmMaintenanceWindowTask
+      include AWSSsmParameter
+      include AWSSsmPatchBaseline
+      include AWSSsmPatchGroup
+      include AWSSsmResourceDataSync
+      include AWSSsmServiceSetting
+      include AWSSsmcontactsContact
+      include AWSSsmcontactsContactChannel
+      include AWSSsmcontactsPlan
+      include AWSSsmcontactsRotation
+      include AWSSsmincidentsReplicationSet
+      include AWSSsmincidentsResponsePlan
+      include AWSSsmquicksetupConfigurationManager
+      include AWSSsoadminAccountAssignment
+      include AWSSsoadminApplication
+      include AWSSsoadminApplicationAccessScope
+      include AWSSsoadminApplicationAssignment
+      include AWSSsoadminApplicationAssignmentConfiguration
+      include AWSSsoadminCustomerManagedPolicyAttachment
+      include AWSSsoadminInstanceAccessControlAttributes
+      include AWSSsoadminManagedPolicyAttachment
+      include AWSSsoadminPermissionSet
+      include AWSSsoadminPermissionSetInlinePolicy
+      include AWSSsoadminPermissionsBoundaryAttachment
+      include AWSSsoadminTrustedTokenIssuer
+      include AWSStoragegatewayCache
+      include AWSStoragegatewayCachedIscsiVolume
+      include AWSStoragegatewayFileSystemAssociation
+      include AWSStoragegatewayGateway
+      include AWSStoragegatewayNfsFileShare
+      include AWSStoragegatewaySmbFileShare
+      include AWSStoragegatewayStoredIscsiVolume
+      include AWSStoragegatewayTapePool
+      include AWSStoragegatewayUploadBuffer
+      include AWSStoragegatewayWorkingStorage
+      include AWSSubnet
+      include AWSSwfDomain
+      include AWSSyntheticsCanary
+      include AWSSyntheticsGroup
+      include AWSSyntheticsGroupAssociation
+      include AWSTimestreaminfluxdbDbInstance
+      include AWSTimestreamqueryScheduledQuery
+      include AWSTimestreamwriteDatabase
+      include AWSTimestreamwriteTable
+      include AWSTranscribeLanguageModel
+      include AWSTranscribeMedicalVocabulary
+      include AWSTranscribeVocabulary
+      include AWSTranscribeVocabularyFilter
+      include AWSTransferAccess
+      include AWSTransferAgreement
+      include AWSTransferCertificate
+      include AWSTransferConnector
+      include AWSTransferProfile
+      include AWSTransferServer
+      include AWSTransferSshKey
+      include AWSTransferTag
+      include AWSTransferUser
+      include AWSTransferWorkflow
+      include AWSVerifiedaccessEndpoint
+      include AWSVerifiedaccessGroup
+      include AWSVerifiedaccessInstance
+      include AWSVerifiedaccessInstanceLoggingConfiguration
+      include AWSVerifiedaccessInstanceTrustProviderAttachment
+      include AWSVerifiedaccessTrustProvider
+      include AWSVerifiedpermissionsIdentitySource
+      include AWSVerifiedpermissionsPolicy
+      include AWSVerifiedpermissionsPolicyStore
+      include AWSVerifiedpermissionsPolicyTemplate
+      include AWSVerifiedpermissionsSchema
+      include AWSVolumeAttachment
+      include AWSVpc
+      include AWSVpcBlockPublicAccessExclusion
+      include AWSVpcBlockPublicAccessOptions
+      include AWSVpcDhcpOptions
+      include AWSVpcDhcpOptionsAssociation
+      include AWSVpcEndpoint
+      include AWSVpcEndpointConnectionAccepter
+      include AWSVpcEndpointConnectionNotification
+      include AWSVpcEndpointPolicy
+      include AWSVpcEndpointPrivateDns
+      include AWSVpcEndpointRouteTableAssociation
+      include AWSVpcEndpointSecurityGroupAssociation
+      include AWSVpcEndpointService
+      include AWSVpcEndpointServiceAllowedPrincipal
+      include AWSVpcEndpointServicePrivateDnsVerification
+      include AWSVpcEndpointSubnetAssociation
+      include AWSVpcIpam
+      include AWSVpcIpamOrganizationAdminAccount
+      include AWSVpcIpamPool
+      include AWSVpcIpamPoolCidr
+      include AWSVpcIpamPoolCidrAllocation
+      include AWSVpcIpamPreviewNextCidr
+      include AWSVpcIpamResourceDiscovery
+      include AWSVpcIpamResourceDiscoveryAssociation
+      include AWSVpcIpamScope
+      include AWSVpcIpv4CidrBlockAssociation
+      include AWSVpcIpv6CidrBlockAssociation
+      include AWSVpcNetworkPerformanceMetricSubscription
+      include AWSVpcPeeringConnection
+      include AWSVpcPeeringConnectionAccepter
+      include AWSVpcPeeringConnectionOptions
+      include AWSVpcRouteServer
+      include AWSVpcRouteServerEndpoint
+      include AWSVpcRouteServerPeer
+      include AWSVpcRouteServerPropagation
+      include AWSVpcRouteServerVpcAssociation
+      include AWSVpcSecurityGroupEgressRule
+      include AWSVpcSecurityGroupIngressRule
+      include AWSVpcSecurityGroupVpcAssociation
+      include AWSVpclatticeAccessLogSubscription
+      include AWSVpclatticeAuthPolicy
+      include AWSVpclatticeListener
+      include AWSVpclatticeListenerRule
+      include AWSVpclatticeResourceConfiguration
+      include AWSVpclatticeResourceGateway
+      include AWSVpclatticeResourcePolicy
+      include AWSVpclatticeService
+      include AWSVpclatticeServiceNetwork
+      include AWSVpclatticeServiceNetworkResourceAssociation
+      include AWSVpclatticeServiceNetworkServiceAssociation
+      include AWSVpclatticeServiceNetworkVpcAssociation
+      include AWSVpclatticeTargetGroup
+      include AWSVpclatticeTargetGroupAttachment
+      include AWSVpnConnection
+      include AWSVpnConnectionRoute
+      include AWSVpnGateway
+      include AWSVpnGatewayAttachment
+      include AWSVpnGatewayRoutePropagation
+      include AWSWafByteMatchSet
+      include AWSWafGeoMatchSet
+      include AWSWafIpset
+      include AWSWafRateBasedRule
+      include AWSWafRegexMatchSet
+      include AWSWafRegexPatternSet
+      include AWSWafRule
+      include AWSWafRuleGroup
+      include AWSWafSizeConstraintSet
+      include AWSWafSqlInjectionMatchSet
+      include AWSWafWebAcl
+      include AWSWafXssMatchSet
+      include AWSWafregionalByteMatchSet
+      include AWSWafregionalGeoMatchSet
+      include AWSWafregionalIpset
+      include AWSWafregionalRateBasedRule
+      include AWSWafregionalRegexMatchSet
+      include AWSWafregionalRegexPatternSet
+      include AWSWafregionalRule
+      include AWSWafregionalRuleGroup
+      include AWSWafregionalSizeConstraintSet
+      include AWSWafregionalSqlInjectionMatchSet
+      include AWSWafregionalWebAcl
+      include AWSWafregionalWebAclAssociation
+      include AWSWafregionalXssMatchSet
+      include AWSWafv2ApiKey
+      include AWSWafv2IpSet
+      include AWSWafv2RegexPatternSet
+      include AWSWafv2RuleGroup
+      include AWSWafv2WebAcl
+      include AWSWafv2WebAclAssociation
+      include AWSWafv2WebAclLoggingConfiguration
+      include AWSWorklinkFleet
+      include AWSWorklinkWebsiteCertificateAuthorityAssociation
+      include AWSWorkspacesConnectionAlias
+      include AWSWorkspacesDirectory
+      include AWSWorkspacesIpGroup
+      include AWSWorkspacesWorkspace
+      include AWSWorkspaceswebBrowserSettings
+      include AWSWorkspaceswebDataProtectionSettings
+      include AWSWorkspaceswebIpAccessSettings
+      include AWSWorkspaceswebNetworkSettings
+      include AWSWorkspaceswebUserAccessLoggingSettings
+      include AWSWorkspaceswebUserSettings
+      include AWSXrayEncryptionConfig
+      include AWSXrayGroup
+      include AWSXrayResourcePolicy
+      include AWSXraySamplingRule
     end
   end
 end
