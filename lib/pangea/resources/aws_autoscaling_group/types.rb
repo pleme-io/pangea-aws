@@ -29,6 +29,10 @@ module Pangea
         class AutoScalingGroupAttributes < Pangea::Resources::BaseAttributes
           transform_keys(&:to_sym)
 
+          # ASG name (optional — AWS will generate if not provided)
+          attribute :name, Resources::Types::String.optional.default(nil)
+          attribute :name_prefix, Resources::Types::String.optional.default(nil)
+
           # Required attributes
           attribute? :min_size, Resources::Types::Integer.constrained(gteq: 0).optional
           attribute? :max_size, Resources::Types::Integer.constrained(gteq: 0).optional

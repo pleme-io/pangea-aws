@@ -37,6 +37,7 @@ module Pangea
           transform_keys(&:to_sym)
           
           # Optional attributes with defaults
+          attribute :name, Resources::Types::String.optional.default(nil)
           attribute :name_prefix, Resources::Types::String.optional.default(nil)
           attribute :vpc_id, Resources::Types::String.optional.default(nil)
           attribute :description, Resources::Types::String.optional.default(nil)

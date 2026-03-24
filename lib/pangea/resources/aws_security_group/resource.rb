@@ -33,7 +33,11 @@ module Pangea
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_security_group, name) do
-          name_prefix sg_attrs.name_prefix if sg_attrs.name_prefix
+          if sg_attrs.name
+            __send__(:name, sg_attrs.name)
+          elsif sg_attrs.name_prefix
+            name_prefix sg_attrs.name_prefix
+          end
           vpc_id sg_attrs.vpc_id if sg_attrs.vpc_id
           description sg_attrs.description if sg_attrs.description
           

@@ -29,6 +29,9 @@ module Pangea
           attribute :enable_dns_support, Resources::Types::Bool.default(true)
           attribute? :instance_tenancy, Resources::Types::InstanceTenancy.optional
           attribute? :tags, Resources::Types::AwsTags.optional
+
+          # Terraform lifecycle meta-argument (prevent_destroy, etc.)
+          attribute :lifecycle, Resources::Types::Hash.default({}.freeze)
           
           # Custom validation for CIDR block subnet size
           def self.new(attributes)

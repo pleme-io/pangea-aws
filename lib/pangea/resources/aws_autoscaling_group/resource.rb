@@ -68,6 +68,10 @@ module Pangea
         
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_autoscaling_group, name) do
+          # Name (optional)
+          __send__(:name, asg_attrs.name) if asg_attrs.name
+          name_prefix asg_attrs.name_prefix if asg_attrs.name_prefix
+
           # Required attributes
           min_size asg_attrs.min_size
           max_size asg_attrs.max_size
