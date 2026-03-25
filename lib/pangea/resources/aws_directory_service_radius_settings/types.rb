@@ -13,10 +13,10 @@ module Pangea::Resources::AWS::Types
     attribute :authentication_protocol, T::String
     attribute :directory_id, T::String
     attribute :display_label, T::String
-    attribute :radius_port, T::Float
-    attribute :radius_retries, T::Float
+    attribute :radius_port, T::Coercible::Float
+    attribute :radius_retries, T::Coercible::Float
     attribute :radius_servers, T::Array.of(T::String)
-    attribute :radius_timeout, T::Float
+    attribute :radius_timeout, T::Coercible::Float
     attribute :shared_secret, T::String
     attribute? :use_same_username, T::Bool.optional
   end

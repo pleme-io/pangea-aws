@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :instance_port, T::Float
+    attribute :instance_port, T::Coercible::Float
     attribute :name, T::String
     attribute? :health_check_path, T::String.optional
     attribute? :ip_address_type, T::String.optional

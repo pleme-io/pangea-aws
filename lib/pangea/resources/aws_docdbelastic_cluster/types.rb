@@ -14,8 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute :admin_user_password, T::String
     attribute :auth_type, T::String
     attribute :name, T::String
-    attribute :shard_capacity, T::Float
-    attribute :shard_count, T::Float
+    attribute :shard_capacity, T::Coercible::Float
+    attribute :shard_count, T::Coercible::Float
     attribute? :tags, T::Hash.optional
   end
 end

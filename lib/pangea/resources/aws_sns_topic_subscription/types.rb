@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :endpoint, T::String
     attribute :protocol, T::String
     attribute :topic_arn, T::String
-    attribute? :confirmation_timeout_in_minutes, T::Float.optional
+    attribute? :confirmation_timeout_in_minutes, T::Coercible::Float.optional
     attribute? :delivery_policy, T::String.optional
     attribute? :endpoint_auto_confirms, T::Bool.optional
     attribute? :filter_policy, T::String.optional

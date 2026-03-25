@@ -10,12 +10,12 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :deployment_duration_in_minutes, T::Float
-    attribute :growth_factor, T::Float
+    attribute :deployment_duration_in_minutes, T::Coercible::Float
+    attribute :growth_factor, T::Coercible::Float
     attribute :name, T::String
     attribute :replicate_to, T::String
     attribute? :description, T::String.optional
-    attribute? :final_bake_time_in_minutes, T::Float.optional
+    attribute? :final_bake_time_in_minutes, T::Coercible::Float.optional
     attribute? :growth_type, T::String.optional
     attribute? :tags, T::Hash.optional
   end

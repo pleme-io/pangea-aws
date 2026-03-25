@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :hosted_zone_id, T::String
     attribute :name, T::String
     attribute :traffic_policy_id, T::String
-    attribute :traffic_policy_version, T::Float
-    attribute :ttl, T::Float
+    attribute :traffic_policy_version, T::Coercible::Float
+    attribute :ttl, T::Coercible::Float
   end
 end

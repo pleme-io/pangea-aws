@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :bypass_policy_lockout_safety_check, T::Bool.optional
-    attribute? :deletion_window_in_days, T::Float.optional
+    attribute? :deletion_window_in_days, T::Coercible::Float.optional
     attribute? :description, T::String.optional
     attribute? :key_material_base64, T::String.optional
     attribute? :tags, T::Hash.optional

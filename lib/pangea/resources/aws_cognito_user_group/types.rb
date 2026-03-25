@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :user_pool_id, T::String
     attribute? :description, T::String.optional
-    attribute? :precedence, T::Float.optional
+    attribute? :precedence, T::Coercible::Float.optional
     attribute? :role_arn, T::String.optional
   end
 end

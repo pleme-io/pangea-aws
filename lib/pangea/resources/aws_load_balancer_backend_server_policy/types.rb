@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :instance_port, T::Float
+    attribute :instance_port, T::Coercible::Float
     attribute :load_balancer_name, T::String
     attribute? :policy_names, T::Array.of(T::String).optional
   end

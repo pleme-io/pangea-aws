@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :load_balancer_name, T::String
-    attribute :load_balancer_port, T::Float
+    attribute :load_balancer_port, T::Coercible::Float
     attribute? :policy_names, T::Array.of(T::String).optional
     attribute? :triggers, T::Hash.optional
   end

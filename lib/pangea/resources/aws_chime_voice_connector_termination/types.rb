@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :calling_regions, T::Array.of(T::String)
     attribute :cidr_allow_list, T::Array.of(T::String)
     attribute :voice_connector_id, T::String
-    attribute? :cps_limit, T::Float.optional
+    attribute? :cps_limit, T::Coercible::Float.optional
     attribute? :default_phone_number, T::String.optional
     attribute? :disabled, T::Bool.optional
   end

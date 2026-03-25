@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :rest_api_id, T::String
     attribute? :authorizer_credentials, T::String.optional
-    attribute? :authorizer_result_ttl_in_seconds, T::Float.optional
+    attribute? :authorizer_result_ttl_in_seconds, T::Coercible::Float.optional
     attribute? :authorizer_uri, T::String.optional
     attribute? :identity_source, T::String.optional
     attribute? :identity_validation_expression, T::String.optional

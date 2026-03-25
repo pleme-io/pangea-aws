@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :application_id, T::String
-    attribute :application_version, T::Float
+    attribute :application_version, T::Coercible::Float
     attribute :environment_id, T::String
     attribute :start, T::Bool
     attribute? :force_stop, T::Bool.optional

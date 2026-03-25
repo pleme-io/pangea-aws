@@ -13,15 +13,15 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :project_arn, T::String
     attribute? :description, T::String.optional
-    attribute? :downlink_bandwidth_bits, T::Float.optional
-    attribute? :downlink_delay_ms, T::Float.optional
-    attribute? :downlink_jitter_ms, T::Float.optional
-    attribute? :downlink_loss_percent, T::Float.optional
+    attribute? :downlink_bandwidth_bits, T::Coercible::Float.optional
+    attribute? :downlink_delay_ms, T::Coercible::Float.optional
+    attribute? :downlink_jitter_ms, T::Coercible::Float.optional
+    attribute? :downlink_loss_percent, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
     attribute? :type, T::String.optional
-    attribute? :uplink_bandwidth_bits, T::Float.optional
-    attribute? :uplink_delay_ms, T::Float.optional
-    attribute? :uplink_jitter_ms, T::Float.optional
-    attribute? :uplink_loss_percent, T::Float.optional
+    attribute? :uplink_bandwidth_bits, T::Coercible::Float.optional
+    attribute? :uplink_delay_ms, T::Coercible::Float.optional
+    attribute? :uplink_jitter_ms, T::Coercible::Float.optional
+    attribute? :uplink_loss_percent, T::Coercible::Float.optional
   end
 end

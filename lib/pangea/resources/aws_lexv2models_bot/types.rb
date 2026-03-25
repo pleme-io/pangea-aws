@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :idle_session_ttl_in_seconds, T::Float
+    attribute :idle_session_ttl_in_seconds, T::Coercible::Float
     attribute :name, T::String
     attribute :role_arn, T::String
     attribute? :data_privacy, T::Array.of(T::Hash).optional

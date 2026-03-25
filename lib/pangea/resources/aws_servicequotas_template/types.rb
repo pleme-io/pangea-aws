@@ -13,6 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :quota_code, T::String
     attribute :region, T::String
     attribute :service_code, T::String
-    attribute :value, T::Float
+    attribute :value, T::Coercible::Float
   end
 end

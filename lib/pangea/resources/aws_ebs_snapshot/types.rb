@@ -15,6 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute? :outpost_arn, T::String.optional
     attribute? :permanent_restore, T::Bool.optional
     attribute? :tags, T::Hash.optional
-    attribute? :temporary_restore_days, T::Float.optional
+    attribute? :temporary_restore_days, T::Coercible::Float.optional
   end
 end

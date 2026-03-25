@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute? :cidr_block, T::String.optional
     attribute? :customer_owned_ipv4_pool, T::String.optional
     attribute? :enable_dns64, T::Bool.optional
-    attribute? :enable_lni_at_device_index, T::Float.optional
+    attribute? :enable_lni_at_device_index, T::Coercible::Float.optional
     attribute? :enable_resource_name_dns_a_record_on_launch, T::Bool.optional
     attribute? :enable_resource_name_dns_aaaa_record_on_launch, T::Bool.optional
     attribute? :ipv6_cidr_block, T::String.optional

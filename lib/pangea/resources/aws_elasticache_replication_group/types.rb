@@ -21,11 +21,11 @@ module Pangea::Resources::AWS::Types
     attribute? :log_delivery_configuration, T::Array.of(T::Hash).optional
     attribute? :multi_az_enabled, T::Bool.optional
     attribute? :notification_topic_arn, T::String.optional
-    attribute? :port, T::Float.optional
+    attribute? :port, T::Coercible::Float.optional
     attribute? :preferred_cache_cluster_azs, T::Array.of(T::String).optional
     attribute? :snapshot_arns, T::Array.of(T::String).optional
     attribute? :snapshot_name, T::String.optional
-    attribute? :snapshot_retention_limit, T::Float.optional
+    attribute? :snapshot_retention_limit, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
     attribute? :user_group_ids, T::Array.of(T::String).optional
   end

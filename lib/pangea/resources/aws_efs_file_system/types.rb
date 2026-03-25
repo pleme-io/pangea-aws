@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute? :lifecycle_policy, T::Array.of(T::Hash).optional
     attribute? :protection, T::Array.of(T::Hash).optional
-    attribute? :provisioned_throughput_in_mibps, T::Float.optional
+    attribute? :provisioned_throughput_in_mibps, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
     attribute? :throughput_mode, T::String.optional
   end

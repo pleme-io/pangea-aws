@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :firewall_rule_group_id, T::String
     attribute :name, T::String
-    attribute :priority, T::Float
+    attribute :priority, T::Coercible::Float
     attribute :vpc_id, T::String
     attribute? :tags, T::Hash.optional
   end

@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :namespace_name, T::String
     attribute? :admin_user_password, T::String.optional
     attribute? :admin_user_password_wo, T::String.optional
-    attribute? :admin_user_password_wo_version, T::Float.optional
+    attribute? :admin_user_password_wo_version, T::Coercible::Float.optional
     attribute? :default_iam_role_arn, T::String.optional
     attribute? :log_exports, T::Array.of(T::String).optional
     attribute? :manage_admin_password, T::Bool.optional

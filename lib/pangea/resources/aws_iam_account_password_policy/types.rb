@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :allow_users_to_change_password, T::Bool.optional
-    attribute? :minimum_password_length, T::Float.optional
+    attribute? :minimum_password_length, T::Coercible::Float.optional
   end
 end

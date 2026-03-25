@@ -23,7 +23,7 @@ module Pangea::Resources::AWS::Types
     attribute? :multivalue_answer_routing_policy, T::Bool.optional
     attribute? :records, T::Array.of(T::String).optional
     attribute? :set_identifier, T::String.optional
-    attribute? :ttl, T::Float.optional
+    attribute? :ttl, T::Coercible::Float.optional
     attribute? :weighted_routing_policy, T::Array.of(T::Hash).optional
   end
 end

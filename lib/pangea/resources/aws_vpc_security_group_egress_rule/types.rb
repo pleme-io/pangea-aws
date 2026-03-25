@@ -15,10 +15,10 @@ module Pangea::Resources::AWS::Types
     attribute? :cidr_ipv4, T::String.optional
     attribute? :cidr_ipv6, T::String.optional
     attribute? :description, T::String.optional
-    attribute? :from_port, T::Float.optional
+    attribute? :from_port, T::Coercible::Float.optional
     attribute? :prefix_list_id, T::String.optional
     attribute? :referenced_security_group_id, T::String.optional
     attribute? :tags, T::Hash.optional
-    attribute? :to_port, T::Float.optional
+    attribute? :to_port, T::Coercible::Float.optional
   end
 end

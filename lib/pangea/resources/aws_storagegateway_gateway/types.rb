@@ -12,8 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :gateway_name, T::String
     attribute :gateway_timezone, T::String
-    attribute? :average_download_rate_limit_in_bits_per_sec, T::Float.optional
-    attribute? :average_upload_rate_limit_in_bits_per_sec, T::Float.optional
+    attribute? :average_download_rate_limit_in_bits_per_sec, T::Coercible::Float.optional
+    attribute? :average_upload_rate_limit_in_bits_per_sec, T::Coercible::Float.optional
     attribute? :cloudwatch_log_group_arn, T::String.optional
     attribute? :gateway_type, T::String.optional
     attribute? :gateway_vpc_endpoint, T::String.optional

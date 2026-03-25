@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :description, T::String
     attribute :rule_name, T::String
-    attribute :rule_order, T::Float
+    attribute :rule_order, T::Coercible::Float
     attribute? :actions, T::Array.of(T::Hash).optional
     attribute? :criteria, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional

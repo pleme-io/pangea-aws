@@ -30,11 +30,11 @@ module Pangea::Resources::AWS::Types
     attribute? :final_snapshot_identifier, T::String.optional
     attribute? :iam_database_authentication_enabled, T::Bool.optional
     attribute? :manage_master_user_password, T::Bool.optional
-    attribute? :max_allocated_storage, T::Float.optional
-    attribute? :monitoring_interval, T::Float.optional
+    attribute? :max_allocated_storage, T::Coercible::Float.optional
+    attribute? :monitoring_interval, T::Coercible::Float.optional
     attribute? :password, T::String.optional
     attribute? :password_wo, T::String.optional
-    attribute? :password_wo_version, T::Float.optional
+    attribute? :password_wo_version, T::Coercible::Float.optional
     attribute? :performance_insights_enabled, T::Bool.optional
     attribute? :publicly_accessible, T::Bool.optional
     attribute? :replicate_source_db, T::String.optional

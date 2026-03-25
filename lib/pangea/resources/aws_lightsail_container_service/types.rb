@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute :power, T::String
-    attribute :scale, T::Float
+    attribute :scale, T::Coercible::Float
     attribute? :is_disabled, T::Bool.optional
     attribute? :private_registry_access, T::Array.of(T::Hash).optional
     attribute? :public_domain_names, T::Array.of(T::Hash).optional

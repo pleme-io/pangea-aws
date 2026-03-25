@@ -12,9 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :address_family, T::String
     attribute :ipam_scope_id, T::String
-    attribute? :allocation_default_netmask_length, T::Float.optional
-    attribute? :allocation_max_netmask_length, T::Float.optional
-    attribute? :allocation_min_netmask_length, T::Float.optional
+    attribute? :allocation_default_netmask_length, T::Coercible::Float.optional
+    attribute? :allocation_max_netmask_length, T::Coercible::Float.optional
+    attribute? :allocation_min_netmask_length, T::Coercible::Float.optional
     attribute? :allocation_resource_tags, T::Hash.optional
     attribute? :auto_import, T::Bool.optional
     attribute? :aws_service, T::String.optional

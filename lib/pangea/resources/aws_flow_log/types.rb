@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute? :eni_id, T::String.optional
     attribute? :iam_role_arn, T::String.optional
     attribute? :log_destination_type, T::String.optional
-    attribute? :max_aggregation_interval, T::Float.optional
+    attribute? :max_aggregation_interval, T::Coercible::Float.optional
     attribute? :subnet_id, T::String.optional
     attribute? :tags, T::Hash.optional
     attribute? :traffic_type, T::String.optional

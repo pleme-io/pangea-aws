@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute? :default_run_properties, T::Hash.optional
     attribute? :description, T::String.optional
-    attribute? :max_concurrent_runs, T::Float.optional
+    attribute? :max_concurrent_runs, T::Coercible::Float.optional
     attribute? :name, T::String.optional
     attribute? :tags, T::Hash.optional
   end

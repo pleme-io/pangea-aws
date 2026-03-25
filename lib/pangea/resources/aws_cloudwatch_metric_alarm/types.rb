@@ -12,11 +12,11 @@ module Pangea::Resources::AWS::Types
 
     attribute :alarm_name, T::String
     attribute :comparison_operator, T::String
-    attribute :evaluation_periods, T::Float
+    attribute :evaluation_periods, T::Coercible::Float
     attribute? :actions_enabled, T::Bool.optional
     attribute? :alarm_actions, T::Array.of(T::String).optional
     attribute? :alarm_description, T::String.optional
-    attribute? :datapoints_to_alarm, T::Float.optional
+    attribute? :datapoints_to_alarm, T::Coercible::Float.optional
     attribute? :dimensions, T::Hash.optional
     attribute? :extended_statistic, T::String.optional
     attribute? :insufficient_data_actions, T::Array.of(T::String).optional
@@ -24,10 +24,10 @@ module Pangea::Resources::AWS::Types
     attribute? :metric_query, T::Array.of(T::Hash).optional
     attribute? :namespace, T::String.optional
     attribute? :ok_actions, T::Array.of(T::String).optional
-    attribute? :period, T::Float.optional
+    attribute? :period, T::Coercible::Float.optional
     attribute? :statistic, T::String.optional
     attribute? :tags, T::Hash.optional
-    attribute? :threshold, T::Float.optional
+    attribute? :threshold, T::Coercible::Float.optional
     attribute? :threshold_metric_id, T::String.optional
     attribute? :treat_missing_data, T::String.optional
     attribute? :unit, T::String.optional

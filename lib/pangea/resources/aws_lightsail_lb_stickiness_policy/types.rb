@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :cookie_duration, T::Float
+    attribute :cookie_duration, T::Coercible::Float
     attribute :enabled, T::Bool
     attribute :lb_name, T::String
   end

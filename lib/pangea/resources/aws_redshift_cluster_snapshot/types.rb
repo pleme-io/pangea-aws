@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :cluster_identifier, T::String
     attribute :snapshot_identifier, T::String
-    attribute? :manual_snapshot_retention_period, T::Float.optional
+    attribute? :manual_snapshot_retention_period, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
   end
 end

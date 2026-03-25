@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute :target_dpus, T::Float
+    attribute :target_dpus, T::Coercible::Float
     attribute? :tags, T::Hash.optional
   end
 end

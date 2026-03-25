@@ -20,8 +20,8 @@ module Pangea::Resources::AWS::Types
     attribute? :log_config, T::Array.of(T::Hash).optional
     attribute? :merged_api_execution_role_arn, T::String.optional
     attribute? :openid_connect_config, T::Array.of(T::Hash).optional
-    attribute? :query_depth_limit, T::Float.optional
-    attribute? :resolver_count_limit, T::Float.optional
+    attribute? :query_depth_limit, T::Coercible::Float.optional
+    attribute? :resolver_count_limit, T::Coercible::Float.optional
     attribute? :schema, T::String.optional
     attribute? :tags, T::Hash.optional
     attribute? :user_pool_config, T::Array.of(T::Hash).optional

@@ -14,8 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute :instance_type, T::String
     attribute :name, T::String
     attribute? :domain_join_info, T::Array.of(T::Hash).optional
-    attribute? :idle_disconnect_timeout_in_seconds, T::Float.optional
-    attribute? :max_sessions_per_instance, T::Float.optional
+    attribute? :idle_disconnect_timeout_in_seconds, T::Coercible::Float.optional
+    attribute? :max_sessions_per_instance, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
     attribute? :vpc_config, T::Array.of(T::Hash).optional
   end

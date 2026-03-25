@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute? :definition, T::Array.of(T::Hash).optional
     attribute? :parameters, T::Array.of(T::Hash).optional
     attribute? :permissions, T::Array.of(T::Hash).optional
-    attribute? :recovery_window_in_days, T::Float.optional
+    attribute? :recovery_window_in_days, T::Coercible::Float.optional
     attribute? :source_entity, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
     attribute? :theme_arn, T::String.optional

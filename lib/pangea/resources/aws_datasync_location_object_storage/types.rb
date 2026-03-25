@@ -16,7 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :access_key, T::String.optional
     attribute? :secret_key, T::String.optional
     attribute? :server_certificate, T::String.optional
-    attribute? :server_port, T::Float.optional
+    attribute? :server_port, T::Coercible::Float.optional
     attribute? :server_protocol, T::String.optional
     attribute? :tags, T::Hash.optional
   end

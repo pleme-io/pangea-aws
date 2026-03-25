@@ -16,14 +16,14 @@ module Pangea::Resources::AWS::Types
     attribute? :capacity_provider_strategy, T::Array.of(T::Hash).optional
     attribute? :deployment_circuit_breaker, T::Array.of(T::Hash).optional
     attribute? :deployment_controller, T::Array.of(T::Hash).optional
-    attribute? :deployment_maximum_percent, T::Float.optional
-    attribute? :deployment_minimum_healthy_percent, T::Float.optional
-    attribute? :desired_count, T::Float.optional
+    attribute? :deployment_maximum_percent, T::Coercible::Float.optional
+    attribute? :deployment_minimum_healthy_percent, T::Coercible::Float.optional
+    attribute? :desired_count, T::Coercible::Float.optional
     attribute? :enable_ecs_managed_tags, T::Bool.optional
     attribute? :enable_execute_command, T::Bool.optional
     attribute? :force_delete, T::Bool.optional
     attribute? :force_new_deployment, T::Bool.optional
-    attribute? :health_check_grace_period_seconds, T::Float.optional
+    attribute? :health_check_grace_period_seconds, T::Coercible::Float.optional
     attribute? :load_balancer, T::Array.of(T::Hash).optional
     attribute? :network_configuration, T::Array.of(T::Hash).optional
     attribute? :ordered_placement_strategy, T::Array.of(T::Hash).optional

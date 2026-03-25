@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :file_cache_type, T::String
     attribute :file_cache_type_version, T::String
-    attribute :storage_capacity, T::Float
+    attribute :storage_capacity, T::Coercible::Float
     attribute :subnet_ids, T::Array.of(T::String)
     attribute? :copy_tags_to_data_repository_associations, T::Bool.optional
     attribute? :data_repository_association, T::Array.of(T::Hash).optional

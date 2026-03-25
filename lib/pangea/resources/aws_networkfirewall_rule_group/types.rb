@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :capacity, T::Float
+    attribute :capacity, T::Coercible::Float
     attribute :name, T::String
     attribute :type, T::String
     attribute? :description, T::String.optional

@@ -20,8 +20,8 @@ module Pangea::Resources::AWS::Types
     attribute? :canned_acl_for_objects, T::String.optional
     attribute? :cdc_inserts_and_updates, T::Bool.optional
     attribute? :cdc_inserts_only, T::Bool.optional
-    attribute? :cdc_max_batch_interval, T::Float.optional
-    attribute? :cdc_min_file_size, T::Float.optional
+    attribute? :cdc_max_batch_interval, T::Coercible::Float.optional
+    attribute? :cdc_min_file_size, T::Coercible::Float.optional
     attribute? :cdc_path, T::String.optional
     attribute? :compression_type, T::String.optional
     attribute? :csv_delimiter, T::String.optional
@@ -29,27 +29,27 @@ module Pangea::Resources::AWS::Types
     attribute? :csv_null_value, T::String.optional
     attribute? :csv_row_delimiter, T::String.optional
     attribute? :data_format, T::String.optional
-    attribute? :data_page_size, T::Float.optional
+    attribute? :data_page_size, T::Coercible::Float.optional
     attribute? :date_partition_delimiter, T::String.optional
     attribute? :date_partition_enabled, T::Bool.optional
     attribute? :date_partition_sequence, T::String.optional
     attribute? :date_partition_timezone, T::String.optional
     attribute? :detach_target_on_lob_lookup_failure_parquet, T::Bool.optional
-    attribute? :dict_page_size_limit, T::Float.optional
+    attribute? :dict_page_size_limit, T::Coercible::Float.optional
     attribute? :enable_statistics, T::Bool.optional
     attribute? :encoding_type, T::String.optional
     attribute? :encryption_mode, T::String.optional
     attribute? :expected_bucket_owner, T::String.optional
     attribute? :external_table_definition, T::String.optional
     attribute? :glue_catalog_generation, T::Bool.optional
-    attribute? :ignore_header_rows, T::Float.optional
+    attribute? :ignore_header_rows, T::Coercible::Float.optional
     attribute? :include_op_for_full_load, T::Bool.optional
-    attribute? :max_file_size, T::Float.optional
+    attribute? :max_file_size, T::Coercible::Float.optional
     attribute? :parquet_timestamp_in_millisecond, T::Bool.optional
     attribute? :parquet_version, T::String.optional
     attribute? :preserve_transactions, T::Bool.optional
     attribute? :rfc_4180, T::Bool.optional
-    attribute? :row_group_length, T::Float.optional
+    attribute? :row_group_length, T::Coercible::Float.optional
     attribute? :server_side_encryption_kms_key_id, T::String.optional
     attribute? :tags, T::Hash.optional
     attribute? :timestamp_column_name, T::String.optional

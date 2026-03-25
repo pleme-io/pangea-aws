@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :device_index, T::Float
+    attribute :device_index, T::Coercible::Float
     attribute :instance_id, T::String
     attribute :network_interface_id, T::String
   end

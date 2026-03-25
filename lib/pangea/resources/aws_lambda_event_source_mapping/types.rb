@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :function_name, T::String
     attribute? :amazon_managed_kafka_event_source_config, T::Array.of(T::Hash).optional
-    attribute? :batch_size, T::Float.optional
+    attribute? :batch_size, T::Coercible::Float.optional
     attribute? :bisect_batch_on_function_error, T::Bool.optional
     attribute? :destination_config, T::Array.of(T::Hash).optional
     attribute? :document_db_event_source_config, T::Array.of(T::Hash).optional
@@ -21,7 +21,7 @@ module Pangea::Resources::AWS::Types
     attribute? :filter_criteria, T::Array.of(T::Hash).optional
     attribute? :function_response_types, T::Array.of(T::String).optional
     attribute? :kms_key_arn, T::String.optional
-    attribute? :maximum_batching_window_in_seconds, T::Float.optional
+    attribute? :maximum_batching_window_in_seconds, T::Coercible::Float.optional
     attribute? :metrics_config, T::Array.of(T::Hash).optional
     attribute? :provisioned_poller_config, T::Array.of(T::Hash).optional
     attribute? :queues, T::Array.of(T::String).optional
@@ -33,6 +33,6 @@ module Pangea::Resources::AWS::Types
     attribute? :starting_position_timestamp, T::String.optional
     attribute? :tags, T::Hash.optional
     attribute? :topics, T::Array.of(T::String).optional
-    attribute? :tumbling_window_in_seconds, T::Float.optional
+    attribute? :tumbling_window_in_seconds, T::Coercible::Float.optional
   end
 end

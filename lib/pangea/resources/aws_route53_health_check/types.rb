@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :type, T::String
-    attribute? :child_health_threshold, T::Float.optional
+    attribute? :child_health_threshold, T::Coercible::Float.optional
     attribute? :child_healthchecks, T::Array.of(T::String).optional
     attribute? :cloudwatch_alarm_name, T::String.optional
     attribute? :cloudwatch_alarm_region, T::String.optional
@@ -21,10 +21,10 @@ module Pangea::Resources::AWS::Types
     attribute? :invert_healthcheck, T::Bool.optional
     attribute? :ip_address, T::String.optional
     attribute? :measure_latency, T::Bool.optional
-    attribute? :port, T::Float.optional
+    attribute? :port, T::Coercible::Float.optional
     attribute? :reference_name, T::String.optional
     attribute? :regions, T::Array.of(T::String).optional
-    attribute? :request_interval, T::Float.optional
+    attribute? :request_interval, T::Coercible::Float.optional
     attribute? :resource_path, T::String.optional
     attribute? :routing_control_arn, T::String.optional
     attribute? :search_string, T::String.optional

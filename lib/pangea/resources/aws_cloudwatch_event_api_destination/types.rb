@@ -15,6 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute :invocation_endpoint, T::String
     attribute :name, T::String
     attribute? :description, T::String.optional
-    attribute? :invocation_rate_limit_per_second, T::Float.optional
+    attribute? :invocation_rate_limit_per_second, T::Coercible::Float.optional
   end
 end

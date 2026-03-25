@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :availability_zone, T::String
     attribute :name, T::String
-    attribute :size_in_gb, T::Float
+    attribute :size_in_gb, T::Coercible::Float
     attribute? :tags, T::Hash.optional
   end
 end

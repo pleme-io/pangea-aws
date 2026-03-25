@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :image_id, T::String
     attribute :instance_type, T::String
     attribute :name, T::String
-    attribute? :automatic_stop_time_minutes, T::Float.optional
+    attribute? :automatic_stop_time_minutes, T::Coercible::Float.optional
     attribute? :connection_type, T::String.optional
     attribute? :description, T::String.optional
     attribute? :subnet_id, T::String.optional

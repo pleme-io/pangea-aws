@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute? :bypass_policy_lockout_safety_check, T::Bool.optional
     attribute? :custom_key_store_id, T::String.optional
     attribute? :customer_master_key_spec, T::String.optional
-    attribute? :deletion_window_in_days, T::Float.optional
+    attribute? :deletion_window_in_days, T::Coercible::Float.optional
     attribute? :enable_key_rotation, T::Bool.optional
     attribute? :is_enabled, T::Bool.optional
     attribute? :key_usage, T::String.optional

@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :duration, T::Float
+    attribute :duration, T::Coercible::Float
     attribute :name, T::String
     attribute :rules_package_arns, T::Array.of(T::String)
     attribute :target_arn, T::String

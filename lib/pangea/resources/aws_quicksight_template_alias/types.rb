@@ -12,6 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :alias_name, T::String
     attribute :template_id, T::String
-    attribute :template_version_number, T::Float
+    attribute :template_version_number, T::Coercible::Float
   end
 end

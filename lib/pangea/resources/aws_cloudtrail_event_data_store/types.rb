@@ -16,7 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :kms_key_id, T::String.optional
     attribute? :multi_region_enabled, T::Bool.optional
     attribute? :organization_enabled, T::Bool.optional
-    attribute? :retention_period, T::Float.optional
+    attribute? :retention_period, T::Coercible::Float.optional
     attribute? :suspend, T::String.optional
     attribute? :tags, T::Hash.optional
     attribute? :termination_protection_enabled, T::Bool.optional

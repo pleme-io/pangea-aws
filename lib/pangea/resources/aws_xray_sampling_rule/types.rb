@@ -10,16 +10,16 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :fixed_rate, T::Float
+    attribute :fixed_rate, T::Coercible::Float
     attribute :host, T::String
     attribute :http_method, T::String
-    attribute :priority, T::Float
-    attribute :reservoir_size, T::Float
+    attribute :priority, T::Coercible::Float
+    attribute :reservoir_size, T::Coercible::Float
     attribute :resource_arn, T::String
     attribute :service_name, T::String
     attribute :service_type, T::String
     attribute :url_path, T::String
-    attribute :version, T::Float
+    attribute :version, T::Coercible::Float
     attribute? :attributes, T::Hash.optional
     attribute? :rule_name, T::String.optional
     attribute? :tags, T::Hash.optional

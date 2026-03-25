@@ -17,8 +17,8 @@ module Pangea::Resources::AWS::Types
     attribute? :copy_tags_to_snapshot, T::Bool.optional
     attribute? :custom_iam_instance_profile, T::String.optional
     attribute? :force_destroy, T::Bool.optional
-    attribute? :monitoring_interval, T::Float.optional
-    attribute? :promotion_tier, T::Float.optional
+    attribute? :monitoring_interval, T::Coercible::Float.optional
+    attribute? :promotion_tier, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
   end
 end

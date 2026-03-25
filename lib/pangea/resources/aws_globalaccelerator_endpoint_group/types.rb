@@ -12,10 +12,10 @@ module Pangea::Resources::AWS::Types
 
     attribute :listener_arn, T::String
     attribute? :endpoint_configuration, T::Array.of(T::Hash).optional
-    attribute? :health_check_interval_seconds, T::Float.optional
+    attribute? :health_check_interval_seconds, T::Coercible::Float.optional
     attribute? :health_check_protocol, T::String.optional
     attribute? :port_override, T::Array.of(T::Hash).optional
-    attribute? :threshold_count, T::Float.optional
-    attribute? :traffic_dial_percentage, T::Float.optional
+    attribute? :threshold_count, T::Coercible::Float.optional
+    attribute? :traffic_dial_percentage, T::Coercible::Float.optional
   end
 end

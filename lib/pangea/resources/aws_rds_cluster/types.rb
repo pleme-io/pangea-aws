@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :engine, T::String
     attribute? :allow_major_version_upgrade, T::Bool.optional
-    attribute? :backtrack_window, T::Float.optional
+    attribute? :backtrack_window, T::Coercible::Float.optional
     attribute? :copy_tags_to_snapshot, T::Bool.optional
     attribute? :db_cluster_instance_class, T::String.optional
     attribute? :db_instance_parameter_group_name, T::String.optional
@@ -28,11 +28,11 @@ module Pangea::Resources::AWS::Types
     attribute? :final_snapshot_identifier, T::String.optional
     attribute? :global_cluster_identifier, T::String.optional
     attribute? :iam_database_authentication_enabled, T::Bool.optional
-    attribute? :iops, T::Float.optional
+    attribute? :iops, T::Coercible::Float.optional
     attribute? :manage_master_user_password, T::Bool.optional
     attribute? :master_password, T::String.optional
     attribute? :master_password_wo, T::String.optional
-    attribute? :master_password_wo_version, T::Float.optional
+    attribute? :master_password_wo_version, T::Coercible::Float.optional
     attribute? :performance_insights_enabled, T::Bool.optional
     attribute? :replication_source_identifier, T::String.optional
     attribute? :restore_to_point_in_time, T::Array.of(T::Hash).optional

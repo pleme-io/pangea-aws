@@ -10,8 +10,8 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :max_retention_days, T::Float
-    attribute :min_retention_days, T::Float
+    attribute :max_retention_days, T::Coercible::Float
+    attribute :min_retention_days, T::Coercible::Float
     attribute :name, T::String
     attribute? :tags, T::Hash.optional
   end

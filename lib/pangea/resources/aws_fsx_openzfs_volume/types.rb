@@ -17,7 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute? :delete_volume_options, T::Array.of(T::String).optional
     attribute? :nfs_exports, T::Array.of(T::Hash).optional
     attribute? :origin_snapshot, T::Array.of(T::Hash).optional
-    attribute? :record_size_kib, T::Float.optional
+    attribute? :record_size_kib, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
     attribute? :user_and_group_quotas, T::Array.of(T::Hash).optional
     attribute? :volume_type, T::String.optional

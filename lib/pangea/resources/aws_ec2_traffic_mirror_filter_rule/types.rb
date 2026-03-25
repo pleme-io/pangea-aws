@@ -12,13 +12,13 @@ module Pangea::Resources::AWS::Types
 
     attribute :destination_cidr_block, T::String
     attribute :rule_action, T::String
-    attribute :rule_number, T::Float
+    attribute :rule_number, T::Coercible::Float
     attribute :source_cidr_block, T::String
     attribute :traffic_direction, T::String
     attribute :traffic_mirror_filter_id, T::String
     attribute? :description, T::String.optional
     attribute? :destination_port_range, T::Array.of(T::Hash).optional
-    attribute? :protocol, T::Float.optional
+    attribute? :protocol, T::Coercible::Float.optional
     attribute? :source_port_range, T::Array.of(T::Hash).optional
   end
 end

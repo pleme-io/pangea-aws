@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :access_logs, T::Array.of(T::Hash).optional
-    attribute? :client_keep_alive, T::Float.optional
+    attribute? :client_keep_alive, T::Coercible::Float.optional
     attribute? :connection_logs, T::Array.of(T::Hash).optional
     attribute? :customer_owned_ipv4_pool, T::String.optional
     attribute? :desync_mitigation_mode, T::String.optional
@@ -24,7 +24,7 @@ module Pangea::Resources::AWS::Types
     attribute? :enable_waf_fail_open, T::Bool.optional
     attribute? :enable_xff_client_port, T::Bool.optional
     attribute? :enable_zonal_shift, T::Bool.optional
-    attribute? :idle_timeout, T::Float.optional
+    attribute? :idle_timeout, T::Coercible::Float.optional
     attribute? :ipam_pools, T::Array.of(T::Hash).optional
     attribute? :load_balancer_type, T::String.optional
     attribute? :minimum_load_balancer_capacity, T::Array.of(T::Hash).optional

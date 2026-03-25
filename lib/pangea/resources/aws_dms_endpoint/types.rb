@@ -20,7 +20,7 @@ module Pangea::Resources::AWS::Types
     attribute? :mongodb_settings, T::Array.of(T::Hash).optional
     attribute? :password, T::String.optional
     attribute? :pause_replication_tasks, T::Bool.optional
-    attribute? :port, T::Float.optional
+    attribute? :port, T::Coercible::Float.optional
     attribute? :postgres_settings, T::Array.of(T::Hash).optional
     attribute? :redis_settings, T::Array.of(T::Hash).optional
     attribute? :redshift_settings, T::Array.of(T::Hash).optional

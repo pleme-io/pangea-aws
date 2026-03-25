@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :node_type, T::String
     attribute? :allow_version_upgrade, T::Bool.optional
     attribute? :apply_immediately, T::Bool.optional
-    attribute? :automated_snapshot_retention_period, T::Float.optional
+    attribute? :automated_snapshot_retention_period, T::Coercible::Float.optional
     attribute? :availability_zone_relocation_enabled, T::Bool.optional
     attribute? :cluster_version, T::String.optional
     attribute? :elastic_ip, T::String.optional
@@ -23,15 +23,15 @@ module Pangea::Resources::AWS::Types
     attribute? :logging, T::Array.of(T::Hash).optional
     attribute? :maintenance_track_name, T::String.optional
     attribute? :manage_master_password, T::Bool.optional
-    attribute? :manual_snapshot_retention_period, T::Float.optional
+    attribute? :manual_snapshot_retention_period, T::Coercible::Float.optional
     attribute? :master_password, T::String.optional
     attribute? :master_password_wo, T::String.optional
-    attribute? :master_password_wo_version, T::Float.optional
+    attribute? :master_password_wo_version, T::Coercible::Float.optional
     attribute? :master_username, T::String.optional
     attribute? :multi_az, T::Bool.optional
-    attribute? :number_of_nodes, T::Float.optional
+    attribute? :number_of_nodes, T::Coercible::Float.optional
     attribute? :owner_account, T::String.optional
-    attribute? :port, T::Float.optional
+    attribute? :port, T::Coercible::Float.optional
     attribute? :publicly_accessible, T::Bool.optional
     attribute? :skip_final_snapshot, T::Bool.optional
     attribute? :snapshot_arn, T::String.optional

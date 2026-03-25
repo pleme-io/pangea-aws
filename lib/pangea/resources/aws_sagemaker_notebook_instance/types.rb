@@ -23,6 +23,6 @@ module Pangea::Resources::AWS::Types
     attribute? :root_access, T::String.optional
     attribute? :subnet_id, T::String.optional
     attribute? :tags, T::Hash.optional
-    attribute? :volume_size, T::Float.optional
+    attribute? :volume_size, T::Coercible::Float.optional
   end
 end

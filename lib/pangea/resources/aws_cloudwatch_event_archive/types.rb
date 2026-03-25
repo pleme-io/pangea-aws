@@ -14,6 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :description, T::String.optional
     attribute? :event_pattern, T::String.optional
-    attribute? :retention_days, T::Float.optional
+    attribute? :retention_days, T::Coercible::Float.optional
   end
 end

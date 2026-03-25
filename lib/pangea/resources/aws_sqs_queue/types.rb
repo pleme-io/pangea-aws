@@ -11,13 +11,13 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :content_based_deduplication, T::Bool.optional
-    attribute? :delay_seconds, T::Float.optional
+    attribute? :delay_seconds, T::Coercible::Float.optional
     attribute? :fifo_queue, T::Bool.optional
     attribute? :kms_master_key_id, T::String.optional
-    attribute? :max_message_size, T::Float.optional
-    attribute? :message_retention_seconds, T::Float.optional
-    attribute? :receive_wait_time_seconds, T::Float.optional
+    attribute? :max_message_size, T::Coercible::Float.optional
+    attribute? :message_retention_seconds, T::Coercible::Float.optional
+    attribute? :receive_wait_time_seconds, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
-    attribute? :visibility_timeout_seconds, T::Float.optional
+    attribute? :visibility_timeout_seconds, T::Coercible::Float.optional
   end
 end

@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :agent_arns, T::Array.of(T::String)
     attribute :name_node, T::Array.of(T::Hash)
     attribute? :authentication_type, T::String.optional
-    attribute? :block_size, T::Float.optional
+    attribute? :block_size, T::Coercible::Float.optional
     attribute? :kerberos_keytab, T::String.optional
     attribute? :kerberos_keytab_base64, T::String.optional
     attribute? :kerberos_krb5_conf, T::String.optional
@@ -21,7 +21,7 @@ module Pangea::Resources::AWS::Types
     attribute? :kerberos_principal, T::String.optional
     attribute? :kms_key_provider_uri, T::String.optional
     attribute? :qop_configuration, T::Array.of(T::Hash).optional
-    attribute? :replication_factor, T::Float.optional
+    attribute? :replication_factor, T::Coercible::Float.optional
     attribute? :simple_user, T::String.optional
     attribute? :subdirectory, T::String.optional
     attribute? :tags, T::Hash.optional

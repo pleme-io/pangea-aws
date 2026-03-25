@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :user, T::String
-    attribute? :password_length, T::Float.optional
+    attribute? :password_length, T::Coercible::Float.optional
     attribute? :pgp_key, T::String.optional
   end
 end

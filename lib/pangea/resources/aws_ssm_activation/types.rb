@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :iam_role, T::String
     attribute? :description, T::String.optional
     attribute? :name, T::String.optional
-    attribute? :registration_limit, T::Float.optional
+    attribute? :registration_limit, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
   end
 end

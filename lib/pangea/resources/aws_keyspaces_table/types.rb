@@ -16,7 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :capacity_specification, T::Array.of(T::Hash).optional
     attribute? :client_side_timestamps, T::Array.of(T::Hash).optional
     attribute? :comment, T::Array.of(T::Hash).optional
-    attribute? :default_time_to_live, T::Float.optional
+    attribute? :default_time_to_live, T::Coercible::Float.optional
     attribute? :encryption_specification, T::Array.of(T::Hash).optional
     attribute? :point_in_time_recovery, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional

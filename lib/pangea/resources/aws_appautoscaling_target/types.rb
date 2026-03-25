@@ -10,8 +10,8 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :max_capacity, T::Float
-    attribute :min_capacity, T::Float
+    attribute :max_capacity, T::Coercible::Float
+    attribute :min_capacity, T::Coercible::Float
     attribute :resource_id, T::String
     attribute :scalable_dimension, T::String
     attribute :service_namespace, T::String

@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :monitor_name, T::String
     attribute :protocol, T::String
     attribute :source_arn, T::String
-    attribute? :destination_port, T::Float.optional
+    attribute? :destination_port, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
   end
 end

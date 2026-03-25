@@ -14,8 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute? :encryption_type, T::String.optional
     attribute? :enforce_consumer_deletion, T::Bool.optional
     attribute? :kms_key_id, T::String.optional
-    attribute? :retention_period, T::Float.optional
-    attribute? :shard_count, T::Float.optional
+    attribute? :retention_period, T::Coercible::Float.optional
+    attribute? :shard_count, T::Coercible::Float.optional
     attribute? :shard_level_metrics, T::Array.of(T::String).optional
     attribute? :stream_mode_details, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional

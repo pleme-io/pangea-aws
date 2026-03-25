@@ -17,7 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute? :copy_tags_to_snapshot, T::Bool.optional
     attribute? :enable_performance_insights, T::Bool.optional
     attribute? :engine, T::String.optional
-    attribute? :promotion_tier, T::Float.optional
+    attribute? :promotion_tier, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
   end
 end

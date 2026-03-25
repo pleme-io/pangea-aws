@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :cluster_name, T::String
     attribute :iam_role_arn, T::String
     attribute :node_type, T::String
-    attribute :replication_factor, T::Float
+    attribute :replication_factor, T::Coercible::Float
     attribute? :availability_zones, T::Array.of(T::String).optional
     attribute? :cluster_endpoint_encryption_type, T::String.optional
     attribute? :description, T::String.optional

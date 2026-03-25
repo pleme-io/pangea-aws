@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :function_name, T::String
-    attribute :provisioned_concurrent_executions, T::Float
+    attribute :provisioned_concurrent_executions, T::Coercible::Float
     attribute :qualifier, T::String
     attribute? :skip_destroy, T::Bool.optional
   end

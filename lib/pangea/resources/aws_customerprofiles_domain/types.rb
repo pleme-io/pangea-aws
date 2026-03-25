@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :default_expiration_days, T::Float
+    attribute :default_expiration_days, T::Coercible::Float
     attribute :domain_name, T::String
     attribute? :dead_letter_queue_url, T::String.optional
     attribute? :default_encryption_key, T::String.optional

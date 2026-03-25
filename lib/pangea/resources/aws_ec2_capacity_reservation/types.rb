@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :availability_zone, T::String
-    attribute :instance_count, T::Float
+    attribute :instance_count, T::Coercible::Float
     attribute :instance_platform, T::String
     attribute :instance_type, T::String
     attribute? :ebs_optimized, T::Bool.optional

@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute? :backup_retention_period, T::Float.optional
+    attribute? :backup_retention_period, T::Coercible::Float.optional
     attribute? :copy_tags_to_snapshot, T::Bool.optional
     attribute? :deletion_protection, T::Bool.optional
     attribute? :enable_cloudwatch_logs_exports, T::Array.of(T::String).optional
@@ -20,7 +20,7 @@ module Pangea::Resources::AWS::Types
     attribute? :iam_database_authentication_enabled, T::Bool.optional
     attribute? :iam_roles, T::Array.of(T::String).optional
     attribute? :neptune_instance_parameter_group_name, T::String.optional
-    attribute? :port, T::Float.optional
+    attribute? :port, T::Coercible::Float.optional
     attribute? :replication_source_identifier, T::String.optional
     attribute? :serverless_v2_scaling_configuration, T::Array.of(T::Hash).optional
     attribute? :skip_final_snapshot, T::Bool.optional

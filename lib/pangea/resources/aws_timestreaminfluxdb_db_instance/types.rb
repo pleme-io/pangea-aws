@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :allocated_storage, T::Float
+    attribute :allocated_storage, T::Coercible::Float
     attribute :bucket, T::String
     attribute :db_instance_type, T::String
     attribute :name, T::String
