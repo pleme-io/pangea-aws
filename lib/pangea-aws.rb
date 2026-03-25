@@ -4,6 +4,8 @@
 require 'pangea-core'
 require 'terraform-synthesizer'
 
+module Pangea; module Resources; module AWS; module Types; end; end; end; end
+
 # AWS resources
 require_relative 'pangea/resources/aws_accessanalyzer_analyzer/resource'
 require_relative 'pangea/resources/aws_accessanalyzer_archive_rule/resource'
