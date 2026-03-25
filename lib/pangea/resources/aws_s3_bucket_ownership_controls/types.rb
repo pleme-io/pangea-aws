@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :bucket, T::String
-    attribute :rule, T::Array.of(T::Hash)
+    attribute :rule, T::Hash
   end
 end

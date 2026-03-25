@@ -16,7 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute :version, T::String
     attribute? :block_device_mapping, T::Array.of(T::Hash).optional
     attribute? :description, T::String.optional
-    attribute? :systems_manager_agent, T::Array.of(T::Hash).optional
+    attribute? :systems_manager_agent, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :working_directory, T::String.optional
   end

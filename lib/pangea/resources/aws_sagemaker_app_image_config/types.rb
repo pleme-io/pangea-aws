@@ -11,9 +11,9 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :app_image_config_name, T::String
-    attribute? :code_editor_app_image_config, T::Array.of(T::Hash).optional
-    attribute? :jupyter_lab_image_config, T::Array.of(T::Hash).optional
-    attribute? :kernel_gateway_image_config, T::Array.of(T::Hash).optional
+    attribute? :code_editor_app_image_config, T::Hash.optional
+    attribute? :jupyter_lab_image_config, T::Hash.optional
+    attribute? :kernel_gateway_image_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

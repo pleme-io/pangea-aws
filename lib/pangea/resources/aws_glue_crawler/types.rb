@@ -22,13 +22,13 @@ module Pangea::Resources::AWS::Types
     attribute? :hudi_target, T::Array.of(T::Hash).optional
     attribute? :iceberg_target, T::Array.of(T::Hash).optional
     attribute? :jdbc_target, T::Array.of(T::Hash).optional
-    attribute? :lake_formation_configuration, T::Array.of(T::Hash).optional
-    attribute? :lineage_configuration, T::Array.of(T::Hash).optional
+    attribute? :lake_formation_configuration, T::Hash.optional
+    attribute? :lineage_configuration, T::Hash.optional
     attribute? :mongodb_target, T::Array.of(T::Hash).optional
-    attribute? :recrawl_policy, T::Array.of(T::Hash).optional
+    attribute? :recrawl_policy, T::Hash.optional
     attribute? :s3_target, T::Array.of(T::Hash).optional
     attribute? :schedule, T::String.optional
-    attribute? :schema_change_policy, T::Array.of(T::Hash).optional
+    attribute? :schema_change_policy, T::Hash.optional
     attribute? :security_configuration, T::String.optional
     attribute? :table_prefix, T::String.optional
     attribute? :tags, T::Hash.optional

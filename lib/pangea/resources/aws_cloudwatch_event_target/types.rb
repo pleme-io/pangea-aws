@@ -12,22 +12,22 @@ module Pangea::Resources::AWS::Types
 
     attribute :arn, T::String
     attribute :rule, T::String
-    attribute? :appsync_target, T::Array.of(T::Hash).optional
-    attribute? :batch_target, T::Array.of(T::Hash).optional
-    attribute? :dead_letter_config, T::Array.of(T::Hash).optional
-    attribute? :ecs_target, T::Array.of(T::Hash).optional
+    attribute? :appsync_target, T::Hash.optional
+    attribute? :batch_target, T::Hash.optional
+    attribute? :dead_letter_config, T::Hash.optional
+    attribute? :ecs_target, T::Hash.optional
     attribute? :event_bus_name, T::String.optional
     attribute? :force_destroy, T::Bool.optional
-    attribute? :http_target, T::Array.of(T::Hash).optional
+    attribute? :http_target, T::Hash.optional
     attribute? :input, T::String.optional
     attribute? :input_path, T::String.optional
-    attribute? :input_transformer, T::Array.of(T::Hash).optional
-    attribute? :kinesis_target, T::Array.of(T::Hash).optional
-    attribute? :redshift_target, T::Array.of(T::Hash).optional
-    attribute? :retry_policy, T::Array.of(T::Hash).optional
+    attribute? :input_transformer, T::Hash.optional
+    attribute? :kinesis_target, T::Hash.optional
+    attribute? :redshift_target, T::Hash.optional
+    attribute? :retry_policy, T::Hash.optional
     attribute? :role_arn, T::String.optional
     attribute? :run_command_targets, T::Array.of(T::Hash).optional
-    attribute? :sagemaker_pipeline_target, T::Array.of(T::Hash).optional
-    attribute? :sqs_target, T::Array.of(T::Hash).optional
+    attribute? :sagemaker_pipeline_target, T::Hash.optional
+    attribute? :sqs_target, T::Hash.optional
   end
 end

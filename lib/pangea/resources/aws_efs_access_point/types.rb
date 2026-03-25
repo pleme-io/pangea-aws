@@ -11,8 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :file_system_id, T::String
-    attribute? :posix_user, T::Array.of(T::Hash).optional
-    attribute? :root_directory, T::Array.of(T::Hash).optional
+    attribute? :posix_user, T::Hash.optional
+    attribute? :root_directory, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

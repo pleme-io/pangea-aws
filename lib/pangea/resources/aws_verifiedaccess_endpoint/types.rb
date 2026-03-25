@@ -14,16 +14,16 @@ module Pangea::Resources::AWS::Types
     attribute :endpoint_type, T::String
     attribute :verified_access_group_id, T::String
     attribute? :application_domain, T::String.optional
-    attribute? :cidr_options, T::Array.of(T::Hash).optional
+    attribute? :cidr_options, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :domain_certificate_arn, T::String.optional
     attribute? :endpoint_domain_prefix, T::String.optional
-    attribute? :load_balancer_options, T::Array.of(T::Hash).optional
-    attribute? :network_interface_options, T::Array.of(T::Hash).optional
+    attribute? :load_balancer_options, T::Hash.optional
+    attribute? :network_interface_options, T::Hash.optional
     attribute? :policy_document, T::String.optional
-    attribute? :rds_options, T::Array.of(T::Hash).optional
+    attribute? :rds_options, T::Hash.optional
     attribute? :security_group_ids, T::Array.of(T::String).optional
-    attribute? :sse_specification, T::Array.of(T::Hash).optional
+    attribute? :sse_specification, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

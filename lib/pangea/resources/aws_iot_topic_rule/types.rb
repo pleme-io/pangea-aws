@@ -21,7 +21,7 @@ module Pangea::Resources::AWS::Types
     attribute? :dynamodb, T::Array.of(T::Hash).optional
     attribute? :dynamodbv2, T::Array.of(T::Hash).optional
     attribute? :elasticsearch, T::Array.of(T::Hash).optional
-    attribute? :error_action, T::Array.of(T::Hash).optional
+    attribute? :error_action, T::Hash.optional
     attribute? :firehose, T::Array.of(T::Hash).optional
     attribute? :http, T::Array.of(T::Hash).optional
     attribute? :iot_analytics, T::Array.of(T::Hash).optional

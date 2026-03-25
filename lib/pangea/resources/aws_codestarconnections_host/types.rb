@@ -13,6 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :provider_endpoint, T::String
     attribute :provider_type, T::String
-    attribute? :vpc_configuration, T::Array.of(T::Hash).optional
+    attribute? :vpc_configuration, T::Hash.optional
   end
 end

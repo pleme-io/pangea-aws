@@ -14,12 +14,12 @@ module Pangea::Resources::AWS::Types
     attribute :principal, T::String
     attribute? :catalog_id, T::String.optional
     attribute? :catalog_resource, T::Bool.optional
-    attribute? :data_cells_filter, T::Array.of(T::Hash).optional
-    attribute? :data_location, T::Array.of(T::Hash).optional
-    attribute? :database, T::Array.of(T::Hash).optional
-    attribute? :lf_tag, T::Array.of(T::Hash).optional
-    attribute? :lf_tag_policy, T::Array.of(T::Hash).optional
-    attribute? :table, T::Array.of(T::Hash).optional
-    attribute? :table_with_columns, T::Array.of(T::Hash).optional
+    attribute? :data_cells_filter, T::Hash.optional
+    attribute? :data_location, T::Hash.optional
+    attribute? :database, T::Hash.optional
+    attribute? :lf_tag, T::Hash.optional
+    attribute? :lf_tag_policy, T::Hash.optional
+    attribute? :table, T::Hash.optional
+    attribute? :table_with_columns, T::Hash.optional
   end
 end

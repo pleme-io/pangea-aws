@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :encryption_configuration, T::Array.of(T::Hash).optional
     attribute? :force_delete, T::Bool.optional
-    attribute? :image_scanning_configuration, T::Array.of(T::Hash).optional
+    attribute? :image_scanning_configuration, T::Hash.optional
     attribute? :image_tag_mutability, T::String.optional
     attribute? :tags, T::Hash.optional
   end

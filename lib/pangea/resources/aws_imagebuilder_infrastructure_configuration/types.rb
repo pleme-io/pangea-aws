@@ -13,11 +13,11 @@ module Pangea::Resources::AWS::Types
     attribute :instance_profile_name, T::String
     attribute :name, T::String
     attribute? :description, T::String.optional
-    attribute? :instance_metadata_options, T::Array.of(T::Hash).optional
+    attribute? :instance_metadata_options, T::Hash.optional
     attribute? :instance_types, T::Array.of(T::String).optional
     attribute? :key_pair, T::String.optional
-    attribute? :logging, T::Array.of(T::Hash).optional
-    attribute? :placement, T::Array.of(T::Hash).optional
+    attribute? :logging, T::Hash.optional
+    attribute? :placement, T::Hash.optional
     attribute? :resource_tags, T::Hash.optional
     attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :sns_topic_arn, T::String.optional

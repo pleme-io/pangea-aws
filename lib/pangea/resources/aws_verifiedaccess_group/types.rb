@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :verifiedaccess_instance_id, T::String
     attribute? :policy_document, T::String.optional
-    attribute? :sse_configuration, T::Array.of(T::Hash).optional
+    attribute? :sse_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

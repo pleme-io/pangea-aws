@@ -12,15 +12,15 @@ module Pangea::Resources::AWS::Types
 
     attribute :channel_class, T::String
     attribute :destinations, T::Array.of(T::Hash)
-    attribute :encoder_settings, T::Array.of(T::Hash)
+    attribute :encoder_settings, T::Hash
     attribute :input_attachments, T::Array.of(T::Hash)
-    attribute :input_specification, T::Array.of(T::Hash)
+    attribute :input_specification, T::Hash
     attribute :name, T::String
-    attribute? :cdi_input_specification, T::Array.of(T::Hash).optional
-    attribute? :maintenance, T::Array.of(T::Hash).optional
+    attribute? :cdi_input_specification, T::Hash.optional
+    attribute? :maintenance, T::Hash.optional
     attribute? :role_arn, T::String.optional
     attribute? :start_channel, T::Bool.optional
     attribute? :tags, T::Hash.optional
-    attribute? :vpc, T::Array.of(T::Hash).optional
+    attribute? :vpc, T::Hash.optional
   end
 end

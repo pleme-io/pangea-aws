@@ -16,9 +16,9 @@ module Pangea::Resources::AWS::Types
     attribute? :capacity_provider_strategy, T::Array.of(T::Hash).optional
     attribute? :force_delete, T::Bool.optional
     attribute? :load_balancer, T::Array.of(T::Hash).optional
-    attribute? :network_configuration, T::Array.of(T::Hash).optional
-    attribute? :scale, T::Array.of(T::Hash).optional
-    attribute? :service_registries, T::Array.of(T::Hash).optional
+    attribute? :network_configuration, T::Hash.optional
+    attribute? :scale, T::Hash.optional
+    attribute? :service_registries, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :wait_until_stable, T::Bool.optional
     attribute? :wait_until_stable_timeout, T::String.optional

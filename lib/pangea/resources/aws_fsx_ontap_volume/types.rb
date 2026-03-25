@@ -12,16 +12,16 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute :storage_virtual_machine_id, T::String
-    attribute? :aggregate_configuration, T::Array.of(T::Hash).optional
+    attribute? :aggregate_configuration, T::Hash.optional
     attribute? :bypass_snaplock_enterprise_retention, T::Bool.optional
     attribute? :copy_tags_to_backups, T::Bool.optional
     attribute? :final_backup_tags, T::Hash.optional
     attribute? :junction_path, T::String.optional
     attribute? :skip_final_backup, T::Bool.optional
-    attribute? :snaplock_configuration, T::Array.of(T::Hash).optional
+    attribute? :snaplock_configuration, T::Hash.optional
     attribute? :storage_efficiency_enabled, T::Bool.optional
     attribute? :tags, T::Hash.optional
-    attribute? :tiering_policy, T::Array.of(T::Hash).optional
+    attribute? :tiering_policy, T::Hash.optional
     attribute? :volume_type, T::String.optional
   end
 end

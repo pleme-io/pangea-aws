@@ -14,6 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :partition_values, T::Array.of(T::String)
     attribute :table_name, T::String
     attribute? :parameters, T::Hash.optional
-    attribute? :storage_descriptor, T::Array.of(T::Hash).optional
+    attribute? :storage_descriptor, T::Hash.optional
   end
 end

@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :spec, T::Array.of(T::Hash).optional
+    attribute? :spec, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

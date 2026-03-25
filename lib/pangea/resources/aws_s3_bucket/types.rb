@@ -14,12 +14,12 @@ module Pangea::Resources::AWS::Types
     attribute? :force_destroy, T::Bool.optional
     attribute? :grant, T::Array.of(T::Hash).optional
     attribute? :lifecycle_rule, T::Array.of(T::Hash).optional
-    attribute? :logging, T::Array.of(T::Hash).optional
-    attribute? :object_lock_configuration, T::Array.of(T::Hash).optional
-    attribute? :replication_configuration, T::Array.of(T::Hash).optional
-    attribute? :server_side_encryption_configuration, T::Array.of(T::Hash).optional
+    attribute? :logging, T::Hash.optional
+    attribute? :object_lock_configuration, T::Hash.optional
+    attribute? :replication_configuration, T::Hash.optional
+    attribute? :server_side_encryption_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :versioning, T::Array.of(T::Hash).optional
-    attribute? :website, T::Array.of(T::Hash).optional
+    attribute? :versioning, T::Hash.optional
+    attribute? :website, T::Hash.optional
   end
 end

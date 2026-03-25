@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :app_id, T::String
     attribute :domain_name, T::String
     attribute :sub_domain, T::Array.of(T::Hash)
-    attribute? :certificate_settings, T::Array.of(T::Hash).optional
+    attribute? :certificate_settings, T::Hash.optional
     attribute? :enable_auto_sub_domain, T::Bool.optional
     attribute? :wait_for_verification, T::Bool.optional
   end

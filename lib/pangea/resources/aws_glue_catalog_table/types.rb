@@ -13,15 +13,15 @@ module Pangea::Resources::AWS::Types
     attribute :database_name, T::String
     attribute :name, T::String
     attribute? :description, T::String.optional
-    attribute? :open_table_format_input, T::Array.of(T::Hash).optional
+    attribute? :open_table_format_input, T::Hash.optional
     attribute? :owner, T::String.optional
     attribute? :parameters, T::Hash.optional
     attribute? :partition_index, T::Array.of(T::Hash).optional
     attribute? :partition_keys, T::Array.of(T::Hash).optional
     attribute? :retention, T::Coercible::Float.optional
-    attribute? :storage_descriptor, T::Array.of(T::Hash).optional
+    attribute? :storage_descriptor, T::Hash.optional
     attribute? :table_type, T::String.optional
-    attribute? :target_table, T::Array.of(T::Hash).optional
+    attribute? :target_table, T::Hash.optional
     attribute? :view_expanded_text, T::String.optional
     attribute? :view_original_text, T::String.optional
   end

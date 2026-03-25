@@ -15,8 +15,8 @@ module Pangea::Resources::AWS::Types
     attribute? :distribution_configuration_arn, T::String.optional
     attribute? :enhanced_image_metadata_enabled, T::Bool.optional
     attribute? :image_recipe_arn, T::String.optional
-    attribute? :image_scanning_configuration, T::Array.of(T::Hash).optional
-    attribute? :image_tests_configuration, T::Array.of(T::Hash).optional
+    attribute? :image_scanning_configuration, T::Hash.optional
+    attribute? :image_tests_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :workflow, T::Array.of(T::Hash).optional
   end

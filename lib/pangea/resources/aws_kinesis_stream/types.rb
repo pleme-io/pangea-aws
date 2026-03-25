@@ -17,7 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute? :retention_period, T::Coercible::Float.optional
     attribute? :shard_count, T::Coercible::Float.optional
     attribute? :shard_level_metrics, T::Array.of(T::String).optional
-    attribute? :stream_mode_details, T::Array.of(T::Hash).optional
+    attribute? :stream_mode_details, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

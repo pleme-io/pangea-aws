@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :vpc_id, T::String
     attribute? :auto_accept, T::Bool.optional
-    attribute? :dns_options, T::Array.of(T::Hash).optional
+    attribute? :dns_options, T::Hash.optional
     attribute? :resource_configuration_arn, T::String.optional
     attribute? :service_name, T::String.optional
     attribute? :service_network_arn, T::String.optional

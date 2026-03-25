@@ -11,12 +11,12 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :cloudwatch_logging_options, T::Array.of(T::Hash).optional
+    attribute? :cloudwatch_logging_options, T::Hash.optional
     attribute? :code, T::String.optional
     attribute? :description, T::String.optional
-    attribute? :inputs, T::Array.of(T::Hash).optional
+    attribute? :inputs, T::Hash.optional
     attribute? :outputs, T::Array.of(T::Hash).optional
-    attribute? :reference_data_sources, T::Array.of(T::Hash).optional
+    attribute? :reference_data_sources, T::Hash.optional
     attribute? :start_application, T::Bool.optional
     attribute? :tags, T::Hash.optional
   end

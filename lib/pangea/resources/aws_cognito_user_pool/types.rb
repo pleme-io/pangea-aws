@@ -11,28 +11,28 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :account_recovery_setting, T::Array.of(T::Hash).optional
-    attribute? :admin_create_user_config, T::Array.of(T::Hash).optional
+    attribute? :account_recovery_setting, T::Hash.optional
+    attribute? :admin_create_user_config, T::Hash.optional
     attribute? :alias_attributes, T::Array.of(T::String).optional
     attribute? :auto_verified_attributes, T::Array.of(T::String).optional
     attribute? :deletion_protection, T::String.optional
-    attribute? :device_configuration, T::Array.of(T::Hash).optional
-    attribute? :email_configuration, T::Array.of(T::Hash).optional
-    attribute? :email_mfa_configuration, T::Array.of(T::Hash).optional
-    attribute? :lambda_config, T::Array.of(T::Hash).optional
+    attribute? :device_configuration, T::Hash.optional
+    attribute? :email_configuration, T::Hash.optional
+    attribute? :email_mfa_configuration, T::Hash.optional
+    attribute? :lambda_config, T::Hash.optional
     attribute? :mfa_configuration, T::String.optional
-    attribute? :password_policy, T::Array.of(T::Hash).optional
+    attribute? :password_policy, T::Hash.optional
     attribute? :schema, T::Array.of(T::Hash).optional
-    attribute? :sign_in_policy, T::Array.of(T::Hash).optional
+    attribute? :sign_in_policy, T::Hash.optional
     attribute? :sms_authentication_message, T::String.optional
-    attribute? :sms_configuration, T::Array.of(T::Hash).optional
-    attribute? :software_token_mfa_configuration, T::Array.of(T::Hash).optional
+    attribute? :sms_configuration, T::Hash.optional
+    attribute? :software_token_mfa_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :user_attribute_update_settings, T::Array.of(T::Hash).optional
-    attribute? :user_pool_add_ons, T::Array.of(T::Hash).optional
+    attribute? :user_attribute_update_settings, T::Hash.optional
+    attribute? :user_pool_add_ons, T::Hash.optional
     attribute? :username_attributes, T::Array.of(T::String).optional
-    attribute? :username_configuration, T::Array.of(T::Hash).optional
-    attribute? :verification_message_template, T::Array.of(T::Hash).optional
-    attribute? :web_authn_configuration, T::Array.of(T::Hash).optional
+    attribute? :username_configuration, T::Hash.optional
+    attribute? :verification_message_template, T::Hash.optional
+    attribute? :web_authn_configuration, T::Hash.optional
   end
 end

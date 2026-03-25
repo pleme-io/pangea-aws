@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :peer_region, T::String
     attribute :peer_transit_gateway_id, T::String
     attribute :transit_gateway_id, T::String
-    attribute? :options, T::Array.of(T::Hash).optional
+    attribute? :options, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :hub_name, T::String
     attribute? :hub_display_name, T::String.optional
     attribute? :hub_search_keywords, T::Array.of(T::String).optional
-    attribute? :s3_storage_config, T::Array.of(T::Hash).optional
+    attribute? :s3_storage_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

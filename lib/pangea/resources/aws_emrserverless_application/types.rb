@@ -14,13 +14,13 @@ module Pangea::Resources::AWS::Types
     attribute :release_label, T::String
     attribute :type, T::String
     attribute? :architecture, T::String.optional
-    attribute? :auto_start_configuration, T::Array.of(T::Hash).optional
-    attribute? :auto_stop_configuration, T::Array.of(T::Hash).optional
-    attribute? :image_configuration, T::Array.of(T::Hash).optional
+    attribute? :auto_start_configuration, T::Hash.optional
+    attribute? :auto_stop_configuration, T::Hash.optional
+    attribute? :image_configuration, T::Hash.optional
     attribute? :initial_capacity, T::Array.of(T::Hash).optional
-    attribute? :interactive_configuration, T::Array.of(T::Hash).optional
-    attribute? :maximum_capacity, T::Array.of(T::Hash).optional
-    attribute? :network_configuration, T::Array.of(T::Hash).optional
+    attribute? :interactive_configuration, T::Hash.optional
+    attribute? :maximum_capacity, T::Hash.optional
+    attribute? :network_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

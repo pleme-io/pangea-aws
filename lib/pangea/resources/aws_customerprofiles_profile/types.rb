@@ -13,9 +13,9 @@ module Pangea::Resources::AWS::Types
     attribute :domain_name, T::String
     attribute? :account_number, T::String.optional
     attribute? :additional_information, T::String.optional
-    attribute? :address, T::Array.of(T::Hash).optional
+    attribute? :address, T::Hash.optional
     attribute? :attributes, T::Hash.optional
-    attribute? :billing_address, T::Array.of(T::Hash).optional
+    attribute? :billing_address, T::Hash.optional
     attribute? :birth_date, T::String.optional
     attribute? :business_email_address, T::String.optional
     attribute? :business_name, T::String.optional
@@ -25,12 +25,12 @@ module Pangea::Resources::AWS::Types
     attribute? :gender_string, T::String.optional
     attribute? :home_phone_number, T::String.optional
     attribute? :last_name, T::String.optional
-    attribute? :mailing_address, T::Array.of(T::Hash).optional
+    attribute? :mailing_address, T::Hash.optional
     attribute? :middle_name, T::String.optional
     attribute? :mobile_phone_number, T::String.optional
     attribute? :party_type_string, T::String.optional
     attribute? :personal_email_address, T::String.optional
     attribute? :phone_number, T::String.optional
-    attribute? :shipping_address, T::Array.of(T::Hash).optional
+    attribute? :shipping_address, T::Hash.optional
   end
 end

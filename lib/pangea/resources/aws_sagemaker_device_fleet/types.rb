@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :device_fleet_name, T::String
-    attribute :output_config, T::Array.of(T::Hash)
+    attribute :output_config, T::Hash
     attribute :role_arn, T::String
     attribute? :description, T::String.optional
     attribute? :enable_iot_role_alias, T::Bool.optional

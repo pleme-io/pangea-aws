@@ -12,11 +12,11 @@ module Pangea::Resources::AWS::Types
 
     attribute :definition, T::String
     attribute :role_arn, T::String
-    attribute? :encryption_configuration, T::Array.of(T::Hash).optional
-    attribute? :logging_configuration, T::Array.of(T::Hash).optional
+    attribute? :encryption_configuration, T::Hash.optional
+    attribute? :logging_configuration, T::Hash.optional
     attribute? :publish, T::Bool.optional
     attribute? :tags, T::Hash.optional
-    attribute? :tracing_configuration, T::Array.of(T::Hash).optional
+    attribute? :tracing_configuration, T::Hash.optional
     attribute? :type, T::String.optional
   end
 end

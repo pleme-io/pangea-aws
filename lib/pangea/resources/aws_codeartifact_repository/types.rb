@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :domain, T::String
     attribute :repository, T::String
     attribute? :description, T::String.optional
-    attribute? :external_connections, T::Array.of(T::Hash).optional
+    attribute? :external_connections, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :upstream, T::Array.of(T::Hash).optional
   end

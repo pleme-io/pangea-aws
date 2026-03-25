@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :s3_bucket_arn, T::String
-    attribute :s3_config, T::Array.of(T::Hash)
+    attribute :s3_config, T::Hash
     attribute :subdirectory, T::String
     attribute? :agent_arns, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional

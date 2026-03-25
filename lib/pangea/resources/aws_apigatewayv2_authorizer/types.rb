@@ -18,6 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :authorizer_uri, T::String.optional
     attribute? :enable_simple_responses, T::Bool.optional
     attribute? :identity_sources, T::Array.of(T::String).optional
-    attribute? :jwt_configuration, T::Array.of(T::Hash).optional
+    attribute? :jwt_configuration, T::Hash.optional
   end
 end

@@ -20,7 +20,7 @@ module Pangea::Resources::AWS::Types
     attribute? :elastic_ip, T::String.optional
     attribute? :encrypted, T::Bool.optional
     attribute? :final_snapshot_identifier, T::String.optional
-    attribute? :logging, T::Array.of(T::Hash).optional
+    attribute? :logging, T::Hash.optional
     attribute? :maintenance_track_name, T::String.optional
     attribute? :manage_master_password, T::Bool.optional
     attribute? :manual_snapshot_retention_period, T::Coercible::Float.optional
@@ -36,7 +36,7 @@ module Pangea::Resources::AWS::Types
     attribute? :skip_final_snapshot, T::Bool.optional
     attribute? :snapshot_arn, T::String.optional
     attribute? :snapshot_cluster_identifier, T::String.optional
-    attribute? :snapshot_copy, T::Array.of(T::Hash).optional
+    attribute? :snapshot_copy, T::Hash.optional
     attribute? :snapshot_identifier, T::String.optional
     attribute? :tags, T::Hash.optional
   end

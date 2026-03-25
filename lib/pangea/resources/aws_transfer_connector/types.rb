@@ -12,9 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :access_role, T::String
     attribute :url, T::String
-    attribute? :as2_config, T::Array.of(T::Hash).optional
+    attribute? :as2_config, T::Hash.optional
     attribute? :logging_role, T::String.optional
-    attribute? :sftp_config, T::Array.of(T::Hash).optional
+    attribute? :sftp_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

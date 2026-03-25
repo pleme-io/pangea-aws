@@ -13,17 +13,17 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :type, T::String
     attribute :zone_id, T::String
-    attribute? :alias, T::Array.of(T::Hash).optional
-    attribute? :cidr_routing_policy, T::Array.of(T::Hash).optional
-    attribute? :failover_routing_policy, T::Array.of(T::Hash).optional
-    attribute? :geolocation_routing_policy, T::Array.of(T::Hash).optional
-    attribute? :geoproximity_routing_policy, T::Array.of(T::Hash).optional
+    attribute? :alias, T::Hash.optional
+    attribute? :cidr_routing_policy, T::Hash.optional
+    attribute? :failover_routing_policy, T::Hash.optional
+    attribute? :geolocation_routing_policy, T::Hash.optional
+    attribute? :geoproximity_routing_policy, T::Hash.optional
     attribute? :health_check_id, T::String.optional
-    attribute? :latency_routing_policy, T::Array.of(T::Hash).optional
+    attribute? :latency_routing_policy, T::Hash.optional
     attribute? :multivalue_answer_routing_policy, T::Bool.optional
     attribute? :records, T::Array.of(T::String).optional
     attribute? :set_identifier, T::String.optional
     attribute? :ttl, T::Coercible::Float.optional
-    attribute? :weighted_routing_policy, T::Array.of(T::Hash).optional
+    attribute? :weighted_routing_policy, T::Hash.optional
   end
 end

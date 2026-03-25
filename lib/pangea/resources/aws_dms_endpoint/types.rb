@@ -14,17 +14,17 @@ module Pangea::Resources::AWS::Types
     attribute :endpoint_type, T::String
     attribute :engine_name, T::String
     attribute? :database_name, T::String.optional
-    attribute? :elasticsearch_settings, T::Array.of(T::Hash).optional
-    attribute? :kafka_settings, T::Array.of(T::Hash).optional
-    attribute? :kinesis_settings, T::Array.of(T::Hash).optional
-    attribute? :mongodb_settings, T::Array.of(T::Hash).optional
+    attribute? :elasticsearch_settings, T::Hash.optional
+    attribute? :kafka_settings, T::Hash.optional
+    attribute? :kinesis_settings, T::Hash.optional
+    attribute? :mongodb_settings, T::Hash.optional
     attribute? :password, T::String.optional
     attribute? :pause_replication_tasks, T::Bool.optional
     attribute? :port, T::Coercible::Float.optional
-    attribute? :postgres_settings, T::Array.of(T::Hash).optional
-    attribute? :redis_settings, T::Array.of(T::Hash).optional
-    attribute? :redshift_settings, T::Array.of(T::Hash).optional
-    attribute? :s3_settings, T::Array.of(T::Hash).optional
+    attribute? :postgres_settings, T::Hash.optional
+    attribute? :redis_settings, T::Hash.optional
+    attribute? :redshift_settings, T::Hash.optional
+    attribute? :s3_settings, T::Hash.optional
     attribute? :secrets_manager_access_role_arn, T::String.optional
     attribute? :secrets_manager_arn, T::String.optional
     attribute? :server_name, T::String.optional

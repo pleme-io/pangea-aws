@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute? :cloud_hsm_cluster_id, T::String.optional
     attribute? :key_store_password, T::String.optional
     attribute? :trust_anchor_certificate, T::String.optional
-    attribute? :xks_proxy_authentication_credential, T::Array.of(T::Hash).optional
+    attribute? :xks_proxy_authentication_credential, T::Hash.optional
     attribute? :xks_proxy_connectivity, T::String.optional
     attribute? :xks_proxy_uri_endpoint, T::String.optional
     attribute? :xks_proxy_uri_path, T::String.optional

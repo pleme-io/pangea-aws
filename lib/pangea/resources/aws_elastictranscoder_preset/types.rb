@@ -11,11 +11,11 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :container, T::String
-    attribute? :audio, T::Array.of(T::Hash).optional
-    attribute? :audio_codec_options, T::Array.of(T::Hash).optional
+    attribute? :audio, T::Hash.optional
+    attribute? :audio_codec_options, T::Hash.optional
     attribute? :description, T::String.optional
-    attribute? :thumbnails, T::Array.of(T::Hash).optional
-    attribute? :video, T::Array.of(T::Hash).optional
+    attribute? :thumbnails, T::Hash.optional
+    attribute? :video, T::Hash.optional
     attribute? :video_codec_options, T::Hash.optional
     attribute? :video_watermarks, T::Array.of(T::Hash).optional
   end

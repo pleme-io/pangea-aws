@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :export_config, T::Array.of(T::Hash)
+    attribute :export_config, T::Hash
     attribute :name, T::String
     attribute :type, T::String
     attribute? :delete_reports, T::Bool.optional

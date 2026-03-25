@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :directory_id, T::String
     attribute :region_name, T::String
-    attribute :vpc_settings, T::Array.of(T::Hash)
+    attribute :vpc_settings, T::Hash
     attribute? :tags, T::Hash.optional
   end
 end

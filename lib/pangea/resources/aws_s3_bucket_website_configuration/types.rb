@@ -11,10 +11,10 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :bucket, T::String
-    attribute? :error_document, T::Array.of(T::Hash).optional
+    attribute? :error_document, T::Hash.optional
     attribute? :expected_bucket_owner, T::String.optional
-    attribute? :index_document, T::Array.of(T::Hash).optional
-    attribute? :redirect_all_requests_to, T::Array.of(T::Hash).optional
+    attribute? :index_document, T::Hash.optional
+    attribute? :redirect_all_requests_to, T::Hash.optional
     attribute? :routing_rule, T::Array.of(T::Hash).optional
   end
 end

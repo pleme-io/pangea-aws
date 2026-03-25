@@ -11,12 +11,12 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :service_name, T::String
-    attribute :source_configuration, T::Array.of(T::Hash)
-    attribute? :encryption_configuration, T::Array.of(T::Hash).optional
-    attribute? :health_check_configuration, T::Array.of(T::Hash).optional
-    attribute? :instance_configuration, T::Array.of(T::Hash).optional
-    attribute? :network_configuration, T::Array.of(T::Hash).optional
-    attribute? :observability_configuration, T::Array.of(T::Hash).optional
+    attribute :source_configuration, T::Hash
+    attribute? :encryption_configuration, T::Hash.optional
+    attribute? :health_check_configuration, T::Hash.optional
+    attribute? :instance_configuration, T::Hash.optional
+    attribute? :network_configuration, T::Hash.optional
+    attribute? :observability_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

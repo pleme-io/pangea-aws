@@ -18,6 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :name, T::String.optional
     attribute? :priority, T::Coercible::Float.optional
     attribute? :targets, T::Array.of(T::Hash).optional
-    attribute? :task_invocation_parameters, T::Array.of(T::Hash).optional
+    attribute? :task_invocation_parameters, T::Hash.optional
   end
 end

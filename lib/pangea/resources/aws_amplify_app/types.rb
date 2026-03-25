@@ -12,10 +12,10 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :access_token, T::String.optional
-    attribute? :auto_branch_creation_config, T::Array.of(T::Hash).optional
+    attribute? :auto_branch_creation_config, T::Hash.optional
     attribute? :auto_branch_creation_patterns, T::Array.of(T::String).optional
     attribute? :basic_auth_credentials, T::String.optional
-    attribute? :cache_config, T::Array.of(T::Hash).optional
+    attribute? :cache_config, T::Hash.optional
     attribute? :compute_role_arn, T::String.optional
     attribute? :custom_rule, T::Array.of(T::Hash).optional
     attribute? :description, T::String.optional

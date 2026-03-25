@@ -17,7 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute? :delete_protection, T::Bool.optional
     attribute? :description, T::String.optional
     attribute? :enabled_analysis_types, T::Array.of(T::String).optional
-    attribute? :encryption_configuration, T::Array.of(T::Hash).optional
+    attribute? :encryption_configuration, T::Hash.optional
     attribute? :firewall_policy_change_protection, T::Bool.optional
     attribute? :subnet_change_protection, T::Bool.optional
     attribute? :tags, T::Hash.optional

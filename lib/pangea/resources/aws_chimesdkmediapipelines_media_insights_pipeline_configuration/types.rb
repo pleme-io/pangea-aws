@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :elements, T::Array.of(T::Hash)
     attribute :name, T::String
     attribute :resource_access_role_arn, T::String
-    attribute? :real_time_alert_configuration, T::Array.of(T::Hash).optional
+    attribute? :real_time_alert_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

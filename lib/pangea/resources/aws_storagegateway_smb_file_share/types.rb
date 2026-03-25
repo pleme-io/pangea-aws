@@ -18,7 +18,7 @@ module Pangea::Resources::AWS::Types
     attribute? :audit_destination_arn, T::String.optional
     attribute? :authentication, T::String.optional
     attribute? :bucket_region, T::String.optional
-    attribute? :cache_attributes, T::Array.of(T::Hash).optional
+    attribute? :cache_attributes, T::Hash.optional
     attribute? :case_sensitivity, T::String.optional
     attribute? :default_storage_class, T::String.optional
     attribute? :guess_mime_type_enabled, T::Bool.optional

@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :deliver_cross_account_role, T::String.optional
-    attribute? :destination_options, T::Array.of(T::Hash).optional
+    attribute? :destination_options, T::Hash.optional
     attribute? :eni_id, T::String.optional
     attribute? :iam_role_arn, T::String.optional
     attribute? :log_destination_type, T::String.optional

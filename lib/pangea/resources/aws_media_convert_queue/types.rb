@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :description, T::String.optional
     attribute? :pricing_plan, T::String.optional
-    attribute? :reservation_plan_settings, T::Array.of(T::Hash).optional
+    attribute? :reservation_plan_settings, T::Hash.optional
     attribute? :status, T::String.optional
     attribute? :tags, T::Hash.optional
   end

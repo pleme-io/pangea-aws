@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :description, T::String
     attribute :execution_role_arn, T::String
-    attribute :policy_details, T::Array.of(T::Hash)
+    attribute :policy_details, T::Hash
     attribute? :state, T::String.optional
     attribute? :tags, T::Hash.optional
   end

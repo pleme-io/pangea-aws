@@ -11,9 +11,9 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :workforce_name, T::String
-    attribute? :cognito_config, T::Array.of(T::Hash).optional
-    attribute? :oidc_config, T::Array.of(T::Hash).optional
-    attribute? :source_ip_config, T::Array.of(T::Hash).optional
-    attribute? :workforce_vpc_config, T::Array.of(T::Hash).optional
+    attribute? :cognito_config, T::Hash.optional
+    attribute? :oidc_config, T::Hash.optional
+    attribute? :source_ip_config, T::Hash.optional
+    attribute? :workforce_vpc_config, T::Hash.optional
   end
 end

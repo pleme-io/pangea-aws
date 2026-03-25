@@ -12,15 +12,15 @@ module Pangea::Resources::AWS::Types
 
     attribute :cluster_name, T::String
     attribute :node_role_arn, T::String
-    attribute :scaling_config, T::Array.of(T::Hash)
+    attribute :scaling_config, T::Hash
     attribute :subnet_ids, T::Array.of(T::String)
     attribute? :force_update_version, T::Bool.optional
     attribute? :labels, T::Hash.optional
-    attribute? :launch_template, T::Array.of(T::Hash).optional
-    attribute? :node_repair_config, T::Array.of(T::Hash).optional
-    attribute? :remote_access, T::Array.of(T::Hash).optional
+    attribute? :launch_template, T::Hash.optional
+    attribute? :node_repair_config, T::Hash.optional
+    attribute? :remote_access, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :taint, T::Array.of(T::Hash).optional
-    attribute? :update_config, T::Array.of(T::Hash).optional
+    attribute? :update_config, T::Hash.optional
   end
 end

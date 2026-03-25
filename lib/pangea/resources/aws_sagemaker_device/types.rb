@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :device, T::Array.of(T::Hash)
+    attribute :device, T::Hash
     attribute :device_fleet_name, T::String
   end
 end

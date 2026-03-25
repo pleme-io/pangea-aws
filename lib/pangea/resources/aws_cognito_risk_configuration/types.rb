@@ -11,9 +11,9 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :user_pool_id, T::String
-    attribute? :account_takeover_risk_configuration, T::Array.of(T::Hash).optional
+    attribute? :account_takeover_risk_configuration, T::Hash.optional
     attribute? :client_id, T::String.optional
-    attribute? :compromised_credentials_risk_configuration, T::Array.of(T::Hash).optional
-    attribute? :risk_exception_configuration, T::Array.of(T::Hash).optional
+    attribute? :compromised_credentials_risk_configuration, T::Hash.optional
+    attribute? :risk_exception_configuration, T::Hash.optional
   end
 end

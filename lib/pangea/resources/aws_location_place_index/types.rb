@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :data_source, T::String
     attribute :index_name, T::String
-    attribute? :data_source_configuration, T::Array.of(T::Hash).optional
+    attribute? :data_source_configuration, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
   end

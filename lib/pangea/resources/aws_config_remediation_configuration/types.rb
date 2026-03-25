@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :target_id, T::String
     attribute :target_type, T::String
     attribute? :automatic, T::Bool.optional
-    attribute? :execution_controls, T::Array.of(T::Hash).optional
+    attribute? :execution_controls, T::Hash.optional
     attribute? :maximum_automatic_attempts, T::Coercible::Float.optional
     attribute? :parameter, T::Array.of(T::Hash).optional
     attribute? :resource_type, T::String.optional

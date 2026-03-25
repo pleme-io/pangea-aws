@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute :routing_strategy, T::Array.of(T::Hash)
+    attribute :routing_strategy, T::Hash
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
   end

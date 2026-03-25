@@ -11,9 +11,9 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :global_network_id, T::String
-    attribute? :aws_location, T::Array.of(T::Hash).optional
+    attribute? :aws_location, T::Hash.optional
     attribute? :description, T::String.optional
-    attribute? :location, T::Array.of(T::Hash).optional
+    attribute? :location, T::Hash.optional
     attribute? :model, T::String.optional
     attribute? :serial_number, T::String.optional
     attribute? :site_id, T::String.optional

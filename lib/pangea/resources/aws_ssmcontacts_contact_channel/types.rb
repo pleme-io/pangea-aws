@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :contact_id, T::String
-    attribute :delivery_address, T::Array.of(T::Hash)
+    attribute :delivery_address, T::Hash
     attribute :name, T::String
     attribute :type, T::String
   end

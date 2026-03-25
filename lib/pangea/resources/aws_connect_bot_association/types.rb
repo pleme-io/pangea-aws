@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :instance_id, T::String
-    attribute :lex_bot, T::Array.of(T::Hash)
+    attribute :lex_bot, T::Hash
   end
 end

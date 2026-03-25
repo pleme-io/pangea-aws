@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :password, T::String
     attribute :username, T::String
     attribute? :audit_destination_arn, T::String.optional
-    attribute? :cache_attributes, T::Array.of(T::Hash).optional
+    attribute? :cache_attributes, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

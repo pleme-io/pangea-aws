@@ -12,9 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :peer_vpc_id, T::String
     attribute :vpc_id, T::String
-    attribute? :accepter, T::Array.of(T::Hash).optional
+    attribute? :accepter, T::Hash.optional
     attribute? :auto_accept, T::Bool.optional
-    attribute? :requester, T::Array.of(T::Hash).optional
+    attribute? :requester, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

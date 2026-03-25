@@ -12,10 +12,10 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :comment, T::String.optional
-    attribute? :cors_config, T::Array.of(T::Hash).optional
-    attribute? :custom_headers_config, T::Array.of(T::Hash).optional
-    attribute? :remove_headers_config, T::Array.of(T::Hash).optional
-    attribute? :security_headers_config, T::Array.of(T::Hash).optional
-    attribute? :server_timing_headers_config, T::Array.of(T::Hash).optional
+    attribute? :cors_config, T::Hash.optional
+    attribute? :custom_headers_config, T::Hash.optional
+    attribute? :remove_headers_config, T::Hash.optional
+    attribute? :security_headers_config, T::Hash.optional
+    attribute? :server_timing_headers_config, T::Hash.optional
   end
 end

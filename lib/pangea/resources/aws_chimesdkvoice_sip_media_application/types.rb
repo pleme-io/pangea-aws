@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :aws_region, T::String
-    attribute :endpoints, T::Array.of(T::Hash)
+    attribute :endpoints, T::Hash
     attribute :name, T::String
     attribute? :tags, T::Hash.optional
   end

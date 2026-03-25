@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :blueprint_id, T::String
     attribute :bundle_id, T::String
     attribute :name, T::String
-    attribute? :add_on, T::Array.of(T::Hash).optional
+    attribute? :add_on, T::Hash.optional
     attribute? :ip_address_type, T::String.optional
     attribute? :key_pair_name, T::String.optional
     attribute? :tags, T::Hash.optional

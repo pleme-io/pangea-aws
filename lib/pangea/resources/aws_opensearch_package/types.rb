@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :package_name, T::String
-    attribute :package_source, T::Array.of(T::Hash)
+    attribute :package_source, T::Hash
     attribute :package_type, T::String
     attribute? :package_description, T::String.optional
   end

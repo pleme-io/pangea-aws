@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :autoscaling_group_name, T::String
-    attribute? :traffic_source, T::Array.of(T::Hash).optional
+    attribute? :traffic_source, T::Hash.optional
   end
 end

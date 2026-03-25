@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :repository_name, T::String
-    attribute? :catalog_data, T::Array.of(T::Hash).optional
+    attribute? :catalog_data, T::Hash.optional
     attribute? :force_destroy, T::Bool.optional
     attribute? :tags, T::Hash.optional
   end

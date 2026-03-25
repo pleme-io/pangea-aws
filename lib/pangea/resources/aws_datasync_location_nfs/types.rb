@@ -10,10 +10,10 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :on_prem_config, T::Array.of(T::Hash)
+    attribute :on_prem_config, T::Hash
     attribute :server_hostname, T::String
     attribute :subdirectory, T::String
-    attribute? :mount_options, T::Array.of(T::Hash).optional
+    attribute? :mount_options, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

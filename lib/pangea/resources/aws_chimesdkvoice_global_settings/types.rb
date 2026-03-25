@@ -10,6 +10,6 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :voice_connector, T::Array.of(T::Hash)
+    attribute :voice_connector, T::Hash
   end
 end

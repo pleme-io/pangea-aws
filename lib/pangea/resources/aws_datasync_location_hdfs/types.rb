@@ -20,7 +20,7 @@ module Pangea::Resources::AWS::Types
     attribute? :kerberos_krb5_conf_base64, T::String.optional
     attribute? :kerberos_principal, T::String.optional
     attribute? :kms_key_provider_uri, T::String.optional
-    attribute? :qop_configuration, T::Array.of(T::Hash).optional
+    attribute? :qop_configuration, T::Hash.optional
     attribute? :replication_factor, T::Coercible::Float.optional
     attribute? :simple_user, T::String.optional
     attribute? :subdirectory, T::String.optional

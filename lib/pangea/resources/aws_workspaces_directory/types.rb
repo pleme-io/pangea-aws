@@ -10,13 +10,13 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute? :active_directory_config, T::Array.of(T::Hash).optional
-    attribute? :certificate_based_auth_properties, T::Array.of(T::Hash).optional
-    attribute? :saml_properties, T::Array.of(T::Hash).optional
-    attribute? :self_service_permissions, T::Array.of(T::Hash).optional
+    attribute? :active_directory_config, T::Hash.optional
+    attribute? :certificate_based_auth_properties, T::Hash.optional
+    attribute? :saml_properties, T::Hash.optional
+    attribute? :self_service_permissions, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :workspace_access_properties, T::Array.of(T::Hash).optional
-    attribute? :workspace_creation_properties, T::Array.of(T::Hash).optional
+    attribute? :workspace_access_properties, T::Hash.optional
+    attribute? :workspace_creation_properties, T::Hash.optional
     attribute? :workspace_directory_description, T::String.optional
     attribute? :workspace_directory_name, T::String.optional
     attribute? :workspace_type, T::String.optional

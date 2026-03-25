@@ -12,9 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :max_size, T::Coercible::Float
     attribute :min_size, T::Coercible::Float
-    attribute? :availability_zone_distribution, T::Array.of(T::Hash).optional
+    attribute? :availability_zone_distribution, T::Hash.optional
     attribute? :capacity_rebalance, T::Bool.optional
-    attribute? :capacity_reservation_specification, T::Array.of(T::Hash).optional
+    attribute? :capacity_reservation_specification, T::Hash.optional
     attribute? :context, T::String.optional
     attribute? :default_instance_warmup, T::Coercible::Float.optional
     attribute? :desired_capacity_type, T::String.optional
@@ -24,14 +24,14 @@ module Pangea::Resources::AWS::Types
     attribute? :health_check_grace_period, T::Coercible::Float.optional
     attribute? :ignore_failed_scaling_activities, T::Bool.optional
     attribute? :initial_lifecycle_hook, T::Array.of(T::Hash).optional
-    attribute? :instance_maintenance_policy, T::Array.of(T::Hash).optional
-    attribute? :instance_refresh, T::Array.of(T::Hash).optional
+    attribute? :instance_maintenance_policy, T::Hash.optional
+    attribute? :instance_refresh, T::Hash.optional
     attribute? :launch_configuration, T::String.optional
-    attribute? :launch_template, T::Array.of(T::Hash).optional
+    attribute? :launch_template, T::Hash.optional
     attribute? :max_instance_lifetime, T::Coercible::Float.optional
     attribute? :metrics_granularity, T::String.optional
     attribute? :min_elb_capacity, T::Coercible::Float.optional
-    attribute? :mixed_instances_policy, T::Array.of(T::Hash).optional
+    attribute? :mixed_instances_policy, T::Hash.optional
     attribute? :placement_group, T::String.optional
     attribute? :protect_from_scale_in, T::Bool.optional
     attribute? :suspended_processes, T::Array.of(T::String).optional
@@ -40,6 +40,6 @@ module Pangea::Resources::AWS::Types
     attribute? :traffic_source, T::Array.of(T::Hash).optional
     attribute? :wait_for_capacity_timeout, T::String.optional
     attribute? :wait_for_elb_capacity, T::Coercible::Float.optional
-    attribute? :warm_pool, T::Array.of(T::Hash).optional
+    attribute? :warm_pool, T::Hash.optional
   end
 end

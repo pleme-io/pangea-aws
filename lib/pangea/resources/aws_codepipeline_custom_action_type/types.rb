@@ -11,12 +11,12 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :category, T::String
-    attribute :input_artifact_details, T::Array.of(T::Hash)
-    attribute :output_artifact_details, T::Array.of(T::Hash)
+    attribute :input_artifact_details, T::Hash
+    attribute :output_artifact_details, T::Hash
     attribute :provider_name, T::String
     attribute :version, T::String
     attribute? :configuration_property, T::Array.of(T::Hash).optional
-    attribute? :settings, T::Array.of(T::Hash).optional
+    attribute? :settings, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

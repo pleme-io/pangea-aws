@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :config_id, T::String
-    attribute :storage_lens_configuration, T::Array.of(T::Hash)
+    attribute :storage_lens_configuration, T::Hash
     attribute? :tags, T::Hash.optional
   end
 end

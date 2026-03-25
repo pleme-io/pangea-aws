@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :bot_name, T::String
     attribute :bot_version, T::String
     attribute :name, T::String
-    attribute? :conversation_logs, T::Array.of(T::Hash).optional
+    attribute? :conversation_logs, T::Hash.optional
     attribute? :description, T::String.optional
   end
 end

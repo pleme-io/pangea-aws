@@ -18,6 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :media_connect_flows, T::Array.of(T::Hash).optional
     attribute? :sources, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
-    attribute? :vpc, T::Array.of(T::Hash).optional
+    attribute? :vpc, T::Hash.optional
   end
 end

@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :instance_id, T::String
     attribute :name, T::String
-    attribute :quick_connect_config, T::Array.of(T::Hash)
+    attribute :quick_connect_config, T::Hash
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
   end

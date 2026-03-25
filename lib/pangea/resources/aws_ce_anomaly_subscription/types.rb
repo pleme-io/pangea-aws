@@ -15,6 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :subscriber, T::Array.of(T::Hash)
     attribute? :tags, T::Hash.optional
-    attribute? :threshold_expression, T::Array.of(T::Hash).optional
+    attribute? :threshold_expression, T::Hash.optional
   end
 end

@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :scalable_dimension, T::String
     attribute :service_namespace, T::String
     attribute? :policy_type, T::String.optional
-    attribute? :step_scaling_policy_configuration, T::Array.of(T::Hash).optional
-    attribute? :target_tracking_scaling_policy_configuration, T::Array.of(T::Hash).optional
+    attribute? :step_scaling_policy_configuration, T::Hash.optional
+    attribute? :target_tracking_scaling_policy_configuration, T::Hash.optional
   end
 end

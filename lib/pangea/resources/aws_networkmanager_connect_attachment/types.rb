@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :core_network_id, T::String
     attribute :edge_location, T::String
-    attribute :options, T::Array.of(T::Hash)
+    attribute :options, T::Hash
     attribute :transport_attachment_id, T::String
     attribute? :tags, T::Hash.optional
   end

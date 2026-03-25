@@ -14,8 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :type, T::String
     attribute? :description, T::String.optional
-    attribute? :encryption_configuration, T::Array.of(T::Hash).optional
-    attribute? :rule_group, T::Array.of(T::Hash).optional
+    attribute? :encryption_configuration, T::Hash.optional
+    attribute? :rule_group, T::Hash.optional
     attribute? :rules, T::String.optional
     attribute? :tags, T::Hash.optional
   end

@@ -10,18 +10,18 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :artifacts, T::Array.of(T::Hash)
-    attribute :environment, T::Array.of(T::Hash)
+    attribute :artifacts, T::Hash
+    attribute :environment, T::Hash
     attribute :name, T::String
     attribute :service_role, T::String
-    attribute :source, T::Array.of(T::Hash)
+    attribute :source, T::Hash
     attribute? :badge_enabled, T::Bool.optional
-    attribute? :build_batch_config, T::Array.of(T::Hash).optional
+    attribute? :build_batch_config, T::Hash.optional
     attribute? :build_timeout, T::Coercible::Float.optional
-    attribute? :cache, T::Array.of(T::Hash).optional
+    attribute? :cache, T::Hash.optional
     attribute? :concurrent_build_limit, T::Coercible::Float.optional
     attribute? :file_system_locations, T::Array.of(T::Hash).optional
-    attribute? :logs_config, T::Array.of(T::Hash).optional
+    attribute? :logs_config, T::Hash.optional
     attribute? :project_visibility, T::String.optional
     attribute? :queued_timeout, T::Coercible::Float.optional
     attribute? :resource_access_role, T::String.optional
@@ -30,6 +30,6 @@ module Pangea::Resources::AWS::Types
     attribute? :secondary_sources, T::Array.of(T::Hash).optional
     attribute? :source_version, T::String.optional
     attribute? :tags, T::Hash.optional
-    attribute? :vpc_config, T::Array.of(T::Hash).optional
+    attribute? :vpc_config, T::Hash.optional
   end
 end

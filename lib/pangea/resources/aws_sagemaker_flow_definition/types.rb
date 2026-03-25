@@ -11,11 +11,11 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :flow_definition_name, T::String
-    attribute :human_loop_config, T::Array.of(T::Hash)
-    attribute :output_config, T::Array.of(T::Hash)
+    attribute :human_loop_config, T::Hash
+    attribute :output_config, T::Hash
     attribute :role_arn, T::String
-    attribute? :human_loop_activation_config, T::Array.of(T::Hash).optional
-    attribute? :human_loop_request_source, T::Array.of(T::Hash).optional
+    attribute? :human_loop_activation_config, T::Hash.optional
+    attribute? :human_loop_request_source, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

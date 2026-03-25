@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :principal, T::String
     attribute :statement_id, T::String
     attribute? :action, T::String.optional
-    attribute? :condition, T::Array.of(T::Hash).optional
+    attribute? :condition, T::Hash.optional
     attribute? :event_bus_name, T::String.optional
   end
 end

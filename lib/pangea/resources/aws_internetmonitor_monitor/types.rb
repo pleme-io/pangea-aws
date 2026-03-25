@@ -11,8 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :monitor_name, T::String
-    attribute? :health_events_config, T::Array.of(T::Hash).optional
-    attribute? :internet_measurements_log_delivery, T::Array.of(T::Hash).optional
+    attribute? :health_events_config, T::Hash.optional
+    attribute? :internet_measurements_log_delivery, T::Hash.optional
     attribute? :max_city_networks_to_monitor, T::Coercible::Float.optional
     attribute? :resources, T::Array.of(T::String).optional
     attribute? :status, T::String.optional

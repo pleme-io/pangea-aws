@@ -10,9 +10,9 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :allowed_publishers, T::Array.of(T::Hash)
+    attribute :allowed_publishers, T::Hash
     attribute? :description, T::String.optional
-    attribute? :policies, T::Array.of(T::Hash).optional
+    attribute? :policies, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

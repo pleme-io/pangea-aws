@@ -12,19 +12,19 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute :role_arn, T::String
-    attribute :vpc_config, T::Array.of(T::Hash)
-    attribute? :access_config, T::Array.of(T::Hash).optional
+    attribute :vpc_config, T::Hash
+    attribute? :access_config, T::Hash.optional
     attribute? :bootstrap_self_managed_addons, T::Bool.optional
-    attribute? :compute_config, T::Array.of(T::Hash).optional
+    attribute? :compute_config, T::Hash.optional
     attribute? :enabled_cluster_log_types, T::Array.of(T::String).optional
-    attribute? :encryption_config, T::Array.of(T::Hash).optional
+    attribute? :encryption_config, T::Hash.optional
     attribute? :force_update_version, T::Bool.optional
-    attribute? :kubernetes_network_config, T::Array.of(T::Hash).optional
-    attribute? :outpost_config, T::Array.of(T::Hash).optional
-    attribute? :remote_network_config, T::Array.of(T::Hash).optional
-    attribute? :storage_config, T::Array.of(T::Hash).optional
+    attribute? :kubernetes_network_config, T::Hash.optional
+    attribute? :outpost_config, T::Hash.optional
+    attribute? :remote_network_config, T::Hash.optional
+    attribute? :storage_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :upgrade_policy, T::Array.of(T::Hash).optional
-    attribute? :zonal_shift_config, T::Array.of(T::Hash).optional
+    attribute? :upgrade_policy, T::Hash.optional
+    attribute? :zonal_shift_config, T::Hash.optional
   end
 end

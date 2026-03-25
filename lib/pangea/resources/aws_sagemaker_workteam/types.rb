@@ -13,9 +13,9 @@ module Pangea::Resources::AWS::Types
     attribute :description, T::String
     attribute :member_definition, T::Array.of(T::Hash)
     attribute :workteam_name, T::String
-    attribute? :notification_configuration, T::Array.of(T::Hash).optional
+    attribute? :notification_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :worker_access_configuration, T::Array.of(T::Hash).optional
+    attribute? :worker_access_configuration, T::Hash.optional
     attribute? :workforce_name, T::String.optional
   end
 end

@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :bandwidth, T::Array.of(T::Hash)
+    attribute :bandwidth, T::Hash
     attribute :global_network_id, T::String
     attribute :site_id, T::String
     attribute? :description, T::String.optional

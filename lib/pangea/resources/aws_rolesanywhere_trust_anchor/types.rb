@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute :source, T::Array.of(T::Hash)
+    attribute :source, T::Hash
     attribute? :notification_settings, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
   end

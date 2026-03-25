@@ -13,18 +13,18 @@ module Pangea::Resources::AWS::Types
     attribute :function_name, T::String
     attribute :role, T::String
     attribute? :code_signing_config_arn, T::String.optional
-    attribute? :dead_letter_config, T::Array.of(T::Hash).optional
+    attribute? :dead_letter_config, T::Hash.optional
     attribute? :description, T::String.optional
-    attribute? :environment, T::Array.of(T::Hash).optional
-    attribute? :ephemeral_storage, T::Array.of(T::Hash).optional
-    attribute? :file_system_config, T::Array.of(T::Hash).optional
+    attribute? :environment, T::Hash.optional
+    attribute? :ephemeral_storage, T::Hash.optional
+    attribute? :file_system_config, T::Hash.optional
     attribute? :filename, T::String.optional
     attribute? :handler, T::String.optional
-    attribute? :image_config, T::Array.of(T::Hash).optional
+    attribute? :image_config, T::Hash.optional
     attribute? :image_uri, T::String.optional
     attribute? :kms_key_arn, T::String.optional
     attribute? :layers, T::Array.of(T::String).optional
-    attribute? :logging_config, T::Array.of(T::Hash).optional
+    attribute? :logging_config, T::Hash.optional
     attribute? :memory_size, T::Coercible::Float.optional
     attribute? :package_type, T::String.optional
     attribute? :publish, T::Bool.optional
@@ -36,10 +36,10 @@ module Pangea::Resources::AWS::Types
     attribute? :s3_key, T::String.optional
     attribute? :s3_object_version, T::String.optional
     attribute? :skip_destroy, T::Bool.optional
-    attribute? :snap_start, T::Array.of(T::Hash).optional
+    attribute? :snap_start, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :timeout, T::Coercible::Float.optional
-    attribute? :tracing_config, T::Array.of(T::Hash).optional
-    attribute? :vpc_config, T::Array.of(T::Hash).optional
+    attribute? :tracing_config, T::Hash.optional
+    attribute? :vpc_config, T::Hash.optional
   end
 end

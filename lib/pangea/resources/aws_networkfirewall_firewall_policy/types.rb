@@ -10,10 +10,10 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :firewall_policy, T::Array.of(T::Hash)
+    attribute :firewall_policy, T::Hash
     attribute :name, T::String
     attribute? :description, T::String.optional
-    attribute? :encryption_configuration, T::Array.of(T::Hash).optional
+    attribute? :encryption_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

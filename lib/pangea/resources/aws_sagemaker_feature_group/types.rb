@@ -16,9 +16,9 @@ module Pangea::Resources::AWS::Types
     attribute :record_identifier_feature_name, T::String
     attribute :role_arn, T::String
     attribute? :description, T::String.optional
-    attribute? :offline_store_config, T::Array.of(T::Hash).optional
-    attribute? :online_store_config, T::Array.of(T::Hash).optional
+    attribute? :offline_store_config, T::Hash.optional
+    attribute? :online_store_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :throughput_config, T::Array.of(T::Hash).optional
+    attribute? :throughput_config, T::Hash.optional
   end
 end

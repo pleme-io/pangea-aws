@@ -18,7 +18,7 @@ module Pangea::Resources::AWS::Types
     attribute? :cluster_endpoint_encryption_type, T::String.optional
     attribute? :description, T::String.optional
     attribute? :notification_topic_arn, T::String.optional
-    attribute? :server_side_encryption, T::Array.of(T::Hash).optional
+    attribute? :server_side_encryption, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

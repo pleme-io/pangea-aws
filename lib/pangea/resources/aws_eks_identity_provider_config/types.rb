@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :cluster_name, T::String
-    attribute :oidc, T::Array.of(T::Hash)
+    attribute :oidc, T::Hash
     attribute? :tags, T::Hash.optional
   end
 end

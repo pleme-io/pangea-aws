@@ -19,7 +19,7 @@ module Pangea::Resources::AWS::Types
     attribute? :provisioning_artifact_name, T::String.optional
     attribute? :provisioning_parameters, T::Array.of(T::Hash).optional
     attribute? :retain_physical_resources, T::Bool.optional
-    attribute? :stack_set_provisioning_preferences, T::Array.of(T::Hash).optional
+    attribute? :stack_set_provisioning_preferences, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

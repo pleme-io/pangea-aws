@@ -35,10 +35,10 @@ module Pangea::Resources::AWS::Types
     attribute? :master_password_wo_version, T::Coercible::Float.optional
     attribute? :performance_insights_enabled, T::Bool.optional
     attribute? :replication_source_identifier, T::String.optional
-    attribute? :restore_to_point_in_time, T::Array.of(T::Hash).optional
-    attribute? :s3_import, T::Array.of(T::Hash).optional
-    attribute? :scaling_configuration, T::Array.of(T::Hash).optional
-    attribute? :serverlessv2_scaling_configuration, T::Array.of(T::Hash).optional
+    attribute? :restore_to_point_in_time, T::Hash.optional
+    attribute? :s3_import, T::Hash.optional
+    attribute? :scaling_configuration, T::Hash.optional
+    attribute? :serverlessv2_scaling_configuration, T::Hash.optional
     attribute? :skip_final_snapshot, T::Bool.optional
     attribute? :snapshot_identifier, T::String.optional
     attribute? :source_region, T::String.optional

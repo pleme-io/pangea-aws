@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :fair_share_policy, T::Array.of(T::Hash).optional
+    attribute? :fair_share_policy, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

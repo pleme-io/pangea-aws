@@ -13,9 +13,9 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :template_id, T::String
     attribute :version_description, T::String
-    attribute? :definition, T::Array.of(T::Hash).optional
+    attribute? :definition, T::Hash.optional
     attribute? :permissions, T::Array.of(T::Hash).optional
-    attribute? :source_entity, T::Array.of(T::Hash).optional
+    attribute? :source_entity, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

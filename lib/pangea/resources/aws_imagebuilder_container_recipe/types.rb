@@ -14,11 +14,11 @@ module Pangea::Resources::AWS::Types
     attribute :container_type, T::String
     attribute :name, T::String
     attribute :parent_image, T::String
-    attribute :target_repository, T::Array.of(T::Hash)
+    attribute :target_repository, T::Hash
     attribute :version, T::String
     attribute? :description, T::String.optional
     attribute? :dockerfile_template_uri, T::String.optional
-    attribute? :instance_configuration, T::Array.of(T::Hash).optional
+    attribute? :instance_configuration, T::Hash.optional
     attribute? :kms_key_id, T::String.optional
     attribute? :platform_override, T::String.optional
     attribute? :tags, T::Hash.optional

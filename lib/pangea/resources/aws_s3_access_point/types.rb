@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :bucket, T::String
     attribute :name, T::String
-    attribute? :public_access_block_configuration, T::Array.of(T::Hash).optional
-    attribute? :vpc_configuration, T::Array.of(T::Hash).optional
+    attribute? :public_access_block_configuration, T::Hash.optional
+    attribute? :vpc_configuration, T::Hash.optional
   end
 end

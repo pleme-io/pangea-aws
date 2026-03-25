@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :protocol, T::Array.of(T::Hash)
+    attribute :protocol, T::Hash
     attribute :security_group_arns, T::Array.of(T::String)
     attribute :storage_virtual_machine_arn, T::String
     attribute? :tags, T::Hash.optional

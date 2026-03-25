@@ -11,8 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :account_aggregation_source, T::Array.of(T::Hash).optional
-    attribute? :organization_aggregation_source, T::Array.of(T::Hash).optional
+    attribute? :account_aggregation_source, T::Hash.optional
+    attribute? :organization_aggregation_source, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

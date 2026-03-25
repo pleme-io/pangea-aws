@@ -16,12 +16,12 @@ module Pangea::Resources::AWS::Types
     attribute :role_arn, T::String
     attribute? :audit_destination_arn, T::String.optional
     attribute? :bucket_region, T::String.optional
-    attribute? :cache_attributes, T::Array.of(T::Hash).optional
+    attribute? :cache_attributes, T::Hash.optional
     attribute? :default_storage_class, T::String.optional
     attribute? :guess_mime_type_enabled, T::Bool.optional
     attribute? :kms_encrypted, T::Bool.optional
     attribute? :kms_key_arn, T::String.optional
-    attribute? :nfs_file_share_defaults, T::Array.of(T::Hash).optional
+    attribute? :nfs_file_share_defaults, T::Hash.optional
     attribute? :notification_policy, T::String.optional
     attribute? :object_acl, T::String.optional
     attribute? :read_only, T::Bool.optional

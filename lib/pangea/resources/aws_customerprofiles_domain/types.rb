@@ -14,8 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute :domain_name, T::String
     attribute? :dead_letter_queue_url, T::String.optional
     attribute? :default_encryption_key, T::String.optional
-    attribute? :matching, T::Array.of(T::Hash).optional
-    attribute? :rule_based_matching, T::Array.of(T::Hash).optional
+    attribute? :matching, T::Hash.optional
+    attribute? :rule_based_matching, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

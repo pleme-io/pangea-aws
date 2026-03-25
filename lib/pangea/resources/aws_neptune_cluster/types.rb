@@ -22,7 +22,7 @@ module Pangea::Resources::AWS::Types
     attribute? :neptune_instance_parameter_group_name, T::String.optional
     attribute? :port, T::Coercible::Float.optional
     attribute? :replication_source_identifier, T::String.optional
-    attribute? :serverless_v2_scaling_configuration, T::Array.of(T::Hash).optional
+    attribute? :serverless_v2_scaling_configuration, T::Hash.optional
     attribute? :skip_final_snapshot, T::Bool.optional
     attribute? :snapshot_identifier, T::String.optional
     attribute? :storage_encrypted, T::Bool.optional

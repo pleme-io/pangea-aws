@@ -11,9 +11,9 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :vpc_peering_connection_id, T::String
-    attribute? :accepter, T::Array.of(T::Hash).optional
+    attribute? :accepter, T::Hash.optional
     attribute? :auto_accept, T::Bool.optional
-    attribute? :requester, T::Array.of(T::Hash).optional
+    attribute? :requester, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :bucket, T::String
     attribute? :expected_bucket_owner, T::String.optional
     attribute? :object_lock_enabled, T::String.optional
-    attribute? :rule, T::Array.of(T::Hash).optional
+    attribute? :rule, T::Hash.optional
     attribute? :token, T::String.optional
   end
 end

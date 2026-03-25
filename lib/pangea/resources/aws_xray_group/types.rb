@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :filter_expression, T::String
     attribute :group_name, T::String
-    attribute? :insights_configuration, T::Array.of(T::Hash).optional
+    attribute? :insights_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

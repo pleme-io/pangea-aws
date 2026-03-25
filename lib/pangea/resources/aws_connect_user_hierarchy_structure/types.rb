@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :hierarchy_structure, T::Array.of(T::Hash)
+    attribute :hierarchy_structure, T::Hash
     attribute :instance_id, T::String
   end
 end

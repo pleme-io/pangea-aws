@@ -11,10 +11,10 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :acl_configuration, T::Array.of(T::Hash).optional
+    attribute? :acl_configuration, T::Hash.optional
     attribute? :bucket, T::String.optional
     attribute? :comment, T::String.optional
-    attribute? :encryption_configuration, T::Array.of(T::Hash).optional
+    attribute? :encryption_configuration, T::Hash.optional
     attribute? :expected_bucket_owner, T::String.optional
     attribute? :force_destroy, T::Bool.optional
     attribute? :properties, T::Hash.optional

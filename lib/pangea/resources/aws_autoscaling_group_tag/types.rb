@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :autoscaling_group_name, T::String
-    attribute :tag, T::Array.of(T::Hash)
+    attribute :tag, T::Hash
   end
 end

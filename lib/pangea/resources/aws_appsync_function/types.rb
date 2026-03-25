@@ -18,7 +18,7 @@ module Pangea::Resources::AWS::Types
     attribute? :max_batch_size, T::Coercible::Float.optional
     attribute? :request_mapping_template, T::String.optional
     attribute? :response_mapping_template, T::String.optional
-    attribute? :runtime, T::Array.of(T::Hash).optional
-    attribute? :sync_config, T::Array.of(T::Hash).optional
+    attribute? :runtime, T::Hash.optional
+    attribute? :sync_config, T::Hash.optional
   end
 end

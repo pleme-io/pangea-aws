@@ -15,6 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute? :build_type, T::String.optional
     attribute? :filter_group, T::Array.of(T::Hash).optional
     attribute? :manual_creation, T::Bool.optional
-    attribute? :scope_configuration, T::Array.of(T::Hash).optional
+    attribute? :scope_configuration, T::Hash.optional
   end
 end

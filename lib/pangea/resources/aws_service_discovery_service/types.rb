@@ -12,10 +12,10 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :description, T::String.optional
-    attribute? :dns_config, T::Array.of(T::Hash).optional
+    attribute? :dns_config, T::Hash.optional
     attribute? :force_destroy, T::Bool.optional
-    attribute? :health_check_config, T::Array.of(T::Hash).optional
-    attribute? :health_check_custom_config, T::Array.of(T::Hash).optional
+    attribute? :health_check_config, T::Hash.optional
+    attribute? :health_check_custom_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

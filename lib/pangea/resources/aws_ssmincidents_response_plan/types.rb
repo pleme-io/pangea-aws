@@ -10,13 +10,13 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :incident_template, T::Array.of(T::Hash)
+    attribute :incident_template, T::Hash
     attribute :name, T::String
-    attribute? :action, T::Array.of(T::Hash).optional
+    attribute? :action, T::Hash.optional
     attribute? :chat_channel, T::Array.of(T::String).optional
     attribute? :display_name, T::String.optional
     attribute? :engagements, T::Array.of(T::String).optional
-    attribute? :integration, T::Array.of(T::Hash).optional
+    attribute? :integration, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

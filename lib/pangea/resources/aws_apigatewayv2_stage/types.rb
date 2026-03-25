@@ -12,10 +12,10 @@ module Pangea::Resources::AWS::Types
 
     attribute :api_id, T::String
     attribute :name, T::String
-    attribute? :access_log_settings, T::Array.of(T::Hash).optional
+    attribute? :access_log_settings, T::Hash.optional
     attribute? :auto_deploy, T::Bool.optional
     attribute? :client_certificate_id, T::String.optional
-    attribute? :default_route_settings, T::Array.of(T::Hash).optional
+    attribute? :default_route_settings, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :route_settings, T::Array.of(T::Hash).optional
     attribute? :stage_variables, T::Hash.optional

@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :domain_name, T::String
-    attribute? :saml_options, T::Array.of(T::Hash).optional
+    attribute? :saml_options, T::Hash.optional
   end
 end

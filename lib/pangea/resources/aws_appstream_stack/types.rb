@@ -12,11 +12,11 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :access_endpoints, T::Array.of(T::Hash).optional
-    attribute? :application_settings, T::Array.of(T::Hash).optional
+    attribute? :application_settings, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :display_name, T::String.optional
     attribute? :storage_connectors, T::Array.of(T::Hash).optional
-    attribute? :streaming_experience_settings, T::Array.of(T::Hash).optional
+    attribute? :streaming_experience_settings, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :user_settings, T::Array.of(T::Hash).optional
   end

@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :core_network_id, T::String
     attribute :subnet_arns, T::Array.of(T::String)
     attribute :vpc_arn, T::String
-    attribute? :options, T::Array.of(T::Hash).optional
+    attribute? :options, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

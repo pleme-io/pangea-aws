@@ -10,8 +10,8 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :disk_container, T::Array.of(T::Hash)
-    attribute? :client_data, T::Array.of(T::Hash).optional
+    attribute :disk_container, T::Hash
+    attribute? :client_data, T::Hash.optional
     attribute? :encrypted, T::Bool.optional
     attribute? :kms_key_id, T::String.optional
     attribute? :permanent_restore, T::Bool.optional

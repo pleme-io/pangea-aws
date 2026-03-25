@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :dead_letter_config, T::Array.of(T::Hash).optional
+    attribute? :dead_letter_config, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :event_source_name, T::String.optional
     attribute? :kms_key_identifier, T::String.optional

@@ -14,8 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute? :api_stages, T::Array.of(T::Hash).optional
     attribute? :description, T::String.optional
     attribute? :product_code, T::String.optional
-    attribute? :quota_settings, T::Array.of(T::Hash).optional
+    attribute? :quota_settings, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :throttle_settings, T::Array.of(T::Hash).optional
+    attribute? :throttle_settings, T::Hash.optional
   end
 end

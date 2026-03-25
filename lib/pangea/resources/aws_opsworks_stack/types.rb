@@ -18,7 +18,7 @@ module Pangea::Resources::AWS::Types
     attribute? :color, T::String.optional
     attribute? :configuration_manager_name, T::String.optional
     attribute? :configuration_manager_version, T::String.optional
-    attribute? :custom_cookbooks_source, T::Array.of(T::Hash).optional
+    attribute? :custom_cookbooks_source, T::Hash.optional
     attribute? :custom_json, T::String.optional
     attribute? :default_os, T::String.optional
     attribute? :default_root_device_type, T::String.optional

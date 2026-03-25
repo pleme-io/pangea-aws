@@ -12,8 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :deployment_config_name, T::String
     attribute? :compute_platform, T::String.optional
-    attribute? :minimum_healthy_hosts, T::Array.of(T::Hash).optional
-    attribute? :traffic_routing_config, T::Array.of(T::Hash).optional
-    attribute? :zonal_config, T::Array.of(T::Hash).optional
+    attribute? :minimum_healthy_hosts, T::Hash.optional
+    attribute? :traffic_routing_config, T::Hash.optional
+    attribute? :zonal_config, T::Hash.optional
   end
 end

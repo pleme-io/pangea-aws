@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :availability_zones, T::Array.of(T::String)
     attribute :name, T::String
-    attribute? :multiplex_settings, T::Array.of(T::Hash).optional
+    attribute? :multiplex_settings, T::Hash.optional
     attribute? :start_multiplex, T::Bool.optional
     attribute? :tags, T::Hash.optional
   end

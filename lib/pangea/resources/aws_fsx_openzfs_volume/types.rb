@@ -15,8 +15,8 @@ module Pangea::Resources::AWS::Types
     attribute? :copy_tags_to_snapshots, T::Bool.optional
     attribute? :data_compression_type, T::String.optional
     attribute? :delete_volume_options, T::Array.of(T::String).optional
-    attribute? :nfs_exports, T::Array.of(T::Hash).optional
-    attribute? :origin_snapshot, T::Array.of(T::Hash).optional
+    attribute? :nfs_exports, T::Hash.optional
+    attribute? :origin_snapshot, T::Hash.optional
     attribute? :record_size_kib, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
     attribute? :user_and_group_quotas, T::Array.of(T::Hash).optional

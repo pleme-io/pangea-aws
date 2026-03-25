@@ -13,6 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
-    attribute? :vpc_config, T::Array.of(T::Hash).optional
+    attribute? :vpc_config, T::Hash.optional
   end
 end

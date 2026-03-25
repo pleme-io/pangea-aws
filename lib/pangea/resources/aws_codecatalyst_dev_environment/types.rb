@@ -10,9 +10,9 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :ides, T::Array.of(T::Hash)
+    attribute :ides, T::Hash
     attribute :instance_type, T::String
-    attribute :persistent_storage, T::Array.of(T::Hash)
+    attribute :persistent_storage, T::Hash
     attribute :project_name, T::String
     attribute :space_name, T::String
     attribute? :alias, T::String.optional

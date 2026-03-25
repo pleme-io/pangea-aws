@@ -13,12 +13,12 @@ module Pangea::Resources::AWS::Types
     attribute :destination_location_arn, T::String
     attribute :source_location_arn, T::String
     attribute? :cloudwatch_log_group_arn, T::String.optional
-    attribute? :excludes, T::Array.of(T::Hash).optional
-    attribute? :includes, T::Array.of(T::Hash).optional
+    attribute? :excludes, T::Hash.optional
+    attribute? :includes, T::Hash.optional
     attribute? :name, T::String.optional
-    attribute? :options, T::Array.of(T::Hash).optional
-    attribute? :schedule, T::Array.of(T::Hash).optional
+    attribute? :options, T::Hash.optional
+    attribute? :schedule, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :task_report_config, T::Array.of(T::Hash).optional
+    attribute? :task_report_config, T::Hash.optional
   end
 end

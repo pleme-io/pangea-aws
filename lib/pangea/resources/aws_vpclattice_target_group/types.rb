@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute :type, T::String
-    attribute? :config, T::Array.of(T::Hash).optional
+    attribute? :config, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

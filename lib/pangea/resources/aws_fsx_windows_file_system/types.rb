@@ -14,15 +14,15 @@ module Pangea::Resources::AWS::Types
     attribute :throughput_capacity, T::Coercible::Float
     attribute? :active_directory_id, T::String.optional
     attribute? :aliases, T::Array.of(T::String).optional
-    attribute? :audit_log_configuration, T::Array.of(T::Hash).optional
+    attribute? :audit_log_configuration, T::Hash.optional
     attribute? :automatic_backup_retention_days, T::Coercible::Float.optional
     attribute? :backup_id, T::String.optional
     attribute? :copy_tags_to_backups, T::Bool.optional
     attribute? :deployment_type, T::String.optional
-    attribute? :disk_iops_configuration, T::Array.of(T::Hash).optional
+    attribute? :disk_iops_configuration, T::Hash.optional
     attribute? :final_backup_tags, T::Hash.optional
     attribute? :security_group_ids, T::Array.of(T::String).optional
-    attribute? :self_managed_active_directory, T::Array.of(T::Hash).optional
+    attribute? :self_managed_active_directory, T::Hash.optional
     attribute? :skip_final_backup, T::Bool.optional
     attribute? :storage_type, T::String.optional
     attribute? :tags, T::Hash.optional

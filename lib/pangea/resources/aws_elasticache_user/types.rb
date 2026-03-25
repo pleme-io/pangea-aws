@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :engine, T::String
     attribute :user_id, T::String
     attribute :user_name, T::String
-    attribute? :authentication_mode, T::Array.of(T::Hash).optional
+    attribute? :authentication_mode, T::Hash.optional
     attribute? :no_password_required, T::Bool.optional
     attribute? :passwords, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional

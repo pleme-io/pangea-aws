@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :kms_key, T::String
     attribute :name, T::String
-    attribute :schedule_config, T::Array.of(T::Hash)
+    attribute :schedule_config, T::Hash
     attribute :source_uri, T::String
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional

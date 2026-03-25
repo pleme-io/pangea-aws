@@ -10,9 +10,9 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute? :campaign_hook, T::Array.of(T::Hash).optional
-    attribute? :limits, T::Array.of(T::Hash).optional
-    attribute? :quiet_time, T::Array.of(T::Hash).optional
+    attribute? :campaign_hook, T::Hash.optional
+    attribute? :limits, T::Hash.optional
+    attribute? :quiet_time, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

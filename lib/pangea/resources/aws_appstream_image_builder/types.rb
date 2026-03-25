@@ -13,8 +13,8 @@ module Pangea::Resources::AWS::Types
     attribute :instance_type, T::String
     attribute :name, T::String
     attribute? :access_endpoint, T::Array.of(T::Hash).optional
-    attribute? :domain_join_info, T::Array.of(T::Hash).optional
+    attribute? :domain_join_info, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :vpc_config, T::Array.of(T::Hash).optional
+    attribute? :vpc_config, T::Hash.optional
   end
 end

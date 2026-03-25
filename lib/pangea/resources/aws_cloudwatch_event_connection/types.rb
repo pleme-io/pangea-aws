@@ -10,11 +10,11 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :auth_parameters, T::Array.of(T::Hash)
+    attribute :auth_parameters, T::Hash
     attribute :authorization_type, T::String
     attribute :name, T::String
     attribute? :description, T::String.optional
-    attribute? :invocation_connectivity_parameters, T::Array.of(T::Hash).optional
+    attribute? :invocation_connectivity_parameters, T::Hash.optional
     attribute? :kms_key_identifier, T::String.optional
   end
 end

@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :index_id, T::String
     attribute :name, T::String
     attribute :role_arn, T::String
-    attribute :source_s3_path, T::Array.of(T::Hash)
+    attribute :source_s3_path, T::Hash
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
   end

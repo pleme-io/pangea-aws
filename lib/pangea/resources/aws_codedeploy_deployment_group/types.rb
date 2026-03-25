@@ -13,16 +13,16 @@ module Pangea::Resources::AWS::Types
     attribute :app_name, T::String
     attribute :deployment_group_name, T::String
     attribute :service_role_arn, T::String
-    attribute? :alarm_configuration, T::Array.of(T::Hash).optional
-    attribute? :auto_rollback_configuration, T::Array.of(T::Hash).optional
+    attribute? :alarm_configuration, T::Hash.optional
+    attribute? :auto_rollback_configuration, T::Hash.optional
     attribute? :autoscaling_groups, T::Array.of(T::String).optional
-    attribute? :blue_green_deployment_config, T::Array.of(T::Hash).optional
+    attribute? :blue_green_deployment_config, T::Hash.optional
     attribute? :deployment_config_name, T::String.optional
-    attribute? :deployment_style, T::Array.of(T::Hash).optional
+    attribute? :deployment_style, T::Hash.optional
     attribute? :ec2_tag_filter, T::Array.of(T::Hash).optional
     attribute? :ec2_tag_set, T::Array.of(T::Hash).optional
-    attribute? :ecs_service, T::Array.of(T::Hash).optional
-    attribute? :load_balancer_info, T::Array.of(T::Hash).optional
+    attribute? :ecs_service, T::Hash.optional
+    attribute? :load_balancer_info, T::Hash.optional
     attribute? :on_premises_instance_tag_filter, T::Array.of(T::Hash).optional
     attribute? :outdated_instances_strategy, T::String.optional
     attribute? :tags, T::Hash.optional

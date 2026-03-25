@@ -11,12 +11,12 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :bucket, T::String
-    attribute :destination, T::Array.of(T::Hash)
+    attribute :destination, T::Hash
     attribute :included_object_versions, T::String
     attribute :name, T::String
-    attribute :schedule, T::Array.of(T::Hash)
+    attribute :schedule, T::Hash
     attribute? :enabled, T::Bool.optional
-    attribute? :filter, T::Array.of(T::Hash).optional
+    attribute? :filter, T::Hash.optional
     attribute? :optional_fields, T::Array.of(T::String).optional
   end
 end

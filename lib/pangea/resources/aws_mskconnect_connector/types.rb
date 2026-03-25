@@ -10,18 +10,18 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :capacity, T::Array.of(T::Hash)
+    attribute :capacity, T::Hash
     attribute :connector_configuration, T::Hash
-    attribute :kafka_cluster, T::Array.of(T::Hash)
-    attribute :kafka_cluster_client_authentication, T::Array.of(T::Hash)
-    attribute :kafka_cluster_encryption_in_transit, T::Array.of(T::Hash)
+    attribute :kafka_cluster, T::Hash
+    attribute :kafka_cluster_client_authentication, T::Hash
+    attribute :kafka_cluster_encryption_in_transit, T::Hash
     attribute :kafkaconnect_version, T::String
     attribute :name, T::String
     attribute :plugin, T::Array.of(T::Hash)
     attribute :service_execution_role_arn, T::String
     attribute? :description, T::String.optional
-    attribute? :log_delivery, T::Array.of(T::Hash).optional
+    attribute? :log_delivery, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :worker_configuration, T::Array.of(T::Hash).optional
+    attribute? :worker_configuration, T::Hash.optional
   end
 end

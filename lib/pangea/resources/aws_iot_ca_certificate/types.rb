@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :allow_auto_registration, T::Bool
     attribute :ca_certificate_pem, T::String
     attribute? :certificate_mode, T::String.optional
-    attribute? :registration_config, T::Array.of(T::Hash).optional
+    attribute? :registration_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :verification_certificate_pem, T::String.optional
   end

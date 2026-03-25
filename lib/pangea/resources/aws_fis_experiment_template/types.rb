@@ -14,9 +14,9 @@ module Pangea::Resources::AWS::Types
     attribute :description, T::String
     attribute :role_arn, T::String
     attribute :stop_condition, T::Array.of(T::Hash)
-    attribute? :experiment_options, T::Array.of(T::Hash).optional
-    attribute? :experiment_report_configuration, T::Array.of(T::Hash).optional
-    attribute? :log_configuration, T::Array.of(T::Hash).optional
+    attribute? :experiment_options, T::Hash.optional
+    attribute? :experiment_report_configuration, T::Hash.optional
+    attribute? :log_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :target, T::Array.of(T::Hash).optional
   end

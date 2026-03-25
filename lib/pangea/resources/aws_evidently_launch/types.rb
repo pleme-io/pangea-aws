@@ -16,7 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :metric_monitors, T::Array.of(T::Hash).optional
     attribute? :randomization_salt, T::String.optional
-    attribute? :scheduled_splits_config, T::Array.of(T::Hash).optional
+    attribute? :scheduled_splits_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

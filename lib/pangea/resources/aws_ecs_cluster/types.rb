@@ -11,8 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :configuration, T::Array.of(T::Hash).optional
-    attribute? :service_connect_defaults, T::Array.of(T::Hash).optional
+    attribute? :configuration, T::Hash.optional
+    attribute? :service_connect_defaults, T::Hash.optional
     attribute? :setting, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
   end

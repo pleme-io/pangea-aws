@@ -12,6 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :instance_id, T::String
     attribute :resource_type, T::String
-    attribute :storage_config, T::Array.of(T::Hash)
+    attribute :storage_config, T::Hash
   end
 end

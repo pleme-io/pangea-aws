@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :project_name, T::String
-    attribute :service_catalog_provisioning_details, T::Array.of(T::Hash)
+    attribute :service_catalog_provisioning_details, T::Hash
     attribute? :project_description, T::String.optional
     attribute? :tags, T::Hash.optional
   end

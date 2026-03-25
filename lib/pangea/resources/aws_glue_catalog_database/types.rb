@@ -13,9 +13,9 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :create_table_default_permission, T::Array.of(T::Hash).optional
     attribute? :description, T::String.optional
-    attribute? :federated_database, T::Array.of(T::Hash).optional
+    attribute? :federated_database, T::Hash.optional
     attribute? :parameters, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :target_database, T::Array.of(T::Hash).optional
+    attribute? :target_database, T::Hash.optional
   end
 end

@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :db_proxy_name, T::String
-    attribute? :connection_pool_config, T::Array.of(T::Hash).optional
+    attribute? :connection_pool_config, T::Hash.optional
   end
 end

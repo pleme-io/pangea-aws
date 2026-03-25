@@ -14,13 +14,13 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :type, T::String
     attribute? :description, T::String.optional
-    attribute? :dynamodb_config, T::Array.of(T::Hash).optional
-    attribute? :elasticsearch_config, T::Array.of(T::Hash).optional
-    attribute? :event_bridge_config, T::Array.of(T::Hash).optional
-    attribute? :http_config, T::Array.of(T::Hash).optional
-    attribute? :lambda_config, T::Array.of(T::Hash).optional
-    attribute? :opensearchservice_config, T::Array.of(T::Hash).optional
-    attribute? :relational_database_config, T::Array.of(T::Hash).optional
+    attribute? :dynamodb_config, T::Hash.optional
+    attribute? :elasticsearch_config, T::Hash.optional
+    attribute? :event_bridge_config, T::Hash.optional
+    attribute? :http_config, T::Hash.optional
+    attribute? :lambda_config, T::Hash.optional
+    attribute? :opensearchservice_config, T::Hash.optional
+    attribute? :relational_database_config, T::Hash.optional
     attribute? :service_role_arn, T::String.optional
   end
 end

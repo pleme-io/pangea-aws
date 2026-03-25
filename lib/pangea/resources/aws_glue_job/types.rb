@@ -10,21 +10,21 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :command, T::Array.of(T::Hash)
+    attribute :command, T::Hash
     attribute :name, T::String
     attribute :role_arn, T::String
     attribute? :connections, T::Array.of(T::String).optional
     attribute? :default_arguments, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :execution_class, T::String.optional
-    attribute? :execution_property, T::Array.of(T::Hash).optional
+    attribute? :execution_property, T::Hash.optional
     attribute? :job_run_queuing_enabled, T::Bool.optional
     attribute? :maintenance_window, T::String.optional
     attribute? :max_retries, T::Coercible::Float.optional
     attribute? :non_overridable_arguments, T::Hash.optional
-    attribute? :notification_property, T::Array.of(T::Hash).optional
+    attribute? :notification_property, T::Hash.optional
     attribute? :security_configuration, T::String.optional
-    attribute? :source_control_details, T::Array.of(T::Hash).optional
+    attribute? :source_control_details, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

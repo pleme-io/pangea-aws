@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :access_string, T::String
-    attribute :authentication_mode, T::Array.of(T::Hash)
+    attribute :authentication_mode, T::Hash
     attribute :user_name, T::String
     attribute? :tags, T::Hash.optional
   end

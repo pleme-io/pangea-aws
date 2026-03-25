@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute? :certificate, T::String.optional
     attribute? :directory_id, T::String.optional
     attribute? :domain, T::String.optional
-    attribute? :endpoint_details, T::Array.of(T::Hash).optional
+    attribute? :endpoint_details, T::Hash.optional
     attribute? :endpoint_type, T::String.optional
     attribute? :force_destroy, T::Bool.optional
     attribute? :function, T::String.optional
@@ -23,12 +23,12 @@ module Pangea::Resources::AWS::Types
     attribute? :logging_role, T::String.optional
     attribute? :post_authentication_login_banner, T::String.optional
     attribute? :pre_authentication_login_banner, T::String.optional
-    attribute? :protocol_details, T::Array.of(T::Hash).optional
-    attribute? :s3_storage_options, T::Array.of(T::Hash).optional
+    attribute? :protocol_details, T::Hash.optional
+    attribute? :s3_storage_options, T::Hash.optional
     attribute? :security_policy_name, T::String.optional
     attribute? :structured_log_destinations, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
     attribute? :url, T::String.optional
-    attribute? :workflow_details, T::Array.of(T::Hash).optional
+    attribute? :workflow_details, T::Hash.optional
   end
 end

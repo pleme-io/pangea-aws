@@ -11,22 +11,22 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :block_duration_minutes, T::Coercible::Float.optional
-    attribute? :capacity_reservation_specification, T::Array.of(T::Hash).optional
-    attribute? :cpu_options, T::Array.of(T::Hash).optional
-    attribute? :credit_specification, T::Array.of(T::Hash).optional
+    attribute? :capacity_reservation_specification, T::Hash.optional
+    attribute? :cpu_options, T::Hash.optional
+    attribute? :credit_specification, T::Hash.optional
     attribute? :ebs_block_device, T::Array.of(T::Hash).optional
-    attribute? :enclave_options, T::Array.of(T::Hash).optional
+    attribute? :enclave_options, T::Hash.optional
     attribute? :ephemeral_block_device, T::Array.of(T::Hash).optional
     attribute? :get_password_data, T::Bool.optional
     attribute? :hibernation, T::Bool.optional
     attribute? :instance_interruption_behavior, T::String.optional
     attribute? :launch_group, T::String.optional
-    attribute? :launch_template, T::Array.of(T::Hash).optional
-    attribute? :maintenance_options, T::Array.of(T::Hash).optional
-    attribute? :metadata_options, T::Array.of(T::Hash).optional
+    attribute? :launch_template, T::Hash.optional
+    attribute? :maintenance_options, T::Hash.optional
+    attribute? :metadata_options, T::Hash.optional
     attribute? :network_interface, T::Array.of(T::Hash).optional
-    attribute? :private_dns_name_options, T::Array.of(T::Hash).optional
-    attribute? :root_block_device, T::Array.of(T::Hash).optional
+    attribute? :private_dns_name_options, T::Hash.optional
+    attribute? :root_block_device, T::Hash.optional
     attribute? :source_dest_check, T::Bool.optional
     attribute? :spot_type, T::String.optional
     attribute? :tags, T::Hash.optional

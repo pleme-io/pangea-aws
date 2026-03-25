@@ -16,9 +16,9 @@ module Pangea::Resources::AWS::Types
     attribute? :enable_monitoring, T::Bool.optional
     attribute? :ephemeral_block_device, T::Array.of(T::Hash).optional
     attribute? :iam_instance_profile, T::String.optional
-    attribute? :metadata_options, T::Array.of(T::Hash).optional
+    attribute? :metadata_options, T::Hash.optional
     attribute? :placement_tenancy, T::String.optional
-    attribute? :root_block_device, T::Array.of(T::Hash).optional
+    attribute? :root_block_device, T::Hash.optional
     attribute? :security_groups, T::Array.of(T::String).optional
     attribute? :spot_price, T::String.optional
     attribute? :user_data, T::String.optional

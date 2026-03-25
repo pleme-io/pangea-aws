@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :monitoring_schedule_config, T::Array.of(T::Hash)
+    attribute :monitoring_schedule_config, T::Hash
     attribute? :tags, T::Hash.optional
   end
 end

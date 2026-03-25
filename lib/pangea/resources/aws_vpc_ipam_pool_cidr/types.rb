@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :ipam_pool_id, T::String
-    attribute? :cidr_authorization_context, T::Array.of(T::Hash).optional
+    attribute? :cidr_authorization_context, T::Hash.optional
     attribute? :netmask_length, T::Coercible::Float.optional
   end
 end

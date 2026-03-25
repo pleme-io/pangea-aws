@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :bucket, T::String
-    attribute? :access_control_policy, T::Array.of(T::Hash).optional
+    attribute? :access_control_policy, T::Hash.optional
     attribute? :acl, T::String.optional
     attribute? :expected_bucket_owner, T::String.optional
   end

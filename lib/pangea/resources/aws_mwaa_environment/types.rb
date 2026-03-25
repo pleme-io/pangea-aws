@@ -13,11 +13,11 @@ module Pangea::Resources::AWS::Types
     attribute :dag_s3_path, T::String
     attribute :execution_role_arn, T::String
     attribute :name, T::String
-    attribute :network_configuration, T::Array.of(T::Hash)
+    attribute :network_configuration, T::Hash
     attribute :source_bucket_arn, T::String
     attribute? :airflow_configuration_options, T::Hash.optional
     attribute? :kms_key, T::String.optional
-    attribute? :logging_configuration, T::Array.of(T::Hash).optional
+    attribute? :logging_configuration, T::Hash.optional
     attribute? :plugins_s3_path, T::String.optional
     attribute? :requirements_s3_path, T::String.optional
     attribute? :startup_script_s3_path, T::String.optional

@@ -10,14 +10,14 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :data_quality_app_specification, T::Array.of(T::Hash)
-    attribute :data_quality_job_input, T::Array.of(T::Hash)
-    attribute :data_quality_job_output_config, T::Array.of(T::Hash)
-    attribute :job_resources, T::Array.of(T::Hash)
+    attribute :data_quality_app_specification, T::Hash
+    attribute :data_quality_job_input, T::Hash
+    attribute :data_quality_job_output_config, T::Hash
+    attribute :job_resources, T::Hash
     attribute :role_arn, T::String
-    attribute? :data_quality_baseline_config, T::Array.of(T::Hash).optional
-    attribute? :network_config, T::Array.of(T::Hash).optional
-    attribute? :stopping_condition, T::Array.of(T::Hash).optional
+    attribute? :data_quality_baseline_config, T::Hash.optional
+    attribute? :network_config, T::Hash.optional
+    attribute? :stopping_condition, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

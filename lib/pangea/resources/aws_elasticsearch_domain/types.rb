@@ -11,18 +11,18 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :domain_name, T::String
-    attribute? :advanced_security_options, T::Array.of(T::Hash).optional
-    attribute? :auto_tune_options, T::Array.of(T::Hash).optional
-    attribute? :cluster_config, T::Array.of(T::Hash).optional
-    attribute? :cognito_options, T::Array.of(T::Hash).optional
-    attribute? :domain_endpoint_options, T::Array.of(T::Hash).optional
-    attribute? :ebs_options, T::Array.of(T::Hash).optional
+    attribute? :advanced_security_options, T::Hash.optional
+    attribute? :auto_tune_options, T::Hash.optional
+    attribute? :cluster_config, T::Hash.optional
+    attribute? :cognito_options, T::Hash.optional
+    attribute? :domain_endpoint_options, T::Hash.optional
+    attribute? :ebs_options, T::Hash.optional
     attribute? :elasticsearch_version, T::String.optional
-    attribute? :encrypt_at_rest, T::Array.of(T::Hash).optional
+    attribute? :encrypt_at_rest, T::Hash.optional
     attribute? :log_publishing_options, T::Array.of(T::Hash).optional
-    attribute? :node_to_node_encryption, T::Array.of(T::Hash).optional
-    attribute? :snapshot_options, T::Array.of(T::Hash).optional
+    attribute? :node_to_node_encryption, T::Hash.optional
+    attribute? :snapshot_options, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :vpc_options, T::Array.of(T::Hash).optional
+    attribute? :vpc_options, T::Hash.optional
   end
 end

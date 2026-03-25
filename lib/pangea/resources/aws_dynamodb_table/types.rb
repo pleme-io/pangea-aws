@@ -15,20 +15,20 @@ module Pangea::Resources::AWS::Types
     attribute? :billing_mode, T::String.optional
     attribute? :deletion_protection_enabled, T::Bool.optional
     attribute? :global_secondary_index, T::Array.of(T::Hash).optional
-    attribute? :import_table, T::Array.of(T::Hash).optional
+    attribute? :import_table, T::Hash.optional
     attribute? :local_secondary_index, T::Array.of(T::Hash).optional
-    attribute? :on_demand_throughput, T::Array.of(T::Hash).optional
-    attribute? :point_in_time_recovery, T::Array.of(T::Hash).optional
+    attribute? :on_demand_throughput, T::Hash.optional
+    attribute? :point_in_time_recovery, T::Hash.optional
     attribute? :range_key, T::String.optional
     attribute? :replica, T::Array.of(T::Hash).optional
     attribute? :restore_date_time, T::String.optional
     attribute? :restore_source_name, T::String.optional
     attribute? :restore_source_table_arn, T::String.optional
     attribute? :restore_to_latest_time, T::Bool.optional
-    attribute? :server_side_encryption, T::Array.of(T::Hash).optional
+    attribute? :server_side_encryption, T::Hash.optional
     attribute? :stream_enabled, T::Bool.optional
     attribute? :table_class, T::String.optional
     attribute? :tags, T::Hash.optional
-    attribute? :ttl, T::Array.of(T::Hash).optional
+    attribute? :ttl, T::Hash.optional
   end
 end

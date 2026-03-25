@@ -12,12 +12,12 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :administration_role_arn, T::String.optional
-    attribute? :auto_deployment, T::Array.of(T::Hash).optional
+    attribute? :auto_deployment, T::Hash.optional
     attribute? :call_as, T::String.optional
     attribute? :capabilities, T::Array.of(T::String).optional
     attribute? :description, T::String.optional
-    attribute? :managed_execution, T::Array.of(T::Hash).optional
-    attribute? :operation_preferences, T::Array.of(T::Hash).optional
+    attribute? :managed_execution, T::Hash.optional
+    attribute? :operation_preferences, T::Hash.optional
     attribute? :parameters, T::Hash.optional
     attribute? :permission_model, T::String.optional
     attribute? :tags, T::Hash.optional

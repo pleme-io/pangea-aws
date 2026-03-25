@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :input_record_tables, T::Array.of(T::Hash)
     attribute :name, T::String
-    attribute :parameters, T::Array.of(T::Hash)
+    attribute :parameters, T::Hash
     attribute :role_arn, T::String
     attribute? :description, T::String.optional
     attribute? :max_retries, T::Coercible::Float.optional

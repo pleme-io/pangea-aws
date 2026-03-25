@@ -13,8 +13,8 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :runtime_environment, T::String
     attribute :service_execution_role, T::String
-    attribute? :application_configuration, T::Array.of(T::Hash).optional
-    attribute? :cloudwatch_logging_options, T::Array.of(T::Hash).optional
+    attribute? :application_configuration, T::Hash.optional
+    attribute? :cloudwatch_logging_options, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :force_stop, T::Bool.optional
     attribute? :start_application, T::Bool.optional

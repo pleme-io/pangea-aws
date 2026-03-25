@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :alarm_name, T::String
     attribute :alarm_rule, T::String
     attribute? :actions_enabled, T::Bool.optional
-    attribute? :actions_suppressor, T::Array.of(T::Hash).optional
+    attribute? :actions_suppressor, T::Hash.optional
     attribute? :alarm_actions, T::Array.of(T::String).optional
     attribute? :alarm_description, T::String.optional
     attribute? :insufficient_data_actions, T::Array.of(T::String).optional

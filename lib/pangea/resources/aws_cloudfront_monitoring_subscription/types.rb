@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :distribution_id, T::String
-    attribute :monitoring_subscription, T::Array.of(T::Hash)
+    attribute :monitoring_subscription, T::Hash
   end
 end

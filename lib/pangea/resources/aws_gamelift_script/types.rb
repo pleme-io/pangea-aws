@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :storage_location, T::Array.of(T::Hash).optional
+    attribute? :storage_location, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :version, T::String.optional
     attribute? :zip_file, T::String.optional

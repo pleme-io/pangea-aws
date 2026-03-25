@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :client_authentication, T::Array.of(T::Hash)
+    attribute :client_authentication, T::Hash
     attribute :cluster_name, T::String
     attribute :vpc_config, T::Array.of(T::Hash)
     attribute? :tags, T::Hash.optional

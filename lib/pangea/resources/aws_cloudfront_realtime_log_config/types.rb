@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :endpoint, T::Array.of(T::Hash)
+    attribute :endpoint, T::Hash
     attribute :fields, T::Array.of(T::String)
     attribute :name, T::String
     attribute :sampling_rate, T::Coercible::Float

@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute? :thing_group_indexing_configuration, T::Array.of(T::Hash).optional
-    attribute? :thing_indexing_configuration, T::Array.of(T::Hash).optional
+    attribute? :thing_group_indexing_configuration, T::Hash.optional
+    attribute? :thing_indexing_configuration, T::Hash.optional
   end
 end

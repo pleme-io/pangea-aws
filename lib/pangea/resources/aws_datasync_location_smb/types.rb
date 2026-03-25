@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :server_hostname, T::String
     attribute :subdirectory, T::String
     attribute :user, T::String
-    attribute? :mount_options, T::Array.of(T::Hash).optional
+    attribute? :mount_options, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

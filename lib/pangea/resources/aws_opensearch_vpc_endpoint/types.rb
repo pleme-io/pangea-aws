@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :domain_arn, T::String
-    attribute :vpc_options, T::Array.of(T::Hash)
+    attribute :vpc_options, T::Hash
   end
 end

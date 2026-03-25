@@ -10,9 +10,9 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :action, T::Array.of(T::Hash)
+    attribute :action, T::Hash
     attribute :listener_identifier, T::String
-    attribute :match, T::Array.of(T::Hash)
+    attribute :match, T::Hash
     attribute :name, T::String
     attribute :priority, T::Coercible::Float
     attribute :service_identifier, T::String

@@ -15,19 +15,19 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :release_label, T::String
     attribute :type, T::String
-    attribute :vpc_configuration, T::Array.of(T::Hash)
-    attribute? :auto_scaling_configuration, T::Array.of(T::Hash).optional
+    attribute :vpc_configuration, T::Hash
+    attribute? :auto_scaling_configuration, T::Hash.optional
     attribute? :availability_zone_id, T::String.optional
     attribute? :cache_storage_configurations, T::Array.of(T::Hash).optional
-    attribute? :capacity_configuration, T::Array.of(T::Hash).optional
-    attribute? :code, T::Array.of(T::Hash).optional
+    attribute? :capacity_configuration, T::Hash.optional
+    attribute? :code, T::Hash.optional
     attribute? :command_line_arguments, T::Hash.optional
     attribute? :database, T::Array.of(T::Hash).optional
     attribute? :description, T::String.optional
     attribute? :execution_role, T::String.optional
     attribute? :initialization_script, T::String.optional
-    attribute? :savedown_storage_configuration, T::Array.of(T::Hash).optional
-    attribute? :scaling_group_configuration, T::Array.of(T::Hash).optional
+    attribute? :savedown_storage_configuration, T::Hash.optional
+    attribute? :scaling_group_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :tickerplant_log_configuration, T::Array.of(T::Hash).optional
   end

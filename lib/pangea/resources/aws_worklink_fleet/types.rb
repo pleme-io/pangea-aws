@@ -14,8 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute? :audit_stream_arn, T::String.optional
     attribute? :device_ca_certificate, T::String.optional
     attribute? :display_name, T::String.optional
-    attribute? :identity_provider, T::Array.of(T::Hash).optional
-    attribute? :network, T::Array.of(T::Hash).optional
+    attribute? :identity_provider, T::Hash.optional
+    attribute? :network, T::Hash.optional
     attribute? :optimize_for_end_user_location, T::Bool.optional
   end
 end

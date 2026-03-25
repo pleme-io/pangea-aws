@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :method_path, T::String
     attribute :rest_api_id, T::String
-    attribute :settings, T::Array.of(T::Hash)
+    attribute :settings, T::Hash
     attribute :stage_name, T::String
   end
 end

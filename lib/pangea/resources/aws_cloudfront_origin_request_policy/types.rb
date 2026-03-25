@@ -10,10 +10,10 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :cookies_config, T::Array.of(T::Hash)
-    attribute :headers_config, T::Array.of(T::Hash)
+    attribute :cookies_config, T::Hash
+    attribute :headers_config, T::Hash
     attribute :name, T::String
-    attribute :query_strings_config, T::Array.of(T::Hash)
+    attribute :query_strings_config, T::Hash
     attribute? :comment, T::String.optional
   end
 end

@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute? :alias, T::String.optional
     attribute? :kms_key_arn, T::String.optional
-    attribute? :logging_configuration, T::Array.of(T::Hash).optional
+    attribute? :logging_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

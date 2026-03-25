@@ -10,11 +10,11 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :action_threshold, T::Array.of(T::Hash)
+    attribute :action_threshold, T::Hash
     attribute :action_type, T::String
     attribute :approval_model, T::String
     attribute :budget_name, T::String
-    attribute :definition, T::Array.of(T::Hash)
+    attribute :definition, T::Hash
     attribute :execution_role_arn, T::String
     attribute :notification_type, T::String
     attribute :subscriber, T::Array.of(T::Hash)

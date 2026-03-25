@@ -10,10 +10,10 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :certificate_authority_configuration, T::Array.of(T::Hash)
+    attribute :certificate_authority_configuration, T::Hash
     attribute? :enabled, T::Bool.optional
     attribute? :permanent_deletion_time_in_days, T::Coercible::Float.optional
-    attribute? :revocation_configuration, T::Array.of(T::Hash).optional
+    attribute? :revocation_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :type, T::String.optional
   end

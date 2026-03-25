@@ -15,18 +15,18 @@ module Pangea::Resources::AWS::Types
     attribute :handler, T::String
     attribute :name, T::String
     attribute :runtime_version, T::String
-    attribute :schedule, T::Array.of(T::Hash)
-    attribute? :artifact_config, T::Array.of(T::Hash).optional
+    attribute :schedule, T::Hash
+    attribute? :artifact_config, T::Hash.optional
     attribute? :delete_lambda, T::Bool.optional
     attribute? :failure_retention_period, T::Coercible::Float.optional
-    attribute? :run_config, T::Array.of(T::Hash).optional
+    attribute? :run_config, T::Hash.optional
     attribute? :s3_bucket, T::String.optional
     attribute? :s3_key, T::String.optional
     attribute? :s3_version, T::String.optional
     attribute? :start_canary, T::Bool.optional
     attribute? :success_retention_period, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
-    attribute? :vpc_config, T::Array.of(T::Hash).optional
+    attribute? :vpc_config, T::Hash.optional
     attribute? :zip_file, T::String.optional
   end
 end

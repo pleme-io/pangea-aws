@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :access_policy, T::String.optional
-    attribute? :notification, T::Array.of(T::Hash).optional
+    attribute? :notification, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

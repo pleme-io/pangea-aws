@@ -13,10 +13,10 @@ module Pangea::Resources::AWS::Types
     attribute :input_bucket, T::String
     attribute :role, T::String
     attribute? :aws_kms_key_arn, T::String.optional
-    attribute? :content_config, T::Array.of(T::Hash).optional
+    attribute? :content_config, T::Hash.optional
     attribute? :content_config_permissions, T::Array.of(T::Hash).optional
-    attribute? :notifications, T::Array.of(T::Hash).optional
-    attribute? :thumbnail_config, T::Array.of(T::Hash).optional
+    attribute? :notifications, T::Hash.optional
+    attribute? :thumbnail_config, T::Hash.optional
     attribute? :thumbnail_config_permissions, T::Array.of(T::Hash).optional
   end
 end

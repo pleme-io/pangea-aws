@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :database_name, T::String
-    attribute :partition_index, T::Array.of(T::Hash)
+    attribute :partition_index, T::Hash
     attribute :table_name, T::String
   end
 end

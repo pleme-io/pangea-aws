@@ -18,9 +18,9 @@ module Pangea::Resources::AWS::Types
     attribute? :estimated_instance_warmup, T::Coercible::Float.optional
     attribute? :min_adjustment_magnitude, T::Coercible::Float.optional
     attribute? :policy_type, T::String.optional
-    attribute? :predictive_scaling_configuration, T::Array.of(T::Hash).optional
+    attribute? :predictive_scaling_configuration, T::Hash.optional
     attribute? :scaling_adjustment, T::Coercible::Float.optional
     attribute? :step_adjustment, T::Array.of(T::Hash).optional
-    attribute? :target_tracking_configuration, T::Array.of(T::Hash).optional
+    attribute? :target_tracking_configuration, T::Hash.optional
   end
 end

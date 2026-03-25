@@ -10,9 +10,9 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :flexible_time_window, T::Array.of(T::Hash)
+    attribute :flexible_time_window, T::Hash
     attribute :schedule_expression, T::String
-    attribute :target, T::Array.of(T::Hash)
+    attribute :target, T::Hash
     attribute? :description, T::String.optional
     attribute? :end_date, T::String.optional
     attribute? :kms_key_arn, T::String.optional

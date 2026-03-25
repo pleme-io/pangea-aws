@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute? :allow_major_version_upgrade, T::Bool.optional
     attribute? :apply_immediately, T::Bool.optional
     attribute? :auto_minor_version_upgrade, T::Bool.optional
-    attribute? :blue_green_update, T::Array.of(T::Hash).optional
+    attribute? :blue_green_update, T::Hash.optional
     attribute? :copy_tags_to_snapshot, T::Bool.optional
     attribute? :custom_iam_instance_profile, T::String.optional
     attribute? :customer_owned_ip_enabled, T::Bool.optional
@@ -38,8 +38,8 @@ module Pangea::Resources::AWS::Types
     attribute? :performance_insights_enabled, T::Bool.optional
     attribute? :publicly_accessible, T::Bool.optional
     attribute? :replicate_source_db, T::String.optional
-    attribute? :restore_to_point_in_time, T::Array.of(T::Hash).optional
-    attribute? :s3_import, T::Array.of(T::Hash).optional
+    attribute? :restore_to_point_in_time, T::Hash.optional
+    attribute? :s3_import, T::Hash.optional
     attribute? :skip_final_snapshot, T::Bool.optional
     attribute? :storage_encrypted, T::Bool.optional
     attribute? :tags, T::Hash.optional

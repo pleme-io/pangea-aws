@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :bucket, T::String
     attribute :name, T::String
-    attribute? :filter, T::Array.of(T::Hash).optional
-    attribute? :storage_class_analysis, T::Array.of(T::Hash).optional
+    attribute? :filter, T::Hash.optional
+    attribute? :storage_class_analysis, T::Hash.optional
   end
 end

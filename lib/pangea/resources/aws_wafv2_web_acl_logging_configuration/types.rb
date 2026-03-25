@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :log_destination_configs, T::Array.of(T::String)
     attribute :resource_arn, T::String
-    attribute? :logging_filter, T::Array.of(T::Hash).optional
+    attribute? :logging_filter, T::Hash.optional
     attribute? :redacted_fields, T::Array.of(T::Hash).optional
   end
 end

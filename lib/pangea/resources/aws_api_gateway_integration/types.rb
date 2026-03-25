@@ -23,7 +23,7 @@ module Pangea::Resources::AWS::Types
     attribute? :request_parameters, T::Hash.optional
     attribute? :request_templates, T::Hash.optional
     attribute? :timeout_milliseconds, T::Coercible::Float.optional
-    attribute? :tls_config, T::Array.of(T::Hash).optional
+    attribute? :tls_config, T::Hash.optional
     attribute? :uri, T::String.optional
   end
 end

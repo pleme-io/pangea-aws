@@ -11,8 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :production_variants, T::Array.of(T::Hash)
-    attribute? :async_inference_config, T::Array.of(T::Hash).optional
-    attribute? :data_capture_config, T::Array.of(T::Hash).optional
+    attribute? :async_inference_config, T::Hash.optional
+    attribute? :data_capture_config, T::Hash.optional
     attribute? :kms_key_arn, T::String.optional
     attribute? :shadow_production_variants, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional

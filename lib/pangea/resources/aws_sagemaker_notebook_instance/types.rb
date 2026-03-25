@@ -17,7 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute? :additional_code_repositories, T::Array.of(T::String).optional
     attribute? :default_code_repository, T::String.optional
     attribute? :direct_internet_access, T::String.optional
-    attribute? :instance_metadata_service_configuration, T::Array.of(T::Hash).optional
+    attribute? :instance_metadata_service_configuration, T::Hash.optional
     attribute? :kms_key_id, T::String.optional
     attribute? :lifecycle_config_name, T::String.optional
     attribute? :root_access, T::String.optional

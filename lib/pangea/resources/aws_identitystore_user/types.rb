@@ -12,13 +12,13 @@ module Pangea::Resources::AWS::Types
 
     attribute :display_name, T::String
     attribute :identity_store_id, T::String
-    attribute :name, T::Array.of(T::Hash)
+    attribute :name, T::Hash
     attribute :user_name, T::String
-    attribute? :addresses, T::Array.of(T::Hash).optional
-    attribute? :emails, T::Array.of(T::Hash).optional
+    attribute? :addresses, T::Hash.optional
+    attribute? :emails, T::Hash.optional
     attribute? :locale, T::String.optional
     attribute? :nickname, T::String.optional
-    attribute? :phone_numbers, T::Array.of(T::Hash).optional
+    attribute? :phone_numbers, T::Hash.optional
     attribute? :preferred_language, T::String.optional
     attribute? :profile_url, T::String.optional
     attribute? :timezone, T::String.optional

@@ -12,6 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :instance_arn, T::String
     attribute :permission_set_arn, T::String
-    attribute :permissions_boundary, T::Array.of(T::Hash)
+    attribute :permissions_boundary, T::Hash
   end
 end

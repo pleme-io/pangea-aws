@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :authorization_type, T::String
     attribute :function_name, T::String
-    attribute? :cors, T::Array.of(T::Hash).optional
+    attribute? :cors, T::Hash.optional
     attribute? :invoke_mode, T::String.optional
     attribute? :qualifier, T::String.optional
   end

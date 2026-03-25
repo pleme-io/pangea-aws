@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :index_id, T::String
     attribute :name, T::String
     attribute :role_arn, T::String
-    attribute? :configuration, T::Array.of(T::Hash).optional
+    attribute? :configuration, T::Hash.optional
     attribute? :description, T::String.optional
   end
 end

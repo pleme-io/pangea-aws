@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :detector_id, T::String
-    attribute? :datasources, T::Array.of(T::Hash).optional
+    attribute? :datasources, T::Hash.optional
   end
 end

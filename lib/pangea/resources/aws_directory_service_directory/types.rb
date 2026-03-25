@@ -12,11 +12,11 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute :password, T::String
-    attribute? :connect_settings, T::Array.of(T::Hash).optional
+    attribute? :connect_settings, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :enable_sso, T::Bool.optional
     attribute? :tags, T::Hash.optional
     attribute? :type, T::String.optional
-    attribute? :vpc_settings, T::Array.of(T::Hash).optional
+    attribute? :vpc_settings, T::Hash.optional
   end
 end

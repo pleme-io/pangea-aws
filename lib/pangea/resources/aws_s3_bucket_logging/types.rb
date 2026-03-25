@@ -15,6 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute :target_prefix, T::String
     attribute? :expected_bucket_owner, T::String.optional
     attribute? :target_grant, T::Array.of(T::Hash).optional
-    attribute? :target_object_key_format, T::Array.of(T::Hash).optional
+    attribute? :target_object_key_format, T::Hash.optional
   end
 end

@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :directory_id, T::String
-    attribute :target, T::Array.of(T::Hash)
+    attribute :target, T::Hash
     attribute? :method, T::String.optional
     attribute? :notes, T::String.optional
   end

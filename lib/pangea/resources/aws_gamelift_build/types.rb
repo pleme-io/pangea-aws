@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute :operating_system, T::String
-    attribute :storage_location, T::Array.of(T::Hash)
+    attribute :storage_location, T::Hash
     attribute? :tags, T::Hash.optional
     attribute? :version, T::String.optional
   end

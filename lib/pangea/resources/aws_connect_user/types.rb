@@ -12,11 +12,11 @@ module Pangea::Resources::AWS::Types
 
     attribute :instance_id, T::String
     attribute :name, T::String
-    attribute :phone_config, T::Array.of(T::Hash)
+    attribute :phone_config, T::Hash
     attribute :routing_profile_id, T::String
     attribute :security_profile_ids, T::Array.of(T::String)
     attribute? :hierarchy_group_id, T::String.optional
-    attribute? :identity_info, T::Array.of(T::Hash).optional
+    attribute? :identity_info, T::Hash.optional
     attribute? :password, T::String.optional
     attribute? :tags, T::Hash.optional
   end

@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :filters, T::Array.of(T::Hash)
+    attribute :filters, T::Hash
     attribute :group_by_attribute, T::String
     attribute :name, T::String
   end

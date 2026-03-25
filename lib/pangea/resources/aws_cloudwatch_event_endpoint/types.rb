@@ -12,9 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :event_bus, T::Array.of(T::Hash)
     attribute :name, T::String
-    attribute :routing_config, T::Array.of(T::Hash)
+    attribute :routing_config, T::Hash
     attribute? :description, T::String.optional
-    attribute? :replication_config, T::Array.of(T::Hash).optional
+    attribute? :replication_config, T::Hash.optional
     attribute? :role_arn, T::String.optional
   end
 end

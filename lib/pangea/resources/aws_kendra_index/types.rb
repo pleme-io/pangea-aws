@@ -12,14 +12,14 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute :role_arn, T::String
-    attribute? :capacity_units, T::Array.of(T::Hash).optional
+    attribute? :capacity_units, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :document_metadata_configuration_updates, T::Array.of(T::Hash).optional
     attribute? :edition, T::String.optional
-    attribute? :server_side_encryption_configuration, T::Array.of(T::Hash).optional
+    attribute? :server_side_encryption_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :user_context_policy, T::String.optional
-    attribute? :user_group_resolution_configuration, T::Array.of(T::Hash).optional
-    attribute? :user_token_configurations, T::Array.of(T::Hash).optional
+    attribute? :user_group_resolution_configuration, T::Hash.optional
+    attribute? :user_token_configurations, T::Hash.optional
   end
 end

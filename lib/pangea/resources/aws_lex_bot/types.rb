@@ -10,11 +10,11 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :abort_statement, T::Array.of(T::Hash)
+    attribute :abort_statement, T::Hash
     attribute :child_directed, T::Bool
     attribute :intent, T::Array.of(T::Hash)
     attribute :name, T::String
-    attribute? :clarification_prompt, T::Array.of(T::Hash).optional
+    attribute? :clarification_prompt, T::Hash.optional
     attribute? :create_version, T::Bool.optional
     attribute? :description, T::String.optional
     attribute? :detect_sentiment, T::Bool.optional

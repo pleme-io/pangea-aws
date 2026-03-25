@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :connect_attachment_id, T::String
     attribute :peer_address, T::String
-    attribute? :bgp_options, T::Array.of(T::Hash).optional
+    attribute? :bgp_options, T::Hash.optional
     attribute? :core_network_address, T::String.optional
     attribute? :inside_cidr_blocks, T::Array.of(T::String).optional
     attribute? :subnet_arn, T::String.optional

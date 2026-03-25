@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :customer_managed_policy_reference, T::Array.of(T::Hash)
+    attribute :customer_managed_policy_reference, T::Hash
     attribute :instance_arn, T::String
     attribute :permission_set_arn, T::String
   end

@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :role_arn, T::String
     attribute? :name, T::String.optional
-    attribute? :recording_group, T::Array.of(T::Hash).optional
-    attribute? :recording_mode, T::Array.of(T::Hash).optional
+    attribute? :recording_group, T::Hash.optional
+    attribute? :recording_mode, T::Hash.optional
   end
 end

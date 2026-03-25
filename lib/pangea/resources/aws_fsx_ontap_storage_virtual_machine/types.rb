@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :file_system_id, T::String
     attribute :name, T::String
-    attribute? :active_directory_configuration, T::Array.of(T::Hash).optional
+    attribute? :active_directory_configuration, T::Hash.optional
     attribute? :root_volume_security_style, T::String.optional
     attribute? :svm_admin_password, T::String.optional
     attribute? :tags, T::Hash.optional

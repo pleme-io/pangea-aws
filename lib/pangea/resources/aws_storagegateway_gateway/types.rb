@@ -17,9 +17,9 @@ module Pangea::Resources::AWS::Types
     attribute? :cloudwatch_log_group_arn, T::String.optional
     attribute? :gateway_type, T::String.optional
     attribute? :gateway_vpc_endpoint, T::String.optional
-    attribute? :maintenance_start_time, T::Array.of(T::Hash).optional
+    attribute? :maintenance_start_time, T::Hash.optional
     attribute? :medium_changer_type, T::String.optional
-    attribute? :smb_active_directory_settings, T::Array.of(T::Hash).optional
+    attribute? :smb_active_directory_settings, T::Hash.optional
     attribute? :smb_file_share_visibility, T::Bool.optional
     attribute? :smb_guest_password, T::String.optional
     attribute? :tags, T::Hash.optional

@@ -14,15 +14,15 @@ module Pangea::Resources::AWS::Types
     attribute? :backup_id, T::String.optional
     attribute? :copy_tags_to_backups, T::Bool.optional
     attribute? :data_compression_type, T::String.optional
-    attribute? :data_read_cache_configuration, T::Array.of(T::Hash).optional
+    attribute? :data_read_cache_configuration, T::Hash.optional
     attribute? :deployment_type, T::String.optional
     attribute? :drive_cache_type, T::String.optional
     attribute? :final_backup_tags, T::Hash.optional
     attribute? :import_path, T::String.optional
-    attribute? :log_configuration, T::Array.of(T::Hash).optional
-    attribute? :metadata_configuration, T::Array.of(T::Hash).optional
+    attribute? :log_configuration, T::Hash.optional
+    attribute? :metadata_configuration, T::Hash.optional
     attribute? :per_unit_storage_throughput, T::Coercible::Float.optional
-    attribute? :root_squash_configuration, T::Array.of(T::Hash).optional
+    attribute? :root_squash_configuration, T::Hash.optional
     attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :skip_final_backup, T::Bool.optional
     attribute? :storage_capacity, T::Coercible::Float.optional

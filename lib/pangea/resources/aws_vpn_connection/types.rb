@@ -19,7 +19,7 @@ module Pangea::Resources::AWS::Types
     attribute? :tunnel1_dpd_timeout_seconds, T::Coercible::Float.optional
     attribute? :tunnel1_enable_tunnel_lifecycle_control, T::Bool.optional
     attribute? :tunnel1_ike_versions, T::Array.of(T::String).optional
-    attribute? :tunnel1_log_options, T::Array.of(T::Hash).optional
+    attribute? :tunnel1_log_options, T::Hash.optional
     attribute? :tunnel1_phase1_dh_group_numbers, T::Array.of(T::Coercible::Float).optional
     attribute? :tunnel1_phase1_encryption_algorithms, T::Array.of(T::String).optional
     attribute? :tunnel1_phase1_integrity_algorithms, T::Array.of(T::String).optional
@@ -36,7 +36,7 @@ module Pangea::Resources::AWS::Types
     attribute? :tunnel2_dpd_timeout_seconds, T::Coercible::Float.optional
     attribute? :tunnel2_enable_tunnel_lifecycle_control, T::Bool.optional
     attribute? :tunnel2_ike_versions, T::Array.of(T::String).optional
-    attribute? :tunnel2_log_options, T::Array.of(T::Hash).optional
+    attribute? :tunnel2_log_options, T::Hash.optional
     attribute? :tunnel2_phase1_dh_group_numbers, T::Array.of(T::Coercible::Float).optional
     attribute? :tunnel2_phase1_encryption_algorithms, T::Array.of(T::String).optional
     attribute? :tunnel2_phase1_integrity_algorithms, T::Array.of(T::String).optional

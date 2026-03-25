@@ -11,9 +11,9 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :csv_classifier, T::Array.of(T::Hash).optional
-    attribute? :grok_classifier, T::Array.of(T::Hash).optional
-    attribute? :json_classifier, T::Array.of(T::Hash).optional
-    attribute? :xml_classifier, T::Array.of(T::Hash).optional
+    attribute? :csv_classifier, T::Hash.optional
+    attribute? :grok_classifier, T::Hash.optional
+    attribute? :json_classifier, T::Hash.optional
+    attribute? :xml_classifier, T::Hash.optional
   end
 end

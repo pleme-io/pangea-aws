@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :configuration_set_name, T::String
-    attribute :event_destination, T::Array.of(T::Hash)
+    attribute :event_destination, T::Hash
     attribute :event_destination_name, T::String
   end
 end

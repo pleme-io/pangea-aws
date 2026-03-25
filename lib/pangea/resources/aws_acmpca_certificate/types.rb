@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :certificate_authority_arn, T::String
     attribute :certificate_signing_request, T::String
     attribute :signing_algorithm, T::String
-    attribute :validity, T::Array.of(T::Hash)
+    attribute :validity, T::Hash
     attribute? :api_passthrough, T::String.optional
     attribute? :template_arn, T::String.optional
   end

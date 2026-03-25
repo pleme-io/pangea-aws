@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :log_group_name, T::String
-    attribute :metric_transformation, T::Array.of(T::Hash)
+    attribute :metric_transformation, T::Hash
     attribute :name, T::String
     attribute :pattern, T::String
   end

@@ -16,11 +16,11 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :desired_state, T::String.optional
     attribute? :enrichment, T::String.optional
-    attribute? :enrichment_parameters, T::Array.of(T::Hash).optional
+    attribute? :enrichment_parameters, T::Hash.optional
     attribute? :kms_key_identifier, T::String.optional
-    attribute? :log_configuration, T::Array.of(T::Hash).optional
-    attribute? :source_parameters, T::Array.of(T::Hash).optional
+    attribute? :log_configuration, T::Hash.optional
+    attribute? :source_parameters, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :target_parameters, T::Array.of(T::Hash).optional
+    attribute? :target_parameters, T::Hash.optional
   end
 end

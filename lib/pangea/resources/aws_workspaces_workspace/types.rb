@@ -17,6 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute? :tags, T::Hash.optional
     attribute? :user_volume_encryption_enabled, T::Bool.optional
     attribute? :volume_encryption_key, T::String.optional
-    attribute? :workspace_properties, T::Array.of(T::Hash).optional
+    attribute? :workspace_properties, T::Hash.optional
   end
 end

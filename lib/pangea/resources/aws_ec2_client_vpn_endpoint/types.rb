@@ -12,11 +12,11 @@ module Pangea::Resources::AWS::Types
 
     attribute :authentication_options, T::Array.of(T::Hash)
     attribute :client_cidr_block, T::String
-    attribute :connection_log_options, T::Array.of(T::Hash)
+    attribute :connection_log_options, T::Hash
     attribute :server_certificate_arn, T::String
-    attribute? :client_connect_options, T::Array.of(T::Hash).optional
-    attribute? :client_login_banner_options, T::Array.of(T::Hash).optional
-    attribute? :client_route_enforcement_options, T::Array.of(T::Hash).optional
+    attribute? :client_connect_options, T::Hash.optional
+    attribute? :client_login_banner_options, T::Hash.optional
+    attribute? :client_route_enforcement_options, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :dns_servers, T::Array.of(T::String).optional
     attribute? :self_service_portal, T::String.optional

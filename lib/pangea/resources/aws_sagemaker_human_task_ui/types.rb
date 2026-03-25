@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :human_task_ui_name, T::String
-    attribute :ui_template, T::Array.of(T::Hash)
+    attribute :ui_template, T::Hash
     attribute? :tags, T::Hash.optional
   end
 end

@@ -12,6 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :container, T::Array.of(T::Hash)
     attribute :service_name, T::String
-    attribute? :public_endpoint, T::Array.of(T::Hash).optional
+    attribute? :public_endpoint, T::Hash.optional
   end
 end

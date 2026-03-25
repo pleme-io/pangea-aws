@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :backup_policy, T::Array.of(T::Hash)
+    attribute :backup_policy, T::Hash
     attribute :file_system_id, T::String
   end
 end

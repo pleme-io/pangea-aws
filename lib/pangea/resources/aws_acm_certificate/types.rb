@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute? :certificate_body, T::String.optional
     attribute? :certificate_chain, T::String.optional
     attribute? :early_renewal_duration, T::String.optional
-    attribute? :options, T::Array.of(T::Hash).optional
+    attribute? :options, T::Hash.optional
     attribute? :private_key, T::String.optional
     attribute? :tags, T::Hash.optional
     attribute? :validation_option, T::Array.of(T::Hash).optional

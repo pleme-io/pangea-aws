@@ -10,8 +10,8 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :repository, T::Array.of(T::Hash)
-    attribute? :kms_key_details, T::Array.of(T::Hash).optional
+    attribute :repository, T::Hash
+    attribute? :kms_key_details, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

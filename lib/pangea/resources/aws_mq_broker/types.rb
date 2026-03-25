@@ -17,13 +17,13 @@ module Pangea::Resources::AWS::Types
     attribute :user, T::Array.of(T::Hash)
     attribute? :apply_immediately, T::Bool.optional
     attribute? :auto_minor_version_upgrade, T::Bool.optional
-    attribute? :configuration, T::Array.of(T::Hash).optional
+    attribute? :configuration, T::Hash.optional
     attribute? :data_replication_primary_broker_arn, T::String.optional
     attribute? :deployment_mode, T::String.optional
-    attribute? :encryption_options, T::Array.of(T::Hash).optional
-    attribute? :ldap_server_metadata, T::Array.of(T::Hash).optional
-    attribute? :logs, T::Array.of(T::Hash).optional
-    attribute? :maintenance_window_start_time, T::Array.of(T::Hash).optional
+    attribute? :encryption_options, T::Hash.optional
+    attribute? :ldap_server_metadata, T::Hash.optional
+    attribute? :logs, T::Hash.optional
+    attribute? :maintenance_window_start_time, T::Hash.optional
     attribute? :publicly_accessible, T::Bool.optional
     attribute? :security_groups, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional

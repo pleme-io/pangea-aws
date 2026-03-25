@@ -11,13 +11,13 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :launch_template_config, T::Array.of(T::Hash)
-    attribute :target_capacity_specification, T::Array.of(T::Hash)
+    attribute :target_capacity_specification, T::Hash
     attribute? :context, T::String.optional
     attribute? :excess_capacity_termination_policy, T::String.optional
     attribute? :fleet_instance_set, T::Array.of(T::Hash).optional
-    attribute? :on_demand_options, T::Array.of(T::Hash).optional
+    attribute? :on_demand_options, T::Hash.optional
     attribute? :replace_unhealthy_instances, T::Bool.optional
-    attribute? :spot_options, T::Array.of(T::Hash).optional
+    attribute? :spot_options, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :terminate_instances, T::Bool.optional
     attribute? :terminate_instances_with_expiration, T::Bool.optional

@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :description, T::String
     attribute :name, T::String
     attribute :query_log_status, T::String
-    attribute? :data_encryption_metadata, T::Array.of(T::Hash).optional
+    attribute? :data_encryption_metadata, T::Hash.optional
     attribute? :member, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
   end

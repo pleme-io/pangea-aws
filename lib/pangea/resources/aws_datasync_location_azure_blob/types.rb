@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :container_url, T::String
     attribute? :access_tier, T::String.optional
     attribute? :blob_type, T::String.optional
-    attribute? :sas_configuration, T::Array.of(T::Hash).optional
+    attribute? :sas_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

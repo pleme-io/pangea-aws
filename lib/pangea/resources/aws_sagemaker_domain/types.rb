@@ -11,16 +11,16 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :auth_mode, T::String
-    attribute :default_user_settings, T::Array.of(T::Hash)
+    attribute :default_user_settings, T::Hash
     attribute :domain_name, T::String
     attribute :subnet_ids, T::Array.of(T::String)
     attribute :vpc_id, T::String
     attribute? :app_network_access_type, T::String.optional
     attribute? :app_security_group_management, T::String.optional
-    attribute? :default_space_settings, T::Array.of(T::Hash).optional
-    attribute? :domain_settings, T::Array.of(T::Hash).optional
+    attribute? :default_space_settings, T::Hash.optional
+    attribute? :domain_settings, T::Hash.optional
     attribute? :kms_key_id, T::String.optional
-    attribute? :retention_policy, T::Array.of(T::Hash).optional
+    attribute? :retention_policy, T::Hash.optional
     attribute? :tag_propagation, T::String.optional
     attribute? :tags, T::Hash.optional
   end

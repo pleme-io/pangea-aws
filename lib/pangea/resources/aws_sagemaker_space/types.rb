@@ -12,10 +12,10 @@ module Pangea::Resources::AWS::Types
 
     attribute :domain_id, T::String
     attribute :space_name, T::String
-    attribute? :ownership_settings, T::Array.of(T::Hash).optional
+    attribute? :ownership_settings, T::Hash.optional
     attribute? :space_display_name, T::String.optional
-    attribute? :space_settings, T::Array.of(T::Hash).optional
-    attribute? :space_sharing_settings, T::Array.of(T::Hash).optional
+    attribute? :space_settings, T::Hash.optional
+    attribute? :space_sharing_settings, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

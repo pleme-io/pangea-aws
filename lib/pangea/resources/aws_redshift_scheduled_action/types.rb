@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :iam_role, T::String
     attribute :name, T::String
     attribute :schedule, T::String
-    attribute :target_action, T::Array.of(T::Hash)
+    attribute :target_action, T::Hash
     attribute? :description, T::String.optional
     attribute? :enable, T::Bool.optional
     attribute? :end_time, T::String.optional

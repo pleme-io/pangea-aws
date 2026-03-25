@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :vpc_configuration, T::Array.of(T::Hash)
+    attribute :vpc_configuration, T::Hash
     attribute? :enabled, T::Bool.optional
   end
 end

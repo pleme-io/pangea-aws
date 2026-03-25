@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :fsx_filesystem_arn, T::String
-    attribute :protocol, T::Array.of(T::Hash)
+    attribute :protocol, T::Hash
     attribute :security_group_arns, T::Array.of(T::String)
     attribute? :tags, T::Hash.optional
   end

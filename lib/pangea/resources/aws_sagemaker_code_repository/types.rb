@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :code_repository_name, T::String
-    attribute :git_config, T::Array.of(T::Hash)
+    attribute :git_config, T::Hash
     attribute? :tags, T::Hash.optional
   end
 end

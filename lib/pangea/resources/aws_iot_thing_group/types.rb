@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :parent_group_name, T::String.optional
-    attribute? :properties, T::Array.of(T::Hash).optional
+    attribute? :properties, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

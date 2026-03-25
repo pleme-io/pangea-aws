@@ -14,10 +14,10 @@ module Pangea::Resources::AWS::Types
     attribute :compute_type, T::String
     attribute :environment_type, T::String
     attribute :name, T::String
-    attribute? :compute_configuration, T::Array.of(T::Hash).optional
+    attribute? :compute_configuration, T::Hash.optional
     attribute? :fleet_service_role, T::String.optional
     attribute? :image_id, T::String.optional
-    attribute? :scaling_configuration, T::Array.of(T::Hash).optional
+    attribute? :scaling_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :vpc_config, T::Array.of(T::Hash).optional
   end

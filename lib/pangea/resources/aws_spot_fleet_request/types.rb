@@ -24,7 +24,7 @@ module Pangea::Resources::AWS::Types
     attribute? :on_demand_max_total_price, T::String.optional
     attribute? :on_demand_target_capacity, T::Coercible::Float.optional
     attribute? :replace_unhealthy_instances, T::Bool.optional
-    attribute? :spot_maintenance_strategies, T::Array.of(T::Hash).optional
+    attribute? :spot_maintenance_strategies, T::Hash.optional
     attribute? :spot_price, T::String.optional
     attribute? :tags, T::Hash.optional
     attribute? :target_capacity_unit_type, T::String.optional

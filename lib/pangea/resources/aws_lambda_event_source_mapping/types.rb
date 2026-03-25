@@ -11,23 +11,23 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :function_name, T::String
-    attribute? :amazon_managed_kafka_event_source_config, T::Array.of(T::Hash).optional
+    attribute? :amazon_managed_kafka_event_source_config, T::Hash.optional
     attribute? :batch_size, T::Coercible::Float.optional
     attribute? :bisect_batch_on_function_error, T::Bool.optional
-    attribute? :destination_config, T::Array.of(T::Hash).optional
-    attribute? :document_db_event_source_config, T::Array.of(T::Hash).optional
+    attribute? :destination_config, T::Hash.optional
+    attribute? :document_db_event_source_config, T::Hash.optional
     attribute? :enabled, T::Bool.optional
     attribute? :event_source_arn, T::String.optional
-    attribute? :filter_criteria, T::Array.of(T::Hash).optional
+    attribute? :filter_criteria, T::Hash.optional
     attribute? :function_response_types, T::Array.of(T::String).optional
     attribute? :kms_key_arn, T::String.optional
     attribute? :maximum_batching_window_in_seconds, T::Coercible::Float.optional
-    attribute? :metrics_config, T::Array.of(T::Hash).optional
-    attribute? :provisioned_poller_config, T::Array.of(T::Hash).optional
+    attribute? :metrics_config, T::Hash.optional
+    attribute? :provisioned_poller_config, T::Hash.optional
     attribute? :queues, T::Array.of(T::String).optional
-    attribute? :scaling_config, T::Array.of(T::Hash).optional
-    attribute? :self_managed_event_source, T::Array.of(T::Hash).optional
-    attribute? :self_managed_kafka_event_source_config, T::Array.of(T::Hash).optional
+    attribute? :scaling_config, T::Hash.optional
+    attribute? :self_managed_event_source, T::Hash.optional
+    attribute? :self_managed_kafka_event_source_config, T::Hash.optional
     attribute? :source_access_configuration, T::Array.of(T::Hash).optional
     attribute? :starting_position, T::String.optional
     attribute? :starting_position_timestamp, T::String.optional

@@ -10,18 +10,18 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :default_cache_behavior, T::Array.of(T::Hash)
+    attribute :default_cache_behavior, T::Hash
     attribute :enabled, T::Bool
     attribute :origin, T::Array.of(T::Hash)
-    attribute :restrictions, T::Array.of(T::Hash)
-    attribute :viewer_certificate, T::Array.of(T::Hash)
+    attribute :restrictions, T::Hash
+    attribute :viewer_certificate, T::Hash
     attribute? :aliases, T::Array.of(T::String).optional
     attribute? :comment, T::String.optional
     attribute? :custom_error_response, T::Array.of(T::Hash).optional
     attribute? :default_root_object, T::String.optional
     attribute? :http_version, T::String.optional
     attribute? :is_ipv6_enabled, T::Bool.optional
-    attribute? :logging_config, T::Array.of(T::Hash).optional
+    attribute? :logging_config, T::Hash.optional
     attribute? :ordered_cache_behavior, T::Array.of(T::Hash).optional
     attribute? :origin_group, T::Array.of(T::Hash).optional
     attribute? :price_class, T::String.optional

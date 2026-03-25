@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :base_model_name, T::String
-    attribute :input_data_config, T::Array.of(T::Hash)
+    attribute :input_data_config, T::Hash
     attribute :language_code, T::String
     attribute :model_name, T::String
     attribute? :tags, T::Hash.optional

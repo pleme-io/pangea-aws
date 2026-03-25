@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :attributes, T::Array.of(T::Hash).optional
+    attribute? :attributes, T::Hash.optional
     attribute? :enabled, T::Bool.optional
     attribute? :ip_address_type, T::String.optional
     attribute? :ip_addresses, T::Array.of(T::String).optional

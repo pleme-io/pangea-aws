@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :storage_capacity, T::Coercible::Float
     attribute :subnet_ids, T::Array.of(T::String)
     attribute? :automatic_backup_retention_days, T::Coercible::Float.optional
-    attribute? :disk_iops_configuration, T::Array.of(T::Hash).optional
+    attribute? :disk_iops_configuration, T::Hash.optional
     attribute? :fsx_admin_password, T::String.optional
     attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :storage_type, T::String.optional

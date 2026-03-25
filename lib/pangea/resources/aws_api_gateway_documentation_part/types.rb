@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :location, T::Array.of(T::Hash)
+    attribute :location, T::Hash
     attribute :properties, T::String
     attribute :rest_api_id, T::String
   end

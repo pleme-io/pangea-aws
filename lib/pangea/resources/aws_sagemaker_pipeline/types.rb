@@ -12,9 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :pipeline_display_name, T::String
     attribute :pipeline_name, T::String
-    attribute? :parallelism_configuration, T::Array.of(T::Hash).optional
+    attribute? :parallelism_configuration, T::Hash.optional
     attribute? :pipeline_definition, T::String.optional
-    attribute? :pipeline_definition_s3_location, T::Array.of(T::Hash).optional
+    attribute? :pipeline_definition_s3_location, T::Hash.optional
     attribute? :pipeline_description, T::String.optional
     attribute? :role_arn, T::String.optional
     attribute? :tags, T::Hash.optional

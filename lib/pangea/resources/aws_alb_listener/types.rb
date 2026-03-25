@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :load_balancer_arn, T::String
     attribute? :alpn_policy, T::String.optional
     attribute? :certificate_arn, T::String.optional
-    attribute? :mutual_authentication, T::Array.of(T::Hash).optional
+    attribute? :mutual_authentication, T::Hash.optional
     attribute? :port, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
   end

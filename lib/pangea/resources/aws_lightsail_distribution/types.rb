@@ -11,11 +11,11 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :bundle_id, T::String
-    attribute :default_cache_behavior, T::Array.of(T::Hash)
+    attribute :default_cache_behavior, T::Hash
     attribute :name, T::String
-    attribute :origin, T::Array.of(T::Hash)
+    attribute :origin, T::Hash
     attribute? :cache_behavior, T::Array.of(T::Hash).optional
-    attribute? :cache_behavior_settings, T::Array.of(T::Hash).optional
+    attribute? :cache_behavior_settings, T::Hash.optional
     attribute? :certificate_name, T::String.optional
     attribute? :ip_address_type, T::String.optional
     attribute? :is_enabled, T::Bool.optional

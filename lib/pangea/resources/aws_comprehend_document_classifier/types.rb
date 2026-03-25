@@ -11,14 +11,14 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :data_access_role_arn, T::String
-    attribute :input_data_config, T::Array.of(T::Hash)
+    attribute :input_data_config, T::Hash
     attribute :language_code, T::String
     attribute :name, T::String
     attribute? :mode, T::String.optional
     attribute? :model_kms_key_id, T::String.optional
-    attribute? :output_data_config, T::Array.of(T::Hash).optional
+    attribute? :output_data_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :volume_kms_key_id, T::String.optional
-    attribute? :vpc_config, T::Array.of(T::Hash).optional
+    attribute? :vpc_config, T::Hash.optional
   end
 end

@@ -11,10 +11,10 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :type, T::String
-    attribute? :compute_resources, T::Array.of(T::Hash).optional
-    attribute? :eks_configuration, T::Array.of(T::Hash).optional
+    attribute? :compute_resources, T::Hash.optional
+    attribute? :eks_configuration, T::Hash.optional
     attribute? :state, T::String.optional
     attribute? :tags, T::Hash.optional
-    attribute? :update_policy, T::Array.of(T::Hash).optional
+    attribute? :update_policy, T::Hash.optional
   end
 end

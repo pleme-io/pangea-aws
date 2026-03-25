@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :body, T::String.optional
-    attribute? :endpoint_configuration, T::Array.of(T::Hash).optional
+    attribute? :endpoint_configuration, T::Hash.optional
     attribute? :fail_on_warnings, T::Bool.optional
     attribute? :parameters, T::Hash.optional
     attribute? :put_rest_api_mode, T::String.optional

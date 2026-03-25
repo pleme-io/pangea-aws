@@ -10,8 +10,8 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :content_type_profile_config, T::Array.of(T::Hash)
-    attribute :query_arg_profile_config, T::Array.of(T::Hash)
+    attribute :content_type_profile_config, T::Hash
+    attribute :query_arg_profile_config, T::Hash
     attribute? :comment, T::String.optional
   end
 end

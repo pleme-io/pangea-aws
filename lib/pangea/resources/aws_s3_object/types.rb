@@ -24,7 +24,7 @@ module Pangea::Resources::AWS::Types
     attribute? :object_lock_legal_hold_status, T::String.optional
     attribute? :object_lock_mode, T::String.optional
     attribute? :object_lock_retain_until_date, T::String.optional
-    attribute? :override_provider, T::Array.of(T::Hash).optional
+    attribute? :override_provider, T::Hash.optional
     attribute? :source, T::String.optional
     attribute? :source_hash, T::String.optional
     attribute? :tags, T::Hash.optional

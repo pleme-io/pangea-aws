@@ -13,11 +13,11 @@ module Pangea::Resources::AWS::Types
     attribute :policy_reference_name, T::String
     attribute :trust_provider_type, T::String
     attribute? :description, T::String.optional
-    attribute? :device_options, T::Array.of(T::Hash).optional
+    attribute? :device_options, T::Hash.optional
     attribute? :device_trust_provider_type, T::String.optional
-    attribute? :native_application_oidc_options, T::Array.of(T::Hash).optional
-    attribute? :oidc_options, T::Array.of(T::Hash).optional
-    attribute? :sse_specification, T::Array.of(T::Hash).optional
+    attribute? :native_application_oidc_options, T::Hash.optional
+    attribute? :oidc_options, T::Hash.optional
+    attribute? :sse_specification, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :user_trust_provider_type, T::String.optional
   end

@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :encryption_entities, T::Array.of(T::Hash)
+    attribute :encryption_entities, T::Hash
     attribute :name, T::String
     attribute? :comment, T::String.optional
   end

@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :inclusive_start_time, T::String
-    attribute :kinesis_configuration, T::Array.of(T::Hash)
+    attribute :kinesis_configuration, T::Hash
     attribute :ledger_name, T::String
     attribute :role_arn, T::String
     attribute :stream_name, T::String

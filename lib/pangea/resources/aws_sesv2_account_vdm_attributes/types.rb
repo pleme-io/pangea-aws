@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :vdm_enabled, T::String
-    attribute? :dashboard_attributes, T::Array.of(T::Hash).optional
-    attribute? :guardian_attributes, T::Array.of(T::Hash).optional
+    attribute? :dashboard_attributes, T::Hash.optional
+    attribute? :guardian_attributes, T::Hash.optional
   end
 end

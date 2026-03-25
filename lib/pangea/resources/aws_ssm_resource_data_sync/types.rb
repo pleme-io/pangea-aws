@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute :s3_destination, T::Array.of(T::Hash)
+    attribute :s3_destination, T::Hash
   end
 end

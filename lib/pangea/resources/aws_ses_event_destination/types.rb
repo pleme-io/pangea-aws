@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :cloudwatch_destination, T::Array.of(T::Hash).optional
     attribute? :enabled, T::Bool.optional
-    attribute? :kinesis_destination, T::Array.of(T::Hash).optional
-    attribute? :sns_destination, T::Array.of(T::Hash).optional
+    attribute? :kinesis_destination, T::Hash.optional
+    attribute? :sns_destination, T::Hash.optional
   end
 end

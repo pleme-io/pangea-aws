@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :bucket, T::String
     attribute :name, T::String
     attribute :tiering, T::Array.of(T::Hash)
-    attribute? :filter, T::Array.of(T::Hash).optional
+    attribute? :filter, T::Hash.optional
     attribute? :status, T::String.optional
   end
 end

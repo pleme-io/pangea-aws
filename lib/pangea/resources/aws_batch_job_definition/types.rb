@@ -15,14 +15,14 @@ module Pangea::Resources::AWS::Types
     attribute? :container_properties, T::String.optional
     attribute? :deregister_on_new_revision, T::Bool.optional
     attribute? :ecs_properties, T::String.optional
-    attribute? :eks_properties, T::Array.of(T::Hash).optional
+    attribute? :eks_properties, T::Hash.optional
     attribute? :node_properties, T::String.optional
     attribute? :parameters, T::Hash.optional
     attribute? :platform_capabilities, T::Array.of(T::String).optional
     attribute? :propagate_tags, T::Bool.optional
-    attribute? :retry_strategy, T::Array.of(T::Hash).optional
+    attribute? :retry_strategy, T::Hash.optional
     attribute? :scheduling_priority, T::Coercible::Float.optional
     attribute? :tags, T::Hash.optional
-    attribute? :timeout, T::Array.of(T::Hash).optional
+    attribute? :timeout, T::Hash.optional
   end
 end

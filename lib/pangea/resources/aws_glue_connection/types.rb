@@ -16,7 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :connection_type, T::String.optional
     attribute? :description, T::String.optional
     attribute? :match_criteria, T::Array.of(T::String).optional
-    attribute? :physical_connection_requirements, T::Array.of(T::Hash).optional
+    attribute? :physical_connection_requirements, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

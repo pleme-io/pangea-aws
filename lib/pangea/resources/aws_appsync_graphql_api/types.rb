@@ -14,17 +14,17 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :additional_authentication_provider, T::Array.of(T::Hash).optional
     attribute? :api_type, T::String.optional
-    attribute? :enhanced_metrics_config, T::Array.of(T::Hash).optional
+    attribute? :enhanced_metrics_config, T::Hash.optional
     attribute? :introspection_config, T::String.optional
-    attribute? :lambda_authorizer_config, T::Array.of(T::Hash).optional
-    attribute? :log_config, T::Array.of(T::Hash).optional
+    attribute? :lambda_authorizer_config, T::Hash.optional
+    attribute? :log_config, T::Hash.optional
     attribute? :merged_api_execution_role_arn, T::String.optional
-    attribute? :openid_connect_config, T::Array.of(T::Hash).optional
+    attribute? :openid_connect_config, T::Hash.optional
     attribute? :query_depth_limit, T::Coercible::Float.optional
     attribute? :resolver_count_limit, T::Coercible::Float.optional
     attribute? :schema, T::String.optional
     attribute? :tags, T::Hash.optional
-    attribute? :user_pool_config, T::Array.of(T::Hash).optional
+    attribute? :user_pool_config, T::Hash.optional
     attribute? :visibility, T::String.optional
     attribute? :xray_enabled, T::Bool.optional
   end

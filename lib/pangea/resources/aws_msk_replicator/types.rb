@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :kafka_cluster, T::Array.of(T::Hash)
-    attribute :replication_info_list, T::Array.of(T::Hash)
+    attribute :replication_info_list, T::Hash
     attribute :replicator_name, T::String
     attribute :service_execution_role_arn, T::String
     attribute? :description, T::String.optional

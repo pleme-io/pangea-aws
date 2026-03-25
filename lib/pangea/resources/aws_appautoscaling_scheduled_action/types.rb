@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :resource_id, T::String
     attribute :scalable_dimension, T::String
-    attribute :scalable_target_action, T::Array.of(T::Hash)
+    attribute :scalable_target_action, T::Hash
     attribute :schedule, T::String
     attribute :service_namespace, T::String
     attribute? :end_time, T::String.optional

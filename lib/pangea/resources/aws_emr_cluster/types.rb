@@ -15,22 +15,22 @@ module Pangea::Resources::AWS::Types
     attribute :service_role, T::String
     attribute? :additional_info, T::String.optional
     attribute? :applications, T::Array.of(T::String).optional
-    attribute? :auto_termination_policy, T::Array.of(T::Hash).optional
+    attribute? :auto_termination_policy, T::Hash.optional
     attribute? :autoscaling_role, T::String.optional
     attribute? :bootstrap_action, T::Array.of(T::Hash).optional
     attribute? :configurations, T::String.optional
     attribute? :configurations_json, T::String.optional
-    attribute? :core_instance_fleet, T::Array.of(T::Hash).optional
-    attribute? :core_instance_group, T::Array.of(T::Hash).optional
+    attribute? :core_instance_fleet, T::Hash.optional
+    attribute? :core_instance_group, T::Hash.optional
     attribute? :custom_ami_id, T::String.optional
     attribute? :ebs_root_volume_size, T::Coercible::Float.optional
-    attribute? :ec2_attributes, T::Array.of(T::Hash).optional
-    attribute? :kerberos_attributes, T::Array.of(T::Hash).optional
+    attribute? :ec2_attributes, T::Hash.optional
+    attribute? :kerberos_attributes, T::Hash.optional
     attribute? :list_steps_states, T::Array.of(T::String).optional
     attribute? :log_encryption_kms_key_id, T::String.optional
     attribute? :log_uri, T::String.optional
-    attribute? :master_instance_fleet, T::Array.of(T::Hash).optional
-    attribute? :master_instance_group, T::Array.of(T::Hash).optional
+    attribute? :master_instance_fleet, T::Hash.optional
+    attribute? :master_instance_group, T::Hash.optional
     attribute? :placement_group_config, T::Array.of(T::Hash).optional
     attribute? :security_configuration, T::String.optional
     attribute? :step_concurrency_level, T::Coercible::Float.optional

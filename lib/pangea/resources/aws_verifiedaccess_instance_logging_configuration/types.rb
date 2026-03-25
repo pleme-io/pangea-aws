@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :access_logs, T::Array.of(T::Hash)
+    attribute :access_logs, T::Hash
     attribute :verifiedaccess_instance_id, T::String
   end
 end

@@ -10,9 +10,9 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute? :access_logs, T::Array.of(T::Hash).optional
+    attribute? :access_logs, T::Hash.optional
     attribute? :client_keep_alive, T::Coercible::Float.optional
-    attribute? :connection_logs, T::Array.of(T::Hash).optional
+    attribute? :connection_logs, T::Hash.optional
     attribute? :customer_owned_ipv4_pool, T::String.optional
     attribute? :desync_mitigation_mode, T::String.optional
     attribute? :dns_record_client_routing_policy, T::String.optional
@@ -25,9 +25,9 @@ module Pangea::Resources::AWS::Types
     attribute? :enable_xff_client_port, T::Bool.optional
     attribute? :enable_zonal_shift, T::Bool.optional
     attribute? :idle_timeout, T::Coercible::Float.optional
-    attribute? :ipam_pools, T::Array.of(T::Hash).optional
+    attribute? :ipam_pools, T::Hash.optional
     attribute? :load_balancer_type, T::String.optional
-    attribute? :minimum_load_balancer_capacity, T::Array.of(T::Hash).optional
+    attribute? :minimum_load_balancer_capacity, T::Hash.optional
     attribute? :preserve_host_header, T::Bool.optional
     attribute? :subnet_mapping, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional

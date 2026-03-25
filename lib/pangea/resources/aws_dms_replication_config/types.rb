@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :compute_config, T::Array.of(T::Hash)
+    attribute :compute_config, T::Hash
     attribute :replication_config_identifier, T::String
     attribute :replication_type, T::String
     attribute :source_endpoint_arn, T::String

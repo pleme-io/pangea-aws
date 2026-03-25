@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :label_template, T::String
     attribute :resource_types, T::Array.of(T::String)
     attribute :sink_identifier, T::String
-    attribute? :link_configuration, T::Array.of(T::Hash).optional
+    attribute? :link_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :capacity, T::Coercible::Float
     attribute :scope, T::String
-    attribute :visibility_config, T::Array.of(T::Hash)
+    attribute :visibility_config, T::Hash
     attribute? :custom_response_body, T::Array.of(T::Hash).optional
     attribute? :description, T::String.optional
     attribute? :rule, T::Array.of(T::Hash).optional

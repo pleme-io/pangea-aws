@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :allowed_columns, T::Array.of(T::String)
     attribute :analysis_method, T::String
     attribute :name, T::String
-    attribute :table_reference, T::Array.of(T::Hash)
+    attribute :table_reference, T::Hash
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
   end

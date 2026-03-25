@@ -12,8 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :stack_set_name, T::String
     attribute? :call_as, T::String.optional
-    attribute? :deployment_targets, T::Array.of(T::Hash).optional
-    attribute? :operation_preferences, T::Array.of(T::Hash).optional
+    attribute? :deployment_targets, T::Hash.optional
+    attribute? :operation_preferences, T::Hash.optional
     attribute? :parameter_overrides, T::Hash.optional
     attribute? :retain_stack, T::Bool.optional
   end

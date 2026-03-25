@@ -12,11 +12,11 @@ module Pangea::Resources::AWS::Types
 
     attribute :destination_flow_config, T::Array.of(T::Hash)
     attribute :name, T::String
-    attribute :source_flow_config, T::Array.of(T::Hash)
+    attribute :source_flow_config, T::Hash
     attribute :task, T::Array.of(T::Hash)
-    attribute :trigger_config, T::Array.of(T::Hash)
+    attribute :trigger_config, T::Hash
     attribute? :description, T::String.optional
-    attribute? :metadata_catalog_config, T::Array.of(T::Hash).optional
+    attribute? :metadata_catalog_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

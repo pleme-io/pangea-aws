@@ -13,10 +13,10 @@ module Pangea::Resources::AWS::Types
     attribute :deployment_id, T::String
     attribute :rest_api_id, T::String
     attribute :stage_name, T::String
-    attribute? :access_log_settings, T::Array.of(T::Hash).optional
+    attribute? :access_log_settings, T::Hash.optional
     attribute? :cache_cluster_enabled, T::Bool.optional
     attribute? :cache_cluster_size, T::String.optional
-    attribute? :canary_settings, T::Array.of(T::Hash).optional
+    attribute? :canary_settings, T::Hash.optional
     attribute? :client_certificate_id, T::String.optional
     attribute? :description, T::String.optional
     attribute? :documentation_version, T::String.optional

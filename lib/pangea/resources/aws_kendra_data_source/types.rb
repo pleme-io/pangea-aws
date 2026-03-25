@@ -13,8 +13,8 @@ module Pangea::Resources::AWS::Types
     attribute :index_id, T::String
     attribute :name, T::String
     attribute :type, T::String
-    attribute? :configuration, T::Array.of(T::Hash).optional
-    attribute? :custom_document_enrichment_configuration, T::Array.of(T::Hash).optional
+    attribute? :configuration, T::Hash.optional
+    attribute? :custom_document_enrichment_configuration, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :role_arn, T::String.optional
     attribute? :schedule, T::String.optional

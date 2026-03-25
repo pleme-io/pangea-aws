@@ -12,9 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :database_name, T::String
     attribute :table_name, T::String
-    attribute? :magnetic_store_write_properties, T::Array.of(T::Hash).optional
-    attribute? :retention_properties, T::Array.of(T::Hash).optional
-    attribute? :schema, T::Array.of(T::Hash).optional
+    attribute? :magnetic_store_write_properties, T::Hash.optional
+    attribute? :retention_properties, T::Hash.optional
+    attribute? :schema, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

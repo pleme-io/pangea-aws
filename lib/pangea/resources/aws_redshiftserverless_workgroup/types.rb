@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute? :config_parameter, T::Array.of(T::Hash).optional
     attribute? :enhanced_vpc_routing, T::Bool.optional
     attribute? :max_capacity, T::Coercible::Float.optional
-    attribute? :price_performance_target, T::Array.of(T::Hash).optional
+    attribute? :price_performance_target, T::Hash.optional
     attribute? :publicly_accessible, T::Bool.optional
     attribute? :tags, T::Hash.optional
   end

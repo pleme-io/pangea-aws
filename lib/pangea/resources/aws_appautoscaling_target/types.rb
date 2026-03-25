@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :resource_id, T::String
     attribute :scalable_dimension, T::String
     attribute :service_namespace, T::String
-    attribute? :suspended_state, T::Array.of(T::Hash).optional
+    attribute? :suspended_state, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

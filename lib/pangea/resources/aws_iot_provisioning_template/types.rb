@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :template_body, T::String
     attribute? :description, T::String.optional
     attribute? :enabled, T::Bool.optional
-    attribute? :pre_provisioning_hook, T::Array.of(T::Hash).optional
+    attribute? :pre_provisioning_hook, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

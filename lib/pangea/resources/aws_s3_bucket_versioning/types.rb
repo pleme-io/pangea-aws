@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :bucket, T::String
-    attribute :versioning_configuration, T::Array.of(T::Hash)
+    attribute :versioning_configuration, T::Hash
     attribute? :expected_bucket_owner, T::String.optional
     attribute? :mfa, T::String.optional
   end

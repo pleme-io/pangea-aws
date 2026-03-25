@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :appversion_lifecycle, T::Array.of(T::Hash).optional
+    attribute? :appversion_lifecycle, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
   end

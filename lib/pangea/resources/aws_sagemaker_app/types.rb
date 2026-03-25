@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :app_name, T::String
     attribute :app_type, T::String
     attribute :domain_id, T::String
-    attribute? :resource_spec, T::Array.of(T::Hash).optional
+    attribute? :resource_spec, T::Hash.optional
     attribute? :space_name, T::String.optional
     attribute? :tags, T::Hash.optional
     attribute? :user_profile_name, T::String.optional

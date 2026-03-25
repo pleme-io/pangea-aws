@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute? :destination_configuration, T::Array.of(T::Hash).optional
+    attribute? :destination_configuration, T::Hash.optional
     attribute? :name, T::String.optional
     attribute? :tags, T::Hash.optional
   end

@@ -13,9 +13,9 @@ module Pangea::Resources::AWS::Types
     attribute :execution_role_arn, T::String
     attribute? :container, T::Array.of(T::Hash).optional
     attribute? :enable_network_isolation, T::Bool.optional
-    attribute? :inference_execution_config, T::Array.of(T::Hash).optional
-    attribute? :primary_container, T::Array.of(T::Hash).optional
+    attribute? :inference_execution_config, T::Hash.optional
+    attribute? :primary_container, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :vpc_config, T::Array.of(T::Hash).optional
+    attribute? :vpc_config, T::Hash.optional
   end
 end

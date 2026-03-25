@@ -11,12 +11,12 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :configuration_set_name, T::String
-    attribute? :delivery_options, T::Array.of(T::Hash).optional
-    attribute? :reputation_options, T::Array.of(T::Hash).optional
-    attribute? :sending_options, T::Array.of(T::Hash).optional
-    attribute? :suppression_options, T::Array.of(T::Hash).optional
+    attribute? :delivery_options, T::Hash.optional
+    attribute? :reputation_options, T::Hash.optional
+    attribute? :sending_options, T::Hash.optional
+    attribute? :suppression_options, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :tracking_options, T::Array.of(T::Hash).optional
-    attribute? :vdm_options, T::Array.of(T::Hash).optional
+    attribute? :tracking_options, T::Hash.optional
+    attribute? :vdm_options, T::Hash.optional
   end
 end

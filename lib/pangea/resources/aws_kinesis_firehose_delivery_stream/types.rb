@@ -12,18 +12,18 @@ module Pangea::Resources::AWS::Types
 
     attribute :destination, T::String
     attribute :name, T::String
-    attribute? :elasticsearch_configuration, T::Array.of(T::Hash).optional
-    attribute? :extended_s3_configuration, T::Array.of(T::Hash).optional
-    attribute? :http_endpoint_configuration, T::Array.of(T::Hash).optional
-    attribute? :iceberg_configuration, T::Array.of(T::Hash).optional
-    attribute? :kinesis_source_configuration, T::Array.of(T::Hash).optional
-    attribute? :msk_source_configuration, T::Array.of(T::Hash).optional
-    attribute? :opensearch_configuration, T::Array.of(T::Hash).optional
-    attribute? :opensearchserverless_configuration, T::Array.of(T::Hash).optional
-    attribute? :redshift_configuration, T::Array.of(T::Hash).optional
-    attribute? :server_side_encryption, T::Array.of(T::Hash).optional
-    attribute? :snowflake_configuration, T::Array.of(T::Hash).optional
-    attribute? :splunk_configuration, T::Array.of(T::Hash).optional
+    attribute? :elasticsearch_configuration, T::Hash.optional
+    attribute? :extended_s3_configuration, T::Hash.optional
+    attribute? :http_endpoint_configuration, T::Hash.optional
+    attribute? :iceberg_configuration, T::Hash.optional
+    attribute? :kinesis_source_configuration, T::Hash.optional
+    attribute? :msk_source_configuration, T::Hash.optional
+    attribute? :opensearch_configuration, T::Hash.optional
+    attribute? :opensearchserverless_configuration, T::Hash.optional
+    attribute? :redshift_configuration, T::Hash.optional
+    attribute? :server_side_encryption, T::Hash.optional
+    attribute? :snowflake_configuration, T::Hash.optional
+    attribute? :splunk_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

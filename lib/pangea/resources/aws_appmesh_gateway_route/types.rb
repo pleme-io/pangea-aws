@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :mesh_name, T::String
     attribute :name, T::String
-    attribute :spec, T::Array.of(T::Hash)
+    attribute :spec, T::Hash
     attribute :virtual_gateway_name, T::String
     attribute? :tags, T::Hash.optional
   end

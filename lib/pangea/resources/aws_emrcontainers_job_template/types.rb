@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :job_template_data, T::Array.of(T::Hash)
+    attribute :job_template_data, T::Hash
     attribute :name, T::String
     attribute? :kms_key_arn, T::String.optional
     attribute? :tags, T::Hash.optional

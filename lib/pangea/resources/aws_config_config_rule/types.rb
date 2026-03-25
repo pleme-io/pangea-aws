@@ -11,12 +11,12 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute :source, T::Array.of(T::Hash)
+    attribute :source, T::Hash
     attribute? :description, T::String.optional
     attribute? :evaluation_mode, T::Array.of(T::Hash).optional
     attribute? :input_parameters, T::String.optional
     attribute? :maximum_execution_frequency, T::String.optional
-    attribute? :scope, T::Array.of(T::Hash).optional
+    attribute? :scope, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

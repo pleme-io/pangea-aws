@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :auto_enable, T::Bool
-    attribute? :organization_configuration, T::Array.of(T::Hash).optional
+    attribute? :organization_configuration, T::Hash.optional
   end
 end

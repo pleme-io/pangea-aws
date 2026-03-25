@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :action, T::String
     attribute :detector_id, T::String
-    attribute :finding_criteria, T::Array.of(T::Hash)
+    attribute :finding_criteria, T::Hash
     attribute :name, T::String
     attribute :rank, T::Coercible::Float
     attribute? :description, T::String.optional

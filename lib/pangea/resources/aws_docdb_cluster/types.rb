@@ -23,7 +23,7 @@ module Pangea::Resources::AWS::Types
     attribute? :master_password_wo, T::String.optional
     attribute? :master_password_wo_version, T::Coercible::Float.optional
     attribute? :port, T::Coercible::Float.optional
-    attribute? :restore_to_point_in_time, T::Array.of(T::Hash).optional
+    attribute? :restore_to_point_in_time, T::Hash.optional
     attribute? :skip_final_snapshot, T::Bool.optional
     attribute? :snapshot_identifier, T::String.optional
     attribute? :storage_encrypted, T::Bool.optional

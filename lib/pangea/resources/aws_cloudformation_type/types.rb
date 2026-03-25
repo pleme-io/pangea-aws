@@ -13,6 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :schema_handler_package, T::String
     attribute :type_name, T::String
     attribute? :execution_role_arn, T::String.optional
-    attribute? :logging_config, T::Array.of(T::Hash).optional
+    attribute? :logging_config, T::Hash.optional
   end
 end

@@ -10,9 +10,9 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :destination, T::Array.of(T::Hash)
+    attribute :destination, T::Hash
     attribute :profile_name, T::String
-    attribute :source, T::Array.of(T::Hash)
+    attribute :source, T::Hash
     attribute? :ignore_signing_job_failure, T::Bool.optional
   end
 end

@@ -12,11 +12,11 @@ module Pangea::Resources::AWS::Types
 
     attribute :analysis_id, T::String
     attribute :name, T::String
-    attribute? :definition, T::Array.of(T::Hash).optional
-    attribute? :parameters, T::Array.of(T::Hash).optional
+    attribute? :definition, T::Hash.optional
+    attribute? :parameters, T::Hash.optional
     attribute? :permissions, T::Array.of(T::Hash).optional
     attribute? :recovery_window_in_days, T::Coercible::Float.optional
-    attribute? :source_entity, T::Array.of(T::Hash).optional
+    attribute? :source_entity, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :theme_arn, T::String.optional
   end

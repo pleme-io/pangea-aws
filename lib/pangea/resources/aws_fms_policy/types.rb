@@ -12,12 +12,12 @@ module Pangea::Resources::AWS::Types
 
     attribute :exclude_resource_tags, T::Bool
     attribute :name, T::String
-    attribute :security_service_policy_data, T::Array.of(T::Hash)
+    attribute :security_service_policy_data, T::Hash
     attribute? :delete_all_policy_resources, T::Bool.optional
     attribute? :delete_unused_fm_managed_resources, T::Bool.optional
     attribute? :description, T::String.optional
-    attribute? :exclude_map, T::Array.of(T::Hash).optional
-    attribute? :include_map, T::Array.of(T::Hash).optional
+    attribute? :exclude_map, T::Hash.optional
+    attribute? :include_map, T::Hash.optional
     attribute? :remediation_enabled, T::Bool.optional
     attribute? :resource_tags, T::Hash.optional
     attribute? :tags, T::Hash.optional

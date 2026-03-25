@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :rotation_rules, T::Array.of(T::Hash)
+    attribute :rotation_rules, T::Hash
     attribute :secret_id, T::String
     attribute? :rotate_immediately, T::Bool.optional
     attribute? :rotation_lambda_arn, T::String.optional

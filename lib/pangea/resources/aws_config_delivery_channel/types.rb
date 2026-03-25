@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute? :name, T::String.optional
     attribute? :s3_key_prefix, T::String.optional
     attribute? :s3_kms_key_arn, T::String.optional
-    attribute? :snapshot_delivery_properties, T::Array.of(T::Hash).optional
+    attribute? :snapshot_delivery_properties, T::Hash.optional
     attribute? :sns_topic_arn, T::String.optional
   end
 end

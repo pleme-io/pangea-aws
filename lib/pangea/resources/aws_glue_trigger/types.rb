@@ -16,7 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :enabled, T::Bool.optional
     attribute? :event_batching_condition, T::Array.of(T::Hash).optional
-    attribute? :predicate, T::Array.of(T::Hash).optional
+    attribute? :predicate, T::Hash.optional
     attribute? :schedule, T::String.optional
     attribute? :start_on_creation, T::Bool.optional
     attribute? :tags, T::Hash.optional

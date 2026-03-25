@@ -14,6 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :function_version, T::String
     attribute :name, T::String
     attribute? :description, T::String.optional
-    attribute? :routing_config, T::Array.of(T::Hash).optional
+    attribute? :routing_config, T::Hash.optional
   end
 end

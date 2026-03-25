@@ -12,12 +12,12 @@ module Pangea::Resources::AWS::Types
 
     attribute :data_source_id, T::String
     attribute :name, T::String
-    attribute :parameters, T::Array.of(T::Hash)
+    attribute :parameters, T::Hash
     attribute :type, T::String
-    attribute? :credentials, T::Array.of(T::Hash).optional
+    attribute? :credentials, T::Hash.optional
     attribute? :permission, T::Array.of(T::Hash).optional
-    attribute? :ssl_properties, T::Array.of(T::Hash).optional
+    attribute? :ssl_properties, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :vpc_connection_properties, T::Array.of(T::Hash).optional
+    attribute? :vpc_connection_properties, T::Hash.optional
   end
 end

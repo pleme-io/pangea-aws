@@ -17,8 +17,8 @@ module Pangea::Resources::AWS::Types
     attribute :traffic_direction, T::String
     attribute :traffic_mirror_filter_id, T::String
     attribute? :description, T::String.optional
-    attribute? :destination_port_range, T::Array.of(T::Hash).optional
+    attribute? :destination_port_range, T::Hash.optional
     attribute? :protocol, T::Coercible::Float.optional
-    attribute? :source_port_range, T::Array.of(T::Hash).optional
+    attribute? :source_port_range, T::Hash.optional
   end
 end

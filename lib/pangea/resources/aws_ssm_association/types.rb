@@ -18,7 +18,7 @@ module Pangea::Resources::AWS::Types
     attribute? :instance_id, T::String.optional
     attribute? :max_concurrency, T::String.optional
     attribute? :max_errors, T::String.optional
-    attribute? :output_location, T::Array.of(T::Hash).optional
+    attribute? :output_location, T::Hash.optional
     attribute? :schedule_expression, T::String.optional
     attribute? :sync_compliance, T::String.optional
     attribute? :tags, T::Hash.optional

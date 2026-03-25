@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :ec2_config, T::Array.of(T::Hash)
+    attribute :ec2_config, T::Hash
     attribute :efs_file_system_arn, T::String
     attribute? :access_point_arn, T::String.optional
     attribute? :file_system_access_role_arn, T::String.optional

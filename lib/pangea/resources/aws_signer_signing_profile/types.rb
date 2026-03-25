@@ -11,8 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :platform_id, T::String
-    attribute? :signature_validity_period, T::Array.of(T::Hash).optional
-    attribute? :signing_material, T::Array.of(T::Hash).optional
+    attribute? :signature_validity_period, T::Hash.optional
+    attribute? :signing_material, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

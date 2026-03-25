@@ -13,15 +13,15 @@ module Pangea::Resources::AWS::Types
     attribute :api_id, T::String
     attribute :field, T::String
     attribute :type, T::String
-    attribute? :caching_config, T::Array.of(T::Hash).optional
+    attribute? :caching_config, T::Hash.optional
     attribute? :code, T::String.optional
     attribute? :data_source, T::String.optional
     attribute? :kind, T::String.optional
     attribute? :max_batch_size, T::Coercible::Float.optional
-    attribute? :pipeline_config, T::Array.of(T::Hash).optional
+    attribute? :pipeline_config, T::Hash.optional
     attribute? :request_template, T::String.optional
     attribute? :response_template, T::String.optional
-    attribute? :runtime, T::Array.of(T::Hash).optional
-    attribute? :sync_config, T::Array.of(T::Hash).optional
+    attribute? :runtime, T::Hash.optional
+    attribute? :sync_config, T::Hash.optional
   end
 end

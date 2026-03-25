@@ -10,6 +10,6 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :auto_enable, T::Array.of(T::Hash)
+    attribute :auto_enable, T::Hash
   end
 end

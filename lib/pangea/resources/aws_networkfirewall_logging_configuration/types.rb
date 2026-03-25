@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :firewall_arn, T::String
-    attribute :logging_configuration, T::Array.of(T::Hash)
+    attribute :logging_configuration, T::Hash
   end
 end

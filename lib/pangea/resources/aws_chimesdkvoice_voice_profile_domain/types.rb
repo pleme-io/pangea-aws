@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute :server_side_encryption_configuration, T::Array.of(T::Hash)
+    attribute :server_side_encryption_configuration, T::Hash
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
   end

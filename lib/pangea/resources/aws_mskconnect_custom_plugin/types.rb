@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :content_type, T::String
-    attribute :location, T::Array.of(T::Hash)
+    attribute :location, T::Hash
     attribute :name, T::String
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional

@@ -11,11 +11,11 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :alarms, T::Array.of(T::Hash).optional
+    attribute? :alarms, T::Hash.optional
     attribute? :availability_zone_rebalancing, T::String.optional
     attribute? :capacity_provider_strategy, T::Array.of(T::Hash).optional
-    attribute? :deployment_circuit_breaker, T::Array.of(T::Hash).optional
-    attribute? :deployment_controller, T::Array.of(T::Hash).optional
+    attribute? :deployment_circuit_breaker, T::Hash.optional
+    attribute? :deployment_controller, T::Hash.optional
     attribute? :deployment_maximum_percent, T::Coercible::Float.optional
     attribute? :deployment_minimum_healthy_percent, T::Coercible::Float.optional
     attribute? :desired_count, T::Coercible::Float.optional
@@ -25,16 +25,16 @@ module Pangea::Resources::AWS::Types
     attribute? :force_new_deployment, T::Bool.optional
     attribute? :health_check_grace_period_seconds, T::Coercible::Float.optional
     attribute? :load_balancer, T::Array.of(T::Hash).optional
-    attribute? :network_configuration, T::Array.of(T::Hash).optional
+    attribute? :network_configuration, T::Hash.optional
     attribute? :ordered_placement_strategy, T::Array.of(T::Hash).optional
     attribute? :placement_constraints, T::Array.of(T::Hash).optional
     attribute? :propagate_tags, T::String.optional
     attribute? :scheduling_strategy, T::String.optional
-    attribute? :service_connect_configuration, T::Array.of(T::Hash).optional
-    attribute? :service_registries, T::Array.of(T::Hash).optional
+    attribute? :service_connect_configuration, T::Hash.optional
+    attribute? :service_registries, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :task_definition, T::String.optional
-    attribute? :volume_configuration, T::Array.of(T::Hash).optional
+    attribute? :volume_configuration, T::Hash.optional
     attribute? :vpc_lattice_configurations, T::Array.of(T::Hash).optional
     attribute? :wait_for_steady_state, T::Bool.optional
   end

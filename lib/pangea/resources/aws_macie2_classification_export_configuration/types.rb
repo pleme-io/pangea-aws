@@ -10,6 +10,6 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute? :s3_destination, T::Array.of(T::Hash).optional
+    attribute? :s3_destination, T::Hash.optional
   end
 end

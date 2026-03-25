@@ -11,8 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute :report_delivery_channel, T::Array.of(T::Hash)
-    attribute :report_setting, T::Array.of(T::Hash)
+    attribute :report_delivery_channel, T::Hash
+    attribute :report_setting, T::Hash
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
   end

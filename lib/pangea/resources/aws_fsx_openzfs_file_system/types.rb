@@ -18,10 +18,10 @@ module Pangea::Resources::AWS::Types
     attribute? :copy_tags_to_backups, T::Bool.optional
     attribute? :copy_tags_to_volumes, T::Bool.optional
     attribute? :delete_options, T::Array.of(T::String).optional
-    attribute? :disk_iops_configuration, T::Array.of(T::Hash).optional
+    attribute? :disk_iops_configuration, T::Hash.optional
     attribute? :final_backup_tags, T::Hash.optional
     attribute? :preferred_subnet_id, T::String.optional
-    attribute? :root_volume_configuration, T::Array.of(T::Hash).optional
+    attribute? :root_volume_configuration, T::Hash.optional
     attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :skip_final_backup, T::Bool.optional
     attribute? :storage_capacity, T::Coercible::Float.optional

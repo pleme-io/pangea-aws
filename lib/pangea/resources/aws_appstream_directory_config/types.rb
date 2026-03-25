@@ -12,6 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :directory_name, T::String
     attribute :organizational_unit_distinguished_names, T::Array.of(T::String)
-    attribute :service_account_credentials, T::Array.of(T::Hash)
+    attribute :service_account_credentials, T::Hash
   end
 end

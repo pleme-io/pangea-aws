@@ -11,32 +11,32 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :block_device_mappings, T::Array.of(T::Hash).optional
-    attribute? :capacity_reservation_specification, T::Array.of(T::Hash).optional
-    attribute? :cpu_options, T::Array.of(T::Hash).optional
-    attribute? :credit_specification, T::Array.of(T::Hash).optional
+    attribute? :capacity_reservation_specification, T::Hash.optional
+    attribute? :cpu_options, T::Hash.optional
+    attribute? :credit_specification, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :disable_api_stop, T::Bool.optional
     attribute? :disable_api_termination, T::Bool.optional
     attribute? :ebs_optimized, T::String.optional
     attribute? :elastic_gpu_specifications, T::Array.of(T::Hash).optional
-    attribute? :elastic_inference_accelerator, T::Array.of(T::Hash).optional
-    attribute? :enclave_options, T::Array.of(T::Hash).optional
-    attribute? :hibernation_options, T::Array.of(T::Hash).optional
-    attribute? :iam_instance_profile, T::Array.of(T::Hash).optional
+    attribute? :elastic_inference_accelerator, T::Hash.optional
+    attribute? :enclave_options, T::Hash.optional
+    attribute? :hibernation_options, T::Hash.optional
+    attribute? :iam_instance_profile, T::Hash.optional
     attribute? :image_id, T::String.optional
     attribute? :instance_initiated_shutdown_behavior, T::String.optional
-    attribute? :instance_market_options, T::Array.of(T::Hash).optional
-    attribute? :instance_requirements, T::Array.of(T::Hash).optional
+    attribute? :instance_market_options, T::Hash.optional
+    attribute? :instance_requirements, T::Hash.optional
     attribute? :instance_type, T::String.optional
     attribute? :kernel_id, T::String.optional
     attribute? :key_name, T::String.optional
     attribute? :license_specification, T::Array.of(T::Hash).optional
-    attribute? :maintenance_options, T::Array.of(T::Hash).optional
-    attribute? :metadata_options, T::Array.of(T::Hash).optional
-    attribute? :monitoring, T::Array.of(T::Hash).optional
+    attribute? :maintenance_options, T::Hash.optional
+    attribute? :metadata_options, T::Hash.optional
+    attribute? :monitoring, T::Hash.optional
     attribute? :network_interfaces, T::Array.of(T::Hash).optional
-    attribute? :placement, T::Array.of(T::Hash).optional
-    attribute? :private_dns_name_options, T::Array.of(T::Hash).optional
+    attribute? :placement, T::Hash.optional
+    attribute? :private_dns_name_options, T::Hash.optional
     attribute? :ram_disk_id, T::String.optional
     attribute? :security_group_names, T::Array.of(T::String).optional
     attribute? :tag_specifications, T::Array.of(T::Hash).optional

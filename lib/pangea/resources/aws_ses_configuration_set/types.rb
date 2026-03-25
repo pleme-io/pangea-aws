@@ -11,9 +11,9 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :delivery_options, T::Array.of(T::Hash).optional
+    attribute? :delivery_options, T::Hash.optional
     attribute? :reputation_metrics_enabled, T::Bool.optional
     attribute? :sending_enabled, T::Bool.optional
-    attribute? :tracking_options, T::Array.of(T::Hash).optional
+    attribute? :tracking_options, T::Hash.optional
   end
 end

@@ -16,7 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :auto_assign_elastic_ips, T::Bool.optional
     attribute? :auto_assign_public_ips, T::Bool.optional
     attribute? :auto_healing, T::Bool.optional
-    attribute? :cloudwatch_configuration, T::Array.of(T::Hash).optional
+    attribute? :cloudwatch_configuration, T::Hash.optional
     attribute? :custom_configure_recipes, T::Array.of(T::String).optional
     attribute? :custom_deploy_recipes, T::Array.of(T::String).optional
     attribute? :custom_instance_profile_arn, T::String.optional
@@ -33,7 +33,7 @@ module Pangea::Resources::AWS::Types
     attribute? :jvm_options, T::String.optional
     attribute? :jvm_type, T::String.optional
     attribute? :jvm_version, T::String.optional
-    attribute? :load_based_auto_scaling, T::Array.of(T::Hash).optional
+    attribute? :load_based_auto_scaling, T::Hash.optional
     attribute? :name, T::String.optional
     attribute? :system_packages, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional

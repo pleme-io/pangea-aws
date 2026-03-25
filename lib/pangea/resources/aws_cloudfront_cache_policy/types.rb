@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute :parameters_in_cache_key_and_forwarded_to_origin, T::Array.of(T::Hash)
+    attribute :parameters_in_cache_key_and_forwarded_to_origin, T::Hash
     attribute? :comment, T::String.optional
     attribute? :default_ttl, T::Coercible::Float.optional
     attribute? :max_ttl, T::Coercible::Float.optional

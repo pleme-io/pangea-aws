@@ -11,9 +11,9 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :job_type, T::String
-    attribute :s3_job_definition, T::Array.of(T::Hash)
+    attribute :s3_job_definition, T::Hash
     attribute? :initial_run, T::Bool.optional
-    attribute? :schedule_frequency, T::Array.of(T::Hash).optional
+    attribute? :schedule_frequency, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

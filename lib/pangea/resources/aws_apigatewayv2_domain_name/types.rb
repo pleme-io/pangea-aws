@@ -11,8 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :domain_name, T::String
-    attribute :domain_name_configuration, T::Array.of(T::Hash)
-    attribute? :mutual_tls_authentication, T::Array.of(T::Hash).optional
+    attribute :domain_name_configuration, T::Hash
+    attribute? :mutual_tls_authentication, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :protocol_type, T::String
     attribute? :api_key_selection_expression, T::String.optional
     attribute? :body, T::String.optional
-    attribute? :cors_configuration, T::Array.of(T::Hash).optional
+    attribute? :cors_configuration, T::Hash.optional
     attribute? :credentials_arn, T::String.optional
     attribute? :description, T::String.optional
     attribute? :disable_execute_api_endpoint, T::Bool.optional

@@ -11,8 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :lf_tag, T::Array.of(T::Hash)
-    attribute? :database, T::Array.of(T::Hash).optional
-    attribute? :table, T::Array.of(T::Hash).optional
-    attribute? :table_with_columns, T::Array.of(T::Hash).optional
+    attribute? :database, T::Hash.optional
+    attribute? :table, T::Hash.optional
+    attribute? :table_with_columns, T::Hash.optional
   end
 end

@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :logging_configuration_identifiers, T::Array.of(T::String).optional
-    attribute? :message_review_handler, T::Array.of(T::Hash).optional
+    attribute? :message_review_handler, T::Hash.optional
     attribute? :name, T::String.optional
     attribute? :tags, T::Hash.optional
   end

@@ -25,7 +25,7 @@ module Pangea::Resources::AWS::Types
     attribute? :force_destroy, T::Bool.optional
     attribute? :grant, T::Array.of(T::Hash).optional
     attribute? :metadata_directive, T::String.optional
-    attribute? :override_provider, T::Array.of(T::Hash).optional
+    attribute? :override_provider, T::Hash.optional
     attribute? :request_payer, T::String.optional
     attribute? :source_customer_algorithm, T::String.optional
     attribute? :source_customer_key, T::String.optional

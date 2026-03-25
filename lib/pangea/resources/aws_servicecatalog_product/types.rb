@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute :owner, T::String
-    attribute :provisioning_artifact_parameters, T::Array.of(T::Hash)
+    attribute :provisioning_artifact_parameters, T::Hash
     attribute :type, T::String
     attribute? :accept_language, T::String.optional
     attribute? :tags, T::Hash.optional

@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :access_scope, T::Array.of(T::Hash)
+    attribute :access_scope, T::Hash
     attribute :cluster_name, T::String
     attribute :policy_arn, T::String
     attribute :principal_arn, T::String

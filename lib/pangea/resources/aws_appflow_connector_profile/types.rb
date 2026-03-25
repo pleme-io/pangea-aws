@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :connection_mode, T::String
-    attribute :connector_profile_config, T::Array.of(T::Hash)
+    attribute :connector_profile_config, T::Hash
     attribute :connector_type, T::String
     attribute :name, T::String
     attribute? :connector_label, T::String.optional

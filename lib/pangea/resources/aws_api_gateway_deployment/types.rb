@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :rest_api_id, T::String
-    attribute? :canary_settings, T::Array.of(T::Hash).optional
+    attribute? :canary_settings, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :stage_description, T::String.optional
     attribute? :stage_name, T::String.optional

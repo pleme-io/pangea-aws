@@ -15,13 +15,13 @@ module Pangea::Resources::AWS::Types
     attribute :permission_type, T::String
     attribute? :data_sources, T::Array.of(T::String).optional
     attribute? :description, T::String.optional
-    attribute? :network_access_control, T::Array.of(T::Hash).optional
+    attribute? :network_access_control, T::Hash.optional
     attribute? :notification_destinations, T::Array.of(T::String).optional
     attribute? :organization_role_name, T::String.optional
     attribute? :organizational_units, T::Array.of(T::String).optional
     attribute? :role_arn, T::String.optional
     attribute? :stack_set_name, T::String.optional
     attribute? :tags, T::Hash.optional
-    attribute? :vpc_configuration, T::Array.of(T::Hash).optional
+    attribute? :vpc_configuration, T::Hash.optional
   end
 end

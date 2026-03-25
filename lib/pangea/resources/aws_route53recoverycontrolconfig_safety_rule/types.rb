@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :control_panel_arn, T::String
     attribute :name, T::String
-    attribute :rule_config, T::Array.of(T::Hash)
+    attribute :rule_config, T::Hash
     attribute :wait_period_ms, T::Coercible::Float
     attribute? :asserted_controls, T::Array.of(T::String).optional
     attribute? :gating_controls, T::Array.of(T::String).optional

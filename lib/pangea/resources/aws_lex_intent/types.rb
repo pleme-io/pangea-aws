@@ -10,16 +10,16 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :fulfillment_activity, T::Array.of(T::Hash)
+    attribute :fulfillment_activity, T::Hash
     attribute :name, T::String
-    attribute? :conclusion_statement, T::Array.of(T::Hash).optional
-    attribute? :confirmation_prompt, T::Array.of(T::Hash).optional
+    attribute? :conclusion_statement, T::Hash.optional
+    attribute? :confirmation_prompt, T::Hash.optional
     attribute? :create_version, T::Bool.optional
     attribute? :description, T::String.optional
-    attribute? :dialog_code_hook, T::Array.of(T::Hash).optional
-    attribute? :follow_up_prompt, T::Array.of(T::Hash).optional
+    attribute? :dialog_code_hook, T::Hash.optional
+    attribute? :follow_up_prompt, T::Hash.optional
     attribute? :parent_intent_signature, T::String.optional
-    attribute? :rejection_statement, T::Array.of(T::Hash).optional
+    attribute? :rejection_statement, T::Hash.optional
     attribute? :sample_utterances, T::Array.of(T::String).optional
     attribute? :slot, T::Array.of(T::Hash).optional
   end

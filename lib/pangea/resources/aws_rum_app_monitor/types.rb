@@ -11,8 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :app_monitor_configuration, T::Array.of(T::Hash).optional
-    attribute? :custom_events, T::Array.of(T::Hash).optional
+    attribute? :app_monitor_configuration, T::Hash.optional
+    attribute? :custom_events, T::Hash.optional
     attribute? :cw_log_enabled, T::Bool.optional
     attribute? :domain, T::String.optional
     attribute? :domain_list, T::Array.of(T::String).optional

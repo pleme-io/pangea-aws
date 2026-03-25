@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :global_network_id, T::String
     attribute? :description, T::String.optional
-    attribute? :location, T::Array.of(T::Hash).optional
+    attribute? :location, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end

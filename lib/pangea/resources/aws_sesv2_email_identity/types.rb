@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :email_identity, T::String
     attribute? :configuration_set_name, T::String.optional
-    attribute? :dkim_signing_attributes, T::Array.of(T::Hash).optional
+    attribute? :dkim_signing_attributes, T::Hash.optional
     attribute? :tags, T::Hash.optional
   end
 end
