@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute? :breach_action, T::String.optional
     attribute? :period, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

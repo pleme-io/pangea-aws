@@ -15,7 +15,9 @@ module Pangea::Resources::AWS::Types
     attribute? :close_on_deletion, T::Bool.optional
     attribute? :create_govcloud, T::Bool.optional
     attribute? :iam_user_access_to_billing, T::String.optional
+    attribute? :parent_id, T::String.optional
     attribute? :role_name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

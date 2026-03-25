@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute? :audit_destination_arn, T::String.optional
     attribute? :cache_attributes, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

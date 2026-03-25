@@ -12,12 +12,17 @@ module Pangea::Resources::AWS::Types
 
     attribute :application, T::String
     attribute :name, T::String
+    attribute? :cname_prefix, T::String.optional
     attribute? :description, T::String.optional
+    attribute? :platform_arn, T::String.optional
     attribute? :poll_interval, T::String.optional
     attribute? :setting, T::Array.of(T::Hash).optional
+    attribute? :solution_stack_name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :template_name, T::String.optional
     attribute? :tier, T::String.optional
+    attribute? :version_label, T::String.optional
     attribute? :wait_for_ready_timeout, T::String.optional
   end
 end

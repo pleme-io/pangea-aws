@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2FleetAttributes,
       outputs: { id: :id },
       map: [:launch_template_config, :target_capacity_specification],
-      map_present: [:context, :excess_capacity_termination_policy, :fleet_instance_set, :on_demand_options, :spot_options, :tags, :type, :valid_from, :valid_until],
+      map_present: [:context, :excess_capacity_termination_policy, :fleet_instance_set, :fleet_state, :fulfilled_capacity, :fulfilled_on_demand_capacity, :on_demand_options, :spot_options, :tags, :tags_all, :type, :valid_from, :valid_until],
       map_bool: [:replace_unhealthy_instances, :terminate_instances, :terminate_instances_with_expiration]
   end
   module AWS

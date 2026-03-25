@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3ObjectAttributes,
       outputs: { id: :id },
       map: [:bucket, :key],
-      map_present: [:cache_control, :checksum_algorithm, :content, :content_base64, :content_disposition, :content_encoding, :content_language, :metadata, :object_lock_legal_hold_status, :object_lock_mode, :object_lock_retain_until_date, :override_provider, :source, :source_hash, :tags, :website_redirect],
-      map_bool: [:force_destroy]
+      map_present: [:acl, :cache_control, :checksum_algorithm, :content, :content_base64, :content_disposition, :content_encoding, :content_language, :content_type, :etag, :kms_key_id, :metadata, :object_lock_legal_hold_status, :object_lock_mode, :object_lock_retain_until_date, :override_provider, :server_side_encryption, :source, :source_hash, :storage_class, :tags, :tags_all, :website_redirect],
+      map_bool: [:bucket_key_enabled, :force_destroy]
   end
   module AWS
     include AWSS3Object

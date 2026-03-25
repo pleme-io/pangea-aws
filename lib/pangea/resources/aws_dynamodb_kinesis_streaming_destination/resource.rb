@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_dynamodb_kinesis_streaming_destination,
       attributes_class: AWS::Types::DynamodbKinesisStreamingDestinationAttributes,
       outputs: { id: :id },
-      map: [:stream_arn, :table_name]
+      map: [:stream_arn, :table_name],
+      map_present: [:approximate_creation_date_time_precision]
   end
   module AWS
     include AWSDynamodbKinesisStreamingDestination

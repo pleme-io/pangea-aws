@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_iam_user_policy,
       attributes_class: AWS::Types::IamUserPolicyAttributes,
       outputs: { id: :id },
-      map: [:policy, :user]
+      map: [:policy, :user],
+      map_present: [:name, :name_prefix]
   end
   module AWS
     include AWSIamUserPolicy

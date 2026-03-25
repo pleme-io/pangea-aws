@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute? :ip_address_type, T::String.optional
     attribute? :ip_addresses, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

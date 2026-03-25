@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DbClusterSnapshotAttributes,
       outputs: { id: :id },
       map: [:db_cluster_identifier, :db_cluster_snapshot_identifier],
-      map_present: [:shared_accounts, :tags]
+      map_present: [:shared_accounts, :tags, :tags_all]
   end
   module AWS
     include AWSDbClusterSnapshot

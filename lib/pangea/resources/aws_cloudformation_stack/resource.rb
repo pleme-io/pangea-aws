@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudformationStackAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:capabilities, :iam_role_arn, :notification_arns, :on_failure, :policy_url, :tags, :template_url, :timeout_in_minutes],
+      map_present: [:capabilities, :iam_role_arn, :notification_arns, :on_failure, :parameters, :policy_body, :policy_url, :tags, :tags_all, :template_body, :template_url, :timeout_in_minutes],
       map_bool: [:disable_rollback]
   end
   module AWS

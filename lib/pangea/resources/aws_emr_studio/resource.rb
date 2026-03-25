@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EmrStudioAttributes,
       outputs: { id: :id },
       map: [:auth_mode, :default_s3_location, :engine_security_group_id, :name, :service_role, :subnet_ids, :vpc_id, :workspace_security_group_id],
-      map_present: [:description, :encryption_key_arn, :idp_auth_url, :idp_relay_state_parameter_name, :tags, :user_role]
+      map_present: [:description, :encryption_key_arn, :idp_auth_url, :idp_relay_state_parameter_name, :tags, :tags_all, :user_role]
   end
   module AWS
     include AWSEmrStudio

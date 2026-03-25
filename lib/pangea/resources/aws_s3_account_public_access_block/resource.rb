@@ -13,6 +13,7 @@ module Pangea::Resources
     define_resource :aws_s3_account_public_access_block,
       attributes_class: AWS::Types::S3AccountPublicAccessBlockAttributes,
       outputs: { id: :id },
+      map_present: [:account_id],
       map_bool: [:block_public_acls, :block_public_policy, :ignore_public_acls, :restrict_public_buckets]
   end
   module AWS

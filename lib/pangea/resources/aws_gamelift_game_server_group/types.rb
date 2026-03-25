@@ -17,7 +17,10 @@ module Pangea::Resources::AWS::Types
     attribute :min_size, (T::Coercible::Integer | T::Coercible::Float)
     attribute :role_arn, T::String
     attribute? :auto_scaling_policy, T::Hash.optional
+    attribute? :balancing_strategy, T::String.optional
+    attribute? :game_server_protection_policy, (T::String | T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc_subnets, T::Array.of(T::String).optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RouteTableAttributes,
       outputs: { id: :id },
       map: [:vpc_id],
-      map_present: [:tags]
+      map_present: [:propagating_vgws, :route, :tags, :tags_all]
   end
   module AWS
     include AWSRouteTable

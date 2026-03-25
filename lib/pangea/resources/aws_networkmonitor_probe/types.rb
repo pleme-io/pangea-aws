@@ -15,6 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :protocol, T::String
     attribute :source_arn, T::String
     attribute? :destination_port, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :packet_size, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end

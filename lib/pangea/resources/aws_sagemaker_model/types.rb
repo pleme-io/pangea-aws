@@ -14,8 +14,10 @@ module Pangea::Resources::AWS::Types
     attribute? :container, T::Array.of(T::Hash).optional
     attribute? :enable_network_isolation, T::Bool.optional
     attribute? :inference_execution_config, T::Hash.optional
+    attribute? :name, T::String.optional
     attribute? :primary_container, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc_config, T::Hash.optional
   end
 end

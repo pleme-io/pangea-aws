@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IamSamlProviderAttributes,
       outputs: { id: :id },
       map: [:name, :saml_metadata_document],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSIamSamlProvider

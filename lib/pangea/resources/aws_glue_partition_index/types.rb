@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :database_name, T::String
     attribute :partition_index, T::Hash
     attribute :table_name, T::String
+    attribute? :catalog_id, T::String.optional
   end
 end

@@ -11,6 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :bucket, T::String
+    attribute? :expected_bucket_owner, T::String.optional
     attribute? :rule, T::Array.of(T::Hash).optional
+    attribute? :transition_default_minimum_object_size, T::String.optional
   end
 end

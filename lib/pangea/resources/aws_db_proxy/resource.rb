@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DbProxyAttributes,
       outputs: { id: :id },
       map: [:auth, :engine_family, :name, :role_arn, :vpc_subnet_ids],
-      map_present: [:tags],
+      map_present: [:idle_client_timeout, :tags, :tags_all, :vpc_security_group_ids],
       map_bool: [:debug_logging, :require_tls]
   end
   module AWS

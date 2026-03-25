@@ -15,7 +15,9 @@ module Pangea::Resources::AWS::Types
     attribute? :aws_kms_key_arn, T::String.optional
     attribute? :content_config, T::Hash.optional
     attribute? :content_config_permissions, T::Array.of(T::Hash).optional
+    attribute? :name, T::String.optional
     attribute? :notifications, T::Hash.optional
+    attribute? :output_bucket, T::String.optional
     attribute? :thumbnail_config, T::Hash.optional
     attribute? :thumbnail_config_permissions, T::Array.of(T::Hash).optional
   end

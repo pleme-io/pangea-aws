@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BackupSelectionAttributes,
       outputs: { id: :id },
       map: [:iam_role_arn, :name, :plan_id],
-      map_present: [:condition, :resources, :selection_tag]
+      map_present: [:condition, :not_resources, :resources, :selection_tag]
   end
   module AWS
     include AWSBackupSelection

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpclatticeResourceGatewayAttributes,
       outputs: { id: :id },
       map: [:name, :subnet_ids, :vpc_id],
-      map_present: [:tags]
+      map_present: [:ip_address_type, :security_group_ids, :tags]
   end
   module AWS
     include AWSVpclatticeResourceGateway

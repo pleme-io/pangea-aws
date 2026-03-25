@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightAccountSubscriptionAttributes,
       outputs: { id: :id },
       map: [:account_name, :authentication_method, :edition, :notification_email],
-      map_present: [:active_directory_name, :admin_group, :author_group, :contact_number, :directory_id, :email_address, :first_name, :iam_identity_center_instance_arn, :last_name, :reader_group, :realm]
+      map_present: [:active_directory_name, :admin_group, :author_group, :aws_account_id, :contact_number, :directory_id, :email_address, :first_name, :iam_identity_center_instance_arn, :last_name, :reader_group, :realm]
   end
   module AWS
     include AWSQuicksightAccountSubscription

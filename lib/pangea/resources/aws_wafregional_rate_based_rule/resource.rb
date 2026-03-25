@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WafregionalRateBasedRuleAttributes,
       outputs: { id: :id },
       map: [:metric_name, :name, :rate_key, :rate_limit],
-      map_present: [:predicate, :tags]
+      map_present: [:predicate, :tags, :tags_all]
   end
   module AWS
     include AWSWafregionalRateBasedRule

@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :database_name, T::String
     attribute :partition_values, T::Array.of(T::String)
     attribute :table_name, T::String
+    attribute? :catalog_id, T::String.optional
     attribute? :parameters, T::Hash.optional
     attribute? :storage_descriptor, T::Hash.optional
   end

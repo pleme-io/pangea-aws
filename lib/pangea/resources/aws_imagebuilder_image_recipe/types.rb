@@ -18,6 +18,8 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :systems_manager_agent, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :user_data_base64, T::String.optional
     attribute? :working_directory, T::String.optional
   end
 end

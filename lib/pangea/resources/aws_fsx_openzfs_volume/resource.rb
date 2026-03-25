@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::FsxOpenzfsVolumeAttributes,
       outputs: { id: :id },
       map: [:name, :parent_volume_id],
-      map_present: [:data_compression_type, :delete_volume_options, :nfs_exports, :origin_snapshot, :record_size_kib, :tags, :user_and_group_quotas, :volume_type],
-      map_bool: [:copy_tags_to_snapshots]
+      map_present: [:data_compression_type, :delete_volume_options, :nfs_exports, :origin_snapshot, :record_size_kib, :storage_capacity_quota_gib, :storage_capacity_reservation_gib, :tags, :tags_all, :user_and_group_quotas, :volume_type],
+      map_bool: [:copy_tags_to_snapshots, :read_only]
   end
   module AWS
     include AWSFsxOpenzfsVolume

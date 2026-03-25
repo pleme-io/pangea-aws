@@ -13,7 +13,9 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :data_retention_in_hours, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :device_name, T::String.optional
+    attribute? :kms_key_id, T::String.optional
     attribute? :media_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

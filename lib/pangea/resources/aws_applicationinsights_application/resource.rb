@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApplicationinsightsApplicationAttributes,
       outputs: { id: :id },
       map: [:resource_group_name],
-      map_present: [:grouping_type, :ops_item_sns_topic_arn, :tags],
+      map_present: [:grouping_type, :ops_item_sns_topic_arn, :tags, :tags_all],
       map_bool: [:auto_config_enabled, :auto_create, :cwe_monitor_enabled, :ops_center_enabled]
   end
   module AWS

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcIpamScopeAttributes,
       outputs: { id: :id },
       map: [:ipam_id],
-      map_present: [:description, :tags]
+      map_present: [:description, :tags, :tags_all]
   end
   module AWS
     include AWSVpcIpamScope

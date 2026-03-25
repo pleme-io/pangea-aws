@@ -18,12 +18,14 @@ module Pangea::Resources::AWS::Types
     attribute? :ebs_block_device, T::Array.of(T::Hash).optional
     attribute? :ena_support, T::Bool.optional
     attribute? :ephemeral_block_device, T::Array.of(T::Hash).optional
+    attribute? :image_location, T::String.optional
     attribute? :imds_support, T::String.optional
     attribute? :kernel_id, T::String.optional
     attribute? :ramdisk_id, T::String.optional
     attribute? :root_device_name, T::String.optional
     attribute? :sriov_net_support, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :tpm_support, T::String.optional
     attribute? :uefi_data, T::String.optional
     attribute? :virtualization_type, T::String.optional

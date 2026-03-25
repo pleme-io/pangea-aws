@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GameliftBuildAttributes,
       outputs: { id: :id },
       map: [:name, :operating_system, :storage_location],
-      map_present: [:tags, :version]
+      map_present: [:tags, :tags_all, :version]
   end
   module AWS
     include AWSGameliftBuild

@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :subnet_ids, T::Array.of(T::String)
     attribute :vpc_id, T::String
+    attribute? :security_group_ids, T::Array.of(T::String).optional
   end
 end

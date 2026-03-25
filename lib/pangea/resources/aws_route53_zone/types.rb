@@ -15,6 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute? :delegation_set_id, T::String.optional
     attribute? :force_destroy, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc, T::Array.of(T::Hash).optional
   end
 end

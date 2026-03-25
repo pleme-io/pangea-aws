@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlobalacceleratorCustomRoutingEndpointGroupAttributes,
       outputs: { id: :id },
       map: [:destination_configuration, :listener_arn],
-      map_present: [:endpoint_configuration]
+      map_present: [:endpoint_configuration, :endpoint_group_region]
   end
   module AWS
     include AWSGlobalacceleratorCustomRoutingEndpointGroup

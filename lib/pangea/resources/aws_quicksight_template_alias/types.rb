@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :alias_name, T::String
     attribute :template_id, T::String
     attribute :template_version_number, (T::Coercible::Integer | T::Coercible::Float)
+    attribute? :aws_account_id, T::String.optional
   end
 end

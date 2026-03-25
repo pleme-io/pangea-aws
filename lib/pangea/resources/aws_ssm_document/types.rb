@@ -17,6 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute? :document_format, T::String.optional
     attribute? :permissions, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :target_type, T::String.optional
     attribute? :version_name, T::String.optional
   end

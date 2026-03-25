@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LightsailInstanceAttributes,
       outputs: { id: :id },
       map: [:availability_zone, :blueprint_id, :bundle_id, :name],
-      map_present: [:add_on, :ip_address_type, :key_pair_name, :tags, :user_data]
+      map_present: [:add_on, :ip_address_type, :key_pair_name, :tags, :tags_all, :user_data]
   end
   module AWS
     include AWSLightsailInstance

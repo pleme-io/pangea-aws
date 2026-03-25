@@ -11,6 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :group_name, T::String
+    attribute? :aws_account_id, T::String.optional
     attribute? :description, T::String.optional
     attribute? :namespace, T::String.optional
   end

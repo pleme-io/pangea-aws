@@ -12,8 +12,20 @@ module Pangea::Resources::AWS::Types
 
     attribute :replication_instance_class, T::String
     attribute :replication_instance_id, T::String
+    attribute? :allocated_storage, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :allow_major_version_upgrade, T::Bool.optional
     attribute? :apply_immediately, T::Bool.optional
+    attribute? :auto_minor_version_upgrade, T::Bool.optional
+    attribute? :availability_zone, T::String.optional
+    attribute? :engine_version, T::String.optional
+    attribute? :kms_key_arn, T::String.optional
+    attribute? :multi_az, T::Bool.optional
+    attribute? :network_type, T::String.optional
+    attribute? :preferred_maintenance_window, T::String.optional
+    attribute? :publicly_accessible, T::Bool.optional
+    attribute? :replication_subnet_group_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :vpc_security_group_ids, T::Array.of(T::String).optional
   end
 end

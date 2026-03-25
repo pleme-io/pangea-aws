@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Apigatewayv2VpcLinkAttributes,
       outputs: { id: :id },
       map: [:name, :security_group_ids, :subnet_ids],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSApigatewayv2VpcLink

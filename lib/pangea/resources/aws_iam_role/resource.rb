@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IamRoleAttributes,
       outputs: { id: :id },
       map: [:assume_role_policy],
-      map_present: [:description, :inline_policy, :max_session_duration, :path, :permissions_boundary, :tags],
+      map_present: [:description, :inline_policy, :managed_policy_arns, :max_session_duration, :name, :name_prefix, :path, :permissions_boundary, :tags, :tags_all],
       map_bool: [:force_detach_policies]
   end
   module AWS

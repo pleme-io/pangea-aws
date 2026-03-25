@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :agent_alias_name, T::String
     attribute :agent_id, T::String
     attribute? :description, T::String.optional
+    attribute? :routing_configuration, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
   end
 end

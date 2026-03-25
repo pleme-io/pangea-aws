@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :subnet_ids, T::Array.of(T::String)
     attribute :workgroup_name, T::String
     attribute? :owner_account, T::String.optional
+    attribute? :vpc_security_group_ids, T::Array.of(T::String).optional
   end
 end

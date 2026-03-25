@@ -19,6 +19,7 @@ module Pangea::Resources::AWS::Types
     attribute? :offline_store_config, T::Hash.optional
     attribute? :online_store_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :throughput_config, T::Hash.optional
   end
 end

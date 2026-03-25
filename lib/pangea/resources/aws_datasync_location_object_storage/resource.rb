@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatasyncLocationObjectStorageAttributes,
       outputs: { id: :id },
       map: [:agent_arns, :bucket_name, :server_hostname],
-      map_present: [:access_key, :secret_key, :server_certificate, :server_port, :server_protocol, :tags]
+      map_present: [:access_key, :secret_key, :server_certificate, :server_port, :server_protocol, :subdirectory, :tags, :tags_all]
   end
   module AWS
     include AWSDatasyncLocationObjectStorage

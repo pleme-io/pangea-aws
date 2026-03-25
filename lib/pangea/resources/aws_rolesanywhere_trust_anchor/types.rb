@@ -12,7 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute :source, T::Hash
+    attribute? :enabled, T::Bool.optional
     attribute? :notification_settings, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

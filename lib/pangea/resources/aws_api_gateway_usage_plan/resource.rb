@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayUsagePlanAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:api_stages, :description, :product_code, :quota_settings, :tags, :throttle_settings]
+      map_present: [:api_stages, :description, :product_code, :quota_settings, :tags, :tags_all, :throttle_settings]
   end
   module AWS
     include AWSApiGatewayUsagePlan

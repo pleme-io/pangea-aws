@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute :resource_access_role_arn, T::String
     attribute? :real_time_alert_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsmquicksetupConfigurationManagerAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:configuration_definition, :tags]
+      map_present: [:configuration_definition, :description, :tags]
   end
   module AWS
     include AWSSsmquicksetupConfigurationManager

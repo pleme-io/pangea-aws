@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_default_vpc_dhcp_options,
       attributes_class: AWS::Types::DefaultVpcDhcpOptionsAttributes,
       outputs: { id: :id },
-      map_present: [:tags]
+      map_present: [:owner_id, :tags, :tags_all]
   end
   module AWS
     include AWSDefaultVpcDhcpOptions

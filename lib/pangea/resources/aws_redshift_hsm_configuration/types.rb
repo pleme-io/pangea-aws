@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute :hsm_partition_password, T::String
     attribute :hsm_server_public_certificate, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

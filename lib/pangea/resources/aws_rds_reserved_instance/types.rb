@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute? :instance_count, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :reservation_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

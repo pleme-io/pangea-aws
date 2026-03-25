@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3DirectoryBucketAttributes,
       outputs: { id: :id },
       map: [:bucket],
-      map_present: [:location]
+      map_present: [:data_redundancy, :location, :type],
+      map_bool: [:force_destroy]
   end
   module AWS
     include AWSS3DirectoryBucket

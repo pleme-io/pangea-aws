@@ -15,6 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :code, T::String.optional
     attribute? :description, T::String.optional
+    attribute? :function_version, T::String.optional
     attribute? :max_batch_size, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :request_mapping_template, T::String.optional
     attribute? :response_mapping_template, T::String.optional

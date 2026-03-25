@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ImagebuilderImageRecipeAttributes,
       outputs: { id: :id },
       map: [:component, :name, :parent_image, :version],
-      map_present: [:block_device_mapping, :description, :systems_manager_agent, :tags, :working_directory]
+      map_present: [:block_device_mapping, :description, :systems_manager_agent, :tags, :tags_all, :user_data_base64, :working_directory]
   end
   module AWS
     include AWSImagebuilderImageRecipe

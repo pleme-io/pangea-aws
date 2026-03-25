@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :role_arn, T::String
     attribute :target_arn, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

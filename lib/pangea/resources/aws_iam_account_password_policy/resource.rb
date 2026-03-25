@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_iam_account_password_policy,
       attributes_class: AWS::Types::IamAccountPasswordPolicyAttributes,
       outputs: { id: :id },
-      map_present: [:minimum_password_length],
-      map_bool: [:allow_users_to_change_password]
+      map_present: [:max_password_age, :minimum_password_length, :password_reuse_prevention],
+      map_bool: [:allow_users_to_change_password, :hard_expiry, :require_lowercase_characters, :require_numbers, :require_symbols, :require_uppercase_characters]
   end
   module AWS
     include AWSIamAccountPasswordPolicy

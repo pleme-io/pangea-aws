@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_default_vpc,
       attributes_class: AWS::Types::DefaultVpcAttributes,
       outputs: { id: :id },
-      map_present: [:ipv6_ipam_pool_id, :ipv6_netmask_length, :tags],
-      map_bool: [:assign_generated_ipv6_cidr_block, :enable_dns_hostnames, :enable_dns_support, :force_destroy]
+      map_present: [:ipv6_cidr_block, :ipv6_cidr_block_network_border_group, :ipv6_ipam_pool_id, :ipv6_netmask_length, :tags, :tags_all],
+      map_bool: [:assign_generated_ipv6_cidr_block, :enable_dns_hostnames, :enable_dns_support, :enable_network_address_usage_metrics, :force_destroy]
   end
   module AWS
     include AWSDefaultVpc

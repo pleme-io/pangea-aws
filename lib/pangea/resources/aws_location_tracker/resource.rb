@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LocationTrackerAttributes,
       outputs: { id: :id },
       map: [:tracker_name],
-      map_present: [:description, :kms_key_id, :position_filtering, :tags]
+      map_present: [:description, :kms_key_id, :position_filtering, :tags, :tags_all]
   end
   module AWS
     include AWSLocationTracker

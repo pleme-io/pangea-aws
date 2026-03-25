@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::PipesPipeAttributes,
       outputs: { id: :id },
       map: [:role_arn, :source, :target],
-      map_present: [:description, :desired_state, :enrichment, :enrichment_parameters, :kms_key_identifier, :log_configuration, :source_parameters, :tags, :target_parameters]
+      map_present: [:description, :desired_state, :enrichment, :enrichment_parameters, :kms_key_identifier, :log_configuration, :name, :name_prefix, :source_parameters, :tags, :tags_all, :target_parameters]
   end
   module AWS
     include AWSPipesPipe

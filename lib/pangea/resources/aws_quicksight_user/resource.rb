@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightUserAttributes,
       outputs: { id: :id },
       map: [:email, :identity_type, :user_role],
-      map_present: [:iam_arn, :namespace, :session_name, :user_name]
+      map_present: [:aws_account_id, :iam_arn, :namespace, :session_name, :user_name]
   end
   module AWS
     include AWSQuicksightUser

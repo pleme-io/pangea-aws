@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NatGatewayAttributes,
       outputs: { id: :id },
       map: [:subnet_id],
-      map_present: [:allocation_id, :connectivity_type, :secondary_allocation_ids, :tags]
+      map_present: [:allocation_id, :connectivity_type, :private_ip, :secondary_allocation_ids, :secondary_private_ip_address_count, :secondary_private_ip_addresses, :tags, :tags_all]
   end
   module AWS
     include AWSNatGateway

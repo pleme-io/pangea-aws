@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WorkspacesIpGroupAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:description, :rules, :tags]
+      map_present: [:description, :rules, :tags, :tags_all]
   end
   module AWS
     include AWSWorkspacesIpGroup

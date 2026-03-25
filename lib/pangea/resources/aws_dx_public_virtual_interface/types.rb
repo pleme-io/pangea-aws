@@ -16,6 +16,10 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :route_filter_prefixes, T::Array.of(T::String)
     attribute :vlan, (T::Coercible::Integer | T::Coercible::Float)
+    attribute? :amazon_address, T::String.optional
+    attribute? :bgp_auth_key, T::String.optional
+    attribute? :customer_address, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

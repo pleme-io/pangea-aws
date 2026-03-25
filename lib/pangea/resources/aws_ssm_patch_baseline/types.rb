@@ -19,7 +19,9 @@ module Pangea::Resources::AWS::Types
     attribute? :global_filter, T::Array.of(T::Hash).optional
     attribute? :operating_system, T::String.optional
     attribute? :rejected_patches, T::Array.of(T::String).optional
+    attribute? :rejected_patches_action, T::String.optional
     attribute? :source, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

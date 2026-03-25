@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkmanagerConnectionAttributes,
       outputs: { id: :id },
       map: [:connected_device_id, :device_id, :global_network_id],
-      map_present: [:connected_link_id, :description, :link_id, :tags]
+      map_present: [:connected_link_id, :description, :link_id, :tags, :tags_all]
   end
   module AWS
     include AWSNetworkmanagerConnection

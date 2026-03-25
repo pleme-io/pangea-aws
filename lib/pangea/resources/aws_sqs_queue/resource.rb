@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_sqs_queue,
       attributes_class: AWS::Types::SqsQueueAttributes,
       outputs: { id: :id },
-      map_present: [:delay_seconds, :kms_master_key_id, :max_message_size, :message_retention_seconds, :receive_wait_time_seconds, :tags, :visibility_timeout_seconds],
-      map_bool: [:content_based_deduplication, :fifo_queue]
+      map_present: [:deduplication_scope, :delay_seconds, :fifo_throughput_limit, :kms_data_key_reuse_period_seconds, :kms_master_key_id, :max_message_size, :message_retention_seconds, :name, :name_prefix, :policy, :receive_wait_time_seconds, :redrive_allow_policy, :redrive_policy, :tags, :tags_all, :visibility_timeout_seconds],
+      map_bool: [:content_based_deduplication, :fifo_queue, :sqs_managed_sse_enabled]
   end
   module AWS
     include AWSSqsQueue

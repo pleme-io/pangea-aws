@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :user, T::String
     attribute? :password_length, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :password_reset_required, T::Bool.optional
     attribute? :pgp_key, T::String.optional
   end
 end

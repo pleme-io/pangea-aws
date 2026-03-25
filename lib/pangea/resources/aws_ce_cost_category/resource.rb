@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CeCostCategoryAttributes,
       outputs: { id: :id },
       map: [:name, :rule, :rule_version],
-      map_present: [:default_value, :split_charge_rule, :tags]
+      map_present: [:default_value, :effective_start, :split_charge_rule, :tags, :tags_all]
   end
   module AWS
     include AWSCeCostCategory

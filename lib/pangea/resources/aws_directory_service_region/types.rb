@@ -13,6 +13,8 @@ module Pangea::Resources::AWS::Types
     attribute :directory_id, T::String
     attribute :region_name, T::String
     attribute :vpc_settings, T::Hash
+    attribute? :desired_number_of_domain_controllers, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

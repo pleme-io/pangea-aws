@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::IamUserLoginProfileAttributes,
       outputs: { id: :id },
       map: [:user],
-      map_present: [:password_length, :pgp_key]
+      map_present: [:password_length, :pgp_key],
+      map_bool: [:password_reset_required]
   end
   module AWS
     include AWSIamUserLoginProfile

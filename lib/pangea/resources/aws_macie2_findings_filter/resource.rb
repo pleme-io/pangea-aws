@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Macie2FindingsFilterAttributes,
       outputs: { id: :id },
       map: [:action, :finding_criteria],
-      map_present: [:description, :tags]
+      map_present: [:description, :name, :name_prefix, :position, :tags, :tags_all]
   end
   module AWS
     include AWSMacie2FindingsFilter

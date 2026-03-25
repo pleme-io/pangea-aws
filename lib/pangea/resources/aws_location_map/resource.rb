@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LocationMapAttributes,
       outputs: { id: :id },
       map: [:configuration, :map_name],
-      map_present: [:description, :tags]
+      map_present: [:description, :tags, :tags_all]
   end
   module AWS
     include AWSLocationMap

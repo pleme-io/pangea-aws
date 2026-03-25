@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute :policy_details, T::Hash
     attribute? :state, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :contact_list_name, T::String
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :topic, T::Array.of(T::Hash).optional
   end
 end

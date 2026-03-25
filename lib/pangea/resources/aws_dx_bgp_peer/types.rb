@@ -13,5 +13,8 @@ module Pangea::Resources::AWS::Types
     attribute :address_family, T::String
     attribute :bgp_asn, (T::Coercible::Integer | T::Coercible::Float)
     attribute :virtual_interface_id, T::String
+    attribute? :amazon_address, T::String.optional
+    attribute? :bgp_auth_key, T::String.optional
+    attribute? :customer_address, T::String.optional
   end
 end

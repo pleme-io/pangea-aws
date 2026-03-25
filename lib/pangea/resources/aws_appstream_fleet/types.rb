@@ -13,10 +13,21 @@ module Pangea::Resources::AWS::Types
     attribute :compute_capacity, T::Hash
     attribute :instance_type, T::String
     attribute :name, T::String
+    attribute? :description, T::String.optional
+    attribute? :disconnect_timeout_in_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :display_name, T::String.optional
     attribute? :domain_join_info, T::Hash.optional
+    attribute? :enable_default_internet_access, T::Bool.optional
+    attribute? :fleet_type, T::String.optional
+    attribute? :iam_role_arn, T::String.optional
     attribute? :idle_disconnect_timeout_in_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :image_arn, T::String.optional
+    attribute? :image_name, T::String.optional
     attribute? :max_sessions_per_instance, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :max_user_duration_in_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :stream_view, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc_config, T::Hash.optional
   end
 end

@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_vpc_endpoint_service,
       attributes_class: AWS::Types::VpcEndpointServiceAttributes,
       outputs: { id: :id },
-      map_present: [:gateway_load_balancer_arns, :network_load_balancer_arns, :tags],
+      map_present: [:allowed_principals, :gateway_load_balancer_arns, :network_load_balancer_arns, :private_dns_name, :supported_ip_address_types, :supported_regions, :tags, :tags_all],
       map_bool: [:acceptance_required]
   end
   module AWS

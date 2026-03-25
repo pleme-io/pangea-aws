@@ -12,6 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :bucket, T::String
     attribute :name, T::String
+    attribute? :account_id, T::String.optional
+    attribute? :bucket_account_id, T::String.optional
+    attribute? :policy, (T::String | T::Hash).optional
     attribute? :public_access_block_configuration, T::Hash.optional
     attribute? :vpc_configuration, T::Hash.optional
   end

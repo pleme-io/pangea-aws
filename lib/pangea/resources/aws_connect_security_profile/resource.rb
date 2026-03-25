@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConnectSecurityProfileAttributes,
       outputs: { id: :id },
       map: [:instance_id, :name],
-      map_present: [:description, :permissions, :tags]
+      map_present: [:description, :permissions, :tags, :tags_all]
   end
   module AWS
     include AWSConnectSecurityProfile

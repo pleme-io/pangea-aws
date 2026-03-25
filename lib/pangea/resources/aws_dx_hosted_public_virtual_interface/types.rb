@@ -17,5 +17,8 @@ module Pangea::Resources::AWS::Types
     attribute :owner_account_id, T::String
     attribute :route_filter_prefixes, T::Array.of(T::String)
     attribute :vlan, (T::Coercible::Integer | T::Coercible::Float)
+    attribute? :amazon_address, T::String.optional
+    attribute? :bgp_auth_key, T::String.optional
+    attribute? :customer_address, T::String.optional
   end
 end

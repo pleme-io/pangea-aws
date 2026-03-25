@@ -14,6 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute :s3_config, T::Hash
     attribute :subdirectory, T::String
     attribute? :agent_arns, T::Array.of(T::String).optional
+    attribute? :s3_storage_class, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

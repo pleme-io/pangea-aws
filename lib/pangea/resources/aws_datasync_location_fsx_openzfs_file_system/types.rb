@@ -13,6 +13,8 @@ module Pangea::Resources::AWS::Types
     attribute :fsx_filesystem_arn, T::String
     attribute :protocol, T::Hash
     attribute :security_group_arns, T::Array.of(T::String)
+    attribute? :subdirectory, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

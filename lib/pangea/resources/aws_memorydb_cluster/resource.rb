@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MemorydbClusterAttributes,
       outputs: { id: :id },
       map: [:acl_name, :node_type],
-      map_present: [:description, :final_snapshot_name, :kms_key_arn, :multi_region_cluster_name, :num_replicas_per_shard, :num_shards, :security_group_ids, :snapshot_arns, :snapshot_name, :sns_topic_arn, :tags],
+      map_present: [:description, :engine, :engine_version, :final_snapshot_name, :kms_key_arn, :maintenance_window, :multi_region_cluster_name, :name, :name_prefix, :num_replicas_per_shard, :num_shards, :parameter_group_name, :port, :security_group_ids, :snapshot_arns, :snapshot_name, :snapshot_retention_limit, :snapshot_window, :sns_topic_arn, :subnet_group_name, :tags, :tags_all],
       map_bool: [:auto_minor_version_upgrade, :data_tiering, :tls_enabled]
   end
   module AWS

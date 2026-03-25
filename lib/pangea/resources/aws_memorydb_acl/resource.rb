@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_memorydb_acl,
       attributes_class: AWS::Types::MemorydbAclAttributes,
       outputs: { id: :id },
-      map_present: [:tags, :user_names]
+      map_present: [:name, :name_prefix, :tags, :tags_all, :user_names]
   end
   module AWS
     include AWSMemorydbAcl

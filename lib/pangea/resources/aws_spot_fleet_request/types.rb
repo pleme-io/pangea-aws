@@ -20,6 +20,7 @@ module Pangea::Resources::AWS::Types
     attribute? :instance_pools_to_use_count, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :launch_specification, T::Array.of(T::Hash).optional
     attribute? :launch_template_config, T::Array.of(T::Hash).optional
+    attribute? :load_balancers, T::Array.of(T::String).optional
     attribute? :on_demand_allocation_strategy, T::String.optional
     attribute? :on_demand_max_total_price, T::String.optional
     attribute? :on_demand_target_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
@@ -27,7 +28,9 @@ module Pangea::Resources::AWS::Types
     attribute? :spot_maintenance_strategies, T::Hash.optional
     attribute? :spot_price, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :target_capacity_unit_type, T::String.optional
+    attribute? :target_group_arns, T::Array.of(T::String).optional
     attribute? :terminate_instances_on_delete, T::String.optional
     attribute? :terminate_instances_with_expiration, T::Bool.optional
     attribute? :valid_from, T::String.optional

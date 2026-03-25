@@ -14,6 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute? :capacity_reservation_specification, T::Hash.optional
     attribute? :cpu_options, T::Hash.optional
     attribute? :credit_specification, T::Hash.optional
+    attribute? :default_version, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :description, T::String.optional
     attribute? :disable_api_stop, T::Bool.optional
     attribute? :disable_api_termination, T::Bool.optional
@@ -34,6 +35,8 @@ module Pangea::Resources::AWS::Types
     attribute? :maintenance_options, T::Hash.optional
     attribute? :metadata_options, T::Hash.optional
     attribute? :monitoring, T::Hash.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :network_interfaces, T::Array.of(T::Hash).optional
     attribute? :placement, T::Hash.optional
     attribute? :private_dns_name_options, T::Hash.optional
@@ -41,6 +44,7 @@ module Pangea::Resources::AWS::Types
     attribute? :security_group_names, T::Array.of(T::String).optional
     attribute? :tag_specifications, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :update_default_version, T::Bool.optional
     attribute? :user_data, T::String.optional
     attribute? :vpc_security_group_ids, T::Array.of(T::String).optional

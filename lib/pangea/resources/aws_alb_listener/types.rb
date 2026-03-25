@@ -16,6 +16,29 @@ module Pangea::Resources::AWS::Types
     attribute? :certificate_arn, T::String.optional
     attribute? :mutual_authentication, T::Hash.optional
     attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :protocol, T::String.optional
+    attribute? :routing_http_request_x_amzn_mtls_clientcert_header_name, T::String.optional
+    attribute? :routing_http_request_x_amzn_mtls_clientcert_issuer_header_name, T::String.optional
+    attribute? :routing_http_request_x_amzn_mtls_clientcert_leaf_header_name, T::String.optional
+    attribute? :routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name, T::String.optional
+    attribute? :routing_http_request_x_amzn_mtls_clientcert_subject_header_name, T::String.optional
+    attribute? :routing_http_request_x_amzn_mtls_clientcert_validity_header_name, T::String.optional
+    attribute? :routing_http_request_x_amzn_tls_cipher_suite_header_name, T::String.optional
+    attribute? :routing_http_request_x_amzn_tls_version_header_name, T::String.optional
+    attribute? :routing_http_response_access_control_allow_credentials_header_value, T::String.optional
+    attribute? :routing_http_response_access_control_allow_headers_header_value, T::String.optional
+    attribute? :routing_http_response_access_control_allow_methods_header_value, T::String.optional
+    attribute? :routing_http_response_access_control_allow_origin_header_value, T::String.optional
+    attribute? :routing_http_response_access_control_expose_headers_header_value, T::String.optional
+    attribute? :routing_http_response_access_control_max_age_header_value, T::String.optional
+    attribute? :routing_http_response_content_security_policy_header_value, T::String.optional
+    attribute? :routing_http_response_server_enabled, T::Bool.optional
+    attribute? :routing_http_response_strict_transport_security_header_value, T::String.optional
+    attribute? :routing_http_response_x_content_type_options_header_value, T::String.optional
+    attribute? :routing_http_response_x_frame_options_header_value, T::String.optional
+    attribute? :ssl_policy, (T::String | T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :tcp_idle_timeout_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

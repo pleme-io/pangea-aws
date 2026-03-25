@@ -19,6 +19,7 @@ module Pangea::Resources::AWS::Types
     attribute? :multicast_support, T::String.optional
     attribute? :security_group_referencing_support, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :transit_gateway_cidr_blocks, T::Array.of(T::String).optional
     attribute? :vpn_ecmp_support, T::String.optional
   end

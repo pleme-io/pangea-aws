@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :email, T::String
     attribute :identity_type, T::String
     attribute :user_role, T::String
+    attribute? :aws_account_id, T::String.optional
     attribute? :iam_arn, T::String.optional
     attribute? :namespace, T::String.optional
     attribute? :session_name, T::String.optional

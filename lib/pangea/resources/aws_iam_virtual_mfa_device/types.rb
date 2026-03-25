@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :virtual_mfa_device_name, T::String
     attribute? :path, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

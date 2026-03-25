@@ -18,9 +18,12 @@ module Pangea::Resources::AWS::Types
     attribute? :certificate_private_key, T::String.optional
     attribute? :endpoint_configuration, T::Hash.optional
     attribute? :mutual_tls_authentication, T::Hash.optional
+    attribute? :ownership_verification_certificate_arn, T::String.optional
     attribute? :policy, (T::String | T::Hash).optional
     attribute? :regional_certificate_arn, T::String.optional
     attribute? :regional_certificate_name, T::String.optional
+    attribute? :security_policy, (T::String | T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

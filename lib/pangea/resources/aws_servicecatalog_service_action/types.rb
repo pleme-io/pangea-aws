@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :definition, T::Hash
     attribute :name, T::String
     attribute? :accept_language, T::String.optional
+    attribute? :description, T::String.optional
   end
 end

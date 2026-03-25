@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :type_name, T::String
     attribute? :execution_role_arn, T::String.optional
     attribute? :logging_config, T::Hash.optional
+    attribute? :type, T::String.optional
   end
 end

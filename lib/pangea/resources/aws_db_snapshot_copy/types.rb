@@ -15,9 +15,11 @@ module Pangea::Resources::AWS::Types
     attribute? :copy_tags, T::Bool.optional
     attribute? :destination_region, T::String.optional
     attribute? :kms_key_id, T::String.optional
+    attribute? :option_group_name, T::String.optional
     attribute? :presigned_url, T::String.optional
     attribute? :shared_accounts, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :target_custom_availability_zone, T::String.optional
   end
 end

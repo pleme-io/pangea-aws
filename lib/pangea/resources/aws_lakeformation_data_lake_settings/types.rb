@@ -10,10 +10,16 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :admins, T::Array.of(T::String).optional
     attribute? :allow_external_data_filtering, T::Bool.optional
     attribute? :allow_full_table_external_data_access, T::Bool.optional
+    attribute? :authorized_session_tag_value_list, T::Array.of(T::String).optional
     attribute? :catalog_id, T::String.optional
     attribute? :create_database_default_permissions, T::Array.of(T::Hash).optional
     attribute? :create_table_default_permissions, T::Array.of(T::Hash).optional
+    attribute? :external_data_filtering_allow_list, T::Array.of(T::String).optional
+    attribute? :parameters, T::Hash.optional
+    attribute? :read_only_admins, T::Array.of(T::String).optional
+    attribute? :trusted_resource_owners, T::Array.of(T::String).optional
   end
 end

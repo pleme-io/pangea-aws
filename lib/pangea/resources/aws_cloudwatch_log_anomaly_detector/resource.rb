@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchLogAnomalyDetectorAttributes,
       outputs: { id: :id },
       map: [:log_group_arn_list],
-      map_present: [:detector_name, :evaluation_frequency, :filter_pattern, :kms_key_id, :tags],
+      map_present: [:anomaly_visibility_time, :detector_name, :evaluation_frequency, :filter_pattern, :kms_key_id, :tags],
       map_bool: [:enabled]
   end
   module AWS

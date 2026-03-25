@@ -13,7 +13,9 @@ module Pangea::Resources
     define_resource :aws_opsworks_permission,
       attributes_class: AWS::Types::OpsworksPermissionAttributes,
       outputs: { id: :id },
-      map: [:stack_id, :user_arn]
+      map: [:stack_id, :user_arn],
+      map_present: [:level],
+      map_bool: [:allow_ssh, :allow_sudo]
   end
   module AWS
     include AWSOpsworksPermission

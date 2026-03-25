@@ -13,9 +13,16 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :type, T::String
     attribute? :allowed_pattern, T::String.optional
+    attribute? :arn, T::String.optional
+    attribute? :data_type, T::String.optional
     attribute? :description, T::String.optional
+    attribute? :insecure_value, T::String.optional
+    attribute? :key_id, T::String.optional
     attribute? :overwrite, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :tier, T::String.optional
+    attribute? :value, T::String.optional
     attribute? :value_wo, T::String.optional
     attribute? :value_wo_version, (T::Coercible::Integer | T::Coercible::Float).optional
   end

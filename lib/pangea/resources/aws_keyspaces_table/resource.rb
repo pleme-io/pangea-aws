@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KeyspacesTableAttributes,
       outputs: { id: :id },
       map: [:keyspace_name, :schema_definition, :table_name],
-      map_present: [:capacity_specification, :client_side_timestamps, :comment, :default_time_to_live, :encryption_specification, :point_in_time_recovery, :tags, :ttl]
+      map_present: [:capacity_specification, :client_side_timestamps, :comment, :default_time_to_live, :encryption_specification, :point_in_time_recovery, :tags, :tags_all, :ttl]
   end
   module AWS
     include AWSKeyspacesTable

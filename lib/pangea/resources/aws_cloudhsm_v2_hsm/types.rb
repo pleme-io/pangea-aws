@@ -11,5 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :cluster_id, T::String
+    attribute? :availability_zone, T::String.optional
+    attribute? :ip_address, T::String.optional
+    attribute? :subnet_id, T::String.optional
   end
 end

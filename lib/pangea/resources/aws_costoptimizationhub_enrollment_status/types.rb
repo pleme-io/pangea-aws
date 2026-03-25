@@ -9,5 +9,7 @@ module Pangea::Resources::AWS::Types
   class CostoptimizationhubEnrollmentStatusAttributes < Dry::Struct
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
+
+    attribute? :include_member_accounts, T::Bool.optional
   end
 end

@@ -16,7 +16,10 @@ module Pangea::Resources::AWS::Types
     attribute? :exclude_filter, T::Array.of(T::Hash).optional
     attribute? :include_filter, T::Array.of(T::Hash).optional
     attribute? :include_linked_accounts_metrics, T::Bool.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :statistics_configuration, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

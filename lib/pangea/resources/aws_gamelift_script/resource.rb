@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GameliftScriptAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:storage_location, :tags, :version, :zip_file]
+      map_present: [:storage_location, :tags, :tags_all, :version, :zip_file]
   end
   module AWS
     include AWSGameliftScript

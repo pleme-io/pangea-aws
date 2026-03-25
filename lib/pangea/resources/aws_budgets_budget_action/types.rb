@@ -18,6 +18,8 @@ module Pangea::Resources::AWS::Types
     attribute :execution_role_arn, T::String
     attribute :notification_type, T::String
     attribute :subscriber, T::Array.of(T::Hash)
+    attribute? :account_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

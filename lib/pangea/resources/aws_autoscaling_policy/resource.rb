@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AutoscalingPolicyAttributes,
       outputs: { id: :id },
       map: [:autoscaling_group_name, :name],
-      map_present: [:adjustment_type, :cooldown, :estimated_instance_warmup, :min_adjustment_magnitude, :policy_type, :predictive_scaling_configuration, :scaling_adjustment, :step_adjustment, :target_tracking_configuration],
+      map_present: [:adjustment_type, :cooldown, :estimated_instance_warmup, :metric_aggregation_type, :min_adjustment_magnitude, :policy_type, :predictive_scaling_configuration, :scaling_adjustment, :step_adjustment, :target_tracking_configuration],
       map_bool: [:enabled]
   end
   module AWS

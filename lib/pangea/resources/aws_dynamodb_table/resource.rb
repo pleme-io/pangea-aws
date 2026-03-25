@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DynamodbTableAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:attribute, :billing_mode, :global_secondary_index, :import_table, :local_secondary_index, :on_demand_throughput, :point_in_time_recovery, :range_key, :replica, :restore_date_time, :restore_source_name, :restore_source_table_arn, :server_side_encryption, :table_class, :tags, :ttl],
+      map_present: [:attribute, :billing_mode, :global_secondary_index, :hash_key, :import_table, :local_secondary_index, :on_demand_throughput, :point_in_time_recovery, :range_key, :read_capacity, :replica, :restore_date_time, :restore_source_name, :restore_source_table_arn, :server_side_encryption, :stream_view_type, :table_class, :tags, :tags_all, :ttl, :write_capacity],
       map_bool: [:deletion_protection_enabled, :restore_to_latest_time, :stream_enabled]
   end
   module AWS

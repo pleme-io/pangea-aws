@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Apigatewayv2StageAttributes,
       outputs: { id: :id },
       map: [:api_id, :name],
-      map_present: [:access_log_settings, :client_certificate_id, :default_route_settings, :description, :route_settings, :stage_variables, :tags],
+      map_present: [:access_log_settings, :client_certificate_id, :default_route_settings, :deployment_id, :description, :route_settings, :stage_variables, :tags, :tags_all],
       map_bool: [:auto_deploy]
   end
   module AWS

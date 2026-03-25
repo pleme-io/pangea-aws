@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :vpc_identifier, T::String
     attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

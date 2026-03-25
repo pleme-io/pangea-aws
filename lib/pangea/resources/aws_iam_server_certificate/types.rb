@@ -13,7 +13,10 @@ module Pangea::Resources::AWS::Types
     attribute :certificate_body, T::String
     attribute :private_key, T::String
     attribute? :certificate_chain, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :path, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

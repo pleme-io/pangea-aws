@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :custom_key_store_name, T::String
     attribute? :cloud_hsm_cluster_id, T::String.optional
+    attribute? :custom_key_store_type, T::String.optional
     attribute? :key_store_password, T::String.optional
     attribute? :trust_anchor_certificate, T::String.optional
     attribute? :xks_proxy_authentication_credential, T::Hash.optional

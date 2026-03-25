@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_efs_mount_target,
       attributes_class: AWS::Types::EfsMountTargetAttributes,
       outputs: { id: :id },
-      map: [:file_system_id, :subnet_id]
+      map: [:file_system_id, :subnet_id],
+      map_present: [:ip_address, :security_groups]
   end
   module AWS
     include AWSEfsMountTarget

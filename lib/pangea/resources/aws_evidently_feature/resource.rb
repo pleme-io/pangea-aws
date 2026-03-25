@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EvidentlyFeatureAttributes,
       outputs: { id: :id },
       map: [:name, :project, :variations],
-      map_present: [:description, :entity_overrides, :tags]
+      map_present: [:default_variation, :description, :entity_overrides, :evaluation_strategy, :tags, :tags_all]
   end
   module AWS
     include AWSEvidentlyFeature

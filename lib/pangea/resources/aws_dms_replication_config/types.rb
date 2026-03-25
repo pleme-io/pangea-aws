@@ -16,8 +16,11 @@ module Pangea::Resources::AWS::Types
     attribute :source_endpoint_arn, T::String
     attribute :table_mappings, T::String
     attribute :target_endpoint_arn, T::String
+    attribute? :replication_settings, T::String.optional
+    attribute? :resource_identifier, T::String.optional
     attribute? :start_replication, T::Bool.optional
     attribute? :supplemental_settings, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

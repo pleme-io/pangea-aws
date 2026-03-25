@@ -11,7 +11,12 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :provisioned_memory, (T::Coercible::Integer | T::Coercible::Float)
+    attribute? :deletion_protection, T::Bool.optional
+    attribute? :graph_name, T::String.optional
     attribute? :graph_name_prefix, T::String.optional
+    attribute? :kms_key_identifier, T::String.optional
+    attribute? :public_connectivity, T::Bool.optional
+    attribute? :replica_count, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
     attribute? :vector_search_configuration, T::Array.of(T::Hash).optional
   end

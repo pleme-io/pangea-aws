@@ -12,8 +12,10 @@ module Pangea::Resources::AWS::Types
 
     attribute :resource_type, T::String
     attribute :retention_period, T::Hash
+    attribute? :description, T::String.optional
     attribute? :lock_configuration, T::Hash.optional
     attribute? :resource_tags, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

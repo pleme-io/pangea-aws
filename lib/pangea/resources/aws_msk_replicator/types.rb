@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute :service_execution_role_arn, T::String
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

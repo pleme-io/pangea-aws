@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DocdbelasticClusterAttributes,
       outputs: { id: :id },
       map: [:admin_user_name, :admin_user_password, :auth_type, :name, :shard_capacity, :shard_count],
-      map_present: [:tags]
+      map_present: [:backup_retention_period, :kms_key_id, :preferred_backup_window, :preferred_maintenance_window, :subnet_ids, :tags, :vpc_security_group_ids]
   end
   module AWS
     include AWSDocdbelasticCluster

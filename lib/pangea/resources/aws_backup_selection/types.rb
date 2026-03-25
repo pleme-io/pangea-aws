@@ -14,6 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :plan_id, T::String
     attribute? :condition, T::Array.of(T::Hash).optional
+    attribute? :not_resources, T::Array.of(T::String).optional
     attribute? :resources, T::Array.of(T::String).optional
     attribute? :selection_tag, T::Array.of(T::Hash).optional
   end

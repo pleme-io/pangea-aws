@@ -15,10 +15,14 @@ module Pangea::Resources::AWS::Types
     attribute :connection_id, T::String
     attribute :name, T::String
     attribute :vlan, (T::Coercible::Integer | T::Coercible::Float)
+    attribute? :amazon_address, T::String.optional
+    attribute? :bgp_auth_key, T::String.optional
+    attribute? :customer_address, T::String.optional
     attribute? :dx_gateway_id, T::String.optional
     attribute? :mtu, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :sitelink_enabled, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpn_gateway_id, T::String.optional
   end
 end

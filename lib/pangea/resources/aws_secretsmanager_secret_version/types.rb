@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute? :secret_string, T::String.optional
     attribute? :secret_string_wo, T::String.optional
     attribute? :secret_string_wo_version, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :version_stages, T::Array.of(T::String).optional
   end
 end

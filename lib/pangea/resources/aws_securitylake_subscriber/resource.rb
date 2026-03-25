@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_securitylake_subscriber,
       attributes_class: AWS::Types::SecuritylakeSubscriberAttributes,
       outputs: { id: :id },
-      map_present: [:source, :subscriber_description, :subscriber_identity, :subscriber_name, :tags]
+      map_present: [:access_type, :source, :subscriber_description, :subscriber_identity, :subscriber_name, :tags]
   end
   module AWS
     include AWSSecuritylakeSubscriber

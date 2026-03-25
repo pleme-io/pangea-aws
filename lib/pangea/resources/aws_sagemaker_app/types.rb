@@ -16,6 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :resource_spec, T::Hash.optional
     attribute? :space_name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :user_profile_name, T::String.optional
   end
 end

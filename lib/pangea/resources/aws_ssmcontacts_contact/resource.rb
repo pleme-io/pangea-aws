@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsmcontactsContactAttributes,
       outputs: { id: :id },
       map: [:alias, :type],
-      map_present: [:display_name, :tags]
+      map_present: [:display_name, :tags, :tags_all]
   end
   module AWS
     include AWSSsmcontactsContact

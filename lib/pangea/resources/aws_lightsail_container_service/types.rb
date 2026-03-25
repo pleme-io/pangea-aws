@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute? :private_registry_access, T::Hash.optional
     attribute? :public_domain_names, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

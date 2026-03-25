@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :dx_gateway_id, T::String
     attribute :virtual_interface_id, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

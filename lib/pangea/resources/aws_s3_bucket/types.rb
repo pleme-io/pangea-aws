@@ -10,15 +10,23 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :acceleration_status, T::String.optional
+    attribute? :acl, T::String.optional
+    attribute? :bucket, T::String.optional
+    attribute? :bucket_prefix, T::String.optional
     attribute? :cors_rule, T::Array.of(T::Hash).optional
     attribute? :force_destroy, T::Bool.optional
     attribute? :grant, T::Array.of(T::Hash).optional
     attribute? :lifecycle_rule, T::Array.of(T::Hash).optional
     attribute? :logging, T::Hash.optional
     attribute? :object_lock_configuration, T::Hash.optional
+    attribute? :object_lock_enabled, T::Bool.optional
+    attribute? :policy, (T::String | T::Hash).optional
     attribute? :replication_configuration, T::Hash.optional
+    attribute? :request_payer, T::String.optional
     attribute? :server_side_encryption_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :versioning, T::Hash.optional
     attribute? :website, T::Hash.optional
   end

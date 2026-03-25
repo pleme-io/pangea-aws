@@ -12,6 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute? :datasources, T::Hash.optional
     attribute? :enable, T::Bool.optional
+    attribute? :finding_publishing_frequency, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

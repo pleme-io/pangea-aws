@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightGroupAttributes,
       outputs: { id: :id },
       map: [:group_name],
-      map_present: [:description, :namespace]
+      map_present: [:aws_account_id, :description, :namespace]
   end
   module AWS
     include AWSQuicksightGroup

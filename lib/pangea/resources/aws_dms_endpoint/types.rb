@@ -13,10 +13,13 @@ module Pangea::Resources::AWS::Types
     attribute :endpoint_id, T::String
     attribute :endpoint_type, T::String
     attribute :engine_name, T::String
+    attribute? :certificate_arn, T::String.optional
     attribute? :database_name, T::String.optional
     attribute? :elasticsearch_settings, T::Hash.optional
+    attribute? :extra_connection_attributes, T::String.optional
     attribute? :kafka_settings, T::Hash.optional
     attribute? :kinesis_settings, T::Hash.optional
+    attribute? :kms_key_arn, T::String.optional
     attribute? :mongodb_settings, T::Hash.optional
     attribute? :password, T::String.optional
     attribute? :pause_replication_tasks, T::Bool.optional
@@ -29,7 +32,9 @@ module Pangea::Resources::AWS::Types
     attribute? :secrets_manager_arn, T::String.optional
     attribute? :server_name, T::String.optional
     attribute? :service_access_role, T::String.optional
+    attribute? :ssl_mode, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :username, T::String.optional
   end
 end

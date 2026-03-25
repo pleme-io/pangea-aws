@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_quicksight_folder_membership,
       attributes_class: AWS::Types::QuicksightFolderMembershipAttributes,
       outputs: { id: :id },
-      map: [:folder_id, :member_id, :member_type]
+      map: [:folder_id, :member_id, :member_type],
+      map_present: [:aws_account_id]
   end
   module AWS
     include AWSQuicksightFolderMembership

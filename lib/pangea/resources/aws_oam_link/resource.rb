@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OamLinkAttributes,
       outputs: { id: :id },
       map: [:label_template, :resource_types, :sink_identifier],
-      map_present: [:link_configuration, :tags]
+      map_present: [:link_configuration, :tags, :tags_all]
   end
   module AWS
     include AWSOamLink

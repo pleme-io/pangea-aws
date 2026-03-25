@@ -14,19 +14,24 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :region, T::String
     attribute :service_role_arn, T::String
+    attribute? :agent_version, T::String.optional
     attribute? :berkshelf_version, T::String.optional
     attribute? :color, T::String.optional
     attribute? :configuration_manager_name, T::String.optional
     attribute? :configuration_manager_version, T::String.optional
     attribute? :custom_cookbooks_source, T::Hash.optional
     attribute? :custom_json, T::String.optional
+    attribute? :default_availability_zone, T::String.optional
     attribute? :default_os, T::String.optional
     attribute? :default_root_device_type, T::String.optional
     attribute? :default_ssh_key_name, T::String.optional
+    attribute? :default_subnet_id, T::String.optional
     attribute? :hostname_theme, T::String.optional
     attribute? :manage_berkshelf, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :use_custom_cookbooks, T::Bool.optional
     attribute? :use_opsworks_security_groups, T::Bool.optional
+    attribute? :vpc_id, T::String.optional
   end
 end

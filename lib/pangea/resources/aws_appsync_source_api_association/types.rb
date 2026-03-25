@@ -11,5 +11,10 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :description, T::String.optional
+    attribute? :merged_api_arn, T::String.optional
+    attribute? :merged_api_id, T::String.optional
+    attribute? :source_api_arn, T::String.optional
+    attribute? :source_api_association_config, T::Array.of(T::Hash).optional
+    attribute? :source_api_id, T::String.optional
   end
 end

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_dynamodb_resource_policy,
       attributes_class: AWS::Types::DynamodbResourcePolicyAttributes,
       outputs: { id: :id },
-      map: [:policy, :resource_arn]
+      map: [:policy, :resource_arn],
+      map_bool: [:confirm_remove_self_resource_access]
   end
   module AWS
     include AWSDynamodbResourcePolicy

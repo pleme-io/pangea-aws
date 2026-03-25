@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :cluster_name, T::String
     attribute :oidc, T::Hash
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

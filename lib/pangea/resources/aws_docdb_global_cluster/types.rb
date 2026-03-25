@@ -13,5 +13,9 @@ module Pangea::Resources::AWS::Types
     attribute :global_cluster_identifier, T::String
     attribute? :database_name, T::String.optional
     attribute? :deletion_protection, T::Bool.optional
+    attribute? :engine, T::String.optional
+    attribute? :engine_version, T::String.optional
+    attribute? :source_db_cluster_identifier, T::String.optional
+    attribute? :storage_encrypted, T::Bool.optional
   end
 end

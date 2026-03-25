@@ -22,5 +22,6 @@ module Pangea::Resources::AWS::Types
     attribute? :report_versioning, T::String.optional
     attribute? :s3_prefix, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

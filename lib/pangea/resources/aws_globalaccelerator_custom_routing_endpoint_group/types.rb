@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :destination_configuration, T::Array.of(T::Hash)
     attribute :listener_arn, T::String
     attribute? :endpoint_configuration, T::Array.of(T::Hash).optional
+    attribute? :endpoint_group_region, T::String.optional
   end
 end

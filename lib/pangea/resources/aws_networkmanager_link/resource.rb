@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkmanagerLinkAttributes,
       outputs: { id: :id },
       map: [:bandwidth, :global_network_id, :site_id],
-      map_present: [:description, :provider_name, :tags, :type]
+      map_present: [:description, :provider_name, :tags, :tags_all, :type]
   end
   module AWS
     include AWSNetworkmanagerLink

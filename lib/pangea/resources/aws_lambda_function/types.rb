@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :function_name, T::String
     attribute :role, T::String
+    attribute? :architectures, T::Array.of(T::String).optional
     attribute? :code_signing_config_arn, T::String.optional
     attribute? :dead_letter_config, T::Hash.optional
     attribute? :description, T::String.optional
@@ -37,7 +38,9 @@ module Pangea::Resources::AWS::Types
     attribute? :s3_object_version, T::String.optional
     attribute? :skip_destroy, T::Bool.optional
     attribute? :snap_start, T::Hash.optional
+    attribute? :source_code_hash, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :timeout, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tracing_config, T::Hash.optional
     attribute? :vpc_config, T::Hash.optional

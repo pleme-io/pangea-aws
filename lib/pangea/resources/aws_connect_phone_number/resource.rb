@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConnectPhoneNumberAttributes,
       outputs: { id: :id },
       map: [:country_code, :target_arn, :type],
-      map_present: [:description, :prefix, :tags]
+      map_present: [:description, :prefix, :tags, :tags_all]
   end
   module AWS
     include AWSConnectPhoneNumber

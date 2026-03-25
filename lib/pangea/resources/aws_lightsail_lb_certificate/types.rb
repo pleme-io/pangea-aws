@@ -12,5 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :lb_name, T::String
     attribute :name, T::String
+    attribute? :domain_name, T::String.optional
+    attribute? :subject_alternative_names, T::Array.of(T::String).optional
   end
 end

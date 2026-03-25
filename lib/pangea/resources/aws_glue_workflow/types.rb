@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute? :max_concurrent_runs, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :snapshot_identifier, T::String
     attribute? :manual_snapshot_retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

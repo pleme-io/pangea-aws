@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OpsworksInstanceAttributes,
       outputs: { id: :id },
       map: [:layer_ids, :stack_id],
-      map_present: [:agent_version, :architecture, :auto_scaling_type, :ebs_block_device, :ephemeral_block_device, :instance_type, :root_block_device, :state],
+      map_present: [:agent_version, :ami_id, :architecture, :auto_scaling_type, :availability_zone, :created_at, :ebs_block_device, :ecs_cluster_arn, :elastic_ip, :ephemeral_block_device, :hostname, :infrastructure_class, :instance_profile_arn, :instance_type, :os, :root_block_device, :root_device_type, :security_group_ids, :ssh_key_name, :state, :status, :subnet_id, :tenancy, :virtualization_type],
       map_bool: [:delete_ebs, :delete_eip, :ebs_optimized, :install_updates_on_boot]
   end
   module AWS

@@ -15,13 +15,16 @@ module Pangea::Resources::AWS::Types
     attribute? :association_name, T::String.optional
     attribute? :automation_target_parameter_name, T::String.optional
     attribute? :compliance_severity, T::String.optional
+    attribute? :document_version, T::String.optional
     attribute? :instance_id, T::String.optional
     attribute? :max_concurrency, T::String.optional
     attribute? :max_errors, T::String.optional
     attribute? :output_location, T::Hash.optional
+    attribute? :parameters, T::Hash.optional
     attribute? :schedule_expression, T::String.optional
     attribute? :sync_compliance, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :targets, T::Array.of(T::Hash).optional
     attribute? :wait_for_success_timeout_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
   end

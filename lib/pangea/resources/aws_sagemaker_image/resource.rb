@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerImageAttributes,
       outputs: { id: :id },
       map: [:image_name, :role_arn],
-      map_present: [:description, :display_name, :tags]
+      map_present: [:description, :display_name, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerImage

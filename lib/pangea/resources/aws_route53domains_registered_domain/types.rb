@@ -20,6 +20,7 @@ module Pangea::Resources::AWS::Types
     attribute? :registrant_contact, T::Hash.optional
     attribute? :registrant_privacy, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :tech_contact, T::Hash.optional
     attribute? :tech_privacy, T::Bool.optional
     attribute? :transfer_lock, T::Bool.optional

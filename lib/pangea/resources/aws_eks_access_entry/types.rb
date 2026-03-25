@@ -12,7 +12,10 @@ module Pangea::Resources::AWS::Types
 
     attribute :cluster_name, T::String
     attribute :principal_arn, T::String
+    attribute? :kubernetes_groups, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :type, T::String.optional
+    attribute? :user_name, T::String.optional
   end
 end

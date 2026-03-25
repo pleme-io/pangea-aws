@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute? :account_aggregation_source, T::Hash.optional
     attribute? :organization_aggregation_source, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

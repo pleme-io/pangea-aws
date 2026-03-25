@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApprunnerAutoScalingConfigurationVersionAttributes,
       outputs: { id: :id },
       map: [:auto_scaling_configuration_name],
-      map_present: [:max_concurrency, :max_size, :min_size, :tags]
+      map_present: [:max_concurrency, :max_size, :min_size, :tags, :tags_all]
   end
   module AWS
     include AWSApprunnerAutoScalingConfigurationVersion

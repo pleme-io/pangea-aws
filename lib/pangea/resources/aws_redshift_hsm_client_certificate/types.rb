@@ -12,5 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :hsm_client_certificate_identifier, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

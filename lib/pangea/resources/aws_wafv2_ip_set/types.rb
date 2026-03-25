@@ -14,6 +14,9 @@ module Pangea::Resources::AWS::Types
     attribute :scope, T::String
     attribute? :addresses, T::Array.of(T::String).optional
     attribute? :description, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

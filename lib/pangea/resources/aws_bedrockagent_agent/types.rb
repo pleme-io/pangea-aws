@@ -13,9 +13,16 @@ module Pangea::Resources::AWS::Types
     attribute :agent_name, T::String
     attribute :agent_resource_role_arn, T::String
     attribute :foundation_model, T::String
+    attribute? :agent_collaboration, T::String.optional
     attribute? :customer_encryption_key_arn, T::String.optional
     attribute? :description, T::String.optional
     attribute? :guardrail_configuration, T::Array.of(T::Hash).optional
+    attribute? :idle_session_ttl_in_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :instruction, T::String.optional
+    attribute? :memory_configuration, T::Array.of(T::Hash).optional
+    attribute? :prepare_agent, T::Bool.optional
+    attribute? :prompt_override_configuration, T::Array.of(T::Hash).optional
+    attribute? :skip_resource_in_use_check, T::Bool.optional
     attribute? :tags, T::Hash.optional
   end
 end

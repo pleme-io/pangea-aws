@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConfigConfigurationAggregatorAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:account_aggregation_source, :organization_aggregation_source, :tags]
+      map_present: [:account_aggregation_source, :organization_aggregation_source, :tags, :tags_all]
   end
   module AWS
     include AWSConfigConfigurationAggregator

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_s3control_multi_region_access_point_policy,
       attributes_class: AWS::Types::S3controlMultiRegionAccessPointPolicyAttributes,
       outputs: { id: :id },
-      map: [:details]
+      map: [:details],
+      map_present: [:account_id]
   end
   module AWS
     include AWSS3controlMultiRegionAccessPointPolicy

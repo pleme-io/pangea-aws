@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :resource_arn, T::String
     attribute :template_name, T::String
+    attribute? :state, T::String.optional
     attribute? :tags, T::Hash.optional
   end
 end

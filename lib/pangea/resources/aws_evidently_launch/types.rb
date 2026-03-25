@@ -18,5 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :randomization_salt, T::String.optional
     attribute? :scheduled_splits_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

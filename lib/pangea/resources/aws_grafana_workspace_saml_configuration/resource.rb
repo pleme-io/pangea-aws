@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GrafanaWorkspaceSamlConfigurationAttributes,
       outputs: { id: :id },
       map: [:editor_role_values, :workspace_id],
-      map_present: [:admin_role_values, :allowed_organizations, :groups_assertion, :idp_metadata_url, :idp_metadata_xml, :org_assertion, :role_assertion]
+      map_present: [:admin_role_values, :allowed_organizations, :email_assertion, :groups_assertion, :idp_metadata_url, :idp_metadata_xml, :login_assertion, :login_validity_duration, :name_assertion, :org_assertion, :role_assertion]
   end
   module AWS
     include AWSGrafanaWorkspaceSamlConfiguration

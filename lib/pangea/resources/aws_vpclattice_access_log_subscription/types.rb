@@ -12,6 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :destination_arn, T::String
     attribute :resource_identifier, T::String
+    attribute? :service_network_log_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

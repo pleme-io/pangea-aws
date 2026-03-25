@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute? :index_document, T::Hash.optional
     attribute? :redirect_all_requests_to, T::Hash.optional
     attribute? :routing_rule, T::Array.of(T::Hash).optional
+    attribute? :routing_rules, T::String.optional
   end
 end

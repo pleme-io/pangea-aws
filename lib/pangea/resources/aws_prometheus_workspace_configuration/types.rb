@@ -12,5 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :workspace_id, T::String
     attribute? :limits_per_label_set, T::Array.of(T::Hash).optional
+    attribute? :retention_period_in_days, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

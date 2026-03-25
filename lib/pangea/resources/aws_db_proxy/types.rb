@@ -16,7 +16,10 @@ module Pangea::Resources::AWS::Types
     attribute :role_arn, T::String
     attribute :vpc_subnet_ids, T::Array.of(T::String)
     attribute? :debug_logging, T::Bool.optional
+    attribute? :idle_client_timeout, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :require_tls, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :vpc_security_group_ids, T::Array.of(T::String).optional
   end
 end

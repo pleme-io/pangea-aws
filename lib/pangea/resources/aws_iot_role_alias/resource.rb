@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IotRoleAliasAttributes,
       outputs: { id: :id },
       map: [:alias, :role_arn],
-      map_present: [:credential_duration, :tags]
+      map_present: [:credential_duration, :tags, :tags_all]
   end
   module AWS
     include AWSIotRoleAlias

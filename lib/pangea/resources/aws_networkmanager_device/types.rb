@@ -18,6 +18,7 @@ module Pangea::Resources::AWS::Types
     attribute? :serial_number, T::String.optional
     attribute? :site_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :type, T::String.optional
     attribute? :vendor, T::String.optional
   end

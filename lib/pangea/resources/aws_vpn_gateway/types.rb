@@ -10,7 +10,10 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :amazon_side_asn, T::String.optional
     attribute? :availability_zone, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :vpc_id, T::String.optional
   end
 end

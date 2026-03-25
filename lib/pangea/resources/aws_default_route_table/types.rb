@@ -12,6 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :default_route_table_id, T::String
     attribute? :propagating_vgws, T::Array.of(T::String).optional
+    attribute? :route, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

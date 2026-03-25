@@ -18,6 +18,8 @@ module Pangea::Resources::AWS::Types
     attribute? :server_certificate, T::String.optional
     attribute? :server_port, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :server_protocol, T::String.optional
+    attribute? :subdirectory, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

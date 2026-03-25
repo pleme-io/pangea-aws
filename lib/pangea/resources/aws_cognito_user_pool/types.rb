@@ -19,6 +19,8 @@ module Pangea::Resources::AWS::Types
     attribute? :device_configuration, T::Hash.optional
     attribute? :email_configuration, T::Hash.optional
     attribute? :email_mfa_configuration, T::Hash.optional
+    attribute? :email_verification_message, T::String.optional
+    attribute? :email_verification_subject, T::String.optional
     attribute? :lambda_config, T::Hash.optional
     attribute? :mfa_configuration, T::String.optional
     attribute? :password_policy, T::Hash.optional
@@ -26,10 +28,13 @@ module Pangea::Resources::AWS::Types
     attribute? :sign_in_policy, T::Hash.optional
     attribute? :sms_authentication_message, T::String.optional
     attribute? :sms_configuration, T::Hash.optional
+    attribute? :sms_verification_message, T::String.optional
     attribute? :software_token_mfa_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :user_attribute_update_settings, T::Hash.optional
     attribute? :user_pool_add_ons, T::Hash.optional
+    attribute? :user_pool_tier, T::String.optional
     attribute? :username_attributes, T::Array.of(T::String).optional
     attribute? :username_configuration, T::Hash.optional
     attribute? :verification_message_template, T::Hash.optional

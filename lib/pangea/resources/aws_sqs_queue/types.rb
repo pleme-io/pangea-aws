@@ -11,13 +11,23 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :content_based_deduplication, T::Bool.optional
+    attribute? :deduplication_scope, T::String.optional
     attribute? :delay_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :fifo_queue, T::Bool.optional
+    attribute? :fifo_throughput_limit, T::String.optional
+    attribute? :kms_data_key_reuse_period_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :kms_master_key_id, T::String.optional
     attribute? :max_message_size, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :message_retention_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
+    attribute? :policy, (T::String | T::Hash).optional
     attribute? :receive_wait_time_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :redrive_allow_policy, (T::String | T::Hash).optional
+    attribute? :redrive_policy, (T::String | T::Hash).optional
+    attribute? :sqs_managed_sse_enabled, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :visibility_timeout_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

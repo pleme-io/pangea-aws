@@ -12,5 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :vpc_id, T::String
     attribute :zone_id, T::String
+    attribute? :vpc_region, T::String.optional
   end
 end

@@ -18,6 +18,7 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :multiple_values_setting, T::Array.of(T::Hash).optional
     attribute? :obfuscation_setting, T::Array.of(T::Hash).optional
+    attribute? :slot_type_id, T::String.optional
     attribute? :sub_slot_setting, T::Array.of(T::Hash).optional
     attribute? :value_elicitation_setting, T::Array.of(T::Hash).optional
   end

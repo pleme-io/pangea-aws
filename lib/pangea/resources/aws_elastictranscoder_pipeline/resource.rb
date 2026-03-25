@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElastictranscoderPipelineAttributes,
       outputs: { id: :id },
       map: [:input_bucket, :role],
-      map_present: [:aws_kms_key_arn, :content_config, :content_config_permissions, :notifications, :thumbnail_config, :thumbnail_config_permissions]
+      map_present: [:aws_kms_key_arn, :content_config, :content_config_permissions, :name, :notifications, :output_bucket, :thumbnail_config, :thumbnail_config_permissions]
   end
   module AWS
     include AWSElastictranscoderPipeline

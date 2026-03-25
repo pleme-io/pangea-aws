@@ -14,9 +14,12 @@ module Pangea::Resources::AWS::Types
     attribute :agent_id, T::String
     attribute :agent_version, T::String
     attribute? :action_group_executor, T::Array.of(T::Hash).optional
+    attribute? :action_group_state, T::String.optional
     attribute? :api_schema, T::Array.of(T::Hash).optional
     attribute? :description, T::String.optional
     attribute? :function_schema, T::Array.of(T::Hash).optional
     attribute? :parent_action_group_signature, T::String.optional
+    attribute? :prepare_agent, T::Bool.optional
+    attribute? :skip_resource_in_use_check, T::Bool.optional
   end
 end

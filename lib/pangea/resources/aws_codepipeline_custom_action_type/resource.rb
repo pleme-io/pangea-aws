@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodepipelineCustomActionTypeAttributes,
       outputs: { id: :id },
       map: [:category, :input_artifact_details, :output_artifact_details, :provider_name, :version],
-      map_present: [:configuration_property, :settings, :tags]
+      map_present: [:configuration_property, :settings, :tags, :tags_all]
   end
   module AWS
     include AWSCodepipelineCustomActionType

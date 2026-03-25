@@ -12,6 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :vpc_id, T::String
     attribute? :assign_ipv6_address_on_creation, T::Bool.optional
+    attribute? :availability_zone, T::String.optional
+    attribute? :availability_zone_id, T::String.optional
     attribute? :cidr_block, T::String.optional
     attribute? :customer_owned_ipv4_pool, T::String.optional
     attribute? :enable_dns64, T::Bool.optional
@@ -23,6 +25,8 @@ module Pangea::Resources::AWS::Types
     attribute? :map_customer_owned_ip_on_launch, T::Bool.optional
     attribute? :map_public_ip_on_launch, T::Bool.optional
     attribute? :outpost_arn, T::String.optional
+    attribute? :private_dns_hostname_type_on_launch, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

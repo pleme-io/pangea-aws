@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_macie2_custom_data_identifier,
       attributes_class: AWS::Types::Macie2CustomDataIdentifierAttributes,
       outputs: { id: :id },
-      map_present: [:description, :ignore_words, :keywords, :regex, :tags]
+      map_present: [:description, :ignore_words, :keywords, :maximum_match_distance, :name, :name_prefix, :regex, :tags, :tags_all]
   end
   module AWS
     include AWSMacie2CustomDataIdentifier

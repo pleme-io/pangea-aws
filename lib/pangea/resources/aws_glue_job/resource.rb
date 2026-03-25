@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueJobAttributes,
       outputs: { id: :id },
       map: [:command, :name, :role_arn],
-      map_present: [:connections, :default_arguments, :description, :execution_class, :execution_property, :maintenance_window, :max_retries, :non_overridable_arguments, :notification_property, :security_configuration, :source_control_details, :tags],
+      map_present: [:connections, :default_arguments, :description, :execution_class, :execution_property, :glue_version, :maintenance_window, :max_capacity, :max_retries, :non_overridable_arguments, :notification_property, :number_of_workers, :security_configuration, :source_control_details, :tags, :tags_all, :timeout, :worker_type],
       map_bool: [:job_run_queuing_enabled]
   end
   module AWS

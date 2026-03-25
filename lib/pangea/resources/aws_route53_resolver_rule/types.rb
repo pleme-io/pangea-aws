@@ -15,6 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute? :name, T::String.optional
     attribute? :resolver_endpoint_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :target_ip, T::Array.of(T::Hash).optional
   end
 end

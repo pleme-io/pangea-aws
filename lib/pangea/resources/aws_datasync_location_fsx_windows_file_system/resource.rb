@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatasyncLocationFsxWindowsFileSystemAttributes,
       outputs: { id: :id },
       map: [:fsx_filesystem_arn, :password, :security_group_arns, :user],
-      map_present: [:domain, :tags]
+      map_present: [:domain, :subdirectory, :tags, :tags_all]
   end
   module AWS
     include AWSDatasyncLocationFsxWindowsFileSystem

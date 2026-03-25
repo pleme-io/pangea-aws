@@ -18,6 +18,7 @@ module Pangea::Resources::AWS::Types
     attribute? :alarm_description, T::String.optional
     attribute? :datapoints_to_alarm, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :dimensions, T::Hash.optional
+    attribute? :evaluate_low_sample_count_percentiles, T::String.optional
     attribute? :extended_statistic, T::String.optional
     attribute? :insufficient_data_actions, T::Array.of(T::String).optional
     attribute? :metric_name, T::String.optional
@@ -27,6 +28,7 @@ module Pangea::Resources::AWS::Types
     attribute? :period, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :statistic, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :threshold, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :threshold_metric_id, T::String.optional
     attribute? :treat_missing_data, T::String.optional

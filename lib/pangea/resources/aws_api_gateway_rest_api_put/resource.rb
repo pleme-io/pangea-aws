@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayRestApiPutAttributes,
       outputs: { id: :id },
       map: [:body, :rest_api_id],
-      map_present: [:parameters, :triggers]
+      map_present: [:parameters, :triggers],
+      map_bool: [:fail_on_warnings]
   end
   module AWS
     include AWSApiGatewayRestApiPut

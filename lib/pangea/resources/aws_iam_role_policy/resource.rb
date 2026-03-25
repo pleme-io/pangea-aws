@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_iam_role_policy,
       attributes_class: AWS::Types::IamRolePolicyAttributes,
       outputs: { id: :id },
-      map: [:policy, :role]
+      map: [:policy, :role],
+      map_present: [:name, :name_prefix]
   end
   module AWS
     include AWSIamRolePolicy

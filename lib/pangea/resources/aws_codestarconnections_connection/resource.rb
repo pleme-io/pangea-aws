@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodestarconnectionsConnectionAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:host_arn, :tags]
+      map_present: [:host_arn, :provider_type, :tags, :tags_all]
   end
   module AWS
     include AWSCodestarconnectionsConnection

@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::Route53HealthCheckAttributes,
       outputs: { id: :id },
       map: [:type],
-      map_present: [:child_health_threshold, :child_healthchecks, :cloudwatch_alarm_name, :cloudwatch_alarm_region, :fqdn, :insufficient_data_health_status, :ip_address, :port, :reference_name, :regions, :request_interval, :resource_path, :routing_control_arn, :search_string, :tags],
-      map_bool: [:disabled, :invert_healthcheck, :measure_latency]
+      map_present: [:child_health_threshold, :child_healthchecks, :cloudwatch_alarm_name, :cloudwatch_alarm_region, :failure_threshold, :fqdn, :insufficient_data_health_status, :ip_address, :port, :reference_name, :regions, :request_interval, :resource_path, :routing_control_arn, :search_string, :tags, :tags_all, :triggers],
+      map_bool: [:disabled, :enable_sni, :invert_healthcheck, :measure_latency]
   end
   module AWS
     include AWSRoute53HealthCheck

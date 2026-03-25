@@ -24,6 +24,7 @@ module Pangea::Resources::AWS::Types
     attribute? :resolver_count_limit, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :schema, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :user_pool_config, T::Hash.optional
     attribute? :visibility, T::String.optional
     attribute? :xray_enabled, T::Bool.optional

@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute? :network_interface_id, T::String.optional
     attribute? :network_load_balancer_arn, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

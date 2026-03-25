@@ -14,17 +14,31 @@ module Pangea::Resources::AWS::Types
     attribute :node_type, T::String
     attribute? :allow_version_upgrade, T::Bool.optional
     attribute? :apply_immediately, T::Bool.optional
+    attribute? :aqua_configuration_status, T::String.optional
     attribute? :automated_snapshot_retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :availability_zone, T::String.optional
     attribute? :availability_zone_relocation_enabled, T::Bool.optional
+    attribute? :cluster_parameter_group_name, T::String.optional
+    attribute? :cluster_public_key, T::String.optional
+    attribute? :cluster_revision_number, T::String.optional
+    attribute? :cluster_subnet_group_name, T::String.optional
+    attribute? :cluster_type, T::String.optional
     attribute? :cluster_version, T::String.optional
+    attribute? :database_name, T::String.optional
+    attribute? :default_iam_role_arn, T::String.optional
     attribute? :elastic_ip, T::String.optional
     attribute? :encrypted, T::Bool.optional
+    attribute? :endpoint, T::String.optional
+    attribute? :enhanced_vpc_routing, T::Bool.optional
     attribute? :final_snapshot_identifier, T::String.optional
+    attribute? :iam_roles, T::Array.of(T::String).optional
+    attribute? :kms_key_id, T::String.optional
     attribute? :logging, T::Hash.optional
     attribute? :maintenance_track_name, T::String.optional
     attribute? :manage_master_password, T::Bool.optional
     attribute? :manual_snapshot_retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :master_password, T::String.optional
+    attribute? :master_password_secret_kms_key_id, T::String.optional
     attribute? :master_password_wo, T::String.optional
     attribute? :master_password_wo_version, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :master_username, T::String.optional
@@ -32,6 +46,7 @@ module Pangea::Resources::AWS::Types
     attribute? :number_of_nodes, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :owner_account, T::String.optional
     attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :preferred_maintenance_window, T::String.optional
     attribute? :publicly_accessible, T::Bool.optional
     attribute? :skip_final_snapshot, T::Bool.optional
     attribute? :snapshot_arn, T::String.optional
@@ -39,5 +54,7 @@ module Pangea::Resources::AWS::Types
     attribute? :snapshot_copy, T::Hash.optional
     attribute? :snapshot_identifier, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :vpc_security_group_ids, T::Array.of(T::String).optional
   end
 end

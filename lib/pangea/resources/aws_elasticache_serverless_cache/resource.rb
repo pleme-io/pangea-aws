@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElasticacheServerlessCacheAttributes,
       outputs: { id: :id },
       map: [:engine, :name],
-      map_present: [:cache_usage_limits, :kms_key_id, :snapshot_arns_to_restore, :tags, :user_group_id]
+      map_present: [:cache_usage_limits, :daily_snapshot_time, :description, :kms_key_id, :major_engine_version, :security_group_ids, :snapshot_arns_to_restore, :snapshot_retention_limit, :subnet_ids, :tags, :user_group_id]
   end
   module AWS
     include AWSElasticacheServerlessCache

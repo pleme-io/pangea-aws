@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute? :file_system_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :volume_id, T::String.optional
   end
 end

@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :local_gateway_route_table_id, T::String
     attribute :vpc_id, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

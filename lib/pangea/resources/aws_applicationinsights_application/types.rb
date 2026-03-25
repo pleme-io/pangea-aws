@@ -18,5 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :ops_center_enabled, T::Bool.optional
     attribute? :ops_item_sns_topic_arn, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

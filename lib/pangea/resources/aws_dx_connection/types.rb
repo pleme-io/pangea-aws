@@ -13,8 +13,11 @@ module Pangea::Resources::AWS::Types
     attribute :bandwidth, T::String
     attribute :location, T::String
     attribute :name, T::String
+    attribute? :encryption_mode, T::String.optional
+    attribute? :provider_name, T::String.optional
     attribute? :request_macsec, T::Bool.optional
     attribute? :skip_destroy, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

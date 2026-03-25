@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_default_security_group,
       attributes_class: AWS::Types::DefaultSecurityGroupAttributes,
       outputs: { id: :id },
-      map_present: [:tags],
+      map_present: [:egress, :ingress, :tags, :tags_all, :vpc_id],
       map_bool: [:revoke_rules_on_delete]
   end
   module AWS

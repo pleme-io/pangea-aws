@@ -20,6 +20,8 @@ module Pangea::Resources::AWS::Types
     attribute? :build_timeout, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :cache, T::Hash.optional
     attribute? :concurrent_build_limit, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :description, T::String.optional
+    attribute? :encryption_key, T::String.optional
     attribute? :file_system_locations, T::Array.of(T::Hash).optional
     attribute? :logs_config, T::Hash.optional
     attribute? :project_visibility, T::String.optional
@@ -30,6 +32,7 @@ module Pangea::Resources::AWS::Types
     attribute? :secondary_sources, T::Array.of(T::Hash).optional
     attribute? :source_version, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc_config, T::Hash.optional
   end
 end

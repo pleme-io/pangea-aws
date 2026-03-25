@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :subnets, T::Array.of(T::String)
     attribute :vpc_connector_name, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

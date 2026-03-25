@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :model_package_group_name, T::String
     attribute? :model_package_group_description, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

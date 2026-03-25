@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightFolderAttributes,
       outputs: { id: :id },
       map: [:folder_id],
-      map_present: [:folder_type, :name, :parent_folder_arn, :permissions, :tags]
+      map_present: [:aws_account_id, :folder_type, :name, :parent_folder_arn, :permissions, :tags, :tags_all]
   end
   module AWS
     include AWSQuicksightFolder

@@ -16,7 +16,9 @@ module Pangea::Resources::AWS::Types
     attribute :task, T::Array.of(T::Hash)
     attribute :trigger_config, T::Hash
     attribute? :description, T::String.optional
+    attribute? :kms_arn, T::String.optional
     attribute? :metadata_catalog_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

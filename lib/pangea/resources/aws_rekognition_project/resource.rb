@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RekognitionProjectAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:feature, :tags]
+      map_present: [:auto_update, :feature, :tags]
   end
   module AWS
     include AWSRekognitionProject

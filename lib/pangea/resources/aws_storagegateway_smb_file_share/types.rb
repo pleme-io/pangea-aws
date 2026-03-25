@@ -21,16 +21,19 @@ module Pangea::Resources::AWS::Types
     attribute? :cache_attributes, T::Hash.optional
     attribute? :case_sensitivity, T::String.optional
     attribute? :default_storage_class, T::String.optional
+    attribute? :file_share_name, T::String.optional
     attribute? :guess_mime_type_enabled, T::Bool.optional
     attribute? :invalid_user_list, T::Array.of(T::String).optional
     attribute? :kms_encrypted, T::Bool.optional
     attribute? :kms_key_arn, T::String.optional
     attribute? :notification_policy, (T::String | T::Hash).optional
     attribute? :object_acl, T::String.optional
+    attribute? :oplocks_enabled, T::Bool.optional
     attribute? :read_only, T::Bool.optional
     attribute? :requester_pays, T::Bool.optional
     attribute? :smb_acl_enabled, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :valid_user_list, T::Array.of(T::String).optional
     attribute? :vpc_endpoint_dns_name, T::String.optional
   end

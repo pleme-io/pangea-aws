@@ -11,38 +11,76 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :instance_class, T::String
+    attribute? :allocated_storage, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :allow_major_version_upgrade, T::Bool.optional
     attribute? :apply_immediately, T::Bool.optional
     attribute? :auto_minor_version_upgrade, T::Bool.optional
+    attribute? :availability_zone, T::String.optional
+    attribute? :backup_retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :backup_target, T::String.optional
+    attribute? :backup_window, T::String.optional
     attribute? :blue_green_update, T::Hash.optional
+    attribute? :ca_cert_identifier, T::String.optional
+    attribute? :character_set_name, T::String.optional
     attribute? :copy_tags_to_snapshot, T::Bool.optional
     attribute? :custom_iam_instance_profile, T::String.optional
     attribute? :customer_owned_ip_enabled, T::Bool.optional
+    attribute? :database_insights_mode, T::String.optional
+    attribute? :db_name, T::String.optional
+    attribute? :db_subnet_group_name, T::String.optional
     attribute? :dedicated_log_volume, T::Bool.optional
     attribute? :delete_automated_backups, T::Bool.optional
     attribute? :deletion_protection, T::Bool.optional
     attribute? :domain, T::String.optional
     attribute? :domain_auth_secret_arn, T::String.optional
     attribute? :domain_dns_ips, T::Array.of(T::String).optional
+    attribute? :domain_fqdn, T::String.optional
     attribute? :domain_iam_role_name, T::String.optional
     attribute? :domain_ou, T::String.optional
     attribute? :enabled_cloudwatch_logs_exports, T::Array.of(T::String).optional
+    attribute? :engine, T::String.optional
+    attribute? :engine_lifecycle_support, T::String.optional
+    attribute? :engine_version, T::String.optional
     attribute? :final_snapshot_identifier, T::String.optional
     attribute? :iam_database_authentication_enabled, T::Bool.optional
+    attribute? :identifier, T::String.optional
+    attribute? :identifier_prefix, T::String.optional
+    attribute? :iops, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :kms_key_id, T::String.optional
+    attribute? :license_model, T::String.optional
+    attribute? :maintenance_window, T::String.optional
     attribute? :manage_master_user_password, T::Bool.optional
+    attribute? :master_user_secret_kms_key_id, T::String.optional
     attribute? :max_allocated_storage, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :monitoring_interval, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :monitoring_role_arn, T::String.optional
+    attribute? :multi_az, T::Bool.optional
+    attribute? :nchar_character_set_name, T::String.optional
+    attribute? :network_type, T::String.optional
+    attribute? :option_group_name, T::String.optional
+    attribute? :parameter_group_name, T::String.optional
     attribute? :password, T::String.optional
     attribute? :password_wo, T::String.optional
     attribute? :password_wo_version, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :performance_insights_enabled, T::Bool.optional
+    attribute? :performance_insights_kms_key_id, T::String.optional
+    attribute? :performance_insights_retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :publicly_accessible, T::Bool.optional
+    attribute? :replica_mode, T::String.optional
     attribute? :replicate_source_db, T::String.optional
     attribute? :restore_to_point_in_time, T::Hash.optional
     attribute? :s3_import, T::Hash.optional
     attribute? :skip_final_snapshot, T::Bool.optional
+    attribute? :snapshot_identifier, T::String.optional
     attribute? :storage_encrypted, T::Bool.optional
+    attribute? :storage_throughput, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :storage_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :timezone, T::String.optional
     attribute? :upgrade_storage_config, T::Bool.optional
+    attribute? :username, T::String.optional
+    attribute? :vpc_security_group_ids, T::Array.of(T::String).optional
   end
 end

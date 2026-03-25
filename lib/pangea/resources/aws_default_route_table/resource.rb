@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DefaultRouteTableAttributes,
       outputs: { id: :id },
       map: [:default_route_table_id],
-      map_present: [:propagating_vgws, :tags]
+      map_present: [:propagating_vgws, :route, :tags, :tags_all]
   end
   module AWS
     include AWSDefaultRouteTable

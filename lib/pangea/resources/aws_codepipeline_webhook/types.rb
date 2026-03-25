@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute :target_pipeline, T::String
     attribute? :authentication_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

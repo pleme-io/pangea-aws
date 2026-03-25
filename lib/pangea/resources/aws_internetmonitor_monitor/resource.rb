@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::InternetmonitorMonitorAttributes,
       outputs: { id: :id },
       map: [:monitor_name],
-      map_present: [:health_events_config, :internet_measurements_log_delivery, :max_city_networks_to_monitor, :resources, :status, :tags, :traffic_percentage_to_monitor]
+      map_present: [:health_events_config, :internet_measurements_log_delivery, :max_city_networks_to_monitor, :resources, :status, :tags, :tags_all, :traffic_percentage_to_monitor]
   end
   module AWS
     include AWSInternetmonitorMonitor

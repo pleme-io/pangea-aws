@@ -11,5 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :resource_type_opt_in_preference, T::Hash
+    attribute? :resource_type_management_preference, T::Hash.optional
   end
 end

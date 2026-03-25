@@ -13,6 +13,9 @@ module Pangea::Resources::AWS::Types
     attribute :definitions, T::Array.of(T::String)
     attribute? :description, T::String.optional
     attribute? :force_destroy, T::Bool.optional
+    attribute? :identifier, T::String.optional
+    attribute? :identifier_prefix, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

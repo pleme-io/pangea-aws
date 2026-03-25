@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudfrontDistributionAttributes,
       outputs: { id: :id },
       map: [:default_cache_behavior, :origin, :restrictions, :viewer_certificate],
-      map_present: [:aliases, :comment, :custom_error_response, :default_root_object, :http_version, :logging_config, :ordered_cache_behavior, :origin_group, :price_class, :tags, :web_acl_id],
+      map_present: [:aliases, :comment, :continuous_deployment_policy_id, :custom_error_response, :default_root_object, :http_version, :logging_config, :ordered_cache_behavior, :origin_group, :price_class, :tags, :tags_all, :web_acl_id],
       map_bool: [:enabled, :is_ipv6_enabled, :retain_on_delete, :staging, :wait_for_deployment]
   end
   module AWS

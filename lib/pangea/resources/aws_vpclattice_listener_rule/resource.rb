@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpclatticeListenerRuleAttributes,
       outputs: { id: :id },
       map: [:action, :listener_identifier, :match, :name, :priority, :service_identifier],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSVpclatticeListenerRule

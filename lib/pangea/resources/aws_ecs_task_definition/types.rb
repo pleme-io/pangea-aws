@@ -13,11 +13,13 @@ module Pangea::Resources::AWS::Types
     attribute :container_definitions, (T::String | T::Hash)
     attribute :family, T::String
     attribute? :cpu, T::String.optional
+    attribute? :enable_fault_injection, T::Bool.optional
     attribute? :ephemeral_storage, T::Hash.optional
     attribute? :execution_role_arn, T::String.optional
     attribute? :inference_accelerator, T::Array.of(T::Hash).optional
     attribute? :ipc_mode, T::String.optional
     attribute? :memory, T::String.optional
+    attribute? :network_mode, T::String.optional
     attribute? :pid_mode, T::String.optional
     attribute? :placement_constraints, T::Array.of(T::Hash).optional
     attribute? :proxy_configuration, T::Hash.optional
@@ -25,6 +27,7 @@ module Pangea::Resources::AWS::Types
     attribute? :runtime_platform, T::Hash.optional
     attribute? :skip_destroy, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :task_role_arn, T::String.optional
     attribute? :track_latest, T::Bool.optional
     attribute? :volume, T::Array.of(T::Hash).optional

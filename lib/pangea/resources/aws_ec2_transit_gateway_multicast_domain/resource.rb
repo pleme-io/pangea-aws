@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2TransitGatewayMulticastDomainAttributes,
       outputs: { id: :id },
       map: [:transit_gateway_id],
-      map_present: [:auto_accept_shared_associations, :igmpv2_support, :static_sources_support, :tags]
+      map_present: [:auto_accept_shared_associations, :igmpv2_support, :static_sources_support, :tags, :tags_all]
   end
   module AWS
     include AWSEc2TransitGatewayMulticastDomain

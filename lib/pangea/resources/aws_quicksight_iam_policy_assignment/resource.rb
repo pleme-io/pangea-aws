@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightIamPolicyAssignmentAttributes,
       outputs: { id: :id },
       map: [:assignment_name, :assignment_status],
-      map_present: [:identities, :policy_arn]
+      map_present: [:aws_account_id, :identities, :namespace, :policy_arn]
   end
   module AWS
     include AWSQuicksightIamPolicyAssignment

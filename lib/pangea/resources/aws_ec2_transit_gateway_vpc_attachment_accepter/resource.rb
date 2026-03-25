@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2TransitGatewayVpcAttachmentAccepterAttributes,
       outputs: { id: :id },
       map: [:transit_gateway_attachment_id],
-      map_present: [:tags],
+      map_present: [:tags, :tags_all],
       map_bool: [:transit_gateway_default_route_table_association, :transit_gateway_default_route_table_propagation]
   end
   module AWS

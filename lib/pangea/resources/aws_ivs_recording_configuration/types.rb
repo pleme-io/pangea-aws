@@ -11,7 +11,10 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :destination_configuration, T::Hash
+    attribute? :name, T::String.optional
+    attribute? :recording_reconnect_window_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :thumbnail_configuration, T::Hash.optional
   end
 end

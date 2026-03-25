@@ -9,5 +9,8 @@ module Pangea::Resources::AWS::Types
   class CostoptimizationhubPreferencesAttributes < Dry::Struct
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
+
+    attribute? :member_account_discount_visibility, T::String.optional
+    attribute? :savings_estimation_mode, T::String.optional
   end
 end

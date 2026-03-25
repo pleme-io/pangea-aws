@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :endpoint_options, T::Hash.optional
     attribute? :index_field, T::Array.of(T::Hash).optional
+    attribute? :multi_az, T::Bool.optional
     attribute? :scaling_parameters, T::Hash.optional
   end
 end

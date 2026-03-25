@@ -15,9 +15,12 @@ module Pangea::Resources::AWS::Types
     attribute? :event_pattern, T::String.optional
     attribute? :force_destroy, T::Bool.optional
     attribute? :is_enabled, T::Bool.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :role_arn, T::String.optional
     attribute? :schedule_expression, T::String.optional
     attribute? :state, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

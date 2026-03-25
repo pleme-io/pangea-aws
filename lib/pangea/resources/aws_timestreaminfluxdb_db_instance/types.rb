@@ -20,7 +20,12 @@ module Pangea::Resources::AWS::Types
     attribute :vpc_security_group_ids, T::Array.of(T::String)
     attribute :vpc_subnet_ids, T::Array.of(T::String)
     attribute? :db_parameter_group_identifier, T::String.optional
+    attribute? :db_storage_type, T::String.optional
+    attribute? :deployment_type, T::String.optional
     attribute? :log_delivery_configuration, T::Array.of(T::Hash).optional
+    attribute? :network_type, T::String.optional
+    attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :publicly_accessible, T::Bool.optional
     attribute? :tags, T::Hash.optional
   end
 end

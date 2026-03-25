@@ -16,9 +16,12 @@ module Pangea::Resources::AWS::Types
     attribute? :database_installation_files_s3_prefix, T::String.optional
     attribute? :description, T::String.optional
     attribute? :filename, T::String.optional
+    attribute? :kms_key_id, T::String.optional
     attribute? :manifest, T::String.optional
     attribute? :manifest_hash, T::String.optional
     attribute? :source_image_id, T::String.optional
+    attribute? :status, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

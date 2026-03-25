@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute :sink_identifier, T::String
     attribute? :link_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

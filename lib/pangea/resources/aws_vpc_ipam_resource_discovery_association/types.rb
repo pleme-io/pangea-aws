@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :ipam_id, T::String
     attribute :ipam_resource_discovery_id, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FsxOntapVolumeAttributes,
       outputs: { id: :id },
       map: [:name, :storage_virtual_machine_id],
-      map_present: [:aggregate_configuration, :final_backup_tags, :junction_path, :snaplock_configuration, :tags, :tiering_policy, :volume_type],
+      map_present: [:aggregate_configuration, :final_backup_tags, :junction_path, :ontap_volume_type, :security_style, :size_in_bytes, :size_in_megabytes, :snaplock_configuration, :snapshot_policy, :tags, :tags_all, :tiering_policy, :volume_style, :volume_type],
       map_bool: [:bypass_snaplock_enterprise_retention, :copy_tags_to_backups, :skip_final_backup, :storage_efficiency_enabled]
   end
   module AWS

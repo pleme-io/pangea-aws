@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute? :deprecated, T::Bool.optional
     attribute? :properties, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

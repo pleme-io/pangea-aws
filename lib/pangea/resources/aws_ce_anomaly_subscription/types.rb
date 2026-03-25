@@ -14,7 +14,9 @@ module Pangea::Resources::AWS::Types
     attribute :monitor_arn_list, T::Array.of(T::String)
     attribute :name, T::String
     attribute :subscriber, T::Array.of(T::Hash)
+    attribute? :account_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :threshold_expression, T::Hash.optional
   end
 end

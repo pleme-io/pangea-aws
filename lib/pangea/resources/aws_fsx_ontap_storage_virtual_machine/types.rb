@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute? :root_volume_security_style, T::String.optional
     attribute? :svm_admin_password, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

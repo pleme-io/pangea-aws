@@ -13,6 +13,8 @@ module Pangea::Resources::AWS::Types
     attribute :action, T::Array.of(T::Hash)
     attribute :condition, T::Array.of(T::Hash)
     attribute :listener_arn, T::String
+    attribute? :priority, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

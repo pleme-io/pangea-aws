@@ -29,6 +29,7 @@ module Pangea::Resources::AWS::Types
     attribute? :savedown_storage_configuration, T::Hash.optional
     attribute? :scaling_group_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :tickerplant_log_configuration, T::Array.of(T::Hash).optional
   end
 end

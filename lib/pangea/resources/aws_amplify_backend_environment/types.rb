@@ -12,5 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :app_id, T::String
     attribute :environment_name, T::String
+    attribute? :deployment_artifacts, T::String.optional
+    attribute? :stack_name, T::String.optional
   end
 end

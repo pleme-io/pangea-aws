@@ -14,6 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :ruleset, T::String
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :target_table, T::Hash.optional
   end
 end

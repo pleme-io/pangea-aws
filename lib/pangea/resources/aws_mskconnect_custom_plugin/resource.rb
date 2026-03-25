@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MskconnectCustomPluginAttributes,
       outputs: { id: :id },
       map: [:content_type, :location, :name],
-      map_present: [:description, :tags]
+      map_present: [:description, :tags, :tags_all]
   end
   module AWS
     include AWSMskconnectCustomPlugin

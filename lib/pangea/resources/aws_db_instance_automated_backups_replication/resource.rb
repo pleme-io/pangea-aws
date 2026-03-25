@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DbInstanceAutomatedBackupsReplicationAttributes,
       outputs: { id: :id },
       map: [:source_db_instance_arn],
-      map_present: [:pre_signed_url, :retention_period]
+      map_present: [:kms_key_id, :pre_signed_url, :retention_period]
   end
   module AWS
     include AWSDbInstanceAutomatedBackupsReplication

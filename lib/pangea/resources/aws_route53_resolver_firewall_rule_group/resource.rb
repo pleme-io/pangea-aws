@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Route53ResolverFirewallRuleGroupAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSRoute53ResolverFirewallRuleGroup

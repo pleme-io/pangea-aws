@@ -11,12 +11,18 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :namespace_name, T::String
+    attribute? :admin_password_secret_kms_key_id, T::String.optional
     attribute? :admin_user_password, T::String.optional
     attribute? :admin_user_password_wo, T::String.optional
     attribute? :admin_user_password_wo_version, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :admin_username, T::String.optional
+    attribute? :db_name, T::String.optional
     attribute? :default_iam_role_arn, T::String.optional
+    attribute? :iam_roles, T::Array.of(T::String).optional
+    attribute? :kms_key_id, T::String.optional
     attribute? :log_exports, T::Array.of(T::String).optional
     attribute? :manage_admin_password, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

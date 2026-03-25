@@ -11,8 +11,12 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :kms_key_id, T::String.optional
+    attribute? :log_group_class, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :retention_in_days, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :skip_destroy, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

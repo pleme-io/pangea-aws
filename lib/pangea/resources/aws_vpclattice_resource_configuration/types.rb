@@ -11,8 +11,13 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
+    attribute? :allow_association_to_shareable_service_network, T::Bool.optional
+    attribute? :port_ranges, T::Array.of(T::String).optional
+    attribute? :protocol, T::String.optional
     attribute? :resource_configuration_definition, T::Array.of(T::Hash).optional
     attribute? :resource_configuration_group_id, T::String.optional
+    attribute? :resource_gateway_identifier, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :type, T::String.optional
   end
 end

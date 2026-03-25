@@ -12,5 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :region, T::Array.of(T::Hash)
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

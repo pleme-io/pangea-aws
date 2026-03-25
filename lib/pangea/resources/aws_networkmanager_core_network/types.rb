@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute? :create_base_policy, T::Bool.optional
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

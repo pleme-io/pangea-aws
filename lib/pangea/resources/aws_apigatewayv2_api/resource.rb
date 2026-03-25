@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Apigatewayv2ApiAttributes,
       outputs: { id: :id },
       map: [:name, :protocol_type],
-      map_present: [:api_key_selection_expression, :body, :cors_configuration, :credentials_arn, :description, :route_key, :route_selection_expression, :tags, :target, :version],
+      map_present: [:api_key_selection_expression, :body, :cors_configuration, :credentials_arn, :description, :ip_address_type, :route_key, :route_selection_expression, :tags, :tags_all, :target, :version],
       map_bool: [:disable_execute_api_endpoint, :fail_on_warnings]
   end
   module AWS

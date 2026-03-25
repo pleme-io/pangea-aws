@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KinesisVideoStreamAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:data_retention_in_hours, :device_name, :media_type, :tags]
+      map_present: [:data_retention_in_hours, :device_name, :kms_key_id, :media_type, :tags, :tags_all]
   end
   module AWS
     include AWSKinesisVideoStream

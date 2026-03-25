@@ -10,10 +10,14 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :activation_key, T::String.optional
+    attribute? :ip_address, T::String.optional
     attribute? :name, T::String.optional
+    attribute? :private_link_endpoint, T::String.optional
     attribute? :security_group_arns, T::Array.of(T::String).optional
     attribute? :subnet_arns, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc_endpoint_id, T::String.optional
   end
 end

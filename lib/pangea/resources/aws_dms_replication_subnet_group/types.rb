@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :replication_subnet_group_id, T::String
     attribute :subnet_ids, T::Array.of(T::String)
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -12,5 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :file_system_id, T::String
     attribute :subnet_id, T::String
+    attribute? :ip_address, T::String.optional
+    attribute? :security_groups, T::Array.of(T::String).optional
   end
 end

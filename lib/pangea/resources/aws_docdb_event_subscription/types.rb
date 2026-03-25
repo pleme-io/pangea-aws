@@ -13,8 +13,11 @@ module Pangea::Resources::AWS::Types
     attribute :sns_topic_arn, T::String
     attribute? :enabled, T::Bool.optional
     attribute? :event_categories, T::Array.of(T::String).optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :source_ids, T::Array.of(T::String).optional
     attribute? :source_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

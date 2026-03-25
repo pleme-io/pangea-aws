@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EbsSnapshotImportAttributes,
       outputs: { id: :id },
       map: [:disk_container],
-      map_present: [:client_data, :kms_key_id, :role_name, :tags, :temporary_restore_days],
+      map_present: [:client_data, :description, :kms_key_id, :role_name, :storage_tier, :tags, :tags_all, :temporary_restore_days],
       map_bool: [:encrypted, :permanent_restore]
   end
   module AWS

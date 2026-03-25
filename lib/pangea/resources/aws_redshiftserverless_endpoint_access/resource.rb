@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftserverlessEndpointAccessAttributes,
       outputs: { id: :id },
       map: [:endpoint_name, :subnet_ids, :workgroup_name],
-      map_present: [:owner_account]
+      map_present: [:owner_account, :vpc_security_group_ids]
   end
   module AWS
     include AWSRedshiftserverlessEndpointAccess

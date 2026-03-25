@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_quicksight_ingestion,
       attributes_class: AWS::Types::QuicksightIngestionAttributes,
       outputs: { id: :id },
-      map: [:data_set_id, :ingestion_id, :ingestion_type]
+      map: [:data_set_id, :ingestion_id, :ingestion_type],
+      map_present: [:aws_account_id]
   end
   module AWS
     include AWSQuicksightIngestion

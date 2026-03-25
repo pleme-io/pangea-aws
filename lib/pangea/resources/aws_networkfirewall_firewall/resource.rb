@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkfirewallFirewallAttributes,
       outputs: { id: :id },
       map: [:firewall_policy_arn, :name, :subnet_mapping, :vpc_id],
-      map_present: [:description, :enabled_analysis_types, :encryption_configuration, :tags],
+      map_present: [:description, :enabled_analysis_types, :encryption_configuration, :tags, :tags_all],
       map_bool: [:delete_protection, :firewall_policy_change_protection, :subnet_change_protection]
   end
   module AWS

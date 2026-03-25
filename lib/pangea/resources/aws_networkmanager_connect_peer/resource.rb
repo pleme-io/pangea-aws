@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkmanagerConnectPeerAttributes,
       outputs: { id: :id },
       map: [:connect_attachment_id, :peer_address],
-      map_present: [:bgp_options, :core_network_address, :inside_cidr_blocks, :subnet_arn, :tags]
+      map_present: [:bgp_options, :core_network_address, :inside_cidr_blocks, :subnet_arn, :tags, :tags_all]
   end
   module AWS
     include AWSNetworkmanagerConnectPeer

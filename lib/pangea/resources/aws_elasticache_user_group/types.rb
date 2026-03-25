@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :engine, T::String
     attribute :user_group_id, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :user_ids, T::Array.of(T::String).optional
   end
 end

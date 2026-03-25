@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DmsReplicationSubnetGroupAttributes,
       outputs: { id: :id },
       map: [:replication_subnet_group_description, :replication_subnet_group_id, :subnet_ids],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSDmsReplicationSubnetGroup

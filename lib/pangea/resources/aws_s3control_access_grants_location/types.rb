@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :iam_role_arn, T::String
     attribute :location_scope, T::String
+    attribute? :account_id, T::String.optional
     attribute? :tags, T::Hash.optional
   end
 end

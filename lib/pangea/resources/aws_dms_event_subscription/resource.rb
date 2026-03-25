@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DmsEventSubscriptionAttributes,
       outputs: { id: :id },
       map: [:event_categories, :name, :sns_topic_arn, :source_type],
-      map_present: [:source_ids, :tags],
+      map_present: [:source_ids, :tags, :tags_all],
       map_bool: [:enabled]
   end
   module AWS

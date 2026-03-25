@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Apigatewayv2AuthorizerAttributes,
       outputs: { id: :id },
       map: [:api_id, :authorizer_type, :name],
-      map_present: [:authorizer_credentials_arn, :authorizer_payload_format_version, :authorizer_uri, :identity_sources, :jwt_configuration],
+      map_present: [:authorizer_credentials_arn, :authorizer_payload_format_version, :authorizer_result_ttl_in_seconds, :authorizer_uri, :identity_sources, :jwt_configuration],
       map_bool: [:enable_simple_responses]
   end
   module AWS

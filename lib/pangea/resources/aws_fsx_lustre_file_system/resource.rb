@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::FsxLustreFileSystemAttributes,
       outputs: { id: :id },
       map: [:subnet_ids],
-      map_present: [:backup_id, :data_compression_type, :data_read_cache_configuration, :deployment_type, :drive_cache_type, :final_backup_tags, :import_path, :log_configuration, :metadata_configuration, :per_unit_storage_throughput, :root_squash_configuration, :security_group_ids, :storage_capacity, :storage_type, :tags, :throughput_capacity],
-      map_bool: [:copy_tags_to_backups, :skip_final_backup]
+      map_present: [:auto_import_policy, :automatic_backup_retention_days, :backup_id, :daily_automatic_backup_start_time, :data_compression_type, :data_read_cache_configuration, :deployment_type, :drive_cache_type, :export_path, :file_system_type_version, :final_backup_tags, :import_path, :imported_file_chunk_size, :kms_key_id, :log_configuration, :metadata_configuration, :per_unit_storage_throughput, :root_squash_configuration, :security_group_ids, :storage_capacity, :storage_type, :tags, :tags_all, :throughput_capacity, :weekly_maintenance_start_time],
+      map_bool: [:copy_tags_to_backups, :efa_enabled, :skip_final_backup]
   end
   module AWS
     include AWSFsxLustreFileSystem

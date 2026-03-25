@@ -13,5 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :cluster_identifier, T::String
     attribute :endpoint_name, T::String
     attribute :subnet_group_name, T::String
+    attribute? :resource_owner, T::String.optional
+    attribute? :vpc_security_group_ids, T::Array.of(T::String).optional
   end
 end

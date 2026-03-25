@@ -18,5 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :no_password_required, T::Bool.optional
     attribute? :passwords, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

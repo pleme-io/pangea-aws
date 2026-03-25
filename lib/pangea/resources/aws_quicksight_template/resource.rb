@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightTemplateAttributes,
       outputs: { id: :id },
       map: [:name, :template_id, :version_description],
-      map_present: [:definition, :permissions, :source_entity, :tags]
+      map_present: [:aws_account_id, :definition, :permissions, :source_entity, :tags, :tags_all]
   end
   module AWS
     include AWSQuicksightTemplate

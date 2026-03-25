@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MwaaEnvironmentAttributes,
       outputs: { id: :id },
       map: [:dag_s3_path, :execution_role_arn, :name, :network_configuration, :source_bucket_arn],
-      map_present: [:airflow_configuration_options, :kms_key, :logging_configuration, :plugins_s3_path, :requirements_s3_path, :startup_script_s3_path, :tags]
+      map_present: [:airflow_configuration_options, :airflow_version, :endpoint_management, :environment_class, :kms_key, :logging_configuration, :max_webservers, :max_workers, :min_webservers, :min_workers, :plugins_s3_object_version, :plugins_s3_path, :requirements_s3_object_version, :requirements_s3_path, :schedulers, :startup_script_s3_object_version, :startup_script_s3_path, :tags, :tags_all, :webserver_access_mode, :weekly_maintenance_window_start]
   end
   module AWS
     include AWSMwaaEnvironment

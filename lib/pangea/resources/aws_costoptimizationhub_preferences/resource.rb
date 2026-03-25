@@ -12,7 +12,8 @@ module Pangea::Resources
 
     define_resource :aws_costoptimizationhub_preferences,
       attributes_class: AWS::Types::CostoptimizationhubPreferencesAttributes,
-      outputs: { id: :id }
+      outputs: { id: :id },
+      map_present: [:member_account_discount_visibility, :savings_estimation_mode]
   end
   module AWS
     include AWSCostoptimizationhubPreferences

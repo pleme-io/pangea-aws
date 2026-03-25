@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkmanagerDeviceAttributes,
       outputs: { id: :id },
       map: [:global_network_id],
-      map_present: [:aws_location, :description, :location, :model, :serial_number, :site_id, :tags, :type, :vendor]
+      map_present: [:aws_location, :description, :location, :model, :serial_number, :site_id, :tags, :tags_all, :type, :vendor]
   end
   module AWS
     include AWSNetworkmanagerDevice

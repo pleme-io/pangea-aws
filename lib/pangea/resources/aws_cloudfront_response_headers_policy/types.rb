@@ -14,6 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute? :comment, T::String.optional
     attribute? :cors_config, T::Hash.optional
     attribute? :custom_headers_config, T::Hash.optional
+    attribute? :etag, T::String.optional
     attribute? :remove_headers_config, T::Hash.optional
     attribute? :security_headers_config, T::Hash.optional
     attribute? :server_timing_headers_config, T::Hash.optional

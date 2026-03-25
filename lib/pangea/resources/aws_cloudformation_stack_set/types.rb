@@ -16,11 +16,14 @@ module Pangea::Resources::AWS::Types
     attribute? :call_as, T::String.optional
     attribute? :capabilities, T::Array.of(T::String).optional
     attribute? :description, T::String.optional
+    attribute? :execution_role_name, T::String.optional
     attribute? :managed_execution, T::Hash.optional
     attribute? :operation_preferences, T::Hash.optional
     attribute? :parameters, T::Hash.optional
     attribute? :permission_model, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :template_body, T::String.optional
     attribute? :template_url, T::String.optional
   end
 end

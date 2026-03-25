@@ -11,8 +11,11 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :logging_configuration_identifiers, T::Array.of(T::String).optional
+    attribute? :maximum_message_length, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :maximum_message_rate_per_second, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :message_review_handler, T::Hash.optional
     attribute? :name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

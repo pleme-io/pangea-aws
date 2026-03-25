@@ -15,6 +15,9 @@ module Pangea::Resources::AWS::Types
     attribute :traffic_mirror_filter_id, T::String
     attribute :traffic_mirror_target_id, T::String
     attribute? :description, T::String.optional
+    attribute? :packet_length, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :virtual_network_id, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

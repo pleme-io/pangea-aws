@@ -13,8 +13,11 @@ module Pangea::Resources::AWS::Types
     attribute :account_access_type, T::String
     attribute :authentication_providers, T::Array.of(T::String)
     attribute :permission_type, T::String
+    attribute? :configuration, T::String.optional
     attribute? :data_sources, T::Array.of(T::String).optional
     attribute? :description, T::String.optional
+    attribute? :grafana_version, T::String.optional
+    attribute? :name, T::String.optional
     attribute? :network_access_control, T::Hash.optional
     attribute? :notification_destinations, T::Array.of(T::String).optional
     attribute? :organization_role_name, T::String.optional
@@ -22,6 +25,7 @@ module Pangea::Resources::AWS::Types
     attribute? :role_arn, T::String.optional
     attribute? :stack_set_name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc_configuration, T::Hash.optional
   end
 end

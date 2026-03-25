@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :body, T::String
     attribute :rest_api_id, T::String
+    attribute? :fail_on_warnings, T::Bool.optional
     attribute? :parameters, T::Hash.optional
     attribute? :triggers, T::Hash.optional
   end

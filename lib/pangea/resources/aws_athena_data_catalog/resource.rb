@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AthenaDataCatalogAttributes,
       outputs: { id: :id },
       map: [:description, :name, :parameters, :type],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSAthenaDataCatalog

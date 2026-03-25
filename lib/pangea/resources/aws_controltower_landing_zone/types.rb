@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :manifest_json, T::String
     attribute :version, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

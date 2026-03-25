@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_lightsail_key_pair,
       attributes_class: AWS::Types::LightsailKeyPairAttributes,
       outputs: { id: :id },
-      map_present: [:pgp_key, :tags]
+      map_present: [:name, :name_prefix, :pgp_key, :public_key, :tags, :tags_all]
   end
   module AWS
     include AWSLightsailKeyPair

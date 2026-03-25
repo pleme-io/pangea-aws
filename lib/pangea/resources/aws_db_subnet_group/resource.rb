@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DbSubnetGroupAttributes,
       outputs: { id: :id },
       map: [:subnet_ids],
-      map_present: [:description, :tags]
+      map_present: [:description, :name, :name_prefix, :tags, :tags_all]
   end
   module AWS
     include AWSDbSubnetGroup

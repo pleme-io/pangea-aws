@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_internet_gateway,
       attributes_class: AWS::Types::InternetGatewayAttributes,
       outputs: { id: :id },
-      map_present: [:tags]
+      map_present: [:tags, :tags_all, :vpc_id]
   end
   module AWS
     include AWSInternetGateway

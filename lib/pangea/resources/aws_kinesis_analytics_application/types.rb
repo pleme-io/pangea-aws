@@ -19,5 +19,6 @@ module Pangea::Resources::AWS::Types
     attribute? :reference_data_sources, T::Hash.optional
     attribute? :start_application, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

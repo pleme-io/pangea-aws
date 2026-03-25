@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::TransferCertificateAttributes,
       outputs: { id: :id },
       map: [:certificate, :usage],
-      map_present: [:certificate_chain, :description, :private_key, :tags]
+      map_present: [:certificate_chain, :description, :private_key, :tags, :tags_all]
   end
   module AWS
     include AWSTransferCertificate

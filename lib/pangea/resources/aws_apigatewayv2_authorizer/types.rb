@@ -15,6 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :authorizer_credentials_arn, T::String.optional
     attribute? :authorizer_payload_format_version, T::String.optional
+    attribute? :authorizer_result_ttl_in_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :authorizer_uri, T::String.optional
     attribute? :enable_simple_responses, T::Bool.optional
     attribute? :identity_sources, T::Array.of(T::String).optional

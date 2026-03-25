@@ -15,7 +15,10 @@ module Pangea::Resources::AWS::Types
     attribute :target, T::Hash
     attribute? :description, T::String.optional
     attribute? :end_date, T::String.optional
+    attribute? :group_name, T::String.optional
     attribute? :kms_key_arn, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :schedule_expression_timezone, T::String.optional
     attribute? :start_date, T::String.optional
     attribute? :state, T::String.optional

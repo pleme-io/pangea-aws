@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudsearchDomainAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:endpoint_options, :index_field, :scaling_parameters]
+      map_present: [:endpoint_options, :index_field, :scaling_parameters],
+      map_bool: [:multi_az]
   end
   module AWS
     include AWSCloudsearchDomain

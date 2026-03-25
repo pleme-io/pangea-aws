@@ -13,11 +13,19 @@ module Pangea::Resources::AWS::Types
     attribute :vpc_id, T::String
     attribute? :auto_accept, T::Bool.optional
     attribute? :dns_options, T::Hash.optional
+    attribute? :ip_address_type, T::String.optional
+    attribute? :policy, (T::String | T::Hash).optional
+    attribute? :private_dns_enabled, T::Bool.optional
     attribute? :resource_configuration_arn, T::String.optional
+    attribute? :route_table_ids, T::Array.of(T::String).optional
+    attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :service_name, T::String.optional
     attribute? :service_network_arn, T::String.optional
+    attribute? :service_region, T::String.optional
     attribute? :subnet_configuration, T::Array.of(T::Hash).optional
+    attribute? :subnet_ids, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc_endpoint_type, T::String.optional
   end
 end

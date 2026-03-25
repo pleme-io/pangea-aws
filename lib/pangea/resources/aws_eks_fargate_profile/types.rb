@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute :selector, T::Array.of(T::Hash)
     attribute? :subnet_ids, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

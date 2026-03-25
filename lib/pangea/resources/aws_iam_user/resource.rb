@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IamUserAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:path, :permissions_boundary, :tags],
+      map_present: [:path, :permissions_boundary, :tags, :tags_all],
       map_bool: [:force_destroy]
   end
   module AWS

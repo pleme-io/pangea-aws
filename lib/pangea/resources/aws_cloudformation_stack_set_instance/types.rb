@@ -11,10 +11,12 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :stack_set_name, T::String
+    attribute? :account_id, T::String.optional
     attribute? :call_as, T::String.optional
     attribute? :deployment_targets, T::Hash.optional
     attribute? :operation_preferences, T::Hash.optional
     attribute? :parameter_overrides, T::Hash.optional
+    attribute? :region, T::String.optional
     attribute? :retain_stack, T::Bool.optional
   end
 end

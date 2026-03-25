@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::TranscribeMedicalVocabularyAttributes,
       outputs: { id: :id },
       map: [:language_code, :vocabulary_file_uri, :vocabulary_name],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSTranscribeMedicalVocabulary

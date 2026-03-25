@@ -15,7 +15,9 @@ module Pangea::Resources::AWS::Types
     attribute :file_system_path, T::String
     attribute? :batch_import_meta_data_on_create, T::Bool.optional
     attribute? :delete_data_in_filesystem, T::Bool.optional
+    attribute? :imported_file_chunk_size, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :s3, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

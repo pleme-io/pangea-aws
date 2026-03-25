@@ -17,15 +17,21 @@ module Pangea::Resources::AWS::Types
     attribute? :backup_id, T::String.optional
     attribute? :copy_tags_to_backups, T::Bool.optional
     attribute? :copy_tags_to_volumes, T::Bool.optional
+    attribute? :daily_automatic_backup_start_time, T::String.optional
     attribute? :delete_options, T::Array.of(T::String).optional
     attribute? :disk_iops_configuration, T::Hash.optional
+    attribute? :endpoint_ip_address_range, T::String.optional
     attribute? :final_backup_tags, T::Hash.optional
+    attribute? :kms_key_id, T::String.optional
     attribute? :preferred_subnet_id, T::String.optional
     attribute? :root_volume_configuration, T::Hash.optional
+    attribute? :route_table_ids, T::Array.of(T::String).optional
     attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :skip_final_backup, T::Bool.optional
     attribute? :storage_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :storage_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :weekly_maintenance_start_time, T::String.optional
   end
 end

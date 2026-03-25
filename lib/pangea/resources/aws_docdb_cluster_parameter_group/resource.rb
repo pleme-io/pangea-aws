@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DocdbClusterParameterGroupAttributes,
       outputs: { id: :id },
       map: [:family],
-      map_present: [:description, :parameter, :tags]
+      map_present: [:description, :name, :name_prefix, :parameter, :tags, :tags_all]
   end
   module AWS
     include AWSDocdbClusterParameterGroup

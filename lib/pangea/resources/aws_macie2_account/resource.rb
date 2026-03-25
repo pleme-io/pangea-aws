@@ -12,7 +12,8 @@ module Pangea::Resources
 
     define_resource :aws_macie2_account,
       attributes_class: AWS::Types::Macie2AccountAttributes,
-      outputs: { id: :id }
+      outputs: { id: :id },
+      map_present: [:finding_publishing_frequency, :status]
   end
   module AWS
     include AWSMacie2Account

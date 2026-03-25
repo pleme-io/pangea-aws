@@ -19,6 +19,8 @@ module Pangea::Resources::AWS::Types
     attribute? :options, T::Hash.optional
     attribute? :schedule, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :task_mode, T::String.optional
     attribute? :task_report_config, T::Hash.optional
   end
 end

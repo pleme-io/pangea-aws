@@ -11,6 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :key_value_store_arn, T::String
+    attribute? :max_batch_size, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :resource_key_value_pair, T::Array.of(T::Hash).optional
   end
 end

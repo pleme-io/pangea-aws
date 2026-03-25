@@ -25,6 +25,7 @@ module Pangea::Resources::AWS::Types
     attribute? :enable_ssl, T::Bool.optional
     attribute? :environment, T::Array.of(T::Hash).optional
     attribute? :rails_env, T::String.optional
+    attribute? :short_name, T::String.optional
     attribute? :ssl_configuration, T::Array.of(T::Hash).optional
   end
 end

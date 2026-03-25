@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute :vpc_arn, T::String
     attribute? :options, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

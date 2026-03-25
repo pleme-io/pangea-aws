@@ -13,6 +13,10 @@ module Pangea::Resources::AWS::Types
     attribute :default_action, T::Hash
     attribute :name, T::String
     attribute :protocol, T::String
+    attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :service_arn, T::String.optional
+    attribute? :service_identifier, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :max_devices, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

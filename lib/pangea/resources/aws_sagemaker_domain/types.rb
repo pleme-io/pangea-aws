@@ -23,5 +23,6 @@ module Pangea::Resources::AWS::Types
     attribute? :retention_policy, T::Hash.optional
     attribute? :tag_propagation, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

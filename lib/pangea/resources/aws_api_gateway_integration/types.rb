@@ -15,11 +15,13 @@ module Pangea::Resources::AWS::Types
     attribute :rest_api_id, T::String
     attribute :type, T::String
     attribute? :cache_key_parameters, T::Array.of(T::String).optional
+    attribute? :cache_namespace, T::String.optional
     attribute? :connection_id, T::String.optional
     attribute? :connection_type, T::String.optional
     attribute? :content_handling, T::String.optional
     attribute? :credentials, T::String.optional
     attribute? :integration_http_method, T::String.optional
+    attribute? :passthrough_behavior, T::String.optional
     attribute? :request_parameters, T::Hash.optional
     attribute? :request_templates, T::Hash.optional
     attribute? :timeout_milliseconds, (T::Coercible::Integer | T::Coercible::Float).optional

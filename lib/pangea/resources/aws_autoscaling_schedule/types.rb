@@ -12,5 +12,12 @@ module Pangea::Resources::AWS::Types
 
     attribute :autoscaling_group_name, T::String
     attribute :scheduled_action_name, T::String
+    attribute? :desired_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :end_time, T::String.optional
+    attribute? :max_size, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :min_size, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :recurrence, T::String.optional
+    attribute? :start_time, T::String.optional
+    attribute? :time_zone, T::String.optional
   end
 end

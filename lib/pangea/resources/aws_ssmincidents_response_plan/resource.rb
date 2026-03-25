@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsmincidentsResponsePlanAttributes,
       outputs: { id: :id },
       map: [:incident_template, :name],
-      map_present: [:action, :chat_channel, :display_name, :engagements, :integration, :tags]
+      map_present: [:action, :chat_channel, :display_name, :engagements, :integration, :tags, :tags_all]
   end
   module AWS
     include AWSSsmincidentsResponsePlan

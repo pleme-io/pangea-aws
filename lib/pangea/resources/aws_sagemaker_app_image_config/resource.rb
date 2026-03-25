@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerAppImageConfigAttributes,
       outputs: { id: :id },
       map: [:app_image_config_name],
-      map_present: [:code_editor_app_image_config, :jupyter_lab_image_config, :kernel_gateway_image_config, :tags]
+      map_present: [:code_editor_app_image_config, :jupyter_lab_image_config, :kernel_gateway_image_config, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerAppImageConfig

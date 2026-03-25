@@ -11,6 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :domain_name, T::String
+    attribute? :access_policies, T::String.optional
+    attribute? :advanced_options, T::Hash.optional
     attribute? :advanced_security_options, T::Hash.optional
     attribute? :auto_tune_options, T::Hash.optional
     attribute? :cluster_config, T::Hash.optional
@@ -18,12 +20,15 @@ module Pangea::Resources::AWS::Types
     attribute? :domain_endpoint_options, T::Hash.optional
     attribute? :ebs_options, T::Hash.optional
     attribute? :encrypt_at_rest, T::Hash.optional
+    attribute? :engine_version, T::String.optional
+    attribute? :ip_address_type, T::String.optional
     attribute? :log_publishing_options, T::Array.of(T::Hash).optional
     attribute? :node_to_node_encryption, T::Hash.optional
     attribute? :off_peak_window_options, T::Hash.optional
     attribute? :snapshot_options, T::Hash.optional
     attribute? :software_update_options, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc_options, T::Hash.optional
   end
 end

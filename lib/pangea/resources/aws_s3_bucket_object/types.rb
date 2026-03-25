@@ -13,20 +13,27 @@ module Pangea::Resources::AWS::Types
     attribute :bucket, T::String
     attribute :key, T::String
     attribute? :acl, T::String.optional
+    attribute? :bucket_key_enabled, T::Bool.optional
     attribute? :cache_control, T::String.optional
     attribute? :content, T::String.optional
     attribute? :content_base64, T::String.optional
     attribute? :content_disposition, T::String.optional
     attribute? :content_encoding, T::String.optional
     attribute? :content_language, T::String.optional
+    attribute? :content_type, T::String.optional
+    attribute? :etag, T::String.optional
     attribute? :force_destroy, T::Bool.optional
+    attribute? :kms_key_id, T::String.optional
     attribute? :metadata, T::Hash.optional
     attribute? :object_lock_legal_hold_status, T::String.optional
     attribute? :object_lock_mode, T::String.optional
     attribute? :object_lock_retain_until_date, T::String.optional
+    attribute? :server_side_encryption, T::String.optional
     attribute? :source, T::String.optional
     attribute? :source_hash, T::String.optional
+    attribute? :storage_class, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :website_redirect, T::String.optional
   end
 end

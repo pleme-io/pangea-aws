@@ -18,5 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :data_encryption_metadata, T::Hash.optional
     attribute? :member, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

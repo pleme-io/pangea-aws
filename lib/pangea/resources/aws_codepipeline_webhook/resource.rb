@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodepipelineWebhookAttributes,
       outputs: { id: :id },
       map: [:authentication, :filter, :name, :target_action, :target_pipeline],
-      map_present: [:authentication_configuration, :tags]
+      map_present: [:authentication_configuration, :tags, :tags_all]
   end
   module AWS
     include AWSCodepipelineWebhook

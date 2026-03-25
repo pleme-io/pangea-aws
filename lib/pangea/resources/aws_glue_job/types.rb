@@ -18,13 +18,19 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :execution_class, T::String.optional
     attribute? :execution_property, T::Hash.optional
+    attribute? :glue_version, T::String.optional
     attribute? :job_run_queuing_enabled, T::Bool.optional
     attribute? :maintenance_window, T::String.optional
+    attribute? :max_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :max_retries, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :non_overridable_arguments, T::Hash.optional
     attribute? :notification_property, T::Hash.optional
+    attribute? :number_of_workers, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :security_configuration, T::String.optional
     attribute? :source_control_details, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :timeout, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :worker_type, T::String.optional
   end
 end

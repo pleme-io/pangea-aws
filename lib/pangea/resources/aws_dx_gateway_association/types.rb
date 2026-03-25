@@ -11,6 +11,9 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :dx_gateway_id, T::String
+    attribute? :allowed_prefixes, T::Array.of(T::String).optional
+    attribute? :associated_gateway_id, T::String.optional
+    attribute? :associated_gateway_owner_account_id, T::String.optional
     attribute? :proposal_id, T::String.optional
     attribute? :vpn_gateway_id, T::String.optional
   end

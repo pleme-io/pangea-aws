@@ -12,12 +12,22 @@ module Pangea::Resources::AWS::Types
 
     attribute :cluster_identifier, T::String
     attribute :instance_class, T::String
+    attribute? :apply_immediately, T::Bool.optional
     attribute? :auto_minor_version_upgrade, T::Bool.optional
+    attribute? :availability_zone, T::String.optional
     attribute? :engine, T::String.optional
+    attribute? :engine_version, T::String.optional
+    attribute? :identifier, T::String.optional
+    attribute? :identifier_prefix, T::String.optional
+    attribute? :neptune_parameter_group_name, T::String.optional
+    attribute? :neptune_subnet_group_name, T::String.optional
     attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :preferred_backup_window, T::String.optional
+    attribute? :preferred_maintenance_window, T::String.optional
     attribute? :promotion_tier, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :publicly_accessible, T::Bool.optional
     attribute? :skip_final_snapshot, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

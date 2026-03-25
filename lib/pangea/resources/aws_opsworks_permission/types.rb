@@ -12,5 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :stack_id, T::String
     attribute :user_arn, T::String
+    attribute? :allow_ssh, T::Bool.optional
+    attribute? :allow_sudo, T::Bool.optional
+    attribute? :level, T::String.optional
   end
 end

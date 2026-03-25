@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AlbListenerRuleAttributes,
       outputs: { id: :id },
       map: [:action, :condition, :listener_arn],
-      map_present: [:tags]
+      map_present: [:priority, :tags, :tags_all]
   end
   module AWS
     include AWSAlbListenerRule

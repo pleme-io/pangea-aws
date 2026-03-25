@@ -11,6 +11,9 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :arn, T::String
+    attribute? :hybrid_access_enabled, T::Bool.optional
+    attribute? :role_arn, T::String.optional
     attribute? :use_service_linked_role, T::Bool.optional
+    attribute? :with_federation, T::Bool.optional
   end
 end

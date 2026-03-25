@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ImagebuilderLifecyclePolicyAttributes,
       outputs: { id: :id },
       map: [:execution_role, :name, :resource_type],
-      map_present: [:description, :policy_detail, :resource_selection, :tags]
+      map_present: [:description, :policy_detail, :resource_selection, :status, :tags]
   end
   module AWS
     include AWSImagebuilderLifecyclePolicy

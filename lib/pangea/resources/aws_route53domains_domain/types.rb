@@ -12,8 +12,17 @@ module Pangea::Resources::AWS::Types
 
     attribute :domain_name, T::String
     attribute? :admin_contact, T::Array.of(T::Hash).optional
+    attribute? :admin_privacy, T::Bool.optional
+    attribute? :auto_renew, T::Bool.optional
+    attribute? :billing_contact, T::Array.of(T::Hash).optional
+    attribute? :billing_privacy, T::Bool.optional
+    attribute? :duration_in_years, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :name_server, T::Array.of(T::Hash).optional
     attribute? :registrant_contact, T::Array.of(T::Hash).optional
+    attribute? :registrant_privacy, T::Bool.optional
     attribute? :tags, T::Hash.optional
     attribute? :tech_contact, T::Array.of(T::Hash).optional
+    attribute? :tech_privacy, T::Bool.optional
+    attribute? :transfer_lock, T::Bool.optional
   end
 end

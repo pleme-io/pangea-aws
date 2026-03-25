@@ -18,5 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :maximum_execution_frequency, T::String.optional
     attribute? :scope, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

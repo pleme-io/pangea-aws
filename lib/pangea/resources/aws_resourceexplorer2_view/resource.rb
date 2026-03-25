@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::Resourceexplorer2ViewAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:filters, :included_property, :tags]
+      map_present: [:filters, :included_property, :scope, :tags],
+      map_bool: [:default_view]
   end
   module AWS
     include AWSResourceexplorer2View

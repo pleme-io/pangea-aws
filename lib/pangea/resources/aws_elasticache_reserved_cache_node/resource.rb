@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElasticacheReservedCacheNodeAttributes,
       outputs: { id: :id },
       map: [:reserved_cache_nodes_offering_id],
-      map_present: [:tags]
+      map_present: [:cache_node_count, :tags]
   end
   module AWS
     include AWSElasticacheReservedCacheNode

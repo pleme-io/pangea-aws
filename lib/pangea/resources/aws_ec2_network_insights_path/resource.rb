@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2NetworkInsightsPathAttributes,
       outputs: { id: :id },
       map: [:protocol, :source],
-      map_present: [:destination, :destination_ip, :destination_port, :filter_at_destination, :filter_at_source, :source_ip, :tags]
+      map_present: [:destination, :destination_ip, :destination_port, :filter_at_destination, :filter_at_source, :source_ip, :tags, :tags_all]
   end
   module AWS
     include AWSEc2NetworkInsightsPath

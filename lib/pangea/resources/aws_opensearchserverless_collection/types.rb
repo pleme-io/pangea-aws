@@ -12,6 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :description, T::String.optional
+    attribute? :standby_replicas, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :type, T::String.optional
   end
 end

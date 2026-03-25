@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElasticBeanstalkApplicationVersionAttributes,
       outputs: { id: :id },
       map: [:application, :bucket, :key, :name],
-      map_present: [:description, :tags],
+      map_present: [:description, :tags, :tags_all],
       map_bool: [:force_delete, :process]
   end
   module AWS

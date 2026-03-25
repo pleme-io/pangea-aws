@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ResourcegroupsGroupAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:configuration, :description, :resource_query, :tags]
+      map_present: [:configuration, :description, :resource_query, :tags, :tags_all]
   end
   module AWS
     include AWSResourcegroupsGroup

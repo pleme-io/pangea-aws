@@ -22,6 +22,7 @@ module Pangea::Resources::AWS::Types
     attribute? :outpost_arn, T::String.optional
     attribute? :placement_group_arn, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :tenancy, T::String.optional
   end
 end

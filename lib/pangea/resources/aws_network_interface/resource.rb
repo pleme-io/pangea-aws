@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkInterfaceAttributes,
       outputs: { id: :id },
       map: [:subnet_id],
-      map_present: [:attachment, :description, :tags],
-      map_bool: [:ipv6_address_list_enabled, :private_ip_list_enabled, :source_dest_check]
+      map_present: [:attachment, :description, :interface_type, :ipv4_prefix_count, :ipv4_prefixes, :ipv6_address_count, :ipv6_address_list, :ipv6_addresses, :ipv6_prefix_count, :ipv6_prefixes, :private_ip, :private_ip_list, :private_ips, :private_ips_count, :security_groups, :tags, :tags_all],
+      map_bool: [:enable_primary_ipv6, :ipv6_address_list_enabled, :private_ip_list_enabled, :source_dest_check]
   end
   module AWS
     include AWSNetworkInterface

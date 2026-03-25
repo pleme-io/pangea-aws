@@ -15,16 +15,27 @@ module Pangea::Resources::AWS::Types
     attribute? :auto_minor_version_upgrade, T::Bool.optional
     attribute? :data_tiering, T::Bool.optional
     attribute? :description, T::String.optional
+    attribute? :engine, T::String.optional
+    attribute? :engine_version, T::String.optional
     attribute? :final_snapshot_name, T::String.optional
     attribute? :kms_key_arn, T::String.optional
+    attribute? :maintenance_window, T::String.optional
     attribute? :multi_region_cluster_name, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :num_replicas_per_shard, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :num_shards, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :parameter_group_name, T::String.optional
+    attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :snapshot_arns, T::Array.of(T::String).optional
     attribute? :snapshot_name, T::String.optional
+    attribute? :snapshot_retention_limit, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :snapshot_window, T::String.optional
     attribute? :sns_topic_arn, T::String.optional
+    attribute? :subnet_group_name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :tls_enabled, T::Bool.optional
   end
 end

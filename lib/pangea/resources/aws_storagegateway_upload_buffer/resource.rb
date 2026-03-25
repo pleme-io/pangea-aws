@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_storagegateway_upload_buffer,
       attributes_class: AWS::Types::StoragegatewayUploadBufferAttributes,
       outputs: { id: :id },
-      map: [:gateway_arn]
+      map: [:gateway_arn],
+      map_present: [:disk_id, :disk_path]
   end
   module AWS
     include AWSStoragegatewayUploadBuffer

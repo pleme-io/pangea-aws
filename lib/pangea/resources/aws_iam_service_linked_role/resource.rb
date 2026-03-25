@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IamServiceLinkedRoleAttributes,
       outputs: { id: :id },
       map: [:aws_service_name],
-      map_present: [:custom_suffix, :description, :tags]
+      map_present: [:custom_suffix, :description, :tags, :tags_all]
   end
   module AWS
     include AWSIamServiceLinkedRole

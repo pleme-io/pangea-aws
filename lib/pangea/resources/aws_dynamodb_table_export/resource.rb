@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DynamodbTableExportAttributes,
       outputs: { id: :id },
       map: [:s3_bucket, :table_arn],
-      map_present: [:export_format, :incremental_export_specification, :s3_sse_kms_key_id]
+      map_present: [:export_format, :export_time, :export_type, :incremental_export_specification, :s3_bucket_owner, :s3_prefix, :s3_sse_algorithm, :s3_sse_kms_key_id]
   end
   module AWS
     include AWSDynamodbTableExport

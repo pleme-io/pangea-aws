@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ChimesdkvoiceVoiceProfileDomainAttributes,
       outputs: { id: :id },
       map: [:name, :server_side_encryption_configuration],
-      map_present: [:description, :tags]
+      map_present: [:description, :tags, :tags_all]
   end
   module AWS
     include AWSChimesdkvoiceVoiceProfileDomain

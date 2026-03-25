@@ -13,5 +13,8 @@ module Pangea::Resources::AWS::Types
     attribute :action, T::String
     attribute :principal, T::String
     attribute :profile_name, T::String
+    attribute? :profile_version, T::String.optional
+    attribute? :statement_id, T::String.optional
+    attribute? :statement_id_prefix, T::String.optional
   end
 end

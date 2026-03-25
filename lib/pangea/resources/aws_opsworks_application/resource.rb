@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OpsworksApplicationAttributes,
       outputs: { id: :id },
       map: [:name, :stack_id, :type],
-      map_present: [:app_source, :auto_bundle_on_deploy, :aws_flow_ruby_settings, :data_source_arn, :data_source_database_name, :data_source_type, :description, :document_root, :domains, :environment, :rails_env, :ssl_configuration],
+      map_present: [:app_source, :auto_bundle_on_deploy, :aws_flow_ruby_settings, :data_source_arn, :data_source_database_name, :data_source_type, :description, :document_root, :domains, :environment, :rails_env, :short_name, :ssl_configuration],
       map_bool: [:enable_ssl]
   end
   module AWS

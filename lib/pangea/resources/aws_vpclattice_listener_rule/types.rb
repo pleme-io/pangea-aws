@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute :priority, (T::Coercible::Integer | T::Coercible::Float)
     attribute :service_identifier, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

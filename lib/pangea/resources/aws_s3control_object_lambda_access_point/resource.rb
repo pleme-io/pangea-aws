@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_s3control_object_lambda_access_point,
       attributes_class: AWS::Types::S3controlObjectLambdaAccessPointAttributes,
       outputs: { id: :id },
-      map: [:configuration, :name]
+      map: [:configuration, :name],
+      map_present: [:account_id]
   end
   module AWS
     include AWSS3controlObjectLambdaAccessPoint

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Apigatewayv2IntegrationAttributes,
       outputs: { id: :id },
       map: [:api_id, :integration_type],
-      map_present: [:connection_id, :connection_type, :content_handling_strategy, :credentials_arn, :description, :integration_method, :integration_subtype, :integration_uri, :passthrough_behavior, :payload_format_version, :request_parameters, :request_templates, :response_parameters, :template_selection_expression, :tls_config]
+      map_present: [:connection_id, :connection_type, :content_handling_strategy, :credentials_arn, :description, :integration_method, :integration_subtype, :integration_uri, :passthrough_behavior, :payload_format_version, :request_parameters, :request_templates, :response_parameters, :template_selection_expression, :timeout_milliseconds, :tls_config]
   end
   module AWS
     include AWSApigatewayv2Integration

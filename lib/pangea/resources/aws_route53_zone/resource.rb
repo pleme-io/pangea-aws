@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Route53ZoneAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:comment, :delegation_set_id, :tags, :vpc],
+      map_present: [:comment, :delegation_set_id, :tags, :tags_all, :vpc],
       map_bool: [:force_destroy]
   end
   module AWS

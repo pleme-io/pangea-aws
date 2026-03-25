@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :host_arn, T::String.optional
+    attribute? :provider_type, T::String.optional
     attribute? :tags, T::Hash.optional
   end
 end

@@ -18,5 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :ephemeral_block_device, T::Array.of(T::Hash).optional
     attribute? :snapshot_without_reboot, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

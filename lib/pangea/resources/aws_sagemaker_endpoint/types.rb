@@ -12,6 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :endpoint_config_name, T::String
     attribute? :deployment_config, T::Hash.optional
+    attribute? :name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -13,8 +13,16 @@ module Pangea::Resources::AWS::Types
     attribute :instance_type, T::String
     attribute :name, T::String
     attribute? :access_endpoint, T::Array.of(T::Hash).optional
+    attribute? :appstream_agent_version, T::String.optional
+    attribute? :description, T::String.optional
+    attribute? :display_name, T::String.optional
     attribute? :domain_join_info, T::Hash.optional
+    attribute? :enable_default_internet_access, T::Bool.optional
+    attribute? :iam_role_arn, T::String.optional
+    attribute? :image_arn, T::String.optional
+    attribute? :image_name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc_config, T::Hash.optional
   end
 end

@@ -13,5 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :domain, T::String
     attribute :policy_document, (T::String | T::Hash)
     attribute :repository, T::String
+    attribute? :domain_owner, T::String.optional
+    attribute? :policy_revision, T::String.optional
   end
 end

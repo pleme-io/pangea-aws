@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RouteAttributes,
       outputs: { id: :id },
       map: [:route_table_id],
-      map_present: [:carrier_gateway_id, :core_network_arn, :destination_cidr_block, :destination_ipv6_cidr_block, :destination_prefix_list_id, :egress_only_gateway_id, :gateway_id, :local_gateway_id, :nat_gateway_id, :transit_gateway_id, :vpc_endpoint_id, :vpc_peering_connection_id]
+      map_present: [:carrier_gateway_id, :core_network_arn, :destination_cidr_block, :destination_ipv6_cidr_block, :destination_prefix_list_id, :egress_only_gateway_id, :gateway_id, :local_gateway_id, :nat_gateway_id, :network_interface_id, :transit_gateway_id, :vpc_endpoint_id, :vpc_peering_connection_id]
   end
   module AWS
     include AWSRoute

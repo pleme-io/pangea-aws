@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::M2EnvironmentAttributes,
       outputs: { id: :id },
       map: [:engine_type, :instance_type, :name],
-      map_present: [:description, :high_availability_config, :kms_key_id, :storage_configuration, :tags],
-      map_bool: [:apply_changes_during_maintenance_window, :force_update]
+      map_present: [:description, :engine_version, :high_availability_config, :kms_key_id, :preferred_maintenance_window, :security_group_ids, :storage_configuration, :subnet_ids, :tags],
+      map_bool: [:apply_changes_during_maintenance_window, :force_update, :publicly_accessible]
   end
   module AWS
     include AWSM2Environment

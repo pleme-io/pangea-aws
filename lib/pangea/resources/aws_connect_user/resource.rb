@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConnectUserAttributes,
       outputs: { id: :id },
       map: [:instance_id, :name, :phone_config, :routing_profile_id, :security_profile_ids],
-      map_present: [:hierarchy_group_id, :identity_info, :password, :tags]
+      map_present: [:directory_user_id, :hierarchy_group_id, :identity_info, :password, :tags, :tags_all]
   end
   module AWS
     include AWSConnectUser

@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :data_set_id, T::String
     attribute :import_mode, T::String
     attribute :name, T::String
+    attribute? :aws_account_id, T::String.optional
     attribute? :column_groups, T::Array.of(T::Hash).optional
     attribute? :column_level_permission_rules, T::Array.of(T::Hash).optional
     attribute? :data_set_usage_configuration, T::Hash.optional
@@ -24,5 +25,6 @@ module Pangea::Resources::AWS::Types
     attribute? :row_level_permission_data_set, T::Hash.optional
     attribute? :row_level_permission_tag_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

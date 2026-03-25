@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_sns_topic,
       attributes_class: AWS::Types::SnsTopicAttributes,
       outputs: { id: :id },
-      map_present: [:application_failure_feedback_role_arn, :application_success_feedback_role_arn, :application_success_feedback_sample_rate, :archive_policy, :delivery_policy, :display_name, :firehose_failure_feedback_role_arn, :firehose_success_feedback_role_arn, :firehose_success_feedback_sample_rate, :http_failure_feedback_role_arn, :http_success_feedback_role_arn, :http_success_feedback_sample_rate, :kms_master_key_id, :lambda_failure_feedback_role_arn, :lambda_success_feedback_role_arn, :lambda_success_feedback_sample_rate, :sqs_failure_feedback_role_arn, :sqs_success_feedback_role_arn, :sqs_success_feedback_sample_rate, :tags],
+      map_present: [:application_failure_feedback_role_arn, :application_success_feedback_role_arn, :application_success_feedback_sample_rate, :archive_policy, :delivery_policy, :display_name, :fifo_throughput_scope, :firehose_failure_feedback_role_arn, :firehose_success_feedback_role_arn, :firehose_success_feedback_sample_rate, :http_failure_feedback_role_arn, :http_success_feedback_role_arn, :http_success_feedback_sample_rate, :kms_master_key_id, :lambda_failure_feedback_role_arn, :lambda_success_feedback_role_arn, :lambda_success_feedback_sample_rate, :name, :name_prefix, :policy, :signature_version, :sqs_failure_feedback_role_arn, :sqs_success_feedback_role_arn, :sqs_success_feedback_sample_rate, :tags, :tags_all, :tracing_config],
       map_bool: [:content_based_deduplication, :fifo_topic]
   end
   module AWS

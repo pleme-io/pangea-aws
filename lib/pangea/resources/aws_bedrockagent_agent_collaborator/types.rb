@@ -14,5 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute :collaboration_instruction, T::String
     attribute :collaborator_name, T::String
     attribute? :agent_descriptor, T::Array.of(T::Hash).optional
+    attribute? :agent_version, T::String.optional
+    attribute? :prepare_agent, T::Bool.optional
+    attribute? :relay_conversation_history, T::String.optional
   end
 end

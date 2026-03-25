@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NeptuneEventSubscriptionAttributes,
       outputs: { id: :id },
       map: [:sns_topic_arn],
-      map_present: [:event_categories, :source_ids, :source_type, :tags],
+      map_present: [:event_categories, :name, :name_prefix, :source_ids, :source_type, :tags, :tags_all],
       map_bool: [:enabled]
   end
   module AWS

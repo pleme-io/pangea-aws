@@ -13,6 +13,7 @@ module Pangea::Resources
     define_resource :aws_api_gateway_account,
       attributes_class: AWS::Types::ApiGatewayAccountAttributes,
       outputs: { id: :id },
+      map_present: [:cloudwatch_role_arn],
       map_bool: [:reset_on_delete]
   end
   module AWS

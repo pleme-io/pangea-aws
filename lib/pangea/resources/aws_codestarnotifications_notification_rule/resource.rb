@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodestarnotificationsNotificationRuleAttributes,
       outputs: { id: :id },
       map: [:detail_type, :event_type_ids, :name, :resource],
-      map_present: [:status, :tags, :target]
+      map_present: [:status, :tags, :tags_all, :target]
   end
   module AWS
     include AWSCodestarnotificationsNotificationRule

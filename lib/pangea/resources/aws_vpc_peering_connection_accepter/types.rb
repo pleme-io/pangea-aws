@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute? :auto_accept, T::Bool.optional
     attribute? :requester, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

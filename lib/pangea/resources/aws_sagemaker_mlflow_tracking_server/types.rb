@@ -14,7 +14,10 @@ module Pangea::Resources::AWS::Types
     attribute :role_arn, T::String
     attribute :tracking_server_name, T::String
     attribute? :automatic_model_registration, T::Bool.optional
+    attribute? :mlflow_version, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :tracking_server_size, T::String.optional
+    attribute? :weekly_maintenance_window_start, T::String.optional
   end
 end

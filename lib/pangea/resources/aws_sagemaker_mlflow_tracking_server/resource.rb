@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerMlflowTrackingServerAttributes,
       outputs: { id: :id },
       map: [:artifact_store_uri, :role_arn, :tracking_server_name],
-      map_present: [:tags, :tracking_server_size],
+      map_present: [:mlflow_version, :tags, :tags_all, :tracking_server_size, :weekly_maintenance_window_start],
       map_bool: [:automatic_model_registration]
   end
   module AWS

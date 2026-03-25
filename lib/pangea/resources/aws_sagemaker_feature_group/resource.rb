@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerFeatureGroupAttributes,
       outputs: { id: :id },
       map: [:event_time_feature_name, :feature_definition, :feature_group_name, :record_identifier_feature_name, :role_arn],
-      map_present: [:description, :offline_store_config, :online_store_config, :tags, :throughput_config]
+      map_present: [:description, :offline_store_config, :online_store_config, :tags, :tags_all, :throughput_config]
   end
   module AWS
     include AWSSagemakerFeatureGroup

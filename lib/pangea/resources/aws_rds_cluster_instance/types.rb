@@ -13,12 +13,28 @@ module Pangea::Resources::AWS::Types
     attribute :cluster_identifier, T::String
     attribute :engine, T::String
     attribute :instance_class, T::String
+    attribute? :apply_immediately, T::Bool.optional
     attribute? :auto_minor_version_upgrade, T::Bool.optional
+    attribute? :availability_zone, T::String.optional
+    attribute? :ca_cert_identifier, T::String.optional
     attribute? :copy_tags_to_snapshot, T::Bool.optional
     attribute? :custom_iam_instance_profile, T::String.optional
+    attribute? :db_parameter_group_name, T::String.optional
+    attribute? :db_subnet_group_name, T::String.optional
+    attribute? :engine_version, T::String.optional
     attribute? :force_destroy, T::Bool.optional
+    attribute? :identifier, T::String.optional
+    attribute? :identifier_prefix, T::String.optional
     attribute? :monitoring_interval, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :monitoring_role_arn, T::String.optional
+    attribute? :performance_insights_enabled, T::Bool.optional
+    attribute? :performance_insights_kms_key_id, T::String.optional
+    attribute? :performance_insights_retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :preferred_backup_window, T::String.optional
+    attribute? :preferred_maintenance_window, T::String.optional
     attribute? :promotion_tier, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :publicly_accessible, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

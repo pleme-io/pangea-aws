@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodeartifactRepositoryAttributes,
       outputs: { id: :id },
       map: [:domain, :repository],
-      map_present: [:description, :external_connections, :tags, :upstream]
+      map_present: [:description, :domain_owner, :external_connections, :tags, :tags_all, :upstream]
   end
   module AWS
     include AWSCodeartifactRepository

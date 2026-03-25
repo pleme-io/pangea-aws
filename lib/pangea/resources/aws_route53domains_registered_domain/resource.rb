@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Route53domainsRegisteredDomainAttributes,
       outputs: { id: :id },
       map: [:domain_name],
-      map_present: [:admin_contact, :billing_contact, :name_server, :registrant_contact, :tags, :tech_contact],
+      map_present: [:admin_contact, :billing_contact, :name_server, :registrant_contact, :tags, :tags_all, :tech_contact],
       map_bool: [:admin_privacy, :auto_renew, :billing_privacy, :registrant_privacy, :tech_privacy, :transfer_lock]
   end
   module AWS

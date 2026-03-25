@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightRefreshScheduleAttributes,
       outputs: { id: :id },
       map: [:data_set_id, :schedule_id],
-      map_present: [:schedule]
+      map_present: [:aws_account_id, :schedule]
   end
   module AWS
     include AWSQuicksightRefreshSchedule

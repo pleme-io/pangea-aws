@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkmonitorProbeAttributes,
       outputs: { id: :id },
       map: [:destination, :monitor_name, :protocol, :source_arn],
-      map_present: [:destination_port, :tags]
+      map_present: [:destination_port, :packet_size, :tags]
   end
   module AWS
     include AWSNetworkmonitorProbe

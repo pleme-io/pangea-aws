@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_backup_region_settings,
       attributes_class: AWS::Types::BackupRegionSettingsAttributes,
       outputs: { id: :id },
-      map: [:resource_type_opt_in_preference]
+      map: [:resource_type_opt_in_preference],
+      map_present: [:resource_type_management_preference]
   end
   module AWS
     include AWSBackupRegionSettings

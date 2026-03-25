@@ -12,21 +12,43 @@ module Pangea::Resources::AWS::Types
 
     attribute :description, T::String
     attribute :replication_group_id, T::String
+    attribute? :apply_immediately, T::Bool.optional
+    attribute? :at_rest_encryption_enabled, T::String.optional
     attribute? :auth_token, T::String.optional
     attribute? :auth_token_update_strategy, T::String.optional
+    attribute? :auto_minor_version_upgrade, T::String.optional
     attribute? :automatic_failover_enabled, T::Bool.optional
+    attribute? :cluster_mode, T::String.optional
+    attribute? :data_tiering_enabled, T::Bool.optional
     attribute? :engine, T::String.optional
+    attribute? :engine_version, T::String.optional
     attribute? :final_snapshot_identifier, T::String.optional
+    attribute? :global_replication_group_id, T::String.optional
+    attribute? :ip_discovery, T::String.optional
     attribute? :kms_key_id, T::String.optional
     attribute? :log_delivery_configuration, T::Array.of(T::Hash).optional
+    attribute? :maintenance_window, T::String.optional
     attribute? :multi_az_enabled, T::Bool.optional
+    attribute? :network_type, T::String.optional
+    attribute? :node_type, T::String.optional
     attribute? :notification_topic_arn, T::String.optional
+    attribute? :num_cache_clusters, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :num_node_groups, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :parameter_group_name, T::String.optional
     attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :preferred_cache_cluster_azs, T::Array.of(T::String).optional
+    attribute? :replicas_per_node_group, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :security_group_ids, T::Array.of(T::String).optional
+    attribute? :security_group_names, T::Array.of(T::String).optional
     attribute? :snapshot_arns, T::Array.of(T::String).optional
     attribute? :snapshot_name, T::String.optional
     attribute? :snapshot_retention_limit, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :snapshot_window, T::String.optional
+    attribute? :subnet_group_name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :transit_encryption_enabled, T::Bool.optional
+    attribute? :transit_encryption_mode, T::String.optional
     attribute? :user_group_ids, T::Array.of(T::String).optional
   end
 end

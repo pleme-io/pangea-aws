@@ -12,11 +12,13 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :athena_properties, T::Hash.optional
+    attribute? :catalog_id, T::String.optional
     attribute? :connection_properties, T::Hash.optional
     attribute? :connection_type, T::String.optional
     attribute? :description, T::String.optional
     attribute? :match_criteria, T::Array.of(T::String).optional
     attribute? :physical_connection_requirements, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

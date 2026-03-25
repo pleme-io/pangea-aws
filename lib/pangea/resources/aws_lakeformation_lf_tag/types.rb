@@ -12,5 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :key, T::String
     attribute :values, T::Array.of(T::String)
+    attribute? :catalog_id, T::String.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsoadminApplicationAttributes,
       outputs: { id: :id },
       map: [:application_provider_arn, :instance_arn, :name],
-      map_present: [:client_token, :description, :portal_options, :tags]
+      map_present: [:client_token, :description, :portal_options, :status, :tags]
   end
   module AWS
     include AWSSsoadminApplication

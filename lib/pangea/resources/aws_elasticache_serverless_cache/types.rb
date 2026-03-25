@@ -13,8 +13,14 @@ module Pangea::Resources::AWS::Types
     attribute :engine, T::String
     attribute :name, T::String
     attribute? :cache_usage_limits, T::Array.of(T::Hash).optional
+    attribute? :daily_snapshot_time, T::String.optional
+    attribute? :description, T::String.optional
     attribute? :kms_key_id, T::String.optional
+    attribute? :major_engine_version, T::String.optional
+    attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :snapshot_arns_to_restore, T::Array.of(T::String).optional
+    attribute? :snapshot_retention_limit, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :subnet_ids, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
     attribute? :user_group_id, T::String.optional
   end

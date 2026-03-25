@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LocationGeofenceCollectionAttributes,
       outputs: { id: :id },
       map: [:collection_name],
-      map_present: [:description, :kms_key_id, :tags]
+      map_present: [:description, :kms_key_id, :tags, :tags_all]
   end
   module AWS
     include AWSLocationGeofenceCollection

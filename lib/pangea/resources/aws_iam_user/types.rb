@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute? :path, T::String.optional
     attribute? :permissions_boundary, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

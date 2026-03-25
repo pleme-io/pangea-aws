@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :actions, T::Array.of(T::String)
     attribute :certificate_authority_arn, T::String
     attribute :principal, T::String
+    attribute? :source_account, T::String.optional
   end
 end

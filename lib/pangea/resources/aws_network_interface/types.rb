@@ -13,9 +13,24 @@ module Pangea::Resources::AWS::Types
     attribute :subnet_id, T::String
     attribute? :attachment, T::Array.of(T::Hash).optional
     attribute? :description, T::String.optional
+    attribute? :enable_primary_ipv6, T::Bool.optional
+    attribute? :interface_type, T::String.optional
+    attribute? :ipv4_prefix_count, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :ipv4_prefixes, T::Array.of(T::String).optional
+    attribute? :ipv6_address_count, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :ipv6_address_list, T::Array.of(T::String).optional
     attribute? :ipv6_address_list_enabled, T::Bool.optional
+    attribute? :ipv6_addresses, T::Array.of(T::String).optional
+    attribute? :ipv6_prefix_count, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :ipv6_prefixes, T::Array.of(T::String).optional
+    attribute? :private_ip, T::String.optional
+    attribute? :private_ip_list, T::Array.of(T::String).optional
     attribute? :private_ip_list_enabled, T::Bool.optional
+    attribute? :private_ips, T::Array.of(T::String).optional
+    attribute? :private_ips_count, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :security_groups, T::Array.of(T::String).optional
     attribute? :source_dest_check, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

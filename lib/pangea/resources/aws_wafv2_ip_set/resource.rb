@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Wafv2IpSetAttributes,
       outputs: { id: :id },
       map: [:ip_address_version, :scope],
-      map_present: [:addresses, :description, :tags]
+      map_present: [:addresses, :description, :name, :name_prefix, :tags, :tags_all]
   end
   module AWS
     include AWSWafv2IpSet

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MskServerlessClusterAttributes,
       outputs: { id: :id },
       map: [:client_authentication, :cluster_name, :vpc_config],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSMskServerlessCluster

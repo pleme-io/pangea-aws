@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerModelAttributes,
       outputs: { id: :id },
       map: [:execution_role_arn],
-      map_present: [:container, :inference_execution_config, :primary_container, :tags, :vpc_config],
+      map_present: [:container, :inference_execution_config, :name, :primary_container, :tags, :tags_all, :vpc_config],
       map_bool: [:enable_network_isolation]
   end
   module AWS

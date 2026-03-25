@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute? :on_create, T::String.optional
     attribute? :on_start, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

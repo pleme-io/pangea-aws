@@ -16,6 +16,9 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :owner_account_id, T::String
     attribute :vlan, (T::Coercible::Integer | T::Coercible::Float)
+    attribute? :amazon_address, T::String.optional
+    attribute? :bgp_auth_key, T::String.optional
+    attribute? :customer_address, T::String.optional
     attribute? :mtu, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

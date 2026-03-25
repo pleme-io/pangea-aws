@@ -14,6 +14,9 @@ module Pangea::Resources::AWS::Types
     attribute :email, T::String
     attribute? :invitation_disable_email_notification, T::Bool.optional
     attribute? :invitation_message, T::String.optional
+    attribute? :invite, T::Bool.optional
+    attribute? :status, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

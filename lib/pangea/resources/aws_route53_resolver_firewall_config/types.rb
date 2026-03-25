@@ -11,5 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :resource_id, T::String
+    attribute? :firewall_fail_open, T::String.optional
   end
 end

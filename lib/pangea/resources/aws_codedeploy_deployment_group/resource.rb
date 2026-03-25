@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodedeployDeploymentGroupAttributes,
       outputs: { id: :id },
       map: [:app_name, :deployment_group_name, :service_role_arn],
-      map_present: [:alarm_configuration, :auto_rollback_configuration, :autoscaling_groups, :blue_green_deployment_config, :deployment_config_name, :deployment_style, :ec2_tag_filter, :ec2_tag_set, :ecs_service, :load_balancer_info, :on_premises_instance_tag_filter, :outdated_instances_strategy, :tags, :trigger_configuration],
+      map_present: [:alarm_configuration, :auto_rollback_configuration, :autoscaling_groups, :blue_green_deployment_config, :deployment_config_name, :deployment_style, :ec2_tag_filter, :ec2_tag_set, :ecs_service, :load_balancer_info, :on_premises_instance_tag_filter, :outdated_instances_strategy, :tags, :tags_all, :trigger_configuration],
       map_bool: [:termination_hook_enabled]
   end
   module AWS

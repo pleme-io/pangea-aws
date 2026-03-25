@@ -17,8 +17,13 @@ module Pangea::Resources::AWS::Types
     attribute? :availability_zones, T::Array.of(T::String).optional
     attribute? :cluster_endpoint_encryption_type, T::String.optional
     attribute? :description, T::String.optional
+    attribute? :maintenance_window, T::String.optional
     attribute? :notification_topic_arn, T::String.optional
+    attribute? :parameter_group_name, T::String.optional
+    attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :server_side_encryption, T::Hash.optional
+    attribute? :subnet_group_name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -20,5 +20,6 @@ module Pangea::Resources::AWS::Types
     attribute? :s3_key, T::String.optional
     attribute? :s3_object_version, T::String.optional
     attribute? :skip_destroy, T::Bool.optional
+    attribute? :source_code_hash, T::String.optional
   end
 end

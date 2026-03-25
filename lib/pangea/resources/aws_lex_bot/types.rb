@@ -23,5 +23,6 @@ module Pangea::Resources::AWS::Types
     attribute? :locale, T::String.optional
     attribute? :nlu_intent_confidence_threshold, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :process_behavior, T::String.optional
+    attribute? :voice_id, T::String.optional
   end
 end

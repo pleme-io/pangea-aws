@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudformationStackInstancesAttributes,
       outputs: { id: :id },
       map: [:stack_set_name],
-      map_present: [:call_as, :deployment_targets, :operation_preferences, :parameter_overrides],
+      map_present: [:accounts, :call_as, :deployment_targets, :operation_preferences, :parameter_overrides, :regions],
       map_bool: [:retain_stacks]
   end
   module AWS

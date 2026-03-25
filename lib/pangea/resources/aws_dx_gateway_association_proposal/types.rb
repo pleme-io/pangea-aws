@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :associated_gateway_id, T::String
     attribute :dx_gateway_id, T::String
     attribute :dx_gateway_owner_account_id, T::String
+    attribute? :allowed_prefixes, T::Array.of(T::String).optional
   end
 end

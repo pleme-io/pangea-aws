@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EcsServiceAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:alarms, :availability_zone_rebalancing, :capacity_provider_strategy, :deployment_circuit_breaker, :deployment_controller, :deployment_maximum_percent, :deployment_minimum_healthy_percent, :desired_count, :health_check_grace_period_seconds, :load_balancer, :network_configuration, :ordered_placement_strategy, :placement_constraints, :propagate_tags, :scheduling_strategy, :service_connect_configuration, :service_registries, :tags, :task_definition, :volume_configuration, :vpc_lattice_configurations],
+      map_present: [:alarms, :availability_zone_rebalancing, :capacity_provider_strategy, :cluster, :deployment_circuit_breaker, :deployment_controller, :deployment_maximum_percent, :deployment_minimum_healthy_percent, :desired_count, :health_check_grace_period_seconds, :iam_role, :launch_type, :load_balancer, :network_configuration, :ordered_placement_strategy, :placement_constraints, :platform_version, :propagate_tags, :scheduling_strategy, :service_connect_configuration, :service_registries, :tags, :tags_all, :task_definition, :triggers, :volume_configuration, :vpc_lattice_configurations],
       map_bool: [:enable_ecs_managed_tags, :enable_execute_command, :force_delete, :force_new_deployment, :wait_for_steady_state]
   end
   module AWS

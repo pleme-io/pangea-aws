@@ -18,5 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :final_bake_time_in_minutes, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :growth_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

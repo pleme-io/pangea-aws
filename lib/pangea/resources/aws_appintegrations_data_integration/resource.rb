@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppintegrationsDataIntegrationAttributes,
       outputs: { id: :id },
       map: [:kms_key, :name, :schedule_config, :source_uri],
-      map_present: [:description, :tags]
+      map_present: [:description, :tags, :tags_all]
   end
   module AWS
     include AWSAppintegrationsDataIntegration

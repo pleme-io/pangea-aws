@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MemorydbUserAttributes,
       outputs: { id: :id },
       map: [:access_string, :authentication_mode, :user_name],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSMemorydbUser

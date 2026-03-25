@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DataexchangeDataSetAttributes,
       outputs: { id: :id },
       map: [:asset_type, :description, :name],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSDataexchangeDataSet

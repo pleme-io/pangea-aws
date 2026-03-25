@@ -10,10 +10,16 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :availability_zone_name, T::String.optional
+    attribute? :creation_token, T::String.optional
+    attribute? :encrypted, T::Bool.optional
+    attribute? :kms_key_id, T::String.optional
     attribute? :lifecycle_policy, T::Array.of(T::Hash).optional
+    attribute? :performance_mode, T::String.optional
     attribute? :protection, T::Hash.optional
     attribute? :provisioned_throughput_in_mibps, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :throughput_mode, T::String.optional
   end
 end

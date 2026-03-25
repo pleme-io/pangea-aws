@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute? :kms_key_arn, T::String.optional
     attribute? :logging_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

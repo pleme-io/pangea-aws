@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :container_provider, T::Hash
     attribute :name, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

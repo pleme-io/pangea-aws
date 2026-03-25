@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EcrRepositoryAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:encryption_configuration, :image_scanning_configuration, :image_tag_mutability, :tags],
+      map_present: [:encryption_configuration, :image_scanning_configuration, :image_tag_mutability, :tags, :tags_all],
       map_bool: [:force_delete]
   end
   module AWS

@@ -14,6 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :local_domain_info, T::Hash
     attribute :remote_domain_info, T::Hash
     attribute? :accept_connection, T::Bool.optional
+    attribute? :connection_mode, T::String.optional
     attribute? :connection_properties, T::Hash.optional
   end
 end

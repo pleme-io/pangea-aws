@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SchemasRegistryAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:description, :tags]
+      map_present: [:description, :tags, :tags_all]
   end
   module AWS
     include AWSSchemasRegistry

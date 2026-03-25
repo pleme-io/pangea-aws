@@ -13,6 +13,14 @@ module Pangea::Resources::AWS::Types
     attribute? :address, T::String.optional
     attribute? :associate_with_private_ip, T::String.optional
     attribute? :customer_owned_ipv4_pool, T::String.optional
+    attribute? :domain, T::String.optional
+    attribute? :instance, T::String.optional
+    attribute? :ipam_pool_id, T::String.optional
+    attribute? :network_border_group, T::String.optional
+    attribute? :network_interface, T::String.optional
+    attribute? :public_ipv4_pool, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :vpc, T::Bool.optional
   end
 end

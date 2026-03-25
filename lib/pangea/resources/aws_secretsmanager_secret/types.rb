@@ -13,8 +13,12 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :force_overwrite_replica_secret, T::Bool.optional
     attribute? :kms_key_id, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
+    attribute? :policy, (T::String | T::Hash).optional
     attribute? :recovery_window_in_days, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :replica, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BackupFrameworkAttributes,
       outputs: { id: :id },
       map: [:control, :name],
-      map_present: [:description, :tags]
+      map_present: [:description, :tags, :tags_all]
   end
   module AWS
     include AWSBackupFramework

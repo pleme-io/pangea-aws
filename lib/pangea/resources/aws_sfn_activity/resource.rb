@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SfnActivityAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:encryption_configuration, :tags]
+      map_present: [:encryption_configuration, :tags, :tags_all]
   end
   module AWS
     include AWSSfnActivity

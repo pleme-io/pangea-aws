@@ -11,8 +11,10 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :verifiedaccess_instance_id, T::String
+    attribute? :description, T::String.optional
     attribute? :policy_document, (T::String | T::Hash).optional
     attribute? :sse_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

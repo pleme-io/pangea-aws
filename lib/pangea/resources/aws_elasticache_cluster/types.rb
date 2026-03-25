@@ -11,15 +11,34 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :cluster_id, T::String
+    attribute? :apply_immediately, T::Bool.optional
     attribute? :auto_minor_version_upgrade, T::String.optional
+    attribute? :availability_zone, T::String.optional
+    attribute? :az_mode, T::String.optional
+    attribute? :engine, T::String.optional
+    attribute? :engine_version, T::String.optional
     attribute? :final_snapshot_identifier, T::String.optional
+    attribute? :ip_discovery, T::String.optional
     attribute? :log_delivery_configuration, T::Array.of(T::Hash).optional
+    attribute? :maintenance_window, T::String.optional
+    attribute? :network_type, T::String.optional
+    attribute? :node_type, T::String.optional
     attribute? :notification_topic_arn, T::String.optional
+    attribute? :num_cache_nodes, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :outpost_mode, T::String.optional
+    attribute? :parameter_group_name, T::String.optional
+    attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :preferred_availability_zones, T::Array.of(T::String).optional
+    attribute? :preferred_outpost_arn, T::String.optional
+    attribute? :replication_group_id, T::String.optional
+    attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :snapshot_arns, T::Array.of(T::String).optional
     attribute? :snapshot_name, T::String.optional
     attribute? :snapshot_retention_limit, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :snapshot_window, T::String.optional
+    attribute? :subnet_group_name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :transit_encryption_enabled, T::Bool.optional
   end
 end

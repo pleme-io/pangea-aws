@@ -14,6 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :type, T::String
     attribute :zone_id, T::String
     attribute? :alias, T::Hash.optional
+    attribute? :allow_overwrite, T::Bool.optional
     attribute? :cidr_routing_policy, T::Hash.optional
     attribute? :failover_routing_policy, T::Hash.optional
     attribute? :geolocation_routing_policy, T::Hash.optional

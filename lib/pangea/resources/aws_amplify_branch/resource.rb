@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AmplifyBranchAttributes,
       outputs: { id: :id },
       map: [:app_id, :branch_name],
-      map_present: [:backend_environment_arn, :basic_auth_credentials, :description, :environment_variables, :framework, :pull_request_environment_name, :stage, :tags, :ttl],
+      map_present: [:backend_environment_arn, :basic_auth_credentials, :description, :display_name, :environment_variables, :framework, :pull_request_environment_name, :stage, :tags, :tags_all, :ttl],
       map_bool: [:enable_auto_build, :enable_basic_auth, :enable_notification, :enable_performance_mode, :enable_pull_request_preview]
   end
   module AWS

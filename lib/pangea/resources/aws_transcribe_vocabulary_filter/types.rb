@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :language_code, T::String
     attribute :vocabulary_filter_name, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vocabulary_filter_file_uri, T::String.optional
     attribute? :words, T::Array.of(T::String).optional
   end

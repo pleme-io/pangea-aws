@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_iam_group_policy,
       attributes_class: AWS::Types::IamGroupPolicyAttributes,
       outputs: { id: :id },
-      map: [:group, :policy]
+      map: [:group, :policy],
+      map_present: [:name, :name_prefix]
   end
   module AWS
     include AWSIamGroupPolicy

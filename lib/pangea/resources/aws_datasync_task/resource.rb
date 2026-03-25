@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatasyncTaskAttributes,
       outputs: { id: :id },
       map: [:destination_location_arn, :source_location_arn],
-      map_present: [:cloudwatch_log_group_arn, :excludes, :includes, :name, :options, :schedule, :tags, :task_report_config]
+      map_present: [:cloudwatch_log_group_arn, :excludes, :includes, :name, :options, :schedule, :tags, :tags_all, :task_mode, :task_report_config]
   end
   module AWS
     include AWSDatasyncTask

@@ -11,11 +11,25 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :engine, T::String
+    attribute? :allocated_storage, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :allow_major_version_upgrade, T::Bool.optional
+    attribute? :apply_immediately, T::Bool.optional
+    attribute? :availability_zones, T::Array.of(T::String).optional
     attribute? :backtrack_window, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :backup_retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :ca_certificate_identifier, T::String.optional
+    attribute? :cluster_identifier, T::String.optional
+    attribute? :cluster_identifier_prefix, T::String.optional
+    attribute? :cluster_members, T::Array.of(T::String).optional
+    attribute? :cluster_scalability_type, T::String.optional
     attribute? :copy_tags_to_snapshot, T::Bool.optional
+    attribute? :database_insights_mode, T::String.optional
+    attribute? :database_name, T::String.optional
     attribute? :db_cluster_instance_class, T::String.optional
+    attribute? :db_cluster_parameter_group_name, T::String.optional
     attribute? :db_instance_parameter_group_name, T::String.optional
+    attribute? :db_subnet_group_name, T::String.optional
+    attribute? :db_system_id, T::String.optional
     attribute? :delete_automated_backups, T::Bool.optional
     attribute? :deletion_protection, T::Bool.optional
     attribute? :domain, T::String.optional
@@ -24,16 +38,30 @@ module Pangea::Resources::AWS::Types
     attribute? :enable_http_endpoint, T::Bool.optional
     attribute? :enable_local_write_forwarding, T::Bool.optional
     attribute? :enabled_cloudwatch_logs_exports, T::Array.of(T::String).optional
+    attribute? :engine_lifecycle_support, T::String.optional
     attribute? :engine_mode, T::String.optional
+    attribute? :engine_version, T::String.optional
     attribute? :final_snapshot_identifier, T::String.optional
     attribute? :global_cluster_identifier, T::String.optional
     attribute? :iam_database_authentication_enabled, T::Bool.optional
+    attribute? :iam_roles, T::Array.of(T::String).optional
     attribute? :iops, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :kms_key_id, T::String.optional
     attribute? :manage_master_user_password, T::Bool.optional
     attribute? :master_password, T::String.optional
     attribute? :master_password_wo, T::String.optional
     attribute? :master_password_wo_version, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :master_user_secret_kms_key_id, T::String.optional
+    attribute? :master_username, T::String.optional
+    attribute? :monitoring_interval, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :monitoring_role_arn, T::String.optional
+    attribute? :network_type, T::String.optional
     attribute? :performance_insights_enabled, T::Bool.optional
+    attribute? :performance_insights_kms_key_id, T::String.optional
+    attribute? :performance_insights_retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :preferred_backup_window, T::String.optional
+    attribute? :preferred_maintenance_window, T::String.optional
     attribute? :replication_source_identifier, T::String.optional
     attribute? :restore_to_point_in_time, T::Hash.optional
     attribute? :s3_import, T::Hash.optional
@@ -42,6 +70,10 @@ module Pangea::Resources::AWS::Types
     attribute? :skip_final_snapshot, T::Bool.optional
     attribute? :snapshot_identifier, T::String.optional
     attribute? :source_region, T::String.optional
+    attribute? :storage_encrypted, T::Bool.optional
+    attribute? :storage_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :vpc_security_group_ids, T::Array.of(T::String).optional
   end
 end

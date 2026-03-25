@@ -17,6 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute? :delivery_policy, (T::String | T::Hash).optional
     attribute? :endpoint_auto_confirms, T::Bool.optional
     attribute? :filter_policy, (T::String | T::Hash).optional
+    attribute? :filter_policy_scope, T::String.optional
     attribute? :raw_message_delivery, T::Bool.optional
     attribute? :redrive_policy, (T::String | T::Hash).optional
     attribute? :replay_policy, (T::String | T::Hash).optional

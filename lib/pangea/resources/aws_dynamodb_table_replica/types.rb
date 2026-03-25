@@ -11,8 +11,11 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :global_table_arn, T::String
+    attribute? :deletion_protection_enabled, T::Bool.optional
+    attribute? :kms_key_arn, T::String.optional
     attribute? :point_in_time_recovery, T::Bool.optional
     attribute? :table_class_override, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

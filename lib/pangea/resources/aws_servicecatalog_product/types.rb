@@ -15,6 +15,12 @@ module Pangea::Resources::AWS::Types
     attribute :provisioning_artifact_parameters, T::Hash
     attribute :type, T::String
     attribute? :accept_language, T::String.optional
+    attribute? :description, T::String.optional
+    attribute? :distributor, T::String.optional
+    attribute? :support_description, T::String.optional
+    attribute? :support_email, T::String.optional
+    attribute? :support_url, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

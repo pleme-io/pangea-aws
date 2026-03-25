@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Wafv2RuleGroupAttributes,
       outputs: { id: :id },
       map: [:capacity, :scope, :visibility_config],
-      map_present: [:custom_response_body, :description, :rule, :tags]
+      map_present: [:custom_response_body, :description, :name, :name_prefix, :rule, :tags, :tags_all]
   end
   module AWS
     include AWSWafv2RuleGroup

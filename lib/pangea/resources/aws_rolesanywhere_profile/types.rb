@@ -11,11 +11,13 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
+    attribute? :duration_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :enabled, T::Bool.optional
     attribute? :managed_policy_arns, T::Array.of(T::String).optional
     attribute? :require_instance_properties, T::Bool.optional
     attribute? :role_arns, T::Array.of(T::String).optional
     attribute? :session_policy, (T::String | T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

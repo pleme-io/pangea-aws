@@ -15,6 +15,8 @@ module Pangea::Resources::AWS::Types
     attribute :schema_definition, (T::String | T::Hash)
     attribute :schema_name, T::String
     attribute? :description, T::String.optional
+    attribute? :registry_arn, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

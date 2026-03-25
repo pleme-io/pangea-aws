@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OrganizationsPolicyAttributes,
       outputs: { id: :id },
       map: [:content, :name],
-      map_present: [:description, :tags, :type],
+      map_present: [:description, :tags, :tags_all, :type],
       map_bool: [:skip_destroy]
   end
   module AWS

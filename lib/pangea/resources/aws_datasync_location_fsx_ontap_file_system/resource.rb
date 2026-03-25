@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatasyncLocationFsxOntapFileSystemAttributes,
       outputs: { id: :id },
       map: [:protocol, :security_group_arns, :storage_virtual_machine_arn],
-      map_present: [:tags]
+      map_present: [:subdirectory, :tags, :tags_all]
   end
   module AWS
     include AWSDatasyncLocationFsxOntapFileSystem

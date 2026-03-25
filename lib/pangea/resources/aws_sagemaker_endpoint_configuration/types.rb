@@ -14,7 +14,10 @@ module Pangea::Resources::AWS::Types
     attribute? :async_inference_config, T::Hash.optional
     attribute? :data_capture_config, T::Hash.optional
     attribute? :kms_key_arn, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :shadow_production_variants, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

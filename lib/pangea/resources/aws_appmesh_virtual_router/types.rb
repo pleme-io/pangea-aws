@@ -13,6 +13,8 @@ module Pangea::Resources::AWS::Types
     attribute :mesh_name, T::String
     attribute :name, T::String
     attribute :spec, T::Hash
+    attribute? :mesh_owner, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

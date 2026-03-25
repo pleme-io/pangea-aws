@@ -11,5 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :target_key_id, T::String
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
   end
 end

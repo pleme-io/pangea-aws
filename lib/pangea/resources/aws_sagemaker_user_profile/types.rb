@@ -15,6 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute? :single_sign_on_user_identifier, T::String.optional
     attribute? :single_sign_on_user_value, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :user_settings, T::Hash.optional
   end
 end

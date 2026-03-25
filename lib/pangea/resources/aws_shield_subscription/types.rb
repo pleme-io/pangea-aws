@@ -10,6 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :auto_renew, T::String.optional
     attribute? :skip_destroy, T::Bool.optional
   end
 end

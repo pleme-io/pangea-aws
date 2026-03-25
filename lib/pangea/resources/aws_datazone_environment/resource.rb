@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatazoneEnvironmentAttributes,
       outputs: { id: :id },
       map: [:domain_identifier, :name, :profile_identifier, :project_identifier],
-      map_present: [:description, :glossary_terms, :user_parameters]
+      map_present: [:account_identifier, :account_region, :blueprint_identifier, :description, :glossary_terms, :user_parameters]
   end
   module AWS
     include AWSDatazoneEnvironment

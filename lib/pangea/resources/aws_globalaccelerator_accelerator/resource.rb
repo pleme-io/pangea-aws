@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlobalacceleratorAcceleratorAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:attributes, :ip_address_type, :ip_addresses, :tags],
+      map_present: [:attributes, :ip_address_type, :ip_addresses, :tags, :tags_all],
       map_bool: [:enabled]
   end
   module AWS

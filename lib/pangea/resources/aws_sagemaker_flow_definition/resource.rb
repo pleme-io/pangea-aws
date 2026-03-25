@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerFlowDefinitionAttributes,
       outputs: { id: :id },
       map: [:flow_definition_name, :human_loop_config, :output_config, :role_arn],
-      map_present: [:human_loop_activation_config, :human_loop_request_source, :tags]
+      map_present: [:human_loop_activation_config, :human_loop_request_source, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerFlowDefinition

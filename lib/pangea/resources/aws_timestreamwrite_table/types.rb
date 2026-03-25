@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute? :retention_properties, T::Hash.optional
     attribute? :schema, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

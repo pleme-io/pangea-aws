@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OrganizationsResourcePolicyAttributes,
       outputs: { id: :id },
       map: [:content],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSOrganizationsResourcePolicy

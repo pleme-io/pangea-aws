@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsmParameterAttributes,
       outputs: { id: :id },
       map: [:name, :type],
-      map_present: [:allowed_pattern, :description, :tags, :value_wo, :value_wo_version],
+      map_present: [:allowed_pattern, :arn, :data_type, :description, :insecure_value, :key_id, :tags, :tags_all, :tier, :value, :value_wo, :value_wo_version],
       map_bool: [:overwrite]
   end
   module AWS

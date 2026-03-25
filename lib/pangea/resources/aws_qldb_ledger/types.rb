@@ -12,6 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :permissions_mode, T::String
     attribute? :deletion_protection, T::Bool.optional
+    attribute? :kms_key, T::String.optional
+    attribute? :name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

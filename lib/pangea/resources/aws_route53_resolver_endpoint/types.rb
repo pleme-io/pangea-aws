@@ -14,6 +14,9 @@ module Pangea::Resources::AWS::Types
     attribute :ip_address, T::Array.of(T::Hash)
     attribute :security_group_ids, T::Array.of(T::String)
     attribute? :name, T::String.optional
+    attribute? :protocols, T::Array.of(T::String).optional
+    attribute? :resolver_endpoint_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_kms_alias,
       attributes_class: AWS::Types::KmsAliasAttributes,
       outputs: { id: :id },
-      map: [:target_key_id]
+      map: [:target_key_id],
+      map_present: [:name, :name_prefix]
   end
   module AWS
     include AWSKmsAlias

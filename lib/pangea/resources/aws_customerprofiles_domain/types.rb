@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute? :matching, T::Hash.optional
     attribute? :rule_based_matching, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

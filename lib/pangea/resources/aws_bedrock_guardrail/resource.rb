@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BedrockGuardrailAttributes,
       outputs: { id: :id },
       map: [:blocked_input_messaging, :blocked_outputs_messaging, :name],
-      map_present: [:content_policy_config, :contextual_grounding_policy_config, :kms_key_arn, :sensitive_information_policy_config, :tags, :topic_policy_config, :word_policy_config]
+      map_present: [:content_policy_config, :contextual_grounding_policy_config, :description, :kms_key_arn, :sensitive_information_policy_config, :tags, :topic_policy_config, :word_policy_config]
   end
   module AWS
     include AWSBedrockGuardrail

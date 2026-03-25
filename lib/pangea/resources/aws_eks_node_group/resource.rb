@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EksNodeGroupAttributes,
       outputs: { id: :id },
       map: [:cluster_name, :node_role_arn, :scaling_config, :subnet_ids],
-      map_present: [:labels, :launch_template, :node_repair_config, :remote_access, :tags, :taint, :update_config],
+      map_present: [:ami_type, :capacity_type, :disk_size, :instance_types, :labels, :launch_template, :node_group_name, :node_group_name_prefix, :node_repair_config, :release_version, :remote_access, :tags, :tags_all, :taint, :update_config, :version],
       map_bool: [:force_update_version]
   end
   module AWS

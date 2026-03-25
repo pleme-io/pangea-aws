@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_glue_workflow,
       attributes_class: AWS::Types::GlueWorkflowAttributes,
       outputs: { id: :id },
-      map_present: [:default_run_properties, :description, :max_concurrent_runs, :name, :tags]
+      map_present: [:default_run_properties, :description, :max_concurrent_runs, :name, :tags, :tags_all]
   end
   module AWS
     include AWSGlueWorkflow

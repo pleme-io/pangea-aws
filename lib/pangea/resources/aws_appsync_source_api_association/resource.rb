@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_appsync_source_api_association,
       attributes_class: AWS::Types::AppsyncSourceApiAssociationAttributes,
       outputs: { id: :id },
-      map_present: [:description]
+      map_present: [:description, :merged_api_arn, :merged_api_id, :source_api_arn, :source_api_association_config, :source_api_id]
   end
   module AWS
     include AWSAppsyncSourceApiAssociation

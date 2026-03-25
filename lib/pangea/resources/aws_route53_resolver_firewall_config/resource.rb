@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_route53_resolver_firewall_config,
       attributes_class: AWS::Types::Route53ResolverFirewallConfigAttributes,
       outputs: { id: :id },
-      map: [:resource_id]
+      map: [:resource_id],
+      map_present: [:firewall_fail_open]
   end
   module AWS
     include AWSRoute53ResolverFirewallConfig

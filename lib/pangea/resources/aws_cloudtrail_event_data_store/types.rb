@@ -19,6 +19,7 @@ module Pangea::Resources::AWS::Types
     attribute? :retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :suspend, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :termination_protection_enabled, T::Bool.optional
   end
 end

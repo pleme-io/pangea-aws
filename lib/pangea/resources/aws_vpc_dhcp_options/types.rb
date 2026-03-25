@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute? :netbios_node_type, T::String.optional
     attribute? :ntp_servers, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

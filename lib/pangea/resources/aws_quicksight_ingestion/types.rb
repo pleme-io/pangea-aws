@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :data_set_id, T::String
     attribute :ingestion_id, T::String
     attribute :ingestion_type, T::String
+    attribute? :aws_account_id, T::String.optional
   end
 end

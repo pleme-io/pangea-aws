@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_sagemaker_notebook_instance_lifecycle_configuration,
       attributes_class: AWS::Types::SagemakerNotebookInstanceLifecycleConfigurationAttributes,
       outputs: { id: :id },
-      map_present: [:name, :on_create, :on_start, :tags]
+      map_present: [:name, :on_create, :on_start, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerNotebookInstanceLifecycleConfiguration

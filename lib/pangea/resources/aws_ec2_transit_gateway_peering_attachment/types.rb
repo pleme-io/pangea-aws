@@ -14,6 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute :peer_transit_gateway_id, T::String
     attribute :transit_gateway_id, T::String
     attribute? :options, T::Hash.optional
+    attribute? :peer_account_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

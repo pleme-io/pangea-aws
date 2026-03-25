@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatasyncLocationFsxLustreFileSystemAttributes,
       outputs: { id: :id },
       map: [:fsx_filesystem_arn, :security_group_arns],
-      map_present: [:tags]
+      map_present: [:subdirectory, :tags, :tags_all]
   end
   module AWS
     include AWSDatasyncLocationFsxLustreFileSystem

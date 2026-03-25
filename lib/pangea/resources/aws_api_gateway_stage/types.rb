@@ -21,6 +21,7 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :documentation_version, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :variables, T::Hash.optional
     attribute? :xray_tracing_enabled, T::Bool.optional
   end

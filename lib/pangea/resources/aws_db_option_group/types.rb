@@ -12,9 +12,12 @@ module Pangea::Resources::AWS::Types
 
     attribute :engine_name, T::String
     attribute :major_engine_version, T::String
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :option, T::Array.of(T::Hash).optional
     attribute? :option_group_description, T::String.optional
     attribute? :skip_destroy, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

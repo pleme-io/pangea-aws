@@ -13,6 +13,7 @@ module Pangea::Resources
     define_resource :aws_securityhub_account,
       attributes_class: AWS::Types::SecurityhubAccountAttributes,
       outputs: { id: :id },
+      map_present: [:control_finding_generator],
       map_bool: [:auto_enable_controls, :enable_default_standards]
   end
   module AWS

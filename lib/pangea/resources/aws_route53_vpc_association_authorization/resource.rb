@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_route53_vpc_association_authorization,
       attributes_class: AWS::Types::Route53VpcAssociationAuthorizationAttributes,
       outputs: { id: :id },
-      map: [:vpc_id, :zone_id]
+      map: [:vpc_id, :zone_id],
+      map_present: [:vpc_region]
   end
   module AWS
     include AWSRoute53VpcAssociationAuthorization

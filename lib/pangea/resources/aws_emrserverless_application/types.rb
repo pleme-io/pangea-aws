@@ -22,5 +22,6 @@ module Pangea::Resources::AWS::Types
     attribute? :maximum_capacity, T::Hash.optional
     attribute? :network_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

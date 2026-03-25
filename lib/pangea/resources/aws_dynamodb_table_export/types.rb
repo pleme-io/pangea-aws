@@ -13,7 +13,12 @@ module Pangea::Resources::AWS::Types
     attribute :s3_bucket, T::String
     attribute :table_arn, T::String
     attribute? :export_format, T::String.optional
+    attribute? :export_time, T::String.optional
+    attribute? :export_type, T::String.optional
     attribute? :incremental_export_specification, T::Hash.optional
+    attribute? :s3_bucket_owner, T::String.optional
+    attribute? :s3_prefix, T::String.optional
+    attribute? :s3_sse_algorithm, T::String.optional
     attribute? :s3_sse_kms_key_id, T::String.optional
   end
 end

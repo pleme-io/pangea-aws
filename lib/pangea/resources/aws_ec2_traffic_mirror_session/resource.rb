@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2TrafficMirrorSessionAttributes,
       outputs: { id: :id },
       map: [:network_interface_id, :session_number, :traffic_mirror_filter_id, :traffic_mirror_target_id],
-      map_present: [:description, :tags]
+      map_present: [:description, :packet_length, :tags, :tags_all, :virtual_network_id]
   end
   module AWS
     include AWSEc2TrafficMirrorSession

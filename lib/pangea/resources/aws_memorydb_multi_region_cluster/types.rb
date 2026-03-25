@@ -13,7 +13,12 @@ module Pangea::Resources::AWS::Types
     attribute :multi_region_cluster_name_suffix, T::String
     attribute :node_type, T::String
     attribute? :description, T::String.optional
+    attribute? :engine, T::String.optional
+    attribute? :engine_version, T::String.optional
+    attribute? :multi_region_parameter_group_name, T::String.optional
+    attribute? :num_shards, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tls_enabled, T::Bool.optional
     attribute? :update_strategy, T::String.optional
   end
 end

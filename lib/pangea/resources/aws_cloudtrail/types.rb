@@ -26,5 +26,6 @@ module Pangea::Resources::AWS::Types
     attribute? :s3_key_prefix, T::String.optional
     attribute? :sns_topic_name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

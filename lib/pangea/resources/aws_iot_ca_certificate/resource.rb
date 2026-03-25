@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IotCaCertificateAttributes,
       outputs: { id: :id },
       map: [:ca_certificate_pem],
-      map_present: [:certificate_mode, :registration_config, :tags, :verification_certificate_pem],
+      map_present: [:certificate_mode, :registration_config, :tags, :tags_all, :verification_certificate_pem],
       map_bool: [:active, :allow_auto_registration]
   end
   module AWS

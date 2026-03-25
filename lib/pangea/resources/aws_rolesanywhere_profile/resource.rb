@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RolesanywhereProfileAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:managed_policy_arns, :role_arns, :session_policy, :tags],
+      map_present: [:duration_seconds, :managed_policy_arns, :role_arns, :session_policy, :tags, :tags_all],
       map_bool: [:enabled, :require_instance_properties]
   end
   module AWS

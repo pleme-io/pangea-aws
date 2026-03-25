@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_iam_user_ssh_key,
       attributes_class: AWS::Types::IamUserSshKeyAttributes,
       outputs: { id: :id },
-      map: [:encoding, :public_key, :username]
+      map: [:encoding, :public_key, :username],
+      map_present: [:status]
   end
   module AWS
     include AWSIamUserSshKey

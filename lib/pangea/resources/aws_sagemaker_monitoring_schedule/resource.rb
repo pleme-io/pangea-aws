@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerMonitoringScheduleAttributes,
       outputs: { id: :id },
       map: [:monitoring_schedule_config],
-      map_present: [:tags]
+      map_present: [:name, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerMonitoringSchedule

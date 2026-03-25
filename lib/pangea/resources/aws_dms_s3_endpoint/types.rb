@@ -23,6 +23,7 @@ module Pangea::Resources::AWS::Types
     attribute? :cdc_max_batch_interval, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :cdc_min_file_size, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :cdc_path, T::String.optional
+    attribute? :certificate_arn, T::String.optional
     attribute? :compression_type, T::String.optional
     attribute? :csv_delimiter, T::String.optional
     attribute? :csv_no_sup_value, T::String.optional
@@ -44,6 +45,7 @@ module Pangea::Resources::AWS::Types
     attribute? :glue_catalog_generation, T::Bool.optional
     attribute? :ignore_header_rows, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :include_op_for_full_load, T::Bool.optional
+    attribute? :kms_key_arn, T::String.optional
     attribute? :max_file_size, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :parquet_timestamp_in_millisecond, T::Bool.optional
     attribute? :parquet_version, T::String.optional
@@ -51,7 +53,9 @@ module Pangea::Resources::AWS::Types
     attribute? :rfc_4180, T::Bool.optional
     attribute? :row_group_length, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :server_side_encryption_kms_key_id, T::String.optional
+    attribute? :ssl_mode, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :timestamp_column_name, T::String.optional
     attribute? :use_csv_no_sup_value, T::Bool.optional
     attribute? :use_task_start_time_for_full_load_timestamp, T::Bool.optional

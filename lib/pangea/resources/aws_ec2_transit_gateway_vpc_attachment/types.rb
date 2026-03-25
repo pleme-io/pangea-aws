@@ -16,6 +16,10 @@ module Pangea::Resources::AWS::Types
     attribute? :appliance_mode_support, T::String.optional
     attribute? :dns_support, T::String.optional
     attribute? :ipv6_support, T::String.optional
+    attribute? :security_group_referencing_support, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :transit_gateway_default_route_table_association, T::Bool.optional
+    attribute? :transit_gateway_default_route_table_propagation, T::Bool.optional
   end
 end

@@ -12,6 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :addon_name, T::String
     attribute :cluster_name, T::String
+    attribute? :addon_version, T::String.optional
+    attribute? :configuration_values, T::String.optional
     attribute? :pod_identity_association, T::Array.of(T::Hash).optional
     attribute? :preserve, T::Bool.optional
     attribute? :resolve_conflicts, T::String.optional
@@ -19,5 +21,6 @@ module Pangea::Resources::AWS::Types
     attribute? :resolve_conflicts_on_update, T::String.optional
     attribute? :service_account_role_arn, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

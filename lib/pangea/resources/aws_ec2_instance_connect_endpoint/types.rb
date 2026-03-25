@@ -11,6 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :subnet_id, T::String
+    attribute? :preserve_client_ip, T::Bool.optional
+    attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
   end
 end

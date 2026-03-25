@@ -24,7 +24,9 @@ module Pangea::Resources::AWS::Types
     attribute? :remote_network_config, T::Hash.optional
     attribute? :storage_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :upgrade_policy, T::Hash.optional
+    attribute? :version, T::String.optional
     attribute? :zonal_shift_config, T::Hash.optional
   end
 end

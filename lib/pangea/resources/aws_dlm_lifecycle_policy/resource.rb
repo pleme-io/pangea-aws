@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DlmLifecyclePolicyAttributes,
       outputs: { id: :id },
       map: [:description, :execution_role_arn, :policy_details],
-      map_present: [:state, :tags]
+      map_present: [:state, :tags, :tags_all]
   end
   module AWS
     include AWSDlmLifecyclePolicy

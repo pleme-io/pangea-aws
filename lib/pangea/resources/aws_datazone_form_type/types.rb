@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute :owning_project_identifier, T::String
     attribute? :description, T::String.optional
     attribute? :model, T::Array.of(T::Hash).optional
+    attribute? :status, T::String.optional
   end
 end

@@ -23,6 +23,7 @@ module Pangea::Resources::AWS::Types
     attribute? :sns_topic_arn, T::String.optional
     attribute? :subnet_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :terminate_instance_on_failure, T::Bool.optional
   end
 end

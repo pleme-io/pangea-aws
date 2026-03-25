@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElasticacheGlobalReplicationGroupAttributes,
       outputs: { id: :id },
       map: [:global_replication_group_id_suffix, :primary_replication_group_id],
-      map_present: [:global_replication_group_description, :parameter_group_name]
+      map_present: [:cache_node_type, :engine_version, :global_replication_group_description, :num_node_groups, :parameter_group_name],
+      map_bool: [:automatic_failover_enabled]
   end
   module AWS
     include AWSElasticacheGlobalReplicationGroup

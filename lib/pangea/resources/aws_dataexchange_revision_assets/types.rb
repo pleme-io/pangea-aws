@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :data_set_id, T::String
     attribute? :asset, T::Array.of(T::Hash).optional
     attribute? :comment, T::String.optional
+    attribute? :finalized, T::Bool.optional
     attribute? :force_destroy, T::Bool.optional
     attribute? :tags, T::Hash.optional
   end

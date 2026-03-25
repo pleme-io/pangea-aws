@@ -11,6 +11,10 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :vpc_id, T::String
+    attribute? :egress, T::Array.of(T::Hash).optional
+    attribute? :ingress, T::Array.of(T::Hash).optional
+    attribute? :subnet_ids, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ChimesdkmediapipelinesMediaInsightsPipelineConfigurationAttributes,
       outputs: { id: :id },
       map: [:elements, :name, :resource_access_role_arn],
-      map_present: [:real_time_alert_configuration, :tags]
+      map_present: [:real_time_alert_configuration, :tags, :tags_all]
   end
   module AWS
     include AWSChimesdkmediapipelinesMediaInsightsPipelineConfiguration

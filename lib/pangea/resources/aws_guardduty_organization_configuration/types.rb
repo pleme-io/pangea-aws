@@ -11,6 +11,8 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :detector_id, T::String
+    attribute? :auto_enable, T::Bool.optional
+    attribute? :auto_enable_organization_members, T::String.optional
     attribute? :datasources, T::Hash.optional
   end
 end

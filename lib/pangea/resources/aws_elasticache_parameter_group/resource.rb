@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElasticacheParameterGroupAttributes,
       outputs: { id: :id },
       map: [:family, :name],
-      map_present: [:description, :parameter, :tags]
+      map_present: [:description, :parameter, :tags, :tags_all]
   end
   module AWS
     include AWSElasticacheParameterGroup

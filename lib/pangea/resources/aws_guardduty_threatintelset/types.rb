@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute :location, T::String
     attribute :name, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

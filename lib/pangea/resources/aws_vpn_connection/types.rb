@@ -12,13 +12,24 @@ module Pangea::Resources::AWS::Types
 
     attribute :customer_gateway_id, T::String
     attribute :type, T::String
+    attribute? :enable_acceleration, T::Bool.optional
+    attribute? :local_ipv4_network_cidr, T::String.optional
+    attribute? :local_ipv6_network_cidr, T::String.optional
+    attribute? :outside_ip_address_type, T::String.optional
+    attribute? :preshared_key_storage, T::String.optional
+    attribute? :remote_ipv4_network_cidr, T::String.optional
+    attribute? :remote_ipv6_network_cidr, T::String.optional
+    attribute? :static_routes_only, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :transit_gateway_id, T::String.optional
     attribute? :transport_transit_gateway_attachment_id, T::String.optional
     attribute? :tunnel1_dpd_timeout_action, T::String.optional
     attribute? :tunnel1_dpd_timeout_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tunnel1_enable_tunnel_lifecycle_control, T::Bool.optional
     attribute? :tunnel1_ike_versions, T::Array.of(T::String).optional
+    attribute? :tunnel1_inside_cidr, T::String.optional
+    attribute? :tunnel1_inside_ipv6_cidr, T::String.optional
     attribute? :tunnel1_log_options, T::Hash.optional
     attribute? :tunnel1_phase1_dh_group_numbers, T::Array.of((T::Coercible::Integer | T::Coercible::Float)).optional
     attribute? :tunnel1_phase1_encryption_algorithms, T::Array.of(T::String).optional
@@ -28,6 +39,7 @@ module Pangea::Resources::AWS::Types
     attribute? :tunnel1_phase2_encryption_algorithms, T::Array.of(T::String).optional
     attribute? :tunnel1_phase2_integrity_algorithms, T::Array.of(T::String).optional
     attribute? :tunnel1_phase2_lifetime_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :tunnel1_preshared_key, T::String.optional
     attribute? :tunnel1_rekey_fuzz_percentage, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tunnel1_rekey_margin_time_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tunnel1_replay_window_size, (T::Coercible::Integer | T::Coercible::Float).optional
@@ -36,6 +48,8 @@ module Pangea::Resources::AWS::Types
     attribute? :tunnel2_dpd_timeout_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tunnel2_enable_tunnel_lifecycle_control, T::Bool.optional
     attribute? :tunnel2_ike_versions, T::Array.of(T::String).optional
+    attribute? :tunnel2_inside_cidr, T::String.optional
+    attribute? :tunnel2_inside_ipv6_cidr, T::String.optional
     attribute? :tunnel2_log_options, T::Hash.optional
     attribute? :tunnel2_phase1_dh_group_numbers, T::Array.of((T::Coercible::Integer | T::Coercible::Float)).optional
     attribute? :tunnel2_phase1_encryption_algorithms, T::Array.of(T::String).optional
@@ -45,10 +59,12 @@ module Pangea::Resources::AWS::Types
     attribute? :tunnel2_phase2_encryption_algorithms, T::Array.of(T::String).optional
     attribute? :tunnel2_phase2_integrity_algorithms, T::Array.of(T::String).optional
     attribute? :tunnel2_phase2_lifetime_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :tunnel2_preshared_key, T::String.optional
     attribute? :tunnel2_rekey_fuzz_percentage, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tunnel2_rekey_margin_time_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tunnel2_replay_window_size, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tunnel2_startup_action, T::String.optional
+    attribute? :tunnel_inside_ip_version, T::String.optional
     attribute? :vpn_gateway_id, T::String.optional
   end
 end

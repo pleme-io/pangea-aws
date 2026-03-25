@@ -10,6 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :access_type, T::String.optional
     attribute? :source, T::Array.of(T::Hash).optional
     attribute? :subscriber_description, T::String.optional
     attribute? :subscriber_identity, T::Array.of(T::Hash).optional

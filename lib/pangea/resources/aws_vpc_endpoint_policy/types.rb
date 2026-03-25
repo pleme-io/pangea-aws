@@ -11,5 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :vpc_endpoint_id, T::String
+    attribute? :policy, (T::String | T::Hash).optional
   end
 end

@@ -19,9 +19,11 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :disable_execute_api_endpoint, T::Bool.optional
     attribute? :fail_on_warnings, T::Bool.optional
+    attribute? :ip_address_type, T::String.optional
     attribute? :route_key, T::String.optional
     attribute? :route_selection_expression, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :target, T::String.optional
     attribute? :version, T::String.optional
   end

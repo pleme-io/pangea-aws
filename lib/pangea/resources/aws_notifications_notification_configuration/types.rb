@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :description, T::String
     attribute :name, T::String
+    attribute? :aggregation_duration, T::String.optional
     attribute? :tags, T::Hash.optional
   end
 end

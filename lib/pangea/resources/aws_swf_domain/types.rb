@@ -12,6 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :workflow_execution_retention_period_in_days, T::String
     attribute? :description, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

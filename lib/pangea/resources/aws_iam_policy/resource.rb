@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IamPolicyAttributes,
       outputs: { id: :id },
       map: [:policy],
-      map_present: [:description, :path, :tags]
+      map_present: [:description, :name, :name_prefix, :path, :tags, :tags_all]
   end
   module AWS
     include AWSIamPolicy

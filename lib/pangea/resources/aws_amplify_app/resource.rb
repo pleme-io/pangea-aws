@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AmplifyAppAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:access_token, :auto_branch_creation_config, :auto_branch_creation_patterns, :basic_auth_credentials, :cache_config, :compute_role_arn, :custom_rule, :description, :environment_variables, :iam_service_role_arn, :oauth_token, :platform, :repository, :tags],
+      map_present: [:access_token, :auto_branch_creation_config, :auto_branch_creation_patterns, :basic_auth_credentials, :build_spec, :cache_config, :compute_role_arn, :custom_headers, :custom_rule, :description, :environment_variables, :iam_service_role_arn, :oauth_token, :platform, :repository, :tags, :tags_all],
       map_bool: [:enable_auto_branch_creation, :enable_basic_auth, :enable_branch_auto_build, :enable_branch_auto_deletion]
   end
   module AWS

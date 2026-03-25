@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute? :igmpv2_support, T::String.optional
     attribute? :static_sources_support, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BudgetsBudgetActionAttributes,
       outputs: { id: :id },
       map: [:action_threshold, :action_type, :approval_model, :budget_name, :definition, :execution_role_arn, :notification_type, :subscriber],
-      map_present: [:tags]
+      map_present: [:account_id, :tags, :tags_all]
   end
   module AWS
     include AWSBudgetsBudgetAction

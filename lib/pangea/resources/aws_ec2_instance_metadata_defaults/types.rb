@@ -9,5 +9,10 @@ module Pangea::Resources::AWS::Types
   class Ec2InstanceMetadataDefaultsAttributes < Dry::Struct
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
+
+    attribute? :http_endpoint, T::String.optional
+    attribute? :http_put_response_hop_limit, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :http_tokens, T::String.optional
+    attribute? :instance_metadata_tags, T::String.optional
   end
 end

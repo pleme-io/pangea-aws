@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NotificationsNotificationConfigurationAttributes,
       outputs: { id: :id },
       map: [:description, :name],
-      map_present: [:tags]
+      map_present: [:aggregation_duration, :tags]
   end
   module AWS
     include AWSNotificationsNotificationConfiguration

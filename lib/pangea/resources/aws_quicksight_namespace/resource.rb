@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightNamespaceAttributes,
       outputs: { id: :id },
       map: [:namespace],
-      map_present: [:tags]
+      map_present: [:aws_account_id, :identity_store, :tags]
   end
   module AWS
     include AWSQuicksightNamespace

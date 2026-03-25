@@ -16,8 +16,10 @@ module Pangea::Resources::AWS::Types
     attribute? :input_devices, T::Array.of(T::Hash).optional
     attribute? :input_security_groups, T::Array.of(T::String).optional
     attribute? :media_connect_flows, T::Array.of(T::Hash).optional
+    attribute? :role_arn, T::String.optional
     attribute? :sources, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc, T::Hash.optional
   end
 end

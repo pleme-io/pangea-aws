@@ -17,6 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute :viewer_certificate, T::Hash
     attribute? :aliases, T::Array.of(T::String).optional
     attribute? :comment, T::String.optional
+    attribute? :continuous_deployment_policy_id, T::String.optional
     attribute? :custom_error_response, T::Array.of(T::Hash).optional
     attribute? :default_root_object, T::String.optional
     attribute? :http_version, T::String.optional
@@ -28,6 +29,7 @@ module Pangea::Resources::AWS::Types
     attribute? :retain_on_delete, T::Bool.optional
     attribute? :staging, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :wait_for_deployment, T::Bool.optional
     attribute? :web_acl_id, T::String.optional
   end

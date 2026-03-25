@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_paymentcryptography_key,
       attributes_class: AWS::Types::PaymentcryptographyKeyAttributes,
       outputs: { id: :id },
-      map_present: [:key_attributes, :tags],
-      map_bool: [:exportable]
+      map_present: [:deletion_window_in_days, :key_attributes, :key_check_value_algorithm, :tags],
+      map_bool: [:exportable, :enabled]
   end
   module AWS
     include AWSPaymentcryptographyKey

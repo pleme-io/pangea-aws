@@ -17,8 +17,12 @@ module Pangea::Resources::AWS::Types
     attribute? :delete_volume_options, T::Array.of(T::String).optional
     attribute? :nfs_exports, T::Hash.optional
     attribute? :origin_snapshot, T::Hash.optional
+    attribute? :read_only, T::Bool.optional
     attribute? :record_size_kib, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :storage_capacity_quota_gib, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :storage_capacity_reservation_gib, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :user_and_group_quotas, T::Array.of(T::Hash).optional
     attribute? :volume_type, T::String.optional
   end

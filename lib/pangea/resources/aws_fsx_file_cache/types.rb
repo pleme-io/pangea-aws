@@ -16,8 +16,10 @@ module Pangea::Resources::AWS::Types
     attribute :subnet_ids, T::Array.of(T::String)
     attribute? :copy_tags_to_data_repository_associations, T::Bool.optional
     attribute? :data_repository_association, T::Array.of(T::Hash).optional
+    attribute? :kms_key_id, T::String.optional
     attribute? :lustre_configuration, T::Array.of(T::Hash).optional
     attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

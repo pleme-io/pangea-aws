@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :outpost_id, T::String
     attribute :security_group_id, T::String
     attribute :subnet_id, T::String
+    attribute? :access_type, T::String.optional
     attribute? :customer_owned_ipv4_pool, T::String.optional
   end
 end

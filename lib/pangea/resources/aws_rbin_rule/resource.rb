@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RbinRuleAttributes,
       outputs: { id: :id },
       map: [:resource_type, :retention_period],
-      map_present: [:lock_configuration, :resource_tags, :tags]
+      map_present: [:description, :lock_configuration, :resource_tags, :tags, :tags_all]
   end
   module AWS
     include AWSRbinRule

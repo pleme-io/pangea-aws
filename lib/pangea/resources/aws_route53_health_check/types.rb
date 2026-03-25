@@ -16,6 +16,8 @@ module Pangea::Resources::AWS::Types
     attribute? :cloudwatch_alarm_name, T::String.optional
     attribute? :cloudwatch_alarm_region, T::String.optional
     attribute? :disabled, T::Bool.optional
+    attribute? :enable_sni, T::Bool.optional
+    attribute? :failure_threshold, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :fqdn, T::String.optional
     attribute? :insufficient_data_health_status, T::String.optional
     attribute? :invert_healthcheck, T::Bool.optional
@@ -29,5 +31,7 @@ module Pangea::Resources::AWS::Types
     attribute? :routing_control_arn, T::String.optional
     attribute? :search_string, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :triggers, T::Hash.optional
   end
 end

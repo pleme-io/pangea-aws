@@ -10,15 +10,25 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :connection_termination, T::Bool.optional
     attribute? :deregistration_delay, T::String.optional
     attribute? :health_check, T::Hash.optional
+    attribute? :ip_address_type, T::String.optional
     attribute? :lambda_multi_value_headers_enabled, T::Bool.optional
+    attribute? :load_balancing_algorithm_type, T::String.optional
+    attribute? :load_balancing_anomaly_mitigation, T::String.optional
+    attribute? :load_balancing_cross_zone_enabled, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :preserve_client_ip, T::String.optional
     attribute? :protocol, T::String.optional
+    attribute? :protocol_version, T::String.optional
     attribute? :proxy_protocol_v2, T::Bool.optional
     attribute? :slow_start, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :stickiness, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :target_failover, T::Array.of(T::Hash).optional
     attribute? :target_group_health, T::Hash.optional
     attribute? :target_health_state, T::Array.of(T::Hash).optional

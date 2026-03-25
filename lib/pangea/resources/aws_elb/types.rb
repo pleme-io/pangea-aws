@@ -12,12 +12,21 @@ module Pangea::Resources::AWS::Types
 
     attribute :listener, T::Array.of(T::Hash)
     attribute? :access_logs, T::Hash.optional
+    attribute? :availability_zones, T::Array.of(T::String).optional
     attribute? :connection_draining, T::Bool.optional
     attribute? :connection_draining_timeout, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :cross_zone_load_balancing, T::Bool.optional
     attribute? :desync_mitigation_mode, T::String.optional
     attribute? :health_check, T::Hash.optional
     attribute? :idle_timeout, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :instances, T::Array.of(T::String).optional
+    attribute? :internal, T::Bool.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
+    attribute? :security_groups, T::Array.of(T::String).optional
+    attribute? :source_security_group, T::String.optional
+    attribute? :subnets, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

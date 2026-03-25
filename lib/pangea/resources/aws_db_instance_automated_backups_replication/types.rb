@@ -11,6 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :source_db_instance_arn, T::String
+    attribute? :kms_key_id, T::String.optional
     attribute? :pre_signed_url, T::String.optional
     attribute? :retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
   end

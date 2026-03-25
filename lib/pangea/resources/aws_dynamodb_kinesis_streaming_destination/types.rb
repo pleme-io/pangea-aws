@@ -12,5 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :stream_arn, T::String
     attribute :table_name, T::String
+    attribute? :approximate_creation_date_time_precision, T::String.optional
   end
 end

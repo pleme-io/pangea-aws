@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SignerSigningProfileAttributes,
       outputs: { id: :id },
       map: [:platform_id],
-      map_present: [:signature_validity_period, :signing_material, :tags]
+      map_present: [:name, :name_prefix, :signature_validity_period, :signing_material, :tags, :tags_all]
   end
   module AWS
     include AWSSignerSigningProfile

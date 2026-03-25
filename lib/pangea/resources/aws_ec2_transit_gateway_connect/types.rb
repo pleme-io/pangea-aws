@@ -14,6 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :transport_attachment_id, T::String
     attribute? :protocol, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :transit_gateway_default_route_table_association, T::Bool.optional
     attribute? :transit_gateway_default_route_table_propagation, T::Bool.optional
   end

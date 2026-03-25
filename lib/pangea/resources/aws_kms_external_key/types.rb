@@ -13,8 +13,12 @@ module Pangea::Resources::AWS::Types
     attribute? :bypass_policy_lockout_safety_check, T::Bool.optional
     attribute? :deletion_window_in_days, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :description, T::String.optional
+    attribute? :enabled, T::Bool.optional
     attribute? :key_material_base64, T::String.optional
+    attribute? :multi_region, T::Bool.optional
+    attribute? :policy, (T::String | T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :valid_to, T::String.optional
   end
 end

@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_cloudwatch_log_group,
       attributes_class: AWS::Types::CloudwatchLogGroupAttributes,
       outputs: { id: :id },
-      map_present: [:kms_key_id, :retention_in_days, :tags],
+      map_present: [:kms_key_id, :log_group_class, :name, :name_prefix, :retention_in_days, :tags, :tags_all],
       map_bool: [:skip_destroy]
   end
   module AWS

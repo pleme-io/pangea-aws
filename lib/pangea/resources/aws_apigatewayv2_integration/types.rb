@@ -26,6 +26,7 @@ module Pangea::Resources::AWS::Types
     attribute? :request_templates, T::Hash.optional
     attribute? :response_parameters, T::Array.of(T::Hash).optional
     attribute? :template_selection_expression, T::String.optional
+    attribute? :timeout_milliseconds, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tls_config, T::Hash.optional
   end
 end

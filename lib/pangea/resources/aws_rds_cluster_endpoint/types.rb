@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute? :excluded_members, T::Array.of(T::String).optional
     attribute? :static_members, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

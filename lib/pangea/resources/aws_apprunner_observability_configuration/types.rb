@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :observability_configuration_name, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :trace_configuration, T::Hash.optional
   end
 end

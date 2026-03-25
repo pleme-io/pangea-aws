@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FinspaceKxVolumeAttributes,
       outputs: { id: :id },
       map: [:availability_zones, :az_mode, :environment_id, :name, :type],
-      map_present: [:description, :nas1_configuration, :tags]
+      map_present: [:description, :nas1_configuration, :tags, :tags_all]
   end
   module AWS
     include AWSFinspaceKxVolume

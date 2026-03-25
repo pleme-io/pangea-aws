@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AmiFromInstanceAttributes,
       outputs: { id: :id },
       map: [:name, :source_instance_id],
-      map_present: [:deprecation_time, :description, :ebs_block_device, :ephemeral_block_device, :tags],
+      map_present: [:deprecation_time, :description, :ebs_block_device, :ephemeral_block_device, :tags, :tags_all],
       map_bool: [:snapshot_without_reboot]
   end
   module AWS

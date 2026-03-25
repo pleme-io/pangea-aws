@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodeartifactDomainAttributes,
       outputs: { id: :id },
       map: [:domain],
-      map_present: [:tags]
+      map_present: [:encryption_key, :tags, :tags_all]
   end
   module AWS
     include AWSCodeartifactDomain

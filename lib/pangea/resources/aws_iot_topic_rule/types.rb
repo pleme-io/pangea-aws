@@ -35,6 +35,7 @@ module Pangea::Resources::AWS::Types
     attribute? :sqs, T::Array.of(T::Hash).optional
     attribute? :step_functions, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :timestream, T::Array.of(T::Hash).optional
   end
 end

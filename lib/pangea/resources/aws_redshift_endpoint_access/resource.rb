@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_redshift_endpoint_access,
       attributes_class: AWS::Types::RedshiftEndpointAccessAttributes,
       outputs: { id: :id },
-      map: [:cluster_identifier, :endpoint_name, :subnet_group_name]
+      map: [:cluster_identifier, :endpoint_name, :subnet_group_name],
+      map_present: [:resource_owner, :vpc_security_group_ids]
   end
   module AWS
     include AWSRedshiftEndpointAccess

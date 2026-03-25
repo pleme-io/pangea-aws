@@ -19,6 +19,8 @@ module Pangea::Resources::AWS::Types
     attribute? :ebs_block_device, T::Array.of(T::Hash).optional
     attribute? :encrypted, T::Bool.optional
     attribute? :ephemeral_block_device, T::Array.of(T::Hash).optional
+    attribute? :kms_key_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

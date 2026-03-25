@@ -14,5 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :vocabulary_name, T::String
     attribute? :phrases, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :vocabulary_file_uri, T::String.optional
   end
 end

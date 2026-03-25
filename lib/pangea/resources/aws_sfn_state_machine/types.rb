@@ -14,8 +14,11 @@ module Pangea::Resources::AWS::Types
     attribute :role_arn, T::String
     attribute? :encryption_configuration, T::Hash.optional
     attribute? :logging_configuration, T::Hash.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :publish, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :tracing_configuration, T::Hash.optional
     attribute? :type, T::String.optional
   end

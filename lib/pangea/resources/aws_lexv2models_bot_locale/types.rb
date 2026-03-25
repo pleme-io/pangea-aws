@@ -15,6 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :locale_id, T::String
     attribute :n_lu_intent_confidence_threshold, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :description, T::String.optional
+    attribute? :name, T::String.optional
     attribute? :voice_settings, T::Array.of(T::Hash).optional
   end
 end

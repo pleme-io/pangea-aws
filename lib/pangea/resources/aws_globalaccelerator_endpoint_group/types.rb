@@ -12,7 +12,10 @@ module Pangea::Resources::AWS::Types
 
     attribute :listener_arn, T::String
     attribute? :endpoint_configuration, T::Array.of(T::Hash).optional
+    attribute? :endpoint_group_region, T::String.optional
     attribute? :health_check_interval_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :health_check_path, T::String.optional
+    attribute? :health_check_port, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :health_check_protocol, T::String.optional
     attribute? :port_override, T::Array.of(T::Hash).optional
     attribute? :threshold_count, (T::Coercible::Integer | T::Coercible::Float).optional

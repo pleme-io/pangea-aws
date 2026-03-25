@@ -10,6 +10,12 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :authorized, T::Bool.optional
+    attribute? :latency_mode, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :recording_configuration_arn, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :type, T::String.optional
   end
 end

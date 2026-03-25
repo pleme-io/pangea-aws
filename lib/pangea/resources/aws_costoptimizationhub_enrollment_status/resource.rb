@@ -12,7 +12,8 @@ module Pangea::Resources
 
     define_resource :aws_costoptimizationhub_enrollment_status,
       attributes_class: AWS::Types::CostoptimizationhubEnrollmentStatusAttributes,
-      outputs: { id: :id }
+      outputs: { id: :id },
+      map_bool: [:include_member_accounts]
   end
   module AWS
     include AWSCostoptimizationhubEnrollmentStatus

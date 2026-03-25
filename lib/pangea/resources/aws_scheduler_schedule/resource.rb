@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SchedulerScheduleAttributes,
       outputs: { id: :id },
       map: [:flexible_time_window, :schedule_expression, :target],
-      map_present: [:description, :end_date, :kms_key_arn, :schedule_expression_timezone, :start_date, :state]
+      map_present: [:description, :end_date, :group_name, :kms_key_arn, :name, :name_prefix, :schedule_expression_timezone, :start_date, :state]
   end
   module AWS
     include AWSSchedulerSchedule

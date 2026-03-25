@@ -33,6 +33,7 @@ module Pangea::Resources::AWS::Types
     attribute? :name, T::String.optional
     attribute? :system_packages, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :url, T::String.optional
     attribute? :use_ebs_optimized_instances, T::Bool.optional
     attribute? :username, T::String.optional

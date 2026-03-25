@@ -16,9 +16,11 @@ module Pangea::Resources::AWS::Types
     attribute? :auto_deploy, T::Bool.optional
     attribute? :client_certificate_id, T::String.optional
     attribute? :default_route_settings, T::Hash.optional
+    attribute? :deployment_id, T::String.optional
     attribute? :description, T::String.optional
     attribute? :route_settings, T::Array.of(T::Hash).optional
     attribute? :stage_variables, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

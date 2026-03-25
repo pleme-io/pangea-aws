@@ -14,6 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute? :alarms, T::Hash.optional
     attribute? :availability_zone_rebalancing, T::String.optional
     attribute? :capacity_provider_strategy, T::Array.of(T::Hash).optional
+    attribute? :cluster, T::String.optional
     attribute? :deployment_circuit_breaker, T::Hash.optional
     attribute? :deployment_controller, T::Hash.optional
     attribute? :deployment_maximum_percent, (T::Coercible::Integer | T::Coercible::Float).optional
@@ -24,16 +25,21 @@ module Pangea::Resources::AWS::Types
     attribute? :force_delete, T::Bool.optional
     attribute? :force_new_deployment, T::Bool.optional
     attribute? :health_check_grace_period_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :iam_role, T::String.optional
+    attribute? :launch_type, T::String.optional
     attribute? :load_balancer, T::Array.of(T::Hash).optional
     attribute? :network_configuration, T::Hash.optional
     attribute? :ordered_placement_strategy, T::Array.of(T::Hash).optional
     attribute? :placement_constraints, T::Array.of(T::Hash).optional
+    attribute? :platform_version, T::String.optional
     attribute? :propagate_tags, T::String.optional
     attribute? :scheduling_strategy, T::String.optional
     attribute? :service_connect_configuration, T::Hash.optional
     attribute? :service_registries, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :task_definition, (T::String | T::Hash).optional
+    attribute? :triggers, T::Hash.optional
     attribute? :volume_configuration, T::Hash.optional
     attribute? :vpc_lattice_configurations, T::Array.of(T::Hash).optional
     attribute? :wait_for_steady_state, T::Bool.optional

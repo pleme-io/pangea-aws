@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RamResourceShareAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:tags],
+      map_present: [:permission_arns, :tags, :tags_all],
       map_bool: [:allow_external_principals]
   end
   module AWS

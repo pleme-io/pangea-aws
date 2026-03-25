@@ -13,8 +13,11 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :project, T::String
     attribute :variations, T::Array.of(T::Hash)
+    attribute? :default_variation, T::String.optional
     attribute? :description, T::String.optional
     attribute? :entity_overrides, T::Hash.optional
+    attribute? :evaluation_strategy, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

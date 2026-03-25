@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IvsRecordingConfigurationAttributes,
       outputs: { id: :id },
       map: [:destination_configuration],
-      map_present: [:tags, :thumbnail_configuration]
+      map_present: [:name, :recording_reconnect_window_seconds, :tags, :tags_all, :thumbnail_configuration]
   end
   module AWS
     include AWSIvsRecordingConfiguration

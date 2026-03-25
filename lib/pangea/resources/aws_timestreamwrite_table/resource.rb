@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::TimestreamwriteTableAttributes,
       outputs: { id: :id },
       map: [:database_name, :table_name],
-      map_present: [:magnetic_store_write_properties, :retention_properties, :schema, :tags]
+      map_present: [:magnetic_store_write_properties, :retention_properties, :schema, :tags, :tags_all]
   end
   module AWS
     include AWSTimestreamwriteTable

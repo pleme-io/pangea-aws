@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute? :event_source_name, T::String.optional
     attribute? :kms_key_identifier, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

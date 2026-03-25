@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CognitoIdentityPoolAttributes,
       outputs: { id: :id },
       map: [:identity_pool_name],
-      map_present: [:cognito_identity_providers, :developer_provider_name, :openid_connect_provider_arns, :saml_provider_arns, :supported_login_providers, :tags],
+      map_present: [:cognito_identity_providers, :developer_provider_name, :openid_connect_provider_arns, :saml_provider_arns, :supported_login_providers, :tags, :tags_all],
       map_bool: [:allow_classic_flow, :allow_unauthenticated_identities]
   end
   module AWS

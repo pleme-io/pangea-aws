@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GameliftGameServerGroupAttributes,
       outputs: { id: :id },
       map: [:game_server_group_name, :instance_definition, :launch_template, :max_size, :min_size, :role_arn],
-      map_present: [:auto_scaling_policy, :tags, :vpc_subnets]
+      map_present: [:auto_scaling_policy, :balancing_strategy, :game_server_protection_policy, :tags, :tags_all, :vpc_subnets]
   end
   module AWS
     include AWSGameliftGameServerGroup

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MedialiveChannelAttributes,
       outputs: { id: :id },
       map: [:channel_class, :destinations, :encoder_settings, :input_attachments, :input_specification, :name],
-      map_present: [:cdi_input_specification, :maintenance, :role_arn, :tags, :vpc],
+      map_present: [:cdi_input_specification, :log_level, :maintenance, :role_arn, :tags, :tags_all, :vpc],
       map_bool: [:start_channel]
   end
   module AWS

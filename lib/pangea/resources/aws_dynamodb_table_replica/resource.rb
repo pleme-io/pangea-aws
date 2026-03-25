@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::DynamodbTableReplicaAttributes,
       outputs: { id: :id },
       map: [:global_table_arn],
-      map_present: [:table_class_override, :tags],
-      map_bool: [:point_in_time_recovery]
+      map_present: [:kms_key_arn, :table_class_override, :tags, :tags_all],
+      map_bool: [:deletion_protection_enabled, :point_in_time_recovery]
   end
   module AWS
     include AWSDynamodbTableReplica

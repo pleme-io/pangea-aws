@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightDashboardAttributes,
       outputs: { id: :id },
       map: [:dashboard_id, :name, :version_description],
-      map_present: [:dashboard_publish_options, :definition, :parameters, :permissions, :source_entity, :tags, :theme_arn]
+      map_present: [:aws_account_id, :dashboard_publish_options, :definition, :parameters, :permissions, :source_entity, :tags, :tags_all, :theme_arn]
   end
   module AWS
     include AWSQuicksightDashboard

@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute? :certificate_pem, T::String.optional
     attribute? :certificate_wallet, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

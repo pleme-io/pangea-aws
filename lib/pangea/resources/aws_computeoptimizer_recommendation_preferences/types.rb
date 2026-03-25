@@ -14,6 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute? :enhanced_infrastructure_metrics, T::String.optional
     attribute? :external_metrics_preference, T::Array.of(T::Hash).optional
     attribute? :inferred_workload_types, T::String.optional
+    attribute? :look_back_period, T::String.optional
     attribute? :preferred_resource, T::Array.of(T::Hash).optional
     attribute? :savings_estimation_mode, T::String.optional
     attribute? :scope, T::Array.of(T::Hash).optional

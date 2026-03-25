@@ -12,8 +12,10 @@ module Pangea::Resources::AWS::Types
 
     attribute :iam_role, T::String
     attribute? :description, T::String.optional
+    attribute? :expiration_date, T::String.optional
     attribute? :name, T::String.optional
     attribute? :registration_limit, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_dx_bgp_peer,
       attributes_class: AWS::Types::DxBgpPeerAttributes,
       outputs: { id: :id },
-      map: [:address_family, :bgp_asn, :virtual_interface_id]
+      map: [:address_family, :bgp_asn, :virtual_interface_id],
+      map_present: [:amazon_address, :bgp_auth_key, :customer_address]
   end
   module AWS
     include AWSDxBgpPeer

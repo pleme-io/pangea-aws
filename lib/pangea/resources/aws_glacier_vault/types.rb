@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute? :access_policy, (T::String | T::Hash).optional
     attribute? :notification, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

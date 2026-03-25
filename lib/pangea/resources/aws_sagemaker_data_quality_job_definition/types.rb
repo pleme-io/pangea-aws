@@ -16,8 +16,10 @@ module Pangea::Resources::AWS::Types
     attribute :job_resources, T::Hash
     attribute :role_arn, T::String
     attribute? :data_quality_baseline_config, T::Hash.optional
+    attribute? :name, T::String.optional
     attribute? :network_config, T::Hash.optional
     attribute? :stopping_condition, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

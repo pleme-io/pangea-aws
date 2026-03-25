@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_acmpca_permission,
       attributes_class: AWS::Types::AcmpcaPermissionAttributes,
       outputs: { id: :id },
-      map: [:actions, :certificate_authority_arn, :principal]
+      map: [:actions, :certificate_authority_arn, :principal],
+      map_present: [:source_account]
   end
   module AWS
     include AWSAcmpcaPermission

@@ -11,5 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :cluster_identifier, T::String
+    attribute? :default_iam_role_arn, T::String.optional
+    attribute? :iam_role_arns, T::Array.of(T::String).optional
   end
 end

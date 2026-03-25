@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2ManagedPrefixListAttributes,
       outputs: { id: :id },
       map: [:address_family, :max_entries, :name],
-      map_present: [:entry, :tags]
+      map_present: [:entry, :tags, :tags_all]
   end
   module AWS
     include AWSEc2ManagedPrefixList

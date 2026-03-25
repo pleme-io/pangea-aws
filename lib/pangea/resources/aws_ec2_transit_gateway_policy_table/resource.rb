@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2TransitGatewayPolicyTableAttributes,
       outputs: { id: :id },
       map: [:transit_gateway_id],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSEc2TransitGatewayPolicyTable

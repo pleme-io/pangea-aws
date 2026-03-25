@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AthenaWorkgroupAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:configuration, :description, :state, :tags],
+      map_present: [:configuration, :description, :state, :tags, :tags_all],
       map_bool: [:force_destroy]
   end
   module AWS

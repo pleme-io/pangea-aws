@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodecommitRepositoryAttributes,
       outputs: { id: :id },
       map: [:repository_name],
-      map_present: [:default_branch, :description, :tags]
+      map_present: [:default_branch, :description, :kms_key_id, :tags, :tags_all]
   end
   module AWS
     include AWSCodecommitRepository

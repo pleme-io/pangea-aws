@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LexBotAttributes,
       outputs: { id: :id },
       map: [:abort_statement, :intent, :name],
-      map_present: [:clarification_prompt, :description, :idle_session_ttl_in_seconds, :locale, :nlu_intent_confidence_threshold, :process_behavior],
+      map_present: [:clarification_prompt, :description, :idle_session_ttl_in_seconds, :locale, :nlu_intent_confidence_threshold, :process_behavior, :voice_id],
       map_bool: [:child_directed, :create_version, :detect_sentiment, :enable_model_improvements]
   end
   module AWS

@@ -13,6 +13,8 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :schedule_expression, T::String
     attribute? :recovery_point_selection, T::Array.of(T::Hash).optional
+    attribute? :schedule_expression_timezone, T::String.optional
+    attribute? :start_window_hours, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end

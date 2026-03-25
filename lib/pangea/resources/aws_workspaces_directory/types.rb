@@ -12,9 +12,14 @@ module Pangea::Resources::AWS::Types
 
     attribute? :active_directory_config, T::Hash.optional
     attribute? :certificate_based_auth_properties, T::Hash.optional
+    attribute? :directory_id, T::String.optional
+    attribute? :ip_group_ids, T::Array.of(T::String).optional
     attribute? :saml_properties, T::Hash.optional
     attribute? :self_service_permissions, T::Hash.optional
+    attribute? :subnet_ids, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :user_identity_type, T::String.optional
     attribute? :workspace_access_properties, T::Hash.optional
     attribute? :workspace_creation_properties, T::Hash.optional
     attribute? :workspace_directory_description, T::String.optional

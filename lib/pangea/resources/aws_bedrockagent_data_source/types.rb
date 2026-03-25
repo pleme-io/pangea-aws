@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :knowledge_base_id, T::String
     attribute :name, T::String
+    attribute? :data_deletion_policy, (T::String | T::Hash).optional
     attribute? :data_source_configuration, T::Array.of(T::Hash).optional
     attribute? :description, T::String.optional
     attribute? :server_side_encryption_configuration, T::Array.of(T::Hash).optional

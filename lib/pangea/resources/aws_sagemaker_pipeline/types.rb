@@ -18,5 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :pipeline_description, T::String.optional
     attribute? :role_arn, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

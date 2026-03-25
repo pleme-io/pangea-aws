@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IotTopicRuleAttributes,
       outputs: { id: :id },
       map: [:name, :sql, :sql_version],
-      map_present: [:cloudwatch_alarm, :cloudwatch_logs, :cloudwatch_metric, :description, :dynamodb, :dynamodbv2, :elasticsearch, :error_action, :firehose, :http, :iot_analytics, :iot_events, :kafka, :kinesis, :lambda, :republish, :s3, :sns, :sqs, :step_functions, :tags, :timestream],
+      map_present: [:cloudwatch_alarm, :cloudwatch_logs, :cloudwatch_metric, :description, :dynamodb, :dynamodbv2, :elasticsearch, :error_action, :firehose, :http, :iot_analytics, :iot_events, :kafka, :kinesis, :lambda, :republish, :s3, :sns, :sqs, :step_functions, :tags, :tags_all, :timestream],
       map_bool: [:enabled]
   end
   module AWS

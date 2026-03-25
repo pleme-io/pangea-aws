@@ -10,22 +10,36 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :allow_major_version_upgrade, T::Bool.optional
+    attribute? :apply_immediately, T::Bool.optional
+    attribute? :availability_zones, T::Array.of(T::String).optional
     attribute? :backup_retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :cluster_identifier, T::String.optional
+    attribute? :cluster_identifier_prefix, T::String.optional
     attribute? :copy_tags_to_snapshot, T::Bool.optional
     attribute? :deletion_protection, T::Bool.optional
     attribute? :enable_cloudwatch_logs_exports, T::Array.of(T::String).optional
     attribute? :engine, T::String.optional
+    attribute? :engine_version, T::String.optional
     attribute? :final_snapshot_identifier, T::String.optional
     attribute? :global_cluster_identifier, T::String.optional
     attribute? :iam_database_authentication_enabled, T::Bool.optional
     attribute? :iam_roles, T::Array.of(T::String).optional
+    attribute? :kms_key_arn, T::String.optional
+    attribute? :neptune_cluster_parameter_group_name, T::String.optional
     attribute? :neptune_instance_parameter_group_name, T::String.optional
+    attribute? :neptune_subnet_group_name, T::String.optional
     attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :preferred_backup_window, T::String.optional
+    attribute? :preferred_maintenance_window, T::String.optional
     attribute? :replication_source_identifier, T::String.optional
     attribute? :serverless_v2_scaling_configuration, T::Hash.optional
     attribute? :skip_final_snapshot, T::Bool.optional
     attribute? :snapshot_identifier, T::String.optional
     attribute? :storage_encrypted, T::Bool.optional
+    attribute? :storage_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :vpc_security_group_ids, T::Array.of(T::String).optional
   end
 end

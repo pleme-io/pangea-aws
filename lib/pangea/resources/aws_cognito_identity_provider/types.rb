@@ -14,6 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :provider_name, T::String
     attribute :provider_type, T::String
     attribute :user_pool_id, T::String
+    attribute? :attribute_mapping, T::Hash.optional
     attribute? :idp_identifiers, T::Array.of(T::String).optional
   end
 end

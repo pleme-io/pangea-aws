@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodedeployAppAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:compute_platform, :tags]
+      map_present: [:compute_platform, :tags, :tags_all]
   end
   module AWS
     include AWSCodedeployApp

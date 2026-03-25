@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute :subdirectory, T::String
     attribute? :mount_options, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

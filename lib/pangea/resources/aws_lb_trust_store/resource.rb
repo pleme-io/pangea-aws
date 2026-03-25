@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LbTrustStoreAttributes,
       outputs: { id: :id },
       map: [:ca_certificates_bundle_s3_bucket, :ca_certificates_bundle_s3_key],
-      map_present: [:ca_certificates_bundle_s3_object_version, :tags]
+      map_present: [:ca_certificates_bundle_s3_object_version, :name, :name_prefix, :tags, :tags_all]
   end
   module AWS
     include AWSLbTrustStore

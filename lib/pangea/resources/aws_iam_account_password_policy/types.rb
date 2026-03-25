@@ -11,6 +11,13 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :allow_users_to_change_password, T::Bool.optional
+    attribute? :hard_expiry, T::Bool.optional
+    attribute? :max_password_age, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :minimum_password_length, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :password_reuse_prevention, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :require_lowercase_characters, T::Bool.optional
+    attribute? :require_numbers, T::Bool.optional
+    attribute? :require_symbols, T::Bool.optional
+    attribute? :require_uppercase_characters, T::Bool.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConnectUserHierarchyGroupAttributes,
       outputs: { id: :id },
       map: [:instance_id, :name],
-      map_present: [:parent_group_id, :tags]
+      map_present: [:parent_group_id, :tags, :tags_all]
   end
   module AWS
     include AWSConnectUserHierarchyGroup

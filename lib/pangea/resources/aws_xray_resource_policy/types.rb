@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :policy_document, (T::String | T::Hash)
     attribute :policy_name, T::String
     attribute? :bypass_policy_lockout_check, T::Bool.optional
+    attribute? :policy_revision_id, T::String.optional
   end
 end

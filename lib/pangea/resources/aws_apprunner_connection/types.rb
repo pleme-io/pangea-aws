@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :connection_name, T::String
     attribute :provider_type, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RdsExportTaskAttributes,
       outputs: { id: :id },
       map: [:export_task_identifier, :iam_role_arn, :kms_key_id, :s3_bucket_name, :source_arn],
-      map_present: [:export_only]
+      map_present: [:export_only, :s3_prefix]
   end
   module AWS
     include AWSRdsExportTask

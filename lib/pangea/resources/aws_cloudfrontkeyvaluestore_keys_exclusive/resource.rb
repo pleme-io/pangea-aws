@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudfrontkeyvaluestoreKeysExclusiveAttributes,
       outputs: { id: :id },
       map: [:key_value_store_arn],
-      map_present: [:resource_key_value_pair]
+      map_present: [:max_batch_size, :resource_key_value_pair]
   end
   module AWS
     include AWSCloudfrontkeyvaluestoreKeysExclusive

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DevicefarmTestGridProjectAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:description, :tags, :vpc_config]
+      map_present: [:description, :tags, :tags_all, :vpc_config]
   end
   module AWS
     include AWSDevicefarmTestGridProject

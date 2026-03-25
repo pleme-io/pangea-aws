@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_instance,
       attributes_class: AWS::Types::InstanceAttributes,
       outputs: { id: :id },
-      map_present: [:capacity_reservation_specification, :cpu_options, :credit_specification, :ebs_block_device, :enclave_options, :ephemeral_block_device, :instance_market_options, :launch_template, :maintenance_options, :metadata_options, :network_interface, :private_dns_name_options, :root_block_device, :tags, :volume_tags],
-      map_bool: [:get_password_data, :hibernation, :source_dest_check, :user_data_replace_on_change]
+      map_present: [:ami, :availability_zone, :capacity_reservation_specification, :cpu_core_count, :cpu_options, :cpu_threads_per_core, :credit_specification, :ebs_block_device, :enclave_options, :ephemeral_block_device, :host_id, :host_resource_group_arn, :iam_instance_profile, :instance_initiated_shutdown_behavior, :instance_market_options, :instance_type, :ipv6_address_count, :ipv6_addresses, :key_name, :launch_template, :maintenance_options, :metadata_options, :network_interface, :placement_group, :placement_partition_number, :private_dns_name_options, :private_ip, :root_block_device, :secondary_private_ips, :security_groups, :subnet_id, :tags, :tags_all, :tenancy, :user_data, :user_data_base64, :volume_tags, :vpc_security_group_ids],
+      map_bool: [:associate_public_ip_address, :disable_api_stop, :disable_api_termination, :ebs_optimized, :enable_primary_ipv6, :get_password_data, :hibernation, :monitoring, :source_dest_check, :user_data_replace_on_change]
   end
   module AWS
     include AWSInstance

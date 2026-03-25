@@ -21,5 +21,6 @@ module Pangea::Resources::AWS::Types
     attribute? :firewall_policy_change_protection, T::Bool.optional
     attribute? :subnet_change_protection, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

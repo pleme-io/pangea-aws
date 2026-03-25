@@ -14,13 +14,22 @@ module Pangea::Resources::AWS::Types
     attribute :node_role_arn, T::String
     attribute :scaling_config, T::Hash
     attribute :subnet_ids, T::Array.of(T::String)
+    attribute? :ami_type, T::String.optional
+    attribute? :capacity_type, T::String.optional
+    attribute? :disk_size, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :force_update_version, T::Bool.optional
+    attribute? :instance_types, T::Array.of(T::String).optional
     attribute? :labels, T::Hash.optional
     attribute? :launch_template, T::Hash.optional
+    attribute? :node_group_name, T::String.optional
+    attribute? :node_group_name_prefix, T::String.optional
     attribute? :node_repair_config, T::Hash.optional
+    attribute? :release_version, T::String.optional
     attribute? :remote_access, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :taint, T::Array.of(T::Hash).optional
     attribute? :update_config, T::Hash.optional
+    attribute? :version, T::String.optional
   end
 end

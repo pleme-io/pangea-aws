@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LicensemanagerLicenseConfigurationAttributes,
       outputs: { id: :id },
       map: [:license_counting_type, :name],
-      map_present: [:description, :license_count, :license_rules, :tags],
+      map_present: [:description, :license_count, :license_rules, :tags, :tags_all],
       map_bool: [:license_count_hard_limit]
   end
   module AWS

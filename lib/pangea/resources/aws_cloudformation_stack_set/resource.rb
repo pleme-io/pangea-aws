@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudformationStackSetAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:administration_role_arn, :auto_deployment, :call_as, :capabilities, :description, :managed_execution, :operation_preferences, :parameters, :permission_model, :tags, :template_url]
+      map_present: [:administration_role_arn, :auto_deployment, :call_as, :capabilities, :description, :execution_role_name, :managed_execution, :operation_preferences, :parameters, :permission_model, :tags, :tags_all, :template_body, :template_url]
   end
   module AWS
     include AWSCloudformationStackSet

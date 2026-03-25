@@ -11,8 +11,10 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
+    attribute? :auth_type, T::String.optional
     attribute? :certificate_arn, T::String.optional
     attribute? :custom_domain_name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

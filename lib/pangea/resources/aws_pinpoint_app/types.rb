@@ -12,7 +12,10 @@ module Pangea::Resources::AWS::Types
 
     attribute? :campaign_hook, T::Hash.optional
     attribute? :limits, T::Hash.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :quiet_time, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -12,8 +12,15 @@ module Pangea::Resources::AWS::Types
 
     attribute :job_type, T::String
     attribute :s3_job_definition, T::Hash
+    attribute? :custom_data_identifier_ids, T::Array.of(T::String).optional
+    attribute? :description, T::String.optional
     attribute? :initial_run, T::Bool.optional
+    attribute? :job_status, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
+    attribute? :sampling_percentage, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :schedule_frequency, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

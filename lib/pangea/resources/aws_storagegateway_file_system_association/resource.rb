@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::StoragegatewayFileSystemAssociationAttributes,
       outputs: { id: :id },
       map: [:gateway_arn, :location_arn, :password, :username],
-      map_present: [:audit_destination_arn, :cache_attributes, :tags]
+      map_present: [:audit_destination_arn, :cache_attributes, :tags, :tags_all]
   end
   module AWS
     include AWSStoragegatewayFileSystemAssociation

@@ -10,6 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :account_id, T::String.optional
     attribute? :identity_center_arn, T::String.optional
     attribute? :tags, T::Hash.optional
   end

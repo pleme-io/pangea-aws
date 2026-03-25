@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AutoscalingGroupAttributes,
       outputs: { id: :id },
       map: [:max_size, :min_size],
-      map_present: [:availability_zone_distribution, :capacity_reservation_specification, :context, :default_instance_warmup, :desired_capacity_type, :enabled_metrics, :health_check_grace_period, :initial_lifecycle_hook, :instance_maintenance_policy, :instance_refresh, :launch_configuration, :launch_template, :max_instance_lifetime, :metrics_granularity, :min_elb_capacity, :mixed_instances_policy, :placement_group, :suspended_processes, :tag, :termination_policies, :traffic_source, :wait_for_capacity_timeout, :wait_for_elb_capacity, :warm_pool],
+      map_present: [:availability_zone_distribution, :availability_zones, :capacity_reservation_specification, :context, :default_cooldown, :default_instance_warmup, :desired_capacity, :desired_capacity_type, :enabled_metrics, :health_check_grace_period, :health_check_type, :initial_lifecycle_hook, :instance_maintenance_policy, :instance_refresh, :launch_configuration, :launch_template, :load_balancers, :max_instance_lifetime, :metrics_granularity, :min_elb_capacity, :mixed_instances_policy, :name, :name_prefix, :placement_group, :service_linked_role_arn, :suspended_processes, :tag, :target_group_arns, :termination_policies, :traffic_source, :vpc_zone_identifier, :wait_for_capacity_timeout, :wait_for_elb_capacity, :warm_pool],
       map_bool: [:capacity_rebalance, :force_delete, :force_delete_warm_pool, :ignore_failed_scaling_activities, :protect_from_scale_in]
   end
   module AWS

@@ -13,7 +13,11 @@ module Pangea::Resources::AWS::Types
     attribute :subnet_id, T::String
     attribute? :allocation_id, T::String.optional
     attribute? :connectivity_type, T::String.optional
+    attribute? :private_ip, T::String.optional
     attribute? :secondary_allocation_ids, T::Array.of(T::String).optional
+    attribute? :secondary_private_ip_address_count, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :secondary_private_ip_addresses, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -10,6 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :cloudwatch_role_arn, T::String.optional
     attribute? :reset_on_delete, T::Bool.optional
   end
 end

@@ -16,11 +16,25 @@ module Pangea::Resources::AWS::Types
     attribute :network_configuration, T::Hash
     attribute :source_bucket_arn, T::String
     attribute? :airflow_configuration_options, T::Hash.optional
+    attribute? :airflow_version, T::String.optional
+    attribute? :endpoint_management, T::String.optional
+    attribute? :environment_class, T::String.optional
     attribute? :kms_key, T::String.optional
     attribute? :logging_configuration, T::Hash.optional
+    attribute? :max_webservers, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :max_workers, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :min_webservers, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :min_workers, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :plugins_s3_object_version, T::String.optional
     attribute? :plugins_s3_path, T::String.optional
+    attribute? :requirements_s3_object_version, T::String.optional
     attribute? :requirements_s3_path, T::String.optional
+    attribute? :schedulers, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :startup_script_s3_object_version, T::String.optional
     attribute? :startup_script_s3_path, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :webserver_access_mode, T::String.optional
+    attribute? :weekly_maintenance_window_start, T::String.optional
   end
 end

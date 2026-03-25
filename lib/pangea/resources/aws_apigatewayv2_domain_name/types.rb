@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :domain_name_configuration, T::Hash
     attribute? :mutual_tls_authentication, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :application_id, T::String
     attribute :name, T::String
+    attribute? :description, T::String.optional
     attribute? :monitor, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
   end

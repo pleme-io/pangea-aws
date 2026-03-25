@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppsyncFunctionAttributes,
       outputs: { id: :id },
       map: [:api_id, :data_source, :name],
-      map_present: [:code, :description, :max_batch_size, :request_mapping_template, :response_mapping_template, :runtime, :sync_config]
+      map_present: [:code, :description, :function_version, :max_batch_size, :request_mapping_template, :response_mapping_template, :runtime, :sync_config]
   end
   module AWS
     include AWSAppsyncFunction

@@ -13,8 +13,10 @@ module Pangea::Resources::AWS::Types
     attribute :product_id, T::String
     attribute? :accept_language, T::String.optional
     attribute? :active, T::Bool.optional
+    attribute? :description, T::String.optional
     attribute? :disable_template_validation, T::Bool.optional
     attribute? :guidance, T::String.optional
+    attribute? :name, T::String.optional
     attribute? :template_physical_id, T::String.optional
     attribute? :template_url, T::String.optional
     attribute? :type, T::String.optional

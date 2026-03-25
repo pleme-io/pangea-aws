@@ -13,5 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :client_id_list, T::Array.of(T::String)
     attribute :url, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :thumbprint_list, T::Array.of(T::String).optional
   end
 end

@@ -12,6 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :config_id, T::String
     attribute :storage_lens_configuration, T::Hash
+    attribute? :account_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -16,6 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :client_token, T::String.optional
     attribute? :description, T::String.optional
     attribute? :portal_options, T::Array.of(T::Hash).optional
+    attribute? :status, T::String.optional
     attribute? :tags, T::Hash.optional
   end
 end

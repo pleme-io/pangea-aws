@@ -15,8 +15,10 @@ module Pangea::Resources::AWS::Types
     attribute? :auto_branch_creation_config, T::Hash.optional
     attribute? :auto_branch_creation_patterns, T::Array.of(T::String).optional
     attribute? :basic_auth_credentials, T::String.optional
+    attribute? :build_spec, T::String.optional
     attribute? :cache_config, T::Hash.optional
     attribute? :compute_role_arn, T::String.optional
+    attribute? :custom_headers, T::String.optional
     attribute? :custom_rule, T::Array.of(T::Hash).optional
     attribute? :description, T::String.optional
     attribute? :enable_auto_branch_creation, T::Bool.optional
@@ -29,5 +31,6 @@ module Pangea::Resources::AWS::Types
     attribute? :platform, T::String.optional
     attribute? :repository, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

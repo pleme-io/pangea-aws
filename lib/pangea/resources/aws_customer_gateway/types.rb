@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute? :device_name, T::String.optional
     attribute? :ip_address, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

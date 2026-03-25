@@ -12,7 +12,10 @@ module Pangea::Resources::AWS::Types
 
     attribute :policy, (T::String | T::Hash)
     attribute? :description, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :path, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

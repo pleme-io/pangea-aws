@@ -12,5 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :domain_identifier, T::String
     attribute :user_identifier, T::String
+    attribute? :status, T::String.optional
+    attribute? :user_type, T::String.optional
   end
 end

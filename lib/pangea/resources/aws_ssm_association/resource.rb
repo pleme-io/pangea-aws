@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsmAssociationAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:association_name, :automation_target_parameter_name, :compliance_severity, :instance_id, :max_concurrency, :max_errors, :output_location, :schedule_expression, :sync_compliance, :tags, :targets, :wait_for_success_timeout_seconds],
+      map_present: [:association_name, :automation_target_parameter_name, :compliance_severity, :document_version, :instance_id, :max_concurrency, :max_errors, :output_location, :parameters, :schedule_expression, :sync_compliance, :tags, :tags_all, :targets, :wait_for_success_timeout_seconds],
       map_bool: [:apply_only_at_cron_interval]
   end
   module AWS

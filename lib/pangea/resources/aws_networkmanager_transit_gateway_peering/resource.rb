@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkmanagerTransitGatewayPeeringAttributes,
       outputs: { id: :id },
       map: [:core_network_id, :transit_gateway_arn],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSNetworkmanagerTransitGatewayPeering

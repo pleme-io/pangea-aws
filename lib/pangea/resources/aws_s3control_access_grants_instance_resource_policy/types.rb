@@ -11,5 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :policy, (T::String | T::Hash)
+    attribute? :account_id, T::String.optional
   end
 end

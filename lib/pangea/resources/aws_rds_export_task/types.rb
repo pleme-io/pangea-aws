@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute :s3_bucket_name, T::String
     attribute :source_arn, T::String
     attribute? :export_only, T::Array.of(T::String).optional
+    attribute? :s3_prefix, T::String.optional
   end
 end

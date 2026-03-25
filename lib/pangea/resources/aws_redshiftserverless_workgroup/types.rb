@@ -12,11 +12,17 @@ module Pangea::Resources::AWS::Types
 
     attribute :namespace_name, T::String
     attribute :workgroup_name, T::String
+    attribute? :base_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :config_parameter, T::Array.of(T::Hash).optional
     attribute? :enhanced_vpc_routing, T::Bool.optional
     attribute? :max_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :price_performance_target, T::Hash.optional
     attribute? :publicly_accessible, T::Bool.optional
+    attribute? :security_group_ids, T::Array.of(T::String).optional
+    attribute? :subnet_ids, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :track_name, T::String.optional
   end
 end

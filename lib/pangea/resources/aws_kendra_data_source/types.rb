@@ -16,8 +16,10 @@ module Pangea::Resources::AWS::Types
     attribute? :configuration, T::Hash.optional
     attribute? :custom_document_enrichment_configuration, T::Hash.optional
     attribute? :description, T::String.optional
+    attribute? :language_code, T::String.optional
     attribute? :role_arn, T::String.optional
     attribute? :schedule, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

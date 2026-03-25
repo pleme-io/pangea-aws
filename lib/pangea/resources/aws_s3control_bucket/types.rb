@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :bucket, T::String
     attribute :outpost_id, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

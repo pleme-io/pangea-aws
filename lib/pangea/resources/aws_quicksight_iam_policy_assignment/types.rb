@@ -12,7 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :assignment_name, T::String
     attribute :assignment_status, T::String
+    attribute? :aws_account_id, T::String.optional
     attribute? :identities, T::Array.of(T::Hash).optional
+    attribute? :namespace, T::String.optional
     attribute? :policy_arn, T::String.optional
   end
 end

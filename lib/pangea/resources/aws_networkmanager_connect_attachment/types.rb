@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute :options, T::Hash
     attribute :transport_attachment_id, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

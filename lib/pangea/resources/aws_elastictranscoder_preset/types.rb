@@ -14,7 +14,9 @@ module Pangea::Resources::AWS::Types
     attribute? :audio, T::Hash.optional
     attribute? :audio_codec_options, T::Hash.optional
     attribute? :description, T::String.optional
+    attribute? :name, T::String.optional
     attribute? :thumbnails, T::Hash.optional
+    attribute? :type, T::String.optional
     attribute? :video, T::Hash.optional
     attribute? :video_codec_options, T::Hash.optional
     attribute? :video_watermarks, T::Array.of(T::Hash).optional

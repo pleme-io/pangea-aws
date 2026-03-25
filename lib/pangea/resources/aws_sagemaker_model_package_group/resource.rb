@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerModelPackageGroupAttributes,
       outputs: { id: :id },
       map: [:model_package_group_name],
-      map_present: [:model_package_group_description, :tags]
+      map_present: [:model_package_group_description, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerModelPackageGroup

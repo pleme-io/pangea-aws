@@ -17,6 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute? :kms_key_identifier, T::String.optional
     attribute? :retrieval_role_arn, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :type, T::String.optional
     attribute? :validator, T::Array.of(T::Hash).optional
   end

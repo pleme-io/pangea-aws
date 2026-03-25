@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :storage_location, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :version, T::String.optional
     attribute? :zip_file, T::String.optional
   end

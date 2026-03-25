@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayIntegrationAttributes,
       outputs: { id: :id },
       map: [:http_method, :resource_id, :rest_api_id, :type],
-      map_present: [:cache_key_parameters, :connection_id, :connection_type, :content_handling, :credentials, :integration_http_method, :request_parameters, :request_templates, :timeout_milliseconds, :tls_config, :uri]
+      map_present: [:cache_key_parameters, :cache_namespace, :connection_id, :connection_type, :content_handling, :credentials, :integration_http_method, :passthrough_behavior, :request_parameters, :request_templates, :timeout_milliseconds, :tls_config, :uri]
   end
   module AWS
     include AWSApiGatewayIntegration

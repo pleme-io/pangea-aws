@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :size_in_gb, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -12,5 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :policy, (T::String | T::Hash)
     attribute :role, T::String
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
   end
 end

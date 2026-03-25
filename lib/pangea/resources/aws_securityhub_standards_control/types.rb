@@ -12,5 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :control_status, T::String
     attribute :standards_control_arn, T::String
+    attribute? :disabled_reason, T::String.optional
   end
 end

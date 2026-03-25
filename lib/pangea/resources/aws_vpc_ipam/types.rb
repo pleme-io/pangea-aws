@@ -15,6 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :enable_private_gua, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :tier, T::String.optional
   end
 end

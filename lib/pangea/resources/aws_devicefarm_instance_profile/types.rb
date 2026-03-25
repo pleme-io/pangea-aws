@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute? :package_cleanup, T::Bool.optional
     attribute? :reboot_after_use, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

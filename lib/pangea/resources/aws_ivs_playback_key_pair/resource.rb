@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IvsPlaybackKeyPairAttributes,
       outputs: { id: :id },
       map: [:public_key],
-      map_present: [:tags]
+      map_present: [:name, :tags, :tags_all]
   end
   module AWS
     include AWSIvsPlaybackKeyPair

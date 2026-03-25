@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EcrpublicRepositoryAttributes,
       outputs: { id: :id },
       map: [:repository_name],
-      map_present: [:catalog_data, :tags],
+      map_present: [:catalog_data, :tags, :tags_all],
       map_bool: [:force_destroy]
   end
   module AWS

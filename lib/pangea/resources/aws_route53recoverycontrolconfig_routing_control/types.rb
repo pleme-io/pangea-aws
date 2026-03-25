@@ -12,5 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :cluster_arn, T::String
     attribute :name, T::String
+    attribute? :control_panel_arn, T::String.optional
   end
 end

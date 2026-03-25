@@ -17,6 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute? :resources, T::Array.of(T::String).optional
     attribute? :status, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :traffic_percentage_to_monitor, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

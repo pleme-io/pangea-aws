@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DmsCertificateAttributes,
       outputs: { id: :id },
       map: [:certificate_id],
-      map_present: [:certificate_pem, :certificate_wallet, :tags]
+      map_present: [:certificate_pem, :certificate_wallet, :tags, :tags_all]
   end
   module AWS
     include AWSDmsCertificate

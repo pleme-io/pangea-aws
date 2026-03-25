@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatasyncLocationAzureBlobAttributes,
       outputs: { id: :id },
       map: [:agent_arns, :authentication_type, :container_url],
-      map_present: [:access_tier, :blob_type, :sas_configuration, :tags]
+      map_present: [:access_tier, :blob_type, :sas_configuration, :subdirectory, :tags, :tags_all]
   end
   module AWS
     include AWSDatasyncLocationAzureBlob

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::StoragegatewayGatewayAttributes,
       outputs: { id: :id },
       map: [:gateway_name, :gateway_timezone],
-      map_present: [:average_download_rate_limit_in_bits_per_sec, :average_upload_rate_limit_in_bits_per_sec, :cloudwatch_log_group_arn, :gateway_type, :gateway_vpc_endpoint, :maintenance_start_time, :medium_changer_type, :smb_active_directory_settings, :smb_guest_password, :tags, :tape_drive_type],
+      map_present: [:activation_key, :average_download_rate_limit_in_bits_per_sec, :average_upload_rate_limit_in_bits_per_sec, :cloudwatch_log_group_arn, :gateway_ip_address, :gateway_type, :gateway_vpc_endpoint, :maintenance_start_time, :medium_changer_type, :smb_active_directory_settings, :smb_guest_password, :smb_security_strategy, :tags, :tags_all, :tape_drive_type],
       map_bool: [:smb_file_share_visibility]
   end
   module AWS

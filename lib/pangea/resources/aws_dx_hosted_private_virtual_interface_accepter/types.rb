@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :virtual_interface_id, T::String
     attribute? :dx_gateway_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpn_gateway_id, T::String.optional
   end
 end

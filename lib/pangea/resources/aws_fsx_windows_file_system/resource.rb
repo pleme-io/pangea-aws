@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FsxWindowsFileSystemAttributes,
       outputs: { id: :id },
       map: [:subnet_ids, :throughput_capacity],
-      map_present: [:active_directory_id, :aliases, :audit_log_configuration, :automatic_backup_retention_days, :backup_id, :deployment_type, :disk_iops_configuration, :final_backup_tags, :security_group_ids, :self_managed_active_directory, :storage_type, :tags],
+      map_present: [:active_directory_id, :aliases, :audit_log_configuration, :automatic_backup_retention_days, :backup_id, :daily_automatic_backup_start_time, :deployment_type, :disk_iops_configuration, :final_backup_tags, :kms_key_id, :preferred_subnet_id, :security_group_ids, :self_managed_active_directory, :storage_capacity, :storage_type, :tags, :tags_all, :weekly_maintenance_start_time],
       map_bool: [:copy_tags_to_backups, :skip_final_backup]
   end
   module AWS

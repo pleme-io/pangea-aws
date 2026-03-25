@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute? :multiplex_settings, T::Hash.optional
     attribute? :start_multiplex, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::XrayResourcePolicyAttributes,
       outputs: { id: :id },
       map: [:policy_document, :policy_name],
+      map_present: [:policy_revision_id],
       map_bool: [:bypass_policy_lockout_check]
   end
   module AWS

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_bedrockagent_agent_knowledge_base_association,
       attributes_class: AWS::Types::BedrockagentAgentKnowledgeBaseAssociationAttributes,
       outputs: { id: :id },
-      map: [:agent_id, :description, :knowledge_base_id, :knowledge_base_state]
+      map: [:agent_id, :description, :knowledge_base_id, :knowledge_base_state],
+      map_present: [:agent_version]
   end
   module AWS
     include AWSBedrockagentAgentKnowledgeBaseAssociation

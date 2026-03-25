@@ -11,6 +11,9 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :bucket, T::String
+    attribute? :data_redundancy, T::String.optional
+    attribute? :force_destroy, T::Bool.optional
     attribute? :location, T::Array.of(T::Hash).optional
+    attribute? :type, T::String.optional
   end
 end

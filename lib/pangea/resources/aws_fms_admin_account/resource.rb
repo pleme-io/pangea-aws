@@ -12,7 +12,8 @@ module Pangea::Resources
 
     define_resource :aws_fms_admin_account,
       attributes_class: AWS::Types::FmsAdminAccountAttributes,
-      outputs: { id: :id }
+      outputs: { id: :id },
+      map_present: [:account_id]
   end
   module AWS
     include AWSFmsAdminAccount

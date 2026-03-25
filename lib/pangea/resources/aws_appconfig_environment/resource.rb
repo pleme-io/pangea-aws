@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppconfigEnvironmentAttributes,
       outputs: { id: :id },
       map: [:application_id, :name],
-      map_present: [:monitor, :tags]
+      map_present: [:description, :monitor, :tags]
   end
   module AWS
     include AWSAppconfigEnvironment

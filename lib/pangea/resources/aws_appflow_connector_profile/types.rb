@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute :connector_type, T::String
     attribute :name, T::String
     attribute? :connector_label, T::String.optional
+    attribute? :kms_arn, T::String.optional
   end
 end

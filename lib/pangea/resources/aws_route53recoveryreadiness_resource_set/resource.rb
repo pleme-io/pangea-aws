@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Route53recoveryreadinessResourceSetAttributes,
       outputs: { id: :id },
       map: [:resource_set_name, :resource_set_type, :resources],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSRoute53recoveryreadinessResourceSet

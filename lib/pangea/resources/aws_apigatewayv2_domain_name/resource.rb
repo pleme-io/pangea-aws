@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Apigatewayv2DomainNameAttributes,
       outputs: { id: :id },
       map: [:domain_name, :domain_name_configuration],
-      map_present: [:mutual_tls_authentication, :tags]
+      map_present: [:mutual_tls_authentication, :tags, :tags_all]
   end
   module AWS
     include AWSApigatewayv2DomainName

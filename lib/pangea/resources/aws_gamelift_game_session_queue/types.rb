@@ -16,6 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :notification_target, T::String.optional
     attribute? :player_latency_policy, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :timeout_in_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

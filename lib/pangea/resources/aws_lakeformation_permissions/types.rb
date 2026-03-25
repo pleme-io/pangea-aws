@@ -19,6 +19,7 @@ module Pangea::Resources::AWS::Types
     attribute? :database, T::Hash.optional
     attribute? :lf_tag, T::Hash.optional
     attribute? :lf_tag_policy, T::Hash.optional
+    attribute? :permissions_with_grant_option, T::Array.of(T::String).optional
     attribute? :table, T::Hash.optional
     attribute? :table_with_columns, T::Hash.optional
   end

@@ -16,8 +16,10 @@ module Pangea::Resources::AWS::Types
     attribute :host_instance_type, T::String
     attribute :user, T::Array.of(T::Hash)
     attribute? :apply_immediately, T::Bool.optional
+    attribute? :authentication_strategy, T::String.optional
     attribute? :auto_minor_version_upgrade, T::Bool.optional
     attribute? :configuration, T::Hash.optional
+    attribute? :data_replication_mode, T::String.optional
     attribute? :data_replication_primary_broker_arn, T::String.optional
     attribute? :deployment_mode, T::String.optional
     attribute? :encryption_options, T::Hash.optional
@@ -26,6 +28,9 @@ module Pangea::Resources::AWS::Types
     attribute? :maintenance_window_start_time, T::Hash.optional
     attribute? :publicly_accessible, T::Bool.optional
     attribute? :security_groups, T::Array.of(T::String).optional
+    attribute? :storage_type, T::String.optional
+    attribute? :subnet_ids, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

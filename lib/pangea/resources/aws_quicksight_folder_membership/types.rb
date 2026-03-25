@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :folder_id, T::String
     attribute :member_id, T::String
     attribute :member_type, T::String
+    attribute? :aws_account_id, T::String.optional
   end
 end

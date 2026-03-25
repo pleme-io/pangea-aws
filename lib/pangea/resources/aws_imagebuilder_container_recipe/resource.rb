@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ImagebuilderContainerRecipeAttributes,
       outputs: { id: :id },
       map: [:component, :container_type, :name, :parent_image, :target_repository, :version],
-      map_present: [:description, :dockerfile_template_uri, :instance_configuration, :kms_key_id, :platform_override, :tags, :working_directory]
+      map_present: [:description, :dockerfile_template_data, :dockerfile_template_uri, :instance_configuration, :kms_key_id, :platform_override, :tags, :tags_all, :working_directory]
   end
   module AWS
     include AWSImagebuilderContainerRecipe

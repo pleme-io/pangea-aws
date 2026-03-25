@@ -19,5 +19,7 @@ module Pangea::Resources::AWS::Types
     attribute? :qualifier, T::String.optional
     attribute? :source_account, T::String.optional
     attribute? :source_arn, T::String.optional
+    attribute? :statement_id, T::String.optional
+    attribute? :statement_id_prefix, T::String.optional
   end
 end

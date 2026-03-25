@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute? :image_scanning_configuration, T::Hash.optional
     attribute? :image_tag_mutability, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatasyncLocationNfsAttributes,
       outputs: { id: :id },
       map: [:on_prem_config, :server_hostname, :subdirectory],
-      map_present: [:mount_options, :tags]
+      map_present: [:mount_options, :tags, :tags_all]
   end
   module AWS
     include AWSDatasyncLocationNfs

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MskconnectConnectorAttributes,
       outputs: { id: :id },
       map: [:capacity, :connector_configuration, :kafka_cluster, :kafka_cluster_client_authentication, :kafka_cluster_encryption_in_transit, :kafkaconnect_version, :name, :plugin, :service_execution_role_arn],
-      map_present: [:description, :log_delivery, :tags, :worker_configuration]
+      map_present: [:description, :log_delivery, :tags, :tags_all, :worker_configuration]
   end
   module AWS
     include AWSMskconnectConnector

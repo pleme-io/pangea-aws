@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_s3_bucket,
       attributes_class: AWS::Types::S3BucketAttributes,
       outputs: { id: :id },
-      map_present: [:cors_rule, :grant, :lifecycle_rule, :logging, :object_lock_configuration, :replication_configuration, :server_side_encryption_configuration, :tags, :versioning, :website],
-      map_bool: [:force_destroy]
+      map_present: [:acceleration_status, :acl, :bucket, :bucket_prefix, :cors_rule, :grant, :lifecycle_rule, :logging, :object_lock_configuration, :policy, :replication_configuration, :request_payer, :server_side_encryption_configuration, :tags, :tags_all, :versioning, :website],
+      map_bool: [:force_destroy, :object_lock_enabled]
   end
   module AWS
     include AWSS3Bucket

@@ -14,9 +14,13 @@ module Pangea::Resources::AWS::Types
     attribute :message_type, T::String
     attribute :number_capabilities, T::Array.of(T::String)
     attribute :number_type, T::String
+    attribute? :deletion_protection_enabled, T::Bool.optional
+    attribute? :opt_out_list_name, T::String.optional
     attribute? :registration_id, T::String.optional
+    attribute? :self_managed_opt_outs_enabled, T::Bool.optional
     attribute? :tags, T::Hash.optional
     attribute? :two_way_channel_arn, T::String.optional
+    attribute? :two_way_channel_enabled, T::Bool.optional
     attribute? :two_way_channel_role, T::String.optional
   end
 end

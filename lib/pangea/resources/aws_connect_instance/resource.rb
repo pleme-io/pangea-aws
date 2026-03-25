@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConnectInstanceAttributes,
       outputs: { id: :id },
       map: [:identity_management_type],
-      map_present: [:directory_id, :instance_alias, :tags],
+      map_present: [:directory_id, :instance_alias, :tags, :tags_all],
       map_bool: [:inbound_calls_enabled, :outbound_calls_enabled, :auto_resolve_best_voices_enabled, :contact_flow_logs_enabled, :contact_lens_enabled, :early_media_enabled, :multi_party_conference_enabled]
   end
   module AWS

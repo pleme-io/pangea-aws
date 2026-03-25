@@ -15,6 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute? :backend_environment_arn, T::String.optional
     attribute? :basic_auth_credentials, T::String.optional
     attribute? :description, T::String.optional
+    attribute? :display_name, T::String.optional
     attribute? :enable_auto_build, T::Bool.optional
     attribute? :enable_basic_auth, T::Bool.optional
     attribute? :enable_notification, T::Bool.optional
@@ -25,6 +26,7 @@ module Pangea::Resources::AWS::Types
     attribute? :pull_request_environment_name, T::String.optional
     attribute? :stage, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :ttl, T::String.optional
   end
 end

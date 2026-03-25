@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :source_name, T::String
     attribute? :configuration, T::Array.of(T::Hash).optional
     attribute? :event_classes, T::Array.of(T::String).optional
+    attribute? :source_version, T::String.optional
   end
 end

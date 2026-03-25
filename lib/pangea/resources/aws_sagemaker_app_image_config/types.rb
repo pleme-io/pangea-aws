@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute? :jupyter_lab_image_config, T::Hash.optional
     attribute? :kernel_gateway_image_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

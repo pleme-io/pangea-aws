@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DxTransitVirtualInterfaceAttributes,
       outputs: { id: :id },
       map: [:address_family, :bgp_asn, :connection_id, :dx_gateway_id, :name, :vlan],
-      map_present: [:mtu, :tags],
+      map_present: [:amazon_address, :bgp_auth_key, :customer_address, :mtu, :tags, :tags_all],
       map_bool: [:sitelink_enabled]
   end
   module AWS

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerSpaceAttributes,
       outputs: { id: :id },
       map: [:domain_id, :space_name],
-      map_present: [:ownership_settings, :space_display_name, :space_settings, :space_sharing_settings, :tags]
+      map_present: [:ownership_settings, :space_display_name, :space_settings, :space_sharing_settings, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerSpace

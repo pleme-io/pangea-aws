@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatasyncLocationEfsAttributes,
       outputs: { id: :id },
       map: [:ec2_config, :efs_file_system_arn],
-      map_present: [:access_point_arn, :file_system_access_role_arn, :in_transit_encryption, :subdirectory, :tags]
+      map_present: [:access_point_arn, :file_system_access_role_arn, :in_transit_encryption, :subdirectory, :tags, :tags_all]
   end
   module AWS
     include AWSDatasyncLocationEfs

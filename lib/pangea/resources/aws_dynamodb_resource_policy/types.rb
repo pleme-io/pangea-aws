@@ -12,5 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :policy, (T::String | T::Hash)
     attribute :resource_arn, T::String
+    attribute? :confirm_remove_self_resource_access, T::Bool.optional
   end
 end

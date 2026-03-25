@@ -17,6 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute? :execution_mode, T::String.optional
     attribute? :pipeline_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :trigger, T::Array.of(T::Hash).optional
     attribute? :variable, T::Array.of(T::Hash).optional
   end

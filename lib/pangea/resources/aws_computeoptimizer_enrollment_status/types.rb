@@ -11,5 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :status, T::String
+    attribute? :include_member_accounts, T::Bool.optional
   end
 end

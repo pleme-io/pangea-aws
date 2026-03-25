@@ -16,6 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :policy_detail, T::Array.of(T::Hash).optional
     attribute? :resource_selection, T::Array.of(T::Hash).optional
+    attribute? :status, T::String.optional
     attribute? :tags, T::Hash.optional
   end
 end

@@ -12,10 +12,12 @@ module Pangea::Resources::AWS::Types
 
     attribute :instance_id, T::String
     attribute :name, T::String
+    attribute? :content, T::String.optional
     attribute? :content_hash, T::String.optional
     attribute? :description, T::String.optional
     attribute? :filename, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :type, T::String.optional
   end
 end

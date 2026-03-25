@@ -14,10 +14,14 @@ module Pangea::Resources::AWS::Types
     attribute? :destination_options, T::Hash.optional
     attribute? :eni_id, T::String.optional
     attribute? :iam_role_arn, T::String.optional
+    attribute? :log_destination, T::String.optional
     attribute? :log_destination_type, T::String.optional
+    attribute? :log_format, T::String.optional
+    attribute? :log_group_name, T::String.optional
     attribute? :max_aggregation_interval, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :subnet_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :traffic_type, T::String.optional
     attribute? :transit_gateway_attachment_id, T::String.optional
     attribute? :transit_gateway_id, T::String.optional

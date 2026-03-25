@@ -12,5 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :policy_store_id, T::String
     attribute? :configuration, T::Array.of(T::Hash).optional
+    attribute? :principal_entity_type, T::String.optional
   end
 end

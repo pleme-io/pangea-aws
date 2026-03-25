@@ -16,6 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :product_code, T::String.optional
     attribute? :quota_settings, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :throttle_settings, T::Hash.optional
   end
 end

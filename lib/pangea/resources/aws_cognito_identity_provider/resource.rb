@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CognitoIdentityProviderAttributes,
       outputs: { id: :id },
       map: [:provider_details, :provider_name, :provider_type, :user_pool_id],
-      map_present: [:idp_identifiers]
+      map_present: [:attribute_mapping, :idp_identifiers]
   end
   module AWS
     include AWSCognitoIdentityProvider

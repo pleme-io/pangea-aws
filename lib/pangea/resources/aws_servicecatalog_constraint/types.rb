@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute :product_id, T::String
     attribute :type, T::String
     attribute? :accept_language, T::String.optional
+    attribute? :description, T::String.optional
   end
 end

@@ -9,5 +9,7 @@ module Pangea::Resources::AWS::Types
   class FmsAdminAccountAttributes < Dry::Struct
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
+
+    attribute? :account_id, T::String.optional
   end
 end

@@ -19,6 +19,7 @@ module Pangea::Resources::AWS::Types
     attribute? :oidc_options, T::Hash.optional
     attribute? :sse_specification, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :user_trust_provider_type, T::String.optional
   end
 end

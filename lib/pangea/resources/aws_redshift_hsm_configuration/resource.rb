@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftHsmConfigurationAttributes,
       outputs: { id: :id },
       map: [:description, :hsm_configuration_identifier, :hsm_ip_address, :hsm_partition_name, :hsm_partition_password, :hsm_server_public_certificate],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSRedshiftHsmConfiguration

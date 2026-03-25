@@ -14,6 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute :source_arn, T::String
     attribute :target_arn, T::String
     attribute? :additional_encryption_context, T::Hash.optional
+    attribute? :data_filter, T::String.optional
+    attribute? :kms_key_id, T::String.optional
     attribute? :tags, T::Hash.optional
   end
 end

@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_acm_certificate,
       attributes_class: AWS::Types::AcmCertificateAttributes,
       outputs: { id: :id },
-      map_present: [:certificate_authority_arn, :certificate_body, :certificate_chain, :early_renewal_duration, :options, :private_key, :tags, :validation_option]
+      map_present: [:certificate_authority_arn, :certificate_body, :certificate_chain, :domain_name, :early_renewal_duration, :key_algorithm, :options, :private_key, :subject_alternative_names, :tags, :tags_all, :validation_method, :validation_option]
   end
   module AWS
     include AWSAcmCertificate

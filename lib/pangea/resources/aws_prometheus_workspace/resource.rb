@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_prometheus_workspace,
       attributes_class: AWS::Types::PrometheusWorkspaceAttributes,
       outputs: { id: :id },
-      map_present: [:alias, :kms_key_arn, :logging_configuration, :tags]
+      map_present: [:alias, :kms_key_arn, :logging_configuration, :tags, :tags_all]
   end
   module AWS
     include AWSPrometheusWorkspace

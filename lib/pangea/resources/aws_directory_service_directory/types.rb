@@ -12,10 +12,16 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute :password, T::String
+    attribute? :alias, T::String.optional
     attribute? :connect_settings, T::Hash.optional
     attribute? :description, T::String.optional
+    attribute? :desired_number_of_domain_controllers, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :edition, T::String.optional
     attribute? :enable_sso, T::Bool.optional
+    attribute? :short_name, T::String.optional
+    attribute? :size, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :type, T::String.optional
     attribute? :vpc_settings, T::Hash.optional
   end

@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :service_identifier, T::String
     attribute :service_network_identifier, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

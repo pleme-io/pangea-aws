@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FsxOpenzfsFileSystemAttributes,
       outputs: { id: :id },
       map: [:deployment_type, :subnet_ids, :throughput_capacity],
-      map_present: [:automatic_backup_retention_days, :backup_id, :delete_options, :disk_iops_configuration, :final_backup_tags, :preferred_subnet_id, :root_volume_configuration, :security_group_ids, :storage_capacity, :storage_type, :tags],
+      map_present: [:automatic_backup_retention_days, :backup_id, :daily_automatic_backup_start_time, :delete_options, :disk_iops_configuration, :endpoint_ip_address_range, :final_backup_tags, :kms_key_id, :preferred_subnet_id, :root_volume_configuration, :route_table_ids, :security_group_ids, :storage_capacity, :storage_type, :tags, :tags_all, :weekly_maintenance_start_time],
       map_bool: [:copy_tags_to_backups, :copy_tags_to_volumes, :skip_final_backup]
   end
   module AWS

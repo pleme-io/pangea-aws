@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute :target_cluster_arn, T::String
     attribute :vpc_id, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

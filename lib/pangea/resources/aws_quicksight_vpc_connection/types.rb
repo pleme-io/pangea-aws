@@ -15,6 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :security_group_ids, T::Array.of(T::String)
     attribute :subnet_ids, T::Array.of(T::String)
     attribute :vpc_connection_id, T::String
+    attribute? :aws_account_id, T::String.optional
     attribute? :dns_resolvers, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
   end

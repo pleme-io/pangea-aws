@@ -12,7 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :hsm_type, T::String
     attribute :subnet_ids, T::Array.of(T::String)
+    attribute? :mode, T::String.optional
     attribute? :source_backup_identifier, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

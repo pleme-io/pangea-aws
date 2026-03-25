@@ -11,7 +11,9 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :amazon_side_asn, (T::Coercible::Integer | T::Coercible::Float)
+    attribute? :persist_routes, T::String.optional
     attribute? :persist_routes_duration, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :sns_notifications_enabled, T::Bool.optional
     attribute? :tags, T::Hash.optional
   end
 end

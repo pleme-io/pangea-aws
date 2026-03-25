@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_opensearchserverless_vpc_endpoint,
       attributes_class: AWS::Types::OpensearchserverlessVpcEndpointAttributes,
       outputs: { id: :id },
-      map: [:name, :subnet_ids, :vpc_id]
+      map: [:name, :subnet_ids, :vpc_id],
+      map_present: [:security_group_ids]
   end
   module AWS
     include AWSOpensearchserverlessVpcEndpoint

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueCrawlerAttributes,
       outputs: { id: :id },
       map: [:database_name, :name, :role],
-      map_present: [:catalog_target, :classifiers, :configuration, :delta_target, :description, :dynamodb_target, :hudi_target, :iceberg_target, :jdbc_target, :lake_formation_configuration, :lineage_configuration, :mongodb_target, :recrawl_policy, :s3_target, :schedule, :schema_change_policy, :security_configuration, :table_prefix, :tags]
+      map_present: [:catalog_target, :classifiers, :configuration, :delta_target, :description, :dynamodb_target, :hudi_target, :iceberg_target, :jdbc_target, :lake_formation_configuration, :lineage_configuration, :mongodb_target, :recrawl_policy, :s3_target, :schedule, :schema_change_policy, :security_configuration, :table_prefix, :tags, :tags_all]
   end
   module AWS
     include AWSGlueCrawler

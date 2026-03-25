@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::XrayGroupAttributes,
       outputs: { id: :id },
       map: [:filter_expression, :group_name],
-      map_present: [:insights_configuration, :tags]
+      map_present: [:insights_configuration, :tags, :tags_all]
   end
   module AWS
     include AWSXrayGroup

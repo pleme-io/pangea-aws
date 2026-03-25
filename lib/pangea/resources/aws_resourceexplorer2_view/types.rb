@@ -11,8 +11,10 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
+    attribute? :default_view, T::Bool.optional
     attribute? :filters, T::Array.of(T::Hash).optional
     attribute? :included_property, T::Array.of(T::Hash).optional
+    attribute? :scope, T::String.optional
     attribute? :tags, T::Hash.optional
   end
 end

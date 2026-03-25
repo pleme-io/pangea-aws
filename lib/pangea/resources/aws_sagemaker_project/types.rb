@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :service_catalog_provisioning_details, T::Hash
     attribute? :project_description, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

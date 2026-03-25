@@ -26,6 +26,7 @@ module Pangea::Resources::AWS::Types
     attribute? :start_canary, T::Bool.optional
     attribute? :success_retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc_config, T::Hash.optional
     attribute? :zip_file, T::String.optional
   end

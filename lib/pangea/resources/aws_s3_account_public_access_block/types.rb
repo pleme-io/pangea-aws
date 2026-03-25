@@ -10,6 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :account_id, T::String.optional
     attribute? :block_public_acls, T::Bool.optional
     attribute? :block_public_policy, T::Bool.optional
     attribute? :ignore_public_acls, T::Bool.optional

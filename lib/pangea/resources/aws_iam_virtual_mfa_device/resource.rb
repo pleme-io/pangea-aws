@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IamVirtualMfaDeviceAttributes,
       outputs: { id: :id },
       map: [:virtual_mfa_device_name],
-      map_present: [:path, :tags]
+      map_present: [:path, :tags, :tags_all]
   end
   module AWS
     include AWSIamVirtualMfaDevice

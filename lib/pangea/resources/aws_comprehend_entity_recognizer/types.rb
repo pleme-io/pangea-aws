@@ -16,6 +16,9 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :model_kms_key_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :version_name, T::String.optional
+    attribute? :version_name_prefix, T::String.optional
     attribute? :volume_kms_key_id, T::String.optional
     attribute? :vpc_config, T::Hash.optional
   end

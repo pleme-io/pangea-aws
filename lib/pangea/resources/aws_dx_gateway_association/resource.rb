@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DxGatewayAssociationAttributes,
       outputs: { id: :id },
       map: [:dx_gateway_id],
-      map_present: [:proposal_id, :vpn_gateway_id]
+      map_present: [:allowed_prefixes, :associated_gateway_id, :associated_gateway_owner_account_id, :proposal_id, :vpn_gateway_id]
   end
   module AWS
     include AWSDxGatewayAssociation

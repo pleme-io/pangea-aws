@@ -23,6 +23,7 @@ module Pangea::Resources::AWS::Types
     attribute? :retry_strategy, T::Hash.optional
     attribute? :scheduling_priority, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :timeout, T::Hash.optional
   end
 end

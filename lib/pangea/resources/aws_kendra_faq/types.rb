@@ -16,6 +16,8 @@ module Pangea::Resources::AWS::Types
     attribute :s3_path, T::Hash
     attribute? :description, T::String.optional
     attribute? :file_format, T::String.optional
+    attribute? :language_code, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

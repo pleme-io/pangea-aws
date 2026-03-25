@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppconfigDeploymentStrategyAttributes,
       outputs: { id: :id },
       map: [:deployment_duration_in_minutes, :growth_factor, :name, :replicate_to],
-      map_present: [:description, :final_bake_time_in_minutes, :growth_type, :tags]
+      map_present: [:description, :final_bake_time_in_minutes, :growth_type, :tags, :tags_all]
   end
   module AWS
     include AWSAppconfigDeploymentStrategy

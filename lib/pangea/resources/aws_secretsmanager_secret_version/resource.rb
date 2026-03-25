@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SecretsmanagerSecretVersionAttributes,
       outputs: { id: :id },
       map: [:secret_id],
-      map_present: [:secret_binary, :secret_string, :secret_string_wo, :secret_string_wo_version]
+      map_present: [:secret_binary, :secret_string, :secret_string_wo, :secret_string_wo_version, :version_stages]
   end
   module AWS
     include AWSSecretsmanagerSecretVersion

@@ -16,9 +16,12 @@ module Pangea::Resources::AWS::Types
     attribute :source_endpoint_arn, T::String
     attribute :table_mappings, T::String
     attribute :target_endpoint_arn, T::String
+    attribute? :cdc_start_position, T::String.optional
     attribute? :cdc_start_time, T::String.optional
+    attribute? :replication_task_settings, T::String.optional
     attribute? :resource_identifier, T::String.optional
     attribute? :start_replication_task, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

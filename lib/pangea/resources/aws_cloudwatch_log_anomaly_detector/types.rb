@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :enabled, T::Bool
     attribute :log_group_arn_list, T::Array.of(T::String)
+    attribute? :anomaly_visibility_time, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :detector_name, T::String.optional
     attribute? :evaluation_frequency, T::String.optional
     attribute? :filter_pattern, T::String.optional

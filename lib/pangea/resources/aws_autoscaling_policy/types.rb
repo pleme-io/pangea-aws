@@ -16,6 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :cooldown, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :enabled, T::Bool.optional
     attribute? :estimated_instance_warmup, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :metric_aggregation_type, T::String.optional
     attribute? :min_adjustment_magnitude, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :policy_type, T::String.optional
     attribute? :predictive_scaling_configuration, T::Hash.optional

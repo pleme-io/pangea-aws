@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayApiKeyAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:customer_id, :description, :tags],
+      map_present: [:customer_id, :description, :tags, :tags_all, :value],
       map_bool: [:enabled]
   end
   module AWS

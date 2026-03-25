@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BudgetsBudgetAttributes,
       outputs: { id: :id },
       map: [:budget_type, :time_unit],
-      map_present: [:auto_adjust_data, :cost_filter, :cost_types, :notification, :planned_limit, :tags, :time_period_end]
+      map_present: [:account_id, :auto_adjust_data, :cost_filter, :cost_types, :limit_amount, :limit_unit, :name, :name_prefix, :notification, :planned_limit, :tags, :tags_all, :time_period_end, :time_period_start]
   end
   module AWS
     include AWSBudgetsBudget

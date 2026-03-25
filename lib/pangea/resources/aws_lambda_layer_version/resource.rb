@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LambdaLayerVersionAttributes,
       outputs: { id: :id },
       map: [:layer_name],
-      map_present: [:compatible_architectures, :compatible_runtimes, :description, :filename, :license_info, :s3_bucket, :s3_key, :s3_object_version],
+      map_present: [:compatible_architectures, :compatible_runtimes, :description, :filename, :license_info, :s3_bucket, :s3_key, :s3_object_version, :source_code_hash],
       map_bool: [:skip_destroy]
   end
   module AWS

@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute? :health_check_path, T::String.optional
     attribute? :ip_address_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

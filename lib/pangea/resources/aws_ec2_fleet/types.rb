@@ -15,10 +15,14 @@ module Pangea::Resources::AWS::Types
     attribute? :context, T::String.optional
     attribute? :excess_capacity_termination_policy, (T::String | T::Hash).optional
     attribute? :fleet_instance_set, T::Array.of(T::Hash).optional
+    attribute? :fleet_state, T::String.optional
+    attribute? :fulfilled_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :fulfilled_on_demand_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :on_demand_options, T::Hash.optional
     attribute? :replace_unhealthy_instances, T::Bool.optional
     attribute? :spot_options, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :terminate_instances, T::Bool.optional
     attribute? :terminate_instances_with_expiration, T::Bool.optional
     attribute? :type, T::String.optional

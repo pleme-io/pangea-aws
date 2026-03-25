@@ -14,12 +14,16 @@ module Pangea::Resources::AWS::Types
     attribute? :accept_language, T::String.optional
     attribute? :ignore_errors, T::Bool.optional
     attribute? :notification_arns, T::Array.of(T::String).optional
+    attribute? :path_id, T::String.optional
     attribute? :path_name, T::String.optional
+    attribute? :product_id, T::String.optional
     attribute? :product_name, T::String.optional
+    attribute? :provisioning_artifact_id, T::String.optional
     attribute? :provisioning_artifact_name, T::String.optional
     attribute? :provisioning_parameters, T::Array.of(T::Hash).optional
     attribute? :retain_physical_resources, T::Bool.optional
     attribute? :stack_set_provisioning_preferences, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

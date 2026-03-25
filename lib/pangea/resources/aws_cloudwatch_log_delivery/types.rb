@@ -12,6 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :delivery_destination_arn, T::String
     attribute :delivery_source_name, T::String
+    attribute? :field_delimiter, T::String.optional
+    attribute? :record_fields, T::Array.of(T::String).optional
+    attribute? :s3_delivery_configuration, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
   end
 end

@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::RdsShardGroupAttributes,
       outputs: { id: :id },
       map: [:db_cluster_identifier, :db_shard_group_identifier, :max_acu],
-      map_present: [:tags]
+      map_present: [:compute_redundancy, :min_acu, :tags],
+      map_bool: [:publicly_accessible]
   end
   module AWS
     include AWSRdsShardGroup

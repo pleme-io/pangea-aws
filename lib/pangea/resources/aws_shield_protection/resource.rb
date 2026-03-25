@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ShieldProtectionAttributes,
       outputs: { id: :id },
       map: [:name, :resource_arn],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSShieldProtection

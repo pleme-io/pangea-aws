@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_networkmanager_global_network,
       attributes_class: AWS::Types::NetworkmanagerGlobalNetworkAttributes,
       outputs: { id: :id },
-      map_present: [:description, :tags]
+      map_present: [:description, :tags, :tags_all]
   end
   module AWS
     include AWSNetworkmanagerGlobalNetwork

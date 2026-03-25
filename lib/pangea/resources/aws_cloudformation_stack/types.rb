@@ -16,8 +16,12 @@ module Pangea::Resources::AWS::Types
     attribute? :iam_role_arn, T::String.optional
     attribute? :notification_arns, T::Array.of(T::String).optional
     attribute? :on_failure, T::String.optional
+    attribute? :parameters, T::Hash.optional
+    attribute? :policy_body, T::String.optional
     attribute? :policy_url, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :template_body, T::String.optional
     attribute? :template_url, T::String.optional
     attribute? :timeout_in_minutes, (T::Coercible::Integer | T::Coercible::Float).optional
   end

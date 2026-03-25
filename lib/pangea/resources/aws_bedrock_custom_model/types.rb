@@ -16,6 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute :job_name, T::String
     attribute :role_arn, T::String
     attribute? :custom_model_kms_key_id, T::String.optional
+    attribute? :customization_type, T::String.optional
     attribute? :output_data_config, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
     attribute? :training_data_config, T::Array.of(T::Hash).optional

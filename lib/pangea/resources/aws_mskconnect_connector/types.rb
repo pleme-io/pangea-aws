@@ -22,6 +22,7 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :log_delivery, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :worker_configuration, T::Hash.optional
   end
 end

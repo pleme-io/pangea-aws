@@ -22,7 +22,10 @@ module Pangea::Resources::AWS::Types
     attribute? :function_response_types, T::Array.of(T::String).optional
     attribute? :kms_key_arn, T::String.optional
     attribute? :maximum_batching_window_in_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :maximum_record_age_in_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :maximum_retry_attempts, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :metrics_config, T::Hash.optional
+    attribute? :parallelization_factor, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :provisioned_poller_config, T::Hash.optional
     attribute? :queues, T::Array.of(T::String).optional
     attribute? :scaling_config, T::Hash.optional
@@ -32,6 +35,7 @@ module Pangea::Resources::AWS::Types
     attribute? :starting_position, T::String.optional
     attribute? :starting_position_timestamp, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :topics, T::Array.of(T::String).optional
     attribute? :tumbling_window_in_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
   end

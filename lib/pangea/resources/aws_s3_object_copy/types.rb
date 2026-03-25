@@ -13,24 +13,43 @@ module Pangea::Resources::AWS::Types
     attribute :bucket, T::String
     attribute :key, T::String
     attribute :source, T::String
+    attribute? :acl, T::String.optional
+    attribute? :bucket_key_enabled, T::Bool.optional
+    attribute? :cache_control, T::String.optional
     attribute? :checksum_algorithm, T::String.optional
+    attribute? :content_disposition, T::String.optional
+    attribute? :content_encoding, T::String.optional
+    attribute? :content_language, T::String.optional
+    attribute? :content_type, T::String.optional
     attribute? :copy_if_match, T::String.optional
     attribute? :copy_if_modified_since, T::String.optional
     attribute? :copy_if_none_match, T::String.optional
     attribute? :copy_if_unmodified_since, T::String.optional
+    attribute? :customer_algorithm, T::String.optional
     attribute? :customer_key, T::String.optional
+    attribute? :customer_key_md5, T::String.optional
     attribute? :expected_bucket_owner, T::String.optional
     attribute? :expected_source_bucket_owner, T::String.optional
     attribute? :expires, T::String.optional
     attribute? :force_destroy, T::Bool.optional
     attribute? :grant, T::Array.of(T::Hash).optional
+    attribute? :kms_encryption_context, T::String.optional
+    attribute? :kms_key_id, T::String.optional
+    attribute? :metadata, T::Hash.optional
     attribute? :metadata_directive, T::String.optional
+    attribute? :object_lock_legal_hold_status, T::String.optional
+    attribute? :object_lock_mode, T::String.optional
+    attribute? :object_lock_retain_until_date, T::String.optional
     attribute? :override_provider, T::Hash.optional
     attribute? :request_payer, T::String.optional
+    attribute? :server_side_encryption, T::String.optional
     attribute? :source_customer_algorithm, T::String.optional
     attribute? :source_customer_key, T::String.optional
     attribute? :source_customer_key_md5, T::String.optional
+    attribute? :storage_class, T::String.optional
     attribute? :tagging_directive, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :website_redirect, T::String.optional
   end
 end

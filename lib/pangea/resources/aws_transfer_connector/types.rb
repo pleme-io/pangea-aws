@@ -14,7 +14,9 @@ module Pangea::Resources::AWS::Types
     attribute :url, T::String
     attribute? :as2_config, T::Hash.optional
     attribute? :logging_role, T::String.optional
+    attribute? :security_policy_name, T::String.optional
     attribute? :sftp_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

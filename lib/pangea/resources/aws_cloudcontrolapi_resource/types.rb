@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :desired_state, T::String
     attribute :type_name, T::String
     attribute? :role_arn, T::String.optional
+    attribute? :schema, T::String.optional
     attribute? :type_version_id, T::String.optional
   end
 end

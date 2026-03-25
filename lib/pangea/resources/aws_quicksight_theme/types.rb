@@ -13,9 +13,11 @@ module Pangea::Resources::AWS::Types
     attribute :base_theme_id, T::String
     attribute :name, T::String
     attribute :theme_id, T::String
+    attribute? :aws_account_id, T::String.optional
     attribute? :configuration, T::Hash.optional
     attribute? :permissions, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :version_description, T::String.optional
   end
 end

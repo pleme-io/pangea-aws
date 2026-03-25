@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatasyncLocationSmbAttributes,
       outputs: { id: :id },
       map: [:agent_arns, :password, :server_hostname, :subdirectory, :user],
-      map_present: [:mount_options, :tags]
+      map_present: [:domain, :mount_options, :tags, :tags_all]
   end
   module AWS
     include AWSDatasyncLocationSmb

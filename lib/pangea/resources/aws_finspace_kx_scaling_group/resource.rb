@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FinspaceKxScalingGroupAttributes,
       outputs: { id: :id },
       map: [:availability_zone_id, :environment_id, :host_type, :name],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSFinspaceKxScalingGroup

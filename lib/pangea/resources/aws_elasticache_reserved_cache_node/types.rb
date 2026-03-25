@@ -11,6 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :reserved_cache_nodes_offering_id, T::String
+    attribute? :cache_node_count, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end

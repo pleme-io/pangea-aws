@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConnectQuickConnectAttributes,
       outputs: { id: :id },
       map: [:instance_id, :name, :quick_connect_config],
-      map_present: [:description, :tags]
+      map_present: [:description, :tags, :tags_all]
   end
   module AWS
     include AWSConnectQuickConnect

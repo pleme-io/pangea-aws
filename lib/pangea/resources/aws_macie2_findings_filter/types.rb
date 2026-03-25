@@ -13,6 +13,10 @@ module Pangea::Resources::AWS::Types
     attribute :action, T::String
     attribute :finding_criteria, T::Hash
     attribute? :description, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
+    attribute? :position, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

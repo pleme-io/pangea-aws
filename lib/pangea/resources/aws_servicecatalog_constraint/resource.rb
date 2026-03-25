@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ServicecatalogConstraintAttributes,
       outputs: { id: :id },
       map: [:parameters, :portfolio_id, :product_id, :type],
-      map_present: [:accept_language]
+      map_present: [:accept_language, :description]
   end
   module AWS
     include AWSServicecatalogConstraint

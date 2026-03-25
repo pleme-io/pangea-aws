@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_dsql_cluster,
       attributes_class: AWS::Types::DsqlClusterAttributes,
       outputs: { id: :id },
-      map_present: [:multi_region_properties, :tags],
+      map_present: [:kms_encryption_key, :multi_region_properties, :tags],
       map_bool: [:deletion_protection_enabled]
   end
   module AWS

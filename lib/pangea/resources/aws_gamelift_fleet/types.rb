@@ -18,10 +18,12 @@ module Pangea::Resources::AWS::Types
     attribute? :ec2_inbound_permission, T::Array.of(T::Hash).optional
     attribute? :fleet_type, T::String.optional
     attribute? :instance_role_arn, T::String.optional
+    attribute? :metric_groups, T::Array.of(T::String).optional
     attribute? :new_game_session_protection_policy, (T::String | T::Hash).optional
     attribute? :resource_creation_limit_policy, T::Hash.optional
     attribute? :runtime_configuration, T::Hash.optional
     attribute? :script_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

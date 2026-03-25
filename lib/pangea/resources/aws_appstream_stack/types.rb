@@ -15,9 +15,13 @@ module Pangea::Resources::AWS::Types
     attribute? :application_settings, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :display_name, T::String.optional
+    attribute? :embed_host_domains, T::Array.of(T::String).optional
+    attribute? :feedback_url, T::String.optional
+    attribute? :redirect_url, T::String.optional
     attribute? :storage_connectors, T::Array.of(T::Hash).optional
     attribute? :streaming_experience_settings, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :user_settings, T::Array.of(T::Hash).optional
   end
 end

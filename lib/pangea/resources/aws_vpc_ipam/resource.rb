@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcIpamAttributes,
       outputs: { id: :id },
       map: [:operating_regions],
-      map_present: [:description, :tags, :tier],
+      map_present: [:description, :tags, :tags_all, :tier],
       map_bool: [:cascade, :enable_private_gua]
   end
   module AWS

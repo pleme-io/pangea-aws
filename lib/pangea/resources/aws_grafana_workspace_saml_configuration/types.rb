@@ -14,9 +14,13 @@ module Pangea::Resources::AWS::Types
     attribute :workspace_id, T::String
     attribute? :admin_role_values, T::Array.of(T::String).optional
     attribute? :allowed_organizations, T::Array.of(T::String).optional
+    attribute? :email_assertion, T::String.optional
     attribute? :groups_assertion, T::String.optional
     attribute? :idp_metadata_url, T::String.optional
     attribute? :idp_metadata_xml, T::String.optional
+    attribute? :login_assertion, T::String.optional
+    attribute? :login_validity_duration, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :name_assertion, T::String.optional
     attribute? :org_assertion, T::String.optional
     attribute? :role_assertion, T::String.optional
   end

@@ -17,6 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute? :content_based_deduplication, T::Bool.optional
     attribute? :delivery_policy, (T::String | T::Hash).optional
     attribute? :display_name, T::String.optional
+    attribute? :fifo_throughput_scope, T::String.optional
     attribute? :fifo_topic, T::Bool.optional
     attribute? :firehose_failure_feedback_role_arn, T::String.optional
     attribute? :firehose_success_feedback_role_arn, T::String.optional
@@ -28,9 +29,15 @@ module Pangea::Resources::AWS::Types
     attribute? :lambda_failure_feedback_role_arn, T::String.optional
     attribute? :lambda_success_feedback_role_arn, T::String.optional
     attribute? :lambda_success_feedback_sample_rate, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
+    attribute? :policy, (T::String | T::Hash).optional
+    attribute? :signature_version, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :sqs_failure_feedback_role_arn, T::String.optional
     attribute? :sqs_success_feedback_role_arn, T::String.optional
     attribute? :sqs_success_feedback_sample_rate, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :tracing_config, T::String.optional
   end
 end

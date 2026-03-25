@@ -12,11 +12,13 @@ module Pangea::Resources::AWS::Types
 
     attribute :service_name, T::String
     attribute :source_configuration, T::Hash
+    attribute? :auto_scaling_configuration_arn, T::String.optional
     attribute? :encryption_configuration, T::Hash.optional
     attribute? :health_check_configuration, T::Hash.optional
     attribute? :instance_configuration, T::Hash.optional
     attribute? :network_configuration, T::Hash.optional
     attribute? :observability_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :encoding, T::String
     attribute :public_key, T::String
     attribute :username, T::String
+    attribute? :status, T::String.optional
   end
 end

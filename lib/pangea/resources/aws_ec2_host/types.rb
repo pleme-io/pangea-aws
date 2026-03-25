@@ -11,11 +11,13 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :availability_zone, T::String
+    attribute? :asset_id, T::String.optional
     attribute? :auto_placement, T::String.optional
     attribute? :host_recovery, T::String.optional
     attribute? :instance_family, T::String.optional
     attribute? :instance_type, T::String.optional
     attribute? :outpost_arn, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

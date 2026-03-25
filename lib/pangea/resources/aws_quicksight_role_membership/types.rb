@@ -12,5 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :member_name, T::String
     attribute :role, T::String
+    attribute? :aws_account_id, T::String.optional
+    attribute? :namespace, T::String.optional
   end
 end

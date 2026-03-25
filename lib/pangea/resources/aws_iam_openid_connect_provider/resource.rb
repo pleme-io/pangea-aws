@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IamOpenidConnectProviderAttributes,
       outputs: { id: :id },
       map: [:client_id_list, :url],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all, :thumbprint_list]
   end
   module AWS
     include AWSIamOpenidConnectProvider

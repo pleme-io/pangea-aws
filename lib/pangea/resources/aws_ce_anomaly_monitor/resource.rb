@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CeAnomalyMonitorAttributes,
       outputs: { id: :id },
       map: [:monitor_type, :name],
-      map_present: [:monitor_dimension, :monitor_specification, :tags]
+      map_present: [:monitor_dimension, :monitor_specification, :tags, :tags_all]
   end
   module AWS
     include AWSCeAnomalyMonitor

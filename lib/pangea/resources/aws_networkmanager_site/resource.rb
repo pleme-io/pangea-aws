@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkmanagerSiteAttributes,
       outputs: { id: :id },
       map: [:global_network_id],
-      map_present: [:description, :location, :tags]
+      map_present: [:description, :location, :tags, :tags_all]
   end
   module AWS
     include AWSNetworkmanagerSite

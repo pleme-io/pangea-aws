@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::EcsTaskDefinitionAttributes,
       outputs: { id: :id },
       map: [:container_definitions, :family],
-      map_present: [:cpu, :ephemeral_storage, :execution_role_arn, :inference_accelerator, :ipc_mode, :memory, :pid_mode, :placement_constraints, :proxy_configuration, :requires_compatibilities, :runtime_platform, :tags, :task_role_arn, :volume],
-      map_bool: [:skip_destroy, :track_latest]
+      map_present: [:cpu, :ephemeral_storage, :execution_role_arn, :inference_accelerator, :ipc_mode, :memory, :network_mode, :pid_mode, :placement_constraints, :proxy_configuration, :requires_compatibilities, :runtime_platform, :tags, :tags_all, :task_role_arn, :volume],
+      map_bool: [:enable_fault_injection, :skip_destroy, :track_latest]
   end
   module AWS
     include AWSEcsTaskDefinition

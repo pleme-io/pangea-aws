@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LocationRouteCalculatorAttributes,
       outputs: { id: :id },
       map: [:calculator_name, :data_source],
-      map_present: [:description, :tags]
+      map_present: [:description, :tags, :tags_all]
   end
   module AWS
     include AWSLocationRouteCalculator

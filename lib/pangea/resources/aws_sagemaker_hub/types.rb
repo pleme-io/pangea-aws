@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute? :hub_search_keywords, T::Array.of(T::String).optional
     attribute? :s3_storage_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

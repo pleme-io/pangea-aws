@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_scheduler_schedule_group,
       attributes_class: AWS::Types::SchedulerScheduleGroupAttributes,
       outputs: { id: :id },
-      map_present: [:tags]
+      map_present: [:name, :name_prefix, :tags, :tags_all]
   end
   module AWS
     include AWSSchedulerScheduleGroup

@@ -11,10 +11,12 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :folder_id, T::String
+    attribute? :aws_account_id, T::String.optional
     attribute? :folder_type, T::String.optional
     attribute? :name, T::String.optional
     attribute? :parent_folder_arn, T::String.optional
     attribute? :permissions, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

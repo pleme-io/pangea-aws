@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :agent_orchestration_config, T::Array.of(T::Hash).optional
+    attribute? :compute_platform, T::String.optional
     attribute? :tags, T::Hash.optional
   end
 end

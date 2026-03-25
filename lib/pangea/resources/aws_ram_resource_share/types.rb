@@ -12,6 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :allow_external_principals, T::Bool.optional
+    attribute? :permission_arns, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_datasync_agent,
       attributes_class: AWS::Types::DatasyncAgentAttributes,
       outputs: { id: :id },
-      map_present: [:name, :security_group_arns, :subnet_arns, :tags, :vpc_endpoint_id]
+      map_present: [:activation_key, :ip_address, :name, :private_link_endpoint, :security_group_arns, :subnet_arns, :tags, :tags_all, :vpc_endpoint_id]
   end
   module AWS
     include AWSDatasyncAgent

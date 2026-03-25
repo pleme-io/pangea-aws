@@ -21,5 +21,6 @@ module Pangea::Resources::AWS::Types
     attribute? :instance_alias, T::String.optional
     attribute? :multi_party_conference_enabled, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

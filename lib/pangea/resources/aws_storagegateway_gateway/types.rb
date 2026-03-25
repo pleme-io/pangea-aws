@@ -12,9 +12,11 @@ module Pangea::Resources::AWS::Types
 
     attribute :gateway_name, T::String
     attribute :gateway_timezone, T::String
+    attribute? :activation_key, T::String.optional
     attribute? :average_download_rate_limit_in_bits_per_sec, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :average_upload_rate_limit_in_bits_per_sec, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :cloudwatch_log_group_arn, T::String.optional
+    attribute? :gateway_ip_address, T::String.optional
     attribute? :gateway_type, T::String.optional
     attribute? :gateway_vpc_endpoint, T::String.optional
     attribute? :maintenance_start_time, T::Hash.optional
@@ -22,7 +24,9 @@ module Pangea::Resources::AWS::Types
     attribute? :smb_active_directory_settings, T::Hash.optional
     attribute? :smb_file_share_visibility, T::Bool.optional
     attribute? :smb_guest_password, T::String.optional
+    attribute? :smb_security_strategy, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :tape_drive_type, T::String.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::TransferWorkflowAttributes,
       outputs: { id: :id },
       map: [:steps],
-      map_present: [:description, :on_exception_steps, :tags]
+      map_present: [:description, :on_exception_steps, :tags, :tags_all]
   end
   module AWS
     include AWSTransferWorkflow

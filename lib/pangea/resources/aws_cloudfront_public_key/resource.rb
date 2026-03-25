@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudfrontPublicKeyAttributes,
       outputs: { id: :id },
       map: [:encoded_key],
-      map_present: [:comment]
+      map_present: [:comment, :name, :name_prefix]
   end
   module AWS
     include AWSCloudfrontPublicKey

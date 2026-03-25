@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::ChatbotTeamsChannelConfigurationAttributes,
       outputs: { id: :id },
       map: [:channel_id, :configuration_name, :iam_role_arn, :team_id, :tenant_id],
-      map_present: [:tags]
+      map_present: [:channel_name, :guardrail_policy_arns, :logging_level, :sns_topic_arns, :tags, :team_name],
+      map_bool: [:user_authorization_required]
   end
   module AWS
     include AWSChatbotTeamsChannelConfiguration

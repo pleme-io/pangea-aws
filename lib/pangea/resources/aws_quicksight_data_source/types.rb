@@ -14,10 +14,12 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :parameters, T::Hash
     attribute :type, T::String
+    attribute? :aws_account_id, T::String.optional
     attribute? :credentials, T::Hash.optional
     attribute? :permission, T::Array.of(T::Hash).optional
     attribute? :ssl_properties, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc_connection_properties, T::Hash.optional
   end
 end

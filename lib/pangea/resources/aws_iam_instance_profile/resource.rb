@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_iam_instance_profile,
       attributes_class: AWS::Types::IamInstanceProfileAttributes,
       outputs: { id: :id },
-      map_present: [:path, :role, :tags]
+      map_present: [:name, :name_prefix, :path, :role, :tags, :tags_all]
   end
   module AWS
     include AWSIamInstanceProfile

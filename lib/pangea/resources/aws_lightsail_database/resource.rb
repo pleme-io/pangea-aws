@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::LightsailDatabaseAttributes,
       outputs: { id: :id },
       map: [:blueprint_id, :bundle_id, :master_database_name, :master_password, :master_username, :relational_database_name],
-      map_present: [:final_snapshot_name, :tags],
-      map_bool: [:backup_retention_enabled, :publicly_accessible, :skip_final_snapshot]
+      map_present: [:availability_zone, :final_snapshot_name, :preferred_backup_window, :preferred_maintenance_window, :tags, :tags_all],
+      map_bool: [:apply_immediately, :backup_retention_enabled, :publicly_accessible, :skip_final_snapshot]
   end
   module AWS
     include AWSLightsailDatabase

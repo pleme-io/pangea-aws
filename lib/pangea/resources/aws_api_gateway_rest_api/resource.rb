@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayRestApiAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:body, :endpoint_configuration, :parameters, :put_rest_api_mode, :tags],
-      map_bool: [:fail_on_warnings]
+      map_present: [:api_key_source, :binary_media_types, :body, :description, :endpoint_configuration, :minimum_compression_size, :parameters, :policy, :put_rest_api_mode, :tags, :tags_all],
+      map_bool: [:disable_execute_api_endpoint, :fail_on_warnings]
   end
   module AWS
     include AWSApiGatewayRestApi

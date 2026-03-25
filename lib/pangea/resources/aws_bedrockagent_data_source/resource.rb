@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BedrockagentDataSourceAttributes,
       outputs: { id: :id },
       map: [:knowledge_base_id, :name],
-      map_present: [:data_source_configuration, :description, :server_side_encryption_configuration, :vector_ingestion_configuration]
+      map_present: [:data_deletion_policy, :data_source_configuration, :description, :server_side_encryption_configuration, :vector_ingestion_configuration]
   end
   module AWS
     include AWSBedrockagentDataSource

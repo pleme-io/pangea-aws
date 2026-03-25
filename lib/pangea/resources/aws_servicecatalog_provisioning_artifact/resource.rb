@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ServicecatalogProvisioningArtifactAttributes,
       outputs: { id: :id },
       map: [:product_id],
-      map_present: [:accept_language, :guidance, :template_physical_id, :template_url, :type],
+      map_present: [:accept_language, :description, :guidance, :name, :template_physical_id, :template_url, :type],
       map_bool: [:active, :disable_template_validation]
   end
   module AWS

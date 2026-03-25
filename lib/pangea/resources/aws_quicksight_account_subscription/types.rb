@@ -17,6 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute? :active_directory_name, T::String.optional
     attribute? :admin_group, T::Array.of(T::String).optional
     attribute? :author_group, T::Array.of(T::String).optional
+    attribute? :aws_account_id, T::String.optional
     attribute? :contact_number, T::String.optional
     attribute? :directory_id, T::String.optional
     attribute? :email_address, T::String.optional

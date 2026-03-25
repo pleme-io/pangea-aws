@@ -11,5 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :gateway_arn, T::String
+    attribute? :disk_id, T::String.optional
+    attribute? :disk_path, T::String.optional
   end
 end

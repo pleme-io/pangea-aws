@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute? :human_loop_activation_config, T::Hash.optional
     attribute? :human_loop_request_source, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

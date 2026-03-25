@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GameliftFleetAttributes,
       outputs: { id: :id },
       map: [:ec2_instance_type, :name],
-      map_present: [:build_id, :certificate_configuration, :description, :ec2_inbound_permission, :fleet_type, :instance_role_arn, :new_game_session_protection_policy, :resource_creation_limit_policy, :runtime_configuration, :script_id, :tags]
+      map_present: [:build_id, :certificate_configuration, :description, :ec2_inbound_permission, :fleet_type, :instance_role_arn, :metric_groups, :new_game_session_protection_policy, :resource_creation_limit_policy, :runtime_configuration, :script_id, :tags, :tags_all]
   end
   module AWS
     include AWSGameliftFleet

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsmPatchBaselineAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:approval_rule, :approved_patches, :approved_patches_compliance_level, :description, :global_filter, :operating_system, :rejected_patches, :source, :tags],
+      map_present: [:approval_rule, :approved_patches, :approved_patches_compliance_level, :description, :global_filter, :operating_system, :rejected_patches, :rejected_patches_action, :source, :tags, :tags_all],
       map_bool: [:approved_patches_enable_non_security]
   end
   module AWS

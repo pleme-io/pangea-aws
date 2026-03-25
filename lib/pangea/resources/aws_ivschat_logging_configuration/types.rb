@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute? :destination_configuration, T::Hash.optional
     attribute? :name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

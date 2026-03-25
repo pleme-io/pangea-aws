@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DmsReplicationConfigAttributes,
       outputs: { id: :id },
       map: [:compute_config, :replication_config_identifier, :replication_type, :source_endpoint_arn, :table_mappings, :target_endpoint_arn],
-      map_present: [:supplemental_settings, :tags],
+      map_present: [:replication_settings, :resource_identifier, :supplemental_settings, :tags, :tags_all],
       map_bool: [:start_replication]
   end
   module AWS

@@ -13,6 +13,9 @@ module Pangea::Resources::AWS::Types
     attribute :inside_cidr_blocks, T::Array.of(T::String)
     attribute :peer_address, T::String
     attribute :transit_gateway_attachment_id, T::String
+    attribute? :bgp_asn, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :transit_gateway_address, T::String.optional
   end
 end

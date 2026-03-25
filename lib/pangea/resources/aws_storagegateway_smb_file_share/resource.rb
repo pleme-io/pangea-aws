@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::StoragegatewaySmbFileShareAttributes,
       outputs: { id: :id },
       map: [:gateway_arn, :location_arn, :role_arn],
-      map_present: [:admin_user_list, :audit_destination_arn, :authentication, :bucket_region, :cache_attributes, :case_sensitivity, :default_storage_class, :invalid_user_list, :kms_key_arn, :notification_policy, :object_acl, :tags, :valid_user_list, :vpc_endpoint_dns_name],
-      map_bool: [:access_based_enumeration, :guess_mime_type_enabled, :kms_encrypted, :read_only, :requester_pays, :smb_acl_enabled]
+      map_present: [:admin_user_list, :audit_destination_arn, :authentication, :bucket_region, :cache_attributes, :case_sensitivity, :default_storage_class, :file_share_name, :invalid_user_list, :kms_key_arn, :notification_policy, :object_acl, :tags, :tags_all, :valid_user_list, :vpc_endpoint_dns_name],
+      map_bool: [:access_based_enumeration, :guess_mime_type_enabled, :kms_encrypted, :oplocks_enabled, :read_only, :requester_pays, :smb_acl_enabled]
   end
   module AWS
     include AWSStoragegatewaySmbFileShare

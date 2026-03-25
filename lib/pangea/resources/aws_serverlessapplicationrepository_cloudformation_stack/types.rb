@@ -13,6 +13,9 @@ module Pangea::Resources::AWS::Types
     attribute :application_id, T::String
     attribute :capabilities, T::Array.of(T::String)
     attribute :name, T::String
+    attribute? :parameters, T::Hash.optional
+    attribute? :semantic_version, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

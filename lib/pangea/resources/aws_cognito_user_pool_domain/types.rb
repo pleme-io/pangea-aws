@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :domain, T::String
     attribute :user_pool_id, T::String
     attribute? :certificate_arn, T::String.optional
+    attribute? :managed_login_version, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

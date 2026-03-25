@@ -13,6 +13,7 @@ module Pangea::Resources
     define_resource :aws_shield_subscription,
       attributes_class: AWS::Types::ShieldSubscriptionAttributes,
       outputs: { id: :id },
+      map_present: [:auto_renew],
       map_bool: [:skip_destroy]
   end
   module AWS

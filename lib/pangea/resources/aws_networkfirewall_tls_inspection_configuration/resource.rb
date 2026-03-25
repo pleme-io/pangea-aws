@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkfirewallTlsInspectionConfigurationAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:description, :tags, :tls_inspection_configuration]
+      map_present: [:description, :encryption_configuration, :tags, :tls_inspection_configuration]
   end
   module AWS
     include AWSNetworkfirewallTlsInspectionConfiguration

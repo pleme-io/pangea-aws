@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2TransitGatewayPeeringAttachmentAttributes,
       outputs: { id: :id },
       map: [:peer_region, :peer_transit_gateway_id, :transit_gateway_id],
-      map_present: [:options, :tags]
+      map_present: [:options, :peer_account_id, :tags, :tags_all]
   end
   module AWS
     include AWSEc2TransitGatewayPeeringAttachment

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WafRuleAttributes,
       outputs: { id: :id },
       map: [:metric_name, :name],
-      map_present: [:predicates, :tags]
+      map_present: [:predicates, :tags, :tags_all]
   end
   module AWS
     include AWSWafRule

@@ -14,12 +14,16 @@ module Pangea::Resources::AWS::Types
     attribute :service, T::String
     attribute :task_definition, (T::String | T::Hash)
     attribute? :capacity_provider_strategy, T::Array.of(T::Hash).optional
+    attribute? :external_id, T::String.optional
     attribute? :force_delete, T::Bool.optional
+    attribute? :launch_type, T::String.optional
     attribute? :load_balancer, T::Array.of(T::Hash).optional
     attribute? :network_configuration, T::Hash.optional
+    attribute? :platform_version, T::String.optional
     attribute? :scale, T::Hash.optional
     attribute? :service_registries, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :wait_until_stable, T::Bool.optional
     attribute? :wait_until_stable_timeout, T::String.optional
   end

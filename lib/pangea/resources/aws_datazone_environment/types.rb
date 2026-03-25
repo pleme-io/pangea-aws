@@ -14,6 +14,9 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :profile_identifier, T::String
     attribute :project_identifier, T::String
+    attribute? :account_identifier, T::String.optional
+    attribute? :account_region, T::String.optional
+    attribute? :blueprint_identifier, T::String.optional
     attribute? :description, T::String.optional
     attribute? :glossary_terms, T::Array.of(T::String).optional
     attribute? :user_parameters, T::Array.of(T::Hash).optional

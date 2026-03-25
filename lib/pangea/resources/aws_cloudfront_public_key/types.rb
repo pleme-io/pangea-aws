@@ -12,5 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :encoded_key, T::String
     attribute? :comment, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
   end
 end

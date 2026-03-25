@@ -12,6 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :cluster_identifier, T::String
     attribute :destination_region, T::String
+    attribute? :manual_snapshot_retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :snapshot_copy_grant_name, T::String.optional
   end
 end

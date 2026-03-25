@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute? :license_count_hard_limit, T::Bool.optional
     attribute? :license_rules, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

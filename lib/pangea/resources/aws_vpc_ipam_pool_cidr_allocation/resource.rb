@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcIpamPoolCidrAllocationAttributes,
       outputs: { id: :id },
       map: [:ipam_pool_id],
-      map_present: [:description, :disallowed_cidrs]
+      map_present: [:cidr, :description, :disallowed_cidrs, :netmask_length]
   end
   module AWS
     include AWSVpcIpamPoolCidrAllocation

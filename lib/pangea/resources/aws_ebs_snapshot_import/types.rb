@@ -12,11 +12,14 @@ module Pangea::Resources::AWS::Types
 
     attribute :disk_container, T::Hash
     attribute? :client_data, T::Hash.optional
+    attribute? :description, T::String.optional
     attribute? :encrypted, T::Bool.optional
     attribute? :kms_key_id, T::String.optional
     attribute? :permanent_restore, T::Bool.optional
     attribute? :role_name, T::String.optional
+    attribute? :storage_tier, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :temporary_restore_days, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

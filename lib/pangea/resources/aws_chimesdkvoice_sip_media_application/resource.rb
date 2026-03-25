@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ChimesdkvoiceSipMediaApplicationAttributes,
       outputs: { id: :id },
       map: [:aws_region, :endpoints, :name],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSChimesdkvoiceSipMediaApplication

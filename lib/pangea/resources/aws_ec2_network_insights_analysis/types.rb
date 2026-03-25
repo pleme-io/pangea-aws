@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :network_insights_path_id, T::String
     attribute? :filter_in_arns, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :wait_for_completion, T::Bool.optional
   end
 end

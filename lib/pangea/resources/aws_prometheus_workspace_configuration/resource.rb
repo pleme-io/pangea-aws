@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::PrometheusWorkspaceConfigurationAttributes,
       outputs: { id: :id },
       map: [:workspace_id],
-      map_present: [:limits_per_label_set]
+      map_present: [:limits_per_label_set, :retention_period_in_days]
   end
   module AWS
     include AWSPrometheusWorkspaceConfiguration

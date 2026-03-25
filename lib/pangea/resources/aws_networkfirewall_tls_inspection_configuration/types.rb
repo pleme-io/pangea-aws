@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :description, T::String.optional
+    attribute? :encryption_configuration, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
     attribute? :tls_inspection_configuration, T::Array.of(T::Hash).optional
   end

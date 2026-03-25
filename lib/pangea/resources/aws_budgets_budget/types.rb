@@ -12,12 +12,19 @@ module Pangea::Resources::AWS::Types
 
     attribute :budget_type, T::String
     attribute :time_unit, T::String
+    attribute? :account_id, T::String.optional
     attribute? :auto_adjust_data, T::Hash.optional
     attribute? :cost_filter, T::Array.of(T::Hash).optional
     attribute? :cost_types, T::Hash.optional
+    attribute? :limit_amount, T::String.optional
+    attribute? :limit_unit, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :notification, T::Array.of(T::Hash).optional
     attribute? :planned_limit, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :time_period_end, T::String.optional
+    attribute? :time_period_start, T::String.optional
   end
 end

@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::RolesanywhereTrustAnchorAttributes,
       outputs: { id: :id },
       map: [:name, :source],
-      map_present: [:notification_settings, :tags]
+      map_present: [:notification_settings, :tags, :tags_all],
+      map_bool: [:enabled]
   end
   module AWS
     include AWSRolesanywhereTrustAnchor

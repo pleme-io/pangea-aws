@@ -14,7 +14,10 @@ module Pangea::Resources::AWS::Types
     attribute :vpc_id, T::String
     attribute? :accepter, T::Hash.optional
     attribute? :auto_accept, T::Bool.optional
+    attribute? :peer_owner_id, T::String.optional
+    attribute? :peer_region, T::String.optional
     attribute? :requester, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

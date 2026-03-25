@@ -21,6 +21,7 @@ module Pangea::Resources::AWS::Types
     attribute :staging_area_subnet_id, T::String
     attribute :staging_area_tags, T::Hash
     attribute :use_dedicated_replication_server, T::Bool
+    attribute? :auto_replicate_new_disks, T::Bool.optional
     attribute? :ebs_encryption_key_arn, T::String.optional
     attribute? :pit_policy, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional

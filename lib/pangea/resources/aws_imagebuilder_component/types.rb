@@ -14,11 +14,13 @@ module Pangea::Resources::AWS::Types
     attribute :platform, T::String
     attribute :version, T::String
     attribute? :change_description, T::String.optional
+    attribute? :data, T::String.optional
     attribute? :description, T::String.optional
     attribute? :kms_key_id, T::String.optional
     attribute? :skip_destroy, T::Bool.optional
     attribute? :supported_os_versions, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :uri, T::String.optional
   end
 end

@@ -15,6 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :workteam_name, T::String
     attribute? :notification_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :worker_access_configuration, T::Hash.optional
     attribute? :workforce_name, T::String.optional
   end

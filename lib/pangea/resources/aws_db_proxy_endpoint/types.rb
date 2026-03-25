@@ -14,6 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute :db_proxy_name, T::String
     attribute :vpc_subnet_ids, T::Array.of(T::String)
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :target_role, T::String.optional
+    attribute? :vpc_security_group_ids, T::Array.of(T::String).optional
   end
 end

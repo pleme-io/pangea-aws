@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ServicecatalogProductAttributes,
       outputs: { id: :id },
       map: [:name, :owner, :provisioning_artifact_parameters, :type],
-      map_present: [:accept_language, :tags]
+      map_present: [:accept_language, :description, :distributor, :support_description, :support_email, :support_url, :tags, :tags_all]
   end
   module AWS
     include AWSServicecatalogProduct

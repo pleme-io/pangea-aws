@@ -10,6 +10,11 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :allocation_id, T::String.optional
     attribute? :allow_reassociation, T::Bool.optional
+    attribute? :instance_id, T::String.optional
+    attribute? :network_interface_id, T::String.optional
+    attribute? :private_ip_address, T::String.optional
+    attribute? :public_ip, T::String.optional
   end
 end

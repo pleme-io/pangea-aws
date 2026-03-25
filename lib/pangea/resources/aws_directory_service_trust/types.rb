@@ -15,5 +15,8 @@ module Pangea::Resources::AWS::Types
     attribute :trust_direction, T::String
     attribute :trust_password, T::String
     attribute? :conditional_forwarder_ip_addrs, T::Array.of(T::String).optional
+    attribute? :delete_associated_conditional_forwarder, T::Bool.optional
+    attribute? :selective_auth, T::String.optional
+    attribute? :trust_type, T::String.optional
   end
 end

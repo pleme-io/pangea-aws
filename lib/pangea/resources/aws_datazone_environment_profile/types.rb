@@ -15,6 +15,8 @@ module Pangea::Resources::AWS::Types
     attribute :environment_blueprint_identifier, T::String
     attribute :name, T::String
     attribute :project_identifier, T::String
+    attribute? :aws_account_id, T::String.optional
+    attribute? :description, T::String.optional
     attribute? :user_parameters, T::Array.of(T::Hash).optional
   end
 end

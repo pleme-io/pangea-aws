@@ -11,10 +11,12 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
+    attribute? :concurrent_jobs, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :description, T::String.optional
     attribute? :pricing_plan, T::String.optional
     attribute? :reservation_plan_settings, T::Hash.optional
     attribute? :status, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

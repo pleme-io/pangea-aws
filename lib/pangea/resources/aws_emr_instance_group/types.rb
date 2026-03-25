@@ -17,6 +17,7 @@ module Pangea::Resources::AWS::Types
     attribute? :configurations_json, T::String.optional
     attribute? :ebs_config, T::Array.of(T::Hash).optional
     attribute? :ebs_optimized, T::Bool.optional
+    attribute? :instance_count, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :name, T::String.optional
   end
 end

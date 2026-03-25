@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MqConfigurationAttributes,
       outputs: { id: :id },
       map: [:data, :engine_type, :engine_version, :name],
-      map_present: [:description, :tags]
+      map_present: [:authentication_strategy, :description, :tags, :tags_all]
   end
   module AWS
     include AWSMqConfiguration

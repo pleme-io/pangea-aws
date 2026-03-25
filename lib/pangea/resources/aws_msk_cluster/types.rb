@@ -20,6 +20,8 @@ module Pangea::Resources::AWS::Types
     attribute? :enhanced_monitoring, T::String.optional
     attribute? :logging_info, T::Hash.optional
     attribute? :open_monitoring, T::Hash.optional
+    attribute? :storage_mode, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

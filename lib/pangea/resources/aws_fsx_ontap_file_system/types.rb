@@ -15,10 +15,19 @@ module Pangea::Resources::AWS::Types
     attribute :storage_capacity, (T::Coercible::Integer | T::Coercible::Float)
     attribute :subnet_ids, T::Array.of(T::String)
     attribute? :automatic_backup_retention_days, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :daily_automatic_backup_start_time, T::String.optional
     attribute? :disk_iops_configuration, T::Hash.optional
+    attribute? :endpoint_ip_address_range, T::String.optional
     attribute? :fsx_admin_password, T::String.optional
+    attribute? :ha_pairs, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :kms_key_id, T::String.optional
+    attribute? :route_table_ids, T::Array.of(T::String).optional
     attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :storage_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :throughput_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :throughput_capacity_per_ha_pair, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :weekly_maintenance_start_time, T::String.optional
   end
 end

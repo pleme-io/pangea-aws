@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_s3control_access_grants_instance_resource_policy,
       attributes_class: AWS::Types::S3controlAccessGrantsInstanceResourcePolicyAttributes,
       outputs: { id: :id },
-      map: [:policy]
+      map: [:policy],
+      map_present: [:account_id]
   end
   module AWS
     include AWSS3controlAccessGrantsInstanceResourcePolicy

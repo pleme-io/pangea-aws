@@ -15,8 +15,11 @@ module Pangea::Resources::AWS::Types
     attribute :window_id, T::String
     attribute? :cutoff_behavior, T::String.optional
     attribute? :description, T::String.optional
+    attribute? :max_concurrency, T::String.optional
+    attribute? :max_errors, T::String.optional
     attribute? :name, T::String.optional
     attribute? :priority, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :service_role_arn, T::String.optional
     attribute? :targets, T::Array.of(T::Hash).optional
     attribute? :task_invocation_parameters, T::Hash.optional
   end

@@ -16,6 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :signing_disabled, T::Bool.optional
     attribute? :status, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :token_key_name, T::String.optional
     attribute? :token_signing_public_keys, T::Hash.optional
   end

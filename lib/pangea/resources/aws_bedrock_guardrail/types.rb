@@ -15,6 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :content_policy_config, T::Array.of(T::Hash).optional
     attribute? :contextual_grounding_policy_config, T::Array.of(T::Hash).optional
+    attribute? :description, T::String.optional
     attribute? :kms_key_arn, T::String.optional
     attribute? :sensitive_information_policy_config, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional

@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :security_group_ids, T::Array.of(T::String)
     attribute :subnet_ids, T::Array.of(T::String)
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

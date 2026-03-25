@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcRouteServerAttributes,
       outputs: { id: :id },
       map: [:amazon_side_asn],
-      map_present: [:persist_routes_duration, :tags]
+      map_present: [:persist_routes, :persist_routes_duration, :tags],
+      map_bool: [:sns_notifications_enabled]
   end
   module AWS
     include AWSVpcRouteServer

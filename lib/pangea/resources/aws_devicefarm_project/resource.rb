@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DevicefarmProjectAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:default_job_timeout_minutes, :tags]
+      map_present: [:default_job_timeout_minutes, :tags, :tags_all]
   end
   module AWS
     include AWSDevicefarmProject

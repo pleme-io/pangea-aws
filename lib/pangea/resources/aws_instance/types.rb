@@ -10,24 +10,53 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
+    attribute? :ami, T::String.optional
+    attribute? :associate_public_ip_address, T::Bool.optional
+    attribute? :availability_zone, T::String.optional
     attribute? :capacity_reservation_specification, T::Hash.optional
+    attribute? :cpu_core_count, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :cpu_options, T::Hash.optional
+    attribute? :cpu_threads_per_core, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :credit_specification, T::Hash.optional
+    attribute? :disable_api_stop, T::Bool.optional
+    attribute? :disable_api_termination, T::Bool.optional
     attribute? :ebs_block_device, T::Array.of(T::Hash).optional
+    attribute? :ebs_optimized, T::Bool.optional
+    attribute? :enable_primary_ipv6, T::Bool.optional
     attribute? :enclave_options, T::Hash.optional
     attribute? :ephemeral_block_device, T::Array.of(T::Hash).optional
     attribute? :get_password_data, T::Bool.optional
     attribute? :hibernation, T::Bool.optional
+    attribute? :host_id, T::String.optional
+    attribute? :host_resource_group_arn, T::String.optional
+    attribute? :iam_instance_profile, T::String.optional
+    attribute? :instance_initiated_shutdown_behavior, T::String.optional
     attribute? :instance_market_options, T::Hash.optional
+    attribute? :instance_type, T::String.optional
+    attribute? :ipv6_address_count, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :ipv6_addresses, T::Array.of(T::String).optional
+    attribute? :key_name, T::String.optional
     attribute? :launch_template, T::Hash.optional
     attribute? :maintenance_options, T::Hash.optional
     attribute? :metadata_options, T::Hash.optional
+    attribute? :monitoring, T::Bool.optional
     attribute? :network_interface, T::Array.of(T::Hash).optional
+    attribute? :placement_group, T::String.optional
+    attribute? :placement_partition_number, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :private_dns_name_options, T::Hash.optional
+    attribute? :private_ip, T::String.optional
     attribute? :root_block_device, T::Hash.optional
+    attribute? :secondary_private_ips, T::Array.of(T::String).optional
+    attribute? :security_groups, T::Array.of(T::String).optional
     attribute? :source_dest_check, T::Bool.optional
+    attribute? :subnet_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :tenancy, T::String.optional
+    attribute? :user_data, T::String.optional
+    attribute? :user_data_base64, T::String.optional
     attribute? :user_data_replace_on_change, T::Bool.optional
     attribute? :volume_tags, T::Hash.optional
+    attribute? :vpc_security_group_ids, T::Array.of(T::String).optional
   end
 end

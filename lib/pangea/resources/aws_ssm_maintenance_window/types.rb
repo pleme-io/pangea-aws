@@ -22,5 +22,6 @@ module Pangea::Resources::AWS::Types
     attribute? :schedule_timezone, T::String.optional
     attribute? :start_date, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -13,5 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :identity_type, T::String
     attribute :session_policy_arn, T::String
     attribute :studio_id, T::String
+    attribute? :identity_id, T::String.optional
+    attribute? :identity_name, T::String.optional
   end
 end

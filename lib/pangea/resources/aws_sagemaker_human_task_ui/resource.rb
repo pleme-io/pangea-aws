@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerHumanTaskUiAttributes,
       outputs: { id: :id },
       map: [:human_task_ui_name, :ui_template],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSSagemakerHumanTaskUi

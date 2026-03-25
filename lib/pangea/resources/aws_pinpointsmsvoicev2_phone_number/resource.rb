@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::Pinpointsmsvoicev2PhoneNumberAttributes,
       outputs: { id: :id },
       map: [:iso_country_code, :message_type, :number_capabilities, :number_type],
-      map_present: [:registration_id, :tags, :two_way_channel_arn, :two_way_channel_role]
+      map_present: [:opt_out_list_name, :registration_id, :tags, :two_way_channel_arn, :two_way_channel_role],
+      map_bool: [:deletion_protection_enabled, :self_managed_opt_outs_enabled, :two_way_channel_enabled]
   end
   module AWS
     include AWSPinpointsmsvoicev2PhoneNumber

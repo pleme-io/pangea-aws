@@ -11,8 +11,13 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :acceptance_required, T::Bool
+    attribute? :allowed_principals, T::Array.of(T::String).optional
     attribute? :gateway_load_balancer_arns, T::Array.of(T::String).optional
     attribute? :network_load_balancer_arns, T::Array.of(T::String).optional
+    attribute? :private_dns_name, T::String.optional
+    attribute? :supported_ip_address_types, T::Array.of(T::String).optional
+    attribute? :supported_regions, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

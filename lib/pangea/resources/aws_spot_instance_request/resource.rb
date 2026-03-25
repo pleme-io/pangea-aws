@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_spot_instance_request,
       attributes_class: AWS::Types::SpotInstanceRequestAttributes,
       outputs: { id: :id },
-      map_present: [:block_duration_minutes, :capacity_reservation_specification, :cpu_options, :credit_specification, :ebs_block_device, :enclave_options, :ephemeral_block_device, :instance_interruption_behavior, :launch_group, :launch_template, :maintenance_options, :metadata_options, :network_interface, :private_dns_name_options, :root_block_device, :spot_type, :tags, :volume_tags],
-      map_bool: [:get_password_data, :hibernation, :source_dest_check, :user_data_replace_on_change, :wait_for_fulfillment]
+      map_present: [:ami, :availability_zone, :block_duration_minutes, :capacity_reservation_specification, :cpu_core_count, :cpu_options, :cpu_threads_per_core, :credit_specification, :ebs_block_device, :enclave_options, :ephemeral_block_device, :host_id, :host_resource_group_arn, :iam_instance_profile, :instance_initiated_shutdown_behavior, :instance_interruption_behavior, :instance_type, :ipv6_address_count, :ipv6_addresses, :key_name, :launch_group, :launch_template, :maintenance_options, :metadata_options, :network_interface, :placement_group, :placement_partition_number, :private_dns_name_options, :private_ip, :root_block_device, :secondary_private_ips, :security_groups, :spot_price, :spot_type, :subnet_id, :tags, :tags_all, :tenancy, :user_data, :user_data_base64, :valid_from, :valid_until, :volume_tags, :vpc_security_group_ids],
+      map_bool: [:associate_public_ip_address, :disable_api_stop, :disable_api_termination, :ebs_optimized, :enable_primary_ipv6, :get_password_data, :hibernation, :monitoring, :source_dest_check, :user_data_replace_on_change, :wait_for_fulfillment]
   end
   module AWS
     include AWSSpotInstanceRequest

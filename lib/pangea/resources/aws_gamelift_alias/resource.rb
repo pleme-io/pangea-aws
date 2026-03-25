@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GameliftAliasAttributes,
       outputs: { id: :id },
       map: [:name, :routing_strategy],
-      map_present: [:description, :tags]
+      map_present: [:description, :tags, :tags_all]
   end
   module AWS
     include AWSGameliftAlias

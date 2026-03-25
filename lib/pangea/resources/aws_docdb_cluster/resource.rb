@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_docdb_cluster,
       attributes_class: AWS::Types::DocdbClusterAttributes,
       outputs: { id: :id },
-      map_present: [:backup_retention_period, :enabled_cloudwatch_logs_exports, :engine, :final_snapshot_identifier, :global_cluster_identifier, :master_password, :master_password_wo, :master_password_wo_version, :port, :restore_to_point_in_time, :snapshot_identifier, :storage_type, :tags],
+      map_present: [:availability_zones, :backup_retention_period, :cluster_identifier, :cluster_identifier_prefix, :cluster_members, :db_cluster_parameter_group_name, :db_subnet_group_name, :enabled_cloudwatch_logs_exports, :engine, :engine_version, :final_snapshot_identifier, :global_cluster_identifier, :kms_key_id, :master_password, :master_password_wo, :master_password_wo_version, :master_username, :port, :preferred_backup_window, :preferred_maintenance_window, :restore_to_point_in_time, :snapshot_identifier, :storage_type, :tags, :tags_all, :vpc_security_group_ids],
       map_bool: [:allow_major_version_upgrade, :apply_immediately, :deletion_protection, :manage_master_user_password, :skip_final_snapshot, :storage_encrypted]
   end
   module AWS

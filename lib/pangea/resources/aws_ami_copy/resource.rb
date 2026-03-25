@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AmiCopyAttributes,
       outputs: { id: :id },
       map: [:name, :source_ami_id, :source_ami_region],
-      map_present: [:deprecation_time, :description, :destination_outpost_arn, :ebs_block_device, :ephemeral_block_device, :tags],
+      map_present: [:deprecation_time, :description, :destination_outpost_arn, :ebs_block_device, :ephemeral_block_device, :kms_key_id, :tags, :tags_all],
       map_bool: [:encrypted]
   end
   module AWS

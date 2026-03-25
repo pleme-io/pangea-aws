@@ -12,7 +12,9 @@ module Pangea::Resources::AWS::Types
 
     attribute :action_point, T::Array.of(T::Hash)
     attribute :name, T::String
+    attribute? :description, T::String.optional
     attribute? :parameter, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

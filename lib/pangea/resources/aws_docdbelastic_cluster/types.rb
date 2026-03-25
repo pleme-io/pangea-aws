@@ -16,6 +16,12 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :shard_capacity, (T::Coercible::Integer | T::Coercible::Float)
     attribute :shard_count, (T::Coercible::Integer | T::Coercible::Float)
+    attribute? :backup_retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :kms_key_id, T::String.optional
+    attribute? :preferred_backup_window, T::String.optional
+    attribute? :preferred_maintenance_window, T::String.optional
+    attribute? :subnet_ids, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :vpc_security_group_ids, T::Array.of(T::String).optional
   end
 end

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ivs_channel,
       attributes_class: AWS::Types::IvsChannelAttributes,
       outputs: { id: :id },
-      map_present: [:tags]
+      map_present: [:latency_mode, :name, :recording_configuration_arn, :tags, :tags_all, :type],
+      map_bool: [:authorized]
   end
   module AWS
     include AWSIvsChannel

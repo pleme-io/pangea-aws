@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OrganizationsOrganizationalUnitAttributes,
       outputs: { id: :id },
       map: [:name, :parent_id],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSOrganizationsOrganizationalUnit

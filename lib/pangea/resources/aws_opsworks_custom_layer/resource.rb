@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OpsworksCustomLayerAttributes,
       outputs: { id: :id },
       map: [:name, :short_name, :stack_id],
-      map_present: [:cloudwatch_configuration, :custom_configure_recipes, :custom_deploy_recipes, :custom_instance_profile_arn, :custom_json, :custom_security_group_ids, :custom_setup_recipes, :custom_shutdown_recipes, :custom_undeploy_recipes, :ebs_volume, :elastic_load_balancer, :instance_shutdown_timeout, :load_based_auto_scaling, :system_packages, :tags],
+      map_present: [:cloudwatch_configuration, :custom_configure_recipes, :custom_deploy_recipes, :custom_instance_profile_arn, :custom_json, :custom_security_group_ids, :custom_setup_recipes, :custom_shutdown_recipes, :custom_undeploy_recipes, :ebs_volume, :elastic_load_balancer, :instance_shutdown_timeout, :load_based_auto_scaling, :system_packages, :tags, :tags_all],
       map_bool: [:auto_assign_elastic_ips, :auto_assign_public_ips, :auto_healing, :drain_elb_on_shutdown, :install_updates_on_boot, :use_ebs_optimized_instances]
   end
   module AWS

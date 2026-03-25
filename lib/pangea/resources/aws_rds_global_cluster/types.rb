@@ -11,8 +11,15 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :global_cluster_identifier, T::String
+    attribute? :database_name, T::String.optional
     attribute? :deletion_protection, T::Bool.optional
+    attribute? :engine, T::String.optional
+    attribute? :engine_lifecycle_support, T::String.optional
+    attribute? :engine_version, T::String.optional
     attribute? :force_destroy, T::Bool.optional
+    attribute? :source_db_cluster_identifier, T::String.optional
+    attribute? :storage_encrypted, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

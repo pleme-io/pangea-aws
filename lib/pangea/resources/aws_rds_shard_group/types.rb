@@ -13,6 +13,9 @@ module Pangea::Resources::AWS::Types
     attribute :db_cluster_identifier, T::String
     attribute :db_shard_group_identifier, T::String
     attribute :max_acu, (T::Coercible::Integer | T::Coercible::Float)
+    attribute? :compute_redundancy, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :min_acu, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :publicly_accessible, T::Bool.optional
     attribute? :tags, T::Hash.optional
   end
 end

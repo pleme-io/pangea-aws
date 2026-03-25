@@ -11,5 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :data_catalog_encryption_settings, T::Hash
+    attribute? :catalog_id, T::String.optional
   end
 end

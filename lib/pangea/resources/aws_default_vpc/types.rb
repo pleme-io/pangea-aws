@@ -13,9 +13,13 @@ module Pangea::Resources::AWS::Types
     attribute? :assign_generated_ipv6_cidr_block, T::Bool.optional
     attribute? :enable_dns_hostnames, T::Bool.optional
     attribute? :enable_dns_support, T::Bool.optional
+    attribute? :enable_network_address_usage_metrics, T::Bool.optional
     attribute? :force_destroy, T::Bool.optional
+    attribute? :ipv6_cidr_block, T::String.optional
+    attribute? :ipv6_cidr_block_network_border_group, T::String.optional
     attribute? :ipv6_ipam_pool_id, T::String.optional
     attribute? :ipv6_netmask_length, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

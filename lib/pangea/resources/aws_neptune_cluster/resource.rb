@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_neptune_cluster,
       attributes_class: AWS::Types::NeptuneClusterAttributes,
       outputs: { id: :id },
-      map_present: [:backup_retention_period, :enable_cloudwatch_logs_exports, :engine, :final_snapshot_identifier, :global_cluster_identifier, :iam_roles, :neptune_instance_parameter_group_name, :port, :replication_source_identifier, :serverless_v2_scaling_configuration, :snapshot_identifier, :tags],
-      map_bool: [:copy_tags_to_snapshot, :deletion_protection, :iam_database_authentication_enabled, :skip_final_snapshot, :storage_encrypted]
+      map_present: [:availability_zones, :backup_retention_period, :cluster_identifier, :cluster_identifier_prefix, :enable_cloudwatch_logs_exports, :engine, :engine_version, :final_snapshot_identifier, :global_cluster_identifier, :iam_roles, :kms_key_arn, :neptune_cluster_parameter_group_name, :neptune_instance_parameter_group_name, :neptune_subnet_group_name, :port, :preferred_backup_window, :preferred_maintenance_window, :replication_source_identifier, :serverless_v2_scaling_configuration, :snapshot_identifier, :storage_type, :tags, :tags_all, :vpc_security_group_ids],
+      map_bool: [:allow_major_version_upgrade, :apply_immediately, :copy_tags_to_snapshot, :deletion_protection, :iam_database_authentication_enabled, :skip_final_snapshot, :storage_encrypted]
   end
   module AWS
     include AWSNeptuneCluster

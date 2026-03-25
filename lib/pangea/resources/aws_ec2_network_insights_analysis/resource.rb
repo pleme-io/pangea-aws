@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2NetworkInsightsAnalysisAttributes,
       outputs: { id: :id },
       map: [:network_insights_path_id],
-      map_present: [:filter_in_arns, :tags],
+      map_present: [:filter_in_arns, :tags, :tags_all],
       map_bool: [:wait_for_completion]
   end
   module AWS

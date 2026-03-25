@@ -16,5 +16,6 @@ module Pangea::Resources::AWS::Types
     attribute :target_arn, T::String
     attribute? :event_subscription, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

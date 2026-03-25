@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerWorkteamAttributes,
       outputs: { id: :id },
       map: [:description, :member_definition, :workteam_name],
-      map_present: [:notification_configuration, :tags, :worker_access_configuration, :workforce_name]
+      map_present: [:notification_configuration, :tags, :tags_all, :worker_access_configuration, :workforce_name]
   end
   module AWS
     include AWSSagemakerWorkteam

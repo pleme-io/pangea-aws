@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IotDomainConfigurationAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:authorizer_config, :server_certificate_arns, :service_type, :status, :tags, :tls_config, :validation_certificate_arn]
+      map_present: [:application_protocol, :authentication_type, :authorizer_config, :domain_name, :server_certificate_arns, :service_type, :status, :tags, :tags_all, :tls_config, :validation_certificate_arn]
   end
   module AWS
     include AWSIotDomainConfiguration

@@ -18,6 +18,7 @@ module Pangea::Resources::AWS::Types
     attribute? :bucket_region, T::String.optional
     attribute? :cache_attributes, T::Hash.optional
     attribute? :default_storage_class, T::String.optional
+    attribute? :file_share_name, T::String.optional
     attribute? :guess_mime_type_enabled, T::Bool.optional
     attribute? :kms_encrypted, T::Bool.optional
     attribute? :kms_key_arn, T::String.optional
@@ -28,6 +29,7 @@ module Pangea::Resources::AWS::Types
     attribute? :requester_pays, T::Bool.optional
     attribute? :squash, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc_endpoint_dns_name, T::String.optional
   end
 end

@@ -16,7 +16,9 @@ module Pangea::Resources::AWS::Types
     attribute? :automatic_stop_time_minutes, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :connection_type, T::String.optional
     attribute? :description, T::String.optional
+    attribute? :owner_arn, T::String.optional
     attribute? :subnet_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -18,6 +18,7 @@ module Pangea::Resources::AWS::Types
     attribute? :downlink_jitter_ms, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :downlink_loss_percent, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :type, T::String.optional
     attribute? :uplink_bandwidth_bits, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :uplink_delay_ms, (T::Coercible::Integer | T::Coercible::Float).optional

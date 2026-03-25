@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :group_name, T::String
     attribute? :insights_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

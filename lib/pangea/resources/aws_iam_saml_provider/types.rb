@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :saml_metadata_document, (T::String | T::Hash)
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

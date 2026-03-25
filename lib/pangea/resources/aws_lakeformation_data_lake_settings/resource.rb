@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_lakeformation_data_lake_settings,
       attributes_class: AWS::Types::LakeformationDataLakeSettingsAttributes,
       outputs: { id: :id },
-      map_present: [:catalog_id, :create_database_default_permissions, :create_table_default_permissions],
+      map_present: [:admins, :authorized_session_tag_value_list, :catalog_id, :create_database_default_permissions, :create_table_default_permissions, :external_data_filtering_allow_list, :parameters, :read_only_admins, :trusted_resource_owners],
       map_bool: [:allow_external_data_filtering, :allow_full_table_external_data_access]
   end
   module AWS

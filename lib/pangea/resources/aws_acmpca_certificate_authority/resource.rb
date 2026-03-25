@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AcmpcaCertificateAuthorityAttributes,
       outputs: { id: :id },
       map: [:certificate_authority_configuration],
-      map_present: [:permanent_deletion_time_in_days, :revocation_configuration, :tags, :type],
+      map_present: [:key_storage_security_standard, :permanent_deletion_time_in_days, :revocation_configuration, :tags, :tags_all, :type, :usage_mode],
       map_bool: [:enabled]
   end
   module AWS

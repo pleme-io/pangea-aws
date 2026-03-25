@@ -17,9 +17,12 @@ module Pangea::Resources::AWS::Types
     attribute? :enable_resource_name_dns_a_record_on_launch, T::Bool.optional
     attribute? :enable_resource_name_dns_aaaa_record_on_launch, T::Bool.optional
     attribute? :force_destroy, T::Bool.optional
+    attribute? :ipv6_cidr_block, T::String.optional
     attribute? :ipv6_native, T::Bool.optional
     attribute? :map_customer_owned_ip_on_launch, T::Bool.optional
     attribute? :map_public_ip_on_launch, T::Bool.optional
+    attribute? :private_dns_hostname_type_on_launch, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

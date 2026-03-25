@@ -12,5 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute? :encryption_configuration, T::Hash.optional
+    attribute? :maintenance_configuration, T::Hash.optional
   end
 end

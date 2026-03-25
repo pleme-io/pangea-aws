@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BatchComputeEnvironmentAttributes,
       outputs: { id: :id },
       map: [:type],
-      map_present: [:compute_resources, :eks_configuration, :state, :tags, :update_policy]
+      map_present: [:compute_environment_name, :compute_environment_name_prefix, :compute_resources, :eks_configuration, :service_role, :state, :tags, :tags_all, :update_policy]
   end
   module AWS
     include AWSBatchComputeEnvironment

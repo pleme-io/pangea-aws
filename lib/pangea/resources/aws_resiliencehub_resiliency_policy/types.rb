@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute :tier, T::String
+    attribute? :data_location_constraint, T::String.optional
     attribute? :description, T::String.optional
     attribute? :policy, T::Hash.optional
     attribute? :tags, T::Hash.optional

@@ -24,6 +24,7 @@ module Pangea::Resources::AWS::Types
     attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :subnet_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :worker_type, T::String.optional
   end
 end

@@ -11,6 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
+    attribute? :auto_update, T::String.optional
     attribute? :feature, T::String.optional
     attribute? :tags, T::Hash.optional
   end

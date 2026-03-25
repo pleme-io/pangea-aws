@@ -20,5 +20,6 @@ module Pangea::Resources::AWS::Types
     attribute? :ipv6_cidr_blocks, T::Array.of(T::String).optional
     attribute? :prefix_list_ids, T::Array.of(T::String).optional
     attribute? :self, T::Bool.optional
+    attribute? :source_security_group_id, T::String.optional
   end
 end

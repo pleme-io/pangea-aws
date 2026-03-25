@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatasyncLocationHdfsAttributes,
       outputs: { id: :id },
       map: [:agent_arns, :name_node],
-      map_present: [:authentication_type, :block_size, :kerberos_keytab, :kerberos_keytab_base64, :kerberos_krb5_conf, :kerberos_krb5_conf_base64, :kerberos_principal, :kms_key_provider_uri, :qop_configuration, :replication_factor, :simple_user, :subdirectory, :tags]
+      map_present: [:authentication_type, :block_size, :kerberos_keytab, :kerberos_keytab_base64, :kerberos_krb5_conf, :kerberos_krb5_conf_base64, :kerberos_principal, :kms_key_provider_uri, :qop_configuration, :replication_factor, :simple_user, :subdirectory, :tags, :tags_all]
   end
   module AWS
     include AWSDatasyncLocationHdfs

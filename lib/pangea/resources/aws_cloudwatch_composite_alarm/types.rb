@@ -19,5 +19,6 @@ module Pangea::Resources::AWS::Types
     attribute? :insufficient_data_actions, T::Array.of(T::String).optional
     attribute? :ok_actions, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

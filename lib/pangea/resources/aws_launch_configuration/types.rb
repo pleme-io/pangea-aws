@@ -12,11 +12,16 @@ module Pangea::Resources::AWS::Types
 
     attribute :image_id, T::String
     attribute :instance_type, T::String
+    attribute? :associate_public_ip_address, T::Bool.optional
     attribute? :ebs_block_device, T::Array.of(T::Hash).optional
+    attribute? :ebs_optimized, T::Bool.optional
     attribute? :enable_monitoring, T::Bool.optional
     attribute? :ephemeral_block_device, T::Array.of(T::Hash).optional
     attribute? :iam_instance_profile, T::String.optional
+    attribute? :key_name, T::String.optional
     attribute? :metadata_options, T::Hash.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :placement_tenancy, T::String.optional
     attribute? :root_block_device, T::Hash.optional
     attribute? :security_groups, T::Array.of(T::String).optional

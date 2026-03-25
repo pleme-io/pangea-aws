@@ -14,7 +14,9 @@ module Pangea::Resources::AWS::Types
     attribute :engine_type, T::String
     attribute :engine_version, T::String
     attribute :name, T::String
+    attribute? :authentication_strategy, T::String.optional
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

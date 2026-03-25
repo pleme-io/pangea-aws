@@ -17,11 +17,13 @@ module Pangea::Resources::AWS::Types
     attribute :target_repository, T::Hash
     attribute :version, T::String
     attribute? :description, T::String.optional
+    attribute? :dockerfile_template_data, T::String.optional
     attribute? :dockerfile_template_uri, T::String.optional
     attribute? :instance_configuration, T::Hash.optional
     attribute? :kms_key_id, T::String.optional
     attribute? :platform_override, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :working_directory, T::String.optional
   end
 end

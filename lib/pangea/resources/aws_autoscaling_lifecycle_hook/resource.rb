@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AutoscalingLifecycleHookAttributes,
       outputs: { id: :id },
       map: [:autoscaling_group_name, :lifecycle_transition, :name],
-      map_present: [:heartbeat_timeout, :notification_metadata, :notification_target_arn, :role_arn]
+      map_present: [:default_result, :heartbeat_timeout, :notification_metadata, :notification_target_arn, :role_arn]
   end
   module AWS
     include AWSAutoscalingLifecycleHook

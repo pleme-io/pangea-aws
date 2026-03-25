@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ComputeoptimizerRecommendationPreferencesAttributes,
       outputs: { id: :id },
       map: [:resource_type],
-      map_present: [:enhanced_infrastructure_metrics, :external_metrics_preference, :inferred_workload_types, :preferred_resource, :savings_estimation_mode, :scope, :utilization_preference]
+      map_present: [:enhanced_infrastructure_metrics, :external_metrics_preference, :inferred_workload_types, :look_back_period, :preferred_resource, :savings_estimation_mode, :scope, :utilization_preference]
   end
   module AWS
     include AWSComputeoptimizerRecommendationPreferences

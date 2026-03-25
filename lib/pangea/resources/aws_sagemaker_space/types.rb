@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute? :space_settings, T::Hash.optional
     attribute? :space_sharing_settings, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

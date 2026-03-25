@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_alb,
       attributes_class: AWS::Types::AlbAttributes,
       outputs: { id: :id },
-      map_present: [:access_logs, :client_keep_alive, :connection_logs, :customer_owned_ipv4_pool, :desync_mitigation_mode, :dns_record_client_routing_policy, :idle_timeout, :ipam_pools, :load_balancer_type, :minimum_load_balancer_capacity, :subnet_mapping, :tags, :xff_header_processing_mode],
-      map_bool: [:drop_invalid_header_fields, :enable_cross_zone_load_balancing, :enable_deletion_protection, :enable_http2, :enable_tls_version_and_cipher_suite_headers, :enable_waf_fail_open, :enable_xff_client_port, :enable_zonal_shift, :preserve_host_header]
+      map_present: [:access_logs, :client_keep_alive, :connection_logs, :customer_owned_ipv4_pool, :desync_mitigation_mode, :dns_record_client_routing_policy, :enforce_security_group_inbound_rules_on_private_link_traffic, :idle_timeout, :ip_address_type, :ipam_pools, :load_balancer_type, :minimum_load_balancer_capacity, :name, :name_prefix, :security_groups, :subnet_mapping, :subnets, :tags, :tags_all, :xff_header_processing_mode],
+      map_bool: [:drop_invalid_header_fields, :enable_cross_zone_load_balancing, :enable_deletion_protection, :enable_http2, :enable_tls_version_and_cipher_suite_headers, :enable_waf_fail_open, :enable_xff_client_port, :enable_zonal_shift, :internal, :preserve_host_header]
   end
   module AWS
     include AWSAlb

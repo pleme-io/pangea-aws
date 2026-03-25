@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudhsmV2ClusterAttributes,
       outputs: { id: :id },
       map: [:hsm_type, :subnet_ids],
-      map_present: [:source_backup_identifier, :tags]
+      map_present: [:mode, :source_backup_identifier, :tags, :tags_all]
   end
   module AWS
     include AWSCloudhsmV2Cluster

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SfnStateMachineAttributes,
       outputs: { id: :id },
       map: [:definition, :role_arn],
-      map_present: [:encryption_configuration, :logging_configuration, :tags, :tracing_configuration, :type],
+      map_present: [:encryption_configuration, :logging_configuration, :name, :name_prefix, :tags, :tags_all, :tracing_configuration, :type],
       map_bool: [:publish]
   end
   module AWS

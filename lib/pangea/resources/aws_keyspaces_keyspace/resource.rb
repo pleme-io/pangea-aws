@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KeyspacesKeyspaceAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:replication_specification, :tags]
+      map_present: [:replication_specification, :tags, :tags_all]
   end
   module AWS
     include AWSKeyspacesKeyspace

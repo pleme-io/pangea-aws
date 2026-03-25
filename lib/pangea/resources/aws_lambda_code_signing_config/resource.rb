@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LambdaCodeSigningConfigAttributes,
       outputs: { id: :id },
       map: [:allowed_publishers],
-      map_present: [:description, :policies, :tags]
+      map_present: [:description, :policies, :tags, :tags_all]
   end
   module AWS
     include AWSLambdaCodeSigningConfig

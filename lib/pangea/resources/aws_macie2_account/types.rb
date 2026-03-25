@@ -9,5 +9,8 @@ module Pangea::Resources::AWS::Types
   class Macie2AccountAttributes < Dry::Struct
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
+
+    attribute? :finding_publishing_frequency, T::String.optional
+    attribute? :status, T::String.optional
   end
 end

@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :account_id, T::String
     attribute :region, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

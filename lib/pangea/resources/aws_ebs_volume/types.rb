@@ -11,9 +11,17 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :availability_zone, T::String
+    attribute? :encrypted, T::Bool.optional
     attribute? :final_snapshot, T::Bool.optional
+    attribute? :iops, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :kms_key_id, T::String.optional
     attribute? :multi_attach_enabled, T::Bool.optional
     attribute? :outpost_arn, T::String.optional
+    attribute? :size, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :snapshot_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :throughput, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :type, T::String.optional
   end
 end

@@ -16,6 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute :resource, T::String
     attribute? :status, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :target, T::Array.of(T::Hash).optional
   end
 end

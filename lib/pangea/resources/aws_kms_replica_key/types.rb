@@ -15,6 +15,8 @@ module Pangea::Resources::AWS::Types
     attribute? :deletion_window_in_days, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :description, T::String.optional
     attribute? :enabled, T::Bool.optional
+    attribute? :policy, (T::String | T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

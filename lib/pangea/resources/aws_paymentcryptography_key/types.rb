@@ -11,7 +11,10 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :exportable, T::Bool
+    attribute? :deletion_window_in_days, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :enabled, T::Bool.optional
     attribute? :key_attributes, T::Hash.optional
+    attribute? :key_check_value_algorithm, T::String.optional
     attribute? :tags, T::Hash.optional
   end
 end

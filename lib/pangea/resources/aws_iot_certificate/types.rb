@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :active, T::Bool
     attribute? :ca_pem, T::String.optional
+    attribute? :certificate_pem, T::String.optional
     attribute? :csr, T::String.optional
   end
 end

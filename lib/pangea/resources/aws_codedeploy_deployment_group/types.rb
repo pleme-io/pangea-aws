@@ -26,6 +26,7 @@ module Pangea::Resources::AWS::Types
     attribute? :on_premises_instance_tag_filter, T::Array.of(T::Hash).optional
     attribute? :outdated_instances_strategy, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :termination_hook_enabled, T::Bool.optional
     attribute? :trigger_configuration, T::Array.of(T::Hash).optional
   end

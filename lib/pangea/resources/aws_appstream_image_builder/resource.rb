@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppstreamImageBuilderAttributes,
       outputs: { id: :id },
       map: [:instance_type, :name],
-      map_present: [:access_endpoint, :domain_join_info, :tags, :vpc_config]
+      map_present: [:access_endpoint, :appstream_agent_version, :description, :display_name, :domain_join_info, :iam_role_arn, :image_arn, :image_name, :tags, :tags_all, :vpc_config],
+      map_bool: [:enable_default_internet_access]
   end
   module AWS
     include AWSAppstreamImageBuilder

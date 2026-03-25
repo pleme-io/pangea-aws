@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodeguruprofilerProfilingGroupAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:agent_orchestration_config, :tags]
+      map_present: [:agent_orchestration_config, :compute_platform, :tags]
   end
   module AWS
     include AWSCodeguruprofilerProfilingGroup

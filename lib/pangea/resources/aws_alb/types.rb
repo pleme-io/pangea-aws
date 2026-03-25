@@ -24,13 +24,21 @@ module Pangea::Resources::AWS::Types
     attribute? :enable_waf_fail_open, T::Bool.optional
     attribute? :enable_xff_client_port, T::Bool.optional
     attribute? :enable_zonal_shift, T::Bool.optional
+    attribute? :enforce_security_group_inbound_rules_on_private_link_traffic, T::String.optional
     attribute? :idle_timeout, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :internal, T::Bool.optional
+    attribute? :ip_address_type, T::String.optional
     attribute? :ipam_pools, T::Hash.optional
     attribute? :load_balancer_type, T::String.optional
     attribute? :minimum_load_balancer_capacity, T::Hash.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :preserve_host_header, T::Bool.optional
+    attribute? :security_groups, T::Array.of(T::String).optional
     attribute? :subnet_mapping, T::Array.of(T::Hash).optional
+    attribute? :subnets, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :xff_header_processing_mode, T::String.optional
   end
 end

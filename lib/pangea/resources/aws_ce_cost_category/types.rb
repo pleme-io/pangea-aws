@@ -14,7 +14,9 @@ module Pangea::Resources::AWS::Types
     attribute :rule, T::Array.of(T::Hash)
     attribute :rule_version, T::String
     attribute? :default_value, T::String.optional
+    attribute? :effective_start, T::String.optional
     attribute? :split_charge_rule, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

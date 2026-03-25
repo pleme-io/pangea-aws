@@ -15,6 +15,8 @@ module Pangea::Resources::AWS::Types
     attribute :security_group_arns, T::Array.of(T::String)
     attribute :user, T::String
     attribute? :domain, T::String.optional
+    attribute? :subdirectory, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

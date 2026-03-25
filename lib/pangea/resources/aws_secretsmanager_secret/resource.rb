@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_secretsmanager_secret,
       attributes_class: AWS::Types::SecretsmanagerSecretAttributes,
       outputs: { id: :id },
-      map_present: [:description, :kms_key_id, :recovery_window_in_days, :replica, :tags],
+      map_present: [:description, :kms_key_id, :name, :name_prefix, :policy, :recovery_window_in_days, :replica, :tags, :tags_all],
       map_bool: [:force_overwrite_replica_secret]
   end
   module AWS

@@ -12,7 +12,11 @@ module Pangea::Resources::AWS::Types
 
     attribute :global_replication_group_id_suffix, T::String
     attribute :primary_replication_group_id, T::String
+    attribute? :automatic_failover_enabled, T::Bool.optional
+    attribute? :cache_node_type, T::String.optional
+    attribute? :engine_version, T::String.optional
     attribute? :global_replication_group_description, T::String.optional
+    attribute? :num_node_groups, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :parameter_group_name, T::String.optional
   end
 end

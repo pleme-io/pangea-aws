@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcIpamResourceDiscoveryAssociationAttributes,
       outputs: { id: :id },
       map: [:ipam_id, :ipam_resource_discovery_id],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSVpcIpamResourceDiscoveryAssociation

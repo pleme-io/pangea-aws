@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute? :appversion_lifecycle, T::Hash.optional
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

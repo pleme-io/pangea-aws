@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SnsTopicSubscriptionAttributes,
       outputs: { id: :id },
       map: [:endpoint, :protocol, :topic_arn],
-      map_present: [:confirmation_timeout_in_minutes, :delivery_policy, :filter_policy, :redrive_policy, :replay_policy, :subscription_role_arn],
+      map_present: [:confirmation_timeout_in_minutes, :delivery_policy, :filter_policy, :filter_policy_scope, :redrive_policy, :replay_policy, :subscription_role_arn],
       map_bool: [:endpoint_auto_confirms, :raw_message_delivery]
   end
   module AWS

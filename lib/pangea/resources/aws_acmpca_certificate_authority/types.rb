@@ -12,9 +12,12 @@ module Pangea::Resources::AWS::Types
 
     attribute :certificate_authority_configuration, T::Hash
     attribute? :enabled, T::Bool.optional
+    attribute? :key_storage_security_standard, T::String.optional
     attribute? :permanent_deletion_time_in_days, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :revocation_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :type, T::String.optional
+    attribute? :usage_mode, T::String.optional
   end
 end

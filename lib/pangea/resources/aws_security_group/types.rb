@@ -11,7 +11,13 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :description, T::String.optional
+    attribute? :egress, T::Array.of(T::Hash).optional
+    attribute? :ingress, T::Array.of(T::Hash).optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :revoke_rules_on_delete, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :vpc_id, T::String.optional
   end
 end

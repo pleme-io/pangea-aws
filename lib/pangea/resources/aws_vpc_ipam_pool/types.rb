@@ -25,5 +25,6 @@ module Pangea::Resources::AWS::Types
     attribute? :publicly_advertisable, T::Bool.optional
     attribute? :source_ipam_pool_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -23,6 +23,7 @@ module Pangea::Resources::AWS::Types
     attribute? :schedule, T::Hash.optional
     attribute? :status, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :workflow, T::Array.of(T::Hash).optional
   end
 end

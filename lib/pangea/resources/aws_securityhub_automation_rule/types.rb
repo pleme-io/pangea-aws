@@ -15,6 +15,8 @@ module Pangea::Resources::AWS::Types
     attribute :rule_order, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :actions, T::Array.of(T::Hash).optional
     attribute? :criteria, T::Array.of(T::Hash).optional
+    attribute? :is_terminal, T::Bool.optional
+    attribute? :rule_status, T::String.optional
     attribute? :tags, T::Hash.optional
   end
 end

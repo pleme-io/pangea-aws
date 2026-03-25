@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerCodeRepositoryAttributes,
       outputs: { id: :id },
       map: [:code_repository_name, :git_config],
-      map_present: [:tags]
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSSagemakerCodeRepository

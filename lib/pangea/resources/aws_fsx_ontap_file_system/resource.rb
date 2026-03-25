@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FsxOntapFileSystemAttributes,
       outputs: { id: :id },
       map: [:deployment_type, :preferred_subnet_id, :storage_capacity, :subnet_ids],
-      map_present: [:automatic_backup_retention_days, :disk_iops_configuration, :fsx_admin_password, :security_group_ids, :storage_type, :tags]
+      map_present: [:automatic_backup_retention_days, :daily_automatic_backup_start_time, :disk_iops_configuration, :endpoint_ip_address_range, :fsx_admin_password, :ha_pairs, :kms_key_id, :route_table_ids, :security_group_ids, :storage_type, :tags, :tags_all, :throughput_capacity, :throughput_capacity_per_ha_pair, :weekly_maintenance_start_time]
   end
   module AWS
     include AWSFsxOntapFileSystem

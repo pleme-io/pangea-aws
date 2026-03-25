@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DxConnectionAttributes,
       outputs: { id: :id },
       map: [:bandwidth, :location, :name],
-      map_present: [:tags],
+      map_present: [:encryption_mode, :provider_name, :tags, :tags_all],
       map_bool: [:request_macsec, :skip_destroy]
   end
   module AWS

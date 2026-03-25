@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2CapacityReservationAttributes,
       outputs: { id: :id },
       map: [:availability_zone, :instance_count, :instance_platform, :instance_type],
-      map_present: [:end_date, :end_date_type, :instance_match_criteria, :outpost_arn, :placement_group_arn, :tags, :tenancy],
+      map_present: [:end_date, :end_date_type, :instance_match_criteria, :outpost_arn, :placement_group_arn, :tags, :tags_all, :tenancy],
       map_bool: [:ebs_optimized, :ephemeral_storage]
   end
   module AWS

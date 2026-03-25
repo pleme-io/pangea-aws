@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConnectContactFlowAttributes,
       outputs: { id: :id },
       map: [:instance_id, :name],
-      map_present: [:content_hash, :description, :filename, :tags, :type]
+      map_present: [:content, :content_hash, :description, :filename, :tags, :tags_all, :type]
   end
   module AWS
     include AWSConnectContactFlow

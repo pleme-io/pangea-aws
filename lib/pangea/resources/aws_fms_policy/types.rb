@@ -19,7 +19,11 @@ module Pangea::Resources::AWS::Types
     attribute? :exclude_map, T::Hash.optional
     attribute? :include_map, T::Hash.optional
     attribute? :remediation_enabled, T::Bool.optional
+    attribute? :resource_set_ids, T::Array.of(T::String).optional
     attribute? :resource_tags, T::Hash.optional
+    attribute? :resource_type, T::String.optional
+    attribute? :resource_type_list, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

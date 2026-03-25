@@ -18,5 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :members, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
     attribute? :test_bot_alias_tags, T::Hash.optional
+    attribute? :type, T::String.optional
   end
 end

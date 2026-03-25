@@ -13,12 +13,14 @@ module Pangea::Resources::AWS::Types
     attribute :dashboard_id, T::String
     attribute :name, T::String
     attribute :version_description, T::String
+    attribute? :aws_account_id, T::String.optional
     attribute? :dashboard_publish_options, T::Hash.optional
     attribute? :definition, T::Hash.optional
     attribute? :parameters, T::Hash.optional
     attribute? :permissions, T::Array.of(T::Hash).optional
     attribute? :source_entity, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :theme_arn, T::String.optional
   end
 end

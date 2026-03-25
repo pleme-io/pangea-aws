@@ -16,10 +16,15 @@ module Pangea::Resources::AWS::Types
     attribute :master_password, T::String
     attribute :master_username, T::String
     attribute :relational_database_name, T::String
+    attribute? :apply_immediately, T::Bool.optional
+    attribute? :availability_zone, T::String.optional
     attribute? :backup_retention_enabled, T::Bool.optional
     attribute? :final_snapshot_name, T::String.optional
+    attribute? :preferred_backup_window, T::String.optional
+    attribute? :preferred_maintenance_window, T::String.optional
     attribute? :publicly_accessible, T::Bool.optional
     attribute? :skip_final_snapshot, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

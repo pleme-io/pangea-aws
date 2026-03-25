@@ -15,6 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute? :custom_dns_configuration, T::Array.of(T::Hash).optional
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :transit_gateway_configuration, T::Hash.optional
   end
 end

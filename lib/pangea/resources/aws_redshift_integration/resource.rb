@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftIntegrationAttributes,
       outputs: { id: :id },
       map: [:integration_name, :source_arn, :target_arn],
-      map_present: [:additional_encryption_context, :description, :tags]
+      map_present: [:additional_encryption_context, :description, :kms_key_id, :tags]
   end
   module AWS
     include AWSRedshiftIntegration

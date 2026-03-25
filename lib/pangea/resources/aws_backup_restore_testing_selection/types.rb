@@ -14,6 +14,9 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :protected_resource_type, T::String
     attribute :restore_testing_plan_name, T::String
+    attribute? :protected_resource_arns, T::Array.of(T::String).optional
     attribute? :protected_resource_conditions, T::Array.of(T::Hash).optional
+    attribute? :restore_metadata_overrides, T::Hash.optional
+    attribute? :validation_window_hours, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

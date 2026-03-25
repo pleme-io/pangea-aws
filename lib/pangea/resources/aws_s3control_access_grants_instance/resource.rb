@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_s3control_access_grants_instance,
       attributes_class: AWS::Types::S3controlAccessGrantsInstanceAttributes,
       outputs: { id: :id },
-      map_present: [:identity_center_arn, :tags]
+      map_present: [:account_id, :identity_center_arn, :tags]
   end
   module AWS
     include AWSS3controlAccessGrantsInstance

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConnectRoutingProfileAttributes,
       outputs: { id: :id },
       map: [:default_outbound_queue_id, :description, :instance_id, :media_concurrencies, :name],
-      map_present: [:queue_configs, :tags]
+      map_present: [:queue_configs, :tags, :tags_all]
   end
   module AWS
     include AWSConnectRoutingProfile

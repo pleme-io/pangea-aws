@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Macie2ClassificationJobAttributes,
       outputs: { id: :id },
       map: [:job_type, :s3_job_definition],
-      map_present: [:schedule_frequency, :tags],
+      map_present: [:custom_data_identifier_ids, :description, :job_status, :name, :name_prefix, :sampling_percentage, :schedule_frequency, :tags, :tags_all],
       map_bool: [:initial_run]
   end
   module AWS

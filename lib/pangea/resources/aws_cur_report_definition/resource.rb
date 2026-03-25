@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CurReportDefinitionAttributes,
       outputs: { id: :id },
       map: [:additional_schema_elements, :compression, :format, :report_name, :s3_bucket, :s3_region, :time_unit],
-      map_present: [:additional_artifacts, :report_versioning, :s3_prefix, :tags],
+      map_present: [:additional_artifacts, :report_versioning, :s3_prefix, :tags, :tags_all],
       map_bool: [:refresh_closed_reports]
   end
   module AWS

@@ -18,5 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :force_delete, T::Bool.optional
     attribute? :process, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

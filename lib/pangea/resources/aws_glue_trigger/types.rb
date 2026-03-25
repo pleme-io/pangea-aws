@@ -20,6 +20,7 @@ module Pangea::Resources::AWS::Types
     attribute? :schedule, T::String.optional
     attribute? :start_on_creation, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :workflow_name, T::String.optional
   end
 end

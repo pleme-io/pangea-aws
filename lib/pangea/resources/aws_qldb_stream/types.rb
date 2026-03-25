@@ -17,5 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute :stream_name, T::String
     attribute? :exclusive_end_time, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

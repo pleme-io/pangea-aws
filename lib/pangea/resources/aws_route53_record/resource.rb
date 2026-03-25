@@ -15,7 +15,7 @@ module Pangea::Resources
       outputs: { id: :id },
       map: [:name, :type, :zone_id],
       map_present: [:alias, :cidr_routing_policy, :failover_routing_policy, :geolocation_routing_policy, :geoproximity_routing_policy, :health_check_id, :latency_routing_policy, :records, :set_identifier, :ttl, :weighted_routing_policy],
-      map_bool: [:multivalue_answer_routing_policy]
+      map_bool: [:allow_overwrite, :multivalue_answer_routing_policy]
   end
   module AWS
     include AWSRoute53Record

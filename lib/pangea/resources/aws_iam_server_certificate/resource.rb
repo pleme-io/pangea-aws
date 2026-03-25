@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IamServerCertificateAttributes,
       outputs: { id: :id },
       map: [:certificate_body, :private_key],
-      map_present: [:certificate_chain, :path, :tags]
+      map_present: [:certificate_chain, :name, :name_prefix, :path, :tags, :tags_all]
   end
   module AWS
     include AWSIamServerCertificate

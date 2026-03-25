@@ -12,9 +12,26 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute :user_pool_id, T::String
+    attribute? :access_token_validity, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :allowed_oauth_flows, T::Array.of(T::String).optional
+    attribute? :allowed_oauth_flows_user_pool_client, T::Bool.optional
+    attribute? :allowed_oauth_scopes, T::Array.of(T::String).optional
     attribute? :analytics_configuration, T::Array.of(T::Hash).optional
+    attribute? :auth_session_validity, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :callback_urls, T::Array.of(T::String).optional
+    attribute? :default_redirect_uri, T::String.optional
+    attribute? :enable_propagate_additional_user_context_data, T::Bool.optional
+    attribute? :enable_token_revocation, T::Bool.optional
+    attribute? :explicit_auth_flows, T::Array.of(T::String).optional
     attribute? :generate_secret, T::Bool.optional
+    attribute? :id_token_validity, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :logout_urls, T::Array.of(T::String).optional
+    attribute? :prevent_user_existence_errors, T::String.optional
+    attribute? :read_attributes, T::Array.of(T::String).optional
     attribute? :refresh_token_rotation, T::Array.of(T::Hash).optional
+    attribute? :refresh_token_validity, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :supported_identity_providers, T::Array.of(T::String).optional
     attribute? :token_validity_units, T::Array.of(T::Hash).optional
+    attribute? :write_attributes, T::Array.of(T::String).optional
   end
 end

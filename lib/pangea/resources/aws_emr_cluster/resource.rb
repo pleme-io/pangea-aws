@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::EmrClusterAttributes,
       outputs: { id: :id },
       map: [:name, :release_label, :service_role],
-      map_present: [:additional_info, :applications, :auto_termination_policy, :autoscaling_role, :bootstrap_action, :configurations, :configurations_json, :core_instance_fleet, :core_instance_group, :custom_ami_id, :ebs_root_volume_size, :ec2_attributes, :kerberos_attributes, :list_steps_states, :log_encryption_kms_key_id, :log_uri, :master_instance_fleet, :master_instance_group, :placement_group_config, :security_configuration, :step_concurrency_level, :tags],
-      map_bool: [:unhealthy_node_replacement, :visible_to_all_users]
+      map_present: [:additional_info, :applications, :auto_termination_policy, :autoscaling_role, :bootstrap_action, :configurations, :configurations_json, :core_instance_fleet, :core_instance_group, :custom_ami_id, :ebs_root_volume_size, :ec2_attributes, :kerberos_attributes, :list_steps_states, :log_encryption_kms_key_id, :log_uri, :master_instance_fleet, :master_instance_group, :placement_group_config, :scale_down_behavior, :security_configuration, :step, :step_concurrency_level, :tags, :tags_all],
+      map_bool: [:keep_job_flow_alive_when_no_steps, :termination_protection, :unhealthy_node_replacement, :visible_to_all_users]
   end
   module AWS
     include AWSEmrCluster

@@ -19,8 +19,11 @@ module Pangea::Resources::AWS::Types
     attribute? :enrichment_parameters, T::Hash.optional
     attribute? :kms_key_identifier, T::String.optional
     attribute? :log_configuration, T::Hash.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :source_parameters, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :target_parameters, T::Hash.optional
   end
 end

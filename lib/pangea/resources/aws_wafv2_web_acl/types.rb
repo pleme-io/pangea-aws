@@ -19,9 +19,12 @@ module Pangea::Resources::AWS::Types
     attribute? :custom_response_body, T::Array.of(T::Hash).optional
     attribute? :data_protection_config, T::Hash.optional
     attribute? :description, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :rule, T::Array.of(T::Hash).optional
     attribute? :rule_json, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :token_domains, T::Array.of(T::String).optional
   end
 end

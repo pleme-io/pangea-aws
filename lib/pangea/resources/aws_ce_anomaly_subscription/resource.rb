@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CeAnomalySubscriptionAttributes,
       outputs: { id: :id },
       map: [:frequency, :monitor_arn_list, :name, :subscriber],
-      map_present: [:tags, :threshold_expression]
+      map_present: [:account_id, :tags, :tags_all, :threshold_expression]
   end
   module AWS
     include AWSCeAnomalySubscription

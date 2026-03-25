@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :human_task_ui_name, T::String
     attribute :ui_template, T::Hash
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

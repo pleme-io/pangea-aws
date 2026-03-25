@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsoadminPermissionSetAttributes,
       outputs: { id: :id },
       map: [:instance_arn, :name],
-      map_present: [:description, :relay_state, :session_duration, :tags]
+      map_present: [:description, :relay_state, :session_duration, :tags, :tags_all]
   end
   module AWS
     include AWSSsoadminPermissionSet

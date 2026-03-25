@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :bot_id, T::String
     attribute :locale_specification, T::Hash
+    attribute? :bot_version, T::String.optional
     attribute? :description, T::String.optional
   end
 end

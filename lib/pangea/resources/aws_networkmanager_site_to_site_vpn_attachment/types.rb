@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :core_network_id, T::String
     attribute :vpn_connection_arn, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

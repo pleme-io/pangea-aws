@@ -14,9 +14,13 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :force_detach_policies, T::Bool.optional
     attribute? :inline_policy, T::Array.of(T::Hash).optional
+    attribute? :managed_policy_arns, T::Array.of(T::String).optional
     attribute? :max_session_duration, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :path, T::String.optional
     attribute? :permissions_boundary, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

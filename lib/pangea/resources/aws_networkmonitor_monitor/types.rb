@@ -11,6 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :monitor_name, T::String
+    attribute? :aggregation_period, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end

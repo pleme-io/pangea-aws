@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EcsTaskSetAttributes,
       outputs: { id: :id },
       map: [:cluster, :service, :task_definition],
-      map_present: [:capacity_provider_strategy, :load_balancer, :network_configuration, :scale, :service_registries, :tags, :wait_until_stable_timeout],
+      map_present: [:capacity_provider_strategy, :external_id, :launch_type, :load_balancer, :network_configuration, :platform_version, :scale, :service_registries, :tags, :tags_all, :wait_until_stable_timeout],
       map_bool: [:force_delete, :wait_until_stable]
   end
   module AWS

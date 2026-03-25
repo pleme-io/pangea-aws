@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :access_grants_location_id, T::String
     attribute :permission, T::String
     attribute? :access_grants_location_configuration, T::Array.of(T::Hash).optional
+    attribute? :account_id, T::String.optional
     attribute? :grantee, T::Array.of(T::Hash).optional
     attribute? :s3_prefix_type, T::String.optional
     attribute? :tags, T::Hash.optional

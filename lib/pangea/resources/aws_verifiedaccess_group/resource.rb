@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VerifiedaccessGroupAttributes,
       outputs: { id: :id },
       map: [:verifiedaccess_instance_id],
-      map_present: [:policy_document, :sse_configuration, :tags]
+      map_present: [:description, :policy_document, :sse_configuration, :tags, :tags_all]
   end
   module AWS
     include AWSVerifiedaccessGroup

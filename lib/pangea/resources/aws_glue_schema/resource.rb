@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueSchemaAttributes,
       outputs: { id: :id },
       map: [:compatibility, :data_format, :schema_definition, :schema_name],
-      map_present: [:description, :tags]
+      map_present: [:description, :registry_arn, :tags, :tags_all]
   end
   module AWS
     include AWSGlueSchema

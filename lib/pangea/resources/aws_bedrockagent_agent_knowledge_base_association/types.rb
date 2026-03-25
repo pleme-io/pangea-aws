@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :description, T::String
     attribute :knowledge_base_id, T::String
     attribute :knowledge_base_state, T::String
+    attribute? :agent_version, T::String.optional
   end
 end

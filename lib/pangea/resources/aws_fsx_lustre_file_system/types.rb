@@ -11,14 +11,22 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :subnet_ids, T::Array.of(T::String)
+    attribute? :auto_import_policy, (T::String | T::Hash).optional
+    attribute? :automatic_backup_retention_days, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :backup_id, T::String.optional
     attribute? :copy_tags_to_backups, T::Bool.optional
+    attribute? :daily_automatic_backup_start_time, T::String.optional
     attribute? :data_compression_type, T::String.optional
     attribute? :data_read_cache_configuration, T::Hash.optional
     attribute? :deployment_type, T::String.optional
     attribute? :drive_cache_type, T::String.optional
+    attribute? :efa_enabled, T::Bool.optional
+    attribute? :export_path, T::String.optional
+    attribute? :file_system_type_version, T::String.optional
     attribute? :final_backup_tags, T::Hash.optional
     attribute? :import_path, T::String.optional
+    attribute? :imported_file_chunk_size, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :kms_key_id, T::String.optional
     attribute? :log_configuration, T::Hash.optional
     attribute? :metadata_configuration, T::Hash.optional
     attribute? :per_unit_storage_throughput, (T::Coercible::Integer | T::Coercible::Float).optional
@@ -28,6 +36,8 @@ module Pangea::Resources::AWS::Types
     attribute? :storage_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :storage_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :throughput_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :weekly_maintenance_start_time, T::String.optional
   end
 end

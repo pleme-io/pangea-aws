@@ -18,5 +18,6 @@ module Pangea::Resources::AWS::Types
     attribute? :rule_group, T::Hash.optional
     attribute? :rules, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

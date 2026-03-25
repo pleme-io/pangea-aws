@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NeptuneClusterEndpointAttributes,
       outputs: { id: :id },
       map: [:cluster_endpoint_identifier, :cluster_identifier, :endpoint_type],
-      map_present: [:excluded_members, :static_members, :tags]
+      map_present: [:excluded_members, :static_members, :tags, :tags_all]
   end
   module AWS
     include AWSNeptuneClusterEndpoint

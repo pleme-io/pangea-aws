@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_kms_key,
       attributes_class: AWS::Types::KmsKeyAttributes,
       outputs: { id: :id },
-      map_present: [:custom_key_store_id, :customer_master_key_spec, :deletion_window_in_days, :key_usage, :tags, :xks_key_id],
-      map_bool: [:bypass_policy_lockout_safety_check, :enable_key_rotation, :is_enabled]
+      map_present: [:custom_key_store_id, :customer_master_key_spec, :deletion_window_in_days, :description, :key_usage, :policy, :rotation_period_in_days, :tags, :tags_all, :xks_key_id],
+      map_bool: [:bypass_policy_lockout_safety_check, :enable_key_rotation, :is_enabled, :multi_region]
   end
   module AWS
     include AWSKmsKey

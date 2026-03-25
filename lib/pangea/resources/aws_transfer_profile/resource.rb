@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::TransferProfileAttributes,
       outputs: { id: :id },
       map: [:as2_id, :profile_type],
-      map_present: [:certificate_ids, :tags]
+      map_present: [:certificate_ids, :tags, :tags_all]
   end
   module AWS
     include AWSTransferProfile

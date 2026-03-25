@@ -34,6 +34,7 @@ module Pangea::Resources::AWS::Types
     attribute? :root_password_on_all_instances, T::Bool.optional
     attribute? :system_packages, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :use_ebs_optimized_instances, T::Bool.optional
   end
 end

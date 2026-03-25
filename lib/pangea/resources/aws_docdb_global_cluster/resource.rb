@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::DocdbGlobalClusterAttributes,
       outputs: { id: :id },
       map: [:global_cluster_identifier],
-      map_present: [:database_name],
-      map_bool: [:deletion_protection]
+      map_present: [:database_name, :engine, :engine_version, :source_db_cluster_identifier],
+      map_bool: [:deletion_protection, :storage_encrypted]
   end
   module AWS
     include AWSDocdbGlobalCluster

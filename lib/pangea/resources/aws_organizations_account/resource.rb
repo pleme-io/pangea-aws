@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OrganizationsAccountAttributes,
       outputs: { id: :id },
       map: [:email, :name],
-      map_present: [:iam_user_access_to_billing, :role_name, :tags],
+      map_present: [:iam_user_access_to_billing, :parent_id, :role_name, :tags, :tags_all],
       map_bool: [:close_on_deletion, :create_govcloud]
   end
   module AWS

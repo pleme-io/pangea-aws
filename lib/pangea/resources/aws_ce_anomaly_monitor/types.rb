@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute? :monitor_dimension, T::String.optional
     attribute? :monitor_specification, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

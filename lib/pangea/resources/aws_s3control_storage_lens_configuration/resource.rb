@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3controlStorageLensConfigurationAttributes,
       outputs: { id: :id },
       map: [:config_id, :storage_lens_configuration],
-      map_present: [:tags]
+      map_present: [:account_id, :tags, :tags_all]
   end
   module AWS
     include AWSS3controlStorageLensConfiguration

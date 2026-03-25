@@ -14,6 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute? :default_sms_type, T::String.optional
     attribute? :delivery_status_iam_role_arn, T::String.optional
     attribute? :delivery_status_success_sampling_rate, T::String.optional
+    attribute? :monthly_spend_limit, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :usage_report_s3_bucket, T::String.optional
   end
 end

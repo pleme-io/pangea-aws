@@ -16,6 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :certificate_mode, T::String.optional
     attribute? :registration_config, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :verification_certificate_pem, T::String.optional
   end
 end

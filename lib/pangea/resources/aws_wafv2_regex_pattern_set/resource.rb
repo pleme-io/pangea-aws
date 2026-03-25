@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Wafv2RegexPatternSetAttributes,
       outputs: { id: :id },
       map: [:scope],
-      map_present: [:description, :regular_expression, :tags]
+      map_present: [:description, :name, :name_prefix, :regular_expression, :tags, :tags_all]
   end
   module AWS
     include AWSWafv2RegexPatternSet

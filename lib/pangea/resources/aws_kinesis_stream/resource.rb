@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KinesisStreamAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:encryption_type, :kms_key_id, :retention_period, :shard_count, :shard_level_metrics, :stream_mode_details, :tags],
+      map_present: [:arn, :encryption_type, :kms_key_id, :retention_period, :shard_count, :shard_level_metrics, :stream_mode_details, :tags, :tags_all],
       map_bool: [:enforce_consumer_deletion]
   end
   module AWS

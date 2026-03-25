@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudtrailEventDataStoreAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:advanced_event_selector, :billing_mode, :kms_key_id, :retention_period, :suspend, :tags],
+      map_present: [:advanced_event_selector, :billing_mode, :kms_key_id, :retention_period, :suspend, :tags, :tags_all],
       map_bool: [:multi_region_enabled, :organization_enabled, :termination_protection_enabled]
   end
   module AWS

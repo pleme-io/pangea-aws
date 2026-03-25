@@ -12,6 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :data_set_id, T::String
     attribute :schedule_id, T::String
+    attribute? :aws_account_id, T::String.optional
     attribute? :schedule, T::Array.of(T::Hash).optional
   end
 end

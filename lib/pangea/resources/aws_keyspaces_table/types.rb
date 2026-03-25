@@ -20,6 +20,7 @@ module Pangea::Resources::AWS::Types
     attribute? :encryption_specification, T::Hash.optional
     attribute? :point_in_time_recovery, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :ttl, T::Hash.optional
   end
 end

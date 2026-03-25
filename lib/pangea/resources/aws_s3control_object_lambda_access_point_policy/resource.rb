@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_s3control_object_lambda_access_point_policy,
       attributes_class: AWS::Types::S3controlObjectLambdaAccessPointPolicyAttributes,
       outputs: { id: :id },
-      map: [:name, :policy]
+      map: [:name, :policy],
+      map_present: [:account_id]
   end
   module AWS
     include AWSS3controlObjectLambdaAccessPointPolicy

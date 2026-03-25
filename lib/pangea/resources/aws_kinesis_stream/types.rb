@@ -11,6 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
+    attribute? :arn, T::String.optional
     attribute? :encryption_type, T::String.optional
     attribute? :enforce_consumer_deletion, T::Bool.optional
     attribute? :kms_key_id, T::String.optional
@@ -19,5 +20,6 @@ module Pangea::Resources::AWS::Types
     attribute? :shard_level_metrics, T::Array.of(T::String).optional
     attribute? :stream_mode_details, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

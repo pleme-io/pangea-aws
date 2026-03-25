@@ -18,12 +18,16 @@ module Pangea::Resources::AWS::Types
     attribute? :client_login_banner_options, T::Hash.optional
     attribute? :client_route_enforcement_options, T::Hash.optional
     attribute? :description, T::String.optional
+    attribute? :disconnect_on_session_timeout, T::Bool.optional
     attribute? :dns_servers, T::Array.of(T::String).optional
+    attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :self_service_portal, T::String.optional
     attribute? :session_timeout_hours, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :split_tunnel, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :transport_protocol, T::String.optional
+    attribute? :vpc_id, T::String.optional
     attribute? :vpn_port, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

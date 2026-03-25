@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::TimestreamwriteDatabaseAttributes,
       outputs: { id: :id },
       map: [:database_name],
-      map_present: [:tags]
+      map_present: [:kms_key_id, :tags, :tags_all]
   end
   module AWS
     include AWSTimestreamwriteDatabase

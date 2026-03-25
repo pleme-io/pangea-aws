@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EmrInstanceGroupAttributes,
       outputs: { id: :id },
       map: [:cluster_id, :instance_type],
-      map_present: [:autoscaling_policy, :bid_price, :configurations_json, :ebs_config, :name],
+      map_present: [:autoscaling_policy, :bid_price, :configurations_json, :ebs_config, :instance_count, :name],
       map_bool: [:ebs_optimized]
   end
   module AWS

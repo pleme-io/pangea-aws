@@ -20,6 +20,7 @@ module Pangea::Resources::AWS::Types
     attribute? :gateway_id, T::String.optional
     attribute? :local_gateway_id, T::String.optional
     attribute? :nat_gateway_id, T::String.optional
+    attribute? :network_interface_id, T::String.optional
     attribute? :transit_gateway_id, T::String.optional
     attribute? :vpc_endpoint_id, T::String.optional
     attribute? :vpc_peering_connection_id, T::String.optional

@@ -11,6 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :deletion_protection_enabled, T::Bool.optional
+    attribute? :kms_encryption_key, T::String.optional
     attribute? :multi_region_properties, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
   end

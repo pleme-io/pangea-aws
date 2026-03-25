@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OpensearchDomainAttributes,
       outputs: { id: :id },
       map: [:domain_name],
-      map_present: [:advanced_security_options, :auto_tune_options, :cluster_config, :cognito_options, :domain_endpoint_options, :ebs_options, :encrypt_at_rest, :log_publishing_options, :node_to_node_encryption, :off_peak_window_options, :snapshot_options, :software_update_options, :tags, :vpc_options]
+      map_present: [:access_policies, :advanced_options, :advanced_security_options, :auto_tune_options, :cluster_config, :cognito_options, :domain_endpoint_options, :ebs_options, :encrypt_at_rest, :engine_version, :ip_address_type, :log_publishing_options, :node_to_node_encryption, :off_peak_window_options, :snapshot_options, :software_update_options, :tags, :tags_all, :vpc_options]
   end
   module AWS
     include AWSOpensearchDomain

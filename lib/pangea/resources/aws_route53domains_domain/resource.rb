@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::Route53domainsDomainAttributes,
       outputs: { id: :id },
       map: [:domain_name],
-      map_present: [:admin_contact, :registrant_contact, :tags, :tech_contact]
+      map_present: [:admin_contact, :billing_contact, :duration_in_years, :name_server, :registrant_contact, :tags, :tech_contact],
+      map_bool: [:admin_privacy, :auto_renew, :billing_privacy, :registrant_privacy, :tech_privacy, :transfer_lock]
   end
   module AWS
     include AWSRoute53domainsDomain

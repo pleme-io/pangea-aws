@@ -13,6 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :analyzer_name, T::String
     attribute? :configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :type, T::String.optional
   end
 end

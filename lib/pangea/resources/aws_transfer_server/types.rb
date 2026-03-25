@@ -24,10 +24,13 @@ module Pangea::Resources::AWS::Types
     attribute? :post_authentication_login_banner, T::String.optional
     attribute? :pre_authentication_login_banner, T::String.optional
     attribute? :protocol_details, T::Hash.optional
+    attribute? :protocols, T::Array.of(T::String).optional
     attribute? :s3_storage_options, T::Hash.optional
     attribute? :security_policy_name, T::String.optional
+    attribute? :sftp_authentication_methods, T::String.optional
     attribute? :structured_log_destinations, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :url, T::String.optional
     attribute? :workflow_details, T::Hash.optional
   end

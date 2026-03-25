@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ImagebuilderImageAttributes,
       outputs: { id: :id },
       map: [:infrastructure_configuration_arn],
-      map_present: [:container_recipe_arn, :distribution_configuration_arn, :image_recipe_arn, :image_scanning_configuration, :image_tests_configuration, :tags, :workflow],
+      map_present: [:container_recipe_arn, :distribution_configuration_arn, :execution_role, :image_recipe_arn, :image_scanning_configuration, :image_tests_configuration, :tags, :tags_all, :workflow],
       map_bool: [:enhanced_image_metadata_enabled]
   end
   module AWS

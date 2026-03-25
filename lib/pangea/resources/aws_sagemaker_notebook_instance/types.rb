@@ -20,9 +20,12 @@ module Pangea::Resources::AWS::Types
     attribute? :instance_metadata_service_configuration, T::Hash.optional
     attribute? :kms_key_id, T::String.optional
     attribute? :lifecycle_config_name, T::String.optional
+    attribute? :platform_identifier, T::String.optional
     attribute? :root_access, T::String.optional
+    attribute? :security_groups, T::Array.of(T::String).optional
     attribute? :subnet_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :volume_size, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

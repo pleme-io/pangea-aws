@@ -29,5 +29,6 @@ module Pangea::Resources::AWS::Types
     attribute? :run_command_targets, T::Array.of(T::Hash).optional
     attribute? :sagemaker_pipeline_target, T::Hash.optional
     attribute? :sqs_target, T::Hash.optional
+    attribute? :target_id, T::String.optional
   end
 end

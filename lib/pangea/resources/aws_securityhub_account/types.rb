@@ -11,6 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :auto_enable_controls, T::Bool.optional
+    attribute? :control_finding_generator, T::String.optional
     attribute? :enable_default_standards, T::Bool.optional
   end
 end

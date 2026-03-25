@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute :log_group_name, T::String
     attribute :name, T::String
     attribute? :distribution, T::String.optional
+    attribute? :role_arn, T::String.optional
   end
 end

@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :fips_enabled, T::Bool.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

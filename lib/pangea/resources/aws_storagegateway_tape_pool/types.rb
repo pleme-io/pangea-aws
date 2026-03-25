@@ -15,5 +15,6 @@ module Pangea::Resources::AWS::Types
     attribute? :retention_lock_time_in_days, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :retention_lock_type, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

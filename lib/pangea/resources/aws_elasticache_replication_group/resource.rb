@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElasticacheReplicationGroupAttributes,
       outputs: { id: :id },
       map: [:description, :replication_group_id],
-      map_present: [:auth_token, :auth_token_update_strategy, :engine, :final_snapshot_identifier, :kms_key_id, :log_delivery_configuration, :notification_topic_arn, :port, :preferred_cache_cluster_azs, :snapshot_arns, :snapshot_name, :snapshot_retention_limit, :tags, :user_group_ids],
-      map_bool: [:automatic_failover_enabled, :multi_az_enabled]
+      map_present: [:at_rest_encryption_enabled, :auth_token, :auth_token_update_strategy, :auto_minor_version_upgrade, :cluster_mode, :engine, :engine_version, :final_snapshot_identifier, :global_replication_group_id, :ip_discovery, :kms_key_id, :log_delivery_configuration, :maintenance_window, :network_type, :node_type, :notification_topic_arn, :num_cache_clusters, :num_node_groups, :parameter_group_name, :port, :preferred_cache_cluster_azs, :replicas_per_node_group, :security_group_ids, :security_group_names, :snapshot_arns, :snapshot_name, :snapshot_retention_limit, :snapshot_window, :subnet_group_name, :tags, :tags_all, :transit_encryption_mode, :user_group_ids],
+      map_bool: [:apply_immediately, :automatic_failover_enabled, :data_tiering_enabled, :multi_az_enabled, :transit_encryption_enabled]
   end
   module AWS
     include AWSElasticacheReplicationGroup

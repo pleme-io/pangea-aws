@@ -23,6 +23,7 @@ module Pangea::Resources::AWS::Types
     attribute? :idp_auth_url, T::String.optional
     attribute? :idp_relay_state_parameter_name, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :user_role, T::String.optional
   end
 end

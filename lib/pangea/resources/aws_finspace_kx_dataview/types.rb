@@ -21,5 +21,6 @@ module Pangea::Resources::AWS::Types
     attribute? :read_write, T::Bool.optional
     attribute? :segment_configurations, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

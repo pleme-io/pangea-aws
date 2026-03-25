@@ -12,5 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :connection_id, T::String
     attribute? :cak, T::String.optional
+    attribute? :ckn, T::String.optional
+    attribute? :secret_arn, T::String.optional
   end
 end

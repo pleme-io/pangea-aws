@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_glue_partition_index,
       attributes_class: AWS::Types::GluePartitionIndexAttributes,
       outputs: { id: :id },
-      map: [:database_name, :partition_index, :table_name]
+      map: [:database_name, :partition_index, :table_name],
+      map_present: [:catalog_id]
   end
   module AWS
     include AWSGluePartitionIndex

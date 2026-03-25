@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsmMaintenanceWindowTaskAttributes,
       outputs: { id: :id },
       map: [:task_arn, :task_type, :window_id],
-      map_present: [:cutoff_behavior, :description, :name, :priority, :targets, :task_invocation_parameters]
+      map_present: [:cutoff_behavior, :description, :max_concurrency, :max_errors, :name, :priority, :service_role_arn, :targets, :task_invocation_parameters]
   end
   module AWS
     include AWSSsmMaintenanceWindowTask

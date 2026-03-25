@@ -13,6 +13,9 @@ module Pangea::Resources::AWS::Types
     attribute :ca_certificates_bundle_s3_bucket, T::String
     attribute :ca_certificates_bundle_s3_key, T::String
     attribute? :ca_certificates_bundle_s3_object_version, T::String.optional
+    attribute? :name, T::String.optional
+    attribute? :name_prefix, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

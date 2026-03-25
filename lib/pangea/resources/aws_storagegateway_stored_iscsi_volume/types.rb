@@ -19,5 +19,6 @@ module Pangea::Resources::AWS::Types
     attribute? :kms_key, T::String.optional
     attribute? :snapshot_id, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

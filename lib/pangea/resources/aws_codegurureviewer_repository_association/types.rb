@@ -13,5 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :repository, T::Hash
     attribute? :kms_key_details, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

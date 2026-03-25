@@ -14,6 +14,10 @@ module Pangea::Resources::AWS::Types
     attribute :iam_role_arn, T::String
     attribute :slack_channel_id, T::String
     attribute :slack_team_id, T::String
+    attribute? :guardrail_policy_arns, T::Array.of(T::String).optional
+    attribute? :logging_level, T::String.optional
+    attribute? :sns_topic_arns, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
+    attribute? :user_authorization_required, T::Bool.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OpsworksStackAttributes,
       outputs: { id: :id },
       map: [:default_instance_profile_arn, :name, :region, :service_role_arn],
-      map_present: [:berkshelf_version, :color, :configuration_manager_name, :configuration_manager_version, :custom_cookbooks_source, :custom_json, :default_os, :default_root_device_type, :default_ssh_key_name, :hostname_theme, :tags],
+      map_present: [:agent_version, :berkshelf_version, :color, :configuration_manager_name, :configuration_manager_version, :custom_cookbooks_source, :custom_json, :default_availability_zone, :default_os, :default_root_device_type, :default_ssh_key_name, :default_subnet_id, :hostname_theme, :tags, :tags_all, :vpc_id],
       map_bool: [:manage_berkshelf, :use_custom_cookbooks, :use_opsworks_security_groups]
   end
   module AWS

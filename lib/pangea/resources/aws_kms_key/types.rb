@@ -14,10 +14,15 @@ module Pangea::Resources::AWS::Types
     attribute? :custom_key_store_id, T::String.optional
     attribute? :customer_master_key_spec, T::String.optional
     attribute? :deletion_window_in_days, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :description, T::String.optional
     attribute? :enable_key_rotation, T::Bool.optional
     attribute? :is_enabled, T::Bool.optional
     attribute? :key_usage, T::String.optional
+    attribute? :multi_region, T::Bool.optional
+    attribute? :policy, (T::String | T::Hash).optional
+    attribute? :rotation_period_in_days, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :xks_key_id, T::String.optional
   end
 end

@@ -9,5 +9,9 @@ module Pangea::Resources::AWS::Types
   class QuicksightAccountSettingsAttributes < Dry::Struct
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
+
+    attribute? :aws_account_id, T::String.optional
+    attribute? :default_namespace, T::String.optional
+    attribute? :termination_protection_enabled, T::Bool.optional
   end
 end

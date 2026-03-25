@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :routing_strategy, T::Hash
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

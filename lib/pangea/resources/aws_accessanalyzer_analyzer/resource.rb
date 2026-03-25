@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AccessanalyzerAnalyzerAttributes,
       outputs: { id: :id },
       map: [:analyzer_name],
-      map_present: [:configuration, :tags, :type]
+      map_present: [:configuration, :tags, :tags_all, :type]
   end
   module AWS
     include AWSAccessanalyzerAnalyzer

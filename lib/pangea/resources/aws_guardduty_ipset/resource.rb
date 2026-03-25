@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GuarddutyIpsetAttributes,
       outputs: { id: :id },
       map: [:detector_id, :format, :location, :name],
-      map_present: [:tags],
+      map_present: [:tags, :tags_all],
       map_bool: [:activate]
   end
   module AWS

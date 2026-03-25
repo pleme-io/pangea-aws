@@ -22,6 +22,7 @@ module Pangea::Resources::AWS::Types
     attribute? :scan_enabled, T::Bool.optional
     attribute? :sns_action, T::Array.of(T::Hash).optional
     attribute? :stop_action, T::Array.of(T::Hash).optional
+    attribute? :tls_policy, (T::String | T::Hash).optional
     attribute? :workmail_action, T::Array.of(T::Hash).optional
   end
 end

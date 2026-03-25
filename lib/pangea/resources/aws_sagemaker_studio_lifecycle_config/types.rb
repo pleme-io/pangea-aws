@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :studio_lifecycle_config_content, T::String
     attribute :studio_lifecycle_config_name, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

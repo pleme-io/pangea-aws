@@ -15,10 +15,15 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute? :apply_changes_during_maintenance_window, T::Bool.optional
     attribute? :description, T::String.optional
+    attribute? :engine_version, T::String.optional
     attribute? :force_update, T::Bool.optional
     attribute? :high_availability_config, T::Array.of(T::Hash).optional
     attribute? :kms_key_id, T::String.optional
+    attribute? :preferred_maintenance_window, T::String.optional
+    attribute? :publicly_accessible, T::Bool.optional
+    attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :storage_configuration, T::Array.of(T::Hash).optional
+    attribute? :subnet_ids, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional
   end
 end

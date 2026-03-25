@@ -14,10 +14,17 @@ module Pangea::Resources::AWS::Types
     attribute :instance_class, T::String
     attribute? :apply_immediately, T::Bool.optional
     attribute? :auto_minor_version_upgrade, T::Bool.optional
+    attribute? :availability_zone, T::String.optional
+    attribute? :ca_cert_identifier, T::String.optional
     attribute? :copy_tags_to_snapshot, T::Bool.optional
     attribute? :enable_performance_insights, T::Bool.optional
     attribute? :engine, T::String.optional
+    attribute? :identifier, T::String.optional
+    attribute? :identifier_prefix, T::String.optional
+    attribute? :performance_insights_kms_key_id, T::String.optional
+    attribute? :preferred_maintenance_window, T::String.optional
     attribute? :promotion_tier, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -14,5 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :authentication_mode, T::Hash
     attribute :user_name, T::String
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

@@ -12,6 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :destination, T::String
     attribute :name, T::String
+    attribute? :arn, T::String.optional
+    attribute? :destination_id, T::String.optional
     attribute? :elasticsearch_configuration, T::Hash.optional
     attribute? :extended_s3_configuration, T::Hash.optional
     attribute? :http_endpoint_configuration, T::Hash.optional
@@ -25,5 +27,7 @@ module Pangea::Resources::AWS::Types
     attribute? :snowflake_configuration, T::Hash.optional
     attribute? :splunk_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
+    attribute? :version_id, T::String.optional
   end
 end

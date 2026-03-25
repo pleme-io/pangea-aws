@@ -14,6 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute :name, T::String
     attribute :spec, T::Hash
     attribute :virtual_router_name, T::String
+    attribute? :mesh_owner, T::String.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
   end
 end

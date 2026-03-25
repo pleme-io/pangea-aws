@@ -17,8 +17,10 @@ module Pangea::Resources::AWS::Types
     attribute? :compute_configuration, T::Hash.optional
     attribute? :fleet_service_role, T::String.optional
     attribute? :image_id, T::String.optional
+    attribute? :overflow_behavior, T::String.optional
     attribute? :scaling_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
+    attribute? :tags_all, T::Hash.optional
     attribute? :vpc_config, T::Array.of(T::Hash).optional
   end
 end
