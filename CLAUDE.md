@@ -1,10 +1,10 @@
 # pangea-aws
 
-AWS provider resources for the Pangea infrastructure DSL. Provides 448+ typed
+AWS provider resources for the Pangea infrastructure DSL. Provides 1,526 typed
 Terraform resource functions with Dry::Struct validation and synthesis testing.
 
-Resources are a mix of **auto-generated** (via pangea-forge) and **hand-written**.
-Both follow the same patterns. All must have RSpec synthesis tests.
+All resources are **auto-generated** by `terraform-schema-importer` from the
+HashiCorp AWS Terraform provider schema via the `pangea-forge` backend.
 
 ## Structure
 
@@ -15,7 +15,7 @@ lib/
   pangea/
     resources/
       aws.rb                        # Aggregator module (Pangea::Resources::AWS)
-      aws_*/                        # 448 resource directories
+      aws_*/                        # 1,526 resource directories
         resource.rb                 # Public API: def aws_<type>(name, attributes)
         types.rb                    # Dry::Struct attributes class
         types/                      # Optional: nested type definitions
