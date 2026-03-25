@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :name, T::String
     attribute :namespace, T::String
-    attribute :resource_policy, T::String
+    attribute :resource_policy, (T::String | T::Hash)
     attribute :table_bucket_arn, T::String
   end
 end

@@ -29,7 +29,7 @@ module Pangea::Resources::AWS::Types
     attribute? :ebs_volume, T::Array.of(T::Hash).optional
     attribute? :elastic_load_balancer, T::String.optional
     attribute? :install_updates_on_boot, T::Bool.optional
-    attribute? :instance_shutdown_timeout, T::Coercible::Float.optional
+    attribute? :instance_shutdown_timeout, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :load_based_auto_scaling, T::Hash.optional
     attribute? :manage_bundler, T::Bool.optional
     attribute? :name, T::String.optional

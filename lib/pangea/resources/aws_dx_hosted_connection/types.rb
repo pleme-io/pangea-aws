@@ -14,6 +14,6 @@ module Pangea::Resources::AWS::Types
     attribute :connection_id, T::String
     attribute :name, T::String
     attribute :owner_account_id, T::String
-    attribute :vlan, T::Coercible::Float
+    attribute :vlan, (T::Coercible::Integer | T::Coercible::Float)
   end
 end

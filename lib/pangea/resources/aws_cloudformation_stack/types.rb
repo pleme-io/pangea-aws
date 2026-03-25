@@ -19,6 +19,6 @@ module Pangea::Resources::AWS::Types
     attribute? :policy_url, T::String.optional
     attribute? :tags, T::Hash.optional
     attribute? :template_url, T::String.optional
-    attribute? :timeout_in_minutes, T::Coercible::Float.optional
+    attribute? :timeout_in_minutes, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

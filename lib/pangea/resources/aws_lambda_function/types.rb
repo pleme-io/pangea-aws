@@ -25,12 +25,12 @@ module Pangea::Resources::AWS::Types
     attribute? :kms_key_arn, T::String.optional
     attribute? :layers, T::Array.of(T::String).optional
     attribute? :logging_config, T::Hash.optional
-    attribute? :memory_size, T::Coercible::Float.optional
+    attribute? :memory_size, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :package_type, T::String.optional
     attribute? :publish, T::Bool.optional
     attribute? :replace_security_groups_on_destroy, T::Bool.optional
     attribute? :replacement_security_group_ids, T::Array.of(T::String).optional
-    attribute? :reserved_concurrent_executions, T::Coercible::Float.optional
+    attribute? :reserved_concurrent_executions, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :runtime, T::String.optional
     attribute? :s3_bucket, T::String.optional
     attribute? :s3_key, T::String.optional
@@ -38,7 +38,7 @@ module Pangea::Resources::AWS::Types
     attribute? :skip_destroy, T::Bool.optional
     attribute? :snap_start, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :timeout, T::Coercible::Float.optional
+    attribute? :timeout, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tracing_config, T::Hash.optional
     attribute? :vpc_config, T::Hash.optional
   end

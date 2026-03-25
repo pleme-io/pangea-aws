@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :network_interface_id, T::String
-    attribute :session_number, T::Coercible::Float
+    attribute :session_number, (T::Coercible::Integer | T::Coercible::Float)
     attribute :traffic_mirror_filter_id, T::String
     attribute :traffic_mirror_target_id, T::String
     attribute? :description, T::String.optional

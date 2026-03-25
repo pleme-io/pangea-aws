@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :resource_policy, T::String
+    attribute :resource_policy, (T::String | T::Hash)
     attribute :table_bucket_arn, T::String
   end
 end

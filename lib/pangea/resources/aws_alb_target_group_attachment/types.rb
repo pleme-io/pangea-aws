@@ -13,6 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :target_group_arn, T::String
     attribute :target_id, T::String
     attribute? :availability_zone, T::String.optional
-    attribute? :port, T::Coercible::Float.optional
+    attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

@@ -10,6 +10,6 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :retention_period_in_days, T::Coercible::Float
+    attribute :retention_period_in_days, (T::Coercible::Integer | T::Coercible::Float)
   end
 end

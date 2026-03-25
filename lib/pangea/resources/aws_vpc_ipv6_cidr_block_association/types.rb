@@ -12,6 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :vpc_id, T::String
     attribute? :ipv6_ipam_pool_id, T::String.optional
-    attribute? :ipv6_netmask_length, T::Coercible::Float.optional
+    attribute? :ipv6_netmask_length, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

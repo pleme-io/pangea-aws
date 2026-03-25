@@ -12,6 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :identity, T::String
     attribute :name, T::String
-    attribute :policy, T::String
+    attribute :policy, (T::String | T::Hash)
   end
 end

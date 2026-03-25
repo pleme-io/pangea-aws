@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :license_counting_type, T::String
     attribute :name, T::String
     attribute? :description, T::String.optional
-    attribute? :license_count, T::Coercible::Float.optional
+    attribute? :license_count, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :license_count_hard_limit, T::Bool.optional
     attribute? :license_rules, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional

@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute? :block_duration_minutes, T::Coercible::Float.optional
+    attribute? :block_duration_minutes, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :capacity_reservation_specification, T::Hash.optional
     attribute? :cpu_options, T::Hash.optional
     attribute? :credit_specification, T::Hash.optional

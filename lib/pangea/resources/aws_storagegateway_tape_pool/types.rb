@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :pool_name, T::String
     attribute :storage_class, T::String
-    attribute? :retention_lock_time_in_days, T::Coercible::Float.optional
+    attribute? :retention_lock_time_in_days, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :retention_lock_type, T::String.optional
     attribute? :tags, T::Hash.optional
   end

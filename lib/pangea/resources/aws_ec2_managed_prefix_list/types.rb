@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :address_family, T::String
-    attribute :max_entries, T::Coercible::Float
+    attribute :max_entries, (T::Coercible::Integer | T::Coercible::Float)
     attribute :name, T::String
     attribute? :entry, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional

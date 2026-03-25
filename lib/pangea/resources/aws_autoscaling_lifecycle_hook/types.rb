@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :autoscaling_group_name, T::String
     attribute :lifecycle_transition, T::String
     attribute :name, T::String
-    attribute? :heartbeat_timeout, T::Coercible::Float.optional
+    attribute? :heartbeat_timeout, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :notification_metadata, T::String.optional
     attribute? :notification_target_arn, T::String.optional
     attribute? :role_arn, T::String.optional

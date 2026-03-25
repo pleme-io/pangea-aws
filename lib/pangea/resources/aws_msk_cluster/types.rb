@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :broker_node_group_info, T::Hash
     attribute :cluster_name, T::String
     attribute :kafka_version, T::String
-    attribute :number_of_broker_nodes, T::Coercible::Float
+    attribute :number_of_broker_nodes, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :client_authentication, T::Hash.optional
     attribute? :configuration_info, T::Hash.optional
     attribute? :encryption_info, T::Hash.optional

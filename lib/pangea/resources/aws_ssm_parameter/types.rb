@@ -17,6 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute? :overwrite, T::Bool.optional
     attribute? :tags, T::Hash.optional
     attribute? :value_wo, T::String.optional
-    attribute? :value_wo_version, T::Coercible::Float.optional
+    attribute? :value_wo_version, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

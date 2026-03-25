@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :source, T::String
     attribute? :destination, T::String.optional
     attribute? :destination_ip, T::String.optional
-    attribute? :destination_port, T::Coercible::Float.optional
+    attribute? :destination_port, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :filter_at_destination, T::Hash.optional
     attribute? :filter_at_source, T::Hash.optional
     attribute? :source_ip, T::String.optional

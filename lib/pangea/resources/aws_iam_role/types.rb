@@ -10,11 +10,11 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :assume_role_policy, T::String
+    attribute :assume_role_policy, (T::String | T::Hash)
     attribute? :description, T::String.optional
     attribute? :force_detach_policies, T::Bool.optional
     attribute? :inline_policy, T::Array.of(T::Hash).optional
-    attribute? :max_session_duration, T::Coercible::Float.optional
+    attribute? :max_session_duration, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :path, T::String.optional
     attribute? :permissions_boundary, T::String.optional
     attribute? :tags, T::Hash.optional

@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :key_name, T::String
     attribute :key_role, T::String
-    attribute :seconds_to_live, T::Coercible::Float
+    attribute :seconds_to_live, (T::Coercible::Integer | T::Coercible::Float)
     attribute :workspace_id, T::String
   end
 end

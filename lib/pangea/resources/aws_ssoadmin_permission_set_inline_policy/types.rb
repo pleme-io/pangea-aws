@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :inline_policy, T::String
+    attribute :inline_policy, (T::String | T::Hash)
     attribute :instance_arn, T::String
     attribute :permission_set_arn, T::String
   end

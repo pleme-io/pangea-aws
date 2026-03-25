@@ -13,6 +13,6 @@ module Pangea::Resources::AWS::Types
     attribute :endpoint, T::Hash
     attribute :fields, T::Array.of(T::String)
     attribute :name, T::String
-    attribute :sampling_rate, T::Coercible::Float
+    attribute :sampling_rate, (T::Coercible::Integer | T::Coercible::Float)
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :project_arn, T::String
     attribute :rule, T::Array.of(T::Hash)
     attribute? :description, T::String.optional
-    attribute? :max_devices, T::Coercible::Float.optional
+    attribute? :max_devices, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end

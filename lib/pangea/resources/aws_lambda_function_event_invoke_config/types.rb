@@ -12,8 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :function_name, T::String
     attribute? :destination_config, T::Hash.optional
-    attribute? :maximum_event_age_in_seconds, T::Coercible::Float.optional
-    attribute? :maximum_retry_attempts, T::Coercible::Float.optional
+    attribute? :maximum_event_age_in_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :maximum_retry_attempts, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :qualifier, T::String.optional
   end
 end

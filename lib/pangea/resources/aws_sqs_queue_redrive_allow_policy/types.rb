@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :queue_url, T::String
-    attribute :redrive_allow_policy, T::String
+    attribute :redrive_allow_policy, (T::String | T::Hash)
   end
 end

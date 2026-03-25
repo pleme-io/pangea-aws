@@ -11,11 +11,11 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :subnet_ids, T::Array.of(T::String)
-    attribute :throughput_capacity, T::Coercible::Float
+    attribute :throughput_capacity, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :active_directory_id, T::String.optional
     attribute? :aliases, T::Array.of(T::String).optional
     attribute? :audit_log_configuration, T::Hash.optional
-    attribute? :automatic_backup_retention_days, T::Coercible::Float.optional
+    attribute? :automatic_backup_retention_days, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :backup_id, T::String.optional
     attribute? :copy_tags_to_backups, T::Bool.optional
     attribute? :deployment_type, T::String.optional

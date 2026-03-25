@@ -12,10 +12,10 @@ module Pangea::Resources::AWS::Types
 
     attribute :default_action, T::Array.of(T::Hash)
     attribute :load_balancer_arn, T::String
-    attribute? :alpn_policy, T::String.optional
+    attribute? :alpn_policy, (T::String | T::Hash).optional
     attribute? :certificate_arn, T::String.optional
     attribute? :mutual_authentication, T::Hash.optional
-    attribute? :port, T::Coercible::Float.optional
+    attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end

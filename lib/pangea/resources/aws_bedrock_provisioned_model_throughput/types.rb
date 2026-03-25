@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :model_arn, T::String
-    attribute :model_units, T::Coercible::Float
+    attribute :model_units, (T::Coercible::Integer | T::Coercible::Float)
     attribute :provisioned_model_name, T::String
     attribute? :commitment_duration, T::String.optional
     attribute? :tags, T::Hash.optional

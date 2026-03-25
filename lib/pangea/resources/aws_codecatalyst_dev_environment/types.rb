@@ -16,7 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute :project_name, T::String
     attribute :space_name, T::String
     attribute? :alias, T::String.optional
-    attribute? :inactivity_timeout_minutes, T::Coercible::Float.optional
+    attribute? :inactivity_timeout_minutes, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :repositories, T::Array.of(T::Hash).optional
   end
 end

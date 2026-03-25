@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :alias, T::String
     attribute :role_arn, T::String
-    attribute? :credential_duration, T::Coercible::Float.optional
+    attribute? :credential_duration, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end

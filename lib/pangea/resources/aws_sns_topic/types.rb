@@ -12,25 +12,25 @@ module Pangea::Resources::AWS::Types
 
     attribute? :application_failure_feedback_role_arn, T::String.optional
     attribute? :application_success_feedback_role_arn, T::String.optional
-    attribute? :application_success_feedback_sample_rate, T::Coercible::Float.optional
-    attribute? :archive_policy, T::String.optional
+    attribute? :application_success_feedback_sample_rate, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :archive_policy, (T::String | T::Hash).optional
     attribute? :content_based_deduplication, T::Bool.optional
-    attribute? :delivery_policy, T::String.optional
+    attribute? :delivery_policy, (T::String | T::Hash).optional
     attribute? :display_name, T::String.optional
     attribute? :fifo_topic, T::Bool.optional
     attribute? :firehose_failure_feedback_role_arn, T::String.optional
     attribute? :firehose_success_feedback_role_arn, T::String.optional
-    attribute? :firehose_success_feedback_sample_rate, T::Coercible::Float.optional
+    attribute? :firehose_success_feedback_sample_rate, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :http_failure_feedback_role_arn, T::String.optional
     attribute? :http_success_feedback_role_arn, T::String.optional
-    attribute? :http_success_feedback_sample_rate, T::Coercible::Float.optional
+    attribute? :http_success_feedback_sample_rate, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :kms_master_key_id, T::String.optional
     attribute? :lambda_failure_feedback_role_arn, T::String.optional
     attribute? :lambda_success_feedback_role_arn, T::String.optional
-    attribute? :lambda_success_feedback_sample_rate, T::Coercible::Float.optional
+    attribute? :lambda_success_feedback_sample_rate, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :sqs_failure_feedback_role_arn, T::String.optional
     attribute? :sqs_success_feedback_role_arn, T::String.optional
-    attribute? :sqs_success_feedback_sample_rate, T::Coercible::Float.optional
+    attribute? :sqs_success_feedback_sample_rate, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end

@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :stack_id, T::String
-    attribute? :allocated_memory, T::Coercible::Float.optional
+    attribute? :allocated_memory, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :auto_assign_elastic_ips, T::Bool.optional
     attribute? :auto_assign_public_ips, T::Bool.optional
     attribute? :auto_healing, T::Bool.optional
@@ -28,7 +28,7 @@ module Pangea::Resources::AWS::Types
     attribute? :ebs_volume, T::Array.of(T::Hash).optional
     attribute? :elastic_load_balancer, T::String.optional
     attribute? :install_updates_on_boot, T::Bool.optional
-    attribute? :instance_shutdown_timeout, T::Coercible::Float.optional
+    attribute? :instance_shutdown_timeout, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :load_based_auto_scaling, T::Hash.optional
     attribute? :name, T::String.optional
     attribute? :system_packages, T::Array.of(T::String).optional

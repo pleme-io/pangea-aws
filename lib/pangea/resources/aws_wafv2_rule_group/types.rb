@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :capacity, T::Coercible::Float
+    attribute :capacity, (T::Coercible::Integer | T::Coercible::Float)
     attribute :scope, T::String
     attribute :visibility_config, T::Hash
     attribute? :custom_response_body, T::Array.of(T::Hash).optional

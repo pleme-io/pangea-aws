@@ -13,10 +13,10 @@ module Pangea::Resources::AWS::Types
     attribute :monitor_name, T::String
     attribute? :health_events_config, T::Hash.optional
     attribute? :internet_measurements_log_delivery, T::Hash.optional
-    attribute? :max_city_networks_to_monitor, T::Coercible::Float.optional
+    attribute? :max_city_networks_to_monitor, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :resources, T::Array.of(T::String).optional
     attribute? :status, T::String.optional
     attribute? :tags, T::Hash.optional
-    attribute? :traffic_percentage_to_monitor, T::Coercible::Float.optional
+    attribute? :traffic_percentage_to_monitor, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

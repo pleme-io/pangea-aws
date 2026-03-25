@@ -13,8 +13,8 @@ module Pangea::Resources::AWS::Types
     attribute :game_server_group_name, T::String
     attribute :instance_definition, T::Array.of(T::Hash)
     attribute :launch_template, T::Hash
-    attribute :max_size, T::Coercible::Float
-    attribute :min_size, T::Coercible::Float
+    attribute :max_size, (T::Coercible::Integer | T::Coercible::Float)
+    attribute :min_size, (T::Coercible::Integer | T::Coercible::Float)
     attribute :role_arn, T::String
     attribute? :auto_scaling_policy, T::Hash.optional
     attribute? :tags, T::Hash.optional

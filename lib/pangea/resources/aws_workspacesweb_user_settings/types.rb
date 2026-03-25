@@ -18,8 +18,8 @@ module Pangea::Resources::AWS::Types
     attribute? :additional_encryption_context, T::Hash.optional
     attribute? :cookie_synchronization_configuration, T::Array.of(T::Hash).optional
     attribute? :customer_managed_key, T::String.optional
-    attribute? :disconnect_timeout_in_minutes, T::Coercible::Float.optional
-    attribute? :idle_disconnect_timeout_in_minutes, T::Coercible::Float.optional
+    attribute? :disconnect_timeout_in_minutes, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :idle_disconnect_timeout_in_minutes, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
     attribute? :toolbar_configuration, T::Array.of(T::Hash).optional
   end

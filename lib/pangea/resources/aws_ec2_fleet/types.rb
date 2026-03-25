@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :launch_template_config, T::Array.of(T::Hash)
     attribute :target_capacity_specification, T::Hash
     attribute? :context, T::String.optional
-    attribute? :excess_capacity_termination_policy, T::String.optional
+    attribute? :excess_capacity_termination_policy, (T::String | T::Hash).optional
     attribute? :fleet_instance_set, T::Array.of(T::Hash).optional
     attribute? :on_demand_options, T::Hash.optional
     attribute? :replace_unhealthy_instances, T::Bool.optional

@@ -11,12 +11,12 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :address_family, T::String
-    attribute :bgp_asn, T::Coercible::Float
+    attribute :bgp_asn, (T::Coercible::Integer | T::Coercible::Float)
     attribute :connection_id, T::String
     attribute :dx_gateway_id, T::String
     attribute :name, T::String
-    attribute :vlan, T::Coercible::Float
-    attribute? :mtu, T::Coercible::Float.optional
+    attribute :vlan, (T::Coercible::Integer | T::Coercible::Float)
+    attribute? :mtu, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :sitelink_enabled, T::Bool.optional
     attribute? :tags, T::Hash.optional
   end

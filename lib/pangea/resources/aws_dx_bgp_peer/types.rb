@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :address_family, T::String
-    attribute :bgp_asn, T::Coercible::Float
+    attribute :bgp_asn, (T::Coercible::Integer | T::Coercible::Float)
     attribute :virtual_interface_id, T::String
   end
 end

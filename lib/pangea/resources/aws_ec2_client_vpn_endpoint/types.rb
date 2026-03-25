@@ -20,10 +20,10 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :dns_servers, T::Array.of(T::String).optional
     attribute? :self_service_portal, T::String.optional
-    attribute? :session_timeout_hours, T::Coercible::Float.optional
+    attribute? :session_timeout_hours, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :split_tunnel, T::Bool.optional
     attribute? :tags, T::Hash.optional
     attribute? :transport_protocol, T::String.optional
-    attribute? :vpn_port, T::Coercible::Float.optional
+    attribute? :vpn_port, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

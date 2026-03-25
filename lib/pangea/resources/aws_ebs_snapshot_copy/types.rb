@@ -12,12 +12,12 @@ module Pangea::Resources::AWS::Types
 
     attribute :source_region, T::String
     attribute :source_snapshot_id, T::String
-    attribute? :completion_duration_minutes, T::Coercible::Float.optional
+    attribute? :completion_duration_minutes, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :description, T::String.optional
     attribute? :encrypted, T::Bool.optional
     attribute? :kms_key_id, T::String.optional
     attribute? :permanent_restore, T::Bool.optional
     attribute? :tags, T::Hash.optional
-    attribute? :temporary_restore_days, T::Coercible::Float.optional
+    attribute? :temporary_restore_days, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

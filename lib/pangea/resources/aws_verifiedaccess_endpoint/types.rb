@@ -20,7 +20,7 @@ module Pangea::Resources::AWS::Types
     attribute? :endpoint_domain_prefix, T::String.optional
     attribute? :load_balancer_options, T::Hash.optional
     attribute? :network_interface_options, T::Hash.optional
-    attribute? :policy_document, T::String.optional
+    attribute? :policy_document, (T::String | T::Hash).optional
     attribute? :rds_options, T::Hash.optional
     attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :sse_specification, T::Hash.optional

@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :metric_name, T::String
     attribute :name, T::String
     attribute :rate_key, T::String
-    attribute :rate_limit, T::Coercible::Float
+    attribute :rate_limit, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :predicates, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
   end

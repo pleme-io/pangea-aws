@@ -18,7 +18,7 @@ module Pangea::Resources::AWS::Types
     attribute? :parameters, T::Hash.optional
     attribute? :partition_index, T::Array.of(T::Hash).optional
     attribute? :partition_keys, T::Array.of(T::Hash).optional
-    attribute? :retention, T::Coercible::Float.optional
+    attribute? :retention, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :storage_descriptor, T::Hash.optional
     attribute? :table_type, T::String.optional
     attribute? :target_table, T::Hash.optional

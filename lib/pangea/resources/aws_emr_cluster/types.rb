@@ -23,7 +23,7 @@ module Pangea::Resources::AWS::Types
     attribute? :core_instance_fleet, T::Hash.optional
     attribute? :core_instance_group, T::Hash.optional
     attribute? :custom_ami_id, T::String.optional
-    attribute? :ebs_root_volume_size, T::Coercible::Float.optional
+    attribute? :ebs_root_volume_size, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :ec2_attributes, T::Hash.optional
     attribute? :kerberos_attributes, T::Hash.optional
     attribute? :list_steps_states, T::Array.of(T::String).optional
@@ -33,7 +33,7 @@ module Pangea::Resources::AWS::Types
     attribute? :master_instance_group, T::Hash.optional
     attribute? :placement_group_config, T::Array.of(T::Hash).optional
     attribute? :security_configuration, T::String.optional
-    attribute? :step_concurrency_level, T::Coercible::Float.optional
+    attribute? :step_concurrency_level, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
     attribute? :unhealthy_node_replacement, T::Bool.optional
     attribute? :visible_to_all_users, T::Bool.optional

@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute? :home_directory, T::String.optional
     attribute? :home_directory_mappings, T::Array.of(T::Hash).optional
     attribute? :home_directory_type, T::String.optional
-    attribute? :policy, T::String.optional
+    attribute? :policy, (T::String | T::Hash).optional
     attribute? :posix_profile, T::Hash.optional
     attribute? :role, T::String.optional
   end

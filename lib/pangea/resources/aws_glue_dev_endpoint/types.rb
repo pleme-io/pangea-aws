@@ -16,8 +16,8 @@ module Pangea::Resources::AWS::Types
     attribute? :extra_jars_s3_path, T::String.optional
     attribute? :extra_python_libs_s3_path, T::String.optional
     attribute? :glue_version, T::String.optional
-    attribute? :number_of_nodes, T::Coercible::Float.optional
-    attribute? :number_of_workers, T::Coercible::Float.optional
+    attribute? :number_of_nodes, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :number_of_workers, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :public_key, T::String.optional
     attribute? :public_keys, T::Array.of(T::String).optional
     attribute? :security_configuration, T::String.optional

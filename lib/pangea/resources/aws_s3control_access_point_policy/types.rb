@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :access_point_arn, T::String
-    attribute :policy, T::String
+    attribute :policy, (T::String | T::Hash)
   end
 end

@@ -16,7 +16,7 @@ module Pangea::Resources::AWS::Types
     attribute? :cutoff_behavior, T::String.optional
     attribute? :description, T::String.optional
     attribute? :name, T::String.optional
-    attribute? :priority, T::Coercible::Float.optional
+    attribute? :priority, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :targets, T::Array.of(T::Hash).optional
     attribute? :task_invocation_parameters, T::Hash.optional
   end

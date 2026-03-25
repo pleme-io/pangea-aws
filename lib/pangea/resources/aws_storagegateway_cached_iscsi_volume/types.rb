@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute :gateway_arn, T::String
     attribute :network_interface_id, T::String
     attribute :target_name, T::String
-    attribute :volume_size_in_bytes, T::Coercible::Float
+    attribute :volume_size_in_bytes, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :kms_encrypted, T::Bool.optional
     attribute? :kms_key, T::String.optional
     attribute? :snapshot_id, T::String.optional

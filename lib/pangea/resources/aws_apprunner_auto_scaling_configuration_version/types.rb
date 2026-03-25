@@ -11,9 +11,9 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :auto_scaling_configuration_name, T::String
-    attribute? :max_concurrency, T::Coercible::Float.optional
-    attribute? :max_size, T::Coercible::Float.optional
-    attribute? :min_size, T::Coercible::Float.optional
+    attribute? :max_concurrency, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :max_size, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :min_size, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end

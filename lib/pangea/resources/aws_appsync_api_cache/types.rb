@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :api_caching_behavior, T::String
     attribute :api_id, T::String
-    attribute :ttl, T::Coercible::Float
+    attribute :ttl, (T::Coercible::Integer | T::Coercible::Float)
     attribute :type, T::String
     attribute? :at_rest_encryption_enabled, T::Bool.optional
     attribute? :transit_encryption_enabled, T::Bool.optional

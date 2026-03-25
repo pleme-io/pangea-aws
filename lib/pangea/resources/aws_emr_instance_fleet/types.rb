@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute? :instance_type_configs, T::Array.of(T::Hash).optional
     attribute? :launch_specifications, T::Hash.optional
     attribute? :name, T::String.optional
-    attribute? :target_on_demand_capacity, T::Coercible::Float.optional
-    attribute? :target_spot_capacity, T::Coercible::Float.optional
+    attribute? :target_on_demand_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :target_spot_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

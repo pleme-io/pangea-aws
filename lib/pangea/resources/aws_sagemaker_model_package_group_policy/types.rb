@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :model_package_group_name, T::String
-    attribute :resource_policy, T::String
+    attribute :resource_policy, (T::String | T::Hash)
   end
 end

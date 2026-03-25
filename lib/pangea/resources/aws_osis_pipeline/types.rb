@@ -10,8 +10,8 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :max_units, T::Coercible::Float
-    attribute :min_units, T::Coercible::Float
+    attribute :max_units, (T::Coercible::Integer | T::Coercible::Float)
+    attribute :min_units, (T::Coercible::Integer | T::Coercible::Float)
     attribute :pipeline_configuration_body, T::String
     attribute :pipeline_name, T::String
     attribute? :buffer_options, T::Array.of(T::Hash).optional

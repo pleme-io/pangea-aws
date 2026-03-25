@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :log_group_name, T::String
-    attribute :policy_document, T::String
+    attribute :policy_document, (T::String | T::Hash)
   end
 end

@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :global_network_id, T::String
-    attribute? :base_policy_document, T::String.optional
+    attribute? :base_policy_document, (T::String | T::Hash).optional
     attribute? :base_policy_region, T::String.optional
     attribute? :base_policy_regions, T::Array.of(T::String).optional
     attribute? :create_base_policy, T::Bool.optional

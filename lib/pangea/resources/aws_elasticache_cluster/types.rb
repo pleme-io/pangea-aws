@@ -19,7 +19,7 @@ module Pangea::Resources::AWS::Types
     attribute? :preferred_availability_zones, T::Array.of(T::String).optional
     attribute? :snapshot_arns, T::Array.of(T::String).optional
     attribute? :snapshot_name, T::String.optional
-    attribute? :snapshot_retention_limit, T::Coercible::Float.optional
+    attribute? :snapshot_retention_limit, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end

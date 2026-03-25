@@ -12,6 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :source_db_instance_arn, T::String
     attribute? :pre_signed_url, T::String.optional
-    attribute? :retention_period, T::Coercible::Float.optional
+    attribute? :retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

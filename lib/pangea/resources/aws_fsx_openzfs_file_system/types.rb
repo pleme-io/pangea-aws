@@ -12,8 +12,8 @@ module Pangea::Resources::AWS::Types
 
     attribute :deployment_type, T::String
     attribute :subnet_ids, T::Array.of(T::String)
-    attribute :throughput_capacity, T::Coercible::Float
-    attribute? :automatic_backup_retention_days, T::Coercible::Float.optional
+    attribute :throughput_capacity, (T::Coercible::Integer | T::Coercible::Float)
+    attribute? :automatic_backup_retention_days, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :backup_id, T::String.optional
     attribute? :copy_tags_to_backups, T::Bool.optional
     attribute? :copy_tags_to_volumes, T::Bool.optional
@@ -24,7 +24,7 @@ module Pangea::Resources::AWS::Types
     attribute? :root_volume_configuration, T::Hash.optional
     attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :skip_final_backup, T::Bool.optional
-    attribute? :storage_capacity, T::Coercible::Float.optional
+    attribute? :storage_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :storage_type, T::String.optional
     attribute? :tags, T::Hash.optional
   end

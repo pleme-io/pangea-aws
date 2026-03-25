@@ -25,7 +25,7 @@ module Pangea::Resources::AWS::Types
     attribute? :invalid_user_list, T::Array.of(T::String).optional
     attribute? :kms_encrypted, T::Bool.optional
     attribute? :kms_key_arn, T::String.optional
-    attribute? :notification_policy, T::String.optional
+    attribute? :notification_policy, (T::String | T::Hash).optional
     attribute? :object_acl, T::String.optional
     attribute? :read_only, T::Bool.optional
     attribute? :requester_pays, T::Bool.optional

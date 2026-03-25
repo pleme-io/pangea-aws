@@ -19,9 +19,9 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :detect_sentiment, T::Bool.optional
     attribute? :enable_model_improvements, T::Bool.optional
-    attribute? :idle_session_ttl_in_seconds, T::Coercible::Float.optional
+    attribute? :idle_session_ttl_in_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :locale, T::String.optional
-    attribute? :nlu_intent_confidence_threshold, T::Coercible::Float.optional
+    attribute? :nlu_intent_confidence_threshold, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :process_behavior, T::String.optional
   end
 end

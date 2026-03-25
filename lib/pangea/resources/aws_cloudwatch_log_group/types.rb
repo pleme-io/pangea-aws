@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :kms_key_id, T::String.optional
-    attribute? :retention_in_days, T::Coercible::Float.optional
+    attribute? :retention_in_days, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :skip_destroy, T::Bool.optional
     attribute? :tags, T::Hash.optional
   end

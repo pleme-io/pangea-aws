@@ -17,6 +17,6 @@ module Pangea::Resources::AWS::Types
     attribute? :permanent_restore, T::Bool.optional
     attribute? :role_name, T::String.optional
     attribute? :tags, T::Hash.optional
-    attribute? :temporary_restore_days, T::Coercible::Float.optional
+    attribute? :temporary_restore_days, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

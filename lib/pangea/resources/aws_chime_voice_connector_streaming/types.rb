@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :data_retention, T::Coercible::Float
+    attribute :data_retention, (T::Coercible::Integer | T::Coercible::Float)
     attribute :voice_connector_id, T::String
     attribute? :disabled, T::Bool.optional
     attribute? :media_insights_configuration, T::Hash.optional

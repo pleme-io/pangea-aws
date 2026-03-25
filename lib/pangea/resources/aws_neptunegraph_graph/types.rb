@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :provisioned_memory, T::Coercible::Float
+    attribute :provisioned_memory, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :graph_name_prefix, T::String.optional
     attribute? :tags, T::Hash.optional
     attribute? :vector_search_configuration, T::Array.of(T::Hash).optional

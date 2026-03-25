@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :layer_name, T::String
     attribute :principal, T::String
     attribute :statement_id, T::String
-    attribute :version_number, T::Coercible::Float
+    attribute :version_number, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :organization_id, T::String.optional
     attribute? :skip_destroy, T::Bool.optional
   end

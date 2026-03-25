@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute :saml_metadata_document, T::String
+    attribute :saml_metadata_document, (T::String | T::Hash)
     attribute? :tags, T::Hash.optional
   end
 end

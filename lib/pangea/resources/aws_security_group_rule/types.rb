@@ -10,10 +10,10 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :from_port, T::Coercible::Float
+    attribute :from_port, (T::Coercible::Integer | T::Coercible::Float)
     attribute :protocol, T::String
     attribute :security_group_id, T::String
-    attribute :to_port, T::Coercible::Float
+    attribute :to_port, (T::Coercible::Integer | T::Coercible::Float)
     attribute :type, T::String
     attribute? :cidr_blocks, T::Array.of(T::String).optional
     attribute? :description, T::String.optional

@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :policy, T::String
+    attribute :policy, (T::String | T::Hash)
     attribute? :event_bus_name, T::String.optional
   end
 end

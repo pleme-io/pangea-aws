@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :default_job_timeout_minutes, T::Coercible::Float.optional
+    attribute? :default_job_timeout_minutes, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end

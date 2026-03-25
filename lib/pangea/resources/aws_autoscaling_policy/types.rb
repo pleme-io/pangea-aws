@@ -13,13 +13,13 @@ module Pangea::Resources::AWS::Types
     attribute :autoscaling_group_name, T::String
     attribute :name, T::String
     attribute? :adjustment_type, T::String.optional
-    attribute? :cooldown, T::Coercible::Float.optional
+    attribute? :cooldown, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :enabled, T::Bool.optional
-    attribute? :estimated_instance_warmup, T::Coercible::Float.optional
-    attribute? :min_adjustment_magnitude, T::Coercible::Float.optional
+    attribute? :estimated_instance_warmup, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :min_adjustment_magnitude, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :policy_type, T::String.optional
     attribute? :predictive_scaling_configuration, T::Hash.optional
-    attribute? :scaling_adjustment, T::Coercible::Float.optional
+    attribute? :scaling_adjustment, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :step_adjustment, T::Array.of(T::Hash).optional
     attribute? :target_tracking_configuration, T::Hash.optional
   end

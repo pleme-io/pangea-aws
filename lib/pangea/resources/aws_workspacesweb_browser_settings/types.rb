@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :browser_policy, T::String
+    attribute :browser_policy, (T::String | T::Hash)
     attribute? :additional_encryption_context, T::Hash.optional
     attribute? :customer_managed_key, T::String.optional
     attribute? :tags, T::Hash.optional

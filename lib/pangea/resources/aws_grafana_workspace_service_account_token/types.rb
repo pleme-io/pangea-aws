@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute :seconds_to_live, T::Coercible::Float
+    attribute :seconds_to_live, (T::Coercible::Integer | T::Coercible::Float)
     attribute :service_account_id, T::String
     attribute :workspace_id, T::String
   end

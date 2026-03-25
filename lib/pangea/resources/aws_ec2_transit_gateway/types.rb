@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute? :amazon_side_asn, T::Coercible::Float.optional
+    attribute? :amazon_side_asn, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :auto_accept_shared_attachments, T::String.optional
     attribute? :default_route_table_association, T::String.optional
     attribute? :default_route_table_propagation, T::String.optional

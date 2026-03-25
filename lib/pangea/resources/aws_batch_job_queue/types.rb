@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute :priority, T::Coercible::Float
+    attribute :priority, (T::Coercible::Integer | T::Coercible::Float)
     attribute :state, T::String
     attribute? :compute_environment_order, T::Array.of(T::Hash).optional
     attribute? :compute_environments, T::Array.of(T::String).optional

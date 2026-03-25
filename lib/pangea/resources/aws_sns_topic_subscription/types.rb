@@ -13,13 +13,13 @@ module Pangea::Resources::AWS::Types
     attribute :endpoint, T::String
     attribute :protocol, T::String
     attribute :topic_arn, T::String
-    attribute? :confirmation_timeout_in_minutes, T::Coercible::Float.optional
-    attribute? :delivery_policy, T::String.optional
+    attribute? :confirmation_timeout_in_minutes, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :delivery_policy, (T::String | T::Hash).optional
     attribute? :endpoint_auto_confirms, T::Bool.optional
-    attribute? :filter_policy, T::String.optional
+    attribute? :filter_policy, (T::String | T::Hash).optional
     attribute? :raw_message_delivery, T::Bool.optional
-    attribute? :redrive_policy, T::String.optional
-    attribute? :replay_policy, T::String.optional
+    attribute? :redrive_policy, (T::String | T::Hash).optional
+    attribute? :replay_policy, (T::String | T::Hash).optional
     attribute? :subscription_role_arn, T::String.optional
   end
 end

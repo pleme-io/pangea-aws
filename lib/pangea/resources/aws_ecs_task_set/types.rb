@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :cluster, T::String
     attribute :service, T::String
-    attribute :task_definition, T::String
+    attribute :task_definition, (T::String | T::Hash)
     attribute? :capacity_provider_strategy, T::Array.of(T::Hash).optional
     attribute? :force_delete, T::Bool.optional
     attribute? :load_balancer, T::Array.of(T::Hash).optional

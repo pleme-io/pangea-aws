@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :backup_vault_name, T::String
-    attribute :policy, T::String
+    attribute :policy, (T::String | T::Hash)
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :instance_id, T::String
     attribute :name, T::String
     attribute? :description, T::String.optional
-    attribute? :max_contacts, T::Coercible::Float.optional
+    attribute? :max_contacts, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :outbound_caller_config, T::Hash.optional
     attribute? :quick_connect_ids, T::Array.of(T::String).optional
     attribute? :tags, T::Hash.optional

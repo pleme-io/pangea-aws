@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :core_network_id, T::String
-    attribute :policy_document, T::String
+    attribute :policy_document, (T::String | T::Hash)
   end
 end

@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :complete_lock, T::Bool
-    attribute :policy, T::String
+    attribute :policy, (T::String | T::Hash)
     attribute :vault_name, T::String
     attribute? :ignore_deletion_error, T::Bool.optional
   end

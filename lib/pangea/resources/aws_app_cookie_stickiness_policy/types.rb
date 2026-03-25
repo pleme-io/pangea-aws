@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :cookie_name, T::String
-    attribute :lb_port, T::Coercible::Float
+    attribute :lb_port, (T::Coercible::Integer | T::Coercible::Float)
     attribute :load_balancer, T::String
     attribute :name, T::String
   end

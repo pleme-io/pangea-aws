@@ -18,7 +18,7 @@ module Pangea::Resources::AWS::Types
     attribute? :edition, T::String.optional
     attribute? :server_side_encryption_configuration, T::Hash.optional
     attribute? :tags, T::Hash.optional
-    attribute? :user_context_policy, T::String.optional
+    attribute? :user_context_policy, (T::String | T::Hash).optional
     attribute? :user_group_resolution_configuration, T::Hash.optional
     attribute? :user_token_configurations, T::Hash.optional
   end

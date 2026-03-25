@@ -11,18 +11,18 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :iam_fleet_role, T::String
-    attribute :target_capacity, T::Coercible::Float
+    attribute :target_capacity, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :allocation_strategy, T::String.optional
     attribute? :context, T::String.optional
-    attribute? :excess_capacity_termination_policy, T::String.optional
+    attribute? :excess_capacity_termination_policy, (T::String | T::Hash).optional
     attribute? :fleet_type, T::String.optional
     attribute? :instance_interruption_behaviour, T::String.optional
-    attribute? :instance_pools_to_use_count, T::Coercible::Float.optional
+    attribute? :instance_pools_to_use_count, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :launch_specification, T::Array.of(T::Hash).optional
     attribute? :launch_template_config, T::Array.of(T::Hash).optional
     attribute? :on_demand_allocation_strategy, T::String.optional
     attribute? :on_demand_max_total_price, T::String.optional
-    attribute? :on_demand_target_capacity, T::Coercible::Float.optional
+    attribute? :on_demand_target_capacity, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :replace_unhealthy_instances, T::Bool.optional
     attribute? :spot_maintenance_strategies, T::Hash.optional
     attribute? :spot_price, T::String.optional

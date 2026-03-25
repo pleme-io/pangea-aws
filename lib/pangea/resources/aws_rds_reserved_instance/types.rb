@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :offering_id, T::String
-    attribute? :instance_count, T::Coercible::Float.optional
+    attribute? :instance_count, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :reservation_id, T::String.optional
     attribute? :tags, T::Hash.optional
   end

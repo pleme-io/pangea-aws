@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :key_id, T::String
-    attribute :policy, T::String
+    attribute :policy, (T::String | T::Hash)
     attribute? :bypass_policy_lockout_safety_check, T::Bool.optional
   end
 end

@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :policy_document, T::String
+    attribute :policy_document, (T::String | T::Hash)
     attribute :policy_name, T::String
     attribute? :bypass_policy_lockout_check, T::Bool.optional
   end

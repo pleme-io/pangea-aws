@@ -14,10 +14,10 @@ module Pangea::Resources::AWS::Types
     attribute :firewall_domain_list_id, T::String
     attribute :firewall_rule_group_id, T::String
     attribute :name, T::String
-    attribute :priority, T::Coercible::Float
+    attribute :priority, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :block_override_dns_type, T::String.optional
     attribute? :block_override_domain, T::String.optional
-    attribute? :block_override_ttl, T::Coercible::Float.optional
+    attribute? :block_override_ttl, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :block_response, T::String.optional
     attribute? :firewall_domain_redirection_action, T::String.optional
     attribute? :q_type, T::String.optional

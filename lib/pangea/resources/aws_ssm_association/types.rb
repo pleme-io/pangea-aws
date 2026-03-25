@@ -23,6 +23,6 @@ module Pangea::Resources::AWS::Types
     attribute? :sync_compliance, T::String.optional
     attribute? :tags, T::Hash.optional
     attribute? :targets, T::Array.of(T::Hash).optional
-    attribute? :wait_for_success_timeout_seconds, T::Coercible::Float.optional
+    attribute? :wait_for_success_timeout_seconds, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

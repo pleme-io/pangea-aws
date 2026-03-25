@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :db_cluster_identifier, T::String
     attribute :db_shard_group_identifier, T::String
-    attribute :max_acu, T::Coercible::Float
+    attribute :max_acu, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :tags, T::Hash.optional
   end
 end

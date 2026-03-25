@@ -11,6 +11,6 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :delivery_destination_name, T::String
-    attribute :delivery_destination_policy, T::String
+    attribute :delivery_destination_policy, (T::String | T::Hash)
   end
 end

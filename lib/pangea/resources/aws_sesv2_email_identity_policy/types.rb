@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :email_identity, T::String
-    attribute :policy, T::String
+    attribute :policy, (T::String | T::Hash)
     attribute :policy_name, T::String
   end
 end

@@ -11,11 +11,11 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute? :access_logs, T::Hash.optional
-    attribute? :client_keep_alive, T::Coercible::Float.optional
+    attribute? :client_keep_alive, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :connection_logs, T::Hash.optional
     attribute? :customer_owned_ipv4_pool, T::String.optional
     attribute? :desync_mitigation_mode, T::String.optional
-    attribute? :dns_record_client_routing_policy, T::String.optional
+    attribute? :dns_record_client_routing_policy, (T::String | T::Hash).optional
     attribute? :drop_invalid_header_fields, T::Bool.optional
     attribute? :enable_cross_zone_load_balancing, T::Bool.optional
     attribute? :enable_deletion_protection, T::Bool.optional
@@ -24,7 +24,7 @@ module Pangea::Resources::AWS::Types
     attribute? :enable_waf_fail_open, T::Bool.optional
     attribute? :enable_xff_client_port, T::Bool.optional
     attribute? :enable_zonal_shift, T::Bool.optional
-    attribute? :idle_timeout, T::Coercible::Float.optional
+    attribute? :idle_timeout, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :ipam_pools, T::Hash.optional
     attribute? :load_balancer_type, T::String.optional
     attribute? :minimum_load_balancer_capacity, T::Hash.optional

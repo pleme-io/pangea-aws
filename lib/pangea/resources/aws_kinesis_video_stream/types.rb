@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute? :data_retention_in_hours, T::Coercible::Float.optional
+    attribute? :data_retention_in_hours, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :device_name, T::String.optional
     attribute? :media_type, T::String.optional
     attribute? :tags, T::Hash.optional

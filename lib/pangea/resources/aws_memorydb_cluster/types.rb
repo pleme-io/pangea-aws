@@ -18,8 +18,8 @@ module Pangea::Resources::AWS::Types
     attribute? :final_snapshot_name, T::String.optional
     attribute? :kms_key_arn, T::String.optional
     attribute? :multi_region_cluster_name, T::String.optional
-    attribute? :num_replicas_per_shard, T::Coercible::Float.optional
-    attribute? :num_shards, T::Coercible::Float.optional
+    attribute? :num_replicas_per_shard, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :num_shards, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :security_group_ids, T::Array.of(T::String).optional
     attribute? :snapshot_arns, T::Array.of(T::String).optional
     attribute? :snapshot_name, T::String.optional

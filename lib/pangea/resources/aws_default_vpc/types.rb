@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute? :enable_dns_support, T::Bool.optional
     attribute? :force_destroy, T::Bool.optional
     attribute? :ipv6_ipam_pool_id, T::String.optional
-    attribute? :ipv6_netmask_length, T::Coercible::Float.optional
+    attribute? :ipv6_netmask_length, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end

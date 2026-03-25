@@ -15,10 +15,10 @@ module Pangea::Resources::AWS::Types
     attribute :parameters, T::Hash
     attribute :role_arn, T::String
     attribute? :description, T::String.optional
-    attribute? :max_retries, T::Coercible::Float.optional
-    attribute? :number_of_workers, T::Coercible::Float.optional
+    attribute? :max_retries, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :number_of_workers, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
-    attribute? :timeout, T::Coercible::Float.optional
+    attribute? :timeout, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :worker_type, T::String.optional
   end
 end

@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :cluster_id, T::String
     attribute :instance_type, T::String
-    attribute? :autoscaling_policy, T::String.optional
+    attribute? :autoscaling_policy, (T::String | T::Hash).optional
     attribute? :bid_price, T::String.optional
     attribute? :configurations_json, T::String.optional
     attribute? :ebs_config, T::Array.of(T::Hash).optional

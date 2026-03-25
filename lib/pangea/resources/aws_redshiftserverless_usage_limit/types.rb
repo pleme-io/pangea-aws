@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :amount, T::Coercible::Float
+    attribute :amount, (T::Coercible::Integer | T::Coercible::Float)
     attribute :resource_arn, T::String
     attribute :usage_type, T::String
     attribute? :breach_action, T::String.optional

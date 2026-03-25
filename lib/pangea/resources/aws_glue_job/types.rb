@@ -20,7 +20,7 @@ module Pangea::Resources::AWS::Types
     attribute? :execution_property, T::Hash.optional
     attribute? :job_run_queuing_enabled, T::Bool.optional
     attribute? :maintenance_window, T::String.optional
-    attribute? :max_retries, T::Coercible::Float.optional
+    attribute? :max_retries, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :non_overridable_arguments, T::Hash.optional
     attribute? :notification_property, T::Hash.optional
     attribute? :security_configuration, T::String.optional

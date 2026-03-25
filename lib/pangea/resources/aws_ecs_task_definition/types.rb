@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :container_definitions, T::String
+    attribute :container_definitions, (T::String | T::Hash)
     attribute :family, T::String
     attribute? :cpu, T::String.optional
     attribute? :ephemeral_storage, T::Hash.optional

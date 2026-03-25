@@ -13,11 +13,11 @@ module Pangea::Resources::AWS::Types
     attribute :listener, T::Array.of(T::Hash)
     attribute? :access_logs, T::Hash.optional
     attribute? :connection_draining, T::Bool.optional
-    attribute? :connection_draining_timeout, T::Coercible::Float.optional
+    attribute? :connection_draining_timeout, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :cross_zone_load_balancing, T::Bool.optional
     attribute? :desync_mitigation_mode, T::String.optional
     attribute? :health_check, T::Hash.optional
-    attribute? :idle_timeout, T::Coercible::Float.optional
+    attribute? :idle_timeout, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end

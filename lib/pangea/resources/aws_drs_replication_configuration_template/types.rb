@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :associate_default_security_group, T::Bool
-    attribute :bandwidth_throttling, T::Coercible::Float
+    attribute :bandwidth_throttling, (T::Coercible::Integer | T::Coercible::Float)
     attribute :create_public_ip, T::Bool
     attribute :data_plane_routing, T::String
     attribute :default_large_staging_disk_type, T::String

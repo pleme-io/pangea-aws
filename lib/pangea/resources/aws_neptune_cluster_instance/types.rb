@@ -14,8 +14,8 @@ module Pangea::Resources::AWS::Types
     attribute :instance_class, T::String
     attribute? :auto_minor_version_upgrade, T::Bool.optional
     attribute? :engine, T::String.optional
-    attribute? :port, T::Coercible::Float.optional
-    attribute? :promotion_tier, T::Coercible::Float.optional
+    attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :promotion_tier, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :publicly_accessible, T::Bool.optional
     attribute? :skip_final_snapshot, T::Bool.optional
     attribute? :tags, T::Hash.optional

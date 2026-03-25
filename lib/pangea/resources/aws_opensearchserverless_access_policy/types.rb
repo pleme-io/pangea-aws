@@ -11,7 +11,7 @@ module Pangea::Resources::AWS::Types
     T = Pangea::Resources::AWS::Types
 
     attribute :name, T::String
-    attribute :policy, T::String
+    attribute :policy, (T::String | T::Hash)
     attribute :type, T::String
     attribute? :description, T::String.optional
   end

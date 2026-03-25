@@ -13,7 +13,7 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :force_overwrite_replica_secret, T::Bool.optional
     attribute? :kms_key_id, T::String.optional
-    attribute? :recovery_window_in_days, T::Coercible::Float.optional
+    attribute? :recovery_window_in_days, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :replica, T::Array.of(T::Hash).optional
     attribute? :tags, T::Hash.optional
   end

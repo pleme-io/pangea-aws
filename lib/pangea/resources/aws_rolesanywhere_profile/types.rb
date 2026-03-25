@@ -15,7 +15,7 @@ module Pangea::Resources::AWS::Types
     attribute? :managed_policy_arns, T::Array.of(T::String).optional
     attribute? :require_instance_properties, T::Bool.optional
     attribute? :role_arns, T::Array.of(T::String).optional
-    attribute? :session_policy, T::String.optional
+    attribute? :session_policy, (T::String | T::Hash).optional
     attribute? :tags, T::Hash.optional
   end
 end

@@ -14,7 +14,7 @@ module Pangea::Resources::AWS::Types
     attribute :detector_id, T::String
     attribute :finding_criteria, T::Hash
     attribute :name, T::String
-    attribute :rank, T::Coercible::Float
+    attribute :rank, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional
   end

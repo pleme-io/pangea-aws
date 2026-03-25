@@ -10,15 +10,15 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :cutoff, T::Coercible::Float
-    attribute :duration, T::Coercible::Float
+    attribute :cutoff, (T::Coercible::Integer | T::Coercible::Float)
+    attribute :duration, (T::Coercible::Integer | T::Coercible::Float)
     attribute :name, T::String
     attribute :schedule, T::String
     attribute? :allow_unassociated_targets, T::Bool.optional
     attribute? :description, T::String.optional
     attribute? :enabled, T::Bool.optional
     attribute? :end_date, T::String.optional
-    attribute? :schedule_offset, T::Coercible::Float.optional
+    attribute? :schedule_offset, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :schedule_timezone, T::String.optional
     attribute? :start_date, T::String.optional
     attribute? :tags, T::Hash.optional

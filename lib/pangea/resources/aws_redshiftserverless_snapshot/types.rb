@@ -12,6 +12,6 @@ module Pangea::Resources::AWS::Types
 
     attribute :namespace_name, T::String
     attribute :snapshot_name, T::String
-    attribute? :retention_period, T::Coercible::Float.optional
+    attribute? :retention_period, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

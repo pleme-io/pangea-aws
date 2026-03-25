@@ -16,8 +16,8 @@ module Pangea::Resources::AWS::Types
     attribute? :description, T::String.optional
     attribute? :encryption_configuration, T::Array.of(T::Hash).optional
     attribute? :image_tag_mutability, T::String.optional
-    attribute? :lifecycle_policy, T::String.optional
-    attribute? :repository_policy, T::String.optional
+    attribute? :lifecycle_policy, (T::String | T::Hash).optional
+    attribute? :repository_policy, (T::String | T::Hash).optional
     attribute? :resource_tags, T::Hash.optional
   end
 end

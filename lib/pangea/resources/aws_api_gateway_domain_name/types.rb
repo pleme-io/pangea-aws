@@ -18,7 +18,7 @@ module Pangea::Resources::AWS::Types
     attribute? :certificate_private_key, T::String.optional
     attribute? :endpoint_configuration, T::Hash.optional
     attribute? :mutual_tls_authentication, T::Hash.optional
-    attribute? :policy, T::String.optional
+    attribute? :policy, (T::String | T::Hash).optional
     attribute? :regional_certificate_arn, T::String.optional
     attribute? :regional_certificate_name, T::String.optional
     attribute? :tags, T::Hash.optional

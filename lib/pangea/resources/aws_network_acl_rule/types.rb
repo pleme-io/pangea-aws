@@ -13,13 +13,13 @@ module Pangea::Resources::AWS::Types
     attribute :network_acl_id, T::String
     attribute :protocol, T::String
     attribute :rule_action, T::String
-    attribute :rule_number, T::Coercible::Float
+    attribute :rule_number, (T::Coercible::Integer | T::Coercible::Float)
     attribute? :cidr_block, T::String.optional
     attribute? :egress, T::Bool.optional
-    attribute? :from_port, T::Coercible::Float.optional
-    attribute? :icmp_code, T::Coercible::Float.optional
-    attribute? :icmp_type, T::Coercible::Float.optional
+    attribute? :from_port, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :icmp_code, (T::Coercible::Integer | T::Coercible::Float).optional
+    attribute? :icmp_type, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :ipv6_cidr_block, T::String.optional
-    attribute? :to_port, T::Coercible::Float.optional
+    attribute? :to_port, (T::Coercible::Integer | T::Coercible::Float).optional
   end
 end

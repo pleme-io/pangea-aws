@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :access_policy, T::String
+    attribute :access_policy, (T::String | T::Hash)
     attribute :domain_name, T::String
   end
 end

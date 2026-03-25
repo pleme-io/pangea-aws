@@ -12,7 +12,7 @@ module Pangea::Resources::AWS::Types
 
     attribute :compatibility, T::String
     attribute :data_format, T::String
-    attribute :schema_definition, T::String
+    attribute :schema_definition, (T::String | T::Hash)
     attribute :schema_name, T::String
     attribute? :description, T::String.optional
     attribute? :tags, T::Hash.optional

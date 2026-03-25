@@ -10,7 +10,7 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :rule_definition, T::String
+    attribute :rule_definition, (T::String | T::Hash)
     attribute :rule_name, T::String
     attribute? :rule_state, T::String.optional
     attribute? :tags, T::Hash.optional

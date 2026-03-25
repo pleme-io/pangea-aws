@@ -13,10 +13,10 @@ module Pangea::Resources::AWS::Types
     attribute? :deregistration_delay, T::String.optional
     attribute? :health_check, T::Hash.optional
     attribute? :lambda_multi_value_headers_enabled, T::Bool.optional
-    attribute? :port, T::Coercible::Float.optional
+    attribute? :port, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :protocol, T::String.optional
     attribute? :proxy_protocol_v2, T::Bool.optional
-    attribute? :slow_start, T::Coercible::Float.optional
+    attribute? :slow_start, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :stickiness, T::Hash.optional
     attribute? :tags, T::Hash.optional
     attribute? :target_failover, T::Array.of(T::Hash).optional

@@ -10,8 +10,8 @@ module Pangea::Resources::AWS::Types
     transform_keys(&:to_sym)
     T = Pangea::Resources::AWS::Types
 
-    attribute :amazon_side_asn, T::Coercible::Float
-    attribute? :persist_routes_duration, T::Coercible::Float.optional
+    attribute :amazon_side_asn, (T::Coercible::Integer | T::Coercible::Float)
+    attribute? :persist_routes_duration, (T::Coercible::Integer | T::Coercible::Float).optional
     attribute? :tags, T::Hash.optional
   end
 end
