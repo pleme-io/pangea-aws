@@ -1534,5 +1534,8 @@ require_relative 'pangea/resources/aws_xray_group/resource'
 require_relative 'pangea/resources/aws_xray_resource_policy/resource'
 require_relative 'pangea/resources/aws_xray_sampling_rule/resource'
 
+# AWS data sources
+require_relative 'pangea/resources/data_aws_ssm_parameter/resource'
+
 # AWS module aggregator
 require_relative 'pangea/resources/aws'
