@@ -30,7 +30,7 @@ module Pangea
           attribute :private_cidrs, Components::Types::SubnetCidrBlocks
           attribute :availability_zones, Components::Types::AvailabilityZones.optional
           attribute :create_nat_gateway, Components::Types::Bool.default(true)
-          attribute :nat_gateway_type, Resources::Types::String.enum('single', 'per_az').default('per_az')
+          attribute :nat_gateway_type, Components::Types::String.default('per_az').enum('single', 'per_az')
           attribute :enable_nat_gateway_monitoring, Components::Types::Bool.default(true)
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
           attribute :public_subnet_tags, Resources::Types::AwsTags.default({}.freeze)
