@@ -122,7 +122,7 @@ module Pangea
       
       # Load balancing configuration
       LoadBalancingConfig = Hash.schema(
-        type: LoadBalancerType,
+        type?: LoadBalancerType.optional,
         scheme: String.default('internet-facing').enum('internet-facing', 'internal'),
         enable_deletion_protection?: Bool.default(false),
         enable_cross_zone?: Bool.default(true),
@@ -172,12 +172,12 @@ module Pangea
         
         # Basic overlap detection (simplified)
         if all_cidrs.uniq.length != all_cidrs.length
-          raise Dry::Types::ConstraintError, "Duplicate CIDR blocks found in subnet distribution"
+          raise Dry::Types::ConstraintError.new("Duplicate CIDR blocks found in subnet distribution", value)
         end
         
         # Ensure public subnets exist
         if (value[:public_cidrs] || []).empty?
-          raise Dry::Types::ConstraintError, "At least one public subnet CIDR is required"
+          raise Dry::Types::ConstraintError.new("At least one public subnet CIDR is required", value)
         end
         
         value
