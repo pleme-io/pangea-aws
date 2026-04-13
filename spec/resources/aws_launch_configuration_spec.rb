@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSLaunchConfiguration do
         expect(ref.key_name).to eq("${aws_launch_configuration.test.key_name}")
         expect(ref.name).to eq("${aws_launch_configuration.test.name}")
         expect(ref.name_prefix).to eq("${aws_launch_configuration.test.name_prefix}")
+        expect(ref.region).to eq("${aws_launch_configuration.test.region}")
       end
     end
 
@@ -61,11 +62,12 @@ RSpec.describe Pangea::Resources::AWSLaunchConfiguration do
         expect(config).not_to have_key('key_name')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ ebs_block_device: [{ 'key1' => 'val1' }], enable_monitoring: true, ephemeral_block_device: [{ 'key1' => 'val1' }], iam_instance_profile: 'test-value', metadata_options: [{ 'key1' => 'val1' }], placement_tenancy: 'test-value', root_block_device: [{ 'key1' => 'val1' }], security_groups: ['test-value'], spot_price: 'test-value', user_data: 'test-value', user_data_base64: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ associate_public_ip_address: true, ebs_block_device: [{ 'key1' => 'val1' }], ebs_optimized: true, enable_monitoring: true, ephemeral_block_device: [{ 'key1' => 'val1' }], iam_instance_profile: 'test-value', key_name: 'test-value', metadata_options: { 'key1' => 'val1' }, name: 'test-value', name_prefix: 'test-value', placement_tenancy: 'test-value', region: 'test-value', root_block_device: { 'key1' => 'val1' }, security_groups: ['test-value'], spot_price: 'test-value', user_data: 'test-value', user_data_base64: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,12 +76,18 @@ RSpec.describe Pangea::Resources::AWSLaunchConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_launch_configuration', 'full')
+        expect(config).to have_key('associate_public_ip_address')
         expect(config).to have_key('ebs_block_device')
+        expect(config).to have_key('ebs_optimized')
         expect(config).to have_key('enable_monitoring')
         expect(config).to have_key('ephemeral_block_device')
         expect(config).to have_key('iam_instance_profile')
+        expect(config).to have_key('key_name')
         expect(config).to have_key('metadata_options')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
         expect(config).to have_key('placement_tenancy')
+        expect(config).to have_key('region')
         expect(config).to have_key('root_block_device')
         expect(config).to have_key('security_groups')
         expect(config).to have_key('spot_price')
@@ -89,6 +97,23 @@ RSpec.describe Pangea::Resources::AWSLaunchConfiguration do
     end
 
     context 'optional attributes' do
+      it 'includes associate_public_ip_address when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_configuration('opt', required_attrs.merge(associate_public_ip_address: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_configuration', 'opt')
+        expect(config).to have_key('associate_public_ip_address')
+      end
+
+      it 'omits associate_public_ip_address when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_configuration', 'minimal')
+        expect(config).not_to have_key('associate_public_ip_address')
+      end
       it 'includes ebs_block_device when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -105,6 +130,23 @@ RSpec.describe Pangea::Resources::AWSLaunchConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_configuration', 'minimal')
         expect(config).not_to have_key('ebs_block_device')
+      end
+      it 'includes ebs_optimized when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_configuration('opt', required_attrs.merge(ebs_optimized: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_configuration', 'opt')
+        expect(config).to have_key('ebs_optimized')
+      end
+
+      it 'omits ebs_optimized when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_configuration', 'minimal')
+        expect(config).not_to have_key('ebs_optimized')
       end
       it 'includes enable_monitoring when provided' do
         synth = create_synthesizer
@@ -157,10 +199,27 @@ RSpec.describe Pangea::Resources::AWSLaunchConfiguration do
         config = validate_resource_structure(result, 'aws_launch_configuration', 'minimal')
         expect(config).not_to have_key('iam_instance_profile')
       end
+      it 'includes key_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_configuration('opt', required_attrs.merge(key_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_configuration', 'opt')
+        expect(config).to have_key('key_name')
+      end
+
+      it 'omits key_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_configuration', 'minimal')
+        expect(config).not_to have_key('key_name')
+      end
       it 'includes metadata_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_configuration('opt', required_attrs.merge(metadata_options: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_configuration('opt', required_attrs.merge(metadata_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_configuration', 'opt')
         expect(config).to have_key('metadata_options')
@@ -173,6 +232,40 @@ RSpec.describe Pangea::Resources::AWSLaunchConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_configuration', 'minimal')
         expect(config).not_to have_key('metadata_options')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_configuration('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_configuration', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_configuration', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_configuration('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_configuration', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_configuration', 'minimal')
+        expect(config).not_to have_key('name_prefix')
       end
       it 'includes placement_tenancy when provided' do
         synth = create_synthesizer
@@ -191,10 +284,27 @@ RSpec.describe Pangea::Resources::AWSLaunchConfiguration do
         config = validate_resource_structure(result, 'aws_launch_configuration', 'minimal')
         expect(config).not_to have_key('placement_tenancy')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes root_block_device when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_configuration('opt', required_attrs.merge(root_block_device: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_configuration('opt', required_attrs.merge(root_block_device: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_configuration', 'opt')
         expect(config).to have_key('root_block_device')
@@ -280,6 +390,28 @@ RSpec.describe Pangea::Resources::AWSLaunchConfiguration do
 
     context 'boolean fields' do
       [true, false].each do |val|
+        it "accepts associate_public_ip_address=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(associate_public_ip_address: val)
+          synth.aws_launch_configuration("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_launch_configuration', "bool_#{val}")
+          expect(config['associate_public_ip_address']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts ebs_optimized=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(ebs_optimized: val)
+          synth.aws_launch_configuration("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_launch_configuration', "bool_#{val}")
+          expect(config['ebs_optimized']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
         it "accepts enable_monitoring=#{val}" do
           synth = create_synthesizer
           synth.extend(described_class)
@@ -335,8 +467,8 @@ RSpec.describe Pangea::Resources::AWSLaunchConfiguration do
     resource_type: :aws_launch_configuration,
     method: :aws_launch_configuration,
     required_attrs: { image_id: 'test-value', instance_type: 'test-value' },
-    expected_outputs: [:id, :arn, :associate_public_ip_address, :ebs_optimized, :key_name, :name, :name_prefix],
+    expected_outputs: [:id, :arn, :associate_public_ip_address, :ebs_optimized, :key_name, :name, :name_prefix, :region],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:enable_monitoring]
+    boolean_fields: [:associate_public_ip_address, :ebs_optimized, :enable_monitoring]
 end

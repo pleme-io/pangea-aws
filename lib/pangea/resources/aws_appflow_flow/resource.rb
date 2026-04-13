@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppflowFlowAttributes,
       outputs: { id: :id },
       map: [:destination_flow_config, :name, :source_flow_config, :task, :trigger_config],
-      map_present: [:description, :kms_arn, :metadata_catalog_config, :tags, :tags_all]
+      map_present: [:description, :kms_arn, :metadata_catalog_config, :region, :tags, :tags_all]
   end
   module AWS
     include AWSAppflowFlow

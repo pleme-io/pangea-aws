@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSVpcNetworkPerformanceMetricSubscription do
 
         expect(ref.id).to eq("${aws_vpc_network_performance_metric_subscription.test.id}")
         expect(ref.period).to eq("${aws_vpc_network_performance_metric_subscription.test.period}")
+        expect(ref.region).to eq("${aws_vpc_network_performance_metric_subscription.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSVpcNetworkPerformanceMetricSubscription do
 
         config = validate_resource_structure(result, 'aws_vpc_network_performance_metric_subscription', 'test')
         expect(config).not_to have_key('period')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ metric: 'test-value', statistic: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ metric: 'test-value', region: 'test-value', statistic: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSVpcNetworkPerformanceMetricSubscription do
 
         config = validate_resource_structure(result, 'aws_vpc_network_performance_metric_subscription', 'full')
         expect(config).to have_key('metric')
+        expect(config).to have_key('region')
         expect(config).to have_key('statistic')
       end
     end
@@ -86,6 +89,23 @@ RSpec.describe Pangea::Resources::AWSVpcNetworkPerformanceMetricSubscription do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_network_performance_metric_subscription', 'minimal')
         expect(config).not_to have_key('metric')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_network_performance_metric_subscription('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_network_performance_metric_subscription', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_network_performance_metric_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_network_performance_metric_subscription', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes statistic when provided' do
         synth = create_synthesizer
@@ -149,7 +169,7 @@ RSpec.describe Pangea::Resources::AWSVpcNetworkPerformanceMetricSubscription do
     resource_type: :aws_vpc_network_performance_metric_subscription,
     method: :aws_vpc_network_performance_metric_subscription,
     required_attrs: { destination: 'test-value', source: 'test-value' },
-    expected_outputs: [:id, :period],
+    expected_outputs: [:id, :period, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

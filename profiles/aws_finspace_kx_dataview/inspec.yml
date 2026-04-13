@@ -1,0 +1,8 @@
+name: aws_finspace_kx_dataview
+title: Manages a aws_finspace_kx_dataview resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

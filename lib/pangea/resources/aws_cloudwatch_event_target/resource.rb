@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchEventTargetAttributes,
       outputs: { id: :id },
       map: [:arn, :rule],
-      map_present: [:appsync_target, :batch_target, :dead_letter_config, :ecs_target, :event_bus_name, :http_target, :input, :input_path, :input_transformer, :kinesis_target, :redshift_target, :retry_policy, :role_arn, :run_command_targets, :sagemaker_pipeline_target, :sqs_target, :target_id],
+      map_present: [:appsync_target, :batch_target, :dead_letter_config, :ecs_target, :event_bus_name, :http_target, :input, :input_path, :input_transformer, :kinesis_target, :redshift_target, :region, :retry_policy, :role_arn, :run_command_targets, :sagemaker_pipeline_target, :sqs_target, :target_id],
       map_bool: [:force_destroy]
   end
   module AWS

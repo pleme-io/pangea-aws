@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSLambdaCodeSigningConfig do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { allowed_publishers: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { allowed_publishers: { 'key1' => 'val1' } } }
 
   describe ':aws_lambda_code_signing_config' do
     context 'with required attributes only' do
@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSLambdaCodeSigningConfig do
         expect(ref.arn).to eq("${aws_lambda_code_signing_config.test.arn}")
         expect(ref.config_id).to eq("${aws_lambda_code_signing_config.test.config_id}")
         expect(ref.last_modified).to eq("${aws_lambda_code_signing_config.test.last_modified}")
+        expect(ref.region).to eq("${aws_lambda_code_signing_config.test.region}")
         expect(ref.tags_all).to eq("${aws_lambda_code_signing_config.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSLambdaCodeSigningConfig do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('config_id')
         expect(config).not_to have_key('last_modified')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', policies: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', policies: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,7 +74,9 @@ RSpec.describe Pangea::Resources::AWSLambdaCodeSigningConfig do
         config = validate_resource_structure(result, 'aws_lambda_code_signing_config', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('policies')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -97,7 +101,7 @@ RSpec.describe Pangea::Resources::AWSLambdaCodeSigningConfig do
       it 'includes policies when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_code_signing_config('opt', required_attrs.merge(policies: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_code_signing_config('opt', required_attrs.merge(policies: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_code_signing_config', 'opt')
         expect(config).to have_key('policies')
@@ -110,6 +114,23 @@ RSpec.describe Pangea::Resources::AWSLambdaCodeSigningConfig do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_code_signing_config', 'minimal')
         expect(config).not_to have_key('policies')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_code_signing_config('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_code_signing_config', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_code_signing_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_code_signing_config', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -128,6 +149,23 @@ RSpec.describe Pangea::Resources::AWSLambdaCodeSigningConfig do
         config = validate_resource_structure(result, 'aws_lambda_code_signing_config', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_code_signing_config('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_code_signing_config', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_code_signing_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_code_signing_config', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -138,7 +176,7 @@ RSpec.describe Pangea::Resources::AWSLambdaCodeSigningConfig do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lambda_code_signing_config', 'typed')
-        expect(config['allowed_publishers']).to be_a(Array)
+        expect(config['allowed_publishers']).to be_a(Hash)
       end
     end
 
@@ -171,8 +209,8 @@ RSpec.describe Pangea::Resources::AWSLambdaCodeSigningConfig do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_lambda_code_signing_config,
     method: :aws_lambda_code_signing_config,
-    required_attrs: { allowed_publishers: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :config_id, :last_modified, :tags_all],
+    required_attrs: { allowed_publishers: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :config_id, :last_modified, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

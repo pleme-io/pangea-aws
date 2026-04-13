@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcEndpointSecurityGroupAssociationAttributes,
       outputs: { id: :id },
       map: [:security_group_id, :vpc_endpoint_id],
+      map_present: [:region],
       map_bool: [:replace_default_association]
   end
   module AWS

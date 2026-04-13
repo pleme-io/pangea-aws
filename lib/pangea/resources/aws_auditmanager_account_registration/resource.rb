@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_auditmanager_account_registration,
       attributes_class: AWS::Types::AuditmanagerAccountRegistrationAttributes,
       outputs: { id: :id },
-      map_present: [:delegated_admin_account, :kms_key],
+      map_present: [:delegated_admin_account, :kms_key, :region],
       map_bool: [:deregister_on_destroy]
   end
   module AWS

@@ -39,7 +39,9 @@ RSpec.describe Pangea::Resources::AWSSsmPatchBaseline do
 
         expect(ref.id).to eq("${aws_ssm_patch_baseline.test.id}")
         expect(ref.arn).to eq("${aws_ssm_patch_baseline.test.arn}")
+        expect(ref.available_security_updates_compliance_status).to eq("${aws_ssm_patch_baseline.test.available_security_updates_compliance_status}")
         expect(ref.json).to eq("${aws_ssm_patch_baseline.test.json}")
+        expect(ref.region).to eq("${aws_ssm_patch_baseline.test.region}")
         expect(ref.rejected_patches_action).to eq("${aws_ssm_patch_baseline.test.rejected_patches_action}")
         expect(ref.tags_all).to eq("${aws_ssm_patch_baseline.test.tags_all}")
       end
@@ -54,14 +56,16 @@ RSpec.describe Pangea::Resources::AWSSsmPatchBaseline do
 
         config = validate_resource_structure(result, 'aws_ssm_patch_baseline', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('available_security_updates_compliance_status')
         expect(config).not_to have_key('json')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('rejected_patches_action')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ approval_rule: [{ 'key1' => 'val1' }], approved_patches: ['test-value'], approved_patches_compliance_level: 'test-value', approved_patches_enable_non_security: true, description: 'test-value', global_filter: [{ 'key1' => 'val1' }], operating_system: 'test-value', rejected_patches: ['test-value'], source: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ approval_rule: [{ 'key1' => 'val1' }], approved_patches: ['test-value'], approved_patches_compliance_level: 'test-value', approved_patches_enable_non_security: true, available_security_updates_compliance_status: 'test-value', description: 'test-value', global_filter: [{ 'key1' => 'val1' }], operating_system: 'test-value', region: 'test-value', rejected_patches: ['test-value'], rejected_patches_action: 'test-value', source: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,12 +78,16 @@ RSpec.describe Pangea::Resources::AWSSsmPatchBaseline do
         expect(config).to have_key('approved_patches')
         expect(config).to have_key('approved_patches_compliance_level')
         expect(config).to have_key('approved_patches_enable_non_security')
+        expect(config).to have_key('available_security_updates_compliance_status')
         expect(config).to have_key('description')
         expect(config).to have_key('global_filter')
         expect(config).to have_key('operating_system')
+        expect(config).to have_key('region')
         expect(config).to have_key('rejected_patches')
+        expect(config).to have_key('rejected_patches_action')
         expect(config).to have_key('source')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -152,6 +160,23 @@ RSpec.describe Pangea::Resources::AWSSsmPatchBaseline do
         config = validate_resource_structure(result, 'aws_ssm_patch_baseline', 'minimal')
         expect(config).not_to have_key('approved_patches_enable_non_security')
       end
+      it 'includes available_security_updates_compliance_status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_patch_baseline('opt', required_attrs.merge(available_security_updates_compliance_status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_patch_baseline', 'opt')
+        expect(config).to have_key('available_security_updates_compliance_status')
+      end
+
+      it 'omits available_security_updates_compliance_status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_patch_baseline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_patch_baseline', 'minimal')
+        expect(config).not_to have_key('available_security_updates_compliance_status')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -203,6 +228,23 @@ RSpec.describe Pangea::Resources::AWSSsmPatchBaseline do
         config = validate_resource_structure(result, 'aws_ssm_patch_baseline', 'minimal')
         expect(config).not_to have_key('operating_system')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_patch_baseline('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_patch_baseline', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_patch_baseline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_patch_baseline', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes rejected_patches when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -219,6 +261,23 @@ RSpec.describe Pangea::Resources::AWSSsmPatchBaseline do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_patch_baseline', 'minimal')
         expect(config).not_to have_key('rejected_patches')
+      end
+      it 'includes rejected_patches_action when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_patch_baseline('opt', required_attrs.merge(rejected_patches_action: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_patch_baseline', 'opt')
+        expect(config).to have_key('rejected_patches_action')
+      end
+
+      it 'omits rejected_patches_action when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_patch_baseline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_patch_baseline', 'minimal')
+        expect(config).not_to have_key('rejected_patches_action')
       end
       it 'includes source when provided' do
         synth = create_synthesizer
@@ -253,6 +312,23 @@ RSpec.describe Pangea::Resources::AWSSsmPatchBaseline do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_patch_baseline', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_patch_baseline('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_patch_baseline', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_patch_baseline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_patch_baseline', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -312,7 +388,7 @@ RSpec.describe Pangea::Resources::AWSSsmPatchBaseline do
     resource_type: :aws_ssm_patch_baseline,
     method: :aws_ssm_patch_baseline,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :json, :rejected_patches_action, :tags_all],
+    expected_outputs: [:id, :arn, :available_security_updates_compliance_status, :json, :region, :rejected_patches_action, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:approved_patches_enable_non_security]

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_grafana_workspace_api_key,
       attributes_class: AWS::Types::GrafanaWorkspaceApiKeyAttributes,
       outputs: { id: :id },
-      map: [:key_name, :key_role, :seconds_to_live, :workspace_id]
+      map: [:key_name, :key_role, :seconds_to_live, :workspace_id],
+      map_present: [:region]
   end
   module AWS
     include AWSGrafanaWorkspaceApiKey

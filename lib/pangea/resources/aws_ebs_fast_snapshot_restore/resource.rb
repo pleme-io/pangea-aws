@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ebs_fast_snapshot_restore,
       attributes_class: AWS::Types::EbsFastSnapshotRestoreAttributes,
       outputs: { id: :id },
-      map: [:availability_zone, :snapshot_id]
+      map: [:availability_zone, :snapshot_id],
+      map_present: [:region]
   end
   module AWS
     include AWSEbsFastSnapshotRestore

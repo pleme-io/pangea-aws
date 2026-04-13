@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LakeformationPermissionsAttributes,
       outputs: { id: :id },
       map: [:permissions, :principal],
-      map_present: [:catalog_id, :data_cells_filter, :data_location, :database, :lf_tag, :lf_tag_policy, :permissions_with_grant_option, :table, :table_with_columns],
+      map_present: [:catalog_id, :data_cells_filter, :data_location, :database, :lf_tag, :lf_tag_policy, :permissions_with_grant_option, :region, :table, :table_with_columns],
       map_bool: [:catalog_resource]
   end
   module AWS

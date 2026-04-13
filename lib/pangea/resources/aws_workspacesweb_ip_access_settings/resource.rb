@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WorkspaceswebIpAccessSettingsAttributes,
       outputs: { id: :id },
       map: [:display_name],
-      map_present: [:additional_encryption_context, :customer_managed_key, :description, :ip_rule, :tags]
+      map_present: [:additional_encryption_context, :customer_managed_key, :description, :ip_rule, :region, :tags]
   end
   module AWS
     include AWSWorkspaceswebIpAccessSettings

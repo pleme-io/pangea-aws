@@ -73,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerVpcAttachment do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ options: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ options: { 'key1' => 'val1' }, routing_policy_label: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -83,7 +83,9 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerVpcAttachment do
 
         config = validate_resource_structure(result, 'aws_networkmanager_vpc_attachment', 'full')
         expect(config).to have_key('options')
+        expect(config).to have_key('routing_policy_label')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -91,7 +93,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerVpcAttachment do
       it 'includes options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_networkmanager_vpc_attachment('opt', required_attrs.merge(options: [{ 'key1' => 'val1' }]))
+        synth.aws_networkmanager_vpc_attachment('opt', required_attrs.merge(options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkmanager_vpc_attachment', 'opt')
         expect(config).to have_key('options')
@@ -104,6 +106,23 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerVpcAttachment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkmanager_vpc_attachment', 'minimal')
         expect(config).not_to have_key('options')
+      end
+      it 'includes routing_policy_label when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_vpc_attachment('opt', required_attrs.merge(routing_policy_label: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_vpc_attachment', 'opt')
+        expect(config).to have_key('routing_policy_label')
+      end
+
+      it 'omits routing_policy_label when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_vpc_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_vpc_attachment', 'minimal')
+        expect(config).not_to have_key('routing_policy_label')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -121,6 +140,23 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerVpcAttachment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkmanager_vpc_attachment', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_vpc_attachment('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_vpc_attachment', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_vpc_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_vpc_attachment', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 

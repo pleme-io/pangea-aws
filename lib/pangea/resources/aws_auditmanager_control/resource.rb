@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AuditmanagerControlAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:action_plan_instructions, :action_plan_title, :control_mapping_sources, :description, :tags, :testing_information]
+      map_present: [:action_plan_instructions, :action_plan_title, :control_mapping_sources, :description, :region, :tags, :testing_information]
   end
   module AWS
     include AWSAuditmanagerControl

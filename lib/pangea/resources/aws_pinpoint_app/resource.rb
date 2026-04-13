@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_pinpoint_app,
       attributes_class: AWS::Types::PinpointAppAttributes,
       outputs: { id: :id },
-      map_present: [:campaign_hook, :limits, :name, :name_prefix, :quiet_time, :tags, :tags_all]
+      map_present: [:campaign_hook, :limits, :name, :name_prefix, :quiet_time, :region, :tags, :tags_all]
   end
   module AWS
     include AWSPinpointApp

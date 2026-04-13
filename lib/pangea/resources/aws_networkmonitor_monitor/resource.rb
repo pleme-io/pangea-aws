@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkmonitorMonitorAttributes,
       outputs: { id: :id },
       map: [:monitor_name],
-      map_present: [:aggregation_period, :tags]
+      map_present: [:aggregation_period, :region, :tags]
   end
   module AWS
     include AWSNetworkmonitorMonitor

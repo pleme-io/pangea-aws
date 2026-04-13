@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSAppconfigExtensionAssociation do
         expect(ref.id).to eq("${aws_appconfig_extension_association.test.id}")
         expect(ref.arn).to eq("${aws_appconfig_extension_association.test.arn}")
         expect(ref.extension_version).to eq("${aws_appconfig_extension_association.test.extension_version}")
+        expect(ref.region).to eq("${aws_appconfig_extension_association.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSAppconfigExtensionAssociation do
         config = validate_resource_structure(result, 'aws_appconfig_extension_association', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('extension_version')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ parameters: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ parameters: { 'key1' => 'val1' }, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSAppconfigExtensionAssociation do
 
         config = validate_resource_structure(result, 'aws_appconfig_extension_association', 'full')
         expect(config).to have_key('parameters')
+        expect(config).to have_key('region')
       end
     end
 
@@ -87,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSAppconfigExtensionAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appconfig_extension_association', 'minimal')
         expect(config).not_to have_key('parameters')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_extension_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_extension_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_extension_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_extension_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -133,7 +153,7 @@ RSpec.describe Pangea::Resources::AWSAppconfigExtensionAssociation do
     resource_type: :aws_appconfig_extension_association,
     method: :aws_appconfig_extension_association,
     required_attrs: { extension_arn: 'test-value', resource_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :extension_version],
+    expected_outputs: [:id, :arn, :extension_version, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

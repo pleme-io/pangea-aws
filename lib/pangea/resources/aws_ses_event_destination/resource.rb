@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SesEventDestinationAttributes,
       outputs: { id: :id },
       map: [:configuration_set_name, :matching_types, :name],
-      map_present: [:cloudwatch_destination, :kinesis_destination, :sns_destination],
+      map_present: [:cloudwatch_destination, :kinesis_destination, :region, :sns_destination],
       map_bool: [:enabled]
   end
   module AWS

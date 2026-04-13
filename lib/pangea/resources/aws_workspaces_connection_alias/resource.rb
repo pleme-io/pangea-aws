@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WorkspacesConnectionAliasAttributes,
       outputs: { id: :id },
       map: [:connection_string],
-      map_present: [:tags]
+      map_present: [:region, :tags]
   end
   module AWS
     include AWSWorkspacesConnectionAlias

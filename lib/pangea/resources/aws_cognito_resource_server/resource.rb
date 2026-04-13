@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CognitoResourceServerAttributes,
       outputs: { id: :id },
       map: [:identifier, :name, :user_pool_id],
-      map_present: [:scope]
+      map_present: [:region, :scope]
   end
   module AWS
     include AWSCognitoResourceServer

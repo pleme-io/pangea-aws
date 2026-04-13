@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSS3BucketObjectLockConfiguration do
         ref = synth.aws_s3_bucket_object_lock_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_s3_bucket_object_lock_configuration.test.id}")
+        expect(ref.region).to eq("${aws_s3_bucket_object_lock_configuration.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_object_lock_configuration('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_s3_bucket_object_lock_configuration', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ expected_bucket_owner: 'test-value', object_lock_enabled: 'test-value', rule: [{ 'key1' => 'val1' }], token: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ expected_bucket_owner: 'test-value', object_lock_enabled: 'test-value', region: 'test-value', rule: { 'key1' => 'val1' }, token: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -53,6 +66,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketObjectLockConfiguration do
         config = validate_resource_structure(result, 'aws_s3_bucket_object_lock_configuration', 'full')
         expect(config).to have_key('expected_bucket_owner')
         expect(config).to have_key('object_lock_enabled')
+        expect(config).to have_key('region')
         expect(config).to have_key('rule')
         expect(config).to have_key('token')
       end
@@ -93,10 +107,27 @@ RSpec.describe Pangea::Resources::AWSS3BucketObjectLockConfiguration do
         config = validate_resource_structure(result, 'aws_s3_bucket_object_lock_configuration', 'minimal')
         expect(config).not_to have_key('object_lock_enabled')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_object_lock_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_object_lock_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_object_lock_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_object_lock_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes rule when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket_object_lock_configuration('opt', required_attrs.merge(rule: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket_object_lock_configuration('opt', required_attrs.merge(rule: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_object_lock_configuration', 'opt')
         expect(config).to have_key('rule')
@@ -178,7 +209,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketObjectLockConfiguration do
     resource_type: :aws_s3_bucket_object_lock_configuration,
     method: :aws_s3_bucket_object_lock_configuration,
     required_attrs: { bucket: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [:token],
     immutable_fields: [],
     boolean_fields: []

@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSDxGatewayAssociationProposal do
         expect(ref.allowed_prefixes).to eq("${aws_dx_gateway_association_proposal.test.allowed_prefixes}")
         expect(ref.associated_gateway_owner_account_id).to eq("${aws_dx_gateway_association_proposal.test.associated_gateway_owner_account_id}")
         expect(ref.associated_gateway_type).to eq("${aws_dx_gateway_association_proposal.test.associated_gateway_type}")
+        expect(ref.region).to eq("${aws_dx_gateway_association_proposal.test.region}")
       end
     end
 
@@ -55,6 +56,59 @@ RSpec.describe Pangea::Resources::AWSDxGatewayAssociationProposal do
         expect(config).not_to have_key('allowed_prefixes')
         expect(config).not_to have_key('associated_gateway_owner_account_id')
         expect(config).not_to have_key('associated_gateway_type')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ allowed_prefixes: ['test-value'], region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway_association_proposal('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_dx_gateway_association_proposal', 'full')
+        expect(config).to have_key('allowed_prefixes')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes allowed_prefixes when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway_association_proposal('opt', required_attrs.merge(allowed_prefixes: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway_association_proposal', 'opt')
+        expect(config).to have_key('allowed_prefixes')
+      end
+
+      it 'omits allowed_prefixes when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway_association_proposal('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway_association_proposal', 'minimal')
+        expect(config).not_to have_key('allowed_prefixes')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway_association_proposal('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway_association_proposal', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway_association_proposal('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway_association_proposal', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -102,7 +156,7 @@ RSpec.describe Pangea::Resources::AWSDxGatewayAssociationProposal do
     resource_type: :aws_dx_gateway_association_proposal,
     method: :aws_dx_gateway_association_proposal,
     required_attrs: { associated_gateway_id: 'test-value', dx_gateway_id: 'test-value', dx_gateway_owner_account_id: 'test-value' },
-    expected_outputs: [:id, :allowed_prefixes, :associated_gateway_owner_account_id, :associated_gateway_type],
+    expected_outputs: [:id, :allowed_prefixes, :associated_gateway_owner_account_id, :associated_gateway_type, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

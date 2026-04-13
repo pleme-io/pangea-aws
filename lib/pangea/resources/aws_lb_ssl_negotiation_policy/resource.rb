@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LbSslNegotiationPolicyAttributes,
       outputs: { id: :id },
       map: [:lb_port, :load_balancer, :name],
-      map_present: [:attribute, :triggers]
+      map_present: [:attribute, :region, :triggers]
   end
   module AWS
     include AWSLbSslNegotiationPolicy

@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_dataexchange_event_action,
       attributes_class: AWS::Types::DataexchangeEventActionAttributes,
       outputs: { id: :id },
-      map_present: [:action, :event]
+      map_present: [:action, :event, :region]
   end
   module AWS
     include AWSDataexchangeEventAction

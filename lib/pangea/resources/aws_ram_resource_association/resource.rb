@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ram_resource_association,
       attributes_class: AWS::Types::RamResourceAssociationAttributes,
       outputs: { id: :id },
-      map: [:resource_arn, :resource_share_arn]
+      map: [:resource_arn, :resource_share_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSRamResourceAssociation

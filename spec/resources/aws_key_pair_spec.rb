@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSKeyPair do
         expect(ref.key_name_prefix).to eq("${aws_key_pair.test.key_name_prefix}")
         expect(ref.key_pair_id).to eq("${aws_key_pair.test.key_pair_id}")
         expect(ref.key_type).to eq("${aws_key_pair.test.key_type}")
+        expect(ref.region).to eq("${aws_key_pair.test.region}")
         expect(ref.tags_all).to eq("${aws_key_pair.test.tags_all}")
       end
     end
@@ -62,12 +63,13 @@ RSpec.describe Pangea::Resources::AWSKeyPair do
         expect(config).not_to have_key('key_name_prefix')
         expect(config).not_to have_key('key_pair_id')
         expect(config).not_to have_key('key_type')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ key_name: 'test-value', key_name_prefix: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,11 +78,66 @@ RSpec.describe Pangea::Resources::AWSKeyPair do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_key_pair', 'full')
+        expect(config).to have_key('key_name')
+        expect(config).to have_key('key_name_prefix')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes key_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_key_pair('opt', required_attrs.merge(key_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_key_pair', 'opt')
+        expect(config).to have_key('key_name')
+      end
+
+      it 'omits key_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_key_pair('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_key_pair', 'minimal')
+        expect(config).not_to have_key('key_name')
+      end
+      it 'includes key_name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_key_pair('opt', required_attrs.merge(key_name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_key_pair', 'opt')
+        expect(config).to have_key('key_name_prefix')
+      end
+
+      it 'omits key_name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_key_pair('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_key_pair', 'minimal')
+        expect(config).not_to have_key('key_name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_key_pair('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_key_pair', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_key_pair('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_key_pair', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -97,6 +154,23 @@ RSpec.describe Pangea::Resources::AWSKeyPair do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_key_pair', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_key_pair('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_key_pair', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_key_pair('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_key_pair', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -142,7 +216,7 @@ RSpec.describe Pangea::Resources::AWSKeyPair do
     resource_type: :aws_key_pair,
     method: :aws_key_pair,
     required_attrs: { public_key: 'test-value' },
-    expected_outputs: [:id, :arn, :fingerprint, :key_name, :key_name_prefix, :key_pair_id, :key_type, :tags_all],
+    expected_outputs: [:id, :arn, :fingerprint, :key_name, :key_name_prefix, :key_pair_id, :key_type, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

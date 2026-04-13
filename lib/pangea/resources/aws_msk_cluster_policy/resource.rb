@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_msk_cluster_policy,
       attributes_class: AWS::Types::MskClusterPolicyAttributes,
       outputs: { id: :id },
-      map: [:cluster_arn, :policy]
+      map: [:cluster_arn, :policy],
+      map_present: [:region]
   end
   module AWS
     include AWSMskClusterPolicy

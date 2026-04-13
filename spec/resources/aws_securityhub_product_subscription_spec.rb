@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubProductSubscription do
 
         expect(ref.id).to eq("${aws_securityhub_product_subscription.test.id}")
         expect(ref.arn).to eq("${aws_securityhub_product_subscription.test.arn}")
+        expect(ref.region).to eq("${aws_securityhub_product_subscription.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSSecurityhubProductSubscription do
 
         config = validate_resource_structure(result, 'aws_securityhub_product_subscription', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_product_subscription('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_securityhub_product_subscription', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_product_subscription('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_product_subscription', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_product_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_product_subscription', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -96,7 +132,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubProductSubscription do
     resource_type: :aws_securityhub_product_subscription,
     method: :aws_securityhub_product_subscription,
     required_attrs: { product_arn: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSMemorydbMultiRegionCluster do
         expect(ref.multi_region_cluster_name).to eq("${aws_memorydb_multi_region_cluster.test.multi_region_cluster_name}")
         expect(ref.multi_region_parameter_group_name).to eq("${aws_memorydb_multi_region_cluster.test.multi_region_parameter_group_name}")
         expect(ref.num_shards).to eq("${aws_memorydb_multi_region_cluster.test.num_shards}")
+        expect(ref.region).to eq("${aws_memorydb_multi_region_cluster.test.region}")
         expect(ref.status).to eq("${aws_memorydb_multi_region_cluster.test.status}")
         expect(ref.tags_all).to eq("${aws_memorydb_multi_region_cluster.test.tags_all}")
         expect(ref.tls_enabled).to eq("${aws_memorydb_multi_region_cluster.test.tls_enabled}")
@@ -64,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSMemorydbMultiRegionCluster do
         expect(config).not_to have_key('multi_region_cluster_name')
         expect(config).not_to have_key('multi_region_parameter_group_name')
         expect(config).not_to have_key('num_shards')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('tls_enabled')
@@ -71,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSMemorydbMultiRegionCluster do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' }, update_strategy: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', engine: 'test-value', engine_version: 'test-value', multi_region_parameter_group_name: 'test-value', num_shards: 3.14, region: 'test-value', tags: { 'key1' => 'val1' }, tls_enabled: true, update_strategy: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -81,7 +83,13 @@ RSpec.describe Pangea::Resources::AWSMemorydbMultiRegionCluster do
 
         config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('engine')
+        expect(config).to have_key('engine_version')
+        expect(config).to have_key('multi_region_parameter_group_name')
+        expect(config).to have_key('num_shards')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tls_enabled')
         expect(config).to have_key('update_strategy')
       end
     end
@@ -104,6 +112,91 @@ RSpec.describe Pangea::Resources::AWSMemorydbMultiRegionCluster do
         config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes engine when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_multi_region_cluster('opt', required_attrs.merge(engine: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'opt')
+        expect(config).to have_key('engine')
+      end
+
+      it 'omits engine when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_multi_region_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'minimal')
+        expect(config).not_to have_key('engine')
+      end
+      it 'includes engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_multi_region_cluster('opt', required_attrs.merge(engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'opt')
+        expect(config).to have_key('engine_version')
+      end
+
+      it 'omits engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_multi_region_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'minimal')
+        expect(config).not_to have_key('engine_version')
+      end
+      it 'includes multi_region_parameter_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_multi_region_cluster('opt', required_attrs.merge(multi_region_parameter_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'opt')
+        expect(config).to have_key('multi_region_parameter_group_name')
+      end
+
+      it 'omits multi_region_parameter_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_multi_region_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'minimal')
+        expect(config).not_to have_key('multi_region_parameter_group_name')
+      end
+      it 'includes num_shards when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_multi_region_cluster('opt', required_attrs.merge(num_shards: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'opt')
+        expect(config).to have_key('num_shards')
+      end
+
+      it 'omits num_shards when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_multi_region_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'minimal')
+        expect(config).not_to have_key('num_shards')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_multi_region_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_multi_region_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -121,6 +214,23 @@ RSpec.describe Pangea::Resources::AWSMemorydbMultiRegionCluster do
         config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tls_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_multi_region_cluster('opt', required_attrs.merge(tls_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'opt')
+        expect(config).to have_key('tls_enabled')
+      end
+
+      it 'omits tls_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_multi_region_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'minimal')
+        expect(config).not_to have_key('tls_enabled')
+      end
       it 'includes update_strategy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -137,6 +247,20 @@ RSpec.describe Pangea::Resources::AWSMemorydbMultiRegionCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', 'minimal')
         expect(config).not_to have_key('update_strategy')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts tls_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(tls_enabled: val)
+          synth.aws_memorydb_multi_region_cluster("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_memorydb_multi_region_cluster', "bool_#{val}")
+          expect(config['tls_enabled']).to eq(val)
+        end
       end
     end
 
@@ -183,8 +307,8 @@ RSpec.describe Pangea::Resources::AWSMemorydbMultiRegionCluster do
     resource_type: :aws_memorydb_multi_region_cluster,
     method: :aws_memorydb_multi_region_cluster,
     required_attrs: { multi_region_cluster_name_suffix: 'test-value', node_type: 'test-value' },
-    expected_outputs: [:id, :arn, :engine, :engine_version, :multi_region_cluster_name, :multi_region_parameter_group_name, :num_shards, :status, :tags_all, :tls_enabled],
+    expected_outputs: [:id, :arn, :engine, :engine_version, :multi_region_cluster_name, :multi_region_parameter_group_name, :num_shards, :region, :status, :tags_all, :tls_enabled],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:tls_enabled]
 end

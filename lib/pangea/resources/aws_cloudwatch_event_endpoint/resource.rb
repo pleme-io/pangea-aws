@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchEventEndpointAttributes,
       outputs: { id: :id },
       map: [:event_bus, :name, :routing_config],
-      map_present: [:description, :replication_config, :role_arn]
+      map_present: [:description, :region, :replication_config, :role_arn]
   end
   module AWS
     include AWSCloudwatchEventEndpoint

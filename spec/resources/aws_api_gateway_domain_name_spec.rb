@@ -44,8 +44,10 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainName do
         expect(ref.cloudfront_zone_id).to eq("${aws_api_gateway_domain_name.test.cloudfront_zone_id}")
         expect(ref.domain_name_id).to eq("${aws_api_gateway_domain_name.test.domain_name_id}")
         expect(ref.ownership_verification_certificate_arn).to eq("${aws_api_gateway_domain_name.test.ownership_verification_certificate_arn}")
+        expect(ref.region).to eq("${aws_api_gateway_domain_name.test.region}")
         expect(ref.regional_domain_name).to eq("${aws_api_gateway_domain_name.test.regional_domain_name}")
         expect(ref.regional_zone_id).to eq("${aws_api_gateway_domain_name.test.regional_zone_id}")
+        expect(ref.routing_mode).to eq("${aws_api_gateway_domain_name.test.routing_mode}")
         expect(ref.security_policy).to eq("${aws_api_gateway_domain_name.test.security_policy}")
         expect(ref.tags_all).to eq("${aws_api_gateway_domain_name.test.tags_all}")
       end
@@ -65,15 +67,17 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainName do
         expect(config).not_to have_key('cloudfront_zone_id')
         expect(config).not_to have_key('domain_name_id')
         expect(config).not_to have_key('ownership_verification_certificate_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('regional_domain_name')
         expect(config).not_to have_key('regional_zone_id')
+        expect(config).not_to have_key('routing_mode')
         expect(config).not_to have_key('security_policy')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ certificate_arn: 'test-value', certificate_body: 'test-value', certificate_chain: 'test-value', certificate_name: 'test-value', certificate_private_key: 'test-value', endpoint_configuration: [{ 'key1' => 'val1' }], mutual_tls_authentication: [{ 'key1' => 'val1' }], policy: 'test-value', regional_certificate_arn: 'test-value', regional_certificate_name: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ certificate_arn: 'test-value', certificate_body: 'test-value', certificate_chain: 'test-value', certificate_name: 'test-value', certificate_private_key: 'test-value', endpoint_access_mode: 'test-value', endpoint_configuration: { 'key1' => 'val1' }, mutual_tls_authentication: { 'key1' => 'val1' }, ownership_verification_certificate_arn: 'test-value', policy: 'test-value', region: 'test-value', regional_certificate_arn: 'test-value', regional_certificate_name: 'test-value', routing_mode: 'test-value', security_policy: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -87,12 +91,18 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainName do
         expect(config).to have_key('certificate_chain')
         expect(config).to have_key('certificate_name')
         expect(config).to have_key('certificate_private_key')
+        expect(config).to have_key('endpoint_access_mode')
         expect(config).to have_key('endpoint_configuration')
         expect(config).to have_key('mutual_tls_authentication')
+        expect(config).to have_key('ownership_verification_certificate_arn')
         expect(config).to have_key('policy')
+        expect(config).to have_key('region')
         expect(config).to have_key('regional_certificate_arn')
         expect(config).to have_key('regional_certificate_name')
+        expect(config).to have_key('routing_mode')
+        expect(config).to have_key('security_policy')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -182,10 +192,27 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainName do
         config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'minimal')
         expect(config).not_to have_key('certificate_private_key')
       end
+      it 'includes endpoint_access_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name('opt', required_attrs.merge(endpoint_access_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'opt')
+        expect(config).to have_key('endpoint_access_mode')
+      end
+
+      it 'omits endpoint_access_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'minimal')
+        expect(config).not_to have_key('endpoint_access_mode')
+      end
       it 'includes endpoint_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_api_gateway_domain_name('opt', required_attrs.merge(endpoint_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_api_gateway_domain_name('opt', required_attrs.merge(endpoint_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'opt')
         expect(config).to have_key('endpoint_configuration')
@@ -202,7 +229,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainName do
       it 'includes mutual_tls_authentication when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_api_gateway_domain_name('opt', required_attrs.merge(mutual_tls_authentication: [{ 'key1' => 'val1' }]))
+        synth.aws_api_gateway_domain_name('opt', required_attrs.merge(mutual_tls_authentication: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'opt')
         expect(config).to have_key('mutual_tls_authentication')
@@ -215,6 +242,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainName do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'minimal')
         expect(config).not_to have_key('mutual_tls_authentication')
+      end
+      it 'includes ownership_verification_certificate_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name('opt', required_attrs.merge(ownership_verification_certificate_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'opt')
+        expect(config).to have_key('ownership_verification_certificate_arn')
+      end
+
+      it 'omits ownership_verification_certificate_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'minimal')
+        expect(config).not_to have_key('ownership_verification_certificate_arn')
       end
       it 'includes policy when provided' do
         synth = create_synthesizer
@@ -232,6 +276,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainName do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'minimal')
         expect(config).not_to have_key('policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes regional_certificate_arn when provided' do
         synth = create_synthesizer
@@ -267,6 +328,40 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainName do
         config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'minimal')
         expect(config).not_to have_key('regional_certificate_name')
       end
+      it 'includes routing_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name('opt', required_attrs.merge(routing_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'opt')
+        expect(config).to have_key('routing_mode')
+      end
+
+      it 'omits routing_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'minimal')
+        expect(config).not_to have_key('routing_mode')
+      end
+      it 'includes security_policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name('opt', required_attrs.merge(security_policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'opt')
+        expect(config).to have_key('security_policy')
+      end
+
+      it 'omits security_policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'minimal')
+        expect(config).not_to have_key('security_policy')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -283,6 +378,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainName do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -335,7 +447,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainName do
     resource_type: :aws_api_gateway_domain_name,
     method: :aws_api_gateway_domain_name,
     required_attrs: { domain_name: 'test-value' },
-    expected_outputs: [:id, :arn, :certificate_upload_date, :cloudfront_domain_name, :cloudfront_zone_id, :domain_name_id, :ownership_verification_certificate_arn, :regional_domain_name, :regional_zone_id, :security_policy, :tags_all],
+    expected_outputs: [:id, :arn, :certificate_upload_date, :cloudfront_domain_name, :cloudfront_zone_id, :domain_name_id, :ownership_verification_certificate_arn, :region, :regional_domain_name, :regional_zone_id, :routing_mode, :security_policy, :tags_all],
     sensitive_fields: [:certificate_private_key],
     immutable_fields: [],
     boolean_fields: []

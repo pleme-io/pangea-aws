@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DbProxyDefaultTargetGroupAttributes,
       outputs: { id: :id },
       map: [:db_proxy_name],
-      map_present: [:connection_pool_config]
+      map_present: [:connection_pool_config, :region]
   end
   module AWS
     include AWSDbProxyDefaultTargetGroup

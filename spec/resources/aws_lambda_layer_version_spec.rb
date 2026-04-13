@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSLambdaLayerVersion do
         expect(ref.code_sha256).to eq("${aws_lambda_layer_version.test.code_sha256}")
         expect(ref.created_date).to eq("${aws_lambda_layer_version.test.created_date}")
         expect(ref.layer_arn).to eq("${aws_lambda_layer_version.test.layer_arn}")
+        expect(ref.region).to eq("${aws_lambda_layer_version.test.region}")
         expect(ref.signing_job_arn).to eq("${aws_lambda_layer_version.test.signing_job_arn}")
         expect(ref.signing_profile_version_arn).to eq("${aws_lambda_layer_version.test.signing_profile_version_arn}")
         expect(ref.source_code_hash).to eq("${aws_lambda_layer_version.test.source_code_hash}")
@@ -62,6 +63,7 @@ RSpec.describe Pangea::Resources::AWSLambdaLayerVersion do
         expect(config).not_to have_key('code_sha256')
         expect(config).not_to have_key('created_date')
         expect(config).not_to have_key('layer_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('signing_job_arn')
         expect(config).not_to have_key('signing_profile_version_arn')
         expect(config).not_to have_key('source_code_hash')
@@ -71,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSLambdaLayerVersion do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ compatible_architectures: ['test-value'], compatible_runtimes: ['test-value'], description: 'test-value', filename: 'test-value', license_info: 'test-value', s3_bucket: 'test-value', s3_key: 'test-value', s3_object_version: 'test-value', skip_destroy: true }) }
+      let(:all_attrs) { required_attrs.merge({ compatible_architectures: ['test-value'], compatible_runtimes: ['test-value'], description: 'test-value', filename: 'test-value', license_info: 'test-value', region: 'test-value', s3_bucket: 'test-value', s3_key: 'test-value', s3_object_version: 'test-value', skip_destroy: true, source_code_hash: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -85,10 +87,12 @@ RSpec.describe Pangea::Resources::AWSLambdaLayerVersion do
         expect(config).to have_key('description')
         expect(config).to have_key('filename')
         expect(config).to have_key('license_info')
+        expect(config).to have_key('region')
         expect(config).to have_key('s3_bucket')
         expect(config).to have_key('s3_key')
         expect(config).to have_key('s3_object_version')
         expect(config).to have_key('skip_destroy')
+        expect(config).to have_key('source_code_hash')
       end
     end
 
@@ -178,6 +182,23 @@ RSpec.describe Pangea::Resources::AWSLambdaLayerVersion do
         config = validate_resource_structure(result, 'aws_lambda_layer_version', 'minimal')
         expect(config).not_to have_key('license_info')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_layer_version('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_layer_version', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_layer_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_layer_version', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes s3_bucket when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -246,6 +267,23 @@ RSpec.describe Pangea::Resources::AWSLambdaLayerVersion do
         config = validate_resource_structure(result, 'aws_lambda_layer_version', 'minimal')
         expect(config).not_to have_key('skip_destroy')
       end
+      it 'includes source_code_hash when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_layer_version('opt', required_attrs.merge(source_code_hash: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_layer_version', 'opt')
+        expect(config).to have_key('source_code_hash')
+      end
+
+      it 'omits source_code_hash when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_layer_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_layer_version', 'minimal')
+        expect(config).not_to have_key('source_code_hash')
+      end
     end
 
     context 'boolean fields' do
@@ -304,7 +342,7 @@ RSpec.describe Pangea::Resources::AWSLambdaLayerVersion do
     resource_type: :aws_lambda_layer_version,
     method: :aws_lambda_layer_version,
     required_attrs: { layer_name: 'test-value' },
-    expected_outputs: [:id, :arn, :code_sha256, :created_date, :layer_arn, :signing_job_arn, :signing_profile_version_arn, :source_code_hash, :source_code_size, :version],
+    expected_outputs: [:id, :arn, :code_sha256, :created_date, :layer_arn, :region, :signing_job_arn, :signing_profile_version_arn, :source_code_hash, :source_code_size, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:skip_destroy]

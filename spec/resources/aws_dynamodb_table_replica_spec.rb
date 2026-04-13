@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableReplica do
         expect(ref.arn).to eq("${aws_dynamodb_table_replica.test.arn}")
         expect(ref.deletion_protection_enabled).to eq("${aws_dynamodb_table_replica.test.deletion_protection_enabled}")
         expect(ref.kms_key_arn).to eq("${aws_dynamodb_table_replica.test.kms_key_arn}")
+        expect(ref.region).to eq("${aws_dynamodb_table_replica.test.region}")
         expect(ref.tags_all).to eq("${aws_dynamodb_table_replica.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableReplica do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('deletion_protection_enabled')
         expect(config).not_to have_key('kms_key_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ point_in_time_recovery: true, table_class_override: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ deletion_protection_enabled: true, kms_key_arn: 'test-value', point_in_time_recovery: true, region: 'test-value', table_class_override: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,13 +72,51 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableReplica do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_dynamodb_table_replica', 'full')
+        expect(config).to have_key('deletion_protection_enabled')
+        expect(config).to have_key('kms_key_arn')
         expect(config).to have_key('point_in_time_recovery')
+        expect(config).to have_key('region')
         expect(config).to have_key('table_class_override')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes deletion_protection_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_replica('opt', required_attrs.merge(deletion_protection_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_replica', 'opt')
+        expect(config).to have_key('deletion_protection_enabled')
+      end
+
+      it 'omits deletion_protection_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_replica('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_replica', 'minimal')
+        expect(config).not_to have_key('deletion_protection_enabled')
+      end
+      it 'includes kms_key_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_replica('opt', required_attrs.merge(kms_key_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_replica', 'opt')
+        expect(config).to have_key('kms_key_arn')
+      end
+
+      it 'omits kms_key_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_replica('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_replica', 'minimal')
+        expect(config).not_to have_key('kms_key_arn')
+      end
       it 'includes point_in_time_recovery when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -93,6 +133,23 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableReplica do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dynamodb_table_replica', 'minimal')
         expect(config).not_to have_key('point_in_time_recovery')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_replica('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_replica', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_replica('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_replica', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes table_class_override when provided' do
         synth = create_synthesizer
@@ -128,9 +185,37 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableReplica do
         config = validate_resource_structure(result, 'aws_dynamodb_table_replica', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_replica('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_replica', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_replica('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_replica', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts deletion_protection_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(deletion_protection_enabled: val)
+          synth.aws_dynamodb_table_replica("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_dynamodb_table_replica', "bool_#{val}")
+          expect(config['deletion_protection_enabled']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts point_in_time_recovery=#{val}" do
           synth = create_synthesizer
@@ -186,8 +271,8 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableReplica do
     resource_type: :aws_dynamodb_table_replica,
     method: :aws_dynamodb_table_replica,
     required_attrs: { global_table_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :deletion_protection_enabled, :kms_key_arn, :tags_all],
+    expected_outputs: [:id, :arn, :deletion_protection_enabled, :kms_key_arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:point_in_time_recovery]
+    boolean_fields: [:deletion_protection_enabled, :point_in_time_recovery]
 end

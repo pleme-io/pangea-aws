@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSEmrSecurityConfiguration do
         expect(ref.creation_date).to eq("${aws_emr_security_configuration.test.creation_date}")
         expect(ref.name).to eq("${aws_emr_security_configuration.test.name}")
         expect(ref.name_prefix).to eq("${aws_emr_security_configuration.test.name_prefix}")
+        expect(ref.region).to eq("${aws_emr_security_configuration.test.region}")
       end
     end
 
@@ -55,6 +56,77 @@ RSpec.describe Pangea::Resources::AWSEmrSecurityConfiguration do
         expect(config).not_to have_key('creation_date')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ name: 'test-value', name_prefix: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_security_configuration('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_emr_security_configuration', 'full')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_security_configuration('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_security_configuration', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_security_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_security_configuration', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_security_configuration('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_security_configuration', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_security_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_security_configuration', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_security_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_security_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_security_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_security_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -100,7 +172,7 @@ RSpec.describe Pangea::Resources::AWSEmrSecurityConfiguration do
     resource_type: :aws_emr_security_configuration,
     method: :aws_emr_security_configuration,
     required_attrs: { configuration: 'test-value' },
-    expected_outputs: [:id, :creation_date, :name, :name_prefix],
+    expected_outputs: [:id, :creation_date, :name, :name_prefix, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

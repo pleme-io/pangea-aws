@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConfigOrganizationConformancePackAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:delivery_s3_bucket, :delivery_s3_key_prefix, :excluded_accounts, :input_parameter, :template_body, :template_s3_uri]
+      map_present: [:delivery_s3_bucket, :delivery_s3_key_prefix, :excluded_accounts, :input_parameter, :region, :template_body, :template_s3_uri]
   end
   module AWS
     include AWSConfigOrganizationConformancePack

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneUserProfile do
 
         expect(ref.id).to eq("${aws_datazone_user_profile.test.id}")
         expect(ref.details).to eq("${aws_datazone_user_profile.test.details}")
+        expect(ref.region).to eq("${aws_datazone_user_profile.test.region}")
         expect(ref.status).to eq("${aws_datazone_user_profile.test.status}")
         expect(ref.type).to eq("${aws_datazone_user_profile.test.type}")
         expect(ref.user_type).to eq("${aws_datazone_user_profile.test.user_type}")
@@ -54,8 +55,79 @@ RSpec.describe Pangea::Resources::AWSDatazoneUserProfile do
 
         config = validate_resource_structure(result, 'aws_datazone_user_profile', 'test')
         expect(config).not_to have_key('details')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('type')
+        expect(config).not_to have_key('user_type')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', status: 'test-value', user_type: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_user_profile('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_datazone_user_profile', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('status')
+        expect(config).to have_key('user_type')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_user_profile('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_user_profile', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_user_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_user_profile', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_user_profile('opt', required_attrs.merge(status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_user_profile', 'opt')
+        expect(config).to have_key('status')
+      end
+
+      it 'omits status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_user_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_user_profile', 'minimal')
+        expect(config).not_to have_key('status')
+      end
+      it 'includes user_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_user_profile('opt', required_attrs.merge(user_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_user_profile', 'opt')
+        expect(config).to have_key('user_type')
+      end
+
+      it 'omits user_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_user_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_user_profile', 'minimal')
         expect(config).not_to have_key('user_type')
       end
     end
@@ -103,7 +175,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneUserProfile do
     resource_type: :aws_datazone_user_profile,
     method: :aws_datazone_user_profile,
     required_attrs: { domain_identifier: 'test-value', user_identifier: 'test-value' },
-    expected_outputs: [:id, :details, :status, :type, :user_type],
+    expected_outputs: [:id, :details, :region, :status, :type, :user_type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodedeployDeploymentConfigAttributes,
       outputs: { id: :id },
       map: [:deployment_config_name],
-      map_present: [:compute_platform, :minimum_healthy_hosts, :traffic_routing_config, :zonal_config]
+      map_present: [:compute_platform, :minimum_healthy_hosts, :region, :traffic_routing_config, :zonal_config]
   end
   module AWS
     include AWSCodedeployDeploymentConfig

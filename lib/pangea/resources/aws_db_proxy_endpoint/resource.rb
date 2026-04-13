@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DbProxyEndpointAttributes,
       outputs: { id: :id },
       map: [:db_proxy_endpoint_name, :db_proxy_name, :vpc_subnet_ids],
-      map_present: [:tags, :tags_all, :target_role, :vpc_security_group_ids]
+      map_present: [:region, :tags, :tags_all, :target_role, :vpc_security_group_ids]
   end
   module AWS
     include AWSDbProxyEndpoint

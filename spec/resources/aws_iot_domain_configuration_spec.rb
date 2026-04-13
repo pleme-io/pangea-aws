@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSIotDomainConfiguration do
         expect(ref.authentication_type).to eq("${aws_iot_domain_configuration.test.authentication_type}")
         expect(ref.domain_name).to eq("${aws_iot_domain_configuration.test.domain_name}")
         expect(ref.domain_type).to eq("${aws_iot_domain_configuration.test.domain_type}")
+        expect(ref.region).to eq("${aws_iot_domain_configuration.test.region}")
         expect(ref.tags_all).to eq("${aws_iot_domain_configuration.test.tags_all}")
       end
     end
@@ -60,12 +61,13 @@ RSpec.describe Pangea::Resources::AWSIotDomainConfiguration do
         expect(config).not_to have_key('authentication_type')
         expect(config).not_to have_key('domain_name')
         expect(config).not_to have_key('domain_type')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ authorizer_config: [{ 'key1' => 'val1' }], server_certificate_arns: ['test-value'], service_type: 'test-value', status: 'test-value', tags: { 'key1' => 'val1' }, tls_config: [{ 'key1' => 'val1' }], validation_certificate_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ application_protocol: 'test-value', authentication_type: 'test-value', authorizer_config: { 'key1' => 'val1' }, domain_name: 'test-value', region: 'test-value', server_certificate_arns: ['test-value'], service_type: 'test-value', status: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tls_config: { 'key1' => 'val1' }, validation_certificate_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,21 +76,60 @@ RSpec.describe Pangea::Resources::AWSIotDomainConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'full')
+        expect(config).to have_key('application_protocol')
+        expect(config).to have_key('authentication_type')
         expect(config).to have_key('authorizer_config')
+        expect(config).to have_key('domain_name')
+        expect(config).to have_key('region')
         expect(config).to have_key('server_certificate_arns')
         expect(config).to have_key('service_type')
         expect(config).to have_key('status')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('tls_config')
         expect(config).to have_key('validation_certificate_arn')
       end
     end
 
     context 'optional attributes' do
+      it 'includes application_protocol when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_domain_configuration('opt', required_attrs.merge(application_protocol: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'opt')
+        expect(config).to have_key('application_protocol')
+      end
+
+      it 'omits application_protocol when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_domain_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'minimal')
+        expect(config).not_to have_key('application_protocol')
+      end
+      it 'includes authentication_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_domain_configuration('opt', required_attrs.merge(authentication_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'opt')
+        expect(config).to have_key('authentication_type')
+      end
+
+      it 'omits authentication_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_domain_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'minimal')
+        expect(config).not_to have_key('authentication_type')
+      end
       it 'includes authorizer_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_iot_domain_configuration('opt', required_attrs.merge(authorizer_config: [{ 'key1' => 'val1' }]))
+        synth.aws_iot_domain_configuration('opt', required_attrs.merge(authorizer_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'opt')
         expect(config).to have_key('authorizer_config')
@@ -101,6 +142,40 @@ RSpec.describe Pangea::Resources::AWSIotDomainConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'minimal')
         expect(config).not_to have_key('authorizer_config')
+      end
+      it 'includes domain_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_domain_configuration('opt', required_attrs.merge(domain_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'opt')
+        expect(config).to have_key('domain_name')
+      end
+
+      it 'omits domain_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_domain_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'minimal')
+        expect(config).not_to have_key('domain_name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_domain_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_domain_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes server_certificate_arns when provided' do
         synth = create_synthesizer
@@ -170,10 +245,27 @@ RSpec.describe Pangea::Resources::AWSIotDomainConfiguration do
         config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_domain_configuration('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_domain_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes tls_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_iot_domain_configuration('opt', required_attrs.merge(tls_config: [{ 'key1' => 'val1' }]))
+        synth.aws_iot_domain_configuration('opt', required_attrs.merge(tls_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_domain_configuration', 'opt')
         expect(config).to have_key('tls_config')
@@ -248,7 +340,7 @@ RSpec.describe Pangea::Resources::AWSIotDomainConfiguration do
     resource_type: :aws_iot_domain_configuration,
     method: :aws_iot_domain_configuration,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :application_protocol, :arn, :authentication_type, :domain_name, :domain_type, :tags_all],
+    expected_outputs: [:id, :application_protocol, :arn, :authentication_type, :domain_name, :domain_type, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

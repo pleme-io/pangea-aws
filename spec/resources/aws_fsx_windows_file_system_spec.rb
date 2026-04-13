@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSFsxWindowsFileSystem do
         expect(ref.owner_id).to eq("${aws_fsx_windows_file_system.test.owner_id}")
         expect(ref.preferred_file_server_ip).to eq("${aws_fsx_windows_file_system.test.preferred_file_server_ip}")
         expect(ref.preferred_subnet_id).to eq("${aws_fsx_windows_file_system.test.preferred_subnet_id}")
+        expect(ref.region).to eq("${aws_fsx_windows_file_system.test.region}")
         expect(ref.remote_administration_endpoint).to eq("${aws_fsx_windows_file_system.test.remote_administration_endpoint}")
         expect(ref.storage_capacity).to eq("${aws_fsx_windows_file_system.test.storage_capacity}")
         expect(ref.tags_all).to eq("${aws_fsx_windows_file_system.test.tags_all}")
@@ -70,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSFsxWindowsFileSystem do
         expect(config).not_to have_key('owner_id')
         expect(config).not_to have_key('preferred_file_server_ip')
         expect(config).not_to have_key('preferred_subnet_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('remote_administration_endpoint')
         expect(config).not_to have_key('storage_capacity')
         expect(config).not_to have_key('tags_all')
@@ -79,7 +81,7 @@ RSpec.describe Pangea::Resources::AWSFsxWindowsFileSystem do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ active_directory_id: 'test-value', aliases: ['test-value'], audit_log_configuration: [{ 'key1' => 'val1' }], automatic_backup_retention_days: 3.14, backup_id: 'test-value', copy_tags_to_backups: true, deployment_type: 'test-value', disk_iops_configuration: [{ 'key1' => 'val1' }], final_backup_tags: { 'key1' => 'val1' }, security_group_ids: ['test-value'], self_managed_active_directory: [{ 'key1' => 'val1' }], skip_final_backup: true, storage_type: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ active_directory_id: 'test-value', aliases: ['test-value'], audit_log_configuration: { 'key1' => 'val1' }, automatic_backup_retention_days: 3.14, backup_id: 'test-value', copy_tags_to_backups: true, daily_automatic_backup_start_time: 'test-value', deployment_type: 'test-value', disk_iops_configuration: { 'key1' => 'val1' }, final_backup_tags: { 'key1' => 'val1' }, kms_key_id: 'test-value', preferred_subnet_id: 'test-value', region: 'test-value', security_group_ids: ['test-value'], self_managed_active_directory: { 'key1' => 'val1' }, skip_final_backup: true, storage_capacity: 3.14, storage_type: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, weekly_maintenance_start_time: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -94,14 +96,21 @@ RSpec.describe Pangea::Resources::AWSFsxWindowsFileSystem do
         expect(config).to have_key('automatic_backup_retention_days')
         expect(config).to have_key('backup_id')
         expect(config).to have_key('copy_tags_to_backups')
+        expect(config).to have_key('daily_automatic_backup_start_time')
         expect(config).to have_key('deployment_type')
         expect(config).to have_key('disk_iops_configuration')
         expect(config).to have_key('final_backup_tags')
+        expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('preferred_subnet_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('security_group_ids')
         expect(config).to have_key('self_managed_active_directory')
         expect(config).to have_key('skip_final_backup')
+        expect(config).to have_key('storage_capacity')
         expect(config).to have_key('storage_type')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('weekly_maintenance_start_time')
       end
     end
 
@@ -143,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSFsxWindowsFileSystem do
       it 'includes audit_log_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_windows_file_system('opt', required_attrs.merge(audit_log_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_windows_file_system('opt', required_attrs.merge(audit_log_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'opt')
         expect(config).to have_key('audit_log_configuration')
@@ -208,6 +217,23 @@ RSpec.describe Pangea::Resources::AWSFsxWindowsFileSystem do
         config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'minimal')
         expect(config).not_to have_key('copy_tags_to_backups')
       end
+      it 'includes daily_automatic_backup_start_time when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('opt', required_attrs.merge(daily_automatic_backup_start_time: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'opt')
+        expect(config).to have_key('daily_automatic_backup_start_time')
+      end
+
+      it 'omits daily_automatic_backup_start_time when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'minimal')
+        expect(config).not_to have_key('daily_automatic_backup_start_time')
+      end
       it 'includes deployment_type when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -228,7 +254,7 @@ RSpec.describe Pangea::Resources::AWSFsxWindowsFileSystem do
       it 'includes disk_iops_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_windows_file_system('opt', required_attrs.merge(disk_iops_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_windows_file_system('opt', required_attrs.merge(disk_iops_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'opt')
         expect(config).to have_key('disk_iops_configuration')
@@ -259,6 +285,57 @@ RSpec.describe Pangea::Resources::AWSFsxWindowsFileSystem do
         config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'minimal')
         expect(config).not_to have_key('final_backup_tags')
       end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes preferred_subnet_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('opt', required_attrs.merge(preferred_subnet_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'opt')
+        expect(config).to have_key('preferred_subnet_id')
+      end
+
+      it 'omits preferred_subnet_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'minimal')
+        expect(config).not_to have_key('preferred_subnet_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes security_group_ids when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -279,7 +356,7 @@ RSpec.describe Pangea::Resources::AWSFsxWindowsFileSystem do
       it 'includes self_managed_active_directory when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_windows_file_system('opt', required_attrs.merge(self_managed_active_directory: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_windows_file_system('opt', required_attrs.merge(self_managed_active_directory: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'opt')
         expect(config).to have_key('self_managed_active_directory')
@@ -309,6 +386,23 @@ RSpec.describe Pangea::Resources::AWSFsxWindowsFileSystem do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'minimal')
         expect(config).not_to have_key('skip_final_backup')
+      end
+      it 'includes storage_capacity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('opt', required_attrs.merge(storage_capacity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'opt')
+        expect(config).to have_key('storage_capacity')
+      end
+
+      it 'omits storage_capacity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'minimal')
+        expect(config).not_to have_key('storage_capacity')
       end
       it 'includes storage_type when provided' do
         synth = create_synthesizer
@@ -343,6 +437,40 @@ RSpec.describe Pangea::Resources::AWSFsxWindowsFileSystem do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes weekly_maintenance_start_time when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('opt', required_attrs.merge(weekly_maintenance_start_time: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'opt')
+        expect(config).to have_key('weekly_maintenance_start_time')
+      end
+
+      it 'omits weekly_maintenance_start_time when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_windows_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_windows_file_system', 'minimal')
+        expect(config).not_to have_key('weekly_maintenance_start_time')
       end
     end
 
@@ -414,7 +542,7 @@ RSpec.describe Pangea::Resources::AWSFsxWindowsFileSystem do
     resource_type: :aws_fsx_windows_file_system,
     method: :aws_fsx_windows_file_system,
     required_attrs: { subnet_ids: ['test-value'], throughput_capacity: 3.14 },
-    expected_outputs: [:id, :arn, :daily_automatic_backup_start_time, :dns_name, :kms_key_id, :network_interface_ids, :owner_id, :preferred_file_server_ip, :preferred_subnet_id, :remote_administration_endpoint, :storage_capacity, :tags_all, :vpc_id, :weekly_maintenance_start_time],
+    expected_outputs: [:id, :arn, :daily_automatic_backup_start_time, :dns_name, :kms_key_id, :network_interface_ids, :owner_id, :preferred_file_server_ip, :preferred_subnet_id, :region, :remote_administration_endpoint, :storage_capacity, :tags_all, :vpc_id, :weekly_maintenance_start_time],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:copy_tags_to_backups, :skip_final_backup]

@@ -1,0 +1,8 @@
+name: aws_sns_topic_data_protection_policy
+title: Manages a aws_sns_topic_data_protection_policy resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

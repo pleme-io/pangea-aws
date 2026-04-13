@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DrsReplicationConfigurationTemplateAttributes,
       outputs: { id: :id },
       map: [:bandwidth_throttling, :data_plane_routing, :default_large_staging_disk_type, :ebs_encryption, :replication_server_instance_type, :replication_servers_security_groups_ids, :staging_area_subnet_id, :staging_area_tags],
-      map_present: [:ebs_encryption_key_arn, :pit_policy, :tags],
+      map_present: [:ebs_encryption_key_arn, :pit_policy, :region, :tags],
       map_bool: [:associate_default_security_group, :create_public_ip, :use_dedicated_replication_server, :auto_replicate_new_disks]
   end
   module AWS

@@ -58,6 +58,40 @@ RSpec.describe Pangea::Resources::AWSIamUserSshKey do
       end
     end
 
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ status: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_user_ssh_key('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_iam_user_ssh_key', 'full')
+        expect(config).to have_key('status')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_user_ssh_key('opt', required_attrs.merge(status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_user_ssh_key', 'opt')
+        expect(config).to have_key('status')
+      end
+
+      it 'omits status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_user_ssh_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_user_ssh_key', 'minimal')
+        expect(config).not_to have_key('status')
+      end
+    end
+
     context 'attribute types' do
       it 'validates expected attribute types' do
         synth = create_synthesizer

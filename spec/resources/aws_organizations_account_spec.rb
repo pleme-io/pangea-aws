@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSOrganizationsAccount do
         expect(ref.joined_method).to eq("${aws_organizations_account.test.joined_method}")
         expect(ref.joined_timestamp).to eq("${aws_organizations_account.test.joined_timestamp}")
         expect(ref.parent_id).to eq("${aws_organizations_account.test.parent_id}")
+        expect(ref.state).to eq("${aws_organizations_account.test.state}")
         expect(ref.status).to eq("${aws_organizations_account.test.status}")
         expect(ref.tags_all).to eq("${aws_organizations_account.test.tags_all}")
       end
@@ -61,13 +62,14 @@ RSpec.describe Pangea::Resources::AWSOrganizationsAccount do
         expect(config).not_to have_key('joined_method')
         expect(config).not_to have_key('joined_timestamp')
         expect(config).not_to have_key('parent_id')
+        expect(config).not_to have_key('state')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ close_on_deletion: true, create_govcloud: true, iam_user_access_to_billing: 'test-value', role_name: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ close_on_deletion: true, create_govcloud: true, iam_user_access_to_billing: 'test-value', parent_id: 'test-value', role_name: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,8 +81,10 @@ RSpec.describe Pangea::Resources::AWSOrganizationsAccount do
         expect(config).to have_key('close_on_deletion')
         expect(config).to have_key('create_govcloud')
         expect(config).to have_key('iam_user_access_to_billing')
+        expect(config).to have_key('parent_id')
         expect(config).to have_key('role_name')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -136,6 +140,23 @@ RSpec.describe Pangea::Resources::AWSOrganizationsAccount do
         config = validate_resource_structure(result, 'aws_organizations_account', 'minimal')
         expect(config).not_to have_key('iam_user_access_to_billing')
       end
+      it 'includes parent_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_organizations_account('opt', required_attrs.merge(parent_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_organizations_account', 'opt')
+        expect(config).to have_key('parent_id')
+      end
+
+      it 'omits parent_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_organizations_account('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_organizations_account', 'minimal')
+        expect(config).not_to have_key('parent_id')
+      end
       it 'includes role_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -169,6 +190,23 @@ RSpec.describe Pangea::Resources::AWSOrganizationsAccount do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_organizations_account', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_organizations_account('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_organizations_account', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_organizations_account('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_organizations_account', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -240,7 +278,7 @@ RSpec.describe Pangea::Resources::AWSOrganizationsAccount do
     resource_type: :aws_organizations_account,
     method: :aws_organizations_account,
     required_attrs: { email: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :govcloud_id, :joined_method, :joined_timestamp, :parent_id, :status, :tags_all],
+    expected_outputs: [:id, :arn, :govcloud_id, :joined_method, :joined_timestamp, :parent_id, :state, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:close_on_deletion, :create_govcloud]

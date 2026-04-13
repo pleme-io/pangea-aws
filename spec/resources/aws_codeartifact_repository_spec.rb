@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSCodeartifactRepository do
         expect(ref.administrator_account).to eq("${aws_codeartifact_repository.test.administrator_account}")
         expect(ref.arn).to eq("${aws_codeartifact_repository.test.arn}")
         expect(ref.domain_owner).to eq("${aws_codeartifact_repository.test.domain_owner}")
+        expect(ref.region).to eq("${aws_codeartifact_repository.test.region}")
         expect(ref.tags_all).to eq("${aws_codeartifact_repository.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSCodeartifactRepository do
         expect(config).not_to have_key('administrator_account')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('domain_owner')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', external_connections: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, upstream: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', domain_owner: 'test-value', external_connections: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, upstream: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,8 +73,11 @@ RSpec.describe Pangea::Resources::AWSCodeartifactRepository do
 
         config = validate_resource_structure(result, 'aws_codeartifact_repository', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('domain_owner')
         expect(config).to have_key('external_connections')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('upstream')
       end
     end
@@ -95,10 +100,27 @@ RSpec.describe Pangea::Resources::AWSCodeartifactRepository do
         config = validate_resource_structure(result, 'aws_codeartifact_repository', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes domain_owner when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codeartifact_repository('opt', required_attrs.merge(domain_owner: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codeartifact_repository', 'opt')
+        expect(config).to have_key('domain_owner')
+      end
+
+      it 'omits domain_owner when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codeartifact_repository('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codeartifact_repository', 'minimal')
+        expect(config).not_to have_key('domain_owner')
+      end
       it 'includes external_connections when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codeartifact_repository('opt', required_attrs.merge(external_connections: [{ 'key1' => 'val1' }]))
+        synth.aws_codeartifact_repository('opt', required_attrs.merge(external_connections: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codeartifact_repository', 'opt')
         expect(config).to have_key('external_connections')
@@ -111,6 +133,23 @@ RSpec.describe Pangea::Resources::AWSCodeartifactRepository do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codeartifact_repository', 'minimal')
         expect(config).not_to have_key('external_connections')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codeartifact_repository('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codeartifact_repository', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codeartifact_repository('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codeartifact_repository', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -128,6 +167,23 @@ RSpec.describe Pangea::Resources::AWSCodeartifactRepository do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codeartifact_repository', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codeartifact_repository('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codeartifact_repository', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codeartifact_repository('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codeartifact_repository', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes upstream when provided' do
         synth = create_synthesizer
@@ -191,7 +247,7 @@ RSpec.describe Pangea::Resources::AWSCodeartifactRepository do
     resource_type: :aws_codeartifact_repository,
     method: :aws_codeartifact_repository,
     required_attrs: { domain: 'test-value', repository: 'test-value' },
-    expected_outputs: [:id, :administrator_account, :arn, :domain_owner, :tags_all],
+    expected_outputs: [:id, :administrator_account, :arn, :domain_owner, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_network_interface_permission,
       attributes_class: AWS::Types::NetworkInterfacePermissionAttributes,
       outputs: { id: :id },
-      map: [:aws_account_id, :network_interface_id, :permission]
+      map: [:aws_account_id, :network_interface_id, :permission],
+      map_present: [:region]
   end
   module AWS
     include AWSNetworkInterfacePermission

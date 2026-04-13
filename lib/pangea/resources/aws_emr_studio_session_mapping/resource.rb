@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EmrStudioSessionMappingAttributes,
       outputs: { id: :id },
       map: [:identity_type, :session_policy_arn, :studio_id],
-      map_present: [:identity_id, :identity_name]
+      map_present: [:identity_id, :identity_name, :region]
   end
   module AWS
     include AWSEmrStudioSessionMapping

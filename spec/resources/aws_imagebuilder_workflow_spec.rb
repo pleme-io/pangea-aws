@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderWorkflow do
         expect(ref.data).to eq("${aws_imagebuilder_workflow.test.data}")
         expect(ref.date_created).to eq("${aws_imagebuilder_workflow.test.date_created}")
         expect(ref.owner).to eq("${aws_imagebuilder_workflow.test.owner}")
+        expect(ref.region).to eq("${aws_imagebuilder_workflow.test.region}")
         expect(ref.tags_all).to eq("${aws_imagebuilder_workflow.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSImagebuilderWorkflow do
         expect(config).not_to have_key('data')
         expect(config).not_to have_key('date_created')
         expect(config).not_to have_key('owner')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ change_description: 'test-value', description: 'test-value', kms_key_id: 'test-value', tags: { 'key1' => 'val1' }, uri: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ change_description: 'test-value', data: 'test-value', description: 'test-value', kms_key_id: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, uri: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,9 +75,12 @@ RSpec.describe Pangea::Resources::AWSImagebuilderWorkflow do
 
         config = validate_resource_structure(result, 'aws_imagebuilder_workflow', 'full')
         expect(config).to have_key('change_description')
+        expect(config).to have_key('data')
         expect(config).to have_key('description')
         expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('uri')
       end
     end
@@ -97,6 +102,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderWorkflow do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_workflow', 'minimal')
         expect(config).not_to have_key('change_description')
+      end
+      it 'includes data when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_workflow('opt', required_attrs.merge(data: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_workflow', 'opt')
+        expect(config).to have_key('data')
+      end
+
+      it 'omits data when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_workflow('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_workflow', 'minimal')
+        expect(config).not_to have_key('data')
       end
       it 'includes description when provided' do
         synth = create_synthesizer
@@ -132,6 +154,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderWorkflow do
         config = validate_resource_structure(result, 'aws_imagebuilder_workflow', 'minimal')
         expect(config).not_to have_key('kms_key_id')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_workflow('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_workflow', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_workflow('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_workflow', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -148,6 +187,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderWorkflow do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_workflow', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_workflow('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_workflow', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_workflow('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_workflow', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes uri when provided' do
         synth = create_synthesizer
@@ -212,7 +268,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderWorkflow do
     resource_type: :aws_imagebuilder_workflow,
     method: :aws_imagebuilder_workflow,
     required_attrs: { name: 'test-value', type: 'test-value', version: 'test-value' },
-    expected_outputs: [:id, :arn, :data, :date_created, :owner, :tags_all],
+    expected_outputs: [:id, :arn, :data, :date_created, :owner, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

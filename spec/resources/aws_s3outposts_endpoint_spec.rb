@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSS3outpostsEndpoint do
         expect(ref.cidr_block).to eq("${aws_s3outposts_endpoint.test.cidr_block}")
         expect(ref.creation_time).to eq("${aws_s3outposts_endpoint.test.creation_time}")
         expect(ref.network_interfaces).to eq("${aws_s3outposts_endpoint.test.network_interfaces}")
+        expect(ref.region).to eq("${aws_s3outposts_endpoint.test.region}")
       end
     end
 
@@ -59,11 +60,12 @@ RSpec.describe Pangea::Resources::AWSS3outpostsEndpoint do
         expect(config).not_to have_key('cidr_block')
         expect(config).not_to have_key('creation_time')
         expect(config).not_to have_key('network_interfaces')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ customer_owned_ipv4_pool: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ access_type: 'test-value', customer_owned_ipv4_pool: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,11 +74,30 @@ RSpec.describe Pangea::Resources::AWSS3outpostsEndpoint do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_s3outposts_endpoint', 'full')
+        expect(config).to have_key('access_type')
         expect(config).to have_key('customer_owned_ipv4_pool')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes access_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3outposts_endpoint('opt', required_attrs.merge(access_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3outposts_endpoint', 'opt')
+        expect(config).to have_key('access_type')
+      end
+
+      it 'omits access_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3outposts_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3outposts_endpoint', 'minimal')
+        expect(config).not_to have_key('access_type')
+      end
       it 'includes customer_owned_ipv4_pool when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -93,6 +114,23 @@ RSpec.describe Pangea::Resources::AWSS3outpostsEndpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3outposts_endpoint', 'minimal')
         expect(config).not_to have_key('customer_owned_ipv4_pool')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3outposts_endpoint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3outposts_endpoint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3outposts_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3outposts_endpoint', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -140,7 +178,7 @@ RSpec.describe Pangea::Resources::AWSS3outpostsEndpoint do
     resource_type: :aws_s3outposts_endpoint,
     method: :aws_s3outposts_endpoint,
     required_attrs: { outpost_id: 'test-value', security_group_id: 'test-value', subnet_id: 'test-value' },
-    expected_outputs: [:id, :access_type, :arn, :cidr_block, :creation_time, :network_interfaces],
+    expected_outputs: [:id, :access_type, :arn, :cidr_block, :creation_time, :network_interfaces, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

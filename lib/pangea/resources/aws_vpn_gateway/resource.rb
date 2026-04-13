@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_vpn_gateway,
       attributes_class: AWS::Types::VpnGatewayAttributes,
       outputs: { id: :id },
-      map_present: [:amazon_side_asn, :availability_zone, :tags, :tags_all, :vpc_id]
+      map_present: [:amazon_side_asn, :availability_zone, :region, :tags, :tags_all, :vpc_id]
   end
   module AWS
     include AWSVpnGateway

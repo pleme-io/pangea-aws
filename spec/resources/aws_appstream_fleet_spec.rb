@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSAppstreamFleet do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { compute_capacity: [{ 'key1' => 'val1' }], instance_type: 'test-value', name: 'test-value' } }
+  let(:required_attrs) { { compute_capacity: { 'key1' => 'val1' }, instance_type: 'test-value', name: 'test-value' } }
 
   describe ':aws_appstream_fleet' do
     context 'with required attributes only' do
@@ -49,6 +49,7 @@ RSpec.describe Pangea::Resources::AWSAppstreamFleet do
         expect(ref.image_arn).to eq("${aws_appstream_fleet.test.image_arn}")
         expect(ref.image_name).to eq("${aws_appstream_fleet.test.image_name}")
         expect(ref.max_user_duration_in_seconds).to eq("${aws_appstream_fleet.test.max_user_duration_in_seconds}")
+        expect(ref.region).to eq("${aws_appstream_fleet.test.region}")
         expect(ref.state).to eq("${aws_appstream_fleet.test.state}")
         expect(ref.stream_view).to eq("${aws_appstream_fleet.test.stream_view}")
         expect(ref.tags_all).to eq("${aws_appstream_fleet.test.tags_all}")
@@ -74,6 +75,7 @@ RSpec.describe Pangea::Resources::AWSAppstreamFleet do
         expect(config).not_to have_key('image_arn')
         expect(config).not_to have_key('image_name')
         expect(config).not_to have_key('max_user_duration_in_seconds')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('stream_view')
         expect(config).not_to have_key('tags_all')
@@ -81,7 +83,7 @@ RSpec.describe Pangea::Resources::AWSAppstreamFleet do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ domain_join_info: [{ 'key1' => 'val1' }], idle_disconnect_timeout_in_seconds: 3.14, max_sessions_per_instance: 3.14, tags: { 'key1' => 'val1' }, vpc_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', disconnect_timeout_in_seconds: 3.14, display_name: 'test-value', domain_join_info: { 'key1' => 'val1' }, enable_default_internet_access: true, fleet_type: 'test-value', iam_role_arn: 'test-value', idle_disconnect_timeout_in_seconds: 3.14, image_arn: 'test-value', image_name: 'test-value', max_sessions_per_instance: 3.14, max_user_duration_in_seconds: 3.14, region: 'test-value', stream_view: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -90,19 +92,82 @@ RSpec.describe Pangea::Resources::AWSAppstreamFleet do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_appstream_fleet', 'full')
+        expect(config).to have_key('description')
+        expect(config).to have_key('disconnect_timeout_in_seconds')
+        expect(config).to have_key('display_name')
         expect(config).to have_key('domain_join_info')
+        expect(config).to have_key('enable_default_internet_access')
+        expect(config).to have_key('fleet_type')
+        expect(config).to have_key('iam_role_arn')
         expect(config).to have_key('idle_disconnect_timeout_in_seconds')
+        expect(config).to have_key('image_arn')
+        expect(config).to have_key('image_name')
         expect(config).to have_key('max_sessions_per_instance')
+        expect(config).to have_key('max_user_duration_in_seconds')
+        expect(config).to have_key('region')
+        expect(config).to have_key('stream_view')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc_config')
       end
     end
 
     context 'optional attributes' do
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
+        expect(config).not_to have_key('description')
+      end
+      it 'includes disconnect_timeout_in_seconds when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('opt', required_attrs.merge(disconnect_timeout_in_seconds: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
+        expect(config).to have_key('disconnect_timeout_in_seconds')
+      end
+
+      it 'omits disconnect_timeout_in_seconds when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
+        expect(config).not_to have_key('disconnect_timeout_in_seconds')
+      end
+      it 'includes display_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('opt', required_attrs.merge(display_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
+        expect(config).to have_key('display_name')
+      end
+
+      it 'omits display_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
+        expect(config).not_to have_key('display_name')
+      end
       it 'includes domain_join_info when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appstream_fleet('opt', required_attrs.merge(domain_join_info: [{ 'key1' => 'val1' }]))
+        synth.aws_appstream_fleet('opt', required_attrs.merge(domain_join_info: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
         expect(config).to have_key('domain_join_info')
@@ -115,6 +180,57 @@ RSpec.describe Pangea::Resources::AWSAppstreamFleet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
         expect(config).not_to have_key('domain_join_info')
+      end
+      it 'includes enable_default_internet_access when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('opt', required_attrs.merge(enable_default_internet_access: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
+        expect(config).to have_key('enable_default_internet_access')
+      end
+
+      it 'omits enable_default_internet_access when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
+        expect(config).not_to have_key('enable_default_internet_access')
+      end
+      it 'includes fleet_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('opt', required_attrs.merge(fleet_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
+        expect(config).to have_key('fleet_type')
+      end
+
+      it 'omits fleet_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
+        expect(config).not_to have_key('fleet_type')
+      end
+      it 'includes iam_role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('opt', required_attrs.merge(iam_role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
+        expect(config).to have_key('iam_role_arn')
+      end
+
+      it 'omits iam_role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
+        expect(config).not_to have_key('iam_role_arn')
       end
       it 'includes idle_disconnect_timeout_in_seconds when provided' do
         synth = create_synthesizer
@@ -133,6 +249,40 @@ RSpec.describe Pangea::Resources::AWSAppstreamFleet do
         config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
         expect(config).not_to have_key('idle_disconnect_timeout_in_seconds')
       end
+      it 'includes image_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('opt', required_attrs.merge(image_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
+        expect(config).to have_key('image_arn')
+      end
+
+      it 'omits image_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
+        expect(config).not_to have_key('image_arn')
+      end
+      it 'includes image_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('opt', required_attrs.merge(image_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
+        expect(config).to have_key('image_name')
+      end
+
+      it 'omits image_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
+        expect(config).not_to have_key('image_name')
+      end
       it 'includes max_sessions_per_instance when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -149,6 +299,57 @@ RSpec.describe Pangea::Resources::AWSAppstreamFleet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
         expect(config).not_to have_key('max_sessions_per_instance')
+      end
+      it 'includes max_user_duration_in_seconds when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('opt', required_attrs.merge(max_user_duration_in_seconds: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
+        expect(config).to have_key('max_user_duration_in_seconds')
+      end
+
+      it 'omits max_user_duration_in_seconds when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
+        expect(config).not_to have_key('max_user_duration_in_seconds')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes stream_view when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('opt', required_attrs.merge(stream_view: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
+        expect(config).to have_key('stream_view')
+      end
+
+      it 'omits stream_view when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
+        expect(config).not_to have_key('stream_view')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -167,10 +368,27 @@ RSpec.describe Pangea::Resources::AWSAppstreamFleet do
         config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_fleet', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes vpc_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appstream_fleet('opt', required_attrs.merge(vpc_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appstream_fleet('opt', required_attrs.merge(vpc_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appstream_fleet', 'opt')
         expect(config).to have_key('vpc_config')
@@ -186,6 +404,20 @@ RSpec.describe Pangea::Resources::AWSAppstreamFleet do
       end
     end
 
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts enable_default_internet_access=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enable_default_internet_access: val)
+          synth.aws_appstream_fleet("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_appstream_fleet', "bool_#{val}")
+          expect(config['enable_default_internet_access']).to eq(val)
+        end
+      end
+    end
+
     context 'attribute types' do
       it 'validates expected attribute types' do
         synth = create_synthesizer
@@ -194,7 +426,7 @@ RSpec.describe Pangea::Resources::AWSAppstreamFleet do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_appstream_fleet', 'typed')
-        expect(config['compute_capacity']).to be_a(Array)
+        expect(config['compute_capacity']).to be_a(Hash)
         expect(config['instance_type']).to be_a(String)
         expect(config['name']).to be_a(String)
       end
@@ -229,9 +461,9 @@ RSpec.describe Pangea::Resources::AWSAppstreamFleet do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_appstream_fleet,
     method: :aws_appstream_fleet,
-    required_attrs: { compute_capacity: [{ 'key1' => 'val1' }], instance_type: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :created_time, :description, :disconnect_timeout_in_seconds, :display_name, :enable_default_internet_access, :fleet_type, :iam_role_arn, :image_arn, :image_name, :max_user_duration_in_seconds, :state, :stream_view, :tags_all],
+    required_attrs: { compute_capacity: { 'key1' => 'val1' }, instance_type: 'test-value', name: 'test-value' },
+    expected_outputs: [:id, :arn, :created_time, :description, :disconnect_timeout_in_seconds, :display_name, :enable_default_internet_access, :fleet_type, :iam_role_arn, :image_arn, :image_name, :max_user_duration_in_seconds, :region, :state, :stream_view, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:enable_default_internet_access]
 end

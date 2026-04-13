@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSVpcBlockPublicAccessOptions do
         expect(ref.id).to eq("${aws_vpc_block_public_access_options.test.id}")
         expect(ref.aws_account_id).to eq("${aws_vpc_block_public_access_options.test.aws_account_id}")
         expect(ref.aws_region).to eq("${aws_vpc_block_public_access_options.test.aws_region}")
+        expect(ref.region).to eq("${aws_vpc_block_public_access_options.test.region}")
       end
     end
 
@@ -53,6 +54,41 @@ RSpec.describe Pangea::Resources::AWSVpcBlockPublicAccessOptions do
         config = validate_resource_structure(result, 'aws_vpc_block_public_access_options', 'test')
         expect(config).not_to have_key('aws_account_id')
         expect(config).not_to have_key('aws_region')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_block_public_access_options('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_vpc_block_public_access_options', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_block_public_access_options('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_block_public_access_options', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_block_public_access_options('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_block_public_access_options', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -98,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSVpcBlockPublicAccessOptions do
     resource_type: :aws_vpc_block_public_access_options,
     method: :aws_vpc_block_public_access_options,
     required_attrs: { internet_gateway_block_mode: 'test-value' },
-    expected_outputs: [:id, :aws_account_id, :aws_region],
+    expected_outputs: [:id, :aws_account_id, :aws_region, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

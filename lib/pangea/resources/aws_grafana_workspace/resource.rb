@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GrafanaWorkspaceAttributes,
       outputs: { id: :id },
       map: [:account_access_type, :authentication_providers, :permission_type],
-      map_present: [:configuration, :data_sources, :description, :grafana_version, :name, :network_access_control, :notification_destinations, :organization_role_name, :organizational_units, :role_arn, :stack_set_name, :tags, :tags_all, :vpc_configuration]
+      map_present: [:configuration, :data_sources, :description, :grafana_version, :kms_key_id, :name, :network_access_control, :notification_destinations, :organization_role_name, :organizational_units, :region, :role_arn, :stack_set_name, :tags, :tags_all, :vpc_configuration]
   end
   module AWS
     include AWSGrafanaWorkspace

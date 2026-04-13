@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatazoneEnvironmentBlueprintConfigurationAttributes,
       outputs: { id: :id },
       map: [:domain_id, :enabled_regions, :environment_blueprint_id],
-      map_present: [:manage_access_role_arn, :provisioning_role_arn, :regional_parameters]
+      map_present: [:manage_access_role_arn, :provisioning_role_arn, :region, :regional_parameters]
   end
   module AWS
     include AWSDatazoneEnvironmentBlueprintConfiguration

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_oam_sink_policy,
       attributes_class: AWS::Types::OamSinkPolicyAttributes,
       outputs: { id: :id },
-      map: [:policy, :sink_identifier]
+      map: [:policy, :sink_identifier],
+      map_present: [:region]
   end
   module AWS
     include AWSOamSinkPolicy

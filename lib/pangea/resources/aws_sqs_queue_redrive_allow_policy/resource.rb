@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_sqs_queue_redrive_allow_policy,
       attributes_class: AWS::Types::SqsQueueRedriveAllowPolicyAttributes,
       outputs: { id: :id },
-      map: [:queue_url, :redrive_allow_policy]
+      map: [:queue_url, :redrive_allow_policy],
+      map_present: [:region]
   end
   module AWS
     include AWSSqsQueueRedriveAllowPolicy

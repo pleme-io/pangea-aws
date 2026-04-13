@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AutoscalingAttachmentAttributes,
       outputs: { id: :id },
       map: [:autoscaling_group_name],
-      map_present: [:elb, :lb_target_group_arn]
+      map_present: [:elb, :lb_target_group_arn, :region]
   end
   module AWS
     include AWSAutoscalingAttachment

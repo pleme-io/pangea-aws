@@ -69,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSOrganizationsOrganization do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ aws_service_access_principals: ['test-value'], enabled_policy_types: ['test-value'], feature_set: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ aws_service_access_principals: ['test-value'], enabled_policy_types: ['test-value'], feature_set: 'test-value', return_organization_only: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -81,6 +81,7 @@ RSpec.describe Pangea::Resources::AWSOrganizationsOrganization do
         expect(config).to have_key('aws_service_access_principals')
         expect(config).to have_key('enabled_policy_types')
         expect(config).to have_key('feature_set')
+        expect(config).to have_key('return_organization_only')
       end
     end
 
@@ -136,6 +137,37 @@ RSpec.describe Pangea::Resources::AWSOrganizationsOrganization do
         config = validate_resource_structure(result, 'aws_organizations_organization', 'minimal')
         expect(config).not_to have_key('feature_set')
       end
+      it 'includes return_organization_only when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_organizations_organization('opt', required_attrs.merge(return_organization_only: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_organizations_organization', 'opt')
+        expect(config).to have_key('return_organization_only')
+      end
+
+      it 'omits return_organization_only when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_organizations_organization('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_organizations_organization', 'minimal')
+        expect(config).not_to have_key('return_organization_only')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts return_organization_only=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(return_organization_only: val)
+          synth.aws_organizations_organization("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_organizations_organization', "bool_#{val}")
+          expect(config['return_organization_only']).to eq(val)
+        end
+      end
     end
 
     context 'attribute types' do
@@ -182,5 +214,5 @@ RSpec.describe Pangea::Resources::AWSOrganizationsOrganization do
     expected_outputs: [:id, :accounts, :arn, :master_account_arn, :master_account_email, :master_account_id, :master_account_name, :non_master_accounts, :roots],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:return_organization_only]
 end

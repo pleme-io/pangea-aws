@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::M2DeploymentAttributes,
       outputs: { id: :id },
       map: [:application_id, :application_version, :environment_id],
+      map_present: [:region],
       map_bool: [:start, :force_stop]
   end
   module AWS

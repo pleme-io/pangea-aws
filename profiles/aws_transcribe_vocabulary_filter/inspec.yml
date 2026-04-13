@@ -1,0 +1,8 @@
+name: aws_transcribe_vocabulary_filter
+title: Manages a aws_transcribe_vocabulary_filter resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

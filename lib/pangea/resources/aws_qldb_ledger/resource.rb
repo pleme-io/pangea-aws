@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QldbLedgerAttributes,
       outputs: { id: :id },
       map: [:permissions_mode],
-      map_present: [:kms_key, :name, :tags, :tags_all],
+      map_present: [:kms_key, :name, :region, :tags, :tags_all],
       map_bool: [:deletion_protection]
   end
   module AWS

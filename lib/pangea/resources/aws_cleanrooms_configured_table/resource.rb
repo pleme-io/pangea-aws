@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CleanroomsConfiguredTableAttributes,
       outputs: { id: :id },
       map: [:allowed_columns, :analysis_method, :name, :table_reference],
-      map_present: [:description, :tags, :tags_all]
+      map_present: [:description, :region, :tags, :tags_all]
   end
   module AWS
     include AWSCleanroomsConfiguredTable

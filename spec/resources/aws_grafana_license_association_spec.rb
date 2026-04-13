@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSGrafanaLicenseAssociation do
         expect(ref.id).to eq("${aws_grafana_license_association.test.id}")
         expect(ref.free_trial_expiration).to eq("${aws_grafana_license_association.test.free_trial_expiration}")
         expect(ref.license_expiration).to eq("${aws_grafana_license_association.test.license_expiration}")
+        expect(ref.region).to eq("${aws_grafana_license_association.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSGrafanaLicenseAssociation do
         config = validate_resource_structure(result, 'aws_grafana_license_association', 'test')
         expect(config).not_to have_key('free_trial_expiration')
         expect(config).not_to have_key('license_expiration')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ grafana_token: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ grafana_token: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSGrafanaLicenseAssociation do
 
         config = validate_resource_structure(result, 'aws_grafana_license_association', 'full')
         expect(config).to have_key('grafana_token')
+        expect(config).to have_key('region')
       end
     end
 
@@ -87,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSGrafanaLicenseAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_grafana_license_association', 'minimal')
         expect(config).not_to have_key('grafana_token')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_license_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_license_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_license_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_license_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -133,7 +153,7 @@ RSpec.describe Pangea::Resources::AWSGrafanaLicenseAssociation do
     resource_type: :aws_grafana_license_association,
     method: :aws_grafana_license_association,
     required_attrs: { license_type: 'test-value', workspace_id: 'test-value' },
-    expected_outputs: [:id, :free_trial_expiration, :license_expiration],
+    expected_outputs: [:id, :free_trial_expiration, :license_expiration, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

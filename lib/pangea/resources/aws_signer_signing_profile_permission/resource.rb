@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SignerSigningProfilePermissionAttributes,
       outputs: { id: :id },
       map: [:action, :principal, :profile_name],
-      map_present: [:profile_version, :statement_id, :statement_id_prefix]
+      map_present: [:profile_version, :region, :statement_id, :statement_id_prefix]
   end
   module AWS
     include AWSSignerSigningProfilePermission

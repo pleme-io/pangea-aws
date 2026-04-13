@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SecuritylakeDataLakeAttributes,
       outputs: { id: :id },
       map: [:meta_store_manager_role_arn],
-      map_present: [:configuration, :tags]
+      map_present: [:configuration, :region, :tags]
   end
   module AWS
     include AWSSecuritylakeDataLake

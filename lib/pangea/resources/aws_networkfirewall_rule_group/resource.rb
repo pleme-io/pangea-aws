@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkfirewallRuleGroupAttributes,
       outputs: { id: :id },
       map: [:capacity, :name, :type],
-      map_present: [:description, :encryption_configuration, :rule_group, :rules, :tags, :tags_all]
+      map_present: [:description, :encryption_configuration, :region, :rule_group, :rules, :tags, :tags_all]
   end
   module AWS
     include AWSNetworkfirewallRuleGroup

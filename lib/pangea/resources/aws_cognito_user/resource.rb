@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CognitoUserAttributes,
       outputs: { id: :id },
       map: [:user_pool_id, :username],
-      map_present: [:attributes, :client_metadata, :desired_delivery_mediums, :message_action, :password, :temporary_password, :validation_data],
+      map_present: [:attributes, :client_metadata, :desired_delivery_mediums, :message_action, :password, :region, :temporary_password, :validation_data],
       map_bool: [:enabled, :force_alias_creation]
   end
   module AWS

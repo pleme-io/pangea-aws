@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WorkspacesWorkspaceAttributes,
       outputs: { id: :id },
       map: [:bundle_id, :directory_id, :user_name],
-      map_present: [:tags, :tags_all, :volume_encryption_key, :workspace_properties],
+      map_present: [:region, :tags, :tags_all, :volume_encryption_key, :workspace_properties],
       map_bool: [:root_volume_encryption_enabled, :user_volume_encryption_enabled]
   end
   module AWS

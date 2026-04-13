@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSAmplifyApp do
         expect(ref.custom_headers).to eq("${aws_amplify_app.test.custom_headers}")
         expect(ref.default_domain).to eq("${aws_amplify_app.test.default_domain}")
         expect(ref.production_branch).to eq("${aws_amplify_app.test.production_branch}")
+        expect(ref.region).to eq("${aws_amplify_app.test.region}")
         expect(ref.tags_all).to eq("${aws_amplify_app.test.tags_all}")
       end
     end
@@ -60,12 +61,13 @@ RSpec.describe Pangea::Resources::AWSAmplifyApp do
         expect(config).not_to have_key('custom_headers')
         expect(config).not_to have_key('default_domain')
         expect(config).not_to have_key('production_branch')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_token: 'test-value', auto_branch_creation_config: [{ 'key1' => 'val1' }], auto_branch_creation_patterns: ['test-value'], basic_auth_credentials: 'test-value', cache_config: [{ 'key1' => 'val1' }], compute_role_arn: 'test-value', custom_rule: [{ 'key1' => 'val1' }], description: 'test-value', enable_auto_branch_creation: true, enable_basic_auth: true, enable_branch_auto_build: true, enable_branch_auto_deletion: true, environment_variables: { 'key1' => 'val1' }, iam_service_role_arn: 'test-value', oauth_token: 'test-value', platform: 'test-value', repository: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ access_token: 'test-value', auto_branch_creation_config: { 'key1' => 'val1' }, auto_branch_creation_patterns: ['test-value'], basic_auth_credentials: 'test-value', build_spec: 'test-value', cache_config: { 'key1' => 'val1' }, compute_role_arn: 'test-value', custom_headers: 'test-value', custom_rule: [{ 'key1' => 'val1' }], description: 'test-value', enable_auto_branch_creation: true, enable_basic_auth: true, enable_branch_auto_build: true, enable_branch_auto_deletion: true, environment_variables: { 'key1' => 'val1' }, iam_service_role_arn: 'test-value', job_config: { 'key1' => 'val1' }, oauth_token: 'test-value', platform: 'test-value', region: 'test-value', repository: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,8 +80,10 @@ RSpec.describe Pangea::Resources::AWSAmplifyApp do
         expect(config).to have_key('auto_branch_creation_config')
         expect(config).to have_key('auto_branch_creation_patterns')
         expect(config).to have_key('basic_auth_credentials')
+        expect(config).to have_key('build_spec')
         expect(config).to have_key('cache_config')
         expect(config).to have_key('compute_role_arn')
+        expect(config).to have_key('custom_headers')
         expect(config).to have_key('custom_rule')
         expect(config).to have_key('description')
         expect(config).to have_key('enable_auto_branch_creation')
@@ -88,10 +92,13 @@ RSpec.describe Pangea::Resources::AWSAmplifyApp do
         expect(config).to have_key('enable_branch_auto_deletion')
         expect(config).to have_key('environment_variables')
         expect(config).to have_key('iam_service_role_arn')
+        expect(config).to have_key('job_config')
         expect(config).to have_key('oauth_token')
         expect(config).to have_key('platform')
+        expect(config).to have_key('region')
         expect(config).to have_key('repository')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -116,7 +123,7 @@ RSpec.describe Pangea::Resources::AWSAmplifyApp do
       it 'includes auto_branch_creation_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_amplify_app('opt', required_attrs.merge(auto_branch_creation_config: [{ 'key1' => 'val1' }]))
+        synth.aws_amplify_app('opt', required_attrs.merge(auto_branch_creation_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_amplify_app', 'opt')
         expect(config).to have_key('auto_branch_creation_config')
@@ -164,10 +171,27 @@ RSpec.describe Pangea::Resources::AWSAmplifyApp do
         config = validate_resource_structure(result, 'aws_amplify_app', 'minimal')
         expect(config).not_to have_key('basic_auth_credentials')
       end
+      it 'includes build_spec when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_app('opt', required_attrs.merge(build_spec: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_app', 'opt')
+        expect(config).to have_key('build_spec')
+      end
+
+      it 'omits build_spec when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_app('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_app', 'minimal')
+        expect(config).not_to have_key('build_spec')
+      end
       it 'includes cache_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_amplify_app('opt', required_attrs.merge(cache_config: [{ 'key1' => 'val1' }]))
+        synth.aws_amplify_app('opt', required_attrs.merge(cache_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_amplify_app', 'opt')
         expect(config).to have_key('cache_config')
@@ -197,6 +221,23 @@ RSpec.describe Pangea::Resources::AWSAmplifyApp do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_amplify_app', 'minimal')
         expect(config).not_to have_key('compute_role_arn')
+      end
+      it 'includes custom_headers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_app('opt', required_attrs.merge(custom_headers: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_app', 'opt')
+        expect(config).to have_key('custom_headers')
+      end
+
+      it 'omits custom_headers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_app('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_app', 'minimal')
+        expect(config).not_to have_key('custom_headers')
       end
       it 'includes custom_rule when provided' do
         synth = create_synthesizer
@@ -334,6 +375,23 @@ RSpec.describe Pangea::Resources::AWSAmplifyApp do
         config = validate_resource_structure(result, 'aws_amplify_app', 'minimal')
         expect(config).not_to have_key('iam_service_role_arn')
       end
+      it 'includes job_config when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_app('opt', required_attrs.merge(job_config: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_app', 'opt')
+        expect(config).to have_key('job_config')
+      end
+
+      it 'omits job_config when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_app('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_app', 'minimal')
+        expect(config).not_to have_key('job_config')
+      end
       it 'includes oauth_token when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -368,6 +426,23 @@ RSpec.describe Pangea::Resources::AWSAmplifyApp do
         config = validate_resource_structure(result, 'aws_amplify_app', 'minimal')
         expect(config).not_to have_key('platform')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_app('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_app', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_app('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_app', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes repository when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -401,6 +476,23 @@ RSpec.describe Pangea::Resources::AWSAmplifyApp do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_amplify_app', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_app('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_app', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_app('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_app', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -502,7 +594,7 @@ RSpec.describe Pangea::Resources::AWSAmplifyApp do
     resource_type: :aws_amplify_app,
     method: :aws_amplify_app,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :build_spec, :custom_headers, :default_domain, :production_branch, :tags_all],
+    expected_outputs: [:id, :arn, :build_spec, :custom_headers, :default_domain, :production_branch, :region, :tags_all],
     sensitive_fields: [:access_token, :basic_auth_credentials, :oauth_token],
     immutable_fields: [],
     boolean_fields: [:enable_auto_branch_creation, :enable_basic_auth, :enable_branch_auto_build, :enable_branch_auto_deletion]

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudtrailAttributes,
       outputs: { id: :id },
       map: [:name, :s3_bucket_name],
-      map_present: [:advanced_event_selector, :cloud_watch_logs_group_arn, :cloud_watch_logs_role_arn, :event_selector, :insight_selector, :kms_key_id, :s3_key_prefix, :sns_topic_name, :tags, :tags_all],
+      map_present: [:advanced_event_selector, :cloud_watch_logs_group_arn, :cloud_watch_logs_role_arn, :event_selector, :insight_selector, :kms_key_id, :region, :s3_key_prefix, :sns_topic_name, :tags, :tags_all],
       map_bool: [:enable_log_file_validation, :enable_logging, :include_global_service_events, :is_multi_region_trail, :is_organization_trail]
   end
   module AWS

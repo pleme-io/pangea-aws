@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SwfDomainAttributes,
       outputs: { id: :id },
       map: [:workflow_execution_retention_period_in_days],
-      map_present: [:description, :name, :name_prefix, :tags, :tags_all]
+      map_present: [:description, :name, :name_prefix, :region, :tags, :tags_all]
   end
   module AWS
     include AWSSwfDomain

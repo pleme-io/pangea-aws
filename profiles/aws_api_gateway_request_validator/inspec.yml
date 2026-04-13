@@ -1,0 +1,8 @@
+name: aws_api_gateway_request_validator
+title: Manages a aws_api_gateway_request_validator resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

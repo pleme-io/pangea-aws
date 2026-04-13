@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LightsailContainerServiceDeploymentVersionAttributes,
       outputs: { id: :id },
       map: [:container, :service_name],
-      map_present: [:public_endpoint]
+      map_present: [:public_endpoint, :region]
   end
   module AWS
     include AWSLightsailContainerServiceDeploymentVersion

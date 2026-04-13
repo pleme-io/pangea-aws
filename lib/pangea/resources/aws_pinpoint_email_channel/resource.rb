@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::PinpointEmailChannelAttributes,
       outputs: { id: :id },
       map: [:application_id, :from_address, :identity],
-      map_present: [:configuration_set, :orchestration_sending_role_arn, :role_arn],
+      map_present: [:configuration_set, :orchestration_sending_role_arn, :region, :role_arn],
       map_bool: [:enabled]
   end
   module AWS

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_appstream_fleet_stack_association,
       attributes_class: AWS::Types::AppstreamFleetStackAssociationAttributes,
       outputs: { id: :id },
-      map: [:fleet_name, :stack_name]
+      map: [:fleet_name, :stack_name],
+      map_present: [:region]
   end
   module AWS
     include AWSAppstreamFleetStackAssociation

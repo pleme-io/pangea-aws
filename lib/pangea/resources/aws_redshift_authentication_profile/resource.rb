@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_redshift_authentication_profile,
       attributes_class: AWS::Types::RedshiftAuthenticationProfileAttributes,
       outputs: { id: :id },
-      map: [:authentication_profile_content, :authentication_profile_name]
+      map: [:authentication_profile_content, :authentication_profile_name],
+      map_present: [:region]
   end
   module AWS
     include AWSRedshiftAuthenticationProfile

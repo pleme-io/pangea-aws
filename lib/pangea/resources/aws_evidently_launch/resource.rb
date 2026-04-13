@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EvidentlyLaunchAttributes,
       outputs: { id: :id },
       map: [:groups, :name, :project],
-      map_present: [:description, :metric_monitors, :randomization_salt, :scheduled_splits_config, :tags, :tags_all]
+      map_present: [:description, :metric_monitors, :randomization_salt, :region, :scheduled_splits_config, :tags, :tags_all]
   end
   module AWS
     include AWSEvidentlyLaunch

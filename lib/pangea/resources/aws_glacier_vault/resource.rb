@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlacierVaultAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:access_policy, :notification, :tags, :tags_all]
+      map_present: [:access_policy, :notification, :region, :tags, :tags_all]
   end
   module AWS
     include AWSGlacierVault

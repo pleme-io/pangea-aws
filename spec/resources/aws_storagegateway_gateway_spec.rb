@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayGateway do
         expect(ref.gateway_ip_address).to eq("${aws_storagegateway_gateway.test.gateway_ip_address}")
         expect(ref.gateway_network_interface).to eq("${aws_storagegateway_gateway.test.gateway_network_interface}")
         expect(ref.host_environment).to eq("${aws_storagegateway_gateway.test.host_environment}")
+        expect(ref.region).to eq("${aws_storagegateway_gateway.test.region}")
         expect(ref.smb_security_strategy).to eq("${aws_storagegateway_gateway.test.smb_security_strategy}")
         expect(ref.tags_all).to eq("${aws_storagegateway_gateway.test.tags_all}")
       end
@@ -67,13 +68,14 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayGateway do
         expect(config).not_to have_key('gateway_ip_address')
         expect(config).not_to have_key('gateway_network_interface')
         expect(config).not_to have_key('host_environment')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('smb_security_strategy')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ average_download_rate_limit_in_bits_per_sec: 3.14, average_upload_rate_limit_in_bits_per_sec: 3.14, cloudwatch_log_group_arn: 'test-value', gateway_type: 'test-value', gateway_vpc_endpoint: 'test-value', maintenance_start_time: [{ 'key1' => 'val1' }], medium_changer_type: 'test-value', smb_active_directory_settings: [{ 'key1' => 'val1' }], smb_file_share_visibility: true, smb_guest_password: 'test-value', tags: { 'key1' => 'val1' }, tape_drive_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ activation_key: 'test-value', average_download_rate_limit_in_bits_per_sec: 3.14, average_upload_rate_limit_in_bits_per_sec: 3.14, cloudwatch_log_group_arn: 'test-value', gateway_ip_address: 'test-value', gateway_type: 'test-value', gateway_vpc_endpoint: 'test-value', maintenance_start_time: { 'key1' => 'val1' }, medium_changer_type: 'test-value', region: 'test-value', smb_active_directory_settings: { 'key1' => 'val1' }, smb_file_share_visibility: true, smb_guest_password: 'test-value', smb_security_strategy: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tape_drive_type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -82,22 +84,44 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayGateway do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'full')
+        expect(config).to have_key('activation_key')
         expect(config).to have_key('average_download_rate_limit_in_bits_per_sec')
         expect(config).to have_key('average_upload_rate_limit_in_bits_per_sec')
         expect(config).to have_key('cloudwatch_log_group_arn')
+        expect(config).to have_key('gateway_ip_address')
         expect(config).to have_key('gateway_type')
         expect(config).to have_key('gateway_vpc_endpoint')
         expect(config).to have_key('maintenance_start_time')
         expect(config).to have_key('medium_changer_type')
+        expect(config).to have_key('region')
         expect(config).to have_key('smb_active_directory_settings')
         expect(config).to have_key('smb_file_share_visibility')
         expect(config).to have_key('smb_guest_password')
+        expect(config).to have_key('smb_security_strategy')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('tape_drive_type')
       end
     end
 
     context 'optional attributes' do
+      it 'includes activation_key when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_gateway('opt', required_attrs.merge(activation_key: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'opt')
+        expect(config).to have_key('activation_key')
+      end
+
+      it 'omits activation_key when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'minimal')
+        expect(config).not_to have_key('activation_key')
+      end
       it 'includes average_download_rate_limit_in_bits_per_sec when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -149,6 +173,23 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayGateway do
         config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'minimal')
         expect(config).not_to have_key('cloudwatch_log_group_arn')
       end
+      it 'includes gateway_ip_address when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_gateway('opt', required_attrs.merge(gateway_ip_address: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'opt')
+        expect(config).to have_key('gateway_ip_address')
+      end
+
+      it 'omits gateway_ip_address when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'minimal')
+        expect(config).not_to have_key('gateway_ip_address')
+      end
       it 'includes gateway_type when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -186,7 +227,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayGateway do
       it 'includes maintenance_start_time when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_storagegateway_gateway('opt', required_attrs.merge(maintenance_start_time: [{ 'key1' => 'val1' }]))
+        synth.aws_storagegateway_gateway('opt', required_attrs.merge(maintenance_start_time: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'opt')
         expect(config).to have_key('maintenance_start_time')
@@ -217,10 +258,27 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayGateway do
         config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'minimal')
         expect(config).not_to have_key('medium_changer_type')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_gateway('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes smb_active_directory_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_storagegateway_gateway('opt', required_attrs.merge(smb_active_directory_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_storagegateway_gateway('opt', required_attrs.merge(smb_active_directory_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'opt')
         expect(config).to have_key('smb_active_directory_settings')
@@ -268,6 +326,23 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayGateway do
         config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'minimal')
         expect(config).not_to have_key('smb_guest_password')
       end
+      it 'includes smb_security_strategy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_gateway('opt', required_attrs.merge(smb_security_strategy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'opt')
+        expect(config).to have_key('smb_security_strategy')
+      end
+
+      it 'omits smb_security_strategy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'minimal')
+        expect(config).not_to have_key('smb_security_strategy')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -284,6 +359,23 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayGateway do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_gateway('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_gateway', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes tape_drive_type when provided' do
         synth = create_synthesizer
@@ -368,7 +460,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayGateway do
     resource_type: :aws_storagegateway_gateway,
     method: :aws_storagegateway_gateway,
     required_attrs: { gateway_name: 'test-value', gateway_timezone: 'test-value' },
-    expected_outputs: [:id, :activation_key, :arn, :ec2_instance_id, :endpoint_type, :gateway_id, :gateway_ip_address, :gateway_network_interface, :host_environment, :smb_security_strategy, :tags_all],
+    expected_outputs: [:id, :activation_key, :arn, :ec2_instance_id, :endpoint_type, :gateway_id, :gateway_ip_address, :gateway_network_interface, :host_environment, :region, :smb_security_strategy, :tags_all],
     sensitive_fields: [:smb_guest_password],
     immutable_fields: [],
     boolean_fields: [:smb_file_share_visibility]

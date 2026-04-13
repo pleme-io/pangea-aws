@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSDxBgpPeer do
         expect(ref.bgp_peer_id).to eq("${aws_dx_bgp_peer.test.bgp_peer_id}")
         expect(ref.bgp_status).to eq("${aws_dx_bgp_peer.test.bgp_status}")
         expect(ref.customer_address).to eq("${aws_dx_bgp_peer.test.customer_address}")
+        expect(ref.region).to eq("${aws_dx_bgp_peer.test.region}")
       end
     end
 
@@ -61,6 +62,95 @@ RSpec.describe Pangea::Resources::AWSDxBgpPeer do
         expect(config).not_to have_key('bgp_peer_id')
         expect(config).not_to have_key('bgp_status')
         expect(config).not_to have_key('customer_address')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ amazon_address: 'test-value', bgp_auth_key: 'test-value', customer_address: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_bgp_peer('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_dx_bgp_peer', 'full')
+        expect(config).to have_key('amazon_address')
+        expect(config).to have_key('bgp_auth_key')
+        expect(config).to have_key('customer_address')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes amazon_address when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_bgp_peer('opt', required_attrs.merge(amazon_address: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_bgp_peer', 'opt')
+        expect(config).to have_key('amazon_address')
+      end
+
+      it 'omits amazon_address when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_bgp_peer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_bgp_peer', 'minimal')
+        expect(config).not_to have_key('amazon_address')
+      end
+      it 'includes bgp_auth_key when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_bgp_peer('opt', required_attrs.merge(bgp_auth_key: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_bgp_peer', 'opt')
+        expect(config).to have_key('bgp_auth_key')
+      end
+
+      it 'omits bgp_auth_key when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_bgp_peer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_bgp_peer', 'minimal')
+        expect(config).not_to have_key('bgp_auth_key')
+      end
+      it 'includes customer_address when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_bgp_peer('opt', required_attrs.merge(customer_address: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_bgp_peer', 'opt')
+        expect(config).to have_key('customer_address')
+      end
+
+      it 'omits customer_address when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_bgp_peer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_bgp_peer', 'minimal')
+        expect(config).not_to have_key('customer_address')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_bgp_peer('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_bgp_peer', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_bgp_peer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_bgp_peer', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -108,7 +198,7 @@ RSpec.describe Pangea::Resources::AWSDxBgpPeer do
     resource_type: :aws_dx_bgp_peer,
     method: :aws_dx_bgp_peer,
     required_attrs: { address_family: 'test-value', bgp_asn: 3.14, virtual_interface_id: 'test-value' },
-    expected_outputs: [:id, :amazon_address, :aws_device, :bgp_auth_key, :bgp_peer_id, :bgp_status, :customer_address],
+    expected_outputs: [:id, :amazon_address, :aws_device, :bgp_auth_key, :bgp_peer_id, :bgp_status, :customer_address, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

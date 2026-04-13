@@ -1,0 +1,8 @@
+name: aws_observabilityadmin_telemetry_pipeline
+title: Manages a aws_observabilityadmin_telemetry_pipeline resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

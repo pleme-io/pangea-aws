@@ -47,6 +47,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationInstance do
         expect(ref.network_type).to eq("${aws_dms_replication_instance.test.network_type}")
         expect(ref.preferred_maintenance_window).to eq("${aws_dms_replication_instance.test.preferred_maintenance_window}")
         expect(ref.publicly_accessible).to eq("${aws_dms_replication_instance.test.publicly_accessible}")
+        expect(ref.region).to eq("${aws_dms_replication_instance.test.region}")
         expect(ref.replication_instance_arn).to eq("${aws_dms_replication_instance.test.replication_instance_arn}")
         expect(ref.replication_instance_private_ips).to eq("${aws_dms_replication_instance.test.replication_instance_private_ips}")
         expect(ref.replication_instance_public_ips).to eq("${aws_dms_replication_instance.test.replication_instance_public_ips}")
@@ -73,6 +74,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationInstance do
         expect(config).not_to have_key('network_type')
         expect(config).not_to have_key('preferred_maintenance_window')
         expect(config).not_to have_key('publicly_accessible')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('replication_instance_arn')
         expect(config).not_to have_key('replication_instance_private_ips')
         expect(config).not_to have_key('replication_instance_public_ips')
@@ -83,7 +85,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationInstance do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allow_major_version_upgrade: true, apply_immediately: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ allocated_storage: 3.14, allow_major_version_upgrade: true, apply_immediately: true, auto_minor_version_upgrade: true, availability_zone: 'test-value', dns_name_servers: 'test-value', engine_version: 'test-value', kerberos_authentication_settings: { 'key1' => 'val1' }, kms_key_arn: 'test-value', multi_az: true, network_type: 'test-value', preferred_maintenance_window: 'test-value', publicly_accessible: true, region: 'test-value', replication_subnet_group_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_security_group_ids: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -92,13 +94,45 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationInstance do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_dms_replication_instance', 'full')
+        expect(config).to have_key('allocated_storage')
         expect(config).to have_key('allow_major_version_upgrade')
         expect(config).to have_key('apply_immediately')
+        expect(config).to have_key('auto_minor_version_upgrade')
+        expect(config).to have_key('availability_zone')
+        expect(config).to have_key('dns_name_servers')
+        expect(config).to have_key('engine_version')
+        expect(config).to have_key('kerberos_authentication_settings')
+        expect(config).to have_key('kms_key_arn')
+        expect(config).to have_key('multi_az')
+        expect(config).to have_key('network_type')
+        expect(config).to have_key('preferred_maintenance_window')
+        expect(config).to have_key('publicly_accessible')
+        expect(config).to have_key('region')
+        expect(config).to have_key('replication_subnet_group_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('vpc_security_group_ids')
       end
     end
 
     context 'optional attributes' do
+      it 'includes allocated_storage when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(allocated_storage: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('allocated_storage')
+      end
+
+      it 'omits allocated_storage when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('allocated_storage')
+      end
       it 'includes allow_major_version_upgrade when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -133,6 +167,210 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationInstance do
         config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
         expect(config).not_to have_key('apply_immediately')
       end
+      it 'includes auto_minor_version_upgrade when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(auto_minor_version_upgrade: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('auto_minor_version_upgrade')
+      end
+
+      it 'omits auto_minor_version_upgrade when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('auto_minor_version_upgrade')
+      end
+      it 'includes availability_zone when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(availability_zone: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('availability_zone')
+      end
+
+      it 'omits availability_zone when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('availability_zone')
+      end
+      it 'includes dns_name_servers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(dns_name_servers: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('dns_name_servers')
+      end
+
+      it 'omits dns_name_servers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('dns_name_servers')
+      end
+      it 'includes engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('engine_version')
+      end
+
+      it 'omits engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('engine_version')
+      end
+      it 'includes kerberos_authentication_settings when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(kerberos_authentication_settings: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('kerberos_authentication_settings')
+      end
+
+      it 'omits kerberos_authentication_settings when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('kerberos_authentication_settings')
+      end
+      it 'includes kms_key_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(kms_key_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('kms_key_arn')
+      end
+
+      it 'omits kms_key_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('kms_key_arn')
+      end
+      it 'includes multi_az when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(multi_az: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('multi_az')
+      end
+
+      it 'omits multi_az when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('multi_az')
+      end
+      it 'includes network_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(network_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('network_type')
+      end
+
+      it 'omits network_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('network_type')
+      end
+      it 'includes preferred_maintenance_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(preferred_maintenance_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('preferred_maintenance_window')
+      end
+
+      it 'omits preferred_maintenance_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('preferred_maintenance_window')
+      end
+      it 'includes publicly_accessible when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(publicly_accessible: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('publicly_accessible')
+      end
+
+      it 'omits publicly_accessible when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('publicly_accessible')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes replication_subnet_group_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(replication_subnet_group_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('replication_subnet_group_id')
+      end
+
+      it 'omits replication_subnet_group_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('replication_subnet_group_id')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -149,6 +387,40 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes vpc_security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('opt', required_attrs.merge(vpc_security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'opt')
+        expect(config).to have_key('vpc_security_group_ids')
+      end
+
+      it 'omits vpc_security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_instance', 'minimal')
+        expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
@@ -173,6 +445,39 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationInstance do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_dms_replication_instance', "bool_#{val}")
           expect(config['apply_immediately']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts auto_minor_version_upgrade=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(auto_minor_version_upgrade: val)
+          synth.aws_dms_replication_instance("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_dms_replication_instance', "bool_#{val}")
+          expect(config['auto_minor_version_upgrade']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts multi_az=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(multi_az: val)
+          synth.aws_dms_replication_instance("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_dms_replication_instance', "bool_#{val}")
+          expect(config['multi_az']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts publicly_accessible=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(publicly_accessible: val)
+          synth.aws_dms_replication_instance("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_dms_replication_instance', "bool_#{val}")
+          expect(config['publicly_accessible']).to eq(val)
         end
       end
     end
@@ -220,8 +525,8 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationInstance do
     resource_type: :aws_dms_replication_instance,
     method: :aws_dms_replication_instance,
     required_attrs: { replication_instance_class: 'test-value', replication_instance_id: 'test-value' },
-    expected_outputs: [:id, :allocated_storage, :auto_minor_version_upgrade, :availability_zone, :engine_version, :kms_key_arn, :multi_az, :network_type, :preferred_maintenance_window, :publicly_accessible, :replication_instance_arn, :replication_instance_private_ips, :replication_instance_public_ips, :replication_subnet_group_id, :tags_all, :vpc_security_group_ids],
+    expected_outputs: [:id, :allocated_storage, :auto_minor_version_upgrade, :availability_zone, :engine_version, :kms_key_arn, :multi_az, :network_type, :preferred_maintenance_window, :publicly_accessible, :region, :replication_instance_arn, :replication_instance_private_ips, :replication_instance_public_ips, :replication_subnet_group_id, :tags_all, :vpc_security_group_ids],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:allow_major_version_upgrade, :apply_immediately]
+    boolean_fields: [:allow_major_version_upgrade, :apply_immediately, :auto_minor_version_upgrade, :multi_az, :publicly_accessible]
 end

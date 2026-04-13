@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_connect_user_hierarchy_structure,
       attributes_class: AWS::Types::ConnectUserHierarchyStructureAttributes,
       outputs: { id: :id },
-      map: [:hierarchy_structure, :instance_id]
+      map: [:hierarchy_structure, :instance_id],
+      map_present: [:region]
   end
   module AWS
     include AWSConnectUserHierarchyStructure

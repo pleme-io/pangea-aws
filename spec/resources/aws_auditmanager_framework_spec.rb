@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerFramework do
         expect(ref.id).to eq("${aws_auditmanager_framework.test.id}")
         expect(ref.arn).to eq("${aws_auditmanager_framework.test.arn}")
         expect(ref.framework_type).to eq("${aws_auditmanager_framework.test.framework_type}")
+        expect(ref.region).to eq("${aws_auditmanager_framework.test.region}")
         expect(ref.tags_all).to eq("${aws_auditmanager_framework.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerFramework do
         config = validate_resource_structure(result, 'aws_auditmanager_framework', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('framework_type')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ compliance_type: 'test-value', control_sets: [{ 'key1' => 'val1' }], description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ compliance_type: 'test-value', control_sets: [{ 'key1' => 'val1' }], description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +73,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerFramework do
         expect(config).to have_key('compliance_type')
         expect(config).to have_key('control_sets')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -126,6 +129,23 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerFramework do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_auditmanager_framework', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_framework('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_framework', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_framework('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_framework', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -188,7 +208,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerFramework do
     resource_type: :aws_auditmanager_framework,
     method: :aws_auditmanager_framework,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :framework_type, :tags_all],
+    expected_outputs: [:id, :arn, :framework_type, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

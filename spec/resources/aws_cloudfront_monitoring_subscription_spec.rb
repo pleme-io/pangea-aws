@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCloudfrontMonitoringSubscription do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { distribution_id: 'test-value', monitoring_subscription: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { distribution_id: 'test-value', monitoring_subscription: { 'key1' => 'val1' } } }
 
   describe ':aws_cloudfront_monitoring_subscription' do
     context 'with required attributes only' do
@@ -50,7 +50,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontMonitoringSubscription do
 
         config = validate_resource_structure(result, 'aws_cloudfront_monitoring_subscription', 'typed')
         expect(config['distribution_id']).to be_a(String)
-        expect(config['monitoring_subscription']).to be_a(Array)
+        expect(config['monitoring_subscription']).to be_a(Hash)
       end
     end
 
@@ -83,7 +83,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontMonitoringSubscription do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_cloudfront_monitoring_subscription,
     method: :aws_cloudfront_monitoring_subscription,
-    required_attrs: { distribution_id: 'test-value', monitoring_subscription: [{ 'key1' => 'val1' }] },
+    required_attrs: { distribution_id: 'test-value', monitoring_subscription: { 'key1' => 'val1' } },
     expected_outputs: [:id],
     sensitive_fields: [],
     immutable_fields: [],

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ImagebuilderWorkflowAttributes,
       outputs: { id: :id },
       map: [:name, :type, :version],
-      map_present: [:change_description, :data, :description, :kms_key_id, :tags, :tags_all, :uri]
+      map_present: [:change_description, :data, :description, :kms_key_id, :region, :tags, :tags_all, :uri]
   end
   module AWS
     include AWSImagebuilderWorkflow

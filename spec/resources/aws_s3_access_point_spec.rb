@@ -47,6 +47,8 @@ RSpec.describe Pangea::Resources::AWSS3AccessPoint do
         expect(ref.has_public_access_policy).to eq("${aws_s3_access_point.test.has_public_access_policy}")
         expect(ref.network_origin).to eq("${aws_s3_access_point.test.network_origin}")
         expect(ref.policy).to eq("${aws_s3_access_point.test.policy}")
+        expect(ref.region).to eq("${aws_s3_access_point.test.region}")
+        expect(ref.tags_all).to eq("${aws_s3_access_point.test.tags_all}")
       end
     end
 
@@ -67,11 +69,13 @@ RSpec.describe Pangea::Resources::AWSS3AccessPoint do
         expect(config).not_to have_key('has_public_access_policy')
         expect(config).not_to have_key('network_origin')
         expect(config).not_to have_key('policy')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ public_access_block_configuration: [{ 'key1' => 'val1' }], vpc_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ account_id: 'test-value', bucket_account_id: 'test-value', policy: 'test-value', public_access_block_configuration: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_configuration: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,16 +84,73 @@ RSpec.describe Pangea::Resources::AWSS3AccessPoint do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_s3_access_point', 'full')
+        expect(config).to have_key('account_id')
+        expect(config).to have_key('bucket_account_id')
+        expect(config).to have_key('policy')
         expect(config).to have_key('public_access_block_configuration')
+        expect(config).to have_key('region')
+        expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc_configuration')
       end
     end
 
     context 'optional attributes' do
+      it 'includes account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_access_point('opt', required_attrs.merge(account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_access_point', 'opt')
+        expect(config).to have_key('account_id')
+      end
+
+      it 'omits account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_access_point('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_access_point', 'minimal')
+        expect(config).not_to have_key('account_id')
+      end
+      it 'includes bucket_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_access_point('opt', required_attrs.merge(bucket_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_access_point', 'opt')
+        expect(config).to have_key('bucket_account_id')
+      end
+
+      it 'omits bucket_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_access_point('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_access_point', 'minimal')
+        expect(config).not_to have_key('bucket_account_id')
+      end
+      it 'includes policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_access_point('opt', required_attrs.merge(policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_access_point', 'opt')
+        expect(config).to have_key('policy')
+      end
+
+      it 'omits policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_access_point('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_access_point', 'minimal')
+        expect(config).not_to have_key('policy')
+      end
       it 'includes public_access_block_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_access_point('opt', required_attrs.merge(public_access_block_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_access_point('opt', required_attrs.merge(public_access_block_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_access_point', 'opt')
         expect(config).to have_key('public_access_block_configuration')
@@ -103,10 +164,61 @@ RSpec.describe Pangea::Resources::AWSS3AccessPoint do
         config = validate_resource_structure(result, 'aws_s3_access_point', 'minimal')
         expect(config).not_to have_key('public_access_block_configuration')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_access_point('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_access_point', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_access_point('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_access_point', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes tags when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_access_point('opt', required_attrs.merge(tags: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_access_point', 'opt')
+        expect(config).to have_key('tags')
+      end
+
+      it 'omits tags when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_access_point('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_access_point', 'minimal')
+        expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_access_point('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_access_point', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_access_point('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_access_point', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes vpc_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_access_point('opt', required_attrs.merge(vpc_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_access_point('opt', required_attrs.merge(vpc_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_access_point', 'opt')
         expect(config).to have_key('vpc_configuration')
@@ -165,7 +277,7 @@ RSpec.describe Pangea::Resources::AWSS3AccessPoint do
     resource_type: :aws_s3_access_point,
     method: :aws_s3_access_point,
     required_attrs: { bucket: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :account_id, :alias, :arn, :bucket_account_id, :domain_name, :endpoints, :has_public_access_policy, :network_origin, :policy],
+    expected_outputs: [:id, :account_id, :alias, :arn, :bucket_account_id, :domain_name, :endpoints, :has_public_access_policy, :network_origin, :policy, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -67,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSIamRole do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', force_detach_policies: true, inline_policy: [{ 'key1' => 'val1' }], max_session_duration: 3.14, path: 'test-value', permissions_boundary: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', force_detach_policies: true, inline_policy: [{ 'key1' => 'val1' }], managed_policy_arns: ['test-value'], max_session_duration: 3.14, name: 'test-value', name_prefix: 'test-value', path: 'test-value', permissions_boundary: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,10 +79,14 @@ RSpec.describe Pangea::Resources::AWSIamRole do
         expect(config).to have_key('description')
         expect(config).to have_key('force_detach_policies')
         expect(config).to have_key('inline_policy')
+        expect(config).to have_key('managed_policy_arns')
         expect(config).to have_key('max_session_duration')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
         expect(config).to have_key('path')
         expect(config).to have_key('permissions_boundary')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -138,6 +142,23 @@ RSpec.describe Pangea::Resources::AWSIamRole do
         config = validate_resource_structure(result, 'aws_iam_role', 'minimal')
         expect(config).not_to have_key('inline_policy')
       end
+      it 'includes managed_policy_arns when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_role('opt', required_attrs.merge(managed_policy_arns: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_role', 'opt')
+        expect(config).to have_key('managed_policy_arns')
+      end
+
+      it 'omits managed_policy_arns when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_role('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_role', 'minimal')
+        expect(config).not_to have_key('managed_policy_arns')
+      end
       it 'includes max_session_duration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -154,6 +175,40 @@ RSpec.describe Pangea::Resources::AWSIamRole do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iam_role', 'minimal')
         expect(config).not_to have_key('max_session_duration')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_role('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_role', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_role('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_role', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_role('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_role', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_role('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_role', 'minimal')
+        expect(config).not_to have_key('name_prefix')
       end
       it 'includes path when provided' do
         synth = create_synthesizer
@@ -205,6 +260,23 @@ RSpec.describe Pangea::Resources::AWSIamRole do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iam_role', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_role('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_role', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_role('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_role', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 

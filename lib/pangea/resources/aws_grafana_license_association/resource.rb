@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GrafanaLicenseAssociationAttributes,
       outputs: { id: :id },
       map: [:license_type, :workspace_id],
-      map_present: [:grafana_token]
+      map_present: [:grafana_token, :region]
   end
   module AWS
     include AWSGrafanaLicenseAssociation

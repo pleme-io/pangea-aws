@@ -43,9 +43,12 @@ RSpec.describe Pangea::Resources::AWSEfsMountTarget do
         expect(ref.dns_name).to eq("${aws_efs_mount_target.test.dns_name}")
         expect(ref.file_system_arn).to eq("${aws_efs_mount_target.test.file_system_arn}")
         expect(ref.ip_address).to eq("${aws_efs_mount_target.test.ip_address}")
+        expect(ref.ip_address_type).to eq("${aws_efs_mount_target.test.ip_address_type}")
+        expect(ref.ipv6_address).to eq("${aws_efs_mount_target.test.ipv6_address}")
         expect(ref.mount_target_dns_name).to eq("${aws_efs_mount_target.test.mount_target_dns_name}")
         expect(ref.network_interface_id).to eq("${aws_efs_mount_target.test.network_interface_id}")
         expect(ref.owner_id).to eq("${aws_efs_mount_target.test.owner_id}")
+        expect(ref.region).to eq("${aws_efs_mount_target.test.region}")
         expect(ref.security_groups).to eq("${aws_efs_mount_target.test.security_groups}")
       end
     end
@@ -63,9 +66,118 @@ RSpec.describe Pangea::Resources::AWSEfsMountTarget do
         expect(config).not_to have_key('dns_name')
         expect(config).not_to have_key('file_system_arn')
         expect(config).not_to have_key('ip_address')
+        expect(config).not_to have_key('ip_address_type')
+        expect(config).not_to have_key('ipv6_address')
         expect(config).not_to have_key('mount_target_dns_name')
         expect(config).not_to have_key('network_interface_id')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('security_groups')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ ip_address: 'test-value', ip_address_type: 'test-value', ipv6_address: 'test-value', region: 'test-value', security_groups: ['test-value'] }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_mount_target('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_efs_mount_target', 'full')
+        expect(config).to have_key('ip_address')
+        expect(config).to have_key('ip_address_type')
+        expect(config).to have_key('ipv6_address')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_groups')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes ip_address when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_mount_target('opt', required_attrs.merge(ip_address: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_mount_target', 'opt')
+        expect(config).to have_key('ip_address')
+      end
+
+      it 'omits ip_address when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_mount_target('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_mount_target', 'minimal')
+        expect(config).not_to have_key('ip_address')
+      end
+      it 'includes ip_address_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_mount_target('opt', required_attrs.merge(ip_address_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_mount_target', 'opt')
+        expect(config).to have_key('ip_address_type')
+      end
+
+      it 'omits ip_address_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_mount_target('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_mount_target', 'minimal')
+        expect(config).not_to have_key('ip_address_type')
+      end
+      it 'includes ipv6_address when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_mount_target('opt', required_attrs.merge(ipv6_address: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_mount_target', 'opt')
+        expect(config).to have_key('ipv6_address')
+      end
+
+      it 'omits ipv6_address when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_mount_target('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_mount_target', 'minimal')
+        expect(config).not_to have_key('ipv6_address')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_mount_target('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_mount_target', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_mount_target('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_mount_target', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_groups when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_mount_target('opt', required_attrs.merge(security_groups: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_mount_target', 'opt')
+        expect(config).to have_key('security_groups')
+      end
+
+      it 'omits security_groups when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_mount_target('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_mount_target', 'minimal')
         expect(config).not_to have_key('security_groups')
       end
     end
@@ -113,7 +225,7 @@ RSpec.describe Pangea::Resources::AWSEfsMountTarget do
     resource_type: :aws_efs_mount_target,
     method: :aws_efs_mount_target,
     required_attrs: { file_system_id: 'test-value', subnet_id: 'test-value' },
-    expected_outputs: [:id, :availability_zone_id, :availability_zone_name, :dns_name, :file_system_arn, :ip_address, :mount_target_dns_name, :network_interface_id, :owner_id, :security_groups],
+    expected_outputs: [:id, :availability_zone_id, :availability_zone_name, :dns_name, :file_system_arn, :ip_address, :ip_address_type, :ipv6_address, :mount_target_dns_name, :network_interface_id, :owner_id, :region, :security_groups],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSEc2ManagedPrefixListEntry do
         ref = synth.aws_ec2_managed_prefix_list_entry('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ec2_managed_prefix_list_entry.test.id}")
+        expect(ref.region).to eq("${aws_ec2_managed_prefix_list_entry.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_managed_prefix_list_entry('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ec2_managed_prefix_list_entry', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSEc2ManagedPrefixListEntry do
 
         config = validate_resource_structure(result, 'aws_ec2_managed_prefix_list_entry', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSEc2ManagedPrefixListEntry do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_managed_prefix_list_entry', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_managed_prefix_list_entry('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_managed_prefix_list_entry', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_managed_prefix_list_entry('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_managed_prefix_list_entry', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -118,7 +149,7 @@ RSpec.describe Pangea::Resources::AWSEc2ManagedPrefixListEntry do
     resource_type: :aws_ec2_managed_prefix_list_entry,
     method: :aws_ec2_managed_prefix_list_entry,
     required_attrs: { cidr: 'test-value', prefix_list_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

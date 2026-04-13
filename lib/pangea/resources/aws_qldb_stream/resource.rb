@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QldbStreamAttributes,
       outputs: { id: :id },
       map: [:inclusive_start_time, :kinesis_configuration, :ledger_name, :role_arn, :stream_name],
-      map_present: [:exclusive_end_time, :tags, :tags_all]
+      map_present: [:exclusive_end_time, :region, :tags, :tags_all]
   end
   module AWS
     include AWSQldbStream

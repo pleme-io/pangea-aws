@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ServicecatalogTagOptionAttributes,
       outputs: { id: :id },
       map: [:key, :value],
+      map_present: [:region],
       map_bool: [:active]
   end
   module AWS

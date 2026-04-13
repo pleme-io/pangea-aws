@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretPolicy do
         ref = synth.aws_secretsmanager_secret_policy('test', required_attrs)
 
         expect(ref.id).to eq("${aws_secretsmanager_secret_policy.test.id}")
+        expect(ref.region).to eq("${aws_secretsmanager_secret_policy.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_secretsmanager_secret_policy('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_secretsmanager_secret_policy', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ block_public_policy: true }) }
+      let(:all_attrs) { required_attrs.merge({ block_public_policy: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretPolicy do
 
         config = validate_resource_structure(result, 'aws_secretsmanager_secret_policy', 'full')
         expect(config).to have_key('block_public_policy')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretPolicy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_secretsmanager_secret_policy', 'minimal')
         expect(config).not_to have_key('block_public_policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_secretsmanager_secret_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_secretsmanager_secret_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_secretsmanager_secret_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_secretsmanager_secret_policy', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -132,7 +163,7 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretPolicy do
     resource_type: :aws_secretsmanager_secret_policy,
     method: :aws_secretsmanager_secret_policy,
     required_attrs: { policy: 'test-value', secret_arn: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:block_public_policy]

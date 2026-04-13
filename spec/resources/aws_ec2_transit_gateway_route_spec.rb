@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayRoute do
         ref = synth.aws_ec2_transit_gateway_route('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ec2_transit_gateway_route.test.id}")
+        expect(ref.region).to eq("${aws_ec2_transit_gateway_route.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_route('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_route', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ blackhole: true, transit_gateway_attachment_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ blackhole: true, region: 'test-value', transit_gateway_attachment_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayRoute do
 
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_route', 'full')
         expect(config).to have_key('blackhole')
+        expect(config).to have_key('region')
         expect(config).to have_key('transit_gateway_attachment_id')
       end
     end
@@ -73,6 +87,23 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayRoute do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_route', 'minimal')
         expect(config).not_to have_key('blackhole')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_route('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_route', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_route('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_route', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes transit_gateway_attachment_id when provided' do
         synth = create_synthesizer
@@ -150,7 +181,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayRoute do
     resource_type: :aws_ec2_transit_gateway_route,
     method: :aws_ec2_transit_gateway_route,
     required_attrs: { destination_cidr_block: 'test-value', transit_gateway_route_table_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:blackhole]

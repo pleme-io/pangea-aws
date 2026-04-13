@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSSsmActivation do
         expect(ref.activation_code).to eq("${aws_ssm_activation.test.activation_code}")
         expect(ref.expiration_date).to eq("${aws_ssm_activation.test.expiration_date}")
         expect(ref.expired).to eq("${aws_ssm_activation.test.expired}")
+        expect(ref.region).to eq("${aws_ssm_activation.test.region}")
         expect(ref.registration_count).to eq("${aws_ssm_activation.test.registration_count}")
         expect(ref.tags_all).to eq("${aws_ssm_activation.test.tags_all}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSSsmActivation do
         expect(config).not_to have_key('activation_code')
         expect(config).not_to have_key('expiration_date')
         expect(config).not_to have_key('expired')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('registration_count')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', name: 'test-value', registration_limit: 3.14, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', expiration_date: 'test-value', name: 'test-value', region: 'test-value', registration_limit: 3.14, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,9 +75,12 @@ RSpec.describe Pangea::Resources::AWSSsmActivation do
 
         config = validate_resource_structure(result, 'aws_ssm_activation', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('expiration_date')
         expect(config).to have_key('name')
+        expect(config).to have_key('region')
         expect(config).to have_key('registration_limit')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -97,6 +102,23 @@ RSpec.describe Pangea::Resources::AWSSsmActivation do
         config = validate_resource_structure(result, 'aws_ssm_activation', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes expiration_date when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_activation('opt', required_attrs.merge(expiration_date: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_activation', 'opt')
+        expect(config).to have_key('expiration_date')
+      end
+
+      it 'omits expiration_date when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_activation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_activation', 'minimal')
+        expect(config).not_to have_key('expiration_date')
+      end
       it 'includes name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -113,6 +135,23 @@ RSpec.describe Pangea::Resources::AWSSsmActivation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_activation', 'minimal')
         expect(config).not_to have_key('name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_activation('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_activation', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_activation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_activation', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes registration_limit when provided' do
         synth = create_synthesizer
@@ -147,6 +186,23 @@ RSpec.describe Pangea::Resources::AWSSsmActivation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_activation', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_activation('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_activation', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_activation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_activation', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -192,7 +248,7 @@ RSpec.describe Pangea::Resources::AWSSsmActivation do
     resource_type: :aws_ssm_activation,
     method: :aws_ssm_activation,
     required_attrs: { iam_role: 'test-value' },
-    expected_outputs: [:id, :activation_code, :expiration_date, :expired, :registration_count, :tags_all],
+    expected_outputs: [:id, :activation_code, :expiration_date, :expired, :region, :registration_count, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSMacie2Account do
         expect(ref.id).to eq("${aws_macie2_account.test.id}")
         expect(ref.created_at).to eq("${aws_macie2_account.test.created_at}")
         expect(ref.finding_publishing_frequency).to eq("${aws_macie2_account.test.finding_publishing_frequency}")
+        expect(ref.region).to eq("${aws_macie2_account.test.region}")
         expect(ref.service_role).to eq("${aws_macie2_account.test.service_role}")
         expect(ref.status).to eq("${aws_macie2_account.test.status}")
         expect(ref.updated_at).to eq("${aws_macie2_account.test.updated_at}")
@@ -56,9 +57,91 @@ RSpec.describe Pangea::Resources::AWSMacie2Account do
         config = validate_resource_structure(result, 'aws_macie2_account', 'test')
         expect(config).not_to have_key('created_at')
         expect(config).not_to have_key('finding_publishing_frequency')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('service_role')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('updated_at')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ finding_publishing_frequency: 'test-value', region: 'test-value', status: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_account('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_macie2_account', 'full')
+        expect(config).to have_key('finding_publishing_frequency')
+        expect(config).to have_key('region')
+        expect(config).to have_key('status')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes finding_publishing_frequency when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_account('opt', required_attrs.merge(finding_publishing_frequency: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_account', 'opt')
+        expect(config).to have_key('finding_publishing_frequency')
+      end
+
+      it 'omits finding_publishing_frequency when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_account('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_account', 'minimal')
+        expect(config).not_to have_key('finding_publishing_frequency')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_account('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_account', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_account('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_account', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_account('opt', required_attrs.merge(status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_account', 'opt')
+        expect(config).to have_key('status')
+      end
+
+      it 'omits status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_account('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_account', 'minimal')
+        expect(config).not_to have_key('status')
+      end
+    end
+
+    context 'attribute types' do
+      it 'validates expected attribute types' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_account('typed', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_macie2_account', 'typed')
       end
     end
 
@@ -92,7 +175,7 @@ RSpec.describe Pangea::Resources::AWSMacie2Account do
     resource_type: :aws_macie2_account,
     method: :aws_macie2_account,
     required_attrs: {},
-    expected_outputs: [:id, :created_at, :finding_publishing_frequency, :service_role, :status, :updated_at],
+    expected_outputs: [:id, :created_at, :finding_publishing_frequency, :region, :service_role, :status, :updated_at],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

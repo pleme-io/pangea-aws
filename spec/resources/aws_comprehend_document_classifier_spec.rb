@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSComprehendDocumentClassifier do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { data_access_role_arn: 'test-value', input_data_config: [{ 'key1' => 'val1' }], language_code: 'test-value', name: 'test-value' } }
+  let(:required_attrs) { { data_access_role_arn: 'test-value', input_data_config: { 'key1' => 'val1' }, language_code: 'test-value', name: 'test-value' } }
 
   describe ':aws_comprehend_document_classifier' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSComprehendDocumentClassifier do
 
         expect(ref.id).to eq("${aws_comprehend_document_classifier.test.id}")
         expect(ref.arn).to eq("${aws_comprehend_document_classifier.test.arn}")
+        expect(ref.region).to eq("${aws_comprehend_document_classifier.test.region}")
         expect(ref.tags_all).to eq("${aws_comprehend_document_classifier.test.tags_all}")
         expect(ref.version_name).to eq("${aws_comprehend_document_classifier.test.version_name}")
         expect(ref.version_name_prefix).to eq("${aws_comprehend_document_classifier.test.version_name_prefix}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSComprehendDocumentClassifier do
 
         config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('version_name')
         expect(config).not_to have_key('version_name_prefix')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSComprehendDocumentClassifier do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ mode: 'test-value', model_kms_key_id: 'test-value', output_data_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, volume_kms_key_id: 'test-value', vpc_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ mode: 'test-value', model_kms_key_id: 'test-value', output_data_config: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, version_name: 'test-value', version_name_prefix: 'test-value', volume_kms_key_id: 'test-value', vpc_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,11 @@ RSpec.describe Pangea::Resources::AWSComprehendDocumentClassifier do
         expect(config).to have_key('mode')
         expect(config).to have_key('model_kms_key_id')
         expect(config).to have_key('output_data_config')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('version_name')
+        expect(config).to have_key('version_name_prefix')
         expect(config).to have_key('volume_kms_key_id')
         expect(config).to have_key('vpc_config')
       end
@@ -117,7 +123,7 @@ RSpec.describe Pangea::Resources::AWSComprehendDocumentClassifier do
       it 'includes output_data_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_comprehend_document_classifier('opt', required_attrs.merge(output_data_config: [{ 'key1' => 'val1' }]))
+        synth.aws_comprehend_document_classifier('opt', required_attrs.merge(output_data_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'opt')
         expect(config).to have_key('output_data_config')
@@ -130,6 +136,23 @@ RSpec.describe Pangea::Resources::AWSComprehendDocumentClassifier do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'minimal')
         expect(config).not_to have_key('output_data_config')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_comprehend_document_classifier('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_comprehend_document_classifier('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -147,6 +170,57 @@ RSpec.describe Pangea::Resources::AWSComprehendDocumentClassifier do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_comprehend_document_classifier('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_comprehend_document_classifier('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes version_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_comprehend_document_classifier('opt', required_attrs.merge(version_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'opt')
+        expect(config).to have_key('version_name')
+      end
+
+      it 'omits version_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_comprehend_document_classifier('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'minimal')
+        expect(config).not_to have_key('version_name')
+      end
+      it 'includes version_name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_comprehend_document_classifier('opt', required_attrs.merge(version_name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'opt')
+        expect(config).to have_key('version_name_prefix')
+      end
+
+      it 'omits version_name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_comprehend_document_classifier('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'minimal')
+        expect(config).not_to have_key('version_name_prefix')
       end
       it 'includes volume_kms_key_id when provided' do
         synth = create_synthesizer
@@ -168,7 +242,7 @@ RSpec.describe Pangea::Resources::AWSComprehendDocumentClassifier do
       it 'includes vpc_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_comprehend_document_classifier('opt', required_attrs.merge(vpc_config: [{ 'key1' => 'val1' }]))
+        synth.aws_comprehend_document_classifier('opt', required_attrs.merge(vpc_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'opt')
         expect(config).to have_key('vpc_config')
@@ -193,7 +267,7 @@ RSpec.describe Pangea::Resources::AWSComprehendDocumentClassifier do
 
         config = validate_resource_structure(result, 'aws_comprehend_document_classifier', 'typed')
         expect(config['data_access_role_arn']).to be_a(String)
-        expect(config['input_data_config']).to be_a(Array)
+        expect(config['input_data_config']).to be_a(Hash)
         expect(config['language_code']).to be_a(String)
         expect(config['name']).to be_a(String)
       end
@@ -228,8 +302,8 @@ RSpec.describe Pangea::Resources::AWSComprehendDocumentClassifier do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_comprehend_document_classifier,
     method: :aws_comprehend_document_classifier,
-    required_attrs: { data_access_role_arn: 'test-value', input_data_config: [{ 'key1' => 'val1' }], language_code: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all, :version_name, :version_name_prefix],
+    required_attrs: { data_access_role_arn: 'test-value', input_data_config: { 'key1' => 'val1' }, language_code: 'test-value', name: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :tags_all, :version_name, :version_name_prefix],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

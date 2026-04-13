@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BatchJobDefinitionAttributes,
       outputs: { id: :id },
       map: [:name, :type],
-      map_present: [:container_properties, :ecs_properties, :eks_properties, :node_properties, :parameters, :platform_capabilities, :retry_strategy, :scheduling_priority, :tags, :tags_all, :timeout],
+      map_present: [:container_properties, :ecs_properties, :eks_properties, :node_properties, :parameters, :platform_capabilities, :region, :retry_strategy, :scheduling_priority, :tags, :tags_all, :timeout],
       map_bool: [:deregister_on_new_revision, :propagate_tags]
   end
   module AWS

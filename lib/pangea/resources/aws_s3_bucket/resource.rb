@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_s3_bucket,
       attributes_class: AWS::Types::S3BucketAttributes,
       outputs: { id: :id },
-      map_present: [:acceleration_status, :acl, :bucket, :bucket_prefix, :cors_rule, :grant, :lifecycle_rule, :logging, :object_lock_configuration, :policy, :replication_configuration, :request_payer, :server_side_encryption_configuration, :tags, :tags_all, :versioning, :website],
+      map_present: [:acceleration_status, :acl, :bucket, :bucket_namespace, :bucket_prefix, :cors_rule, :grant, :lifecycle_rule, :logging, :object_lock_configuration, :policy, :region, :replication_configuration, :request_payer, :server_side_encryption_configuration, :tags, :tags_all, :versioning, :website],
       map_bool: [:force_destroy, :object_lock_enabled]
   end
   module AWS

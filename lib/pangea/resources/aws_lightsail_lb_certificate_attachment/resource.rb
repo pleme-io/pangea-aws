@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_lightsail_lb_certificate_attachment,
       attributes_class: AWS::Types::LightsailLbCertificateAttachmentAttributes,
       outputs: { id: :id },
-      map: [:certificate_name, :lb_name]
+      map: [:certificate_name, :lb_name],
+      map_present: [:region]
   end
   module AWS
     include AWSLightsailLbCertificateAttachment

@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSPinpointApnsVoipSandboxChannel do
         ref = synth.aws_pinpoint_apns_voip_sandbox_channel('test', required_attrs)
 
         expect(ref.id).to eq("${aws_pinpoint_apns_voip_sandbox_channel.test.id}")
+        expect(ref.region).to eq("${aws_pinpoint_apns_voip_sandbox_channel.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpoint_apns_voip_sandbox_channel('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_pinpoint_apns_voip_sandbox_channel', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ bundle_id: 'test-value', certificate: 'test-value', default_authentication_method: 'test-value', enabled: true, private_key: 'test-value', team_id: 'test-value', token_key: 'test-value', token_key_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ bundle_id: 'test-value', certificate: 'test-value', default_authentication_method: 'test-value', enabled: true, private_key: 'test-value', region: 'test-value', team_id: 'test-value', token_key: 'test-value', token_key_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -56,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSPinpointApnsVoipSandboxChannel do
         expect(config).to have_key('default_authentication_method')
         expect(config).to have_key('enabled')
         expect(config).to have_key('private_key')
+        expect(config).to have_key('region')
         expect(config).to have_key('team_id')
         expect(config).to have_key('token_key')
         expect(config).to have_key('token_key_id')
@@ -147,6 +161,23 @@ RSpec.describe Pangea::Resources::AWSPinpointApnsVoipSandboxChannel do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_pinpoint_apns_voip_sandbox_channel', 'minimal')
         expect(config).not_to have_key('private_key')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpoint_apns_voip_sandbox_channel('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpoint_apns_voip_sandbox_channel', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpoint_apns_voip_sandbox_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpoint_apns_voip_sandbox_channel', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes team_id when provided' do
         synth = create_synthesizer
@@ -269,7 +300,7 @@ RSpec.describe Pangea::Resources::AWSPinpointApnsVoipSandboxChannel do
     resource_type: :aws_pinpoint_apns_voip_sandbox_channel,
     method: :aws_pinpoint_apns_voip_sandbox_channel,
     required_attrs: { application_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [:bundle_id, :certificate, :private_key, :team_id, :token_key, :token_key_id],
     immutable_fields: [],
     boolean_fields: [:enabled]

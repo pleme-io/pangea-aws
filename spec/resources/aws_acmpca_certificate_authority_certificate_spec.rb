@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthorityCertificate do
         ref = synth.aws_acmpca_certificate_authority_certificate('test', required_attrs)
 
         expect(ref.id).to eq("${aws_acmpca_certificate_authority_certificate.test.id}")
+        expect(ref.region).to eq("${aws_acmpca_certificate_authority_certificate.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_certificate_authority_certificate('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_acmpca_certificate_authority_certificate', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ certificate_chain: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ certificate_chain: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthorityCertificate do
 
         config = validate_resource_structure(result, 'aws_acmpca_certificate_authority_certificate', 'full')
         expect(config).to have_key('certificate_chain')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthorityCertificate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_acmpca_certificate_authority_certificate', 'minimal')
         expect(config).not_to have_key('certificate_chain')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_certificate_authority_certificate('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_certificate_authority_certificate', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_certificate_authority_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_certificate_authority_certificate', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -118,7 +149,7 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthorityCertificate do
     resource_type: :aws_acmpca_certificate_authority_certificate,
     method: :aws_acmpca_certificate_authority_certificate,
     required_attrs: { certificate: 'test-value', certificate_authority_arn: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

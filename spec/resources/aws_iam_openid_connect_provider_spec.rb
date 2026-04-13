@@ -59,7 +59,7 @@ RSpec.describe Pangea::Resources::AWSIamOpenidConnectProvider do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, thumbprint_list: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +69,8 @@ RSpec.describe Pangea::Resources::AWSIamOpenidConnectProvider do
 
         config = validate_resource_structure(result, 'aws_iam_openid_connect_provider', 'full')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('thumbprint_list')
       end
     end
 
@@ -89,6 +91,40 @@ RSpec.describe Pangea::Resources::AWSIamOpenidConnectProvider do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iam_openid_connect_provider', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_openid_connect_provider('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_openid_connect_provider', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_openid_connect_provider('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_openid_connect_provider', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes thumbprint_list when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_openid_connect_provider('opt', required_attrs.merge(thumbprint_list: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_openid_connect_provider', 'opt')
+        expect(config).to have_key('thumbprint_list')
+      end
+
+      it 'omits thumbprint_list when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_openid_connect_provider('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_openid_connect_provider', 'minimal')
+        expect(config).not_to have_key('thumbprint_list')
       end
     end
 

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LbTargetGroupAttachmentAttributes,
       outputs: { id: :id },
       map: [:target_group_arn, :target_id],
-      map_present: [:availability_zone, :port]
+      map_present: [:availability_zone, :port, :quic_server_id, :region]
   end
   module AWS
     include AWSLbTargetGroupAttachment

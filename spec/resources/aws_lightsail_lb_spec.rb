@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSLightsailLb do
         expect(ref.dns_name).to eq("${aws_lightsail_lb.test.dns_name}")
         expect(ref.protocol).to eq("${aws_lightsail_lb.test.protocol}")
         expect(ref.public_ports).to eq("${aws_lightsail_lb.test.public_ports}")
+        expect(ref.region).to eq("${aws_lightsail_lb.test.region}")
         expect(ref.support_code).to eq("${aws_lightsail_lb.test.support_code}")
         expect(ref.tags_all).to eq("${aws_lightsail_lb.test.tags_all}")
       end
@@ -61,13 +62,14 @@ RSpec.describe Pangea::Resources::AWSLightsailLb do
         expect(config).not_to have_key('dns_name')
         expect(config).not_to have_key('protocol')
         expect(config).not_to have_key('public_ports')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('support_code')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ health_check_path: 'test-value', ip_address_type: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ health_check_path: 'test-value', ip_address_type: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,7 +80,9 @@ RSpec.describe Pangea::Resources::AWSLightsailLb do
         config = validate_resource_structure(result, 'aws_lightsail_lb', 'full')
         expect(config).to have_key('health_check_path')
         expect(config).to have_key('ip_address_type')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -117,6 +121,23 @@ RSpec.describe Pangea::Resources::AWSLightsailLb do
         config = validate_resource_structure(result, 'aws_lightsail_lb', 'minimal')
         expect(config).not_to have_key('ip_address_type')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_lb', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_lb', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -133,6 +154,23 @@ RSpec.describe Pangea::Resources::AWSLightsailLb do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_lb', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_lb', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_lb', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -179,7 +217,7 @@ RSpec.describe Pangea::Resources::AWSLightsailLb do
     resource_type: :aws_lightsail_lb,
     method: :aws_lightsail_lb,
     required_attrs: { instance_port: 3.14, name: 'test-value' },
-    expected_outputs: [:id, :arn, :created_at, :dns_name, :protocol, :public_ports, :support_code, :tags_all],
+    expected_outputs: [:id, :arn, :created_at, :dns_name, :protocol, :public_ports, :region, :support_code, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

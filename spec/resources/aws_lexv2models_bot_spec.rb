@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBot do
 
         expect(ref.id).to eq("${aws_lexv2models_bot.test.id}")
         expect(ref.arn).to eq("${aws_lexv2models_bot.test.arn}")
+        expect(ref.region).to eq("${aws_lexv2models_bot.test.region}")
         expect(ref.tags_all).to eq("${aws_lexv2models_bot.test.tags_all}")
         expect(ref.type).to eq("${aws_lexv2models_bot.test.type}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBot do
 
         config = validate_resource_structure(result, 'aws_lexv2models_bot', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('type')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ data_privacy: [{ 'key1' => 'val1' }], description: 'test-value', members: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, test_bot_alias_tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ data_privacy: [{ 'key1' => 'val1' }], description: 'test-value', members: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' }, test_bot_alias_tags: { 'key1' => 'val1' }, type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,8 +73,10 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBot do
         expect(config).to have_key('data_privacy')
         expect(config).to have_key('description')
         expect(config).to have_key('members')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
         expect(config).to have_key('test_bot_alias_tags')
+        expect(config).to have_key('type')
       end
     end
 
@@ -128,6 +132,23 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBot do
         config = validate_resource_structure(result, 'aws_lexv2models_bot', 'minimal')
         expect(config).not_to have_key('members')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_bot('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_bot', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_bot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_bot', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -161,6 +182,23 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBot do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lexv2models_bot', 'minimal')
         expect(config).not_to have_key('test_bot_alias_tags')
+      end
+      it 'includes type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_bot('opt', required_attrs.merge(type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_bot', 'opt')
+        expect(config).to have_key('type')
+      end
+
+      it 'omits type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_bot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_bot', 'minimal')
+        expect(config).not_to have_key('type')
       end
     end
 
@@ -208,7 +246,7 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBot do
     resource_type: :aws_lexv2models_bot,
     method: :aws_lexv2models_bot,
     required_attrs: { idle_session_ttl_in_seconds: 3.14, name: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all, :type],
+    expected_outputs: [:id, :arn, :region, :tags_all, :type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

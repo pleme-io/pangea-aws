@@ -40,6 +40,9 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogTable do
         expect(ref.id).to eq("${aws_glue_catalog_table.test.id}")
         expect(ref.arn).to eq("${aws_glue_catalog_table.test.arn}")
         expect(ref.catalog_id).to eq("${aws_glue_catalog_table.test.catalog_id}")
+        expect(ref.parameters).to eq("${aws_glue_catalog_table.test.parameters}")
+        expect(ref.region).to eq("${aws_glue_catalog_table.test.region}")
+        expect(ref.table_type).to eq("${aws_glue_catalog_table.test.table_type}")
       end
     end
 
@@ -53,11 +56,14 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogTable do
         config = validate_resource_structure(result, 'aws_glue_catalog_table', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('catalog_id')
+        expect(config).not_to have_key('parameters')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('table_type')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', open_table_format_input: [{ 'key1' => 'val1' }], owner: 'test-value', parameters: { 'key1' => 'val1' }, partition_index: [{ 'key1' => 'val1' }], partition_keys: [{ 'key1' => 'val1' }], retention: 3.14, storage_descriptor: [{ 'key1' => 'val1' }], table_type: 'test-value', target_table: [{ 'key1' => 'val1' }], view_expanded_text: 'test-value', view_original_text: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ catalog_id: 'test-value', description: 'test-value', open_table_format_input: { 'key1' => 'val1' }, owner: 'test-value', parameters: { 'key1' => 'val1' }, partition_index: [{ 'key1' => 'val1' }], partition_keys: [{ 'key1' => 'val1' }], region: 'test-value', retention: 3.14, storage_descriptor: { 'key1' => 'val1' }, table_type: 'test-value', target_table: { 'key1' => 'val1' }, view_definition: { 'key1' => 'val1' }, view_expanded_text: 'test-value', view_original_text: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,22 +72,42 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogTable do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_glue_catalog_table', 'full')
+        expect(config).to have_key('catalog_id')
         expect(config).to have_key('description')
         expect(config).to have_key('open_table_format_input')
         expect(config).to have_key('owner')
         expect(config).to have_key('parameters')
         expect(config).to have_key('partition_index')
         expect(config).to have_key('partition_keys')
+        expect(config).to have_key('region')
         expect(config).to have_key('retention')
         expect(config).to have_key('storage_descriptor')
         expect(config).to have_key('table_type')
         expect(config).to have_key('target_table')
+        expect(config).to have_key('view_definition')
         expect(config).to have_key('view_expanded_text')
         expect(config).to have_key('view_original_text')
       end
     end
 
     context 'optional attributes' do
+      it 'includes catalog_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_table('opt', required_attrs.merge(catalog_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_table', 'opt')
+        expect(config).to have_key('catalog_id')
+      end
+
+      it 'omits catalog_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_table', 'minimal')
+        expect(config).not_to have_key('catalog_id')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -102,7 +128,7 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogTable do
       it 'includes open_table_format_input when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_catalog_table('opt', required_attrs.merge(open_table_format_input: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_catalog_table('opt', required_attrs.merge(open_table_format_input: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_catalog_table', 'opt')
         expect(config).to have_key('open_table_format_input')
@@ -184,6 +210,23 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogTable do
         config = validate_resource_structure(result, 'aws_glue_catalog_table', 'minimal')
         expect(config).not_to have_key('partition_keys')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_table('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_table', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_table', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes retention when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -204,7 +247,7 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogTable do
       it 'includes storage_descriptor when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_catalog_table('opt', required_attrs.merge(storage_descriptor: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_catalog_table('opt', required_attrs.merge(storage_descriptor: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_catalog_table', 'opt')
         expect(config).to have_key('storage_descriptor')
@@ -238,7 +281,7 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogTable do
       it 'includes target_table when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_catalog_table('opt', required_attrs.merge(target_table: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_catalog_table('opt', required_attrs.merge(target_table: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_catalog_table', 'opt')
         expect(config).to have_key('target_table')
@@ -251,6 +294,23 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogTable do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_catalog_table', 'minimal')
         expect(config).not_to have_key('target_table')
+      end
+      it 'includes view_definition when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_table('opt', required_attrs.merge(view_definition: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_table', 'opt')
+        expect(config).to have_key('view_definition')
+      end
+
+      it 'omits view_definition when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_table', 'minimal')
+        expect(config).not_to have_key('view_definition')
       end
       it 'includes view_expanded_text when provided' do
         synth = create_synthesizer
@@ -331,7 +391,7 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogTable do
     resource_type: :aws_glue_catalog_table,
     method: :aws_glue_catalog_table,
     required_attrs: { database_name: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :catalog_id],
+    expected_outputs: [:id, :arn, :catalog_id, :parameters, :region, :table_type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

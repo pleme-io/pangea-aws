@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_location_tracker_association,
       attributes_class: AWS::Types::LocationTrackerAssociationAttributes,
       outputs: { id: :id },
-      map: [:consumer_arn, :tracker_name]
+      map: [:consumer_arn, :tracker_name],
+      map_present: [:region]
   end
   module AWS
     include AWSLocationTrackerAssociation

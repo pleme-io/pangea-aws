@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSDxConnectionConfirmation do
         ref = synth.aws_dx_connection_confirmation('test', required_attrs)
 
         expect(ref.id).to eq("${aws_dx_connection_confirmation.test.id}")
+        expect(ref.region).to eq("${aws_dx_connection_confirmation.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_connection_confirmation('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_dx_connection_confirmation', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_connection_confirmation('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_dx_connection_confirmation', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_connection_confirmation('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_connection_confirmation', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_connection_confirmation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_connection_confirmation', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -83,7 +130,7 @@ RSpec.describe Pangea::Resources::AWSDxConnectionConfirmation do
     resource_type: :aws_dx_connection_confirmation,
     method: :aws_dx_connection_confirmation,
     required_attrs: { connection_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

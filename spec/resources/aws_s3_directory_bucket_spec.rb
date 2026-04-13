@@ -41,6 +41,8 @@ RSpec.describe Pangea::Resources::AWSS3DirectoryBucket do
         expect(ref.arn).to eq("${aws_s3_directory_bucket.test.arn}")
         expect(ref.data_redundancy).to eq("${aws_s3_directory_bucket.test.data_redundancy}")
         expect(ref.force_destroy).to eq("${aws_s3_directory_bucket.test.force_destroy}")
+        expect(ref.region).to eq("${aws_s3_directory_bucket.test.region}")
+        expect(ref.tags_all).to eq("${aws_s3_directory_bucket.test.tags_all}")
         expect(ref.type).to eq("${aws_s3_directory_bucket.test.type}")
       end
     end
@@ -56,12 +58,14 @@ RSpec.describe Pangea::Resources::AWSS3DirectoryBucket do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('data_redundancy')
         expect(config).not_to have_key('force_destroy')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('type')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ location: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ data_redundancy: 'test-value', force_destroy: true, location: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' }, type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,11 +74,50 @@ RSpec.describe Pangea::Resources::AWSS3DirectoryBucket do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_s3_directory_bucket', 'full')
+        expect(config).to have_key('data_redundancy')
+        expect(config).to have_key('force_destroy')
         expect(config).to have_key('location')
+        expect(config).to have_key('region')
+        expect(config).to have_key('tags')
+        expect(config).to have_key('type')
       end
     end
 
     context 'optional attributes' do
+      it 'includes data_redundancy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_directory_bucket('opt', required_attrs.merge(data_redundancy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_directory_bucket', 'opt')
+        expect(config).to have_key('data_redundancy')
+      end
+
+      it 'omits data_redundancy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_directory_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_directory_bucket', 'minimal')
+        expect(config).not_to have_key('data_redundancy')
+      end
+      it 'includes force_destroy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_directory_bucket('opt', required_attrs.merge(force_destroy: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_directory_bucket', 'opt')
+        expect(config).to have_key('force_destroy')
+      end
+
+      it 'omits force_destroy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_directory_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_directory_bucket', 'minimal')
+        expect(config).not_to have_key('force_destroy')
+      end
       it 'includes location when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -91,6 +134,71 @@ RSpec.describe Pangea::Resources::AWSS3DirectoryBucket do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_directory_bucket', 'minimal')
         expect(config).not_to have_key('location')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_directory_bucket('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_directory_bucket', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_directory_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_directory_bucket', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes tags when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_directory_bucket('opt', required_attrs.merge(tags: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_directory_bucket', 'opt')
+        expect(config).to have_key('tags')
+      end
+
+      it 'omits tags when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_directory_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_directory_bucket', 'minimal')
+        expect(config).not_to have_key('tags')
+      end
+      it 'includes type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_directory_bucket('opt', required_attrs.merge(type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_directory_bucket', 'opt')
+        expect(config).to have_key('type')
+      end
+
+      it 'omits type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_directory_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_directory_bucket', 'minimal')
+        expect(config).not_to have_key('type')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts force_destroy=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(force_destroy: val)
+          synth.aws_s3_directory_bucket("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_s3_directory_bucket', "bool_#{val}")
+          expect(config['force_destroy']).to eq(val)
+        end
       end
     end
 
@@ -136,8 +244,8 @@ RSpec.describe Pangea::Resources::AWSS3DirectoryBucket do
     resource_type: :aws_s3_directory_bucket,
     method: :aws_s3_directory_bucket,
     required_attrs: { bucket: 'test-value' },
-    expected_outputs: [:id, :arn, :data_redundancy, :force_destroy, :type],
+    expected_outputs: [:id, :arn, :data_redundancy, :force_destroy, :region, :tags_all, :type],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:force_destroy]
 end

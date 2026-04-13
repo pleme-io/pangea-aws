@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayMulticastDomainAssociation
         ref = synth.aws_ec2_transit_gateway_multicast_domain_association('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ec2_transit_gateway_multicast_domain_association.test.id}")
+        expect(ref.region).to eq("${aws_ec2_transit_gateway_multicast_domain_association.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_multicast_domain_association('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_multicast_domain_association', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_multicast_domain_association('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_multicast_domain_association', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_multicast_domain_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_multicast_domain_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_multicast_domain_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_multicast_domain_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -85,7 +132,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayMulticastDomainAssociation
     resource_type: :aws_ec2_transit_gateway_multicast_domain_association,
     method: :aws_ec2_transit_gateway_multicast_domain_association,
     required_attrs: { subnet_id: 'test-value', transit_gateway_attachment_id: 'test-value', transit_gateway_multicast_domain_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

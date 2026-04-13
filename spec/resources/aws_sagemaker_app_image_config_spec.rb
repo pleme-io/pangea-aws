@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerAppImageConfig do
 
         expect(ref.id).to eq("${aws_sagemaker_app_image_config.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_app_image_config.test.arn}")
+        expect(ref.region).to eq("${aws_sagemaker_app_image_config.test.region}")
         expect(ref.tags_all).to eq("${aws_sagemaker_app_image_config.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSSagemakerAppImageConfig do
 
         config = validate_resource_structure(result, 'aws_sagemaker_app_image_config', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ code_editor_app_image_config: [{ 'key1' => 'val1' }], jupyter_lab_image_config: [{ 'key1' => 'val1' }], kernel_gateway_image_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ code_editor_app_image_config: { 'key1' => 'val1' }, jupyter_lab_image_config: { 'key1' => 'val1' }, kernel_gateway_image_config: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +71,9 @@ RSpec.describe Pangea::Resources::AWSSagemakerAppImageConfig do
         expect(config).to have_key('code_editor_app_image_config')
         expect(config).to have_key('jupyter_lab_image_config')
         expect(config).to have_key('kernel_gateway_image_config')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -77,7 +81,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerAppImageConfig do
       it 'includes code_editor_app_image_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_app_image_config('opt', required_attrs.merge(code_editor_app_image_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_app_image_config('opt', required_attrs.merge(code_editor_app_image_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_app_image_config', 'opt')
         expect(config).to have_key('code_editor_app_image_config')
@@ -94,7 +98,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerAppImageConfig do
       it 'includes jupyter_lab_image_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_app_image_config('opt', required_attrs.merge(jupyter_lab_image_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_app_image_config('opt', required_attrs.merge(jupyter_lab_image_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_app_image_config', 'opt')
         expect(config).to have_key('jupyter_lab_image_config')
@@ -111,7 +115,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerAppImageConfig do
       it 'includes kernel_gateway_image_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_app_image_config('opt', required_attrs.merge(kernel_gateway_image_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_app_image_config('opt', required_attrs.merge(kernel_gateway_image_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_app_image_config', 'opt')
         expect(config).to have_key('kernel_gateway_image_config')
@@ -124,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerAppImageConfig do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_app_image_config', 'minimal')
         expect(config).not_to have_key('kernel_gateway_image_config')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_app_image_config('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_app_image_config', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_app_image_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_app_image_config', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -141,6 +162,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerAppImageConfig do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_app_image_config', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_app_image_config('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_app_image_config', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_app_image_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_app_image_config', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -186,7 +224,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerAppImageConfig do
     resource_type: :aws_sagemaker_app_image_config,
     method: :aws_sagemaker_app_image_config,
     required_attrs: { app_image_config_name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

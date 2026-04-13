@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_grafana_workspace_service_account,
       attributes_class: AWS::Types::GrafanaWorkspaceServiceAccountAttributes,
       outputs: { id: :id },
-      map: [:grafana_role, :name, :workspace_id]
+      map: [:grafana_role, :name, :workspace_id],
+      map_present: [:region]
   end
   module AWS
     include AWSGrafanaWorkspaceServiceAccount

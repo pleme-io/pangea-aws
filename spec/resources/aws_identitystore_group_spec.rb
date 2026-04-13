@@ -38,8 +38,10 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreGroup do
         ref = synth.aws_identitystore_group('test', required_attrs)
 
         expect(ref.id).to eq("${aws_identitystore_group.test.id}")
+        expect(ref.arn).to eq("${aws_identitystore_group.test.arn}")
         expect(ref.external_ids).to eq("${aws_identitystore_group.test.external_ids}")
         expect(ref.group_id).to eq("${aws_identitystore_group.test.group_id}")
+        expect(ref.region).to eq("${aws_identitystore_group.test.region}")
       end
     end
 
@@ -51,13 +53,15 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreGroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_identitystore_group', 'test')
+        expect(config).not_to have_key('arn')
         expect(config).not_to have_key('external_ids')
         expect(config).not_to have_key('group_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreGroup do
 
         config = validate_resource_structure(result, 'aws_identitystore_group', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -87,6 +92,23 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_identitystore_group', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_identitystore_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_identitystore_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_identitystore_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_identitystore_group', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -133,7 +155,7 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreGroup do
     resource_type: :aws_identitystore_group,
     method: :aws_identitystore_group,
     required_attrs: { display_name: 'test-value', identity_store_id: 'test-value' },
-    expected_outputs: [:id, :external_ids, :group_id],
+    expected_outputs: [:id, :arn, :external_ids, :group_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

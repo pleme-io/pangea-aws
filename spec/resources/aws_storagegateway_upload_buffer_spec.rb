@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayUploadBuffer do
         expect(ref.id).to eq("${aws_storagegateway_upload_buffer.test.id}")
         expect(ref.disk_id).to eq("${aws_storagegateway_upload_buffer.test.disk_id}")
         expect(ref.disk_path).to eq("${aws_storagegateway_upload_buffer.test.disk_path}")
+        expect(ref.region).to eq("${aws_storagegateway_upload_buffer.test.region}")
       end
     end
 
@@ -53,6 +54,77 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayUploadBuffer do
         config = validate_resource_structure(result, 'aws_storagegateway_upload_buffer', 'test')
         expect(config).not_to have_key('disk_id')
         expect(config).not_to have_key('disk_path')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ disk_id: 'test-value', disk_path: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_upload_buffer('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_storagegateway_upload_buffer', 'full')
+        expect(config).to have_key('disk_id')
+        expect(config).to have_key('disk_path')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes disk_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_upload_buffer('opt', required_attrs.merge(disk_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_upload_buffer', 'opt')
+        expect(config).to have_key('disk_id')
+      end
+
+      it 'omits disk_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_upload_buffer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_upload_buffer', 'minimal')
+        expect(config).not_to have_key('disk_id')
+      end
+      it 'includes disk_path when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_upload_buffer('opt', required_attrs.merge(disk_path: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_upload_buffer', 'opt')
+        expect(config).to have_key('disk_path')
+      end
+
+      it 'omits disk_path when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_upload_buffer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_upload_buffer', 'minimal')
+        expect(config).not_to have_key('disk_path')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_upload_buffer('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_upload_buffer', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_upload_buffer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_upload_buffer', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -98,7 +170,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayUploadBuffer do
     resource_type: :aws_storagegateway_upload_buffer,
     method: :aws_storagegateway_upload_buffer,
     required_attrs: { gateway_arn: 'test-value' },
-    expected_outputs: [:id, :disk_id, :disk_path],
+    expected_outputs: [:id, :disk_id, :disk_path, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

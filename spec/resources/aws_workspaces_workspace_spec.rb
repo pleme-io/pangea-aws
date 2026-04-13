@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSWorkspacesWorkspace do
         expect(ref.id).to eq("${aws_workspaces_workspace.test.id}")
         expect(ref.computer_name).to eq("${aws_workspaces_workspace.test.computer_name}")
         expect(ref.ip_address).to eq("${aws_workspaces_workspace.test.ip_address}")
+        expect(ref.region).to eq("${aws_workspaces_workspace.test.region}")
         expect(ref.state).to eq("${aws_workspaces_workspace.test.state}")
         expect(ref.tags_all).to eq("${aws_workspaces_workspace.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSWorkspacesWorkspace do
         config = validate_resource_structure(result, 'aws_workspaces_workspace', 'test')
         expect(config).not_to have_key('computer_name')
         expect(config).not_to have_key('ip_address')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ root_volume_encryption_enabled: true, tags: { 'key1' => 'val1' }, user_volume_encryption_enabled: true, volume_encryption_key: 'test-value', workspace_properties: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', root_volume_encryption_enabled: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, user_volume_encryption_enabled: true, volume_encryption_key: 'test-value', workspace_properties: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,8 +72,10 @@ RSpec.describe Pangea::Resources::AWSWorkspacesWorkspace do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_workspaces_workspace', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('root_volume_encryption_enabled')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('user_volume_encryption_enabled')
         expect(config).to have_key('volume_encryption_key')
         expect(config).to have_key('workspace_properties')
@@ -79,6 +83,23 @@ RSpec.describe Pangea::Resources::AWSWorkspacesWorkspace do
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_workspace('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_workspace', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_workspace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_workspace', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes root_volume_encryption_enabled when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -112,6 +133,23 @@ RSpec.describe Pangea::Resources::AWSWorkspacesWorkspace do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_workspaces_workspace', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_workspace('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_workspace', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_workspace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_workspace', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes user_volume_encryption_enabled when provided' do
         synth = create_synthesizer
@@ -150,7 +188,7 @@ RSpec.describe Pangea::Resources::AWSWorkspacesWorkspace do
       it 'includes workspace_properties when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_workspaces_workspace('opt', required_attrs.merge(workspace_properties: [{ 'key1' => 'val1' }]))
+        synth.aws_workspaces_workspace('opt', required_attrs.merge(workspace_properties: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_workspaces_workspace', 'opt')
         expect(config).to have_key('workspace_properties')
@@ -235,7 +273,7 @@ RSpec.describe Pangea::Resources::AWSWorkspacesWorkspace do
     resource_type: :aws_workspaces_workspace,
     method: :aws_workspaces_workspace,
     required_attrs: { bundle_id: 'test-value', directory_id: 'test-value', user_name: 'test-value' },
-    expected_outputs: [:id, :computer_name, :ip_address, :state, :tags_all],
+    expected_outputs: [:id, :computer_name, :ip_address, :region, :state, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:root_volume_encryption_enabled, :user_volume_encryption_enabled]

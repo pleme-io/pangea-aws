@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSChimeVoiceConnectorLogging do
         ref = synth.aws_chime_voice_connector_logging('test', required_attrs)
 
         expect(ref.id).to eq("${aws_chime_voice_connector_logging.test.id}")
+        expect(ref.region).to eq("${aws_chime_voice_connector_logging.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chime_voice_connector_logging('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_chime_voice_connector_logging', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enable_media_metric_logs: true, enable_sip_logs: true }) }
+      let(:all_attrs) { required_attrs.merge({ enable_media_metric_logs: true, enable_sip_logs: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -53,6 +66,7 @@ RSpec.describe Pangea::Resources::AWSChimeVoiceConnectorLogging do
         config = validate_resource_structure(result, 'aws_chime_voice_connector_logging', 'full')
         expect(config).to have_key('enable_media_metric_logs')
         expect(config).to have_key('enable_sip_logs')
+        expect(config).to have_key('region')
       end
     end
 
@@ -90,6 +104,23 @@ RSpec.describe Pangea::Resources::AWSChimeVoiceConnectorLogging do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_chime_voice_connector_logging', 'minimal')
         expect(config).not_to have_key('enable_sip_logs')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chime_voice_connector_logging('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chime_voice_connector_logging', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chime_voice_connector_logging('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chime_voice_connector_logging', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -160,7 +191,7 @@ RSpec.describe Pangea::Resources::AWSChimeVoiceConnectorLogging do
     resource_type: :aws_chime_voice_connector_logging,
     method: :aws_chime_voice_connector_logging,
     required_attrs: { voice_connector_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enable_media_metric_logs, :enable_sip_logs]

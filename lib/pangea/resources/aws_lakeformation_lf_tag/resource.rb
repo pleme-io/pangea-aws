@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LakeformationLfTagAttributes,
       outputs: { id: :id },
       map: [:key, :values],
-      map_present: [:catalog_id]
+      map_present: [:catalog_id, :region]
   end
   module AWS
     include AWSLakeformationLfTag

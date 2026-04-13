@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSFinspaceKxCluster do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { az_mode: 'test-value', environment_id: 'test-value', name: 'test-value', release_label: 'test-value', type: 'test-value', vpc_configuration: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { az_mode: 'test-value', environment_id: 'test-value', name: 'test-value', release_label: 'test-value', type: 'test-value', vpc_configuration: { 'key1' => 'val1' } } }
 
   describe ':aws_finspace_kx_cluster' do
     context 'with required attributes only' do
@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxCluster do
         expect(ref.arn).to eq("${aws_finspace_kx_cluster.test.arn}")
         expect(ref.created_timestamp).to eq("${aws_finspace_kx_cluster.test.created_timestamp}")
         expect(ref.last_modified_timestamp).to eq("${aws_finspace_kx_cluster.test.last_modified_timestamp}")
+        expect(ref.region).to eq("${aws_finspace_kx_cluster.test.region}")
         expect(ref.status).to eq("${aws_finspace_kx_cluster.test.status}")
         expect(ref.status_reason).to eq("${aws_finspace_kx_cluster.test.status_reason}")
         expect(ref.tags_all).to eq("${aws_finspace_kx_cluster.test.tags_all}")
@@ -58,6 +59,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxCluster do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created_timestamp')
         expect(config).not_to have_key('last_modified_timestamp')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('status_reason')
         expect(config).not_to have_key('tags_all')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxCluster do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ auto_scaling_configuration: [{ 'key1' => 'val1' }], availability_zone_id: 'test-value', cache_storage_configurations: [{ 'key1' => 'val1' }], capacity_configuration: [{ 'key1' => 'val1' }], code: [{ 'key1' => 'val1' }], command_line_arguments: { 'key1' => 'val1' }, database: [{ 'key1' => 'val1' }], description: 'test-value', execution_role: 'test-value', initialization_script: 'test-value', savedown_storage_configuration: [{ 'key1' => 'val1' }], scaling_group_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tickerplant_log_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ auto_scaling_configuration: { 'key1' => 'val1' }, availability_zone_id: 'test-value', cache_storage_configurations: [{ 'key1' => 'val1' }], capacity_configuration: { 'key1' => 'val1' }, code: { 'key1' => 'val1' }, command_line_arguments: { 'key1' => 'val1' }, database: [{ 'key1' => 'val1' }], description: 'test-value', execution_role: 'test-value', initialization_script: 'test-value', region: 'test-value', savedown_storage_configuration: { 'key1' => 'val1' }, scaling_group_configuration: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tickerplant_log_configuration: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -84,9 +86,11 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxCluster do
         expect(config).to have_key('description')
         expect(config).to have_key('execution_role')
         expect(config).to have_key('initialization_script')
+        expect(config).to have_key('region')
         expect(config).to have_key('savedown_storage_configuration')
         expect(config).to have_key('scaling_group_configuration')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('tickerplant_log_configuration')
       end
     end
@@ -95,7 +99,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxCluster do
       it 'includes auto_scaling_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_finspace_kx_cluster('opt', required_attrs.merge(auto_scaling_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_finspace_kx_cluster('opt', required_attrs.merge(auto_scaling_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_finspace_kx_cluster', 'opt')
         expect(config).to have_key('auto_scaling_configuration')
@@ -146,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxCluster do
       it 'includes capacity_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_finspace_kx_cluster('opt', required_attrs.merge(capacity_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_finspace_kx_cluster('opt', required_attrs.merge(capacity_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_finspace_kx_cluster', 'opt')
         expect(config).to have_key('capacity_configuration')
@@ -163,7 +167,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxCluster do
       it 'includes code when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_finspace_kx_cluster('opt', required_attrs.merge(code: [{ 'key1' => 'val1' }]))
+        synth.aws_finspace_kx_cluster('opt', required_attrs.merge(code: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_finspace_kx_cluster', 'opt')
         expect(config).to have_key('code')
@@ -262,10 +266,27 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxCluster do
         config = validate_resource_structure(result, 'aws_finspace_kx_cluster', 'minimal')
         expect(config).not_to have_key('initialization_script')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_finspace_kx_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_finspace_kx_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_finspace_kx_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_finspace_kx_cluster', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes savedown_storage_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_finspace_kx_cluster('opt', required_attrs.merge(savedown_storage_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_finspace_kx_cluster('opt', required_attrs.merge(savedown_storage_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_finspace_kx_cluster', 'opt')
         expect(config).to have_key('savedown_storage_configuration')
@@ -282,7 +303,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxCluster do
       it 'includes scaling_group_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_finspace_kx_cluster('opt', required_attrs.merge(scaling_group_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_finspace_kx_cluster('opt', required_attrs.merge(scaling_group_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_finspace_kx_cluster', 'opt')
         expect(config).to have_key('scaling_group_configuration')
@@ -312,6 +333,23 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_finspace_kx_cluster', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_finspace_kx_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_finspace_kx_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_finspace_kx_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_finspace_kx_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes tickerplant_log_configuration when provided' do
         synth = create_synthesizer
@@ -345,7 +383,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxCluster do
         expect(config['name']).to be_a(String)
         expect(config['release_label']).to be_a(String)
         expect(config['type']).to be_a(String)
-        expect(config['vpc_configuration']).to be_a(Array)
+        expect(config['vpc_configuration']).to be_a(Hash)
       end
     end
 
@@ -378,8 +416,8 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxCluster do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_finspace_kx_cluster,
     method: :aws_finspace_kx_cluster,
-    required_attrs: { az_mode: 'test-value', environment_id: 'test-value', name: 'test-value', release_label: 'test-value', type: 'test-value', vpc_configuration: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :created_timestamp, :last_modified_timestamp, :status, :status_reason, :tags_all],
+    required_attrs: { az_mode: 'test-value', environment_id: 'test-value', name: 'test-value', release_label: 'test-value', type: 'test-value', vpc_configuration: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :created_timestamp, :last_modified_timestamp, :region, :status, :status_reason, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapVolume do
         expect(ref.file_system_id).to eq("${aws_fsx_ontap_volume.test.file_system_id}")
         expect(ref.flexcache_endpoint_type).to eq("${aws_fsx_ontap_volume.test.flexcache_endpoint_type}")
         expect(ref.ontap_volume_type).to eq("${aws_fsx_ontap_volume.test.ontap_volume_type}")
+        expect(ref.region).to eq("${aws_fsx_ontap_volume.test.region}")
         expect(ref.security_style).to eq("${aws_fsx_ontap_volume.test.security_style}")
         expect(ref.size_in_bytes).to eq("${aws_fsx_ontap_volume.test.size_in_bytes}")
         expect(ref.size_in_megabytes).to eq("${aws_fsx_ontap_volume.test.size_in_megabytes}")
@@ -64,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapVolume do
         expect(config).not_to have_key('file_system_id')
         expect(config).not_to have_key('flexcache_endpoint_type')
         expect(config).not_to have_key('ontap_volume_type')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_style')
         expect(config).not_to have_key('size_in_bytes')
         expect(config).not_to have_key('size_in_megabytes')
@@ -75,7 +77,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapVolume do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ aggregate_configuration: [{ 'key1' => 'val1' }], bypass_snaplock_enterprise_retention: true, copy_tags_to_backups: true, final_backup_tags: { 'key1' => 'val1' }, junction_path: 'test-value', skip_final_backup: true, snaplock_configuration: [{ 'key1' => 'val1' }], storage_efficiency_enabled: true, tags: { 'key1' => 'val1' }, tiering_policy: [{ 'key1' => 'val1' }], volume_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ aggregate_configuration: { 'key1' => 'val1' }, bypass_snaplock_enterprise_retention: true, copy_tags_to_backups: true, final_backup_tags: { 'key1' => 'val1' }, junction_path: 'test-value', ontap_volume_type: 'test-value', region: 'test-value', security_style: 'test-value', size_in_bytes: 'test-value', size_in_megabytes: 3.14, skip_final_backup: true, snaplock_configuration: { 'key1' => 'val1' }, snapshot_policy: 'test-value', storage_efficiency_enabled: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tiering_policy: { 'key1' => 'val1' }, volume_style: 'test-value', volume_type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -89,11 +91,19 @@ RSpec.describe Pangea::Resources::AWSFsxOntapVolume do
         expect(config).to have_key('copy_tags_to_backups')
         expect(config).to have_key('final_backup_tags')
         expect(config).to have_key('junction_path')
+        expect(config).to have_key('ontap_volume_type')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_style')
+        expect(config).to have_key('size_in_bytes')
+        expect(config).to have_key('size_in_megabytes')
         expect(config).to have_key('skip_final_backup')
         expect(config).to have_key('snaplock_configuration')
+        expect(config).to have_key('snapshot_policy')
         expect(config).to have_key('storage_efficiency_enabled')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('tiering_policy')
+        expect(config).to have_key('volume_style')
         expect(config).to have_key('volume_type')
       end
     end
@@ -102,7 +112,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapVolume do
       it 'includes aggregate_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(aggregate_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(aggregate_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'opt')
         expect(config).to have_key('aggregate_configuration')
@@ -184,6 +194,91 @@ RSpec.describe Pangea::Resources::AWSFsxOntapVolume do
         config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'minimal')
         expect(config).not_to have_key('junction_path')
       end
+      it 'includes ontap_volume_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(ontap_volume_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'opt')
+        expect(config).to have_key('ontap_volume_type')
+      end
+
+      it 'omits ontap_volume_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'minimal')
+        expect(config).not_to have_key('ontap_volume_type')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_style when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(security_style: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'opt')
+        expect(config).to have_key('security_style')
+      end
+
+      it 'omits security_style when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'minimal')
+        expect(config).not_to have_key('security_style')
+      end
+      it 'includes size_in_bytes when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(size_in_bytes: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'opt')
+        expect(config).to have_key('size_in_bytes')
+      end
+
+      it 'omits size_in_bytes when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'minimal')
+        expect(config).not_to have_key('size_in_bytes')
+      end
+      it 'includes size_in_megabytes when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(size_in_megabytes: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'opt')
+        expect(config).to have_key('size_in_megabytes')
+      end
+
+      it 'omits size_in_megabytes when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'minimal')
+        expect(config).not_to have_key('size_in_megabytes')
+      end
       it 'includes skip_final_backup when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -204,7 +299,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapVolume do
       it 'includes snaplock_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(snaplock_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(snaplock_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'opt')
         expect(config).to have_key('snaplock_configuration')
@@ -217,6 +312,23 @@ RSpec.describe Pangea::Resources::AWSFsxOntapVolume do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'minimal')
         expect(config).not_to have_key('snaplock_configuration')
+      end
+      it 'includes snapshot_policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(snapshot_policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'opt')
+        expect(config).to have_key('snapshot_policy')
+      end
+
+      it 'omits snapshot_policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'minimal')
+        expect(config).not_to have_key('snapshot_policy')
       end
       it 'includes storage_efficiency_enabled when provided' do
         synth = create_synthesizer
@@ -252,10 +364,27 @@ RSpec.describe Pangea::Resources::AWSFsxOntapVolume do
         config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes tiering_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(tiering_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(tiering_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'opt')
         expect(config).to have_key('tiering_policy')
@@ -268,6 +397,23 @@ RSpec.describe Pangea::Resources::AWSFsxOntapVolume do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'minimal')
         expect(config).not_to have_key('tiering_policy')
+      end
+      it 'includes volume_style when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('opt', required_attrs.merge(volume_style: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'opt')
+        expect(config).to have_key('volume_style')
+      end
+
+      it 'omits volume_style when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_volume', 'minimal')
+        expect(config).not_to have_key('volume_style')
       end
       it 'includes volume_type when provided' do
         synth = create_synthesizer
@@ -378,7 +524,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapVolume do
     resource_type: :aws_fsx_ontap_volume,
     method: :aws_fsx_ontap_volume,
     required_attrs: { name: 'test-value', storage_virtual_machine_id: 'test-value' },
-    expected_outputs: [:id, :arn, :file_system_id, :flexcache_endpoint_type, :ontap_volume_type, :security_style, :size_in_bytes, :size_in_megabytes, :snapshot_policy, :tags_all, :uuid, :volume_style],
+    expected_outputs: [:id, :arn, :file_system_id, :flexcache_endpoint_type, :ontap_volume_type, :region, :security_style, :size_in_bytes, :size_in_megabytes, :snapshot_policy, :tags_all, :uuid, :volume_style],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:bypass_snaplock_enterprise_retention, :copy_tags_to_backups, :skip_final_backup, :storage_efficiency_enabled]

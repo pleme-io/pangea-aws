@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSEksAddon do
         expect(ref.configuration_values).to eq("${aws_eks_addon.test.configuration_values}")
         expect(ref.created_at).to eq("${aws_eks_addon.test.created_at}")
         expect(ref.modified_at).to eq("${aws_eks_addon.test.modified_at}")
+        expect(ref.region).to eq("${aws_eks_addon.test.region}")
         expect(ref.tags_all).to eq("${aws_eks_addon.test.tags_all}")
       end
     end
@@ -60,12 +61,13 @@ RSpec.describe Pangea::Resources::AWSEksAddon do
         expect(config).not_to have_key('configuration_values')
         expect(config).not_to have_key('created_at')
         expect(config).not_to have_key('modified_at')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ pod_identity_association: [{ 'key1' => 'val1' }], preserve: true, resolve_conflicts: 'test-value', resolve_conflicts_on_create: 'test-value', resolve_conflicts_on_update: 'test-value', service_account_role_arn: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ addon_version: 'test-value', configuration_values: 'test-value', pod_identity_association: [{ 'key1' => 'val1' }], preserve: true, region: 'test-value', resolve_conflicts_on_create: 'test-value', resolve_conflicts_on_update: 'test-value', service_account_role_arn: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,17 +76,54 @@ RSpec.describe Pangea::Resources::AWSEksAddon do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_eks_addon', 'full')
+        expect(config).to have_key('addon_version')
+        expect(config).to have_key('configuration_values')
         expect(config).to have_key('pod_identity_association')
         expect(config).to have_key('preserve')
-        expect(config).to have_key('resolve_conflicts')
+        expect(config).to have_key('region')
         expect(config).to have_key('resolve_conflicts_on_create')
         expect(config).to have_key('resolve_conflicts_on_update')
         expect(config).to have_key('service_account_role_arn')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes addon_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_addon('opt', required_attrs.merge(addon_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_addon', 'opt')
+        expect(config).to have_key('addon_version')
+      end
+
+      it 'omits addon_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_addon('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_addon', 'minimal')
+        expect(config).not_to have_key('addon_version')
+      end
+      it 'includes configuration_values when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_addon('opt', required_attrs.merge(configuration_values: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_addon', 'opt')
+        expect(config).to have_key('configuration_values')
+      end
+
+      it 'omits configuration_values when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_addon('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_addon', 'minimal')
+        expect(config).not_to have_key('configuration_values')
+      end
       it 'includes pod_identity_association when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -119,22 +158,22 @@ RSpec.describe Pangea::Resources::AWSEksAddon do
         config = validate_resource_structure(result, 'aws_eks_addon', 'minimal')
         expect(config).not_to have_key('preserve')
       end
-      it 'includes resolve_conflicts when provided' do
+      it 'includes region when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_addon('opt', required_attrs.merge(resolve_conflicts: 'test-value'))
+        synth.aws_eks_addon('opt', required_attrs.merge(region: 'test-value'))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_addon', 'opt')
-        expect(config).to have_key('resolve_conflicts')
+        expect(config).to have_key('region')
       end
 
-      it 'omits resolve_conflicts when not provided' do
+      it 'omits region when not provided' do
         synth = create_synthesizer
         synth.extend(described_class)
         synth.aws_eks_addon('minimal', required_attrs)
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_addon', 'minimal')
-        expect(config).not_to have_key('resolve_conflicts')
+        expect(config).not_to have_key('region')
       end
       it 'includes resolve_conflicts_on_create when provided' do
         synth = create_synthesizer
@@ -204,6 +243,23 @@ RSpec.describe Pangea::Resources::AWSEksAddon do
         config = validate_resource_structure(result, 'aws_eks_addon', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_addon('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_addon', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_addon('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_addon', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'boolean fields' do
@@ -263,7 +319,7 @@ RSpec.describe Pangea::Resources::AWSEksAddon do
     resource_type: :aws_eks_addon,
     method: :aws_eks_addon,
     required_attrs: { addon_name: 'test-value', cluster_name: 'test-value' },
-    expected_outputs: [:id, :addon_version, :arn, :configuration_values, :created_at, :modified_at, :tags_all],
+    expected_outputs: [:id, :addon_version, :arn, :configuration_values, :created_at, :modified_at, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:preserve]

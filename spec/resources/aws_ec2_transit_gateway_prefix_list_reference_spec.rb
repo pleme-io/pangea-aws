@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayPrefixListReference do
 
         expect(ref.id).to eq("${aws_ec2_transit_gateway_prefix_list_reference.test.id}")
         expect(ref.prefix_list_owner_id).to eq("${aws_ec2_transit_gateway_prefix_list_reference.test.prefix_list_owner_id}")
+        expect(ref.region).to eq("${aws_ec2_transit_gateway_prefix_list_reference.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayPrefixListReference do
 
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_prefix_list_reference', 'test')
         expect(config).not_to have_key('prefix_list_owner_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ blackhole: true, transit_gateway_attachment_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ blackhole: true, region: 'test-value', transit_gateway_attachment_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayPrefixListReference do
 
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_prefix_list_reference', 'full')
         expect(config).to have_key('blackhole')
+        expect(config).to have_key('region')
         expect(config).to have_key('transit_gateway_attachment_id')
       end
     end
@@ -86,6 +89,23 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayPrefixListReference do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_prefix_list_reference', 'minimal')
         expect(config).not_to have_key('blackhole')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_prefix_list_reference('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_prefix_list_reference', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_prefix_list_reference('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_prefix_list_reference', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes transit_gateway_attachment_id when provided' do
         synth = create_synthesizer
@@ -163,7 +183,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayPrefixListReference do
     resource_type: :aws_ec2_transit_gateway_prefix_list_reference,
     method: :aws_ec2_transit_gateway_prefix_list_reference,
     required_attrs: { prefix_list_id: 'test-value', transit_gateway_route_table_id: 'test-value' },
-    expected_outputs: [:id, :prefix_list_owner_id],
+    expected_outputs: [:id, :prefix_list_owner_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:blackhole]

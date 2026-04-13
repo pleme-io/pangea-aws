@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthority do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { certificate_authority_configuration: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { certificate_authority_configuration: { 'key1' => 'val1' } } }
 
   describe ':aws_acmpca_certificate_authority' do
     context 'with required attributes only' do
@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthority do
         expect(ref.key_storage_security_standard).to eq("${aws_acmpca_certificate_authority.test.key_storage_security_standard}")
         expect(ref.not_after).to eq("${aws_acmpca_certificate_authority.test.not_after}")
         expect(ref.not_before).to eq("${aws_acmpca_certificate_authority.test.not_before}")
+        expect(ref.region).to eq("${aws_acmpca_certificate_authority.test.region}")
         expect(ref.serial).to eq("${aws_acmpca_certificate_authority.test.serial}")
         expect(ref.tags_all).to eq("${aws_acmpca_certificate_authority.test.tags_all}")
         expect(ref.usage_mode).to eq("${aws_acmpca_certificate_authority.test.usage_mode}")
@@ -66,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthority do
         expect(config).not_to have_key('key_storage_security_standard')
         expect(config).not_to have_key('not_after')
         expect(config).not_to have_key('not_before')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('serial')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('usage_mode')
@@ -73,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthority do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enabled: true, permanent_deletion_time_in_days: 3.14, revocation_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ enabled: true, key_storage_security_standard: 'test-value', permanent_deletion_time_in_days: 3.14, region: 'test-value', revocation_configuration: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, type: 'test-value', usage_mode: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -83,10 +85,14 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthority do
 
         config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'full')
         expect(config).to have_key('enabled')
+        expect(config).to have_key('key_storage_security_standard')
         expect(config).to have_key('permanent_deletion_time_in_days')
+        expect(config).to have_key('region')
         expect(config).to have_key('revocation_configuration')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('type')
+        expect(config).to have_key('usage_mode')
       end
     end
 
@@ -108,6 +114,23 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthority do
         config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'minimal')
         expect(config).not_to have_key('enabled')
       end
+      it 'includes key_storage_security_standard when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_certificate_authority('opt', required_attrs.merge(key_storage_security_standard: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'opt')
+        expect(config).to have_key('key_storage_security_standard')
+      end
+
+      it 'omits key_storage_security_standard when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_certificate_authority('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'minimal')
+        expect(config).not_to have_key('key_storage_security_standard')
+      end
       it 'includes permanent_deletion_time_in_days when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -125,10 +148,27 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthority do
         config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'minimal')
         expect(config).not_to have_key('permanent_deletion_time_in_days')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_certificate_authority('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_certificate_authority('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes revocation_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_acmpca_certificate_authority('opt', required_attrs.merge(revocation_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_acmpca_certificate_authority('opt', required_attrs.merge(revocation_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'opt')
         expect(config).to have_key('revocation_configuration')
@@ -159,6 +199,23 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthority do
         config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_certificate_authority('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_certificate_authority('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes type when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -175,6 +232,23 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthority do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'minimal')
         expect(config).not_to have_key('type')
+      end
+      it 'includes usage_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_certificate_authority('opt', required_attrs.merge(usage_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'opt')
+        expect(config).to have_key('usage_mode')
+      end
+
+      it 'omits usage_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_certificate_authority('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'minimal')
+        expect(config).not_to have_key('usage_mode')
       end
     end
 
@@ -200,7 +274,7 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthority do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_acmpca_certificate_authority', 'typed')
-        expect(config['certificate_authority_configuration']).to be_a(Array)
+        expect(config['certificate_authority_configuration']).to be_a(Hash)
       end
     end
 
@@ -233,8 +307,8 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificateAuthority do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_acmpca_certificate_authority,
     method: :aws_acmpca_certificate_authority,
-    required_attrs: { certificate_authority_configuration: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :certificate, :certificate_chain, :certificate_signing_request, :key_storage_security_standard, :not_after, :not_before, :serial, :tags_all, :usage_mode],
+    required_attrs: { certificate_authority_configuration: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :certificate, :certificate_chain, :certificate_signing_request, :key_storage_security_standard, :not_after, :not_before, :region, :serial, :tags_all, :usage_mode],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled]

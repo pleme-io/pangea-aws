@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxDataview do
         expect(ref.arn).to eq("${aws_finspace_kx_dataview.test.arn}")
         expect(ref.created_timestamp).to eq("${aws_finspace_kx_dataview.test.created_timestamp}")
         expect(ref.last_modified_timestamp).to eq("${aws_finspace_kx_dataview.test.last_modified_timestamp}")
+        expect(ref.region).to eq("${aws_finspace_kx_dataview.test.region}")
         expect(ref.status).to eq("${aws_finspace_kx_dataview.test.status}")
         expect(ref.tags_all).to eq("${aws_finspace_kx_dataview.test.tags_all}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxDataview do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created_timestamp')
         expect(config).not_to have_key('last_modified_timestamp')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ availability_zone_id: 'test-value', changeset_id: 'test-value', description: 'test-value', read_write: true, segment_configurations: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ availability_zone_id: 'test-value', changeset_id: 'test-value', description: 'test-value', read_write: true, region: 'test-value', segment_configurations: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,8 +78,10 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxDataview do
         expect(config).to have_key('changeset_id')
         expect(config).to have_key('description')
         expect(config).to have_key('read_write')
+        expect(config).to have_key('region')
         expect(config).to have_key('segment_configurations')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -150,6 +154,23 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxDataview do
         config = validate_resource_structure(result, 'aws_finspace_kx_dataview', 'minimal')
         expect(config).not_to have_key('read_write')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_finspace_kx_dataview('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_finspace_kx_dataview', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_finspace_kx_dataview('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_finspace_kx_dataview', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes segment_configurations when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -183,6 +204,23 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxDataview do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_finspace_kx_dataview', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_finspace_kx_dataview('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_finspace_kx_dataview', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_finspace_kx_dataview('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_finspace_kx_dataview', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -257,7 +295,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxDataview do
     resource_type: :aws_finspace_kx_dataview,
     method: :aws_finspace_kx_dataview,
     required_attrs: { auto_update: true, az_mode: 'test-value', database_name: 'test-value', environment_id: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :created_timestamp, :last_modified_timestamp, :status, :tags_all],
+    expected_outputs: [:id, :arn, :created_timestamp, :last_modified_timestamp, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:auto_update, :read_write]

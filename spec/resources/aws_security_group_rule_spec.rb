@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSSecurityGroupRule do
         ref = synth.aws_security_group_rule('test', required_attrs)
 
         expect(ref.id).to eq("${aws_security_group_rule.test.id}")
+        expect(ref.region).to eq("${aws_security_group_rule.test.region}")
         expect(ref.security_group_rule_id).to eq("${aws_security_group_rule.test.security_group_rule_id}")
         expect(ref.source_security_group_id).to eq("${aws_security_group_rule.test.source_security_group_id}")
       end
@@ -51,13 +52,14 @@ RSpec.describe Pangea::Resources::AWSSecurityGroupRule do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_security_group_rule', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_group_rule_id')
         expect(config).not_to have_key('source_security_group_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cidr_blocks: ['test-value'], description: 'test-value', ipv6_cidr_blocks: ['test-value'], prefix_list_ids: ['test-value'], self: true }) }
+      let(:all_attrs) { required_attrs.merge({ cidr_blocks: ['test-value'], description: 'test-value', ipv6_cidr_blocks: ['test-value'], prefix_list_ids: ['test-value'], region: 'test-value', self: true, source_security_group_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,7 +72,9 @@ RSpec.describe Pangea::Resources::AWSSecurityGroupRule do
         expect(config).to have_key('description')
         expect(config).to have_key('ipv6_cidr_blocks')
         expect(config).to have_key('prefix_list_ids')
+        expect(config).to have_key('region')
         expect(config).to have_key('self')
+        expect(config).to have_key('source_security_group_id')
       end
     end
 
@@ -143,6 +147,23 @@ RSpec.describe Pangea::Resources::AWSSecurityGroupRule do
         config = validate_resource_structure(result, 'aws_security_group_rule', 'minimal')
         expect(config).not_to have_key('prefix_list_ids')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_security_group_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_security_group_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_security_group_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_security_group_rule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes self when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -159,6 +180,23 @@ RSpec.describe Pangea::Resources::AWSSecurityGroupRule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_security_group_rule', 'minimal')
         expect(config).not_to have_key('self')
+      end
+      it 'includes source_security_group_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_security_group_rule('opt', required_attrs.merge(source_security_group_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_security_group_rule', 'opt')
+        expect(config).to have_key('source_security_group_id')
+      end
+
+      it 'omits source_security_group_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_security_group_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_security_group_rule', 'minimal')
+        expect(config).not_to have_key('source_security_group_id')
       end
     end
 
@@ -222,7 +260,7 @@ RSpec.describe Pangea::Resources::AWSSecurityGroupRule do
     resource_type: :aws_security_group_rule,
     method: :aws_security_group_rule,
     required_attrs: { from_port: 3.14, protocol: 'test-value', security_group_id: 'test-value', to_port: 3.14, type: 'test-value' },
-    expected_outputs: [:id, :security_group_rule_id, :source_security_group_id],
+    expected_outputs: [:id, :region, :security_group_rule_id, :source_security_group_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:self]

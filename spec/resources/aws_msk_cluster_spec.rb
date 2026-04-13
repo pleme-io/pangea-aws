@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSMskCluster do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { broker_node_group_info: [{ 'key1' => 'val1' }], cluster_name: 'test-value', kafka_version: 'test-value', number_of_broker_nodes: 3.14 } }
+  let(:required_attrs) { { broker_node_group_info: { 'key1' => 'val1' }, cluster_name: 'test-value', kafka_version: 'test-value', number_of_broker_nodes: 3.14 } }
 
   describe ':aws_msk_cluster' do
     context 'with required attributes only' do
@@ -51,6 +51,7 @@ RSpec.describe Pangea::Resources::AWSMskCluster do
         expect(ref.bootstrap_brokers_vpc_connectivity_tls).to eq("${aws_msk_cluster.test.bootstrap_brokers_vpc_connectivity_tls}")
         expect(ref.cluster_uuid).to eq("${aws_msk_cluster.test.cluster_uuid}")
         expect(ref.current_version).to eq("${aws_msk_cluster.test.current_version}")
+        expect(ref.region).to eq("${aws_msk_cluster.test.region}")
         expect(ref.storage_mode).to eq("${aws_msk_cluster.test.storage_mode}")
         expect(ref.tags_all).to eq("${aws_msk_cluster.test.tags_all}")
         expect(ref.zookeeper_connect_string).to eq("${aws_msk_cluster.test.zookeeper_connect_string}")
@@ -79,6 +80,7 @@ RSpec.describe Pangea::Resources::AWSMskCluster do
         expect(config).not_to have_key('bootstrap_brokers_vpc_connectivity_tls')
         expect(config).not_to have_key('cluster_uuid')
         expect(config).not_to have_key('current_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('storage_mode')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('zookeeper_connect_string')
@@ -87,7 +89,7 @@ RSpec.describe Pangea::Resources::AWSMskCluster do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ client_authentication: [{ 'key1' => 'val1' }], configuration_info: [{ 'key1' => 'val1' }], encryption_info: [{ 'key1' => 'val1' }], enhanced_monitoring: 'test-value', logging_info: [{ 'key1' => 'val1' }], open_monitoring: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ client_authentication: { 'key1' => 'val1' }, configuration_info: { 'key1' => 'val1' }, encryption_info: { 'key1' => 'val1' }, enhanced_monitoring: 'test-value', logging_info: { 'key1' => 'val1' }, open_monitoring: { 'key1' => 'val1' }, rebalancing: { 'key1' => 'val1' }, region: 'test-value', storage_mode: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -102,7 +104,11 @@ RSpec.describe Pangea::Resources::AWSMskCluster do
         expect(config).to have_key('enhanced_monitoring')
         expect(config).to have_key('logging_info')
         expect(config).to have_key('open_monitoring')
+        expect(config).to have_key('rebalancing')
+        expect(config).to have_key('region')
+        expect(config).to have_key('storage_mode')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -110,7 +116,7 @@ RSpec.describe Pangea::Resources::AWSMskCluster do
       it 'includes client_authentication when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_msk_cluster('opt', required_attrs.merge(client_authentication: [{ 'key1' => 'val1' }]))
+        synth.aws_msk_cluster('opt', required_attrs.merge(client_authentication: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_msk_cluster', 'opt')
         expect(config).to have_key('client_authentication')
@@ -127,7 +133,7 @@ RSpec.describe Pangea::Resources::AWSMskCluster do
       it 'includes configuration_info when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_msk_cluster('opt', required_attrs.merge(configuration_info: [{ 'key1' => 'val1' }]))
+        synth.aws_msk_cluster('opt', required_attrs.merge(configuration_info: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_msk_cluster', 'opt')
         expect(config).to have_key('configuration_info')
@@ -144,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSMskCluster do
       it 'includes encryption_info when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_msk_cluster('opt', required_attrs.merge(encryption_info: [{ 'key1' => 'val1' }]))
+        synth.aws_msk_cluster('opt', required_attrs.merge(encryption_info: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_msk_cluster', 'opt')
         expect(config).to have_key('encryption_info')
@@ -178,7 +184,7 @@ RSpec.describe Pangea::Resources::AWSMskCluster do
       it 'includes logging_info when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_msk_cluster('opt', required_attrs.merge(logging_info: [{ 'key1' => 'val1' }]))
+        synth.aws_msk_cluster('opt', required_attrs.merge(logging_info: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_msk_cluster', 'opt')
         expect(config).to have_key('logging_info')
@@ -195,7 +201,7 @@ RSpec.describe Pangea::Resources::AWSMskCluster do
       it 'includes open_monitoring when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_msk_cluster('opt', required_attrs.merge(open_monitoring: [{ 'key1' => 'val1' }]))
+        synth.aws_msk_cluster('opt', required_attrs.merge(open_monitoring: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_msk_cluster', 'opt')
         expect(config).to have_key('open_monitoring')
@@ -208,6 +214,57 @@ RSpec.describe Pangea::Resources::AWSMskCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_msk_cluster', 'minimal')
         expect(config).not_to have_key('open_monitoring')
+      end
+      it 'includes rebalancing when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_cluster('opt', required_attrs.merge(rebalancing: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_cluster', 'opt')
+        expect(config).to have_key('rebalancing')
+      end
+
+      it 'omits rebalancing when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_cluster', 'minimal')
+        expect(config).not_to have_key('rebalancing')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_cluster', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes storage_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_cluster('opt', required_attrs.merge(storage_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_cluster', 'opt')
+        expect(config).to have_key('storage_mode')
+      end
+
+      it 'omits storage_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_cluster', 'minimal')
+        expect(config).not_to have_key('storage_mode')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -226,6 +283,23 @@ RSpec.describe Pangea::Resources::AWSMskCluster do
         config = validate_resource_structure(result, 'aws_msk_cluster', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -236,7 +310,7 @@ RSpec.describe Pangea::Resources::AWSMskCluster do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_msk_cluster', 'typed')
-        expect(config['broker_node_group_info']).to be_a(Array)
+        expect(config['broker_node_group_info']).to be_a(Hash)
         expect(config['cluster_name']).to be_a(String)
         expect(config['kafka_version']).to be_a(String)
         expect(config['number_of_broker_nodes']).to be_a(Float)
@@ -272,8 +346,8 @@ RSpec.describe Pangea::Resources::AWSMskCluster do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_msk_cluster,
     method: :aws_msk_cluster,
-    required_attrs: { broker_node_group_info: [{ 'key1' => 'val1' }], cluster_name: 'test-value', kafka_version: 'test-value', number_of_broker_nodes: 3.14 },
-    expected_outputs: [:id, :arn, :bootstrap_brokers, :bootstrap_brokers_public_sasl_iam, :bootstrap_brokers_public_sasl_scram, :bootstrap_brokers_public_tls, :bootstrap_brokers_sasl_iam, :bootstrap_brokers_sasl_scram, :bootstrap_brokers_tls, :bootstrap_brokers_vpc_connectivity_sasl_iam, :bootstrap_brokers_vpc_connectivity_sasl_scram, :bootstrap_brokers_vpc_connectivity_tls, :cluster_uuid, :current_version, :storage_mode, :tags_all, :zookeeper_connect_string, :zookeeper_connect_string_tls],
+    required_attrs: { broker_node_group_info: { 'key1' => 'val1' }, cluster_name: 'test-value', kafka_version: 'test-value', number_of_broker_nodes: 3.14 },
+    expected_outputs: [:id, :arn, :bootstrap_brokers, :bootstrap_brokers_public_sasl_iam, :bootstrap_brokers_public_sasl_scram, :bootstrap_brokers_public_tls, :bootstrap_brokers_sasl_iam, :bootstrap_brokers_sasl_scram, :bootstrap_brokers_tls, :bootstrap_brokers_vpc_connectivity_sasl_iam, :bootstrap_brokers_vpc_connectivity_sasl_scram, :bootstrap_brokers_vpc_connectivity_tls, :cluster_uuid, :current_version, :region, :storage_mode, :tags_all, :zookeeper_connect_string, :zookeeper_connect_string_tls],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSGlueDataQualityRuleset do
         expect(ref.created_on).to eq("${aws_glue_data_quality_ruleset.test.created_on}")
         expect(ref.last_modified_on).to eq("${aws_glue_data_quality_ruleset.test.last_modified_on}")
         expect(ref.recommendation_run_id).to eq("${aws_glue_data_quality_ruleset.test.recommendation_run_id}")
+        expect(ref.region).to eq("${aws_glue_data_quality_ruleset.test.region}")
         expect(ref.tags_all).to eq("${aws_glue_data_quality_ruleset.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSGlueDataQualityRuleset do
         expect(config).not_to have_key('created_on')
         expect(config).not_to have_key('last_modified_on')
         expect(config).not_to have_key('recommendation_run_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' }, target_table: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target_table: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,9 @@ RSpec.describe Pangea::Resources::AWSGlueDataQualityRuleset do
 
         config = validate_resource_structure(result, 'aws_glue_data_quality_ruleset', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('target_table')
       end
     end
@@ -96,6 +100,23 @@ RSpec.describe Pangea::Resources::AWSGlueDataQualityRuleset do
         config = validate_resource_structure(result, 'aws_glue_data_quality_ruleset', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_data_quality_ruleset('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_data_quality_ruleset', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_data_quality_ruleset('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_data_quality_ruleset', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -113,10 +134,27 @@ RSpec.describe Pangea::Resources::AWSGlueDataQualityRuleset do
         config = validate_resource_structure(result, 'aws_glue_data_quality_ruleset', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_data_quality_ruleset('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_data_quality_ruleset', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_data_quality_ruleset('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_data_quality_ruleset', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes target_table when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_data_quality_ruleset('opt', required_attrs.merge(target_table: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_data_quality_ruleset('opt', required_attrs.merge(target_table: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_data_quality_ruleset', 'opt')
         expect(config).to have_key('target_table')
@@ -175,7 +213,7 @@ RSpec.describe Pangea::Resources::AWSGlueDataQualityRuleset do
     resource_type: :aws_glue_data_quality_ruleset,
     method: :aws_glue_data_quality_ruleset,
     required_attrs: { name: 'test-value', ruleset: 'test-value' },
-    expected_outputs: [:id, :arn, :created_on, :last_modified_on, :recommendation_run_id, :tags_all],
+    expected_outputs: [:id, :arn, :created_on, :last_modified_on, :recommendation_run_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

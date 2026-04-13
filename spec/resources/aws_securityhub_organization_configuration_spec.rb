@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubOrganizationConfiguration do
 
         expect(ref.id).to eq("${aws_securityhub_organization_configuration.test.id}")
         expect(ref.auto_enable_standards).to eq("${aws_securityhub_organization_configuration.test.auto_enable_standards}")
+        expect(ref.region).to eq("${aws_securityhub_organization_configuration.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSSecurityhubOrganizationConfiguration do
 
         config = validate_resource_structure(result, 'aws_securityhub_organization_configuration', 'test')
         expect(config).not_to have_key('auto_enable_standards')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ organization_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ auto_enable_standards: 'test-value', organization_configuration: { 'key1' => 'val1' }, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,15 +66,34 @@ RSpec.describe Pangea::Resources::AWSSecurityhubOrganizationConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_securityhub_organization_configuration', 'full')
+        expect(config).to have_key('auto_enable_standards')
         expect(config).to have_key('organization_configuration')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes auto_enable_standards when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_organization_configuration('opt', required_attrs.merge(auto_enable_standards: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_organization_configuration', 'opt')
+        expect(config).to have_key('auto_enable_standards')
+      end
+
+      it 'omits auto_enable_standards when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_organization_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_organization_configuration', 'minimal')
+        expect(config).not_to have_key('auto_enable_standards')
+      end
       it 'includes organization_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_securityhub_organization_configuration('opt', required_attrs.merge(organization_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_securityhub_organization_configuration('opt', required_attrs.merge(organization_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_securityhub_organization_configuration', 'opt')
         expect(config).to have_key('organization_configuration')
@@ -85,6 +106,23 @@ RSpec.describe Pangea::Resources::AWSSecurityhubOrganizationConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_securityhub_organization_configuration', 'minimal')
         expect(config).not_to have_key('organization_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_organization_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_organization_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_organization_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_organization_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -144,7 +182,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubOrganizationConfiguration do
     resource_type: :aws_securityhub_organization_configuration,
     method: :aws_securityhub_organization_configuration,
     required_attrs: { auto_enable: true },
-    expected_outputs: [:id, :auto_enable_standards],
+    expected_outputs: [:id, :auto_enable_standards, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:auto_enable]

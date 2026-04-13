@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcEndpointServicePrivateDnsVerificationAttributes,
       outputs: { id: :id },
       map: [:service_id],
+      map_present: [:region],
       map_bool: [:wait_for_verification]
   end
   module AWS

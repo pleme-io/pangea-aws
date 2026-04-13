@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Lexv2modelsBotVersionAttributes,
       outputs: { id: :id },
       map: [:bot_id, :locale_specification],
-      map_present: [:bot_version, :description]
+      map_present: [:bot_version, :description, :region]
   end
   module AWS
     include AWSLexv2modelsBotVersion

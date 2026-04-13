@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSKinesisanalyticsv2Application do
         expect(ref.arn).to eq("${aws_kinesisanalyticsv2_application.test.arn}")
         expect(ref.create_timestamp).to eq("${aws_kinesisanalyticsv2_application.test.create_timestamp}")
         expect(ref.last_update_timestamp).to eq("${aws_kinesisanalyticsv2_application.test.last_update_timestamp}")
+        expect(ref.region).to eq("${aws_kinesisanalyticsv2_application.test.region}")
         expect(ref.status).to eq("${aws_kinesisanalyticsv2_application.test.status}")
         expect(ref.tags_all).to eq("${aws_kinesisanalyticsv2_application.test.tags_all}")
         expect(ref.version_id).to eq("${aws_kinesisanalyticsv2_application.test.version_id}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSKinesisanalyticsv2Application do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('create_timestamp')
         expect(config).not_to have_key('last_update_timestamp')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('version_id')
@@ -67,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSKinesisanalyticsv2Application do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ application_configuration: [{ 'key1' => 'val1' }], cloudwatch_logging_options: [{ 'key1' => 'val1' }], description: 'test-value', force_stop: true, start_application: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ application_configuration: { 'key1' => 'val1' }, application_mode: 'test-value', cloudwatch_logging_options: { 'key1' => 'val1' }, description: 'test-value', force_stop: true, region: 'test-value', start_application: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,11 +79,14 @@ RSpec.describe Pangea::Resources::AWSKinesisanalyticsv2Application do
 
         config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application', 'full')
         expect(config).to have_key('application_configuration')
+        expect(config).to have_key('application_mode')
         expect(config).to have_key('cloudwatch_logging_options')
         expect(config).to have_key('description')
         expect(config).to have_key('force_stop')
+        expect(config).to have_key('region')
         expect(config).to have_key('start_application')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -89,7 +94,7 @@ RSpec.describe Pangea::Resources::AWSKinesisanalyticsv2Application do
       it 'includes application_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesisanalyticsv2_application('opt', required_attrs.merge(application_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesisanalyticsv2_application('opt', required_attrs.merge(application_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application', 'opt')
         expect(config).to have_key('application_configuration')
@@ -103,10 +108,27 @@ RSpec.describe Pangea::Resources::AWSKinesisanalyticsv2Application do
         config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application', 'minimal')
         expect(config).not_to have_key('application_configuration')
       end
+      it 'includes application_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesisanalyticsv2_application('opt', required_attrs.merge(application_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application', 'opt')
+        expect(config).to have_key('application_mode')
+      end
+
+      it 'omits application_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesisanalyticsv2_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application', 'minimal')
+        expect(config).not_to have_key('application_mode')
+      end
       it 'includes cloudwatch_logging_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesisanalyticsv2_application('opt', required_attrs.merge(cloudwatch_logging_options: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesisanalyticsv2_application('opt', required_attrs.merge(cloudwatch_logging_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application', 'opt')
         expect(config).to have_key('cloudwatch_logging_options')
@@ -154,6 +176,23 @@ RSpec.describe Pangea::Resources::AWSKinesisanalyticsv2Application do
         config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application', 'minimal')
         expect(config).not_to have_key('force_stop')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesisanalyticsv2_application('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesisanalyticsv2_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes start_application when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -187,6 +226,23 @@ RSpec.describe Pangea::Resources::AWSKinesisanalyticsv2Application do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesisanalyticsv2_application('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesisanalyticsv2_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -259,7 +315,7 @@ RSpec.describe Pangea::Resources::AWSKinesisanalyticsv2Application do
     resource_type: :aws_kinesisanalyticsv2_application,
     method: :aws_kinesisanalyticsv2_application,
     required_attrs: { name: 'test-value', runtime_environment: 'test-value', service_execution_role: 'test-value' },
-    expected_outputs: [:id, :application_mode, :arn, :create_timestamp, :last_update_timestamp, :status, :tags_all, :version_id],
+    expected_outputs: [:id, :application_mode, :arn, :create_timestamp, :last_update_timestamp, :region, :status, :tags_all, :version_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:force_stop, :start_application]

@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSSsoadminApplicationAccessScope do
         ref = synth.aws_ssoadmin_application_access_scope('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ssoadmin_application_access_scope.test.id}")
+        expect(ref.region).to eq("${aws_ssoadmin_application_access_scope.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_application_access_scope('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ssoadmin_application_access_scope', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ authorized_targets: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ authorized_targets: ['test-value'], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSSsoadminApplicationAccessScope do
 
         config = validate_resource_structure(result, 'aws_ssoadmin_application_access_scope', 'full')
         expect(config).to have_key('authorized_targets')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSSsoadminApplicationAccessScope do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssoadmin_application_access_scope', 'minimal')
         expect(config).not_to have_key('authorized_targets')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_application_access_scope('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_application_access_scope', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_application_access_scope('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_application_access_scope', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -118,7 +149,7 @@ RSpec.describe Pangea::Resources::AWSSsoadminApplicationAccessScope do
     resource_type: :aws_ssoadmin_application_access_scope,
     method: :aws_ssoadmin_application_access_scope,
     required_attrs: { application_arn: 'test-value', scope: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

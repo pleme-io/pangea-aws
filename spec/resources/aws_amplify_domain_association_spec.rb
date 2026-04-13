@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSAmplifyDomainAssociation do
         expect(ref.id).to eq("${aws_amplify_domain_association.test.id}")
         expect(ref.arn).to eq("${aws_amplify_domain_association.test.arn}")
         expect(ref.certificate_verification_dns_record).to eq("${aws_amplify_domain_association.test.certificate_verification_dns_record}")
+        expect(ref.region).to eq("${aws_amplify_domain_association.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSAmplifyDomainAssociation do
         config = validate_resource_structure(result, 'aws_amplify_domain_association', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('certificate_verification_dns_record')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ certificate_settings: [{ 'key1' => 'val1' }], enable_auto_sub_domain: true, wait_for_verification: true }) }
+      let(:all_attrs) { required_attrs.merge({ certificate_settings: { 'key1' => 'val1' }, enable_auto_sub_domain: true, region: 'test-value', wait_for_verification: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSAmplifyDomainAssociation do
         config = validate_resource_structure(result, 'aws_amplify_domain_association', 'full')
         expect(config).to have_key('certificate_settings')
         expect(config).to have_key('enable_auto_sub_domain')
+        expect(config).to have_key('region')
         expect(config).to have_key('wait_for_verification')
       end
     end
@@ -76,7 +79,7 @@ RSpec.describe Pangea::Resources::AWSAmplifyDomainAssociation do
       it 'includes certificate_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_amplify_domain_association('opt', required_attrs.merge(certificate_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_amplify_domain_association('opt', required_attrs.merge(certificate_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_amplify_domain_association', 'opt')
         expect(config).to have_key('certificate_settings')
@@ -106,6 +109,23 @@ RSpec.describe Pangea::Resources::AWSAmplifyDomainAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_amplify_domain_association', 'minimal')
         expect(config).not_to have_key('enable_auto_sub_domain')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_domain_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_domain_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_domain_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_domain_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes wait_for_verification when provided' do
         synth = create_synthesizer
@@ -195,7 +215,7 @@ RSpec.describe Pangea::Resources::AWSAmplifyDomainAssociation do
     resource_type: :aws_amplify_domain_association,
     method: :aws_amplify_domain_association,
     required_attrs: { app_id: 'test-value', domain_name: 'test-value', sub_domain: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :certificate_verification_dns_record],
+    expected_outputs: [:id, :arn, :certificate_verification_dns_record, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enable_auto_sub_domain, :wait_for_verification]

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSBedrockProvisionedModelThroughput do
 
         expect(ref.id).to eq("${aws_bedrock_provisioned_model_throughput.test.id}")
         expect(ref.provisioned_model_arn).to eq("${aws_bedrock_provisioned_model_throughput.test.provisioned_model_arn}")
+        expect(ref.region).to eq("${aws_bedrock_provisioned_model_throughput.test.region}")
         expect(ref.tags_all).to eq("${aws_bedrock_provisioned_model_throughput.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSBedrockProvisionedModelThroughput do
 
         config = validate_resource_structure(result, 'aws_bedrock_provisioned_model_throughput', 'test')
         expect(config).not_to have_key('provisioned_model_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ commitment_duration: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ commitment_duration: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSBedrockProvisionedModelThroughput do
 
         config = validate_resource_structure(result, 'aws_bedrock_provisioned_model_throughput', 'full')
         expect(config).to have_key('commitment_duration')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -88,6 +91,23 @@ RSpec.describe Pangea::Resources::AWSBedrockProvisionedModelThroughput do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_bedrock_provisioned_model_throughput', 'minimal')
         expect(config).not_to have_key('commitment_duration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_provisioned_model_throughput('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_provisioned_model_throughput', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_provisioned_model_throughput('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_provisioned_model_throughput', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -152,7 +172,7 @@ RSpec.describe Pangea::Resources::AWSBedrockProvisionedModelThroughput do
     resource_type: :aws_bedrock_provisioned_model_throughput,
     method: :aws_bedrock_provisioned_model_throughput,
     required_attrs: { model_arn: 'test-value', model_units: 3.14, provisioned_model_name: 'test-value' },
-    expected_outputs: [:id, :provisioned_model_arn, :tags_all],
+    expected_outputs: [:id, :provisioned_model_arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

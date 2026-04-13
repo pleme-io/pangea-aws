@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LaunchConfigurationAttributes,
       outputs: { id: :id },
       map: [:image_id, :instance_type],
-      map_present: [:ebs_block_device, :ephemeral_block_device, :iam_instance_profile, :key_name, :metadata_options, :name, :name_prefix, :placement_tenancy, :root_block_device, :security_groups, :spot_price, :user_data, :user_data_base64],
+      map_present: [:ebs_block_device, :ephemeral_block_device, :iam_instance_profile, :key_name, :metadata_options, :name, :name_prefix, :placement_tenancy, :region, :root_block_device, :security_groups, :spot_price, :user_data, :user_data_base64],
       map_bool: [:associate_public_ip_address, :ebs_optimized, :enable_monitoring]
   end
   module AWS

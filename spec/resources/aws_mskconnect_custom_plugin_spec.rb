@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSMskconnectCustomPlugin do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { content_type: 'test-value', location: [{ 'key1' => 'val1' }], name: 'test-value' } }
+  let(:required_attrs) { { content_type: 'test-value', location: { 'key1' => 'val1' }, name: 'test-value' } }
 
   describe ':aws_mskconnect_custom_plugin' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSMskconnectCustomPlugin do
         expect(ref.id).to eq("${aws_mskconnect_custom_plugin.test.id}")
         expect(ref.arn).to eq("${aws_mskconnect_custom_plugin.test.arn}")
         expect(ref.latest_revision).to eq("${aws_mskconnect_custom_plugin.test.latest_revision}")
+        expect(ref.region).to eq("${aws_mskconnect_custom_plugin.test.region}")
         expect(ref.state).to eq("${aws_mskconnect_custom_plugin.test.state}")
         expect(ref.tags_all).to eq("${aws_mskconnect_custom_plugin.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSMskconnectCustomPlugin do
         config = validate_resource_structure(result, 'aws_mskconnect_custom_plugin', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('latest_revision')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,7 +73,9 @@ RSpec.describe Pangea::Resources::AWSMskconnectCustomPlugin do
 
         config = validate_resource_structure(result, 'aws_mskconnect_custom_plugin', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -93,6 +97,23 @@ RSpec.describe Pangea::Resources::AWSMskconnectCustomPlugin do
         config = validate_resource_structure(result, 'aws_mskconnect_custom_plugin', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mskconnect_custom_plugin('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mskconnect_custom_plugin', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mskconnect_custom_plugin('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mskconnect_custom_plugin', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -110,6 +131,23 @@ RSpec.describe Pangea::Resources::AWSMskconnectCustomPlugin do
         config = validate_resource_structure(result, 'aws_mskconnect_custom_plugin', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mskconnect_custom_plugin('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mskconnect_custom_plugin', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mskconnect_custom_plugin('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mskconnect_custom_plugin', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -121,7 +159,7 @@ RSpec.describe Pangea::Resources::AWSMskconnectCustomPlugin do
 
         config = validate_resource_structure(result, 'aws_mskconnect_custom_plugin', 'typed')
         expect(config['content_type']).to be_a(String)
-        expect(config['location']).to be_a(Array)
+        expect(config['location']).to be_a(Hash)
         expect(config['name']).to be_a(String)
       end
     end
@@ -155,8 +193,8 @@ RSpec.describe Pangea::Resources::AWSMskconnectCustomPlugin do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_mskconnect_custom_plugin,
     method: :aws_mskconnect_custom_plugin,
-    required_attrs: { content_type: 'test-value', location: [{ 'key1' => 'val1' }], name: 'test-value' },
-    expected_outputs: [:id, :arn, :latest_revision, :state, :tags_all],
+    required_attrs: { content_type: 'test-value', location: { 'key1' => 'val1' }, name: 'test-value' },
+    expected_outputs: [:id, :arn, :latest_revision, :region, :state, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

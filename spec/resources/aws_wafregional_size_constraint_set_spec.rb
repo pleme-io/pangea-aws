@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSWafregionalSizeConstraintSet do
 
         expect(ref.id).to eq("${aws_wafregional_size_constraint_set.test.id}")
         expect(ref.arn).to eq("${aws_wafregional_size_constraint_set.test.arn}")
+        expect(ref.region).to eq("${aws_wafregional_size_constraint_set.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSWafregionalSizeConstraintSet do
 
         config = validate_resource_structure(result, 'aws_wafregional_size_constraint_set', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ size_constraints: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', size_constraints: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,11 +66,29 @@ RSpec.describe Pangea::Resources::AWSWafregionalSizeConstraintSet do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_wafregional_size_constraint_set', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('size_constraints')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafregional_size_constraint_set('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafregional_size_constraint_set', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafregional_size_constraint_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafregional_size_constraint_set', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes size_constraints when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -130,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSWafregionalSizeConstraintSet do
     resource_type: :aws_wafregional_size_constraint_set,
     method: :aws_wafregional_size_constraint_set,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

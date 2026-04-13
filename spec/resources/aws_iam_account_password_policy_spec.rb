@@ -69,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSIamAccountPasswordPolicy do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allow_users_to_change_password: true, minimum_password_length: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ allow_users_to_change_password: true, hard_expiry: true, max_password_age: 3.14, minimum_password_length: 3.14, password_reuse_prevention: 3.14, require_lowercase_characters: true, require_numbers: true, require_symbols: true, require_uppercase_characters: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,7 +79,14 @@ RSpec.describe Pangea::Resources::AWSIamAccountPasswordPolicy do
 
         config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'full')
         expect(config).to have_key('allow_users_to_change_password')
+        expect(config).to have_key('hard_expiry')
+        expect(config).to have_key('max_password_age')
         expect(config).to have_key('minimum_password_length')
+        expect(config).to have_key('password_reuse_prevention')
+        expect(config).to have_key('require_lowercase_characters')
+        expect(config).to have_key('require_numbers')
+        expect(config).to have_key('require_symbols')
+        expect(config).to have_key('require_uppercase_characters')
       end
     end
 
@@ -101,6 +108,40 @@ RSpec.describe Pangea::Resources::AWSIamAccountPasswordPolicy do
         config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'minimal')
         expect(config).not_to have_key('allow_users_to_change_password')
       end
+      it 'includes hard_expiry when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('opt', required_attrs.merge(hard_expiry: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'opt')
+        expect(config).to have_key('hard_expiry')
+      end
+
+      it 'omits hard_expiry when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'minimal')
+        expect(config).not_to have_key('hard_expiry')
+      end
+      it 'includes max_password_age when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('opt', required_attrs.merge(max_password_age: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'opt')
+        expect(config).to have_key('max_password_age')
+      end
+
+      it 'omits max_password_age when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'minimal')
+        expect(config).not_to have_key('max_password_age')
+      end
       it 'includes minimum_password_length when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -118,6 +159,91 @@ RSpec.describe Pangea::Resources::AWSIamAccountPasswordPolicy do
         config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'minimal')
         expect(config).not_to have_key('minimum_password_length')
       end
+      it 'includes password_reuse_prevention when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('opt', required_attrs.merge(password_reuse_prevention: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'opt')
+        expect(config).to have_key('password_reuse_prevention')
+      end
+
+      it 'omits password_reuse_prevention when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'minimal')
+        expect(config).not_to have_key('password_reuse_prevention')
+      end
+      it 'includes require_lowercase_characters when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('opt', required_attrs.merge(require_lowercase_characters: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'opt')
+        expect(config).to have_key('require_lowercase_characters')
+      end
+
+      it 'omits require_lowercase_characters when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'minimal')
+        expect(config).not_to have_key('require_lowercase_characters')
+      end
+      it 'includes require_numbers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('opt', required_attrs.merge(require_numbers: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'opt')
+        expect(config).to have_key('require_numbers')
+      end
+
+      it 'omits require_numbers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'minimal')
+        expect(config).not_to have_key('require_numbers')
+      end
+      it 'includes require_symbols when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('opt', required_attrs.merge(require_symbols: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'opt')
+        expect(config).to have_key('require_symbols')
+      end
+
+      it 'omits require_symbols when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'minimal')
+        expect(config).not_to have_key('require_symbols')
+      end
+      it 'includes require_uppercase_characters when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('opt', required_attrs.merge(require_uppercase_characters: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'opt')
+        expect(config).to have_key('require_uppercase_characters')
+      end
+
+      it 'omits require_uppercase_characters when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_account_password_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_account_password_policy', 'minimal')
+        expect(config).not_to have_key('require_uppercase_characters')
+      end
     end
 
     context 'boolean fields' do
@@ -130,6 +256,61 @@ RSpec.describe Pangea::Resources::AWSIamAccountPasswordPolicy do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_iam_account_password_policy', "bool_#{val}")
           expect(config['allow_users_to_change_password']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts hard_expiry=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(hard_expiry: val)
+          synth.aws_iam_account_password_policy("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_iam_account_password_policy', "bool_#{val}")
+          expect(config['hard_expiry']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts require_lowercase_characters=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(require_lowercase_characters: val)
+          synth.aws_iam_account_password_policy("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_iam_account_password_policy', "bool_#{val}")
+          expect(config['require_lowercase_characters']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts require_numbers=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(require_numbers: val)
+          synth.aws_iam_account_password_policy("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_iam_account_password_policy', "bool_#{val}")
+          expect(config['require_numbers']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts require_symbols=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(require_symbols: val)
+          synth.aws_iam_account_password_policy("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_iam_account_password_policy', "bool_#{val}")
+          expect(config['require_symbols']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts require_uppercase_characters=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(require_uppercase_characters: val)
+          synth.aws_iam_account_password_policy("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_iam_account_password_policy', "bool_#{val}")
+          expect(config['require_uppercase_characters']).to eq(val)
         end
       end
     end
@@ -178,5 +359,5 @@ RSpec.describe Pangea::Resources::AWSIamAccountPasswordPolicy do
     expected_outputs: [:id, :expire_passwords, :hard_expiry, :max_password_age, :password_reuse_prevention, :require_lowercase_characters, :require_numbers, :require_symbols, :require_uppercase_characters],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:allow_users_to_change_password]
+    boolean_fields: [:allow_users_to_change_password, :hard_expiry, :require_lowercase_characters, :require_numbers, :require_symbols, :require_uppercase_characters]
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DirectoryServiceSharedDirectoryAttributes,
       outputs: { id: :id },
       map: [:directory_id, :target],
-      map_present: [:method, :notes]
+      map_present: [:method, :notes, :region]
   end
   module AWS
     include AWSDirectoryServiceSharedDirectory

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCloudwatchLogMetricFilter do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { log_group_name: 'test-value', metric_transformation: [{ 'key1' => 'val1' }], name: 'test-value', pattern: 'test-value' } }
+  let(:required_attrs) { { log_group_name: 'test-value', metric_transformation: { 'key1' => 'val1' }, name: 'test-value', pattern: 'test-value' } }
 
   describe ':aws_cloudwatch_log_metric_filter' do
     context 'with required attributes only' do
@@ -38,6 +38,87 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogMetricFilter do
         ref = synth.aws_cloudwatch_log_metric_filter('test', required_attrs)
 
         expect(ref.id).to eq("${aws_cloudwatch_log_metric_filter.test.id}")
+        expect(ref.apply_on_transformed_logs).to eq("${aws_cloudwatch_log_metric_filter.test.apply_on_transformed_logs}")
+        expect(ref.region).to eq("${aws_cloudwatch_log_metric_filter.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_metric_filter('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_metric_filter', 'test')
+        expect(config).not_to have_key('apply_on_transformed_logs')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ apply_on_transformed_logs: true, region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_metric_filter('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_metric_filter', 'full')
+        expect(config).to have_key('apply_on_transformed_logs')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes apply_on_transformed_logs when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_metric_filter('opt', required_attrs.merge(apply_on_transformed_logs: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_metric_filter', 'opt')
+        expect(config).to have_key('apply_on_transformed_logs')
+      end
+
+      it 'omits apply_on_transformed_logs when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_metric_filter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_metric_filter', 'minimal')
+        expect(config).not_to have_key('apply_on_transformed_logs')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_metric_filter('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_metric_filter', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_metric_filter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_metric_filter', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts apply_on_transformed_logs=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(apply_on_transformed_logs: val)
+          synth.aws_cloudwatch_log_metric_filter("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_cloudwatch_log_metric_filter', "bool_#{val}")
+          expect(config['apply_on_transformed_logs']).to eq(val)
+        end
       end
     end
 
@@ -50,7 +131,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogMetricFilter do
 
         config = validate_resource_structure(result, 'aws_cloudwatch_log_metric_filter', 'typed')
         expect(config['log_group_name']).to be_a(String)
-        expect(config['metric_transformation']).to be_a(Array)
+        expect(config['metric_transformation']).to be_a(Hash)
         expect(config['name']).to be_a(String)
         expect(config['pattern']).to be_a(String)
       end
@@ -85,9 +166,9 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogMetricFilter do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_cloudwatch_log_metric_filter,
     method: :aws_cloudwatch_log_metric_filter,
-    required_attrs: { log_group_name: 'test-value', metric_transformation: [{ 'key1' => 'val1' }], name: 'test-value', pattern: 'test-value' },
-    expected_outputs: [:id],
+    required_attrs: { log_group_name: 'test-value', metric_transformation: { 'key1' => 'val1' }, name: 'test-value', pattern: 'test-value' },
+    expected_outputs: [:id, :apply_on_transformed_logs, :region],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:apply_on_transformed_logs]
 end

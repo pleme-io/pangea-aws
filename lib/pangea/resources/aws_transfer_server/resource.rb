@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_transfer_server,
       attributes_class: AWS::Types::TransferServerAttributes,
       outputs: { id: :id },
-      map_present: [:certificate, :directory_id, :domain, :endpoint_details, :endpoint_type, :function, :host_key, :identity_provider_type, :invocation_role, :logging_role, :post_authentication_login_banner, :pre_authentication_login_banner, :protocol_details, :protocols, :s3_storage_options, :security_policy_name, :sftp_authentication_methods, :structured_log_destinations, :tags, :tags_all, :url, :workflow_details],
+      map_present: [:certificate, :directory_id, :domain, :endpoint_details, :endpoint_type, :function, :host_key, :identity_provider_type, :invocation_role, :logging_role, :post_authentication_login_banner, :pre_authentication_login_banner, :protocol_details, :protocols, :region, :s3_storage_options, :security_policy_name, :sftp_authentication_methods, :structured_log_destinations, :tags, :tags_all, :url, :workflow_details],
       map_bool: [:force_destroy]
   end
   module AWS

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentKnowledgeBaseAssociation d
 
         expect(ref.id).to eq("${aws_bedrockagent_agent_knowledge_base_association.test.id}")
         expect(ref.agent_version).to eq("${aws_bedrockagent_agent_knowledge_base_association.test.agent_version}")
+        expect(ref.region).to eq("${aws_bedrockagent_agent_knowledge_base_association.test.region}")
       end
     end
 
@@ -51,6 +52,59 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentKnowledgeBaseAssociation d
 
         config = validate_resource_structure(result, 'aws_bedrockagent_agent_knowledge_base_association', 'test')
         expect(config).not_to have_key('agent_version')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ agent_version: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_knowledge_base_association('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_knowledge_base_association', 'full')
+        expect(config).to have_key('agent_version')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes agent_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_knowledge_base_association('opt', required_attrs.merge(agent_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_knowledge_base_association', 'opt')
+        expect(config).to have_key('agent_version')
+      end
+
+      it 'omits agent_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_knowledge_base_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_knowledge_base_association', 'minimal')
+        expect(config).not_to have_key('agent_version')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_knowledge_base_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_knowledge_base_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_knowledge_base_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_knowledge_base_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -99,7 +153,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentKnowledgeBaseAssociation d
     resource_type: :aws_bedrockagent_agent_knowledge_base_association,
     method: :aws_bedrockagent_agent_knowledge_base_association,
     required_attrs: { agent_id: 'test-value', description: 'test-value', knowledge_base_id: 'test-value', knowledge_base_state: 'test-value' },
-    expected_outputs: [:id, :agent_version],
+    expected_outputs: [:id, :agent_version, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

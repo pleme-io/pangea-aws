@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ecr_account_setting,
       attributes_class: AWS::Types::EcrAccountSettingAttributes,
       outputs: { id: :id },
-      map: [:name, :value]
+      map: [:name, :value],
+      map_present: [:region]
   end
   module AWS
     include AWSEcrAccountSetting

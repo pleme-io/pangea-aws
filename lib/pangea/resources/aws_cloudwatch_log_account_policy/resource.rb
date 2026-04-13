@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchLogAccountPolicyAttributes,
       outputs: { id: :id },
       map: [:policy_document, :policy_name, :policy_type],
-      map_present: [:scope, :selection_criteria]
+      map_present: [:region, :scope, :selection_criteria]
   end
   module AWS
     include AWSCloudwatchLogAccountPolicy

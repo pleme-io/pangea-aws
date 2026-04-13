@@ -38,6 +38,73 @@ RSpec.describe Pangea::Resources::AWSIotThingPrincipalAttachment do
         ref = synth.aws_iot_thing_principal_attachment('test', required_attrs)
 
         expect(ref.id).to eq("${aws_iot_thing_principal_attachment.test.id}")
+        expect(ref.region).to eq("${aws_iot_thing_principal_attachment.test.region}")
+        expect(ref.thing_principal_type).to eq("${aws_iot_thing_principal_attachment.test.thing_principal_type}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_thing_principal_attachment('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_iot_thing_principal_attachment', 'test')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('thing_principal_type')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', thing_principal_type: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_thing_principal_attachment('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_iot_thing_principal_attachment', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('thing_principal_type')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_thing_principal_attachment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_thing_principal_attachment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_thing_principal_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_thing_principal_attachment', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes thing_principal_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_thing_principal_attachment('opt', required_attrs.merge(thing_principal_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_thing_principal_attachment', 'opt')
+        expect(config).to have_key('thing_principal_type')
+      end
+
+      it 'omits thing_principal_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_thing_principal_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_thing_principal_attachment', 'minimal')
+        expect(config).not_to have_key('thing_principal_type')
       end
     end
 
@@ -84,7 +151,7 @@ RSpec.describe Pangea::Resources::AWSIotThingPrincipalAttachment do
     resource_type: :aws_iot_thing_principal_attachment,
     method: :aws_iot_thing_principal_attachment,
     required_attrs: { principal: 'test-value', thing: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region, :thing_principal_type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

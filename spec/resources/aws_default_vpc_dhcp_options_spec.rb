@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSDefaultVpcDhcpOptions do
         expect(ref.netbios_node_type).to eq("${aws_default_vpc_dhcp_options.test.netbios_node_type}")
         expect(ref.ntp_servers).to eq("${aws_default_vpc_dhcp_options.test.ntp_servers}")
         expect(ref.owner_id).to eq("${aws_default_vpc_dhcp_options.test.owner_id}")
+        expect(ref.region).to eq("${aws_default_vpc_dhcp_options.test.region}")
         expect(ref.tags_all).to eq("${aws_default_vpc_dhcp_options.test.tags_all}")
       end
     end
@@ -66,12 +67,13 @@ RSpec.describe Pangea::Resources::AWSDefaultVpcDhcpOptions do
         expect(config).not_to have_key('netbios_node_type')
         expect(config).not_to have_key('ntp_servers')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ owner_id: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,11 +82,48 @@ RSpec.describe Pangea::Resources::AWSDefaultVpcDhcpOptions do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_default_vpc_dhcp_options', 'full')
+        expect(config).to have_key('owner_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes owner_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc_dhcp_options('opt', required_attrs.merge(owner_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc_dhcp_options', 'opt')
+        expect(config).to have_key('owner_id')
+      end
+
+      it 'omits owner_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc_dhcp_options('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc_dhcp_options', 'minimal')
+        expect(config).not_to have_key('owner_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc_dhcp_options('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc_dhcp_options', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc_dhcp_options('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc_dhcp_options', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -101,6 +140,23 @@ RSpec.describe Pangea::Resources::AWSDefaultVpcDhcpOptions do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_default_vpc_dhcp_options', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc_dhcp_options('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc_dhcp_options', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc_dhcp_options('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc_dhcp_options', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -145,7 +201,7 @@ RSpec.describe Pangea::Resources::AWSDefaultVpcDhcpOptions do
     resource_type: :aws_default_vpc_dhcp_options,
     method: :aws_default_vpc_dhcp_options,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :domain_name, :domain_name_servers, :ipv6_address_preferred_lease_time, :netbios_name_servers, :netbios_node_type, :ntp_servers, :owner_id, :tags_all],
+    expected_outputs: [:id, :arn, :domain_name, :domain_name_servers, :ipv6_address_preferred_lease_time, :netbios_name_servers, :netbios_node_type, :ntp_servers, :owner_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

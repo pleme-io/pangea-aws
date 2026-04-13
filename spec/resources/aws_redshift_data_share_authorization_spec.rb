@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftDataShareAuthorization do
         expect(ref.id).to eq("${aws_redshift_data_share_authorization.test.id}")
         expect(ref.managed_by).to eq("${aws_redshift_data_share_authorization.test.managed_by}")
         expect(ref.producer_arn).to eq("${aws_redshift_data_share_authorization.test.producer_arn}")
+        expect(ref.region).to eq("${aws_redshift_data_share_authorization.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSRedshiftDataShareAuthorization do
         config = validate_resource_structure(result, 'aws_redshift_data_share_authorization', 'test')
         expect(config).not_to have_key('managed_by')
         expect(config).not_to have_key('producer_arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allow_writes: true }) }
+      let(:all_attrs) { required_attrs.merge({ allow_writes: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftDataShareAuthorization do
 
         config = validate_resource_structure(result, 'aws_redshift_data_share_authorization', 'full')
         expect(config).to have_key('allow_writes')
+        expect(config).to have_key('region')
       end
     end
 
@@ -87,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftDataShareAuthorization do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_data_share_authorization', 'minimal')
         expect(config).not_to have_key('allow_writes')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_data_share_authorization('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_data_share_authorization', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_data_share_authorization('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_data_share_authorization', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -147,7 +167,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftDataShareAuthorization do
     resource_type: :aws_redshift_data_share_authorization,
     method: :aws_redshift_data_share_authorization,
     required_attrs: { consumer_identifier: 'test-value', data_share_arn: 'test-value' },
-    expected_outputs: [:id, :managed_by, :producer_arn],
+    expected_outputs: [:id, :managed_by, :producer_arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:allow_writes]

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DevicefarmInstanceProfileAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:description, :exclude_app_packages_from_cleanup, :tags, :tags_all],
+      map_present: [:description, :exclude_app_packages_from_cleanup, :region, :tags, :tags_all],
       map_bool: [:package_cleanup, :reboot_after_use]
   end
   module AWS

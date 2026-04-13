@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_dynamodb_global_table,
       attributes_class: AWS::Types::DynamodbGlobalTableAttributes,
       outputs: { id: :id },
-      map: [:name, :replica]
+      map: [:name, :replica],
+      map_present: [:region]
   end
   module AWS
     include AWSDynamodbGlobalTable

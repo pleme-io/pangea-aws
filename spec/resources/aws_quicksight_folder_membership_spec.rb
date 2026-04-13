@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightFolderMembership do
 
         expect(ref.id).to eq("${aws_quicksight_folder_membership.test.id}")
         expect(ref.aws_account_id).to eq("${aws_quicksight_folder_membership.test.aws_account_id}")
+        expect(ref.region).to eq("${aws_quicksight_folder_membership.test.region}")
       end
     end
 
@@ -51,6 +52,59 @@ RSpec.describe Pangea::Resources::AWSQuicksightFolderMembership do
 
         config = validate_resource_structure(result, 'aws_quicksight_folder_membership', 'test')
         expect(config).not_to have_key('aws_account_id')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ aws_account_id: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_folder_membership('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_quicksight_folder_membership', 'full')
+        expect(config).to have_key('aws_account_id')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes aws_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_folder_membership('opt', required_attrs.merge(aws_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_folder_membership', 'opt')
+        expect(config).to have_key('aws_account_id')
+      end
+
+      it 'omits aws_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_folder_membership('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_folder_membership', 'minimal')
+        expect(config).not_to have_key('aws_account_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_folder_membership('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_folder_membership', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_folder_membership('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_folder_membership', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -98,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightFolderMembership do
     resource_type: :aws_quicksight_folder_membership,
     method: :aws_quicksight_folder_membership,
     required_attrs: { folder_id: 'test-value', member_id: 'test-value', member_type: 'test-value' },
-    expected_outputs: [:id, :aws_account_id],
+    expected_outputs: [:id, :aws_account_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_directory_service_log_subscription,
       attributes_class: AWS::Types::DirectoryServiceLogSubscriptionAttributes,
       outputs: { id: :id },
-      map: [:directory_id, :log_group_name]
+      map: [:directory_id, :log_group_name],
+      map_present: [:region]
   end
   module AWS
     include AWSDirectoryServiceLogSubscription

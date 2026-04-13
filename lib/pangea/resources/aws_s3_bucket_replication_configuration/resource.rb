@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketReplicationConfigurationAttributes,
       outputs: { id: :id },
       map: [:bucket, :role, :rule],
-      map_present: [:token]
+      map_present: [:region, :token]
   end
   module AWS
     include AWSS3BucketReplicationConfiguration

@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSEipAssociation do
         expect(ref.network_interface_id).to eq("${aws_eip_association.test.network_interface_id}")
         expect(ref.private_ip_address).to eq("${aws_eip_association.test.private_ip_address}")
         expect(ref.public_ip).to eq("${aws_eip_association.test.public_ip}")
+        expect(ref.region).to eq("${aws_eip_association.test.region}")
       end
     end
 
@@ -59,11 +60,12 @@ RSpec.describe Pangea::Resources::AWSEipAssociation do
         expect(config).not_to have_key('network_interface_id')
         expect(config).not_to have_key('private_ip_address')
         expect(config).not_to have_key('public_ip')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allow_reassociation: true }) }
+      let(:all_attrs) { required_attrs.merge({ allocation_id: 'test-value', allow_reassociation: true, instance_id: 'test-value', network_interface_id: 'test-value', private_ip_address: 'test-value', public_ip: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,11 +74,34 @@ RSpec.describe Pangea::Resources::AWSEipAssociation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_eip_association', 'full')
+        expect(config).to have_key('allocation_id')
         expect(config).to have_key('allow_reassociation')
+        expect(config).to have_key('instance_id')
+        expect(config).to have_key('network_interface_id')
+        expect(config).to have_key('private_ip_address')
+        expect(config).to have_key('public_ip')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes allocation_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_association('opt', required_attrs.merge(allocation_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_association', 'opt')
+        expect(config).to have_key('allocation_id')
+      end
+
+      it 'omits allocation_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_association', 'minimal')
+        expect(config).not_to have_key('allocation_id')
+      end
       it 'includes allow_reassociation when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -93,6 +118,91 @@ RSpec.describe Pangea::Resources::AWSEipAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eip_association', 'minimal')
         expect(config).not_to have_key('allow_reassociation')
+      end
+      it 'includes instance_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_association('opt', required_attrs.merge(instance_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_association', 'opt')
+        expect(config).to have_key('instance_id')
+      end
+
+      it 'omits instance_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_association', 'minimal')
+        expect(config).not_to have_key('instance_id')
+      end
+      it 'includes network_interface_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_association('opt', required_attrs.merge(network_interface_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_association', 'opt')
+        expect(config).to have_key('network_interface_id')
+      end
+
+      it 'omits network_interface_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_association', 'minimal')
+        expect(config).not_to have_key('network_interface_id')
+      end
+      it 'includes private_ip_address when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_association('opt', required_attrs.merge(private_ip_address: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_association', 'opt')
+        expect(config).to have_key('private_ip_address')
+      end
+
+      it 'omits private_ip_address when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_association', 'minimal')
+        expect(config).not_to have_key('private_ip_address')
+      end
+      it 'includes public_ip when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_association('opt', required_attrs.merge(public_ip: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_association', 'opt')
+        expect(config).to have_key('public_ip')
+      end
+
+      it 'omits public_ip when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_association', 'minimal')
+        expect(config).not_to have_key('public_ip')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -151,7 +261,7 @@ RSpec.describe Pangea::Resources::AWSEipAssociation do
     resource_type: :aws_eip_association,
     method: :aws_eip_association,
     required_attrs: {},
-    expected_outputs: [:id, :allocation_id, :instance_id, :network_interface_id, :private_ip_address, :public_ip],
+    expected_outputs: [:id, :allocation_id, :instance_id, :network_interface_id, :private_ip_address, :public_ip, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:allow_reassociation]

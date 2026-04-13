@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_macie2_classification_export_configuration,
       attributes_class: AWS::Types::Macie2ClassificationExportConfigurationAttributes,
       outputs: { id: :id },
-      map_present: [:s3_destination]
+      map: [:s3_destination],
+      map_present: [:region]
   end
   module AWS
     include AWSMacie2ClassificationExportConfiguration

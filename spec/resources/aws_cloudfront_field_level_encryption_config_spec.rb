@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCloudfrontFieldLevelEncryptionConfig do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { content_type_profile_config: [{ 'key1' => 'val1' }], query_arg_profile_config: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { content_type_profile_config: { 'key1' => 'val1' }, query_arg_profile_config: { 'key1' => 'val1' } } }
 
   describe ':aws_cloudfront_field_level_encryption_config' do
     context 'with required attributes only' do
@@ -100,8 +100,8 @@ RSpec.describe Pangea::Resources::AWSCloudfrontFieldLevelEncryptionConfig do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudfront_field_level_encryption_config', 'typed')
-        expect(config['content_type_profile_config']).to be_a(Array)
-        expect(config['query_arg_profile_config']).to be_a(Array)
+        expect(config['content_type_profile_config']).to be_a(Hash)
+        expect(config['query_arg_profile_config']).to be_a(Hash)
       end
     end
 
@@ -134,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontFieldLevelEncryptionConfig do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_cloudfront_field_level_encryption_config,
     method: :aws_cloudfront_field_level_encryption_config,
-    required_attrs: { content_type_profile_config: [{ 'key1' => 'val1' }], query_arg_profile_config: [{ 'key1' => 'val1' }] },
+    required_attrs: { content_type_profile_config: { 'key1' => 'val1' }, query_arg_profile_config: { 'key1' => 'val1' } },
     expected_outputs: [:id, :arn, :caller_reference, :etag],
     sensitive_fields: [],
     immutable_fields: [],

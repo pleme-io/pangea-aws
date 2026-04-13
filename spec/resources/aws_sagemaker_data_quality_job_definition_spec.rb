@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSagemakerDataQualityJobDefinition do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { data_quality_app_specification: [{ 'key1' => 'val1' }], data_quality_job_input: [{ 'key1' => 'val1' }], data_quality_job_output_config: [{ 'key1' => 'val1' }], job_resources: [{ 'key1' => 'val1' }], role_arn: 'test-value' } }
+  let(:required_attrs) { { data_quality_app_specification: { 'key1' => 'val1' }, data_quality_job_input: { 'key1' => 'val1' }, data_quality_job_output_config: { 'key1' => 'val1' }, job_resources: { 'key1' => 'val1' }, role_arn: 'test-value' } }
 
   describe ':aws_sagemaker_data_quality_job_definition' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerDataQualityJobDefinition do
         expect(ref.id).to eq("${aws_sagemaker_data_quality_job_definition.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_data_quality_job_definition.test.arn}")
         expect(ref.name).to eq("${aws_sagemaker_data_quality_job_definition.test.name}")
+        expect(ref.region).to eq("${aws_sagemaker_data_quality_job_definition.test.region}")
         expect(ref.tags_all).to eq("${aws_sagemaker_data_quality_job_definition.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSSagemakerDataQualityJobDefinition do
         config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ data_quality_baseline_config: [{ 'key1' => 'val1' }], network_config: [{ 'key1' => 'val1' }], stopping_condition: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ data_quality_baseline_config: { 'key1' => 'val1' }, name: 'test-value', network_config: { 'key1' => 'val1' }, region: 'test-value', stopping_condition: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,9 +71,12 @@ RSpec.describe Pangea::Resources::AWSSagemakerDataQualityJobDefinition do
 
         config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'full')
         expect(config).to have_key('data_quality_baseline_config')
+        expect(config).to have_key('name')
         expect(config).to have_key('network_config')
+        expect(config).to have_key('region')
         expect(config).to have_key('stopping_condition')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -79,7 +84,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerDataQualityJobDefinition do
       it 'includes data_quality_baseline_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_data_quality_job_definition('opt', required_attrs.merge(data_quality_baseline_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_data_quality_job_definition('opt', required_attrs.merge(data_quality_baseline_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'opt')
         expect(config).to have_key('data_quality_baseline_config')
@@ -93,10 +98,27 @@ RSpec.describe Pangea::Resources::AWSSagemakerDataQualityJobDefinition do
         config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'minimal')
         expect(config).not_to have_key('data_quality_baseline_config')
       end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_data_quality_job_definition('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_data_quality_job_definition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'minimal')
+        expect(config).not_to have_key('name')
+      end
       it 'includes network_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_data_quality_job_definition('opt', required_attrs.merge(network_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_data_quality_job_definition('opt', required_attrs.merge(network_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'opt')
         expect(config).to have_key('network_config')
@@ -110,10 +132,27 @@ RSpec.describe Pangea::Resources::AWSSagemakerDataQualityJobDefinition do
         config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'minimal')
         expect(config).not_to have_key('network_config')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_data_quality_job_definition('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_data_quality_job_definition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes stopping_condition when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_data_quality_job_definition('opt', required_attrs.merge(stopping_condition: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_data_quality_job_definition('opt', required_attrs.merge(stopping_condition: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'opt')
         expect(config).to have_key('stopping_condition')
@@ -144,6 +183,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerDataQualityJobDefinition do
         config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_data_quality_job_definition('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_data_quality_job_definition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -154,10 +210,10 @@ RSpec.describe Pangea::Resources::AWSSagemakerDataQualityJobDefinition do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_sagemaker_data_quality_job_definition', 'typed')
-        expect(config['data_quality_app_specification']).to be_a(Array)
-        expect(config['data_quality_job_input']).to be_a(Array)
-        expect(config['data_quality_job_output_config']).to be_a(Array)
-        expect(config['job_resources']).to be_a(Array)
+        expect(config['data_quality_app_specification']).to be_a(Hash)
+        expect(config['data_quality_job_input']).to be_a(Hash)
+        expect(config['data_quality_job_output_config']).to be_a(Hash)
+        expect(config['job_resources']).to be_a(Hash)
         expect(config['role_arn']).to be_a(String)
       end
     end
@@ -191,8 +247,8 @@ RSpec.describe Pangea::Resources::AWSSagemakerDataQualityJobDefinition do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_sagemaker_data_quality_job_definition,
     method: :aws_sagemaker_data_quality_job_definition,
-    required_attrs: { data_quality_app_specification: [{ 'key1' => 'val1' }], data_quality_job_input: [{ 'key1' => 'val1' }], data_quality_job_output_config: [{ 'key1' => 'val1' }], job_resources: [{ 'key1' => 'val1' }], role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :name, :tags_all],
+    required_attrs: { data_quality_app_specification: { 'key1' => 'val1' }, data_quality_job_input: { 'key1' => 'val1' }, data_quality_job_output_config: { 'key1' => 'val1' }, job_resources: { 'key1' => 'val1' }, role_arn: 'test-value' },
+    expected_outputs: [:id, :arn, :name, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

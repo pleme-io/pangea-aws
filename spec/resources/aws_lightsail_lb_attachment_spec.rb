@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSLightsailLbAttachment do
         ref = synth.aws_lightsail_lb_attachment('test', required_attrs)
 
         expect(ref.id).to eq("${aws_lightsail_lb_attachment.test.id}")
+        expect(ref.region).to eq("${aws_lightsail_lb_attachment.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb_attachment('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_lightsail_lb_attachment', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb_attachment('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_lightsail_lb_attachment', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb_attachment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_lb_attachment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_lb_attachment', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -84,7 +131,7 @@ RSpec.describe Pangea::Resources::AWSLightsailLbAttachment do
     resource_type: :aws_lightsail_lb_attachment,
     method: :aws_lightsail_lb_attachment,
     required_attrs: { instance_name: 'test-value', lb_name: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

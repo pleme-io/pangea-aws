@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppautoscalingScheduledActionAttributes,
       outputs: { id: :id },
       map: [:name, :resource_id, :scalable_dimension, :scalable_target_action, :schedule, :service_namespace],
-      map_present: [:end_time, :start_time, :timezone]
+      map_present: [:end_time, :region, :start_time, :timezone]
   end
   module AWS
     include AWSAppautoscalingScheduledAction

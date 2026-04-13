@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpn_connection_route,
       attributes_class: AWS::Types::VpnConnectionRouteAttributes,
       outputs: { id: :id },
-      map: [:destination_cidr_block, :vpn_connection_id]
+      map: [:destination_cidr_block, :vpn_connection_id],
+      map_present: [:region]
   end
   module AWS
     include AWSVpnConnectionRoute

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SesReceiptRuleAttributes,
       outputs: { id: :id },
       map: [:name, :rule_set_name],
-      map_present: [:add_header_action, :after, :bounce_action, :lambda_action, :recipients, :s3_action, :sns_action, :stop_action, :tls_policy, :workmail_action],
+      map_present: [:add_header_action, :after, :bounce_action, :lambda_action, :recipients, :region, :s3_action, :sns_action, :stop_action, :tls_policy, :workmail_action],
       map_bool: [:enabled, :scan_enabled]
   end
   module AWS

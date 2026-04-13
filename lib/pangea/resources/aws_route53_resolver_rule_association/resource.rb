@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Route53ResolverRuleAssociationAttributes,
       outputs: { id: :id },
       map: [:resolver_rule_id, :vpc_id],
-      map_present: [:name]
+      map_present: [:name, :region]
   end
   module AWS
     include AWSRoute53ResolverRuleAssociation

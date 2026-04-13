@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DbOptionGroupAttributes,
       outputs: { id: :id },
       map: [:engine_name, :major_engine_version],
-      map_present: [:name, :name_prefix, :option, :option_group_description, :tags, :tags_all],
+      map_present: [:name, :name_prefix, :option, :option_group_description, :region, :tags, :tags_all],
       map_bool: [:skip_destroy]
   end
   module AWS

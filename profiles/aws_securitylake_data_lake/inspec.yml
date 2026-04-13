@@ -1,0 +1,8 @@
+name: aws_securitylake_data_lake
+title: Manages a aws_securitylake_data_lake resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

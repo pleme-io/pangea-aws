@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnAuthorizationRule do
         ref = synth.aws_ec2_client_vpn_authorization_rule('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ec2_client_vpn_authorization_rule.test.id}")
+        expect(ref.region).to eq("${aws_ec2_client_vpn_authorization_rule.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_authorization_rule('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_authorization_rule', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_group_id: 'test-value', authorize_all_groups: true, description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ access_group_id: 'test-value', authorize_all_groups: true, description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -54,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnAuthorizationRule do
         expect(config).to have_key('access_group_id')
         expect(config).to have_key('authorize_all_groups')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -108,6 +122,23 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnAuthorizationRule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_client_vpn_authorization_rule', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_authorization_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_authorization_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_authorization_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_authorization_rule', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -168,7 +199,7 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnAuthorizationRule do
     resource_type: :aws_ec2_client_vpn_authorization_rule,
     method: :aws_ec2_client_vpn_authorization_rule,
     required_attrs: { client_vpn_endpoint_id: 'test-value', target_network_cidr: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:authorize_all_groups]

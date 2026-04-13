@@ -40,6 +40,8 @@ RSpec.describe Pangea::Resources::AWSVpclatticeServiceNetworkVpcAssociation do
         expect(ref.id).to eq("${aws_vpclattice_service_network_vpc_association.test.id}")
         expect(ref.arn).to eq("${aws_vpclattice_service_network_vpc_association.test.arn}")
         expect(ref.created_by).to eq("${aws_vpclattice_service_network_vpc_association.test.created_by}")
+        expect(ref.private_dns_enabled).to eq("${aws_vpclattice_service_network_vpc_association.test.private_dns_enabled}")
+        expect(ref.region).to eq("${aws_vpclattice_service_network_vpc_association.test.region}")
         expect(ref.status).to eq("${aws_vpclattice_service_network_vpc_association.test.status}")
         expect(ref.tags_all).to eq("${aws_vpclattice_service_network_vpc_association.test.tags_all}")
       end
@@ -55,13 +57,15 @@ RSpec.describe Pangea::Resources::AWSVpclatticeServiceNetworkVpcAssociation do
         config = validate_resource_structure(result, 'aws_vpclattice_service_network_vpc_association', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created_by')
+        expect(config).not_to have_key('private_dns_enabled')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ security_group_ids: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ dns_options: { 'key1' => 'val1' }, private_dns_enabled: true, region: 'test-value', security_group_ids: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,12 +74,67 @@ RSpec.describe Pangea::Resources::AWSVpclatticeServiceNetworkVpcAssociation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpclattice_service_network_vpc_association', 'full')
+        expect(config).to have_key('dns_options')
+        expect(config).to have_key('private_dns_enabled')
+        expect(config).to have_key('region')
         expect(config).to have_key('security_group_ids')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes dns_options when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service_network_vpc_association('opt', required_attrs.merge(dns_options: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service_network_vpc_association', 'opt')
+        expect(config).to have_key('dns_options')
+      end
+
+      it 'omits dns_options when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service_network_vpc_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service_network_vpc_association', 'minimal')
+        expect(config).not_to have_key('dns_options')
+      end
+      it 'includes private_dns_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service_network_vpc_association('opt', required_attrs.merge(private_dns_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service_network_vpc_association', 'opt')
+        expect(config).to have_key('private_dns_enabled')
+      end
+
+      it 'omits private_dns_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service_network_vpc_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service_network_vpc_association', 'minimal')
+        expect(config).not_to have_key('private_dns_enabled')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service_network_vpc_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service_network_vpc_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service_network_vpc_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service_network_vpc_association', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes security_group_ids when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -109,6 +168,37 @@ RSpec.describe Pangea::Resources::AWSVpclatticeServiceNetworkVpcAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpclattice_service_network_vpc_association', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service_network_vpc_association('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service_network_vpc_association', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service_network_vpc_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service_network_vpc_association', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts private_dns_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(private_dns_enabled: val)
+          synth.aws_vpclattice_service_network_vpc_association("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_vpclattice_service_network_vpc_association', "bool_#{val}")
+          expect(config['private_dns_enabled']).to eq(val)
+        end
       end
     end
 
@@ -155,8 +245,8 @@ RSpec.describe Pangea::Resources::AWSVpclatticeServiceNetworkVpcAssociation do
     resource_type: :aws_vpclattice_service_network_vpc_association,
     method: :aws_vpclattice_service_network_vpc_association,
     required_attrs: { service_network_identifier: 'test-value', vpc_identifier: 'test-value' },
-    expected_outputs: [:id, :arn, :created_by, :status, :tags_all],
+    expected_outputs: [:id, :arn, :created_by, :private_dns_enabled, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:private_dns_enabled]
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2TrafficMirrorFilterRuleAttributes,
       outputs: { id: :id },
       map: [:destination_cidr_block, :rule_action, :rule_number, :source_cidr_block, :traffic_direction, :traffic_mirror_filter_id],
-      map_present: [:description, :destination_port_range, :protocol, :source_port_range]
+      map_present: [:description, :destination_port_range, :protocol, :region, :source_port_range]
   end
   module AWS
     include AWSEc2TrafficMirrorFilterRule

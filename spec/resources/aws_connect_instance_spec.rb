@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSConnectInstance do
         expect(ref.id).to eq("${aws_connect_instance.test.id}")
         expect(ref.arn).to eq("${aws_connect_instance.test.arn}")
         expect(ref.created_time).to eq("${aws_connect_instance.test.created_time}")
+        expect(ref.region).to eq("${aws_connect_instance.test.region}")
         expect(ref.service_role).to eq("${aws_connect_instance.test.service_role}")
         expect(ref.status).to eq("${aws_connect_instance.test.status}")
         expect(ref.tags_all).to eq("${aws_connect_instance.test.tags_all}")
@@ -56,6 +57,7 @@ RSpec.describe Pangea::Resources::AWSConnectInstance do
         config = validate_resource_structure(result, 'aws_connect_instance', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created_time')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('service_role')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
@@ -63,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSConnectInstance do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ auto_resolve_best_voices_enabled: true, contact_flow_logs_enabled: true, contact_lens_enabled: true, directory_id: 'test-value', early_media_enabled: true, instance_alias: 'test-value', multi_party_conference_enabled: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ auto_resolve_best_voices_enabled: true, contact_flow_logs_enabled: true, contact_lens_enabled: true, directory_id: 'test-value', early_media_enabled: true, instance_alias: 'test-value', multi_party_conference_enabled: true, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,7 +81,9 @@ RSpec.describe Pangea::Resources::AWSConnectInstance do
         expect(config).to have_key('early_media_enabled')
         expect(config).to have_key('instance_alias')
         expect(config).to have_key('multi_party_conference_enabled')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -203,6 +207,23 @@ RSpec.describe Pangea::Resources::AWSConnectInstance do
         config = validate_resource_structure(result, 'aws_connect_instance', 'minimal')
         expect(config).not_to have_key('multi_party_conference_enabled')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_instance('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_instance', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_instance', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -219,6 +240,23 @@ RSpec.describe Pangea::Resources::AWSConnectInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_connect_instance', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_instance('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_instance', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_instance', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -346,7 +384,7 @@ RSpec.describe Pangea::Resources::AWSConnectInstance do
     resource_type: :aws_connect_instance,
     method: :aws_connect_instance,
     required_attrs: { identity_management_type: 'test-value', inbound_calls_enabled: true, outbound_calls_enabled: true },
-    expected_outputs: [:id, :arn, :created_time, :service_role, :status, :tags_all],
+    expected_outputs: [:id, :arn, :created_time, :region, :service_role, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:inbound_calls_enabled, :outbound_calls_enabled, :auto_resolve_best_voices_enabled, :contact_flow_logs_enabled, :contact_lens_enabled, :early_media_enabled, :multi_party_conference_enabled]

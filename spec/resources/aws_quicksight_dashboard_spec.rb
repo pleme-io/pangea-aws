@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightDashboard do
         expect(ref.created_time).to eq("${aws_quicksight_dashboard.test.created_time}")
         expect(ref.last_published_time).to eq("${aws_quicksight_dashboard.test.last_published_time}")
         expect(ref.last_updated_time).to eq("${aws_quicksight_dashboard.test.last_updated_time}")
+        expect(ref.region).to eq("${aws_quicksight_dashboard.test.region}")
         expect(ref.source_entity_arn).to eq("${aws_quicksight_dashboard.test.source_entity_arn}")
         expect(ref.status).to eq("${aws_quicksight_dashboard.test.status}")
         expect(ref.tags_all).to eq("${aws_quicksight_dashboard.test.tags_all}")
@@ -63,6 +64,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightDashboard do
         expect(config).not_to have_key('created_time')
         expect(config).not_to have_key('last_published_time')
         expect(config).not_to have_key('last_updated_time')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('source_entity_arn')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
@@ -71,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightDashboard do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ dashboard_publish_options: [{ 'key1' => 'val1' }], definition: [{ 'key1' => 'val1' }], parameters: [{ 'key1' => 'val1' }], permissions: [{ 'key1' => 'val1' }], source_entity: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, theme_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ aws_account_id: 'test-value', dashboard_publish_options: { 'key1' => 'val1' }, definition: { 'key1' => 'val1' }, parameters: { 'key1' => 'val1' }, permissions: [{ 'key1' => 'val1' }], region: 'test-value', source_entity: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, theme_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,21 +82,41 @@ RSpec.describe Pangea::Resources::AWSQuicksightDashboard do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_quicksight_dashboard', 'full')
+        expect(config).to have_key('aws_account_id')
         expect(config).to have_key('dashboard_publish_options')
         expect(config).to have_key('definition')
         expect(config).to have_key('parameters')
         expect(config).to have_key('permissions')
+        expect(config).to have_key('region')
         expect(config).to have_key('source_entity')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('theme_arn')
       end
     end
 
     context 'optional attributes' do
+      it 'includes aws_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_dashboard('opt', required_attrs.merge(aws_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_dashboard', 'opt')
+        expect(config).to have_key('aws_account_id')
+      end
+
+      it 'omits aws_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_dashboard('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_dashboard', 'minimal')
+        expect(config).not_to have_key('aws_account_id')
+      end
       it 'includes dashboard_publish_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_quicksight_dashboard('opt', required_attrs.merge(dashboard_publish_options: [{ 'key1' => 'val1' }]))
+        synth.aws_quicksight_dashboard('opt', required_attrs.merge(dashboard_publish_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_dashboard', 'opt')
         expect(config).to have_key('dashboard_publish_options')
@@ -111,7 +133,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightDashboard do
       it 'includes definition when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_quicksight_dashboard('opt', required_attrs.merge(definition: [{ 'key1' => 'val1' }]))
+        synth.aws_quicksight_dashboard('opt', required_attrs.merge(definition: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_dashboard', 'opt')
         expect(config).to have_key('definition')
@@ -128,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightDashboard do
       it 'includes parameters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_quicksight_dashboard('opt', required_attrs.merge(parameters: [{ 'key1' => 'val1' }]))
+        synth.aws_quicksight_dashboard('opt', required_attrs.merge(parameters: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_dashboard', 'opt')
         expect(config).to have_key('parameters')
@@ -159,10 +181,27 @@ RSpec.describe Pangea::Resources::AWSQuicksightDashboard do
         config = validate_resource_structure(result, 'aws_quicksight_dashboard', 'minimal')
         expect(config).not_to have_key('permissions')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_dashboard('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_dashboard', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_dashboard('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_dashboard', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes source_entity when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_quicksight_dashboard('opt', required_attrs.merge(source_entity: [{ 'key1' => 'val1' }]))
+        synth.aws_quicksight_dashboard('opt', required_attrs.merge(source_entity: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_dashboard', 'opt')
         expect(config).to have_key('source_entity')
@@ -192,6 +231,23 @@ RSpec.describe Pangea::Resources::AWSQuicksightDashboard do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_dashboard', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_dashboard('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_dashboard', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_dashboard('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_dashboard', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes theme_arn when provided' do
         synth = create_synthesizer
@@ -256,7 +312,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightDashboard do
     resource_type: :aws_quicksight_dashboard,
     method: :aws_quicksight_dashboard,
     required_attrs: { dashboard_id: 'test-value', name: 'test-value', version_description: 'test-value' },
-    expected_outputs: [:id, :arn, :aws_account_id, :created_time, :last_published_time, :last_updated_time, :source_entity_arn, :status, :tags_all, :version_number],
+    expected_outputs: [:id, :arn, :aws_account_id, :created_time, :last_published_time, :last_updated_time, :region, :source_entity_arn, :status, :tags_all, :version_number],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ssoadmin_managed_policy_attachment,
       attributes_class: AWS::Types::SsoadminManagedPolicyAttachmentAttributes,
       outputs: { id: :id },
-      map: [:instance_arn, :managed_policy_arn, :permission_set_arn]
+      map: [:instance_arn, :managed_policy_arn, :permission_set_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSSsoadminManagedPolicyAttachment

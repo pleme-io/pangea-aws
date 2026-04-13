@@ -1,0 +1,8 @@
+name: aws_networkmanager_connect_peer
+title: Manages a aws_networkmanager_connect_peer resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

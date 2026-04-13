@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceRadiusSettings do
         ref = synth.aws_directory_service_radius_settings('test', required_attrs)
 
         expect(ref.id).to eq("${aws_directory_service_radius_settings.test.id}")
+        expect(ref.region).to eq("${aws_directory_service_radius_settings.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_radius_settings('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_directory_service_radius_settings', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ use_same_username: true }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', use_same_username: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -51,11 +64,29 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceRadiusSettings do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_directory_service_radius_settings', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('use_same_username')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_radius_settings('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_radius_settings', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_radius_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_radius_settings', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes use_same_username when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -145,7 +176,7 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceRadiusSettings do
     resource_type: :aws_directory_service_radius_settings,
     method: :aws_directory_service_radius_settings,
     required_attrs: { authentication_protocol: 'test-value', directory_id: 'test-value', display_label: 'test-value', radius_port: 3.14, radius_retries: 3.14, radius_servers: ['test-value'], radius_timeout: 3.14, shared_secret: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [:shared_secret],
     immutable_fields: [],
     boolean_fields: [:use_same_username]

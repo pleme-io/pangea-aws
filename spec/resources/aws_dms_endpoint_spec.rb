@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
         expect(ref.endpoint_arn).to eq("${aws_dms_endpoint.test.endpoint_arn}")
         expect(ref.extra_connection_attributes).to eq("${aws_dms_endpoint.test.extra_connection_attributes}")
         expect(ref.kms_key_arn).to eq("${aws_dms_endpoint.test.kms_key_arn}")
+        expect(ref.region).to eq("${aws_dms_endpoint.test.region}")
         expect(ref.ssl_mode).to eq("${aws_dms_endpoint.test.ssl_mode}")
         expect(ref.tags_all).to eq("${aws_dms_endpoint.test.tags_all}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
         expect(config).not_to have_key('endpoint_arn')
         expect(config).not_to have_key('extra_connection_attributes')
         expect(config).not_to have_key('kms_key_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('ssl_mode')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ database_name: 'test-value', elasticsearch_settings: [{ 'key1' => 'val1' }], kafka_settings: [{ 'key1' => 'val1' }], kinesis_settings: [{ 'key1' => 'val1' }], mongodb_settings: [{ 'key1' => 'val1' }], password: 'test-value', pause_replication_tasks: true, port: 3.14, postgres_settings: [{ 'key1' => 'val1' }], redis_settings: [{ 'key1' => 'val1' }], redshift_settings: [{ 'key1' => 'val1' }], s3_settings: [{ 'key1' => 'val1' }], secrets_manager_access_role_arn: 'test-value', secrets_manager_arn: 'test-value', server_name: 'test-value', service_access_role: 'test-value', tags: { 'key1' => 'val1' }, username: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ certificate_arn: 'test-value', database_name: 'test-value', elasticsearch_settings: { 'key1' => 'val1' }, extra_connection_attributes: 'test-value', kafka_settings: { 'key1' => 'val1' }, kinesis_settings: { 'key1' => 'val1' }, kms_key_arn: 'test-value', mongodb_settings: { 'key1' => 'val1' }, mysql_settings: { 'key1' => 'val1' }, oracle_settings: { 'key1' => 'val1' }, password: 'test-value', pause_replication_tasks: true, port: 3.14, postgres_settings: { 'key1' => 'val1' }, redis_settings: { 'key1' => 'val1' }, redshift_settings: { 'key1' => 'val1' }, region: 'test-value', secrets_manager_access_role_arn: 'test-value', secrets_manager_arn: 'test-value', server_name: 'test-value', service_access_role: 'test-value', ssl_mode: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, username: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,28 +76,52 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'full')
+        expect(config).to have_key('certificate_arn')
         expect(config).to have_key('database_name')
         expect(config).to have_key('elasticsearch_settings')
+        expect(config).to have_key('extra_connection_attributes')
         expect(config).to have_key('kafka_settings')
         expect(config).to have_key('kinesis_settings')
+        expect(config).to have_key('kms_key_arn')
         expect(config).to have_key('mongodb_settings')
+        expect(config).to have_key('mysql_settings')
+        expect(config).to have_key('oracle_settings')
         expect(config).to have_key('password')
         expect(config).to have_key('pause_replication_tasks')
         expect(config).to have_key('port')
         expect(config).to have_key('postgres_settings')
         expect(config).to have_key('redis_settings')
         expect(config).to have_key('redshift_settings')
-        expect(config).to have_key('s3_settings')
+        expect(config).to have_key('region')
         expect(config).to have_key('secrets_manager_access_role_arn')
         expect(config).to have_key('secrets_manager_arn')
         expect(config).to have_key('server_name')
         expect(config).to have_key('service_access_role')
+        expect(config).to have_key('ssl_mode')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('username')
       end
     end
 
     context 'optional attributes' do
+      it 'includes certificate_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('opt', required_attrs.merge(certificate_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
+        expect(config).to have_key('certificate_arn')
+      end
+
+      it 'omits certificate_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
+        expect(config).not_to have_key('certificate_arn')
+      end
       it 'includes database_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -116,7 +142,7 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
       it 'includes elasticsearch_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dms_endpoint('opt', required_attrs.merge(elasticsearch_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_dms_endpoint('opt', required_attrs.merge(elasticsearch_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
         expect(config).to have_key('elasticsearch_settings')
@@ -130,10 +156,27 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
         expect(config).not_to have_key('elasticsearch_settings')
       end
+      it 'includes extra_connection_attributes when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('opt', required_attrs.merge(extra_connection_attributes: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
+        expect(config).to have_key('extra_connection_attributes')
+      end
+
+      it 'omits extra_connection_attributes when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
+        expect(config).not_to have_key('extra_connection_attributes')
+      end
       it 'includes kafka_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dms_endpoint('opt', required_attrs.merge(kafka_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_dms_endpoint('opt', required_attrs.merge(kafka_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
         expect(config).to have_key('kafka_settings')
@@ -150,7 +193,7 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
       it 'includes kinesis_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dms_endpoint('opt', required_attrs.merge(kinesis_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_dms_endpoint('opt', required_attrs.merge(kinesis_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
         expect(config).to have_key('kinesis_settings')
@@ -164,10 +207,27 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
         expect(config).not_to have_key('kinesis_settings')
       end
+      it 'includes kms_key_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('opt', required_attrs.merge(kms_key_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
+        expect(config).to have_key('kms_key_arn')
+      end
+
+      it 'omits kms_key_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
+        expect(config).not_to have_key('kms_key_arn')
+      end
       it 'includes mongodb_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dms_endpoint('opt', required_attrs.merge(mongodb_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_dms_endpoint('opt', required_attrs.merge(mongodb_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
         expect(config).to have_key('mongodb_settings')
@@ -180,6 +240,40 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
         expect(config).not_to have_key('mongodb_settings')
+      end
+      it 'includes mysql_settings when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('opt', required_attrs.merge(mysql_settings: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
+        expect(config).to have_key('mysql_settings')
+      end
+
+      it 'omits mysql_settings when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
+        expect(config).not_to have_key('mysql_settings')
+      end
+      it 'includes oracle_settings when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('opt', required_attrs.merge(oracle_settings: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
+        expect(config).to have_key('oracle_settings')
+      end
+
+      it 'omits oracle_settings when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
+        expect(config).not_to have_key('oracle_settings')
       end
       it 'includes password when provided' do
         synth = create_synthesizer
@@ -235,7 +329,7 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
       it 'includes postgres_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dms_endpoint('opt', required_attrs.merge(postgres_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_dms_endpoint('opt', required_attrs.merge(postgres_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
         expect(config).to have_key('postgres_settings')
@@ -252,7 +346,7 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
       it 'includes redis_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dms_endpoint('opt', required_attrs.merge(redis_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_dms_endpoint('opt', required_attrs.merge(redis_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
         expect(config).to have_key('redis_settings')
@@ -269,7 +363,7 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
       it 'includes redshift_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dms_endpoint('opt', required_attrs.merge(redshift_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_dms_endpoint('opt', required_attrs.merge(redshift_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
         expect(config).to have_key('redshift_settings')
@@ -283,22 +377,22 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
         expect(config).not_to have_key('redshift_settings')
       end
-      it 'includes s3_settings when provided' do
+      it 'includes region when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dms_endpoint('opt', required_attrs.merge(s3_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_dms_endpoint('opt', required_attrs.merge(region: 'test-value'))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
-        expect(config).to have_key('s3_settings')
+        expect(config).to have_key('region')
       end
 
-      it 'omits s3_settings when not provided' do
+      it 'omits region when not provided' do
         synth = create_synthesizer
         synth.extend(described_class)
         synth.aws_dms_endpoint('minimal', required_attrs)
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
-        expect(config).not_to have_key('s3_settings')
+        expect(config).not_to have_key('region')
       end
       it 'includes secrets_manager_access_role_arn when provided' do
         synth = create_synthesizer
@@ -368,6 +462,23 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
         expect(config).not_to have_key('service_access_role')
       end
+      it 'includes ssl_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('opt', required_attrs.merge(ssl_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
+        expect(config).to have_key('ssl_mode')
+      end
+
+      it 'omits ssl_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
+        expect(config).not_to have_key('ssl_mode')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -384,6 +495,23 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_endpoint', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes username when provided' do
         synth = create_synthesizer
@@ -469,7 +597,7 @@ RSpec.describe Pangea::Resources::AWSDmsEndpoint do
     resource_type: :aws_dms_endpoint,
     method: :aws_dms_endpoint,
     required_attrs: { endpoint_id: 'test-value', endpoint_type: 'test-value', engine_name: 'test-value' },
-    expected_outputs: [:id, :certificate_arn, :endpoint_arn, :extra_connection_attributes, :kms_key_arn, :ssl_mode, :tags_all],
+    expected_outputs: [:id, :certificate_arn, :endpoint_arn, :extra_connection_attributes, :kms_key_arn, :region, :ssl_mode, :tags_all],
     sensitive_fields: [:password],
     immutable_fields: [],
     boolean_fields: [:pause_replication_tasks]

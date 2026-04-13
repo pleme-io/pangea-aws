@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebNetworkSettings do
         expect(ref.id).to eq("${aws_workspacesweb_network_settings.test.id}")
         expect(ref.associated_portal_arns).to eq("${aws_workspacesweb_network_settings.test.associated_portal_arns}")
         expect(ref.network_settings_arn).to eq("${aws_workspacesweb_network_settings.test.network_settings_arn}")
+        expect(ref.region).to eq("${aws_workspacesweb_network_settings.test.region}")
         expect(ref.tags_all).to eq("${aws_workspacesweb_network_settings.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebNetworkSettings do
         config = validate_resource_structure(result, 'aws_workspacesweb_network_settings', 'test')
         expect(config).not_to have_key('associated_portal_arns')
         expect(config).not_to have_key('network_settings_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,11 +70,29 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebNetworkSettings do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_workspacesweb_network_settings', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspacesweb_network_settings('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspacesweb_network_settings', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspacesweb_network_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspacesweb_network_settings', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -136,7 +156,7 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebNetworkSettings do
     resource_type: :aws_workspacesweb_network_settings,
     method: :aws_workspacesweb_network_settings,
     required_attrs: { security_group_ids: ['test-value'], subnet_ids: ['test-value'], vpc_id: 'test-value' },
-    expected_outputs: [:id, :associated_portal_arns, :network_settings_arn, :tags_all],
+    expected_outputs: [:id, :associated_portal_arns, :network_settings_arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

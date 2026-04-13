@@ -48,6 +48,7 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         expect(ref.outside_ip_address_type).to eq("${aws_vpn_connection.test.outside_ip_address_type}")
         expect(ref.preshared_key_arn).to eq("${aws_vpn_connection.test.preshared_key_arn}")
         expect(ref.preshared_key_storage).to eq("${aws_vpn_connection.test.preshared_key_storage}")
+        expect(ref.region).to eq("${aws_vpn_connection.test.region}")
         expect(ref.remote_ipv4_network_cidr).to eq("${aws_vpn_connection.test.remote_ipv4_network_cidr}")
         expect(ref.remote_ipv6_network_cidr).to eq("${aws_vpn_connection.test.remote_ipv6_network_cidr}")
         expect(ref.routes).to eq("${aws_vpn_connection.test.routes}")
@@ -70,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         expect(ref.tunnel2_inside_ipv6_cidr).to eq("${aws_vpn_connection.test.tunnel2_inside_ipv6_cidr}")
         expect(ref.tunnel2_preshared_key).to eq("${aws_vpn_connection.test.tunnel2_preshared_key}")
         expect(ref.tunnel2_vgw_inside_address).to eq("${aws_vpn_connection.test.tunnel2_vgw_inside_address}")
+        expect(ref.tunnel_bandwidth).to eq("${aws_vpn_connection.test.tunnel_bandwidth}")
         expect(ref.tunnel_inside_ip_version).to eq("${aws_vpn_connection.test.tunnel_inside_ip_version}")
         expect(ref.vgw_telemetry).to eq("${aws_vpn_connection.test.vgw_telemetry}")
       end
@@ -93,6 +95,7 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         expect(config).not_to have_key('outside_ip_address_type')
         expect(config).not_to have_key('preshared_key_arn')
         expect(config).not_to have_key('preshared_key_storage')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('remote_ipv4_network_cidr')
         expect(config).not_to have_key('remote_ipv6_network_cidr')
         expect(config).not_to have_key('routes')
@@ -115,13 +118,14 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         expect(config).not_to have_key('tunnel2_inside_ipv6_cidr')
         expect(config).not_to have_key('tunnel2_preshared_key')
         expect(config).not_to have_key('tunnel2_vgw_inside_address')
+        expect(config).not_to have_key('tunnel_bandwidth')
         expect(config).not_to have_key('tunnel_inside_ip_version')
         expect(config).not_to have_key('vgw_telemetry')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' }, transit_gateway_id: 'test-value', transport_transit_gateway_attachment_id: 'test-value', tunnel1_dpd_timeout_action: 'test-value', tunnel1_dpd_timeout_seconds: 3.14, tunnel1_enable_tunnel_lifecycle_control: true, tunnel1_ike_versions: ['test-value'], tunnel1_log_options: [{ 'key1' => 'val1' }], tunnel1_phase1_dh_group_numbers: [3.14], tunnel1_phase1_encryption_algorithms: ['test-value'], tunnel1_phase1_integrity_algorithms: ['test-value'], tunnel1_phase1_lifetime_seconds: 3.14, tunnel1_phase2_dh_group_numbers: [3.14], tunnel1_phase2_encryption_algorithms: ['test-value'], tunnel1_phase2_integrity_algorithms: ['test-value'], tunnel1_phase2_lifetime_seconds: 3.14, tunnel1_rekey_fuzz_percentage: 3.14, tunnel1_rekey_margin_time_seconds: 3.14, tunnel1_replay_window_size: 3.14, tunnel1_startup_action: 'test-value', tunnel2_dpd_timeout_action: 'test-value', tunnel2_dpd_timeout_seconds: 3.14, tunnel2_enable_tunnel_lifecycle_control: true, tunnel2_ike_versions: ['test-value'], tunnel2_log_options: [{ 'key1' => 'val1' }], tunnel2_phase1_dh_group_numbers: [3.14], tunnel2_phase1_encryption_algorithms: ['test-value'], tunnel2_phase1_integrity_algorithms: ['test-value'], tunnel2_phase1_lifetime_seconds: 3.14, tunnel2_phase2_dh_group_numbers: [3.14], tunnel2_phase2_encryption_algorithms: ['test-value'], tunnel2_phase2_integrity_algorithms: ['test-value'], tunnel2_phase2_lifetime_seconds: 3.14, tunnel2_rekey_fuzz_percentage: 3.14, tunnel2_rekey_margin_time_seconds: 3.14, tunnel2_replay_window_size: 3.14, tunnel2_startup_action: 'test-value', vpn_gateway_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ enable_acceleration: true, local_ipv4_network_cidr: 'test-value', local_ipv6_network_cidr: 'test-value', outside_ip_address_type: 'test-value', preshared_key_storage: 'test-value', region: 'test-value', remote_ipv4_network_cidr: 'test-value', remote_ipv6_network_cidr: 'test-value', static_routes_only: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, transit_gateway_id: 'test-value', transport_transit_gateway_attachment_id: 'test-value', tunnel1_dpd_timeout_action: 'test-value', tunnel1_dpd_timeout_seconds: 3.14, tunnel1_enable_tunnel_lifecycle_control: true, tunnel1_ike_versions: ['test-value'], tunnel1_inside_cidr: 'test-value', tunnel1_inside_ipv6_cidr: 'test-value', tunnel1_log_options: { 'key1' => 'val1' }, tunnel1_phase1_dh_group_numbers: [3.14], tunnel1_phase1_encryption_algorithms: ['test-value'], tunnel1_phase1_integrity_algorithms: ['test-value'], tunnel1_phase1_lifetime_seconds: 3.14, tunnel1_phase2_dh_group_numbers: [3.14], tunnel1_phase2_encryption_algorithms: ['test-value'], tunnel1_phase2_integrity_algorithms: ['test-value'], tunnel1_phase2_lifetime_seconds: 3.14, tunnel1_preshared_key: 'test-value', tunnel1_rekey_fuzz_percentage: 3.14, tunnel1_rekey_margin_time_seconds: 3.14, tunnel1_replay_window_size: 3.14, tunnel1_startup_action: 'test-value', tunnel2_dpd_timeout_action: 'test-value', tunnel2_dpd_timeout_seconds: 3.14, tunnel2_enable_tunnel_lifecycle_control: true, tunnel2_ike_versions: ['test-value'], tunnel2_inside_cidr: 'test-value', tunnel2_inside_ipv6_cidr: 'test-value', tunnel2_log_options: { 'key1' => 'val1' }, tunnel2_phase1_dh_group_numbers: [3.14], tunnel2_phase1_encryption_algorithms: ['test-value'], tunnel2_phase1_integrity_algorithms: ['test-value'], tunnel2_phase1_lifetime_seconds: 3.14, tunnel2_phase2_dh_group_numbers: [3.14], tunnel2_phase2_encryption_algorithms: ['test-value'], tunnel2_phase2_integrity_algorithms: ['test-value'], tunnel2_phase2_lifetime_seconds: 3.14, tunnel2_preshared_key: 'test-value', tunnel2_rekey_fuzz_percentage: 3.14, tunnel2_rekey_margin_time_seconds: 3.14, tunnel2_replay_window_size: 3.14, tunnel2_startup_action: 'test-value', tunnel_bandwidth: 'test-value', tunnel_inside_ip_version: 'test-value', vpn_concentrator_id: 'test-value', vpn_gateway_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -130,13 +134,25 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpn_connection', 'full')
+        expect(config).to have_key('enable_acceleration')
+        expect(config).to have_key('local_ipv4_network_cidr')
+        expect(config).to have_key('local_ipv6_network_cidr')
+        expect(config).to have_key('outside_ip_address_type')
+        expect(config).to have_key('preshared_key_storage')
+        expect(config).to have_key('region')
+        expect(config).to have_key('remote_ipv4_network_cidr')
+        expect(config).to have_key('remote_ipv6_network_cidr')
+        expect(config).to have_key('static_routes_only')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('transit_gateway_id')
         expect(config).to have_key('transport_transit_gateway_attachment_id')
         expect(config).to have_key('tunnel1_dpd_timeout_action')
         expect(config).to have_key('tunnel1_dpd_timeout_seconds')
         expect(config).to have_key('tunnel1_enable_tunnel_lifecycle_control')
         expect(config).to have_key('tunnel1_ike_versions')
+        expect(config).to have_key('tunnel1_inside_cidr')
+        expect(config).to have_key('tunnel1_inside_ipv6_cidr')
         expect(config).to have_key('tunnel1_log_options')
         expect(config).to have_key('tunnel1_phase1_dh_group_numbers')
         expect(config).to have_key('tunnel1_phase1_encryption_algorithms')
@@ -146,6 +162,7 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         expect(config).to have_key('tunnel1_phase2_encryption_algorithms')
         expect(config).to have_key('tunnel1_phase2_integrity_algorithms')
         expect(config).to have_key('tunnel1_phase2_lifetime_seconds')
+        expect(config).to have_key('tunnel1_preshared_key')
         expect(config).to have_key('tunnel1_rekey_fuzz_percentage')
         expect(config).to have_key('tunnel1_rekey_margin_time_seconds')
         expect(config).to have_key('tunnel1_replay_window_size')
@@ -154,6 +171,8 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         expect(config).to have_key('tunnel2_dpd_timeout_seconds')
         expect(config).to have_key('tunnel2_enable_tunnel_lifecycle_control')
         expect(config).to have_key('tunnel2_ike_versions')
+        expect(config).to have_key('tunnel2_inside_cidr')
+        expect(config).to have_key('tunnel2_inside_ipv6_cidr')
         expect(config).to have_key('tunnel2_log_options')
         expect(config).to have_key('tunnel2_phase1_dh_group_numbers')
         expect(config).to have_key('tunnel2_phase1_encryption_algorithms')
@@ -163,15 +182,172 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         expect(config).to have_key('tunnel2_phase2_encryption_algorithms')
         expect(config).to have_key('tunnel2_phase2_integrity_algorithms')
         expect(config).to have_key('tunnel2_phase2_lifetime_seconds')
+        expect(config).to have_key('tunnel2_preshared_key')
         expect(config).to have_key('tunnel2_rekey_fuzz_percentage')
         expect(config).to have_key('tunnel2_rekey_margin_time_seconds')
         expect(config).to have_key('tunnel2_replay_window_size')
         expect(config).to have_key('tunnel2_startup_action')
+        expect(config).to have_key('tunnel_bandwidth')
+        expect(config).to have_key('tunnel_inside_ip_version')
+        expect(config).to have_key('vpn_concentrator_id')
         expect(config).to have_key('vpn_gateway_id')
       end
     end
 
     context 'optional attributes' do
+      it 'includes enable_acceleration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(enable_acceleration: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('enable_acceleration')
+      end
+
+      it 'omits enable_acceleration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('enable_acceleration')
+      end
+      it 'includes local_ipv4_network_cidr when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(local_ipv4_network_cidr: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('local_ipv4_network_cidr')
+      end
+
+      it 'omits local_ipv4_network_cidr when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('local_ipv4_network_cidr')
+      end
+      it 'includes local_ipv6_network_cidr when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(local_ipv6_network_cidr: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('local_ipv6_network_cidr')
+      end
+
+      it 'omits local_ipv6_network_cidr when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('local_ipv6_network_cidr')
+      end
+      it 'includes outside_ip_address_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(outside_ip_address_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('outside_ip_address_type')
+      end
+
+      it 'omits outside_ip_address_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('outside_ip_address_type')
+      end
+      it 'includes preshared_key_storage when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(preshared_key_storage: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('preshared_key_storage')
+      end
+
+      it 'omits preshared_key_storage when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('preshared_key_storage')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes remote_ipv4_network_cidr when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(remote_ipv4_network_cidr: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('remote_ipv4_network_cidr')
+      end
+
+      it 'omits remote_ipv4_network_cidr when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('remote_ipv4_network_cidr')
+      end
+      it 'includes remote_ipv6_network_cidr when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(remote_ipv6_network_cidr: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('remote_ipv6_network_cidr')
+      end
+
+      it 'omits remote_ipv6_network_cidr when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('remote_ipv6_network_cidr')
+      end
+      it 'includes static_routes_only when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(static_routes_only: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('static_routes_only')
+      end
+
+      it 'omits static_routes_only when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('static_routes_only')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -188,6 +364,23 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes transit_gateway_id when provided' do
         synth = create_synthesizer
@@ -291,10 +484,44 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
         expect(config).not_to have_key('tunnel1_ike_versions')
       end
+      it 'includes tunnel1_inside_cidr when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(tunnel1_inside_cidr: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('tunnel1_inside_cidr')
+      end
+
+      it 'omits tunnel1_inside_cidr when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('tunnel1_inside_cidr')
+      end
+      it 'includes tunnel1_inside_ipv6_cidr when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(tunnel1_inside_ipv6_cidr: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('tunnel1_inside_ipv6_cidr')
+      end
+
+      it 'omits tunnel1_inside_ipv6_cidr when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('tunnel1_inside_ipv6_cidr')
+      end
       it 'includes tunnel1_log_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_vpn_connection('opt', required_attrs.merge(tunnel1_log_options: [{ 'key1' => 'val1' }]))
+        synth.aws_vpn_connection('opt', required_attrs.merge(tunnel1_log_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
         expect(config).to have_key('tunnel1_log_options')
@@ -444,6 +671,23 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
         expect(config).not_to have_key('tunnel1_phase2_lifetime_seconds')
       end
+      it 'includes tunnel1_preshared_key when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(tunnel1_preshared_key: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('tunnel1_preshared_key')
+      end
+
+      it 'omits tunnel1_preshared_key when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('tunnel1_preshared_key')
+      end
       it 'includes tunnel1_rekey_fuzz_percentage when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -580,10 +824,44 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
         expect(config).not_to have_key('tunnel2_ike_versions')
       end
+      it 'includes tunnel2_inside_cidr when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(tunnel2_inside_cidr: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('tunnel2_inside_cidr')
+      end
+
+      it 'omits tunnel2_inside_cidr when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('tunnel2_inside_cidr')
+      end
+      it 'includes tunnel2_inside_ipv6_cidr when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(tunnel2_inside_ipv6_cidr: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('tunnel2_inside_ipv6_cidr')
+      end
+
+      it 'omits tunnel2_inside_ipv6_cidr when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('tunnel2_inside_ipv6_cidr')
+      end
       it 'includes tunnel2_log_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_vpn_connection('opt', required_attrs.merge(tunnel2_log_options: [{ 'key1' => 'val1' }]))
+        synth.aws_vpn_connection('opt', required_attrs.merge(tunnel2_log_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
         expect(config).to have_key('tunnel2_log_options')
@@ -733,6 +1011,23 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
         expect(config).not_to have_key('tunnel2_phase2_lifetime_seconds')
       end
+      it 'includes tunnel2_preshared_key when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(tunnel2_preshared_key: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('tunnel2_preshared_key')
+      end
+
+      it 'omits tunnel2_preshared_key when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('tunnel2_preshared_key')
+      end
       it 'includes tunnel2_rekey_fuzz_percentage when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -801,6 +1096,57 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
         config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
         expect(config).not_to have_key('tunnel2_startup_action')
       end
+      it 'includes tunnel_bandwidth when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(tunnel_bandwidth: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('tunnel_bandwidth')
+      end
+
+      it 'omits tunnel_bandwidth when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('tunnel_bandwidth')
+      end
+      it 'includes tunnel_inside_ip_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(tunnel_inside_ip_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('tunnel_inside_ip_version')
+      end
+
+      it 'omits tunnel_inside_ip_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('tunnel_inside_ip_version')
+      end
+      it 'includes vpn_concentrator_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('opt', required_attrs.merge(vpn_concentrator_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'opt')
+        expect(config).to have_key('vpn_concentrator_id')
+      end
+
+      it 'omits vpn_concentrator_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_connection', 'minimal')
+        expect(config).not_to have_key('vpn_concentrator_id')
+      end
       it 'includes vpn_gateway_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -830,6 +1176,28 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts enable_acceleration=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enable_acceleration: val)
+          synth.aws_vpn_connection("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_vpn_connection', "bool_#{val}")
+          expect(config['enable_acceleration']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts static_routes_only=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(static_routes_only: val)
+          synth.aws_vpn_connection("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_vpn_connection', "bool_#{val}")
+          expect(config['static_routes_only']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts tunnel1_enable_tunnel_lifecycle_control=#{val}" do
           synth = create_synthesizer
@@ -897,8 +1265,8 @@ RSpec.describe Pangea::Resources::AWSVpnConnection do
     resource_type: :aws_vpn_connection,
     method: :aws_vpn_connection,
     required_attrs: { customer_gateway_id: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :arn, :core_network_arn, :core_network_attachment_arn, :customer_gateway_configuration, :enable_acceleration, :local_ipv4_network_cidr, :local_ipv6_network_cidr, :outside_ip_address_type, :preshared_key_arn, :preshared_key_storage, :remote_ipv4_network_cidr, :remote_ipv6_network_cidr, :routes, :static_routes_only, :tags_all, :transit_gateway_attachment_id, :tunnel1_address, :tunnel1_bgp_asn, :tunnel1_bgp_holdtime, :tunnel1_cgw_inside_address, :tunnel1_inside_cidr, :tunnel1_inside_ipv6_cidr, :tunnel1_preshared_key, :tunnel1_vgw_inside_address, :tunnel2_address, :tunnel2_bgp_asn, :tunnel2_bgp_holdtime, :tunnel2_cgw_inside_address, :tunnel2_inside_cidr, :tunnel2_inside_ipv6_cidr, :tunnel2_preshared_key, :tunnel2_vgw_inside_address, :tunnel_inside_ip_version, :vgw_telemetry],
+    expected_outputs: [:id, :arn, :core_network_arn, :core_network_attachment_arn, :customer_gateway_configuration, :enable_acceleration, :local_ipv4_network_cidr, :local_ipv6_network_cidr, :outside_ip_address_type, :preshared_key_arn, :preshared_key_storage, :region, :remote_ipv4_network_cidr, :remote_ipv6_network_cidr, :routes, :static_routes_only, :tags_all, :transit_gateway_attachment_id, :tunnel1_address, :tunnel1_bgp_asn, :tunnel1_bgp_holdtime, :tunnel1_cgw_inside_address, :tunnel1_inside_cidr, :tunnel1_inside_ipv6_cidr, :tunnel1_preshared_key, :tunnel1_vgw_inside_address, :tunnel2_address, :tunnel2_bgp_asn, :tunnel2_bgp_holdtime, :tunnel2_cgw_inside_address, :tunnel2_inside_cidr, :tunnel2_inside_ipv6_cidr, :tunnel2_preshared_key, :tunnel2_vgw_inside_address, :tunnel_bandwidth, :tunnel_inside_ip_version, :vgw_telemetry],
     sensitive_fields: [:customer_gateway_configuration, :tunnel1_preshared_key, :tunnel2_preshared_key],
     immutable_fields: [],
-    boolean_fields: [:tunnel1_enable_tunnel_lifecycle_control, :tunnel2_enable_tunnel_lifecycle_control]
+    boolean_fields: [:enable_acceleration, :static_routes_only, :tunnel1_enable_tunnel_lifecycle_control, :tunnel2_enable_tunnel_lifecycle_control]
 end

@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallTlsInspectionConfiguration d
         expect(ref.certificates).to eq("${aws_networkfirewall_tls_inspection_configuration.test.certificates}")
         expect(ref.encryption_configuration).to eq("${aws_networkfirewall_tls_inspection_configuration.test.encryption_configuration}")
         expect(ref.number_of_associations).to eq("${aws_networkfirewall_tls_inspection_configuration.test.number_of_associations}")
+        expect(ref.region).to eq("${aws_networkfirewall_tls_inspection_configuration.test.region}")
         expect(ref.tags_all).to eq("${aws_networkfirewall_tls_inspection_configuration.test.tags_all}")
         expect(ref.tls_inspection_configuration_id).to eq("${aws_networkfirewall_tls_inspection_configuration.test.tls_inspection_configuration_id}")
         expect(ref.update_token).to eq("${aws_networkfirewall_tls_inspection_configuration.test.update_token}")
@@ -62,6 +63,7 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallTlsInspectionConfiguration d
         expect(config).not_to have_key('certificates')
         expect(config).not_to have_key('encryption_configuration')
         expect(config).not_to have_key('number_of_associations')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('tls_inspection_configuration_id')
         expect(config).not_to have_key('update_token')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallTlsInspectionConfiguration d
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' }, tls_inspection_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', encryption_configuration: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' }, tls_inspection_configuration: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,6 +81,8 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallTlsInspectionConfiguration d
 
         config = validate_resource_structure(result, 'aws_networkfirewall_tls_inspection_configuration', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('encryption_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
         expect(config).to have_key('tls_inspection_configuration')
       end
@@ -101,6 +105,40 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallTlsInspectionConfiguration d
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkfirewall_tls_inspection_configuration', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes encryption_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_tls_inspection_configuration('opt', required_attrs.merge(encryption_configuration: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_tls_inspection_configuration', 'opt')
+        expect(config).to have_key('encryption_configuration')
+      end
+
+      it 'omits encryption_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_tls_inspection_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_tls_inspection_configuration', 'minimal')
+        expect(config).not_to have_key('encryption_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_tls_inspection_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_tls_inspection_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_tls_inspection_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_tls_inspection_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -180,7 +218,7 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallTlsInspectionConfiguration d
     resource_type: :aws_networkfirewall_tls_inspection_configuration,
     method: :aws_networkfirewall_tls_inspection_configuration,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :certificate_authority, :certificates, :encryption_configuration, :number_of_associations, :tags_all, :tls_inspection_configuration_id, :update_token],
+    expected_outputs: [:id, :arn, :certificate_authority, :certificates, :encryption_configuration, :number_of_associations, :region, :tags_all, :tls_inspection_configuration_id, :update_token],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

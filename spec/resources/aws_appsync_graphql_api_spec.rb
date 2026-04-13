@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncGraphqlApi do
 
         expect(ref.id).to eq("${aws_appsync_graphql_api.test.id}")
         expect(ref.arn).to eq("${aws_appsync_graphql_api.test.arn}")
+        expect(ref.region).to eq("${aws_appsync_graphql_api.test.region}")
         expect(ref.tags_all).to eq("${aws_appsync_graphql_api.test.tags_all}")
         expect(ref.uris).to eq("${aws_appsync_graphql_api.test.uris}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSAppsyncGraphqlApi do
 
         config = validate_resource_structure(result, 'aws_appsync_graphql_api', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('uris')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ additional_authentication_provider: [{ 'key1' => 'val1' }], api_type: 'test-value', enhanced_metrics_config: [{ 'key1' => 'val1' }], introspection_config: 'test-value', lambda_authorizer_config: [{ 'key1' => 'val1' }], log_config: [{ 'key1' => 'val1' }], merged_api_execution_role_arn: 'test-value', openid_connect_config: [{ 'key1' => 'val1' }], query_depth_limit: 3.14, resolver_count_limit: 3.14, schema: 'test-value', tags: { 'key1' => 'val1' }, user_pool_config: [{ 'key1' => 'val1' }], visibility: 'test-value', xray_enabled: true }) }
+      let(:all_attrs) { required_attrs.merge({ additional_authentication_provider: [{ 'key1' => 'val1' }], api_type: 'test-value', enhanced_metrics_config: { 'key1' => 'val1' }, introspection_config: 'test-value', lambda_authorizer_config: { 'key1' => 'val1' }, log_config: { 'key1' => 'val1' }, merged_api_execution_role_arn: 'test-value', openid_connect_config: { 'key1' => 'val1' }, query_depth_limit: 3.14, region: 'test-value', resolver_count_limit: 3.14, schema: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, user_pool_config: { 'key1' => 'val1' }, visibility: 'test-value', xray_enabled: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,9 +79,11 @@ RSpec.describe Pangea::Resources::AWSAppsyncGraphqlApi do
         expect(config).to have_key('merged_api_execution_role_arn')
         expect(config).to have_key('openid_connect_config')
         expect(config).to have_key('query_depth_limit')
+        expect(config).to have_key('region')
         expect(config).to have_key('resolver_count_limit')
         expect(config).to have_key('schema')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('user_pool_config')
         expect(config).to have_key('visibility')
         expect(config).to have_key('xray_enabled')
@@ -124,7 +128,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncGraphqlApi do
       it 'includes enhanced_metrics_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_graphql_api('opt', required_attrs.merge(enhanced_metrics_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_graphql_api('opt', required_attrs.merge(enhanced_metrics_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_graphql_api', 'opt')
         expect(config).to have_key('enhanced_metrics_config')
@@ -158,7 +162,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncGraphqlApi do
       it 'includes lambda_authorizer_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_graphql_api('opt', required_attrs.merge(lambda_authorizer_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_graphql_api('opt', required_attrs.merge(lambda_authorizer_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_graphql_api', 'opt')
         expect(config).to have_key('lambda_authorizer_config')
@@ -175,7 +179,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncGraphqlApi do
       it 'includes log_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_graphql_api('opt', required_attrs.merge(log_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_graphql_api('opt', required_attrs.merge(log_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_graphql_api', 'opt')
         expect(config).to have_key('log_config')
@@ -209,7 +213,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncGraphqlApi do
       it 'includes openid_connect_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_graphql_api('opt', required_attrs.merge(openid_connect_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_graphql_api('opt', required_attrs.merge(openid_connect_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_graphql_api', 'opt')
         expect(config).to have_key('openid_connect_config')
@@ -239,6 +243,23 @@ RSpec.describe Pangea::Resources::AWSAppsyncGraphqlApi do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_graphql_api', 'minimal')
         expect(config).not_to have_key('query_depth_limit')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_graphql_api('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_graphql_api', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_graphql_api('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_graphql_api', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes resolver_count_limit when provided' do
         synth = create_synthesizer
@@ -291,10 +312,27 @@ RSpec.describe Pangea::Resources::AWSAppsyncGraphqlApi do
         config = validate_resource_structure(result, 'aws_appsync_graphql_api', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_graphql_api('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_graphql_api', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_graphql_api('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_graphql_api', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes user_pool_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_graphql_api('opt', required_attrs.merge(user_pool_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_graphql_api('opt', required_attrs.merge(user_pool_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_graphql_api', 'opt')
         expect(config).to have_key('user_pool_config')
@@ -401,7 +439,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncGraphqlApi do
     resource_type: :aws_appsync_graphql_api,
     method: :aws_appsync_graphql_api,
     required_attrs: { authentication_type: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all, :uris],
+    expected_outputs: [:id, :arn, :region, :tags_all, :uris],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:xray_enabled]

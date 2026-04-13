@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LightsailDomainEntryAttributes,
       outputs: { id: :id },
       map: [:domain_name, :name, :target, :type],
+      map_present: [:region],
       map_bool: [:is_alias]
   end
   module AWS

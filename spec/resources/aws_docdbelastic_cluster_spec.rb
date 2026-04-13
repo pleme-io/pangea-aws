@@ -44,6 +44,8 @@ RSpec.describe Pangea::Resources::AWSDocdbelasticCluster do
         expect(ref.kms_key_id).to eq("${aws_docdbelastic_cluster.test.kms_key_id}")
         expect(ref.preferred_backup_window).to eq("${aws_docdbelastic_cluster.test.preferred_backup_window}")
         expect(ref.preferred_maintenance_window).to eq("${aws_docdbelastic_cluster.test.preferred_maintenance_window}")
+        expect(ref.region).to eq("${aws_docdbelastic_cluster.test.region}")
+        expect(ref.shard_instance_count).to eq("${aws_docdbelastic_cluster.test.shard_instance_count}")
         expect(ref.subnet_ids).to eq("${aws_docdbelastic_cluster.test.subnet_ids}")
         expect(ref.tags_all).to eq("${aws_docdbelastic_cluster.test.tags_all}")
         expect(ref.vpc_security_group_ids).to eq("${aws_docdbelastic_cluster.test.vpc_security_group_ids}")
@@ -64,6 +66,8 @@ RSpec.describe Pangea::Resources::AWSDocdbelasticCluster do
         expect(config).not_to have_key('kms_key_id')
         expect(config).not_to have_key('preferred_backup_window')
         expect(config).not_to have_key('preferred_maintenance_window')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('shard_instance_count')
         expect(config).not_to have_key('subnet_ids')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_security_group_ids')
@@ -71,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSDocdbelasticCluster do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ backup_retention_period: 3.14, kms_key_id: 'test-value', preferred_backup_window: 'test-value', preferred_maintenance_window: 'test-value', region: 'test-value', shard_instance_count: 3.14, subnet_ids: ['test-value'], tags: { 'key1' => 'val1' }, vpc_security_group_ids: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,11 +84,138 @@ RSpec.describe Pangea::Resources::AWSDocdbelasticCluster do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'full')
+        expect(config).to have_key('backup_retention_period')
+        expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('preferred_backup_window')
+        expect(config).to have_key('preferred_maintenance_window')
+        expect(config).to have_key('region')
+        expect(config).to have_key('shard_instance_count')
+        expect(config).to have_key('subnet_ids')
         expect(config).to have_key('tags')
+        expect(config).to have_key('vpc_security_group_ids')
       end
     end
 
     context 'optional attributes' do
+      it 'includes backup_retention_period when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('opt', required_attrs.merge(backup_retention_period: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'opt')
+        expect(config).to have_key('backup_retention_period')
+      end
+
+      it 'omits backup_retention_period when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'minimal')
+        expect(config).not_to have_key('backup_retention_period')
+      end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes preferred_backup_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('opt', required_attrs.merge(preferred_backup_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'opt')
+        expect(config).to have_key('preferred_backup_window')
+      end
+
+      it 'omits preferred_backup_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'minimal')
+        expect(config).not_to have_key('preferred_backup_window')
+      end
+      it 'includes preferred_maintenance_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('opt', required_attrs.merge(preferred_maintenance_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'opt')
+        expect(config).to have_key('preferred_maintenance_window')
+      end
+
+      it 'omits preferred_maintenance_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'minimal')
+        expect(config).not_to have_key('preferred_maintenance_window')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes shard_instance_count when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('opt', required_attrs.merge(shard_instance_count: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'opt')
+        expect(config).to have_key('shard_instance_count')
+      end
+
+      it 'omits shard_instance_count when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'minimal')
+        expect(config).not_to have_key('shard_instance_count')
+      end
+      it 'includes subnet_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('opt', required_attrs.merge(subnet_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'opt')
+        expect(config).to have_key('subnet_ids')
+      end
+
+      it 'omits subnet_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'minimal')
+        expect(config).not_to have_key('subnet_ids')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -101,6 +232,23 @@ RSpec.describe Pangea::Resources::AWSDocdbelasticCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes vpc_security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('opt', required_attrs.merge(vpc_security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'opt')
+        expect(config).to have_key('vpc_security_group_ids')
+      end
+
+      it 'omits vpc_security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdbelastic_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdbelastic_cluster', 'minimal')
+        expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
@@ -158,7 +306,7 @@ RSpec.describe Pangea::Resources::AWSDocdbelasticCluster do
     resource_type: :aws_docdbelastic_cluster,
     method: :aws_docdbelastic_cluster,
     required_attrs: { admin_user_name: 'test-value', admin_user_password: 'test-value', auth_type: 'test-value', name: 'test-value', shard_capacity: 3.14, shard_count: 3.14 },
-    expected_outputs: [:id, :arn, :backup_retention_period, :endpoint, :kms_key_id, :preferred_backup_window, :preferred_maintenance_window, :subnet_ids, :tags_all, :vpc_security_group_ids],
+    expected_outputs: [:id, :arn, :backup_retention_period, :endpoint, :kms_key_id, :preferred_backup_window, :preferred_maintenance_window, :region, :shard_instance_count, :subnet_ids, :tags_all, :vpc_security_group_ids],
     sensitive_fields: [:admin_user_password],
     immutable_fields: [],
     boolean_fields: []

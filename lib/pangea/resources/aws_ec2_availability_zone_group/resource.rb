@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ec2_availability_zone_group,
       attributes_class: AWS::Types::Ec2AvailabilityZoneGroupAttributes,
       outputs: { id: :id },
-      map: [:group_name, :opt_in_status]
+      map: [:group_name, :opt_in_status],
+      map_present: [:region]
   end
   module AWS
     include AWSEc2AvailabilityZoneGroup

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_api_gateway_method_settings,
       attributes_class: AWS::Types::ApiGatewayMethodSettingsAttributes,
       outputs: { id: :id },
-      map: [:method_path, :rest_api_id, :settings, :stage_name]
+      map: [:method_path, :rest_api_id, :settings, :stage_name],
+      map_present: [:region]
   end
   module AWS
     include AWSApiGatewayMethodSettings

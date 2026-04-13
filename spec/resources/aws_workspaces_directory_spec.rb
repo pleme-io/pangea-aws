@@ -46,9 +46,11 @@ RSpec.describe Pangea::Resources::AWSWorkspacesDirectory do
         expect(ref.dns_ip_addresses).to eq("${aws_workspaces_directory.test.dns_ip_addresses}")
         expect(ref.iam_role_id).to eq("${aws_workspaces_directory.test.iam_role_id}")
         expect(ref.ip_group_ids).to eq("${aws_workspaces_directory.test.ip_group_ids}")
+        expect(ref.region).to eq("${aws_workspaces_directory.test.region}")
         expect(ref.registration_code).to eq("${aws_workspaces_directory.test.registration_code}")
         expect(ref.subnet_ids).to eq("${aws_workspaces_directory.test.subnet_ids}")
         expect(ref.tags_all).to eq("${aws_workspaces_directory.test.tags_all}")
+        expect(ref.tenancy).to eq("${aws_workspaces_directory.test.tenancy}")
         expect(ref.user_identity_type).to eq("${aws_workspaces_directory.test.user_identity_type}")
         expect(ref.workspace_security_group_id).to eq("${aws_workspaces_directory.test.workspace_security_group_id}")
       end
@@ -70,16 +72,18 @@ RSpec.describe Pangea::Resources::AWSWorkspacesDirectory do
         expect(config).not_to have_key('dns_ip_addresses')
         expect(config).not_to have_key('iam_role_id')
         expect(config).not_to have_key('ip_group_ids')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('registration_code')
         expect(config).not_to have_key('subnet_ids')
         expect(config).not_to have_key('tags_all')
+        expect(config).not_to have_key('tenancy')
         expect(config).not_to have_key('user_identity_type')
         expect(config).not_to have_key('workspace_security_group_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ active_directory_config: [{ 'key1' => 'val1' }], certificate_based_auth_properties: [{ 'key1' => 'val1' }], saml_properties: [{ 'key1' => 'val1' }], self_service_permissions: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, workspace_access_properties: [{ 'key1' => 'val1' }], workspace_creation_properties: [{ 'key1' => 'val1' }], workspace_directory_description: 'test-value', workspace_directory_name: 'test-value', workspace_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ active_directory_config: { 'key1' => 'val1' }, certificate_based_auth_properties: { 'key1' => 'val1' }, directory_id: 'test-value', ip_group_ids: ['test-value'], region: 'test-value', saml_properties: { 'key1' => 'val1' }, self_service_permissions: { 'key1' => 'val1' }, subnet_ids: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tenancy: 'test-value', user_identity_type: 'test-value', workspace_access_properties: { 'key1' => 'val1' }, workspace_creation_properties: { 'key1' => 'val1' }, workspace_directory_description: 'test-value', workspace_directory_name: 'test-value', workspace_type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -90,9 +94,16 @@ RSpec.describe Pangea::Resources::AWSWorkspacesDirectory do
         config = validate_resource_structure(result, 'aws_workspaces_directory', 'full')
         expect(config).to have_key('active_directory_config')
         expect(config).to have_key('certificate_based_auth_properties')
+        expect(config).to have_key('directory_id')
+        expect(config).to have_key('ip_group_ids')
+        expect(config).to have_key('region')
         expect(config).to have_key('saml_properties')
         expect(config).to have_key('self_service_permissions')
+        expect(config).to have_key('subnet_ids')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('tenancy')
+        expect(config).to have_key('user_identity_type')
         expect(config).to have_key('workspace_access_properties')
         expect(config).to have_key('workspace_creation_properties')
         expect(config).to have_key('workspace_directory_description')
@@ -105,7 +116,7 @@ RSpec.describe Pangea::Resources::AWSWorkspacesDirectory do
       it 'includes active_directory_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_workspaces_directory('opt', required_attrs.merge(active_directory_config: [{ 'key1' => 'val1' }]))
+        synth.aws_workspaces_directory('opt', required_attrs.merge(active_directory_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_workspaces_directory', 'opt')
         expect(config).to have_key('active_directory_config')
@@ -122,7 +133,7 @@ RSpec.describe Pangea::Resources::AWSWorkspacesDirectory do
       it 'includes certificate_based_auth_properties when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_workspaces_directory('opt', required_attrs.merge(certificate_based_auth_properties: [{ 'key1' => 'val1' }]))
+        synth.aws_workspaces_directory('opt', required_attrs.merge(certificate_based_auth_properties: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_workspaces_directory', 'opt')
         expect(config).to have_key('certificate_based_auth_properties')
@@ -136,10 +147,61 @@ RSpec.describe Pangea::Resources::AWSWorkspacesDirectory do
         config = validate_resource_structure(result, 'aws_workspaces_directory', 'minimal')
         expect(config).not_to have_key('certificate_based_auth_properties')
       end
+      it 'includes directory_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('opt', required_attrs.merge(directory_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'opt')
+        expect(config).to have_key('directory_id')
+      end
+
+      it 'omits directory_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'minimal')
+        expect(config).not_to have_key('directory_id')
+      end
+      it 'includes ip_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('opt', required_attrs.merge(ip_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'opt')
+        expect(config).to have_key('ip_group_ids')
+      end
+
+      it 'omits ip_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'minimal')
+        expect(config).not_to have_key('ip_group_ids')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes saml_properties when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_workspaces_directory('opt', required_attrs.merge(saml_properties: [{ 'key1' => 'val1' }]))
+        synth.aws_workspaces_directory('opt', required_attrs.merge(saml_properties: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_workspaces_directory', 'opt')
         expect(config).to have_key('saml_properties')
@@ -156,7 +218,7 @@ RSpec.describe Pangea::Resources::AWSWorkspacesDirectory do
       it 'includes self_service_permissions when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_workspaces_directory('opt', required_attrs.merge(self_service_permissions: [{ 'key1' => 'val1' }]))
+        synth.aws_workspaces_directory('opt', required_attrs.merge(self_service_permissions: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_workspaces_directory', 'opt')
         expect(config).to have_key('self_service_permissions')
@@ -169,6 +231,23 @@ RSpec.describe Pangea::Resources::AWSWorkspacesDirectory do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_workspaces_directory', 'minimal')
         expect(config).not_to have_key('self_service_permissions')
+      end
+      it 'includes subnet_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('opt', required_attrs.merge(subnet_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'opt')
+        expect(config).to have_key('subnet_ids')
+      end
+
+      it 'omits subnet_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'minimal')
+        expect(config).not_to have_key('subnet_ids')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -187,10 +266,61 @@ RSpec.describe Pangea::Resources::AWSWorkspacesDirectory do
         config = validate_resource_structure(result, 'aws_workspaces_directory', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes tenancy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('opt', required_attrs.merge(tenancy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'opt')
+        expect(config).to have_key('tenancy')
+      end
+
+      it 'omits tenancy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'minimal')
+        expect(config).not_to have_key('tenancy')
+      end
+      it 'includes user_identity_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('opt', required_attrs.merge(user_identity_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'opt')
+        expect(config).to have_key('user_identity_type')
+      end
+
+      it 'omits user_identity_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspaces_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspaces_directory', 'minimal')
+        expect(config).not_to have_key('user_identity_type')
+      end
       it 'includes workspace_access_properties when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_workspaces_directory('opt', required_attrs.merge(workspace_access_properties: [{ 'key1' => 'val1' }]))
+        synth.aws_workspaces_directory('opt', required_attrs.merge(workspace_access_properties: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_workspaces_directory', 'opt')
         expect(config).to have_key('workspace_access_properties')
@@ -207,7 +337,7 @@ RSpec.describe Pangea::Resources::AWSWorkspacesDirectory do
       it 'includes workspace_creation_properties when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_workspaces_directory('opt', required_attrs.merge(workspace_creation_properties: [{ 'key1' => 'val1' }]))
+        synth.aws_workspaces_directory('opt', required_attrs.merge(workspace_creation_properties: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_workspaces_directory', 'opt')
         expect(config).to have_key('workspace_creation_properties')
@@ -315,7 +445,7 @@ RSpec.describe Pangea::Resources::AWSWorkspacesDirectory do
     resource_type: :aws_workspaces_directory,
     method: :aws_workspaces_directory,
     required_attrs: {},
-    expected_outputs: [:id, :alias, :customer_user_name, :directory_id, :directory_name, :directory_type, :dns_ip_addresses, :iam_role_id, :ip_group_ids, :registration_code, :subnet_ids, :tags_all, :user_identity_type, :workspace_security_group_id],
+    expected_outputs: [:id, :alias, :customer_user_name, :directory_id, :directory_name, :directory_type, :dns_ip_addresses, :iam_role_id, :ip_group_ids, :region, :registration_code, :subnet_ids, :tags_all, :tenancy, :user_identity_type, :workspace_security_group_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_iot_thing_principal_attachment,
       attributes_class: AWS::Types::IotThingPrincipalAttachmentAttributes,
       outputs: { id: :id },
-      map: [:principal, :thing]
+      map: [:principal, :thing],
+      map_present: [:region, :thing_principal_type]
   end
   module AWS
     include AWSIotThingPrincipalAttachment

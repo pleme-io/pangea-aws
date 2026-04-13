@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRamResourceShareAccepter do
         expect(ref.id).to eq("${aws_ram_resource_share_accepter.test.id}")
         expect(ref.invitation_arn).to eq("${aws_ram_resource_share_accepter.test.invitation_arn}")
         expect(ref.receiver_account_id).to eq("${aws_ram_resource_share_accepter.test.receiver_account_id}")
+        expect(ref.region).to eq("${aws_ram_resource_share_accepter.test.region}")
         expect(ref.resources).to eq("${aws_ram_resource_share_accepter.test.resources}")
         expect(ref.sender_account_id).to eq("${aws_ram_resource_share_accepter.test.sender_account_id}")
         expect(ref.share_id).to eq("${aws_ram_resource_share_accepter.test.share_id}")
@@ -58,11 +59,46 @@ RSpec.describe Pangea::Resources::AWSRamResourceShareAccepter do
         config = validate_resource_structure(result, 'aws_ram_resource_share_accepter', 'test')
         expect(config).not_to have_key('invitation_arn')
         expect(config).not_to have_key('receiver_account_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resources')
         expect(config).not_to have_key('sender_account_id')
         expect(config).not_to have_key('share_id')
         expect(config).not_to have_key('share_name')
         expect(config).not_to have_key('status')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ram_resource_share_accepter('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ram_resource_share_accepter', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ram_resource_share_accepter('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ram_resource_share_accepter', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ram_resource_share_accepter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ram_resource_share_accepter', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -108,7 +144,7 @@ RSpec.describe Pangea::Resources::AWSRamResourceShareAccepter do
     resource_type: :aws_ram_resource_share_accepter,
     method: :aws_ram_resource_share_accepter,
     required_attrs: { share_arn: 'test-value' },
-    expected_outputs: [:id, :invitation_arn, :receiver_account_id, :resources, :sender_account_id, :share_id, :share_name, :status],
+    expected_outputs: [:id, :invitation_arn, :receiver_account_id, :region, :resources, :sender_account_id, :share_id, :share_name, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

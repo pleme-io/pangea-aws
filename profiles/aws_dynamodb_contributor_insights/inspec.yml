@@ -1,0 +1,8 @@
+name: aws_dynamodb_contributor_insights
+title: Manages a aws_dynamodb_contributor_insights resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

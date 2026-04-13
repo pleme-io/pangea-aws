@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_codecommit_trigger,
       attributes_class: AWS::Types::CodecommitTriggerAttributes,
       outputs: { id: :id },
-      map: [:repository_name, :trigger]
+      map: [:repository_name, :trigger],
+      map_present: [:region]
   end
   module AWS
     include AWSCodecommitTrigger

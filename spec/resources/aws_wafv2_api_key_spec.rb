@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSWafv2ApiKey do
 
         expect(ref.id).to eq("${aws_wafv2_api_key.test.id}")
         expect(ref.api_key).to eq("${aws_wafv2_api_key.test.api_key}")
+        expect(ref.region).to eq("${aws_wafv2_api_key.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSWafv2ApiKey do
 
         config = validate_resource_structure(result, 'aws_wafv2_api_key', 'test')
         expect(config).not_to have_key('api_key')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_api_key('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_wafv2_api_key', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_api_key('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_api_key', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_api_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_api_key', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -104,7 +140,7 @@ RSpec.describe Pangea::Resources::AWSWafv2ApiKey do
     resource_type: :aws_wafv2_api_key,
     method: :aws_wafv2_api_key,
     required_attrs: { scope: 'test-value', token_domains: ['test-value'] },
-    expected_outputs: [:id, :api_key],
+    expected_outputs: [:id, :api_key, :region],
     sensitive_fields: [:api_key],
     immutable_fields: [],
     boolean_fields: []

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsPolicy do
         expect(ref.id).to eq("${aws_verifiedpermissions_policy.test.id}")
         expect(ref.created_date).to eq("${aws_verifiedpermissions_policy.test.created_date}")
         expect(ref.policy_id).to eq("${aws_verifiedpermissions_policy.test.policy_id}")
+        expect(ref.region).to eq("${aws_verifiedpermissions_policy.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsPolicy do
         config = validate_resource_structure(result, 'aws_verifiedpermissions_policy', 'test')
         expect(config).not_to have_key('created_date')
         expect(config).not_to have_key('policy_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ definition: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ definition: [{ 'key1' => 'val1' }], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsPolicy do
 
         config = validate_resource_structure(result, 'aws_verifiedpermissions_policy', 'full')
         expect(config).to have_key('definition')
+        expect(config).to have_key('region')
       end
     end
 
@@ -87,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsPolicy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedpermissions_policy', 'minimal')
         expect(config).not_to have_key('definition')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedpermissions_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedpermissions_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedpermissions_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedpermissions_policy', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -132,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsPolicy do
     resource_type: :aws_verifiedpermissions_policy,
     method: :aws_verifiedpermissions_policy,
     required_attrs: { policy_store_id: 'test-value' },
-    expected_outputs: [:id, :created_date, :policy_id],
+    expected_outputs: [:id, :created_date, :policy_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

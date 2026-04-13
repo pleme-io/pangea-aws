@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ses_receipt_rule_set,
       attributes_class: AWS::Types::SesReceiptRuleSetAttributes,
       outputs: { id: :id },
-      map: [:rule_set_name]
+      map: [:rule_set_name],
+      map_present: [:region]
   end
   module AWS
     include AWSSesReceiptRuleSet

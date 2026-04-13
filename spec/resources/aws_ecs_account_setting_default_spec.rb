@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEcsAccountSettingDefault do
 
         expect(ref.id).to eq("${aws_ecs_account_setting_default.test.id}")
         expect(ref.principal_arn).to eq("${aws_ecs_account_setting_default.test.principal_arn}")
+        expect(ref.region).to eq("${aws_ecs_account_setting_default.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSEcsAccountSettingDefault do
 
         config = validate_resource_structure(result, 'aws_ecs_account_setting_default', 'test')
         expect(config).not_to have_key('principal_arn')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_account_setting_default('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ecs_account_setting_default', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_account_setting_default('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_account_setting_default', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_account_setting_default('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_account_setting_default', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -97,7 +133,7 @@ RSpec.describe Pangea::Resources::AWSEcsAccountSettingDefault do
     resource_type: :aws_ecs_account_setting_default,
     method: :aws_ecs_account_setting_default,
     required_attrs: { name: 'test-value', value: 'test-value' },
-    expected_outputs: [:id, :principal_arn],
+    expected_outputs: [:id, :principal_arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

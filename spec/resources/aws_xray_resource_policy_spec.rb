@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSXrayResourcePolicy do
         expect(ref.id).to eq("${aws_xray_resource_policy.test.id}")
         expect(ref.last_updated_time).to eq("${aws_xray_resource_policy.test.last_updated_time}")
         expect(ref.policy_revision_id).to eq("${aws_xray_resource_policy.test.policy_revision_id}")
+        expect(ref.region).to eq("${aws_xray_resource_policy.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSXrayResourcePolicy do
         config = validate_resource_structure(result, 'aws_xray_resource_policy', 'test')
         expect(config).not_to have_key('last_updated_time')
         expect(config).not_to have_key('policy_revision_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ bypass_policy_lockout_check: true }) }
+      let(:all_attrs) { required_attrs.merge({ bypass_policy_lockout_check: true, policy_revision_id: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,8 @@ RSpec.describe Pangea::Resources::AWSXrayResourcePolicy do
 
         config = validate_resource_structure(result, 'aws_xray_resource_policy', 'full')
         expect(config).to have_key('bypass_policy_lockout_check')
+        expect(config).to have_key('policy_revision_id')
+        expect(config).to have_key('region')
       end
     end
 
@@ -87,6 +91,40 @@ RSpec.describe Pangea::Resources::AWSXrayResourcePolicy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_xray_resource_policy', 'minimal')
         expect(config).not_to have_key('bypass_policy_lockout_check')
+      end
+      it 'includes policy_revision_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_xray_resource_policy('opt', required_attrs.merge(policy_revision_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_xray_resource_policy', 'opt')
+        expect(config).to have_key('policy_revision_id')
+      end
+
+      it 'omits policy_revision_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_xray_resource_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_xray_resource_policy', 'minimal')
+        expect(config).not_to have_key('policy_revision_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_xray_resource_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_xray_resource_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_xray_resource_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_xray_resource_policy', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -147,7 +185,7 @@ RSpec.describe Pangea::Resources::AWSXrayResourcePolicy do
     resource_type: :aws_xray_resource_policy,
     method: :aws_xray_resource_policy,
     required_attrs: { policy_document: 'test-value', policy_name: 'test-value' },
-    expected_outputs: [:id, :last_updated_time, :policy_revision_id],
+    expected_outputs: [:id, :last_updated_time, :policy_revision_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:bypass_policy_lockout_check]

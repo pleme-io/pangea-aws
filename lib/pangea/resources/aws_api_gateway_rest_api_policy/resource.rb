@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_api_gateway_rest_api_policy,
       attributes_class: AWS::Types::ApiGatewayRestApiPolicyAttributes,
       outputs: { id: :id },
-      map: [:policy, :rest_api_id]
+      map: [:policy, :rest_api_id],
+      map_present: [:region]
   end
   module AWS
     include AWSApiGatewayRestApiPolicy

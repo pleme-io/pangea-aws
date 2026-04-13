@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BackupPlanAttributes,
       outputs: { id: :id },
       map: [:name, :rule],
-      map_present: [:advanced_backup_setting, :tags, :tags_all]
+      map_present: [:advanced_backup_setting, :region, :scan_setting, :tags, :tags_all]
   end
   module AWS
     include AWSBackupPlan

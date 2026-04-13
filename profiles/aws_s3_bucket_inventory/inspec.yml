@@ -1,0 +1,8 @@
+name: aws_s3_bucket_inventory
+title: Manages a aws_s3_bucket_inventory resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

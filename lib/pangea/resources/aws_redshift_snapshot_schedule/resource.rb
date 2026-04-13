@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftSnapshotScheduleAttributes,
       outputs: { id: :id },
       map: [:definitions],
-      map_present: [:description, :identifier, :identifier_prefix, :tags, :tags_all],
+      map_present: [:description, :identifier, :identifier_prefix, :region, :tags, :tags_all],
       map_bool: [:force_destroy]
   end
   module AWS

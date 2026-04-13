@@ -1,0 +1,8 @@
+name: aws_db_instance_automated_backups_replication
+title: Manages a aws_db_instance_automated_backups_replication resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

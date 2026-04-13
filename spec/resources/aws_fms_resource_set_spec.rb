@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSFmsResourceSet do
 
         expect(ref.id).to eq("${aws_fms_resource_set.test.id}")
         expect(ref.arn).to eq("${aws_fms_resource_set.test.arn}")
+        expect(ref.region).to eq("${aws_fms_resource_set.test.region}")
         expect(ref.tags_all).to eq("${aws_fms_resource_set.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSFmsResourceSet do
 
         config = validate_resource_structure(result, 'aws_fms_resource_set', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ resource_set: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', resource_set: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,12 +68,30 @@ RSpec.describe Pangea::Resources::AWSFmsResourceSet do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_fms_resource_set', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('resource_set')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_resource_set('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_resource_set', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_resource_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_resource_set', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes resource_set when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -149,7 +169,7 @@ RSpec.describe Pangea::Resources::AWSFmsResourceSet do
     resource_type: :aws_fms_resource_set,
     method: :aws_fms_resource_set,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

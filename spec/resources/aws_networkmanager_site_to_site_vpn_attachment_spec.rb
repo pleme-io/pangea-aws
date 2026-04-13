@@ -73,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerSiteToSiteVpnAttachment do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ routing_policy_label: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -82,11 +82,30 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerSiteToSiteVpnAttachment do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_networkmanager_site_to_site_vpn_attachment', 'full')
+        expect(config).to have_key('routing_policy_label')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes routing_policy_label when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_site_to_site_vpn_attachment('opt', required_attrs.merge(routing_policy_label: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_site_to_site_vpn_attachment', 'opt')
+        expect(config).to have_key('routing_policy_label')
+      end
+
+      it 'omits routing_policy_label when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_site_to_site_vpn_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_site_to_site_vpn_attachment', 'minimal')
+        expect(config).not_to have_key('routing_policy_label')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -103,6 +122,23 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerSiteToSiteVpnAttachment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkmanager_site_to_site_vpn_attachment', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_site_to_site_vpn_attachment('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_site_to_site_vpn_attachment', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_site_to_site_vpn_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_site_to_site_vpn_attachment', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 

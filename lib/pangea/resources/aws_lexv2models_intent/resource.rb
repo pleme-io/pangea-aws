@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Lexv2modelsIntentAttributes,
       outputs: { id: :id },
       map: [:bot_id, :bot_version, :locale_id, :name],
-      map_present: [:closing_setting, :confirmation_setting, :description, :dialog_code_hook, :fulfillment_code_hook, :initial_response_setting, :input_context, :kendra_configuration, :output_context, :parent_intent_signature, :sample_utterance, :slot_priority]
+      map_present: [:closing_setting, :confirmation_setting, :description, :dialog_code_hook, :fulfillment_code_hook, :initial_response_setting, :input_context, :kendra_configuration, :output_context, :parent_intent_signature, :qna_intent_configuration, :region, :sample_utterance, :slot_priority]
   end
   module AWS
     include AWSLexv2modelsIntent

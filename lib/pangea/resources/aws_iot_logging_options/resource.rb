@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IotLoggingOptionsAttributes,
       outputs: { id: :id },
       map: [:default_log_level, :role_arn],
+      map_present: [:region],
       map_bool: [:disable_all_logs]
   end
   module AWS

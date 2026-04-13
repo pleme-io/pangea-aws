@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BedrockagentAgentAliasAttributes,
       outputs: { id: :id },
       map: [:agent_alias_name, :agent_id],
-      map_present: [:description, :routing_configuration, :tags]
+      map_present: [:description, :region, :routing_configuration, :tags]
   end
   module AWS
     include AWSBedrockagentAgentAlias

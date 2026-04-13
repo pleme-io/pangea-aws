@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_s3tables_namespace,
       attributes_class: AWS::Types::S3tablesNamespaceAttributes,
       outputs: { id: :id },
-      map: [:namespace, :table_bucket_arn]
+      map: [:namespace, :table_bucket_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSS3tablesNamespace

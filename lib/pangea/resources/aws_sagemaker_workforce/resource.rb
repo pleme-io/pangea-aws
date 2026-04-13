@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerWorkforceAttributes,
       outputs: { id: :id },
       map: [:workforce_name],
-      map_present: [:cognito_config, :oidc_config, :source_ip_config, :workforce_vpc_config]
+      map_present: [:cognito_config, :oidc_config, :region, :source_ip_config, :workforce_vpc_config]
   end
   module AWS
     include AWSSagemakerWorkforce

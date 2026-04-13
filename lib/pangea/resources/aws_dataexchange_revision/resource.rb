@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DataexchangeRevisionAttributes,
       outputs: { id: :id },
       map: [:data_set_id],
-      map_present: [:comment, :tags, :tags_all]
+      map_present: [:comment, :region, :tags, :tags_all]
   end
   module AWS
     include AWSDataexchangeRevision

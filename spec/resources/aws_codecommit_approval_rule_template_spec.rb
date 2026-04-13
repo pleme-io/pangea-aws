@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSCodecommitApprovalRuleTemplate do
         expect(ref.creation_date).to eq("${aws_codecommit_approval_rule_template.test.creation_date}")
         expect(ref.last_modified_date).to eq("${aws_codecommit_approval_rule_template.test.last_modified_date}")
         expect(ref.last_modified_user).to eq("${aws_codecommit_approval_rule_template.test.last_modified_user}")
+        expect(ref.region).to eq("${aws_codecommit_approval_rule_template.test.region}")
         expect(ref.rule_content_sha256).to eq("${aws_codecommit_approval_rule_template.test.rule_content_sha256}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSCodecommitApprovalRuleTemplate do
         expect(config).not_to have_key('creation_date')
         expect(config).not_to have_key('last_modified_date')
         expect(config).not_to have_key('last_modified_user')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('rule_content_sha256')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,6 +75,7 @@ RSpec.describe Pangea::Resources::AWSCodecommitApprovalRuleTemplate do
 
         config = validate_resource_structure(result, 'aws_codecommit_approval_rule_template', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -93,6 +96,23 @@ RSpec.describe Pangea::Resources::AWSCodecommitApprovalRuleTemplate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codecommit_approval_rule_template', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecommit_approval_rule_template('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecommit_approval_rule_template', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecommit_approval_rule_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecommit_approval_rule_template', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -139,7 +159,7 @@ RSpec.describe Pangea::Resources::AWSCodecommitApprovalRuleTemplate do
     resource_type: :aws_codecommit_approval_rule_template,
     method: :aws_codecommit_approval_rule_template,
     required_attrs: { content: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :approval_rule_template_id, :creation_date, :last_modified_date, :last_modified_user, :rule_content_sha256],
+    expected_outputs: [:id, :approval_rule_template_id, :creation_date, :last_modified_date, :last_modified_user, :region, :rule_content_sha256],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

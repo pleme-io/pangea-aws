@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeSubscriber do
         expect(ref.id).to eq("${aws_securitylake_subscriber.test.id}")
         expect(ref.access_type).to eq("${aws_securitylake_subscriber.test.access_type}")
         expect(ref.arn).to eq("${aws_securitylake_subscriber.test.arn}")
+        expect(ref.region).to eq("${aws_securitylake_subscriber.test.region}")
         expect(ref.resource_share_arn).to eq("${aws_securitylake_subscriber.test.resource_share_arn}")
         expect(ref.resource_share_name).to eq("${aws_securitylake_subscriber.test.resource_share_name}")
         expect(ref.role_arn).to eq("${aws_securitylake_subscriber.test.role_arn}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeSubscriber do
         config = validate_resource_structure(result, 'aws_securitylake_subscriber', 'test')
         expect(config).not_to have_key('access_type')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_share_arn')
         expect(config).not_to have_key('resource_share_name')
         expect(config).not_to have_key('role_arn')
@@ -71,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeSubscriber do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ source: [{ 'key1' => 'val1' }], subscriber_description: 'test-value', subscriber_identity: [{ 'key1' => 'val1' }], subscriber_name: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ access_type: 'test-value', region: 'test-value', source: [{ 'key1' => 'val1' }], subscriber_description: 'test-value', subscriber_identity: [{ 'key1' => 'val1' }], subscriber_name: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,6 +82,8 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeSubscriber do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_securitylake_subscriber', 'full')
+        expect(config).to have_key('access_type')
+        expect(config).to have_key('region')
         expect(config).to have_key('source')
         expect(config).to have_key('subscriber_description')
         expect(config).to have_key('subscriber_identity')
@@ -89,6 +93,40 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeSubscriber do
     end
 
     context 'optional attributes' do
+      it 'includes access_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securitylake_subscriber('opt', required_attrs.merge(access_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securitylake_subscriber', 'opt')
+        expect(config).to have_key('access_type')
+      end
+
+      it 'omits access_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securitylake_subscriber('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securitylake_subscriber', 'minimal')
+        expect(config).not_to have_key('access_type')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securitylake_subscriber('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securitylake_subscriber', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securitylake_subscriber('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securitylake_subscriber', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes source when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -217,7 +255,7 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeSubscriber do
     resource_type: :aws_securitylake_subscriber,
     method: :aws_securitylake_subscriber,
     required_attrs: {},
-    expected_outputs: [:id, :access_type, :arn, :resource_share_arn, :resource_share_name, :role_arn, :s3_bucket_arn, :subscriber_endpoint, :subscriber_status, :tags_all],
+    expected_outputs: [:id, :access_type, :arn, :region, :resource_share_arn, :resource_share_name, :role_arn, :s3_bucket_arn, :subscriber_endpoint, :subscriber_status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

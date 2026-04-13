@@ -48,6 +48,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgent do
         expect(ref.prepare_agent).to eq("${aws_bedrockagent_agent.test.prepare_agent}")
         expect(ref.prepared_at).to eq("${aws_bedrockagent_agent.test.prepared_at}")
         expect(ref.prompt_override_configuration).to eq("${aws_bedrockagent_agent.test.prompt_override_configuration}")
+        expect(ref.region).to eq("${aws_bedrockagent_agent.test.region}")
         expect(ref.skip_resource_in_use_check).to eq("${aws_bedrockagent_agent.test.skip_resource_in_use_check}")
         expect(ref.tags_all).to eq("${aws_bedrockagent_agent.test.tags_all}")
       end
@@ -71,13 +72,14 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgent do
         expect(config).not_to have_key('prepare_agent')
         expect(config).not_to have_key('prepared_at')
         expect(config).not_to have_key('prompt_override_configuration')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('skip_resource_in_use_check')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ customer_encryption_key_arn: 'test-value', description: 'test-value', guardrail_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ agent_collaboration: 'test-value', customer_encryption_key_arn: 'test-value', description: 'test-value', guardrail_configuration: [{ 'key1' => 'val1' }], idle_session_ttl_in_seconds: 3.14, instruction: 'test-value', memory_configuration: [{ 'key1' => 'val1' }], prepare_agent: true, prompt_override_configuration: [{ 'key1' => 'val1' }], region: 'test-value', skip_resource_in_use_check: true, tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -86,14 +88,39 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgent do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'full')
+        expect(config).to have_key('agent_collaboration')
         expect(config).to have_key('customer_encryption_key_arn')
         expect(config).to have_key('description')
         expect(config).to have_key('guardrail_configuration')
+        expect(config).to have_key('idle_session_ttl_in_seconds')
+        expect(config).to have_key('instruction')
+        expect(config).to have_key('memory_configuration')
+        expect(config).to have_key('prepare_agent')
+        expect(config).to have_key('prompt_override_configuration')
+        expect(config).to have_key('region')
+        expect(config).to have_key('skip_resource_in_use_check')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes agent_collaboration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('opt', required_attrs.merge(agent_collaboration: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'opt')
+        expect(config).to have_key('agent_collaboration')
+      end
+
+      it 'omits agent_collaboration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'minimal')
+        expect(config).not_to have_key('agent_collaboration')
+      end
       it 'includes customer_encryption_key_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -145,6 +172,125 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgent do
         config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'minimal')
         expect(config).not_to have_key('guardrail_configuration')
       end
+      it 'includes idle_session_ttl_in_seconds when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('opt', required_attrs.merge(idle_session_ttl_in_seconds: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'opt')
+        expect(config).to have_key('idle_session_ttl_in_seconds')
+      end
+
+      it 'omits idle_session_ttl_in_seconds when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'minimal')
+        expect(config).not_to have_key('idle_session_ttl_in_seconds')
+      end
+      it 'includes instruction when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('opt', required_attrs.merge(instruction: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'opt')
+        expect(config).to have_key('instruction')
+      end
+
+      it 'omits instruction when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'minimal')
+        expect(config).not_to have_key('instruction')
+      end
+      it 'includes memory_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('opt', required_attrs.merge(memory_configuration: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'opt')
+        expect(config).to have_key('memory_configuration')
+      end
+
+      it 'omits memory_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'minimal')
+        expect(config).not_to have_key('memory_configuration')
+      end
+      it 'includes prepare_agent when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('opt', required_attrs.merge(prepare_agent: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'opt')
+        expect(config).to have_key('prepare_agent')
+      end
+
+      it 'omits prepare_agent when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'minimal')
+        expect(config).not_to have_key('prepare_agent')
+      end
+      it 'includes prompt_override_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('opt', required_attrs.merge(prompt_override_configuration: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'opt')
+        expect(config).to have_key('prompt_override_configuration')
+      end
+
+      it 'omits prompt_override_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'minimal')
+        expect(config).not_to have_key('prompt_override_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes skip_resource_in_use_check when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('opt', required_attrs.merge(skip_resource_in_use_check: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'opt')
+        expect(config).to have_key('skip_resource_in_use_check')
+      end
+
+      it 'omits skip_resource_in_use_check when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'minimal')
+        expect(config).not_to have_key('skip_resource_in_use_check')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -161,6 +307,31 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgent do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_bedrockagent_agent', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts prepare_agent=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(prepare_agent: val)
+          synth.aws_bedrockagent_agent("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_bedrockagent_agent', "bool_#{val}")
+          expect(config['prepare_agent']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts skip_resource_in_use_check=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(skip_resource_in_use_check: val)
+          synth.aws_bedrockagent_agent("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_bedrockagent_agent', "bool_#{val}")
+          expect(config['skip_resource_in_use_check']).to eq(val)
+        end
       end
     end
 
@@ -208,8 +379,8 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgent do
     resource_type: :aws_bedrockagent_agent,
     method: :aws_bedrockagent_agent,
     required_attrs: { agent_name: 'test-value', agent_resource_role_arn: 'test-value', foundation_model: 'test-value' },
-    expected_outputs: [:id, :agent_arn, :agent_collaboration, :agent_id, :agent_version, :idle_session_ttl_in_seconds, :instruction, :memory_configuration, :prepare_agent, :prepared_at, :prompt_override_configuration, :skip_resource_in_use_check, :tags_all],
+    expected_outputs: [:id, :agent_arn, :agent_collaboration, :agent_id, :agent_version, :idle_session_ttl_in_seconds, :instruction, :memory_configuration, :prepare_agent, :prepared_at, :prompt_override_configuration, :region, :skip_resource_in_use_check, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:prepare_agent, :skip_resource_in_use_check]
 end

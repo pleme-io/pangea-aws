@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightNamespace do
         expect(ref.capacity_region).to eq("${aws_quicksight_namespace.test.capacity_region}")
         expect(ref.creation_status).to eq("${aws_quicksight_namespace.test.creation_status}")
         expect(ref.identity_store).to eq("${aws_quicksight_namespace.test.identity_store}")
+        expect(ref.region).to eq("${aws_quicksight_namespace.test.region}")
         expect(ref.tags_all).to eq("${aws_quicksight_namespace.test.tags_all}")
       end
     end
@@ -60,12 +61,13 @@ RSpec.describe Pangea::Resources::AWSQuicksightNamespace do
         expect(config).not_to have_key('capacity_region')
         expect(config).not_to have_key('creation_status')
         expect(config).not_to have_key('identity_store')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ aws_account_id: 'test-value', identity_store: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,11 +76,65 @@ RSpec.describe Pangea::Resources::AWSQuicksightNamespace do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_quicksight_namespace', 'full')
+        expect(config).to have_key('aws_account_id')
+        expect(config).to have_key('identity_store')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes aws_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_namespace('opt', required_attrs.merge(aws_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_namespace', 'opt')
+        expect(config).to have_key('aws_account_id')
+      end
+
+      it 'omits aws_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_namespace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_namespace', 'minimal')
+        expect(config).not_to have_key('aws_account_id')
+      end
+      it 'includes identity_store when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_namespace('opt', required_attrs.merge(identity_store: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_namespace', 'opt')
+        expect(config).to have_key('identity_store')
+      end
+
+      it 'omits identity_store when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_namespace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_namespace', 'minimal')
+        expect(config).not_to have_key('identity_store')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_namespace('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_namespace', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_namespace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_namespace', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -140,7 +196,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightNamespace do
     resource_type: :aws_quicksight_namespace,
     method: :aws_quicksight_namespace,
     required_attrs: { namespace: 'test-value' },
-    expected_outputs: [:id, :arn, :aws_account_id, :capacity_region, :creation_status, :identity_store, :tags_all],
+    expected_outputs: [:id, :arn, :aws_account_id, :capacity_region, :creation_status, :identity_store, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

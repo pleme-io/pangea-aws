@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncTask do
 
         expect(ref.id).to eq("${aws_datasync_task.test.id}")
         expect(ref.arn).to eq("${aws_datasync_task.test.arn}")
+        expect(ref.region).to eq("${aws_datasync_task.test.region}")
         expect(ref.tags_all).to eq("${aws_datasync_task.test.tags_all}")
         expect(ref.task_mode).to eq("${aws_datasync_task.test.task_mode}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSDatasyncTask do
 
         config = validate_resource_structure(result, 'aws_datasync_task', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('task_mode')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cloudwatch_log_group_arn: 'test-value', excludes: [{ 'key1' => 'val1' }], includes: [{ 'key1' => 'val1' }], name: 'test-value', options: [{ 'key1' => 'val1' }], schedule: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, task_report_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ cloudwatch_log_group_arn: 'test-value', excludes: { 'key1' => 'val1' }, includes: { 'key1' => 'val1' }, name: 'test-value', options: { 'key1' => 'val1' }, region: 'test-value', schedule: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, task_mode: 'test-value', task_report_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,8 +75,11 @@ RSpec.describe Pangea::Resources::AWSDatasyncTask do
         expect(config).to have_key('includes')
         expect(config).to have_key('name')
         expect(config).to have_key('options')
+        expect(config).to have_key('region')
         expect(config).to have_key('schedule')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('task_mode')
         expect(config).to have_key('task_report_config')
       end
     end
@@ -100,7 +105,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncTask do
       it 'includes excludes when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_datasync_task('opt', required_attrs.merge(excludes: [{ 'key1' => 'val1' }]))
+        synth.aws_datasync_task('opt', required_attrs.merge(excludes: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_task', 'opt')
         expect(config).to have_key('excludes')
@@ -117,7 +122,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncTask do
       it 'includes includes when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_datasync_task('opt', required_attrs.merge(includes: [{ 'key1' => 'val1' }]))
+        synth.aws_datasync_task('opt', required_attrs.merge(includes: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_task', 'opt')
         expect(config).to have_key('includes')
@@ -151,7 +156,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncTask do
       it 'includes options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_datasync_task('opt', required_attrs.merge(options: [{ 'key1' => 'val1' }]))
+        synth.aws_datasync_task('opt', required_attrs.merge(options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_task', 'opt')
         expect(config).to have_key('options')
@@ -165,10 +170,27 @@ RSpec.describe Pangea::Resources::AWSDatasyncTask do
         config = validate_resource_structure(result, 'aws_datasync_task', 'minimal')
         expect(config).not_to have_key('options')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_task('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_task', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_task('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_task', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes schedule when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_datasync_task('opt', required_attrs.merge(schedule: [{ 'key1' => 'val1' }]))
+        synth.aws_datasync_task('opt', required_attrs.merge(schedule: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_task', 'opt')
         expect(config).to have_key('schedule')
@@ -199,10 +221,44 @@ RSpec.describe Pangea::Resources::AWSDatasyncTask do
         config = validate_resource_structure(result, 'aws_datasync_task', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_task('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_task', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_task('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_task', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes task_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_task('opt', required_attrs.merge(task_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_task', 'opt')
+        expect(config).to have_key('task_mode')
+      end
+
+      it 'omits task_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_task('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_task', 'minimal')
+        expect(config).not_to have_key('task_mode')
+      end
       it 'includes task_report_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_datasync_task('opt', required_attrs.merge(task_report_config: [{ 'key1' => 'val1' }]))
+        synth.aws_datasync_task('opt', required_attrs.merge(task_report_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_task', 'opt')
         expect(config).to have_key('task_report_config')
@@ -261,7 +317,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncTask do
     resource_type: :aws_datasync_task,
     method: :aws_datasync_task,
     required_attrs: { destination_location_arn: 'test-value', source_location_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all, :task_mode],
+    expected_outputs: [:id, :arn, :region, :tags_all, :task_mode],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSSignerSigningProfile do
         expect(ref.name).to eq("${aws_signer_signing_profile.test.name}")
         expect(ref.name_prefix).to eq("${aws_signer_signing_profile.test.name_prefix}")
         expect(ref.platform_display_name).to eq("${aws_signer_signing_profile.test.platform_display_name}")
+        expect(ref.region).to eq("${aws_signer_signing_profile.test.region}")
         expect(ref.revocation_record).to eq("${aws_signer_signing_profile.test.revocation_record}")
         expect(ref.status).to eq("${aws_signer_signing_profile.test.status}")
         expect(ref.tags_all).to eq("${aws_signer_signing_profile.test.tags_all}")
@@ -62,6 +63,7 @@ RSpec.describe Pangea::Resources::AWSSignerSigningProfile do
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
         expect(config).not_to have_key('platform_display_name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('revocation_record')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
@@ -71,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSSignerSigningProfile do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ signature_validity_period: [{ 'key1' => 'val1' }], signing_material: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ name: 'test-value', name_prefix: 'test-value', region: 'test-value', signature_validity_period: { 'key1' => 'val1' }, signing_material: { 'key1' => 'val1' }, signing_parameters: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,17 +82,73 @@ RSpec.describe Pangea::Resources::AWSSignerSigningProfile do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_signer_signing_profile', 'full')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
         expect(config).to have_key('signature_validity_period')
         expect(config).to have_key('signing_material')
+        expect(config).to have_key('signing_parameters')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes signature_validity_period when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_signer_signing_profile('opt', required_attrs.merge(signature_validity_period: [{ 'key1' => 'val1' }]))
+        synth.aws_signer_signing_profile('opt', required_attrs.merge(signature_validity_period: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_signer_signing_profile', 'opt')
         expect(config).to have_key('signature_validity_period')
@@ -107,7 +165,7 @@ RSpec.describe Pangea::Resources::AWSSignerSigningProfile do
       it 'includes signing_material when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_signer_signing_profile('opt', required_attrs.merge(signing_material: [{ 'key1' => 'val1' }]))
+        synth.aws_signer_signing_profile('opt', required_attrs.merge(signing_material: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_signer_signing_profile', 'opt')
         expect(config).to have_key('signing_material')
@@ -120,6 +178,23 @@ RSpec.describe Pangea::Resources::AWSSignerSigningProfile do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_signer_signing_profile', 'minimal')
         expect(config).not_to have_key('signing_material')
+      end
+      it 'includes signing_parameters when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile('opt', required_attrs.merge(signing_parameters: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile', 'opt')
+        expect(config).to have_key('signing_parameters')
+      end
+
+      it 'omits signing_parameters when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile', 'minimal')
+        expect(config).not_to have_key('signing_parameters')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -137,6 +212,23 @@ RSpec.describe Pangea::Resources::AWSSignerSigningProfile do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_signer_signing_profile', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -182,7 +274,7 @@ RSpec.describe Pangea::Resources::AWSSignerSigningProfile do
     resource_type: :aws_signer_signing_profile,
     method: :aws_signer_signing_profile,
     required_attrs: { platform_id: 'test-value' },
-    expected_outputs: [:id, :arn, :name, :name_prefix, :platform_display_name, :revocation_record, :status, :tags_all, :version, :version_arn],
+    expected_outputs: [:id, :arn, :name, :name_prefix, :platform_display_name, :region, :revocation_record, :status, :tags_all, :version, :version_arn],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

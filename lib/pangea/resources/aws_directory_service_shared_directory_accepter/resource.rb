@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_directory_service_shared_directory_accepter,
       attributes_class: AWS::Types::DirectoryServiceSharedDirectoryAccepterAttributes,
       outputs: { id: :id },
-      map: [:shared_directory_id]
+      map: [:shared_directory_id],
+      map_present: [:region]
   end
   module AWS
     include AWSDirectoryServiceSharedDirectoryAccepter

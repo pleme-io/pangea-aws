@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServer do
         expect(ref.id).to eq("${aws_vpc_route_server.test.id}")
         expect(ref.arn).to eq("${aws_vpc_route_server.test.arn}")
         expect(ref.persist_routes).to eq("${aws_vpc_route_server.test.persist_routes}")
+        expect(ref.region).to eq("${aws_vpc_route_server.test.region}")
         expect(ref.route_server_id).to eq("${aws_vpc_route_server.test.route_server_id}")
         expect(ref.sns_notifications_enabled).to eq("${aws_vpc_route_server.test.sns_notifications_enabled}")
         expect(ref.sns_topic_arn).to eq("${aws_vpc_route_server.test.sns_topic_arn}")
@@ -57,6 +58,7 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServer do
         config = validate_resource_structure(result, 'aws_vpc_route_server', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('persist_routes')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('route_server_id')
         expect(config).not_to have_key('sns_notifications_enabled')
         expect(config).not_to have_key('sns_topic_arn')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServer do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ persist_routes_duration: 3.14, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ persist_routes: 'test-value', persist_routes_duration: 3.14, region: 'test-value', sns_notifications_enabled: true, tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,12 +76,32 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServer do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpc_route_server', 'full')
+        expect(config).to have_key('persist_routes')
         expect(config).to have_key('persist_routes_duration')
+        expect(config).to have_key('region')
+        expect(config).to have_key('sns_notifications_enabled')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes persist_routes when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_route_server('opt', required_attrs.merge(persist_routes: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_route_server', 'opt')
+        expect(config).to have_key('persist_routes')
+      end
+
+      it 'omits persist_routes when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_route_server('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_route_server', 'minimal')
+        expect(config).not_to have_key('persist_routes')
+      end
       it 'includes persist_routes_duration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -97,6 +119,40 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServer do
         config = validate_resource_structure(result, 'aws_vpc_route_server', 'minimal')
         expect(config).not_to have_key('persist_routes_duration')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_route_server('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_route_server', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_route_server('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_route_server', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes sns_notifications_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_route_server('opt', required_attrs.merge(sns_notifications_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_route_server', 'opt')
+        expect(config).to have_key('sns_notifications_enabled')
+      end
+
+      it 'omits sns_notifications_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_route_server('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_route_server', 'minimal')
+        expect(config).not_to have_key('sns_notifications_enabled')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -113,6 +169,20 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServer do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_route_server', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts sns_notifications_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(sns_notifications_enabled: val)
+          synth.aws_vpc_route_server("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_vpc_route_server', "bool_#{val}")
+          expect(config['sns_notifications_enabled']).to eq(val)
+        end
       end
     end
 
@@ -158,8 +228,8 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServer do
     resource_type: :aws_vpc_route_server,
     method: :aws_vpc_route_server,
     required_attrs: { amazon_side_asn: 3.14 },
-    expected_outputs: [:id, :arn, :persist_routes, :route_server_id, :sns_notifications_enabled, :sns_topic_arn, :tags_all],
+    expected_outputs: [:id, :arn, :persist_routes, :region, :route_server_id, :sns_notifications_enabled, :sns_topic_arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:sns_notifications_enabled]
 end

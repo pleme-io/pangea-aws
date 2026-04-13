@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSDbProxy do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { auth: [{ 'key1' => 'val1' }], engine_family: 'test-value', name: 'test-value', role_arn: 'test-value', vpc_subnet_ids: ['test-value'] } }
+  let(:required_attrs) { { engine_family: 'test-value', name: 'test-value', role_arn: 'test-value', vpc_subnet_ids: ['test-value'] } }
 
   describe ':aws_db_proxy' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSDbProxy do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_db_proxy', 'test')
-        validate_required_attributes(config, [:auth, :engine_family, :name, :role_arn, :vpc_subnet_ids])
+        validate_required_attributes(config, [:engine_family, :name, :role_arn, :vpc_subnet_ids])
       end
 
       it 'returns a ResourceReference' do
@@ -39,9 +39,13 @@ RSpec.describe Pangea::Resources::AWSDbProxy do
 
         expect(ref.id).to eq("${aws_db_proxy.test.id}")
         expect(ref.arn).to eq("${aws_db_proxy.test.arn}")
+        expect(ref.default_auth_scheme).to eq("${aws_db_proxy.test.default_auth_scheme}")
         expect(ref.endpoint).to eq("${aws_db_proxy.test.endpoint}")
+        expect(ref.endpoint_network_type).to eq("${aws_db_proxy.test.endpoint_network_type}")
         expect(ref.idle_client_timeout).to eq("${aws_db_proxy.test.idle_client_timeout}")
+        expect(ref.region).to eq("${aws_db_proxy.test.region}")
         expect(ref.tags_all).to eq("${aws_db_proxy.test.tags_all}")
+        expect(ref.target_connection_network_type).to eq("${aws_db_proxy.test.target_connection_network_type}")
         expect(ref.vpc_security_group_ids).to eq("${aws_db_proxy.test.vpc_security_group_ids}")
       end
     end
@@ -55,15 +59,19 @@ RSpec.describe Pangea::Resources::AWSDbProxy do
 
         config = validate_resource_structure(result, 'aws_db_proxy', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('default_auth_scheme')
         expect(config).not_to have_key('endpoint')
+        expect(config).not_to have_key('endpoint_network_type')
         expect(config).not_to have_key('idle_client_timeout')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
+        expect(config).not_to have_key('target_connection_network_type')
         expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ debug_logging: true, require_tls: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ auth: [{ 'key1' => 'val1' }], debug_logging: true, default_auth_scheme: 'test-value', endpoint_network_type: 'test-value', idle_client_timeout: 3.14, region: 'test-value', require_tls: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target_connection_network_type: 'test-value', vpc_security_group_ids: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,13 +80,38 @@ RSpec.describe Pangea::Resources::AWSDbProxy do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_db_proxy', 'full')
+        expect(config).to have_key('auth')
         expect(config).to have_key('debug_logging')
+        expect(config).to have_key('default_auth_scheme')
+        expect(config).to have_key('endpoint_network_type')
+        expect(config).to have_key('idle_client_timeout')
+        expect(config).to have_key('region')
         expect(config).to have_key('require_tls')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('target_connection_network_type')
+        expect(config).to have_key('vpc_security_group_ids')
       end
     end
 
     context 'optional attributes' do
+      it 'includes auth when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('opt', required_attrs.merge(auth: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'opt')
+        expect(config).to have_key('auth')
+      end
+
+      it 'omits auth when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'minimal')
+        expect(config).not_to have_key('auth')
+      end
       it 'includes debug_logging when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -95,6 +128,74 @@ RSpec.describe Pangea::Resources::AWSDbProxy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_proxy', 'minimal')
         expect(config).not_to have_key('debug_logging')
+      end
+      it 'includes default_auth_scheme when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('opt', required_attrs.merge(default_auth_scheme: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'opt')
+        expect(config).to have_key('default_auth_scheme')
+      end
+
+      it 'omits default_auth_scheme when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'minimal')
+        expect(config).not_to have_key('default_auth_scheme')
+      end
+      it 'includes endpoint_network_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('opt', required_attrs.merge(endpoint_network_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'opt')
+        expect(config).to have_key('endpoint_network_type')
+      end
+
+      it 'omits endpoint_network_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'minimal')
+        expect(config).not_to have_key('endpoint_network_type')
+      end
+      it 'includes idle_client_timeout when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('opt', required_attrs.merge(idle_client_timeout: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'opt')
+        expect(config).to have_key('idle_client_timeout')
+      end
+
+      it 'omits idle_client_timeout when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'minimal')
+        expect(config).not_to have_key('idle_client_timeout')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes require_tls when provided' do
         synth = create_synthesizer
@@ -129,6 +230,57 @@ RSpec.describe Pangea::Resources::AWSDbProxy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_proxy', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes target_connection_network_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('opt', required_attrs.merge(target_connection_network_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'opt')
+        expect(config).to have_key('target_connection_network_type')
+      end
+
+      it 'omits target_connection_network_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'minimal')
+        expect(config).not_to have_key('target_connection_network_type')
+      end
+      it 'includes vpc_security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('opt', required_attrs.merge(vpc_security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'opt')
+        expect(config).to have_key('vpc_security_group_ids')
+      end
+
+      it 'omits vpc_security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy', 'minimal')
+        expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
@@ -165,7 +317,6 @@ RSpec.describe Pangea::Resources::AWSDbProxy do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_db_proxy', 'typed')
-        expect(config['auth']).to be_a(Array)
         expect(config['engine_family']).to be_a(String)
         expect(config['name']).to be_a(String)
         expect(config['role_arn']).to be_a(String)
@@ -202,8 +353,8 @@ RSpec.describe Pangea::Resources::AWSDbProxy do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_db_proxy,
     method: :aws_db_proxy,
-    required_attrs: { auth: [{ 'key1' => 'val1' }], engine_family: 'test-value', name: 'test-value', role_arn: 'test-value', vpc_subnet_ids: ['test-value'] },
-    expected_outputs: [:id, :arn, :endpoint, :idle_client_timeout, :tags_all, :vpc_security_group_ids],
+    required_attrs: { engine_family: 'test-value', name: 'test-value', role_arn: 'test-value', vpc_subnet_ids: ['test-value'] },
+    expected_outputs: [:id, :arn, :default_auth_scheme, :endpoint, :endpoint_network_type, :idle_client_timeout, :region, :tags_all, :target_connection_network_type, :vpc_security_group_ids],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:debug_logging, :require_tls]

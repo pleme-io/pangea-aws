@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSRdsClusterSnapshotCopy do
         expect(ref.engine).to eq("${aws_rds_cluster_snapshot_copy.test.engine}")
         expect(ref.engine_version).to eq("${aws_rds_cluster_snapshot_copy.test.engine_version}")
         expect(ref.license_model).to eq("${aws_rds_cluster_snapshot_copy.test.license_model}")
+        expect(ref.region).to eq("${aws_rds_cluster_snapshot_copy.test.region}")
         expect(ref.snapshot_type).to eq("${aws_rds_cluster_snapshot_copy.test.snapshot_type}")
         expect(ref.storage_encrypted).to eq("${aws_rds_cluster_snapshot_copy.test.storage_encrypted}")
         expect(ref.storage_type).to eq("${aws_rds_cluster_snapshot_copy.test.storage_type}")
@@ -64,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSRdsClusterSnapshotCopy do
         expect(config).not_to have_key('engine')
         expect(config).not_to have_key('engine_version')
         expect(config).not_to have_key('license_model')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('snapshot_type')
         expect(config).not_to have_key('storage_encrypted')
         expect(config).not_to have_key('storage_type')
@@ -73,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSRdsClusterSnapshotCopy do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ copy_tags: true, destination_region: 'test-value', kms_key_id: 'test-value', presigned_url: 'test-value', shared_accounts: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ copy_tags: true, destination_region: 'test-value', kms_key_id: 'test-value', presigned_url: 'test-value', region: 'test-value', shared_accounts: ['test-value'], tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -86,6 +88,7 @@ RSpec.describe Pangea::Resources::AWSRdsClusterSnapshotCopy do
         expect(config).to have_key('destination_region')
         expect(config).to have_key('kms_key_id')
         expect(config).to have_key('presigned_url')
+        expect(config).to have_key('region')
         expect(config).to have_key('shared_accounts')
         expect(config).to have_key('tags')
       end
@@ -159,6 +162,23 @@ RSpec.describe Pangea::Resources::AWSRdsClusterSnapshotCopy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_cluster_snapshot_copy', 'minimal')
         expect(config).not_to have_key('presigned_url')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster_snapshot_copy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster_snapshot_copy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster_snapshot_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster_snapshot_copy', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes shared_accounts when provided' do
         synth = create_synthesizer
@@ -253,7 +273,7 @@ RSpec.describe Pangea::Resources::AWSRdsClusterSnapshotCopy do
     resource_type: :aws_rds_cluster_snapshot_copy,
     method: :aws_rds_cluster_snapshot_copy,
     required_attrs: { source_db_cluster_snapshot_identifier: 'test-value', target_db_cluster_snapshot_identifier: 'test-value' },
-    expected_outputs: [:id, :allocated_storage, :db_cluster_snapshot_arn, :engine, :engine_version, :license_model, :snapshot_type, :storage_encrypted, :storage_type, :tags_all, :vpc_id],
+    expected_outputs: [:id, :allocated_storage, :db_cluster_snapshot_arn, :engine, :engine_version, :license_model, :region, :snapshot_type, :storage_encrypted, :storage_type, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:copy_tags]

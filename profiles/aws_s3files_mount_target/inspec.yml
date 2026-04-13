@@ -1,0 +1,8 @@
+name: aws_s3files_mount_target
+title: Manages a aws_s3files_mount_target resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_iot_certificate,
       attributes_class: AWS::Types::IotCertificateAttributes,
       outputs: { id: :id },
-      map_present: [:ca_pem, :certificate_pem, :csr],
+      map_present: [:ca_pem, :certificate_pem, :csr, :region],
       map_bool: [:active]
   end
   module AWS

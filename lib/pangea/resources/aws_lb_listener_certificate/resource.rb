@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_lb_listener_certificate,
       attributes_class: AWS::Types::LbListenerCertificateAttributes,
       outputs: { id: :id },
-      map: [:certificate_arn, :listener_arn]
+      map: [:certificate_arn, :listener_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSLbListenerCertificate

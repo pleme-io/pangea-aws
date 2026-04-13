@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_emr_block_public_access_configuration,
       attributes_class: AWS::Types::EmrBlockPublicAccessConfigurationAttributes,
       outputs: { id: :id },
-      map_present: [:permitted_public_security_group_rule_range],
+      map_present: [:permitted_public_security_group_rule_range, :region],
       map_bool: [:block_public_security_group_rules]
   end
   module AWS

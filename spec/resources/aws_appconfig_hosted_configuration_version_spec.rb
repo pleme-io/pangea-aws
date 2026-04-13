@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAppconfigHostedConfigurationVersion do
 
         expect(ref.id).to eq("${aws_appconfig_hosted_configuration_version.test.id}")
         expect(ref.arn).to eq("${aws_appconfig_hosted_configuration_version.test.arn}")
+        expect(ref.region).to eq("${aws_appconfig_hosted_configuration_version.test.region}")
         expect(ref.version_number).to eq("${aws_appconfig_hosted_configuration_version.test.version_number}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSAppconfigHostedConfigurationVersion do
 
         config = validate_resource_structure(result, 'aws_appconfig_hosted_configuration_version', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('version_number')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSAppconfigHostedConfigurationVersion do
 
         config = validate_resource_structure(result, 'aws_appconfig_hosted_configuration_version', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -87,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSAppconfigHostedConfigurationVersion do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appconfig_hosted_configuration_version', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_hosted_configuration_version('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_hosted_configuration_version', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_hosted_configuration_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_hosted_configuration_version', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -142,7 +162,7 @@ RSpec.describe Pangea::Resources::AWSAppconfigHostedConfigurationVersion do
     resource_type: :aws_appconfig_hosted_configuration_version,
     method: :aws_appconfig_hosted_configuration_version,
     required_attrs: { application_id: 'test-value', configuration_profile_id: 'test-value', content: 'test-value', content_type: 'test-value' },
-    expected_outputs: [:id, :arn, :version_number],
+    expected_outputs: [:id, :arn, :region, :version_number],
     sensitive_fields: [:content],
     immutable_fields: [],
     boolean_fields: []

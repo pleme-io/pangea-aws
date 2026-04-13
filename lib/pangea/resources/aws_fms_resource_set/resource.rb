@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_fms_resource_set,
       attributes_class: AWS::Types::FmsResourceSetAttributes,
       outputs: { id: :id },
-      map_present: [:resource_set, :tags]
+      map_present: [:region, :resource_set, :tags]
   end
   module AWS
     include AWSFmsResourceSet

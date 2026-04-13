@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppstreamStackAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:access_endpoints, :application_settings, :description, :display_name, :embed_host_domains, :feedback_url, :redirect_url, :storage_connectors, :streaming_experience_settings, :tags, :tags_all, :user_settings]
+      map_present: [:access_endpoints, :application_settings, :description, :display_name, :embed_host_domains, :feedback_url, :redirect_url, :region, :storage_connectors, :streaming_experience_settings, :tags, :tags_all, :user_settings]
   end
   module AWS
     include AWSAppstreamStack

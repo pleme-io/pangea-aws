@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GuarddutyMemberDetectorFeatureAttributes,
       outputs: { id: :id },
       map: [:account_id, :detector_id, :name, :status],
-      map_present: [:additional_configuration]
+      map_present: [:additional_configuration, :region]
   end
   module AWS
     include AWSGuarddutyMemberDetectorFeature

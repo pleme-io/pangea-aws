@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CognitoUserGroupAttributes,
       outputs: { id: :id },
       map: [:name, :user_pool_id],
-      map_present: [:description, :precedence, :role_arn]
+      map_present: [:description, :precedence, :region, :role_arn]
   end
   module AWS
     include AWSCognitoUserGroup

@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_db_proxy,
       attributes_class: AWS::Types::DbProxyAttributes,
       outputs: { id: :id },
-      map: [:auth, :engine_family, :name, :role_arn, :vpc_subnet_ids],
-      map_present: [:idle_client_timeout, :tags, :tags_all, :vpc_security_group_ids],
+      map: [:engine_family, :name, :role_arn, :vpc_subnet_ids],
+      map_present: [:auth, :default_auth_scheme, :endpoint_network_type, :idle_client_timeout, :region, :tags, :tags_all, :target_connection_network_type, :vpc_security_group_ids],
       map_bool: [:debug_logging, :require_tls]
   end
   module AWS

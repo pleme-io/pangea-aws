@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentCollaborator do
         expect(ref.agent_version).to eq("${aws_bedrockagent_agent_collaborator.test.agent_version}")
         expect(ref.collaborator_id).to eq("${aws_bedrockagent_agent_collaborator.test.collaborator_id}")
         expect(ref.prepare_agent).to eq("${aws_bedrockagent_agent_collaborator.test.prepare_agent}")
+        expect(ref.region).to eq("${aws_bedrockagent_agent_collaborator.test.region}")
         expect(ref.relay_conversation_history).to eq("${aws_bedrockagent_agent_collaborator.test.relay_conversation_history}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentCollaborator do
         expect(config).not_to have_key('agent_version')
         expect(config).not_to have_key('collaborator_id')
         expect(config).not_to have_key('prepare_agent')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('relay_conversation_history')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ agent_descriptor: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ agent_descriptor: [{ 'key1' => 'val1' }], agent_version: 'test-value', prepare_agent: true, region: 'test-value', relay_conversation_history: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +73,10 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentCollaborator do
 
         config = validate_resource_structure(result, 'aws_bedrockagent_agent_collaborator', 'full')
         expect(config).to have_key('agent_descriptor')
+        expect(config).to have_key('agent_version')
+        expect(config).to have_key('prepare_agent')
+        expect(config).to have_key('region')
+        expect(config).to have_key('relay_conversation_history')
       end
     end
 
@@ -91,6 +97,88 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentCollaborator do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_bedrockagent_agent_collaborator', 'minimal')
         expect(config).not_to have_key('agent_descriptor')
+      end
+      it 'includes agent_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_collaborator('opt', required_attrs.merge(agent_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_collaborator', 'opt')
+        expect(config).to have_key('agent_version')
+      end
+
+      it 'omits agent_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_collaborator('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_collaborator', 'minimal')
+        expect(config).not_to have_key('agent_version')
+      end
+      it 'includes prepare_agent when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_collaborator('opt', required_attrs.merge(prepare_agent: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_collaborator', 'opt')
+        expect(config).to have_key('prepare_agent')
+      end
+
+      it 'omits prepare_agent when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_collaborator('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_collaborator', 'minimal')
+        expect(config).not_to have_key('prepare_agent')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_collaborator('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_collaborator', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_collaborator('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_collaborator', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes relay_conversation_history when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_collaborator('opt', required_attrs.merge(relay_conversation_history: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_collaborator', 'opt')
+        expect(config).to have_key('relay_conversation_history')
+      end
+
+      it 'omits relay_conversation_history when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_collaborator('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_collaborator', 'minimal')
+        expect(config).not_to have_key('relay_conversation_history')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts prepare_agent=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(prepare_agent: val)
+          synth.aws_bedrockagent_agent_collaborator("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_bedrockagent_agent_collaborator', "bool_#{val}")
+          expect(config['prepare_agent']).to eq(val)
+        end
       end
     end
 
@@ -138,8 +226,8 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentCollaborator do
     resource_type: :aws_bedrockagent_agent_collaborator,
     method: :aws_bedrockagent_agent_collaborator,
     required_attrs: { agent_id: 'test-value', collaboration_instruction: 'test-value', collaborator_name: 'test-value' },
-    expected_outputs: [:id, :agent_version, :collaborator_id, :prepare_agent, :relay_conversation_history],
+    expected_outputs: [:id, :agent_version, :collaborator_id, :prepare_agent, :region, :relay_conversation_history],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:prepare_agent]
 end

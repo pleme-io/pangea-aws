@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LambdaEventSourceMappingAttributes,
       outputs: { id: :id },
       map: [:function_name],
-      map_present: [:amazon_managed_kafka_event_source_config, :batch_size, :destination_config, :document_db_event_source_config, :event_source_arn, :filter_criteria, :function_response_types, :kms_key_arn, :maximum_batching_window_in_seconds, :maximum_record_age_in_seconds, :maximum_retry_attempts, :metrics_config, :parallelization_factor, :provisioned_poller_config, :queues, :scaling_config, :self_managed_event_source, :self_managed_kafka_event_source_config, :source_access_configuration, :starting_position, :starting_position_timestamp, :tags, :tags_all, :topics, :tumbling_window_in_seconds],
+      map_present: [:amazon_managed_kafka_event_source_config, :batch_size, :destination_config, :document_db_event_source_config, :event_source_arn, :filter_criteria, :function_response_types, :kms_key_arn, :maximum_batching_window_in_seconds, :maximum_record_age_in_seconds, :maximum_retry_attempts, :metrics_config, :parallelization_factor, :provisioned_poller_config, :queues, :region, :scaling_config, :self_managed_event_source, :self_managed_kafka_event_source_config, :source_access_configuration, :starting_position, :starting_position_timestamp, :tags, :tags_all, :topics, :tumbling_window_in_seconds],
       map_bool: [:bisect_batch_on_function_error, :enabled]
   end
   module AWS

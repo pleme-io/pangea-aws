@@ -40,8 +40,10 @@ RSpec.describe Pangea::Resources::AWSLakeformationResource do
         expect(ref.id).to eq("${aws_lakeformation_resource.test.id}")
         expect(ref.hybrid_access_enabled).to eq("${aws_lakeformation_resource.test.hybrid_access_enabled}")
         expect(ref.last_modified).to eq("${aws_lakeformation_resource.test.last_modified}")
+        expect(ref.region).to eq("${aws_lakeformation_resource.test.region}")
         expect(ref.role_arn).to eq("${aws_lakeformation_resource.test.role_arn}")
         expect(ref.with_federation).to eq("${aws_lakeformation_resource.test.with_federation}")
+        expect(ref.with_privileged_access).to eq("${aws_lakeformation_resource.test.with_privileged_access}")
       end
     end
 
@@ -55,13 +57,15 @@ RSpec.describe Pangea::Resources::AWSLakeformationResource do
         config = validate_resource_structure(result, 'aws_lakeformation_resource', 'test')
         expect(config).not_to have_key('hybrid_access_enabled')
         expect(config).not_to have_key('last_modified')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('role_arn')
         expect(config).not_to have_key('with_federation')
+        expect(config).not_to have_key('with_privileged_access')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ use_service_linked_role: true }) }
+      let(:all_attrs) { required_attrs.merge({ hybrid_access_enabled: true, region: 'test-value', role_arn: 'test-value', use_service_linked_role: true, with_federation: true, with_privileged_access: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,11 +74,67 @@ RSpec.describe Pangea::Resources::AWSLakeformationResource do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lakeformation_resource', 'full')
+        expect(config).to have_key('hybrid_access_enabled')
+        expect(config).to have_key('region')
+        expect(config).to have_key('role_arn')
         expect(config).to have_key('use_service_linked_role')
+        expect(config).to have_key('with_federation')
+        expect(config).to have_key('with_privileged_access')
       end
     end
 
     context 'optional attributes' do
+      it 'includes hybrid_access_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_resource('opt', required_attrs.merge(hybrid_access_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_resource', 'opt')
+        expect(config).to have_key('hybrid_access_enabled')
+      end
+
+      it 'omits hybrid_access_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_resource('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_resource', 'minimal')
+        expect(config).not_to have_key('hybrid_access_enabled')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_resource('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_resource', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_resource('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_resource', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_resource('opt', required_attrs.merge(role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_resource', 'opt')
+        expect(config).to have_key('role_arn')
+      end
+
+      it 'omits role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_resource('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_resource', 'minimal')
+        expect(config).not_to have_key('role_arn')
+      end
       it 'includes use_service_linked_role when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -92,9 +152,54 @@ RSpec.describe Pangea::Resources::AWSLakeformationResource do
         config = validate_resource_structure(result, 'aws_lakeformation_resource', 'minimal')
         expect(config).not_to have_key('use_service_linked_role')
       end
+      it 'includes with_federation when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_resource('opt', required_attrs.merge(with_federation: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_resource', 'opt')
+        expect(config).to have_key('with_federation')
+      end
+
+      it 'omits with_federation when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_resource('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_resource', 'minimal')
+        expect(config).not_to have_key('with_federation')
+      end
+      it 'includes with_privileged_access when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_resource('opt', required_attrs.merge(with_privileged_access: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_resource', 'opt')
+        expect(config).to have_key('with_privileged_access')
+      end
+
+      it 'omits with_privileged_access when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_resource('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_resource', 'minimal')
+        expect(config).not_to have_key('with_privileged_access')
+      end
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts hybrid_access_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(hybrid_access_enabled: val)
+          synth.aws_lakeformation_resource("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_lakeformation_resource', "bool_#{val}")
+          expect(config['hybrid_access_enabled']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts use_service_linked_role=#{val}" do
           synth = create_synthesizer
@@ -104,6 +209,28 @@ RSpec.describe Pangea::Resources::AWSLakeformationResource do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_lakeformation_resource', "bool_#{val}")
           expect(config['use_service_linked_role']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts with_federation=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(with_federation: val)
+          synth.aws_lakeformation_resource("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_lakeformation_resource', "bool_#{val}")
+          expect(config['with_federation']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts with_privileged_access=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(with_privileged_access: val)
+          synth.aws_lakeformation_resource("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_lakeformation_resource', "bool_#{val}")
+          expect(config['with_privileged_access']).to eq(val)
         end
       end
     end
@@ -150,8 +277,8 @@ RSpec.describe Pangea::Resources::AWSLakeformationResource do
     resource_type: :aws_lakeformation_resource,
     method: :aws_lakeformation_resource,
     required_attrs: { arn: 'test-value' },
-    expected_outputs: [:id, :hybrid_access_enabled, :last_modified, :role_arn, :with_federation],
+    expected_outputs: [:id, :hybrid_access_enabled, :last_modified, :region, :role_arn, :with_federation, :with_privileged_access],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:use_service_linked_role]
+    boolean_fields: [:hybrid_access_enabled, :use_service_linked_role, :with_federation, :with_privileged_access]
 end

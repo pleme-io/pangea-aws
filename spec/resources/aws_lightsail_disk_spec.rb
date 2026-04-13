@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSLightsailDisk do
         expect(ref.id).to eq("${aws_lightsail_disk.test.id}")
         expect(ref.arn).to eq("${aws_lightsail_disk.test.arn}")
         expect(ref.created_at).to eq("${aws_lightsail_disk.test.created_at}")
+        expect(ref.region).to eq("${aws_lightsail_disk.test.region}")
         expect(ref.support_code).to eq("${aws_lightsail_disk.test.support_code}")
         expect(ref.tags_all).to eq("${aws_lightsail_disk.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSLightsailDisk do
         config = validate_resource_structure(result, 'aws_lightsail_disk', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created_at')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('support_code')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,11 +72,30 @@ RSpec.describe Pangea::Resources::AWSLightsailDisk do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lightsail_disk', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_disk('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_disk', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_disk('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_disk', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -91,6 +112,23 @@ RSpec.describe Pangea::Resources::AWSLightsailDisk do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_disk', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_disk('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_disk', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_disk('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_disk', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -138,7 +176,7 @@ RSpec.describe Pangea::Resources::AWSLightsailDisk do
     resource_type: :aws_lightsail_disk,
     method: :aws_lightsail_disk,
     required_attrs: { availability_zone: 'test-value', name: 'test-value', size_in_gb: 3.14 },
-    expected_outputs: [:id, :arn, :created_at, :support_code, :tags_all],
+    expected_outputs: [:id, :arn, :created_at, :region, :support_code, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

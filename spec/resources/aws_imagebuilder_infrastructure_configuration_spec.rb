@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderInfrastructureConfiguration do
         expect(ref.arn).to eq("${aws_imagebuilder_infrastructure_configuration.test.arn}")
         expect(ref.date_created).to eq("${aws_imagebuilder_infrastructure_configuration.test.date_created}")
         expect(ref.date_updated).to eq("${aws_imagebuilder_infrastructure_configuration.test.date_updated}")
+        expect(ref.region).to eq("${aws_imagebuilder_infrastructure_configuration.test.region}")
         expect(ref.tags_all).to eq("${aws_imagebuilder_infrastructure_configuration.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSImagebuilderInfrastructureConfiguration do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('date_created')
         expect(config).not_to have_key('date_updated')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', instance_metadata_options: [{ 'key1' => 'val1' }], instance_types: ['test-value'], key_pair: 'test-value', logging: [{ 'key1' => 'val1' }], placement: [{ 'key1' => 'val1' }], resource_tags: { 'key1' => 'val1' }, security_group_ids: ['test-value'], sns_topic_arn: 'test-value', subnet_id: 'test-value', tags: { 'key1' => 'val1' }, terminate_instance_on_failure: true }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', instance_metadata_options: { 'key1' => 'val1' }, instance_types: ['test-value'], key_pair: 'test-value', logging: { 'key1' => 'val1' }, placement: { 'key1' => 'val1' }, region: 'test-value', resource_tags: { 'key1' => 'val1' }, security_group_ids: ['test-value'], sns_topic_arn: 'test-value', subnet_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, terminate_instance_on_failure: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,11 +78,13 @@ RSpec.describe Pangea::Resources::AWSImagebuilderInfrastructureConfiguration do
         expect(config).to have_key('key_pair')
         expect(config).to have_key('logging')
         expect(config).to have_key('placement')
+        expect(config).to have_key('region')
         expect(config).to have_key('resource_tags')
         expect(config).to have_key('security_group_ids')
         expect(config).to have_key('sns_topic_arn')
         expect(config).to have_key('subnet_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('terminate_instance_on_failure')
       end
     end
@@ -106,7 +110,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderInfrastructureConfiguration do
       it 'includes instance_metadata_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_imagebuilder_infrastructure_configuration('opt', required_attrs.merge(instance_metadata_options: [{ 'key1' => 'val1' }]))
+        synth.aws_imagebuilder_infrastructure_configuration('opt', required_attrs.merge(instance_metadata_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_infrastructure_configuration', 'opt')
         expect(config).to have_key('instance_metadata_options')
@@ -157,7 +161,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderInfrastructureConfiguration do
       it 'includes logging when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_imagebuilder_infrastructure_configuration('opt', required_attrs.merge(logging: [{ 'key1' => 'val1' }]))
+        synth.aws_imagebuilder_infrastructure_configuration('opt', required_attrs.merge(logging: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_infrastructure_configuration', 'opt')
         expect(config).to have_key('logging')
@@ -174,7 +178,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderInfrastructureConfiguration do
       it 'includes placement when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_imagebuilder_infrastructure_configuration('opt', required_attrs.merge(placement: [{ 'key1' => 'val1' }]))
+        synth.aws_imagebuilder_infrastructure_configuration('opt', required_attrs.merge(placement: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_infrastructure_configuration', 'opt')
         expect(config).to have_key('placement')
@@ -187,6 +191,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderInfrastructureConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_infrastructure_configuration', 'minimal')
         expect(config).not_to have_key('placement')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_infrastructure_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_infrastructure_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_infrastructure_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_infrastructure_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes resource_tags when provided' do
         synth = create_synthesizer
@@ -273,6 +294,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderInfrastructureConfiguration do
         config = validate_resource_structure(result, 'aws_imagebuilder_infrastructure_configuration', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_infrastructure_configuration('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_infrastructure_configuration', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_infrastructure_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_infrastructure_configuration', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes terminate_instance_on_failure when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -349,7 +387,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderInfrastructureConfiguration do
     resource_type: :aws_imagebuilder_infrastructure_configuration,
     method: :aws_imagebuilder_infrastructure_configuration,
     required_attrs: { instance_profile_name: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :date_created, :date_updated, :tags_all],
+    expected_outputs: [:id, :arn, :date_created, :date_updated, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:terminate_instance_on_failure]

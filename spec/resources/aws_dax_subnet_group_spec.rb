@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSDaxSubnetGroup do
         ref = synth.aws_dax_subnet_group('test', required_attrs)
 
         expect(ref.id).to eq("${aws_dax_subnet_group.test.id}")
+        expect(ref.region).to eq("${aws_dax_subnet_group.test.region}")
         expect(ref.vpc_id).to eq("${aws_dax_subnet_group.test.vpc_id}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSDaxSubnetGroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_dax_subnet_group', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('vpc_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSDaxSubnetGroup do
 
         config = validate_resource_structure(result, 'aws_dax_subnet_group', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -85,6 +88,23 @@ RSpec.describe Pangea::Resources::AWSDaxSubnetGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dax_subnet_group', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_subnet_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_subnet_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_subnet_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_subnet_group', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -131,7 +151,7 @@ RSpec.describe Pangea::Resources::AWSDaxSubnetGroup do
     resource_type: :aws_dax_subnet_group,
     method: :aws_dax_subnet_group,
     required_attrs: { name: 'test-value', subnet_ids: ['test-value'] },
-    expected_outputs: [:id, :vpc_id],
+    expected_outputs: [:id, :region, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

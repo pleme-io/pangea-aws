@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewaySmbFileShare do
         expect(ref.fileshare_id).to eq("${aws_storagegateway_smb_file_share.test.fileshare_id}")
         expect(ref.oplocks_enabled).to eq("${aws_storagegateway_smb_file_share.test.oplocks_enabled}")
         expect(ref.path).to eq("${aws_storagegateway_smb_file_share.test.path}")
+        expect(ref.region).to eq("${aws_storagegateway_smb_file_share.test.region}")
         expect(ref.tags_all).to eq("${aws_storagegateway_smb_file_share.test.tags_all}")
       end
     end
@@ -60,12 +61,13 @@ RSpec.describe Pangea::Resources::AWSStoragegatewaySmbFileShare do
         expect(config).not_to have_key('fileshare_id')
         expect(config).not_to have_key('oplocks_enabled')
         expect(config).not_to have_key('path')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_based_enumeration: true, admin_user_list: ['test-value'], audit_destination_arn: 'test-value', authentication: 'test-value', bucket_region: 'test-value', cache_attributes: [{ 'key1' => 'val1' }], case_sensitivity: 'test-value', default_storage_class: 'test-value', guess_mime_type_enabled: true, invalid_user_list: ['test-value'], kms_encrypted: true, kms_key_arn: 'test-value', notification_policy: 'test-value', object_acl: 'test-value', read_only: true, requester_pays: true, smb_acl_enabled: true, tags: { 'key1' => 'val1' }, valid_user_list: ['test-value'], vpc_endpoint_dns_name: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ access_based_enumeration: true, admin_user_list: ['test-value'], audit_destination_arn: 'test-value', authentication: 'test-value', bucket_region: 'test-value', cache_attributes: { 'key1' => 'val1' }, case_sensitivity: 'test-value', default_storage_class: 'test-value', file_share_name: 'test-value', guess_mime_type_enabled: true, invalid_user_list: ['test-value'], kms_encrypted: true, kms_key_arn: 'test-value', notification_policy: 'test-value', object_acl: 'test-value', oplocks_enabled: true, read_only: true, region: 'test-value', requester_pays: true, smb_acl_enabled: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, valid_user_list: ['test-value'], vpc_endpoint_dns_name: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -82,16 +84,20 @@ RSpec.describe Pangea::Resources::AWSStoragegatewaySmbFileShare do
         expect(config).to have_key('cache_attributes')
         expect(config).to have_key('case_sensitivity')
         expect(config).to have_key('default_storage_class')
+        expect(config).to have_key('file_share_name')
         expect(config).to have_key('guess_mime_type_enabled')
         expect(config).to have_key('invalid_user_list')
         expect(config).to have_key('kms_encrypted')
         expect(config).to have_key('kms_key_arn')
         expect(config).to have_key('notification_policy')
         expect(config).to have_key('object_acl')
+        expect(config).to have_key('oplocks_enabled')
         expect(config).to have_key('read_only')
+        expect(config).to have_key('region')
         expect(config).to have_key('requester_pays')
         expect(config).to have_key('smb_acl_enabled')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('valid_user_list')
         expect(config).to have_key('vpc_endpoint_dns_name')
       end
@@ -186,7 +192,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewaySmbFileShare do
       it 'includes cache_attributes when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_storagegateway_smb_file_share('opt', required_attrs.merge(cache_attributes: [{ 'key1' => 'val1' }]))
+        synth.aws_storagegateway_smb_file_share('opt', required_attrs.merge(cache_attributes: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', 'opt')
         expect(config).to have_key('cache_attributes')
@@ -233,6 +239,23 @@ RSpec.describe Pangea::Resources::AWSStoragegatewaySmbFileShare do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', 'minimal')
         expect(config).not_to have_key('default_storage_class')
+      end
+      it 'includes file_share_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_smb_file_share('opt', required_attrs.merge(file_share_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', 'opt')
+        expect(config).to have_key('file_share_name')
+      end
+
+      it 'omits file_share_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_smb_file_share('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', 'minimal')
+        expect(config).not_to have_key('file_share_name')
       end
       it 'includes guess_mime_type_enabled when provided' do
         synth = create_synthesizer
@@ -336,6 +359,23 @@ RSpec.describe Pangea::Resources::AWSStoragegatewaySmbFileShare do
         config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', 'minimal')
         expect(config).not_to have_key('object_acl')
       end
+      it 'includes oplocks_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_smb_file_share('opt', required_attrs.merge(oplocks_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', 'opt')
+        expect(config).to have_key('oplocks_enabled')
+      end
+
+      it 'omits oplocks_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_smb_file_share('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', 'minimal')
+        expect(config).not_to have_key('oplocks_enabled')
+      end
       it 'includes read_only when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -352,6 +392,23 @@ RSpec.describe Pangea::Resources::AWSStoragegatewaySmbFileShare do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', 'minimal')
         expect(config).not_to have_key('read_only')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_smb_file_share('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_smb_file_share('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes requester_pays when provided' do
         synth = create_synthesizer
@@ -403,6 +460,23 @@ RSpec.describe Pangea::Resources::AWSStoragegatewaySmbFileShare do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_smb_file_share('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_smb_file_share('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes valid_user_list when provided' do
         synth = create_synthesizer
@@ -472,6 +546,17 @@ RSpec.describe Pangea::Resources::AWSStoragegatewaySmbFileShare do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', "bool_#{val}")
           expect(config['kms_encrypted']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts oplocks_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(oplocks_enabled: val)
+          synth.aws_storagegateway_smb_file_share("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_storagegateway_smb_file_share', "bool_#{val}")
+          expect(config['oplocks_enabled']).to eq(val)
         end
       end
       [true, false].each do |val|
@@ -553,8 +638,8 @@ RSpec.describe Pangea::Resources::AWSStoragegatewaySmbFileShare do
     resource_type: :aws_storagegateway_smb_file_share,
     method: :aws_storagegateway_smb_file_share,
     required_attrs: { gateway_arn: 'test-value', location_arn: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :file_share_name, :fileshare_id, :oplocks_enabled, :path, :tags_all],
+    expected_outputs: [:id, :arn, :file_share_name, :fileshare_id, :oplocks_enabled, :path, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:access_based_enumeration, :guess_mime_type_enabled, :kms_encrypted, :read_only, :requester_pays, :smb_acl_enabled]
+    boolean_fields: [:access_based_enumeration, :guess_mime_type_enabled, :kms_encrypted, :oplocks_enabled, :read_only, :requester_pays, :smb_acl_enabled]
 end

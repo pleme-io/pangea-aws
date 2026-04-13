@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::TransferAccessAttributes,
       outputs: { id: :id },
       map: [:external_id, :server_id],
-      map_present: [:home_directory, :home_directory_mappings, :home_directory_type, :policy, :posix_profile, :role]
+      map_present: [:home_directory, :home_directory_mappings, :home_directory_type, :policy, :posix_profile, :region, :role]
   end
   module AWS
     include AWSTransferAccess

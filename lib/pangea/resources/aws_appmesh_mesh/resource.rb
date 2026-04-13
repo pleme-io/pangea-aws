@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppmeshMeshAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:spec, :tags, :tags_all]
+      map_present: [:region, :spec, :tags, :tags_all]
   end
   module AWS
     include AWSAppmeshMesh

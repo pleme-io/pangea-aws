@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_iot_policy_attachment,
       attributes_class: AWS::Types::IotPolicyAttachmentAttributes,
       outputs: { id: :id },
-      map: [:policy, :target]
+      map: [:policy, :target],
+      map_present: [:region]
   end
   module AWS
     include AWSIotPolicyAttachment

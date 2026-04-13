@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IotBillingGroupAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:properties, :tags]
+      map_present: [:properties, :region, :tags]
   end
   module AWS
     include AWSIotBillingGroup

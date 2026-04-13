@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSRolesanywhereTrustAnchor do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { name: 'test-value', source: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { name: 'test-value', source: { 'key1' => 'val1' } } }
 
   describe ':aws_rolesanywhere_trust_anchor' do
     context 'with required attributes only' do
@@ -59,7 +59,7 @@ RSpec.describe Pangea::Resources::AWSRolesanywhereTrustAnchor do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ notification_settings: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ enabled: true, notification_settings: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,12 +68,31 @@ RSpec.describe Pangea::Resources::AWSRolesanywhereTrustAnchor do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_rolesanywhere_trust_anchor', 'full')
+        expect(config).to have_key('enabled')
         expect(config).to have_key('notification_settings')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rolesanywhere_trust_anchor('opt', required_attrs.merge(enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rolesanywhere_trust_anchor', 'opt')
+        expect(config).to have_key('enabled')
+      end
+
+      it 'omits enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rolesanywhere_trust_anchor('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rolesanywhere_trust_anchor', 'minimal')
+        expect(config).not_to have_key('enabled')
+      end
       it 'includes notification_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -108,6 +127,37 @@ RSpec.describe Pangea::Resources::AWSRolesanywhereTrustAnchor do
         config = validate_resource_structure(result, 'aws_rolesanywhere_trust_anchor', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rolesanywhere_trust_anchor('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rolesanywhere_trust_anchor', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rolesanywhere_trust_anchor('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rolesanywhere_trust_anchor', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enabled: val)
+          synth.aws_rolesanywhere_trust_anchor("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_rolesanywhere_trust_anchor', "bool_#{val}")
+          expect(config['enabled']).to eq(val)
+        end
+      end
     end
 
     context 'attribute types' do
@@ -119,7 +169,7 @@ RSpec.describe Pangea::Resources::AWSRolesanywhereTrustAnchor do
 
         config = validate_resource_structure(result, 'aws_rolesanywhere_trust_anchor', 'typed')
         expect(config['name']).to be_a(String)
-        expect(config['source']).to be_a(Array)
+        expect(config['source']).to be_a(Hash)
       end
     end
 
@@ -152,9 +202,9 @@ RSpec.describe Pangea::Resources::AWSRolesanywhereTrustAnchor do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_rolesanywhere_trust_anchor,
     method: :aws_rolesanywhere_trust_anchor,
-    required_attrs: { name: 'test-value', source: [{ 'key1' => 'val1' }] },
+    required_attrs: { name: 'test-value', source: { 'key1' => 'val1' } },
     expected_outputs: [:id, :arn, :enabled, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:enabled]
 end

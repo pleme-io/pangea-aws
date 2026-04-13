@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KendraQuerySuggestionsBlockListAttributes,
       outputs: { id: :id },
       map: [:index_id, :name, :role_arn, :source_s3_path],
-      map_present: [:description, :tags, :tags_all]
+      map_present: [:description, :region, :tags, :tags_all]
   end
   module AWS
     include AWSKendraQuerySuggestionsBlockList

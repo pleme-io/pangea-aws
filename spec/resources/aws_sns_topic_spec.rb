@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSSnsTopic do
         expect(ref.name_prefix).to eq("${aws_sns_topic.test.name_prefix}")
         expect(ref.owner).to eq("${aws_sns_topic.test.owner}")
         expect(ref.policy).to eq("${aws_sns_topic.test.policy}")
+        expect(ref.region).to eq("${aws_sns_topic.test.region}")
         expect(ref.signature_version).to eq("${aws_sns_topic.test.signature_version}")
         expect(ref.tags_all).to eq("${aws_sns_topic.test.tags_all}")
         expect(ref.tracing_config).to eq("${aws_sns_topic.test.tracing_config}")
@@ -66,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSSnsTopic do
         expect(config).not_to have_key('name_prefix')
         expect(config).not_to have_key('owner')
         expect(config).not_to have_key('policy')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('signature_version')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('tracing_config')
@@ -73,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSSnsTopic do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ application_failure_feedback_role_arn: 'test-value', application_success_feedback_role_arn: 'test-value', application_success_feedback_sample_rate: 3.14, archive_policy: 'test-value', content_based_deduplication: true, delivery_policy: 'test-value', display_name: 'test-value', fifo_topic: true, firehose_failure_feedback_role_arn: 'test-value', firehose_success_feedback_role_arn: 'test-value', firehose_success_feedback_sample_rate: 3.14, http_failure_feedback_role_arn: 'test-value', http_success_feedback_role_arn: 'test-value', http_success_feedback_sample_rate: 3.14, kms_master_key_id: 'test-value', lambda_failure_feedback_role_arn: 'test-value', lambda_success_feedback_role_arn: 'test-value', lambda_success_feedback_sample_rate: 3.14, sqs_failure_feedback_role_arn: 'test-value', sqs_success_feedback_role_arn: 'test-value', sqs_success_feedback_sample_rate: 3.14, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ application_failure_feedback_role_arn: 'test-value', application_success_feedback_role_arn: 'test-value', application_success_feedback_sample_rate: 3.14, archive_policy: 'test-value', content_based_deduplication: true, delivery_policy: 'test-value', display_name: 'test-value', fifo_throughput_scope: 'test-value', fifo_topic: true, firehose_failure_feedback_role_arn: 'test-value', firehose_success_feedback_role_arn: 'test-value', firehose_success_feedback_sample_rate: 3.14, http_failure_feedback_role_arn: 'test-value', http_success_feedback_role_arn: 'test-value', http_success_feedback_sample_rate: 3.14, kms_master_key_id: 'test-value', lambda_failure_feedback_role_arn: 'test-value', lambda_success_feedback_role_arn: 'test-value', lambda_success_feedback_sample_rate: 3.14, name: 'test-value', name_prefix: 'test-value', policy: 'test-value', region: 'test-value', signature_version: 3.14, sqs_failure_feedback_role_arn: 'test-value', sqs_success_feedback_role_arn: 'test-value', sqs_success_feedback_sample_rate: 3.14, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tracing_config: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -89,6 +91,7 @@ RSpec.describe Pangea::Resources::AWSSnsTopic do
         expect(config).to have_key('content_based_deduplication')
         expect(config).to have_key('delivery_policy')
         expect(config).to have_key('display_name')
+        expect(config).to have_key('fifo_throughput_scope')
         expect(config).to have_key('fifo_topic')
         expect(config).to have_key('firehose_failure_feedback_role_arn')
         expect(config).to have_key('firehose_success_feedback_role_arn')
@@ -100,10 +103,17 @@ RSpec.describe Pangea::Resources::AWSSnsTopic do
         expect(config).to have_key('lambda_failure_feedback_role_arn')
         expect(config).to have_key('lambda_success_feedback_role_arn')
         expect(config).to have_key('lambda_success_feedback_sample_rate')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('policy')
+        expect(config).to have_key('region')
+        expect(config).to have_key('signature_version')
         expect(config).to have_key('sqs_failure_feedback_role_arn')
         expect(config).to have_key('sqs_success_feedback_role_arn')
         expect(config).to have_key('sqs_success_feedback_sample_rate')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('tracing_config')
       end
     end
 
@@ -226,6 +236,23 @@ RSpec.describe Pangea::Resources::AWSSnsTopic do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sns_topic', 'minimal')
         expect(config).not_to have_key('display_name')
+      end
+      it 'includes fifo_throughput_scope when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('opt', required_attrs.merge(fifo_throughput_scope: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'opt')
+        expect(config).to have_key('fifo_throughput_scope')
+      end
+
+      it 'omits fifo_throughput_scope when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'minimal')
+        expect(config).not_to have_key('fifo_throughput_scope')
       end
       it 'includes fifo_topic when provided' do
         synth = create_synthesizer
@@ -414,6 +441,91 @@ RSpec.describe Pangea::Resources::AWSSnsTopic do
         config = validate_resource_structure(result, 'aws_sns_topic', 'minimal')
         expect(config).not_to have_key('lambda_success_feedback_sample_rate')
       end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('opt', required_attrs.merge(policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'opt')
+        expect(config).to have_key('policy')
+      end
+
+      it 'omits policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'minimal')
+        expect(config).not_to have_key('policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes signature_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('opt', required_attrs.merge(signature_version: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'opt')
+        expect(config).to have_key('signature_version')
+      end
+
+      it 'omits signature_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'minimal')
+        expect(config).not_to have_key('signature_version')
+      end
       it 'includes sqs_failure_feedback_role_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -481,6 +593,40 @@ RSpec.describe Pangea::Resources::AWSSnsTopic do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sns_topic', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes tracing_config when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('opt', required_attrs.merge(tracing_config: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'opt')
+        expect(config).to have_key('tracing_config')
+      end
+
+      it 'omits tracing_config when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic', 'minimal')
+        expect(config).not_to have_key('tracing_config')
       end
     end
 
@@ -550,7 +696,7 @@ RSpec.describe Pangea::Resources::AWSSnsTopic do
     resource_type: :aws_sns_topic,
     method: :aws_sns_topic,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :beginning_archive_time, :fifo_throughput_scope, :name, :name_prefix, :owner, :policy, :signature_version, :tags_all, :tracing_config],
+    expected_outputs: [:id, :arn, :beginning_archive_time, :fifo_throughput_scope, :name, :name_prefix, :owner, :policy, :region, :signature_version, :tags_all, :tracing_config],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:content_based_deduplication, :fifo_topic]

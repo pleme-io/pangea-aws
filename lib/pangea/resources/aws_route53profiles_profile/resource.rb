@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Route53profilesProfileAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:tags]
+      map_present: [:region, :tags]
   end
   module AWS
     include AWSRoute53profilesProfile

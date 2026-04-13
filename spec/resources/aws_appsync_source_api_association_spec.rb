@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncSourceApiAssociation do
         expect(ref.association_id).to eq("${aws_appsync_source_api_association.test.association_id}")
         expect(ref.merged_api_arn).to eq("${aws_appsync_source_api_association.test.merged_api_arn}")
         expect(ref.merged_api_id).to eq("${aws_appsync_source_api_association.test.merged_api_id}")
+        expect(ref.region).to eq("${aws_appsync_source_api_association.test.region}")
         expect(ref.source_api_arn).to eq("${aws_appsync_source_api_association.test.source_api_arn}")
         expect(ref.source_api_association_config).to eq("${aws_appsync_source_api_association.test.source_api_association_config}")
         expect(ref.source_api_id).to eq("${aws_appsync_source_api_association.test.source_api_id}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncSourceApiAssociation do
         expect(config).not_to have_key('association_id')
         expect(config).not_to have_key('merged_api_arn')
         expect(config).not_to have_key('merged_api_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('source_api_arn')
         expect(config).not_to have_key('source_api_association_config')
         expect(config).not_to have_key('source_api_id')
@@ -67,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncSourceApiAssociation do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', merged_api_arn: 'test-value', merged_api_id: 'test-value', region: 'test-value', source_api_arn: 'test-value', source_api_association_config: [{ 'key1' => 'val1' }], source_api_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,6 +79,12 @@ RSpec.describe Pangea::Resources::AWSAppsyncSourceApiAssociation do
 
         config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('merged_api_arn')
+        expect(config).to have_key('merged_api_id')
+        expect(config).to have_key('region')
+        expect(config).to have_key('source_api_arn')
+        expect(config).to have_key('source_api_association_config')
+        expect(config).to have_key('source_api_id')
       end
     end
 
@@ -97,6 +105,108 @@ RSpec.describe Pangea::Resources::AWSAppsyncSourceApiAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes merged_api_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_source_api_association('opt', required_attrs.merge(merged_api_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'opt')
+        expect(config).to have_key('merged_api_arn')
+      end
+
+      it 'omits merged_api_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_source_api_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'minimal')
+        expect(config).not_to have_key('merged_api_arn')
+      end
+      it 'includes merged_api_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_source_api_association('opt', required_attrs.merge(merged_api_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'opt')
+        expect(config).to have_key('merged_api_id')
+      end
+
+      it 'omits merged_api_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_source_api_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'minimal')
+        expect(config).not_to have_key('merged_api_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_source_api_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_source_api_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes source_api_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_source_api_association('opt', required_attrs.merge(source_api_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'opt')
+        expect(config).to have_key('source_api_arn')
+      end
+
+      it 'omits source_api_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_source_api_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'minimal')
+        expect(config).not_to have_key('source_api_arn')
+      end
+      it 'includes source_api_association_config when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_source_api_association('opt', required_attrs.merge(source_api_association_config: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'opt')
+        expect(config).to have_key('source_api_association_config')
+      end
+
+      it 'omits source_api_association_config when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_source_api_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'minimal')
+        expect(config).not_to have_key('source_api_association_config')
+      end
+      it 'includes source_api_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_source_api_association('opt', required_attrs.merge(source_api_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'opt')
+        expect(config).to have_key('source_api_id')
+      end
+
+      it 'omits source_api_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_source_api_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_source_api_association', 'minimal')
+        expect(config).not_to have_key('source_api_id')
       end
     end
 
@@ -141,7 +251,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncSourceApiAssociation do
     resource_type: :aws_appsync_source_api_association,
     method: :aws_appsync_source_api_association,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :association_id, :merged_api_arn, :merged_api_id, :source_api_arn, :source_api_association_config, :source_api_id],
+    expected_outputs: [:id, :arn, :association_id, :merged_api_arn, :merged_api_id, :region, :source_api_arn, :source_api_association_config, :source_api_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

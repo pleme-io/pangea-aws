@@ -48,6 +48,7 @@ RSpec.describe Pangea::Resources::AWSRdsReservedInstance do
         expect(ref.offering_type).to eq("${aws_rds_reserved_instance.test.offering_type}")
         expect(ref.product_description).to eq("${aws_rds_reserved_instance.test.product_description}")
         expect(ref.recurring_charges).to eq("${aws_rds_reserved_instance.test.recurring_charges}")
+        expect(ref.region).to eq("${aws_rds_reserved_instance.test.region}")
         expect(ref.start_time).to eq("${aws_rds_reserved_instance.test.start_time}")
         expect(ref.state).to eq("${aws_rds_reserved_instance.test.state}")
         expect(ref.tags_all).to eq("${aws_rds_reserved_instance.test.tags_all}")
@@ -73,6 +74,7 @@ RSpec.describe Pangea::Resources::AWSRdsReservedInstance do
         expect(config).not_to have_key('offering_type')
         expect(config).not_to have_key('product_description')
         expect(config).not_to have_key('recurring_charges')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('start_time')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
@@ -81,7 +83,7 @@ RSpec.describe Pangea::Resources::AWSRdsReservedInstance do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ instance_count: 3.14, reservation_id: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ instance_count: 3.14, region: 'test-value', reservation_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -91,8 +93,10 @@ RSpec.describe Pangea::Resources::AWSRdsReservedInstance do
 
         config = validate_resource_structure(result, 'aws_rds_reserved_instance', 'full')
         expect(config).to have_key('instance_count')
+        expect(config).to have_key('region')
         expect(config).to have_key('reservation_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -113,6 +117,23 @@ RSpec.describe Pangea::Resources::AWSRdsReservedInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_reserved_instance', 'minimal')
         expect(config).not_to have_key('instance_count')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_reserved_instance('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_reserved_instance', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_reserved_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_reserved_instance', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes reservation_id when provided' do
         synth = create_synthesizer
@@ -147,6 +168,23 @@ RSpec.describe Pangea::Resources::AWSRdsReservedInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_reserved_instance', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_reserved_instance('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_reserved_instance', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_reserved_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_reserved_instance', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -192,7 +230,7 @@ RSpec.describe Pangea::Resources::AWSRdsReservedInstance do
     resource_type: :aws_rds_reserved_instance,
     method: :aws_rds_reserved_instance,
     required_attrs: { offering_id: 'test-value' },
-    expected_outputs: [:id, :arn, :currency_code, :db_instance_class, :duration, :fixed_price, :lease_id, :multi_az, :offering_type, :product_description, :recurring_charges, :start_time, :state, :tags_all, :usage_price],
+    expected_outputs: [:id, :arn, :currency_code, :db_instance_class, :duration, :fixed_price, :lease_id, :multi_az, :offering_type, :product_description, :recurring_charges, :region, :start_time, :state, :tags_all, :usage_price],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

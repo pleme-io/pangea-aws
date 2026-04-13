@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LexBotAliasAttributes,
       outputs: { id: :id },
       map: [:bot_name, :bot_version, :name],
-      map_present: [:conversation_logs, :description]
+      map_present: [:conversation_logs, :description, :region]
   end
   module AWS
     include AWSLexBotAlias

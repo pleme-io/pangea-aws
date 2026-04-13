@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentGroup do
         expect(ref.arn).to eq("${aws_codedeploy_deployment_group.test.arn}")
         expect(ref.compute_platform).to eq("${aws_codedeploy_deployment_group.test.compute_platform}")
         expect(ref.deployment_group_id).to eq("${aws_codedeploy_deployment_group.test.deployment_group_id}")
+        expect(ref.region).to eq("${aws_codedeploy_deployment_group.test.region}")
         expect(ref.tags_all).to eq("${aws_codedeploy_deployment_group.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentGroup do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('compute_platform')
         expect(config).not_to have_key('deployment_group_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ alarm_configuration: [{ 'key1' => 'val1' }], auto_rollback_configuration: [{ 'key1' => 'val1' }], autoscaling_groups: ['test-value'], blue_green_deployment_config: [{ 'key1' => 'val1' }], deployment_config_name: 'test-value', deployment_style: [{ 'key1' => 'val1' }], ec2_tag_filter: [{ 'key1' => 'val1' }], ec2_tag_set: [{ 'key1' => 'val1' }], ecs_service: [{ 'key1' => 'val1' }], load_balancer_info: [{ 'key1' => 'val1' }], on_premises_instance_tag_filter: [{ 'key1' => 'val1' }], outdated_instances_strategy: 'test-value', tags: { 'key1' => 'val1' }, termination_hook_enabled: true, trigger_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ alarm_configuration: { 'key1' => 'val1' }, auto_rollback_configuration: { 'key1' => 'val1' }, autoscaling_groups: ['test-value'], blue_green_deployment_config: { 'key1' => 'val1' }, deployment_config_name: 'test-value', deployment_style: { 'key1' => 'val1' }, ec2_tag_filter: [{ 'key1' => 'val1' }], ec2_tag_set: [{ 'key1' => 'val1' }], ecs_service: { 'key1' => 'val1' }, load_balancer_info: { 'key1' => 'val1' }, on_premises_instance_tag_filter: [{ 'key1' => 'val1' }], outdated_instances_strategy: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, termination_hook_enabled: true, trigger_configuration: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -82,7 +84,9 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentGroup do
         expect(config).to have_key('load_balancer_info')
         expect(config).to have_key('on_premises_instance_tag_filter')
         expect(config).to have_key('outdated_instances_strategy')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('termination_hook_enabled')
         expect(config).to have_key('trigger_configuration')
       end
@@ -92,7 +96,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentGroup do
       it 'includes alarm_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(alarm_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(alarm_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_group', 'opt')
         expect(config).to have_key('alarm_configuration')
@@ -109,7 +113,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentGroup do
       it 'includes auto_rollback_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(auto_rollback_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(auto_rollback_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_group', 'opt')
         expect(config).to have_key('auto_rollback_configuration')
@@ -143,7 +147,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentGroup do
       it 'includes blue_green_deployment_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(blue_green_deployment_config: [{ 'key1' => 'val1' }]))
+        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(blue_green_deployment_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_group', 'opt')
         expect(config).to have_key('blue_green_deployment_config')
@@ -177,7 +181,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentGroup do
       it 'includes deployment_style when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(deployment_style: [{ 'key1' => 'val1' }]))
+        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(deployment_style: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_group', 'opt')
         expect(config).to have_key('deployment_style')
@@ -228,7 +232,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentGroup do
       it 'includes ecs_service when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(ecs_service: [{ 'key1' => 'val1' }]))
+        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(ecs_service: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_group', 'opt')
         expect(config).to have_key('ecs_service')
@@ -245,7 +249,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentGroup do
       it 'includes load_balancer_info when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(load_balancer_info: [{ 'key1' => 'val1' }]))
+        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(load_balancer_info: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_group', 'opt')
         expect(config).to have_key('load_balancer_info')
@@ -293,6 +297,23 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentGroup do
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_group', 'minimal')
         expect(config).not_to have_key('outdated_instances_strategy')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codedeploy_deployment_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codedeploy_deployment_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codedeploy_deployment_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -309,6 +330,23 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_group', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codedeploy_deployment_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codedeploy_deployment_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codedeploy_deployment_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codedeploy_deployment_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes termination_hook_enabled when provided' do
         synth = create_synthesizer
@@ -404,7 +442,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentGroup do
     resource_type: :aws_codedeploy_deployment_group,
     method: :aws_codedeploy_deployment_group,
     required_attrs: { app_name: 'test-value', deployment_group_name: 'test-value', service_role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :compute_platform, :deployment_group_id, :tags_all],
+    expected_outputs: [:id, :arn, :compute_platform, :deployment_group_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:termination_hook_enabled]

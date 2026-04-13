@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FinspaceKxClusterAttributes,
       outputs: { id: :id },
       map: [:az_mode, :environment_id, :name, :release_label, :type, :vpc_configuration],
-      map_present: [:auto_scaling_configuration, :availability_zone_id, :cache_storage_configurations, :capacity_configuration, :code, :command_line_arguments, :database, :description, :execution_role, :initialization_script, :savedown_storage_configuration, :scaling_group_configuration, :tags, :tags_all, :tickerplant_log_configuration]
+      map_present: [:auto_scaling_configuration, :availability_zone_id, :cache_storage_configurations, :capacity_configuration, :code, :command_line_arguments, :database, :description, :execution_role, :initialization_script, :region, :savedown_storage_configuration, :scaling_group_configuration, :tags, :tags_all, :tickerplant_log_configuration]
   end
   module AWS
     include AWSFinspaceKxCluster

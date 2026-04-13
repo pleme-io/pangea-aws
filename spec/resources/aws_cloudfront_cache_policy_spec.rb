@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCloudfrontCachePolicy do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { name: 'test-value', parameters_in_cache_key_and_forwarded_to_origin: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { name: 'test-value', parameters_in_cache_key_and_forwarded_to_origin: { 'key1' => 'val1' } } }
 
   describe ':aws_cloudfront_cache_policy' do
     context 'with required attributes only' do
@@ -153,7 +153,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontCachePolicy do
 
         config = validate_resource_structure(result, 'aws_cloudfront_cache_policy', 'typed')
         expect(config['name']).to be_a(String)
-        expect(config['parameters_in_cache_key_and_forwarded_to_origin']).to be_a(Array)
+        expect(config['parameters_in_cache_key_and_forwarded_to_origin']).to be_a(Hash)
       end
     end
 
@@ -186,7 +186,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontCachePolicy do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_cloudfront_cache_policy,
     method: :aws_cloudfront_cache_policy,
-    required_attrs: { name: 'test-value', parameters_in_cache_key_and_forwarded_to_origin: [{ 'key1' => 'val1' }] },
+    required_attrs: { name: 'test-value', parameters_in_cache_key_and_forwarded_to_origin: { 'key1' => 'val1' } },
     expected_outputs: [:id, :arn, :etag],
     sensitive_fields: [],
     immutable_fields: [],

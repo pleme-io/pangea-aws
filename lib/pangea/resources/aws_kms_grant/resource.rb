@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KmsGrantAttributes,
       outputs: { id: :id },
       map: [:grantee_principal, :key_id, :operations],
-      map_present: [:constraints, :grant_creation_tokens, :name, :retiring_principal],
+      map_present: [:constraints, :grant_creation_tokens, :name, :region, :retiring_principal],
       map_bool: [:retire_on_delete]
   end
   module AWS

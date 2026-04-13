@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RumMetricsDestinationAttributes,
       outputs: { id: :id },
       map: [:app_monitor_name, :destination],
-      map_present: [:destination_arn, :iam_role_arn]
+      map_present: [:destination_arn, :iam_role_arn, :region]
   end
   module AWS
     include AWSRumMetricsDestination

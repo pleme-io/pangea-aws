@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSignerSigningProfilePermission do
 
         expect(ref.id).to eq("${aws_signer_signing_profile_permission.test.id}")
         expect(ref.profile_version).to eq("${aws_signer_signing_profile_permission.test.profile_version}")
+        expect(ref.region).to eq("${aws_signer_signing_profile_permission.test.region}")
         expect(ref.statement_id).to eq("${aws_signer_signing_profile_permission.test.statement_id}")
         expect(ref.statement_id_prefix).to eq("${aws_signer_signing_profile_permission.test.statement_id_prefix}")
       end
@@ -53,7 +54,96 @@ RSpec.describe Pangea::Resources::AWSSignerSigningProfilePermission do
 
         config = validate_resource_structure(result, 'aws_signer_signing_profile_permission', 'test')
         expect(config).not_to have_key('profile_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('statement_id')
+        expect(config).not_to have_key('statement_id_prefix')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ profile_version: 'test-value', region: 'test-value', statement_id: 'test-value', statement_id_prefix: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile_permission('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_signer_signing_profile_permission', 'full')
+        expect(config).to have_key('profile_version')
+        expect(config).to have_key('region')
+        expect(config).to have_key('statement_id')
+        expect(config).to have_key('statement_id_prefix')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes profile_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile_permission('opt', required_attrs.merge(profile_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile_permission', 'opt')
+        expect(config).to have_key('profile_version')
+      end
+
+      it 'omits profile_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile_permission('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile_permission', 'minimal')
+        expect(config).not_to have_key('profile_version')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile_permission('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile_permission', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile_permission('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile_permission', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes statement_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile_permission('opt', required_attrs.merge(statement_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile_permission', 'opt')
+        expect(config).to have_key('statement_id')
+      end
+
+      it 'omits statement_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile_permission('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile_permission', 'minimal')
+        expect(config).not_to have_key('statement_id')
+      end
+      it 'includes statement_id_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile_permission('opt', required_attrs.merge(statement_id_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile_permission', 'opt')
+        expect(config).to have_key('statement_id_prefix')
+      end
+
+      it 'omits statement_id_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_profile_permission('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_profile_permission', 'minimal')
         expect(config).not_to have_key('statement_id_prefix')
       end
     end
@@ -102,7 +192,7 @@ RSpec.describe Pangea::Resources::AWSSignerSigningProfilePermission do
     resource_type: :aws_signer_signing_profile_permission,
     method: :aws_signer_signing_profile_permission,
     required_attrs: { action: 'test-value', principal: 'test-value', profile_name: 'test-value' },
-    expected_outputs: [:id, :profile_version, :statement_id, :statement_id_prefix],
+    expected_outputs: [:id, :profile_version, :region, :statement_id, :statement_id_prefix],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

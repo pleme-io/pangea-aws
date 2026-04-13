@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppautoscalingTargetAttributes,
       outputs: { id: :id },
       map: [:max_capacity, :min_capacity, :resource_id, :scalable_dimension, :service_namespace],
-      map_present: [:role_arn, :suspended_state, :tags, :tags_all]
+      map_present: [:region, :role_arn, :suspended_state, :tags, :tags_all]
   end
   module AWS
     include AWSAppautoscalingTarget

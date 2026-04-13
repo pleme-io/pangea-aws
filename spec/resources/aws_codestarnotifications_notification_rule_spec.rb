@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCodestarnotificationsNotificationRule do
 
         expect(ref.id).to eq("${aws_codestarnotifications_notification_rule.test.id}")
         expect(ref.arn).to eq("${aws_codestarnotifications_notification_rule.test.arn}")
+        expect(ref.region).to eq("${aws_codestarnotifications_notification_rule.test.region}")
         expect(ref.tags_all).to eq("${aws_codestarnotifications_notification_rule.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSCodestarnotificationsNotificationRule do
 
         config = validate_resource_structure(result, 'aws_codestarnotifications_notification_rule', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ status: 'test-value', tags: { 'key1' => 'val1' }, target: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', status: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,13 +68,32 @@ RSpec.describe Pangea::Resources::AWSCodestarnotificationsNotificationRule do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_codestarnotifications_notification_rule', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('status')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('target')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codestarnotifications_notification_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codestarnotifications_notification_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codestarnotifications_notification_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codestarnotifications_notification_rule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes status when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -106,6 +127,23 @@ RSpec.describe Pangea::Resources::AWSCodestarnotificationsNotificationRule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codestarnotifications_notification_rule', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codestarnotifications_notification_rule('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codestarnotifications_notification_rule', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codestarnotifications_notification_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codestarnotifications_notification_rule', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes target when provided' do
         synth = create_synthesizer
@@ -171,7 +209,7 @@ RSpec.describe Pangea::Resources::AWSCodestarnotificationsNotificationRule do
     resource_type: :aws_codestarnotifications_notification_rule,
     method: :aws_codestarnotifications_notification_rule,
     required_attrs: { detail_type: 'test-value', event_type_ids: ['test-value'], name: 'test-value', resource: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

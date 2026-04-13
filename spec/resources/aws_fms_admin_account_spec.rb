@@ -54,6 +54,51 @@ RSpec.describe Pangea::Resources::AWSFmsAdminAccount do
       end
     end
 
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ account_id: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_admin_account('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_fms_admin_account', 'full')
+        expect(config).to have_key('account_id')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_admin_account('opt', required_attrs.merge(account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_admin_account', 'opt')
+        expect(config).to have_key('account_id')
+      end
+
+      it 'omits account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_admin_account('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_admin_account', 'minimal')
+        expect(config).not_to have_key('account_id')
+      end
+    end
+
+    context 'attribute types' do
+      it 'validates expected attribute types' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_admin_account('typed', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_fms_admin_account', 'typed')
+      end
+    end
+
     context 'multiple instances' do
       it 'synthesizes multiple resources independently' do
         synth = create_synthesizer

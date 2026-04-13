@@ -40,8 +40,12 @@ RSpec.describe Pangea::Resources::AWSS3tablesTableBucket do
         expect(ref.id).to eq("${aws_s3tables_table_bucket.test.id}")
         expect(ref.arn).to eq("${aws_s3tables_table_bucket.test.arn}")
         expect(ref.created_at).to eq("${aws_s3tables_table_bucket.test.created_at}")
+        expect(ref.encryption_configuration).to eq("${aws_s3tables_table_bucket.test.encryption_configuration}")
+        expect(ref.force_destroy).to eq("${aws_s3tables_table_bucket.test.force_destroy}")
         expect(ref.maintenance_configuration).to eq("${aws_s3tables_table_bucket.test.maintenance_configuration}")
         expect(ref.owner_account_id).to eq("${aws_s3tables_table_bucket.test.owner_account_id}")
+        expect(ref.region).to eq("${aws_s3tables_table_bucket.test.region}")
+        expect(ref.tags_all).to eq("${aws_s3tables_table_bucket.test.tags_all}")
       end
     end
 
@@ -55,13 +59,17 @@ RSpec.describe Pangea::Resources::AWSS3tablesTableBucket do
         config = validate_resource_structure(result, 'aws_s3tables_table_bucket', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created_at')
+        expect(config).not_to have_key('encryption_configuration')
+        expect(config).not_to have_key('force_destroy')
         expect(config).not_to have_key('maintenance_configuration')
         expect(config).not_to have_key('owner_account_id')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ encryption_configuration: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ encryption_configuration: { 'key1' => 'val1' }, force_destroy: true, maintenance_configuration: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +79,10 @@ RSpec.describe Pangea::Resources::AWSS3tablesTableBucket do
 
         config = validate_resource_structure(result, 'aws_s3tables_table_bucket', 'full')
         expect(config).to have_key('encryption_configuration')
+        expect(config).to have_key('force_destroy')
+        expect(config).to have_key('maintenance_configuration')
+        expect(config).to have_key('region')
+        expect(config).to have_key('tags')
       end
     end
 
@@ -91,6 +103,88 @@ RSpec.describe Pangea::Resources::AWSS3tablesTableBucket do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3tables_table_bucket', 'minimal')
         expect(config).not_to have_key('encryption_configuration')
+      end
+      it 'includes force_destroy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table_bucket('opt', required_attrs.merge(force_destroy: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table_bucket', 'opt')
+        expect(config).to have_key('force_destroy')
+      end
+
+      it 'omits force_destroy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table_bucket', 'minimal')
+        expect(config).not_to have_key('force_destroy')
+      end
+      it 'includes maintenance_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table_bucket('opt', required_attrs.merge(maintenance_configuration: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table_bucket', 'opt')
+        expect(config).to have_key('maintenance_configuration')
+      end
+
+      it 'omits maintenance_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table_bucket', 'minimal')
+        expect(config).not_to have_key('maintenance_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table_bucket('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table_bucket', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table_bucket', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes tags when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table_bucket('opt', required_attrs.merge(tags: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table_bucket', 'opt')
+        expect(config).to have_key('tags')
+      end
+
+      it 'omits tags when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table_bucket', 'minimal')
+        expect(config).not_to have_key('tags')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts force_destroy=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(force_destroy: val)
+          synth.aws_s3tables_table_bucket("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_s3tables_table_bucket', "bool_#{val}")
+          expect(config['force_destroy']).to eq(val)
+        end
       end
     end
 
@@ -136,8 +230,8 @@ RSpec.describe Pangea::Resources::AWSS3tablesTableBucket do
     resource_type: :aws_s3tables_table_bucket,
     method: :aws_s3tables_table_bucket,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :created_at, :maintenance_configuration, :owner_account_id],
+    expected_outputs: [:id, :arn, :created_at, :encryption_configuration, :force_destroy, :maintenance_configuration, :owner_account_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:force_destroy]
 end

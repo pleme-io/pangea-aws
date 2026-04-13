@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ComputeoptimizerEnrollmentStatusAttributes,
       outputs: { id: :id },
       map: [:status],
+      map_present: [:region],
       map_bool: [:include_member_accounts]
   end
   module AWS

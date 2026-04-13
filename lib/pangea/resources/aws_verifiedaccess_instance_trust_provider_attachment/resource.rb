@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_verifiedaccess_instance_trust_provider_attachment,
       attributes_class: AWS::Types::VerifiedaccessInstanceTrustProviderAttachmentAttributes,
       outputs: { id: :id },
-      map: [:verifiedaccess_instance_id, :verifiedaccess_trust_provider_id]
+      map: [:verifiedaccess_instance_id, :verifiedaccess_trust_provider_id],
+      map_present: [:region]
   end
   module AWS
     include AWSVerifiedaccessInstanceTrustProviderAttachment

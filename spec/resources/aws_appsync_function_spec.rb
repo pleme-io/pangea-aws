@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncFunction do
         expect(ref.arn).to eq("${aws_appsync_function.test.arn}")
         expect(ref.function_id).to eq("${aws_appsync_function.test.function_id}")
         expect(ref.function_version).to eq("${aws_appsync_function.test.function_version}")
+        expect(ref.region).to eq("${aws_appsync_function.test.region}")
       end
     end
 
@@ -55,11 +56,12 @@ RSpec.describe Pangea::Resources::AWSAppsyncFunction do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('function_id')
         expect(config).not_to have_key('function_version')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ code: 'test-value', description: 'test-value', max_batch_size: 3.14, request_mapping_template: 'test-value', response_mapping_template: 'test-value', runtime: [{ 'key1' => 'val1' }], sync_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ code: 'test-value', description: 'test-value', function_version: 'test-value', max_batch_size: 3.14, region: 'test-value', request_mapping_template: 'test-value', response_mapping_template: 'test-value', runtime: { 'key1' => 'val1' }, sync_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,7 +72,9 @@ RSpec.describe Pangea::Resources::AWSAppsyncFunction do
         config = validate_resource_structure(result, 'aws_appsync_function', 'full')
         expect(config).to have_key('code')
         expect(config).to have_key('description')
+        expect(config).to have_key('function_version')
         expect(config).to have_key('max_batch_size')
+        expect(config).to have_key('region')
         expect(config).to have_key('request_mapping_template')
         expect(config).to have_key('response_mapping_template')
         expect(config).to have_key('runtime')
@@ -113,6 +117,23 @@ RSpec.describe Pangea::Resources::AWSAppsyncFunction do
         config = validate_resource_structure(result, 'aws_appsync_function', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes function_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_function('opt', required_attrs.merge(function_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_function', 'opt')
+        expect(config).to have_key('function_version')
+      end
+
+      it 'omits function_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_function('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_function', 'minimal')
+        expect(config).not_to have_key('function_version')
+      end
       it 'includes max_batch_size when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -129,6 +150,23 @@ RSpec.describe Pangea::Resources::AWSAppsyncFunction do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_function', 'minimal')
         expect(config).not_to have_key('max_batch_size')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_function('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_function', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_function('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_function', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes request_mapping_template when provided' do
         synth = create_synthesizer
@@ -167,7 +205,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncFunction do
       it 'includes runtime when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_function('opt', required_attrs.merge(runtime: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_function('opt', required_attrs.merge(runtime: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_function', 'opt')
         expect(config).to have_key('runtime')
@@ -184,7 +222,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncFunction do
       it 'includes sync_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_function('opt', required_attrs.merge(sync_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_function('opt', required_attrs.merge(sync_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_function', 'opt')
         expect(config).to have_key('sync_config')
@@ -244,7 +282,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncFunction do
     resource_type: :aws_appsync_function,
     method: :aws_appsync_function,
     required_attrs: { api_id: 'test-value', data_source: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :function_id, :function_version],
+    expected_outputs: [:id, :arn, :function_id, :function_version, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

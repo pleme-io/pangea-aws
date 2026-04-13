@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverRule do
         expect(ref.id).to eq("${aws_route53_resolver_rule.test.id}")
         expect(ref.arn).to eq("${aws_route53_resolver_rule.test.arn}")
         expect(ref.owner_id).to eq("${aws_route53_resolver_rule.test.owner_id}")
+        expect(ref.region).to eq("${aws_route53_resolver_rule.test.region}")
         expect(ref.share_status).to eq("${aws_route53_resolver_rule.test.share_status}")
         expect(ref.tags_all).to eq("${aws_route53_resolver_rule.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverRule do
         config = validate_resource_structure(result, 'aws_route53_resolver_rule', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('share_status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ name: 'test-value', resolver_endpoint_id: 'test-value', tags: { 'key1' => 'val1' }, target_ip: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ name: 'test-value', region: 'test-value', resolver_endpoint_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target_ip: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,8 +73,10 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverRule do
 
         config = validate_resource_structure(result, 'aws_route53_resolver_rule', 'full')
         expect(config).to have_key('name')
+        expect(config).to have_key('region')
         expect(config).to have_key('resolver_endpoint_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('target_ip')
       end
     end
@@ -94,6 +98,23 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverRule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53_resolver_rule', 'minimal')
         expect(config).not_to have_key('name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_rule', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes resolver_endpoint_id when provided' do
         synth = create_synthesizer
@@ -128,6 +149,23 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverRule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53_resolver_rule', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_rule('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_rule', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_rule', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes target_ip when provided' do
         synth = create_synthesizer
@@ -191,7 +229,7 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverRule do
     resource_type: :aws_route53_resolver_rule,
     method: :aws_route53_resolver_rule,
     required_attrs: { domain_name: 'test-value', rule_type: 'test-value' },
-    expected_outputs: [:id, :arn, :owner_id, :share_status, :tags_all],
+    expected_outputs: [:id, :arn, :owner_id, :region, :share_status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

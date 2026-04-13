@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LbCookieStickinessPolicyAttributes,
       outputs: { id: :id },
       map: [:lb_port, :load_balancer, :name],
-      map_present: [:cookie_expiration_period]
+      map_present: [:cookie_expiration_period, :region]
   end
   module AWS
     include AWSLbCookieStickinessPolicy

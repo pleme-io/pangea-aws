@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Resourceexplorer2IndexAttributes,
       outputs: { id: :id },
       map: [:type],
-      map_present: [:tags]
+      map_present: [:region, :tags]
   end
   module AWS
     include AWSResourceexplorer2Index

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_efs_backup_policy,
       attributes_class: AWS::Types::EfsBackupPolicyAttributes,
       outputs: { id: :id },
-      map: [:backup_policy, :file_system_id]
+      map: [:backup_policy, :file_system_id],
+      map_present: [:region]
   end
   module AWS
     include AWSEfsBackupPolicy

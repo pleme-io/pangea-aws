@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayStageAttributes,
       outputs: { id: :id },
       map: [:deployment_id, :rest_api_id, :stage_name],
-      map_present: [:access_log_settings, :cache_cluster_size, :canary_settings, :client_certificate_id, :description, :documentation_version, :tags, :tags_all, :variables],
+      map_present: [:access_log_settings, :cache_cluster_size, :canary_settings, :client_certificate_id, :description, :documentation_version, :region, :tags, :tags_all, :variables],
       map_bool: [:cache_cluster_enabled, :xray_tracing_enabled]
   end
   module AWS

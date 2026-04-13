@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspaceSamlConfiguration do
         expect(ref.login_assertion).to eq("${aws_grafana_workspace_saml_configuration.test.login_assertion}")
         expect(ref.login_validity_duration).to eq("${aws_grafana_workspace_saml_configuration.test.login_validity_duration}")
         expect(ref.name_assertion).to eq("${aws_grafana_workspace_saml_configuration.test.name_assertion}")
+        expect(ref.region).to eq("${aws_grafana_workspace_saml_configuration.test.region}")
         expect(ref.status).to eq("${aws_grafana_workspace_saml_configuration.test.status}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspaceSamlConfiguration do
         expect(config).not_to have_key('login_assertion')
         expect(config).not_to have_key('login_validity_duration')
         expect(config).not_to have_key('name_assertion')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ admin_role_values: ['test-value'], allowed_organizations: ['test-value'], groups_assertion: 'test-value', idp_metadata_url: 'test-value', idp_metadata_xml: 'test-value', org_assertion: 'test-value', role_assertion: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ admin_role_values: ['test-value'], allowed_organizations: ['test-value'], email_assertion: 'test-value', groups_assertion: 'test-value', idp_metadata_url: 'test-value', idp_metadata_xml: 'test-value', login_assertion: 'test-value', login_validity_duration: 3.14, name_assertion: 'test-value', org_assertion: 'test-value', region: 'test-value', role_assertion: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,10 +76,15 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspaceSamlConfiguration do
         config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'full')
         expect(config).to have_key('admin_role_values')
         expect(config).to have_key('allowed_organizations')
+        expect(config).to have_key('email_assertion')
         expect(config).to have_key('groups_assertion')
         expect(config).to have_key('idp_metadata_url')
         expect(config).to have_key('idp_metadata_xml')
+        expect(config).to have_key('login_assertion')
+        expect(config).to have_key('login_validity_duration')
+        expect(config).to have_key('name_assertion')
         expect(config).to have_key('org_assertion')
+        expect(config).to have_key('region')
         expect(config).to have_key('role_assertion')
       end
     end
@@ -116,6 +123,23 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspaceSamlConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'minimal')
         expect(config).not_to have_key('allowed_organizations')
+      end
+      it 'includes email_assertion when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_saml_configuration('opt', required_attrs.merge(email_assertion: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'opt')
+        expect(config).to have_key('email_assertion')
+      end
+
+      it 'omits email_assertion when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_saml_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'minimal')
+        expect(config).not_to have_key('email_assertion')
       end
       it 'includes groups_assertion when provided' do
         synth = create_synthesizer
@@ -168,6 +192,57 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspaceSamlConfiguration do
         config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'minimal')
         expect(config).not_to have_key('idp_metadata_xml')
       end
+      it 'includes login_assertion when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_saml_configuration('opt', required_attrs.merge(login_assertion: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'opt')
+        expect(config).to have_key('login_assertion')
+      end
+
+      it 'omits login_assertion when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_saml_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'minimal')
+        expect(config).not_to have_key('login_assertion')
+      end
+      it 'includes login_validity_duration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_saml_configuration('opt', required_attrs.merge(login_validity_duration: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'opt')
+        expect(config).to have_key('login_validity_duration')
+      end
+
+      it 'omits login_validity_duration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_saml_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'minimal')
+        expect(config).not_to have_key('login_validity_duration')
+      end
+      it 'includes name_assertion when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_saml_configuration('opt', required_attrs.merge(name_assertion: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'opt')
+        expect(config).to have_key('name_assertion')
+      end
+
+      it 'omits name_assertion when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_saml_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'minimal')
+        expect(config).not_to have_key('name_assertion')
+      end
       it 'includes org_assertion when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -184,6 +259,23 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspaceSamlConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'minimal')
         expect(config).not_to have_key('org_assertion')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_saml_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_saml_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_saml_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes role_assertion when provided' do
         synth = create_synthesizer
@@ -247,7 +339,7 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspaceSamlConfiguration do
     resource_type: :aws_grafana_workspace_saml_configuration,
     method: :aws_grafana_workspace_saml_configuration,
     required_attrs: { editor_role_values: ['test-value'], workspace_id: 'test-value' },
-    expected_outputs: [:id, :email_assertion, :login_assertion, :login_validity_duration, :name_assertion, :status],
+    expected_outputs: [:id, :email_assertion, :login_assertion, :login_validity_duration, :name_assertion, :region, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

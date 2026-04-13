@@ -55,7 +55,7 @@ RSpec.describe Pangea::Resources::AWSShieldSubscription do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ skip_destroy: true }) }
+      let(:all_attrs) { required_attrs.merge({ auto_renew: 'test-value', skip_destroy: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,11 +64,29 @@ RSpec.describe Pangea::Resources::AWSShieldSubscription do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_shield_subscription', 'full')
+        expect(config).to have_key('auto_renew')
         expect(config).to have_key('skip_destroy')
       end
     end
 
     context 'optional attributes' do
+      it 'includes auto_renew when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_shield_subscription('opt', required_attrs.merge(auto_renew: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_shield_subscription', 'opt')
+        expect(config).to have_key('auto_renew')
+      end
+
+      it 'omits auto_renew when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_shield_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_shield_subscription', 'minimal')
+        expect(config).not_to have_key('auto_renew')
+      end
       it 'includes skip_destroy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)

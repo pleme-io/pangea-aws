@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ServiceDiscoveryServiceAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:description, :dns_config, :health_check_config, :health_check_custom_config, :namespace_id, :tags, :tags_all, :type],
+      map_present: [:description, :dns_config, :health_check_config, :health_check_custom_config, :namespace_id, :region, :tags, :tags_all, :type],
       map_bool: [:force_destroy]
   end
   module AWS

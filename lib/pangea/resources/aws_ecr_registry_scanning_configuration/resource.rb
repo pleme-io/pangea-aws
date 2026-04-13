@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EcrRegistryScanningConfigurationAttributes,
       outputs: { id: :id },
       map: [:scan_type],
-      map_present: [:rule]
+      map_present: [:region, :rule]
   end
   module AWS
     include AWSEcrRegistryScanningConfiguration

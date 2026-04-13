@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAmplifyWebhook do
 
         expect(ref.id).to eq("${aws_amplify_webhook.test.id}")
         expect(ref.arn).to eq("${aws_amplify_webhook.test.arn}")
+        expect(ref.region).to eq("${aws_amplify_webhook.test.region}")
         expect(ref.url).to eq("${aws_amplify_webhook.test.url}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSAmplifyWebhook do
 
         config = validate_resource_structure(result, 'aws_amplify_webhook', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('url')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSAmplifyWebhook do
 
         config = validate_resource_structure(result, 'aws_amplify_webhook', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -87,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSAmplifyWebhook do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_amplify_webhook', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_webhook('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_webhook', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_webhook('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_webhook', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -133,7 +153,7 @@ RSpec.describe Pangea::Resources::AWSAmplifyWebhook do
     resource_type: :aws_amplify_webhook,
     method: :aws_amplify_webhook,
     required_attrs: { app_id: 'test-value', branch_name: 'test-value' },
-    expected_outputs: [:id, :arn, :url],
+    expected_outputs: [:id, :arn, :region, :url],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

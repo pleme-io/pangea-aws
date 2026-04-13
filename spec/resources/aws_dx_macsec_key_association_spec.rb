@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDxMacsecKeyAssociation do
 
         expect(ref.id).to eq("${aws_dx_macsec_key_association.test.id}")
         expect(ref.ckn).to eq("${aws_dx_macsec_key_association.test.ckn}")
+        expect(ref.region).to eq("${aws_dx_macsec_key_association.test.region}")
         expect(ref.secret_arn).to eq("${aws_dx_macsec_key_association.test.secret_arn}")
         expect(ref.start_on).to eq("${aws_dx_macsec_key_association.test.start_on}")
         expect(ref.state).to eq("${aws_dx_macsec_key_association.test.state}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSDxMacsecKeyAssociation do
 
         config = validate_resource_structure(result, 'aws_dx_macsec_key_association', 'test')
         expect(config).not_to have_key('ckn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('secret_arn')
         expect(config).not_to have_key('start_on')
         expect(config).not_to have_key('state')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSDxMacsecKeyAssociation do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cak: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ cak: 'test-value', ckn: 'test-value', region: 'test-value', secret_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +73,9 @@ RSpec.describe Pangea::Resources::AWSDxMacsecKeyAssociation do
 
         config = validate_resource_structure(result, 'aws_dx_macsec_key_association', 'full')
         expect(config).to have_key('cak')
+        expect(config).to have_key('ckn')
+        expect(config).to have_key('region')
+        expect(config).to have_key('secret_arn')
       end
     end
 
@@ -91,6 +96,57 @@ RSpec.describe Pangea::Resources::AWSDxMacsecKeyAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dx_macsec_key_association', 'minimal')
         expect(config).not_to have_key('cak')
+      end
+      it 'includes ckn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_macsec_key_association('opt', required_attrs.merge(ckn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_macsec_key_association', 'opt')
+        expect(config).to have_key('ckn')
+      end
+
+      it 'omits ckn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_macsec_key_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_macsec_key_association', 'minimal')
+        expect(config).not_to have_key('ckn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_macsec_key_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_macsec_key_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_macsec_key_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_macsec_key_association', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes secret_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_macsec_key_association('opt', required_attrs.merge(secret_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_macsec_key_association', 'opt')
+        expect(config).to have_key('secret_arn')
+      end
+
+      it 'omits secret_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_macsec_key_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_macsec_key_association', 'minimal')
+        expect(config).not_to have_key('secret_arn')
       end
     end
 
@@ -136,7 +192,7 @@ RSpec.describe Pangea::Resources::AWSDxMacsecKeyAssociation do
     resource_type: :aws_dx_macsec_key_association,
     method: :aws_dx_macsec_key_association,
     required_attrs: { connection_id: 'test-value' },
-    expected_outputs: [:id, :ckn, :secret_arn, :start_on, :state],
+    expected_outputs: [:id, :ckn, :region, :secret_arn, :start_on, :state],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

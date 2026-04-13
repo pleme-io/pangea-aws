@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Wafv2WebAclLoggingConfigurationAttributes,
       outputs: { id: :id },
       map: [:log_destination_configs, :resource_arn],
-      map_present: [:logging_filter, :redacted_fields]
+      map_present: [:logging_filter, :redacted_fields, :region]
   end
   module AWS
     include AWSWafv2WebAclLoggingConfiguration

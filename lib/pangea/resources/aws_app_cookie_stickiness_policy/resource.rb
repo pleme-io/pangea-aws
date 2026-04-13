@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_app_cookie_stickiness_policy,
       attributes_class: AWS::Types::AppCookieStickinessPolicyAttributes,
       outputs: { id: :id },
-      map: [:cookie_name, :lb_port, :load_balancer, :name]
+      map: [:cookie_name, :lb_port, :load_balancer, :name],
+      map_present: [:region]
   end
   module AWS
     include AWSAppCookieStickinessPolicy

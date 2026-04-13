@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayMethodAttributes,
       outputs: { id: :id },
       map: [:authorization, :http_method, :resource_id, :rest_api_id],
-      map_present: [:authorization_scopes, :authorizer_id, :operation_name, :request_models, :request_parameters, :request_validator_id],
+      map_present: [:authorization_scopes, :authorizer_id, :operation_name, :region, :request_models, :request_parameters, :request_validator_id],
       map_bool: [:api_key_required]
   end
   module AWS

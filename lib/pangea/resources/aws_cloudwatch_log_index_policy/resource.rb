@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_cloudwatch_log_index_policy,
       attributes_class: AWS::Types::CloudwatchLogIndexPolicyAttributes,
       outputs: { id: :id },
-      map: [:log_group_name, :policy_document]
+      map: [:log_group_name, :policy_document],
+      map_present: [:region]
   end
   module AWS
     include AWSCloudwatchLogIndexPolicy

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BatchJobQueueAttributes,
       outputs: { id: :id },
       map: [:name, :priority, :state],
-      map_present: [:compute_environment_order, :compute_environments, :job_state_time_limit_action, :scheduling_policy_arn, :tags]
+      map_present: [:compute_environment_order, :job_state_time_limit_action, :region, :scheduling_policy_arn, :tags]
   end
   module AWS
     include AWSBatchJobQueue

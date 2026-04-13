@@ -49,6 +49,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisionedProduct do
         expect(ref.path_id).to eq("${aws_servicecatalog_provisioned_product.test.path_id}")
         expect(ref.product_id).to eq("${aws_servicecatalog_provisioned_product.test.product_id}")
         expect(ref.provisioning_artifact_id).to eq("${aws_servicecatalog_provisioned_product.test.provisioning_artifact_id}")
+        expect(ref.region).to eq("${aws_servicecatalog_provisioned_product.test.region}")
         expect(ref.status).to eq("${aws_servicecatalog_provisioned_product.test.status}")
         expect(ref.status_message).to eq("${aws_servicecatalog_provisioned_product.test.status_message}")
         expect(ref.tags_all).to eq("${aws_servicecatalog_provisioned_product.test.tags_all}")
@@ -75,6 +76,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisionedProduct do
         expect(config).not_to have_key('path_id')
         expect(config).not_to have_key('product_id')
         expect(config).not_to have_key('provisioning_artifact_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('status_message')
         expect(config).not_to have_key('tags_all')
@@ -83,7 +85,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisionedProduct do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ accept_language: 'test-value', ignore_errors: true, notification_arns: ['test-value'], path_name: 'test-value', product_name: 'test-value', provisioning_artifact_name: 'test-value', provisioning_parameters: [{ 'key1' => 'val1' }], retain_physical_resources: true, stack_set_provisioning_preferences: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ accept_language: 'test-value', ignore_errors: true, notification_arns: ['test-value'], path_id: 'test-value', path_name: 'test-value', product_id: 'test-value', product_name: 'test-value', provisioning_artifact_id: 'test-value', provisioning_artifact_name: 'test-value', provisioning_parameters: [{ 'key1' => 'val1' }], region: 'test-value', retain_physical_resources: true, stack_set_provisioning_preferences: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -95,13 +97,18 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisionedProduct do
         expect(config).to have_key('accept_language')
         expect(config).to have_key('ignore_errors')
         expect(config).to have_key('notification_arns')
+        expect(config).to have_key('path_id')
         expect(config).to have_key('path_name')
+        expect(config).to have_key('product_id')
         expect(config).to have_key('product_name')
+        expect(config).to have_key('provisioning_artifact_id')
         expect(config).to have_key('provisioning_artifact_name')
         expect(config).to have_key('provisioning_parameters')
+        expect(config).to have_key('region')
         expect(config).to have_key('retain_physical_resources')
         expect(config).to have_key('stack_set_provisioning_preferences')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -157,6 +164,23 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisionedProduct do
         config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'minimal')
         expect(config).not_to have_key('notification_arns')
       end
+      it 'includes path_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioned_product('opt', required_attrs.merge(path_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'opt')
+        expect(config).to have_key('path_id')
+      end
+
+      it 'omits path_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioned_product('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'minimal')
+        expect(config).not_to have_key('path_id')
+      end
       it 'includes path_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -174,6 +198,23 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisionedProduct do
         config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'minimal')
         expect(config).not_to have_key('path_name')
       end
+      it 'includes product_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioned_product('opt', required_attrs.merge(product_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'opt')
+        expect(config).to have_key('product_id')
+      end
+
+      it 'omits product_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioned_product('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'minimal')
+        expect(config).not_to have_key('product_id')
+      end
       it 'includes product_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -190,6 +231,23 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisionedProduct do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'minimal')
         expect(config).not_to have_key('product_name')
+      end
+      it 'includes provisioning_artifact_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioned_product('opt', required_attrs.merge(provisioning_artifact_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'opt')
+        expect(config).to have_key('provisioning_artifact_id')
+      end
+
+      it 'omits provisioning_artifact_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioned_product('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'minimal')
+        expect(config).not_to have_key('provisioning_artifact_id')
       end
       it 'includes provisioning_artifact_name when provided' do
         synth = create_synthesizer
@@ -225,6 +283,23 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisionedProduct do
         config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'minimal')
         expect(config).not_to have_key('provisioning_parameters')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioned_product('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioned_product('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes retain_physical_resources when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -245,7 +320,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisionedProduct do
       it 'includes stack_set_provisioning_preferences when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_servicecatalog_provisioned_product('opt', required_attrs.merge(stack_set_provisioning_preferences: [{ 'key1' => 'val1' }]))
+        synth.aws_servicecatalog_provisioned_product('opt', required_attrs.merge(stack_set_provisioning_preferences: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'opt')
         expect(config).to have_key('stack_set_provisioning_preferences')
@@ -275,6 +350,23 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisionedProduct do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioned_product('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioned_product('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioned_product', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -345,7 +437,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisionedProduct do
     resource_type: :aws_servicecatalog_provisioned_product,
     method: :aws_servicecatalog_provisioned_product,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :cloudwatch_dashboard_names, :created_time, :last_provisioning_record_id, :last_record_id, :last_successful_provisioning_record_id, :launch_role_arn, :outputs, :path_id, :product_id, :provisioning_artifact_id, :status, :status_message, :tags_all, :type],
+    expected_outputs: [:id, :arn, :cloudwatch_dashboard_names, :created_time, :last_provisioning_record_id, :last_record_id, :last_successful_provisioning_record_id, :launch_role_arn, :outputs, :path_id, :product_id, :provisioning_artifact_id, :region, :status, :status_message, :tags_all, :type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:ignore_errors, :retain_physical_resources]

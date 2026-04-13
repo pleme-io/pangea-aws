@@ -47,6 +47,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
         expect(ref.name).to eq("${aws_autoscaling_group.test.name}")
         expect(ref.name_prefix).to eq("${aws_autoscaling_group.test.name_prefix}")
         expect(ref.predicted_capacity).to eq("${aws_autoscaling_group.test.predicted_capacity}")
+        expect(ref.region).to eq("${aws_autoscaling_group.test.region}")
         expect(ref.service_linked_role_arn).to eq("${aws_autoscaling_group.test.service_linked_role_arn}")
         expect(ref.target_group_arns).to eq("${aws_autoscaling_group.test.target_group_arns}")
         expect(ref.vpc_zone_identifier).to eq("${aws_autoscaling_group.test.vpc_zone_identifier}")
@@ -71,6 +72,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
         expect(config).not_to have_key('predicted_capacity')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('service_linked_role_arn')
         expect(config).not_to have_key('target_group_arns')
         expect(config).not_to have_key('vpc_zone_identifier')
@@ -79,7 +81,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ availability_zone_distribution: [{ 'key1' => 'val1' }], capacity_rebalance: true, capacity_reservation_specification: [{ 'key1' => 'val1' }], context: 'test-value', default_instance_warmup: 3.14, desired_capacity_type: 'test-value', enabled_metrics: ['test-value'], force_delete: true, force_delete_warm_pool: true, health_check_grace_period: 3.14, ignore_failed_scaling_activities: true, initial_lifecycle_hook: [{ 'key1' => 'val1' }], instance_maintenance_policy: [{ 'key1' => 'val1' }], instance_refresh: [{ 'key1' => 'val1' }], launch_configuration: 'test-value', launch_template: [{ 'key1' => 'val1' }], max_instance_lifetime: 3.14, metrics_granularity: 'test-value', min_elb_capacity: 3.14, mixed_instances_policy: [{ 'key1' => 'val1' }], placement_group: 'test-value', protect_from_scale_in: true, suspended_processes: ['test-value'], tag: [{ 'key1' => 'val1' }], termination_policies: ['test-value'], traffic_source: [{ 'key1' => 'val1' }], wait_for_capacity_timeout: 'test-value', wait_for_elb_capacity: 3.14, warm_pool: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ availability_zone_distribution: { 'key1' => 'val1' }, availability_zones: ['test-value'], capacity_rebalance: true, capacity_reservation_specification: { 'key1' => 'val1' }, context: 'test-value', default_cooldown: 3.14, default_instance_warmup: 3.14, desired_capacity: 3.14, desired_capacity_type: 'test-value', enabled_metrics: ['test-value'], force_delete: true, force_delete_warm_pool: true, health_check_grace_period: 3.14, health_check_type: 'test-value', ignore_failed_scaling_activities: true, initial_lifecycle_hook: [{ 'key1' => 'val1' }], instance_maintenance_policy: { 'key1' => 'val1' }, instance_refresh: { 'key1' => 'val1' }, launch_configuration: 'test-value', launch_template: { 'key1' => 'val1' }, load_balancers: ['test-value'], max_instance_lifetime: 3.14, metrics_granularity: 'test-value', min_elb_capacity: 3.14, mixed_instances_policy: { 'key1' => 'val1' }, name: 'test-value', name_prefix: 'test-value', placement_group: 'test-value', protect_from_scale_in: true, region: 'test-value', service_linked_role_arn: 'test-value', suspended_processes: ['test-value'], tag: [{ 'key1' => 'val1' }], target_group_arns: ['test-value'], termination_policies: ['test-value'], traffic_source: [{ 'key1' => 'val1' }], vpc_zone_identifier: ['test-value'], wait_for_capacity_timeout: 'test-value', wait_for_elb_capacity: 3.14, warm_pool: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -89,31 +91,42 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
 
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'full')
         expect(config).to have_key('availability_zone_distribution')
+        expect(config).to have_key('availability_zones')
         expect(config).to have_key('capacity_rebalance')
         expect(config).to have_key('capacity_reservation_specification')
         expect(config).to have_key('context')
+        expect(config).to have_key('default_cooldown')
         expect(config).to have_key('default_instance_warmup')
+        expect(config).to have_key('desired_capacity')
         expect(config).to have_key('desired_capacity_type')
         expect(config).to have_key('enabled_metrics')
         expect(config).to have_key('force_delete')
         expect(config).to have_key('force_delete_warm_pool')
         expect(config).to have_key('health_check_grace_period')
+        expect(config).to have_key('health_check_type')
         expect(config).to have_key('ignore_failed_scaling_activities')
         expect(config).to have_key('initial_lifecycle_hook')
         expect(config).to have_key('instance_maintenance_policy')
         expect(config).to have_key('instance_refresh')
         expect(config).to have_key('launch_configuration')
         expect(config).to have_key('launch_template')
+        expect(config).to have_key('load_balancers')
         expect(config).to have_key('max_instance_lifetime')
         expect(config).to have_key('metrics_granularity')
         expect(config).to have_key('min_elb_capacity')
         expect(config).to have_key('mixed_instances_policy')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
         expect(config).to have_key('placement_group')
         expect(config).to have_key('protect_from_scale_in')
+        expect(config).to have_key('region')
+        expect(config).to have_key('service_linked_role_arn')
         expect(config).to have_key('suspended_processes')
         expect(config).to have_key('tag')
+        expect(config).to have_key('target_group_arns')
         expect(config).to have_key('termination_policies')
         expect(config).to have_key('traffic_source')
+        expect(config).to have_key('vpc_zone_identifier')
         expect(config).to have_key('wait_for_capacity_timeout')
         expect(config).to have_key('wait_for_elb_capacity')
         expect(config).to have_key('warm_pool')
@@ -124,7 +137,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
       it 'includes availability_zone_distribution when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_autoscaling_group('opt', required_attrs.merge(availability_zone_distribution: [{ 'key1' => 'val1' }]))
+        synth.aws_autoscaling_group('opt', required_attrs.merge(availability_zone_distribution: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
         expect(config).to have_key('availability_zone_distribution')
@@ -137,6 +150,23 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
         expect(config).not_to have_key('availability_zone_distribution')
+      end
+      it 'includes availability_zones when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('opt', required_attrs.merge(availability_zones: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
+        expect(config).to have_key('availability_zones')
+      end
+
+      it 'omits availability_zones when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
+        expect(config).not_to have_key('availability_zones')
       end
       it 'includes capacity_rebalance when provided' do
         synth = create_synthesizer
@@ -158,7 +188,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
       it 'includes capacity_reservation_specification when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_autoscaling_group('opt', required_attrs.merge(capacity_reservation_specification: [{ 'key1' => 'val1' }]))
+        synth.aws_autoscaling_group('opt', required_attrs.merge(capacity_reservation_specification: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
         expect(config).to have_key('capacity_reservation_specification')
@@ -189,6 +219,23 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
         expect(config).not_to have_key('context')
       end
+      it 'includes default_cooldown when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('opt', required_attrs.merge(default_cooldown: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
+        expect(config).to have_key('default_cooldown')
+      end
+
+      it 'omits default_cooldown when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
+        expect(config).not_to have_key('default_cooldown')
+      end
       it 'includes default_instance_warmup when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -205,6 +252,23 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
         expect(config).not_to have_key('default_instance_warmup')
+      end
+      it 'includes desired_capacity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('opt', required_attrs.merge(desired_capacity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
+        expect(config).to have_key('desired_capacity')
+      end
+
+      it 'omits desired_capacity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
+        expect(config).not_to have_key('desired_capacity')
       end
       it 'includes desired_capacity_type when provided' do
         synth = create_synthesizer
@@ -291,6 +355,23 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
         expect(config).not_to have_key('health_check_grace_period')
       end
+      it 'includes health_check_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('opt', required_attrs.merge(health_check_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
+        expect(config).to have_key('health_check_type')
+      end
+
+      it 'omits health_check_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
+        expect(config).not_to have_key('health_check_type')
+      end
       it 'includes ignore_failed_scaling_activities when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -328,7 +409,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
       it 'includes instance_maintenance_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_autoscaling_group('opt', required_attrs.merge(instance_maintenance_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_autoscaling_group('opt', required_attrs.merge(instance_maintenance_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
         expect(config).to have_key('instance_maintenance_policy')
@@ -345,7 +426,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
       it 'includes instance_refresh when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_autoscaling_group('opt', required_attrs.merge(instance_refresh: [{ 'key1' => 'val1' }]))
+        synth.aws_autoscaling_group('opt', required_attrs.merge(instance_refresh: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
         expect(config).to have_key('instance_refresh')
@@ -379,7 +460,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
       it 'includes launch_template when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_autoscaling_group('opt', required_attrs.merge(launch_template: [{ 'key1' => 'val1' }]))
+        synth.aws_autoscaling_group('opt', required_attrs.merge(launch_template: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
         expect(config).to have_key('launch_template')
@@ -392,6 +473,23 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
         expect(config).not_to have_key('launch_template')
+      end
+      it 'includes load_balancers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('opt', required_attrs.merge(load_balancers: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
+        expect(config).to have_key('load_balancers')
+      end
+
+      it 'omits load_balancers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
+        expect(config).not_to have_key('load_balancers')
       end
       it 'includes max_instance_lifetime when provided' do
         synth = create_synthesizer
@@ -447,7 +545,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
       it 'includes mixed_instances_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_autoscaling_group('opt', required_attrs.merge(mixed_instances_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_autoscaling_group('opt', required_attrs.merge(mixed_instances_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
         expect(config).to have_key('mixed_instances_policy')
@@ -460,6 +558,40 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
         expect(config).not_to have_key('mixed_instances_policy')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
+        expect(config).not_to have_key('name_prefix')
       end
       it 'includes placement_group when provided' do
         synth = create_synthesizer
@@ -495,6 +627,40 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
         expect(config).not_to have_key('protect_from_scale_in')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes service_linked_role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('opt', required_attrs.merge(service_linked_role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
+        expect(config).to have_key('service_linked_role_arn')
+      end
+
+      it 'omits service_linked_role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
+        expect(config).not_to have_key('service_linked_role_arn')
+      end
       it 'includes suspended_processes when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -529,6 +695,23 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
         expect(config).not_to have_key('tag')
       end
+      it 'includes target_group_arns when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('opt', required_attrs.merge(target_group_arns: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
+        expect(config).to have_key('target_group_arns')
+      end
+
+      it 'omits target_group_arns when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
+        expect(config).not_to have_key('target_group_arns')
+      end
       it 'includes termination_policies when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -562,6 +745,23 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
         expect(config).not_to have_key('traffic_source')
+      end
+      it 'includes vpc_zone_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('opt', required_attrs.merge(vpc_zone_identifier: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
+        expect(config).to have_key('vpc_zone_identifier')
+      end
+
+      it 'omits vpc_zone_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_group', 'minimal')
+        expect(config).not_to have_key('vpc_zone_identifier')
       end
       it 'includes wait_for_capacity_timeout when provided' do
         synth = create_synthesizer
@@ -600,7 +800,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
       it 'includes warm_pool when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_autoscaling_group('opt', required_attrs.merge(warm_pool: [{ 'key1' => 'val1' }]))
+        synth.aws_autoscaling_group('opt', required_attrs.merge(warm_pool: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_group', 'opt')
         expect(config).to have_key('warm_pool')
@@ -717,7 +917,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingGroup do
     resource_type: :aws_autoscaling_group,
     method: :aws_autoscaling_group,
     required_attrs: { max_size: 3.14, min_size: 3.14 },
-    expected_outputs: [:id, :arn, :availability_zones, :default_cooldown, :desired_capacity, :health_check_type, :load_balancers, :name, :name_prefix, :predicted_capacity, :service_linked_role_arn, :target_group_arns, :vpc_zone_identifier, :warm_pool_size],
+    expected_outputs: [:id, :arn, :availability_zones, :default_cooldown, :desired_capacity, :health_check_type, :load_balancers, :name, :name_prefix, :predicted_capacity, :region, :service_linked_role_arn, :target_group_arns, :vpc_zone_identifier, :warm_pool_size],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:capacity_rebalance, :force_delete, :force_delete_warm_pool, :ignore_failed_scaling_activities, :protect_from_scale_in]

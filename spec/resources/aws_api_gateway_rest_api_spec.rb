@@ -47,6 +47,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApi do
         expect(ref.execution_arn).to eq("${aws_api_gateway_rest_api.test.execution_arn}")
         expect(ref.minimum_compression_size).to eq("${aws_api_gateway_rest_api.test.minimum_compression_size}")
         expect(ref.policy).to eq("${aws_api_gateway_rest_api.test.policy}")
+        expect(ref.region).to eq("${aws_api_gateway_rest_api.test.region}")
         expect(ref.root_resource_id).to eq("${aws_api_gateway_rest_api.test.root_resource_id}")
         expect(ref.tags_all).to eq("${aws_api_gateway_rest_api.test.tags_all}")
       end
@@ -69,13 +70,14 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApi do
         expect(config).not_to have_key('execution_arn')
         expect(config).not_to have_key('minimum_compression_size')
         expect(config).not_to have_key('policy')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('root_resource_id')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ body: 'test-value', endpoint_configuration: [{ 'key1' => 'val1' }], fail_on_warnings: true, parameters: { 'key1' => 'val1' }, put_rest_api_mode: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ api_key_source: 'test-value', binary_media_types: ['test-value'], body: 'test-value', description: 'test-value', disable_execute_api_endpoint: true, endpoint_configuration: { 'key1' => 'val1' }, fail_on_warnings: true, minimum_compression_size: 'test-value', parameters: { 'key1' => 'val1' }, policy: 'test-value', put_rest_api_mode: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -84,16 +86,58 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApi do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'full')
+        expect(config).to have_key('api_key_source')
+        expect(config).to have_key('binary_media_types')
         expect(config).to have_key('body')
+        expect(config).to have_key('description')
+        expect(config).to have_key('disable_execute_api_endpoint')
         expect(config).to have_key('endpoint_configuration')
         expect(config).to have_key('fail_on_warnings')
+        expect(config).to have_key('minimum_compression_size')
         expect(config).to have_key('parameters')
+        expect(config).to have_key('policy')
         expect(config).to have_key('put_rest_api_mode')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes api_key_source when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('opt', required_attrs.merge(api_key_source: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'opt')
+        expect(config).to have_key('api_key_source')
+      end
+
+      it 'omits api_key_source when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'minimal')
+        expect(config).not_to have_key('api_key_source')
+      end
+      it 'includes binary_media_types when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('opt', required_attrs.merge(binary_media_types: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'opt')
+        expect(config).to have_key('binary_media_types')
+      end
+
+      it 'omits binary_media_types when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'minimal')
+        expect(config).not_to have_key('binary_media_types')
+      end
       it 'includes body when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -111,10 +155,44 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApi do
         config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'minimal')
         expect(config).not_to have_key('body')
       end
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'minimal')
+        expect(config).not_to have_key('description')
+      end
+      it 'includes disable_execute_api_endpoint when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('opt', required_attrs.merge(disable_execute_api_endpoint: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'opt')
+        expect(config).to have_key('disable_execute_api_endpoint')
+      end
+
+      it 'omits disable_execute_api_endpoint when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'minimal')
+        expect(config).not_to have_key('disable_execute_api_endpoint')
+      end
       it 'includes endpoint_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_api_gateway_rest_api('opt', required_attrs.merge(endpoint_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_api_gateway_rest_api('opt', required_attrs.merge(endpoint_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'opt')
         expect(config).to have_key('endpoint_configuration')
@@ -145,6 +223,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApi do
         config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'minimal')
         expect(config).not_to have_key('fail_on_warnings')
       end
+      it 'includes minimum_compression_size when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('opt', required_attrs.merge(minimum_compression_size: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'opt')
+        expect(config).to have_key('minimum_compression_size')
+      end
+
+      it 'omits minimum_compression_size when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'minimal')
+        expect(config).not_to have_key('minimum_compression_size')
+      end
       it 'includes parameters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -161,6 +256,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApi do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'minimal')
         expect(config).not_to have_key('parameters')
+      end
+      it 'includes policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('opt', required_attrs.merge(policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'opt')
+        expect(config).to have_key('policy')
+      end
+
+      it 'omits policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'minimal')
+        expect(config).not_to have_key('policy')
       end
       it 'includes put_rest_api_mode when provided' do
         synth = create_synthesizer
@@ -179,6 +291,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApi do
         config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'minimal')
         expect(config).not_to have_key('put_rest_api_mode')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -196,9 +325,37 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApi do
         config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts disable_execute_api_endpoint=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(disable_execute_api_endpoint: val)
+          synth.aws_api_gateway_rest_api("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_api_gateway_rest_api', "bool_#{val}")
+          expect(config['disable_execute_api_endpoint']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts fail_on_warnings=#{val}" do
           synth = create_synthesizer
@@ -254,8 +411,8 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApi do
     resource_type: :aws_api_gateway_rest_api,
     method: :aws_api_gateway_rest_api,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :api_key_source, :arn, :binary_media_types, :created_date, :description, :disable_execute_api_endpoint, :execution_arn, :minimum_compression_size, :policy, :root_resource_id, :tags_all],
+    expected_outputs: [:id, :api_key_source, :arn, :binary_media_types, :created_date, :description, :disable_execute_api_endpoint, :execution_arn, :minimum_compression_size, :policy, :region, :root_resource_id, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:fail_on_warnings]
+    boolean_fields: [:disable_execute_api_endpoint, :fail_on_warnings]
 end

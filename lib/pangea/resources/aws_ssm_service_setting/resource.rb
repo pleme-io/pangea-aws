@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ssm_service_setting,
       attributes_class: AWS::Types::SsmServiceSettingAttributes,
       outputs: { id: :id },
-      map: [:setting_id, :setting_value]
+      map: [:setting_id, :setting_value],
+      map_present: [:region]
   end
   module AWS
     include AWSSsmServiceSetting

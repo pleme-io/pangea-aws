@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EksIdentityProviderConfigAttributes,
       outputs: { id: :id },
       map: [:cluster_name, :oidc],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSEksIdentityProviderConfig

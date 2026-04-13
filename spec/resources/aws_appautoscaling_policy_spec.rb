@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingPolicy do
         expect(ref.id).to eq("${aws_appautoscaling_policy.test.id}")
         expect(ref.alarm_arns).to eq("${aws_appautoscaling_policy.test.alarm_arns}")
         expect(ref.arn).to eq("${aws_appautoscaling_policy.test.arn}")
+        expect(ref.region).to eq("${aws_appautoscaling_policy.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingPolicy do
         config = validate_resource_structure(result, 'aws_appautoscaling_policy', 'test')
         expect(config).not_to have_key('alarm_arns')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ policy_type: 'test-value', step_scaling_policy_configuration: [{ 'key1' => 'val1' }], target_tracking_scaling_policy_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ policy_type: 'test-value', predictive_scaling_policy_configuration: { 'key1' => 'val1' }, region: 'test-value', step_scaling_policy_configuration: { 'key1' => 'val1' }, target_tracking_scaling_policy_configuration: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,8 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingPolicy do
 
         config = validate_resource_structure(result, 'aws_appautoscaling_policy', 'full')
         expect(config).to have_key('policy_type')
+        expect(config).to have_key('predictive_scaling_policy_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('step_scaling_policy_configuration')
         expect(config).to have_key('target_tracking_scaling_policy_configuration')
       end
@@ -90,10 +94,44 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingPolicy do
         config = validate_resource_structure(result, 'aws_appautoscaling_policy', 'minimal')
         expect(config).not_to have_key('policy_type')
       end
+      it 'includes predictive_scaling_policy_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appautoscaling_policy('opt', required_attrs.merge(predictive_scaling_policy_configuration: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appautoscaling_policy', 'opt')
+        expect(config).to have_key('predictive_scaling_policy_configuration')
+      end
+
+      it 'omits predictive_scaling_policy_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appautoscaling_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appautoscaling_policy', 'minimal')
+        expect(config).not_to have_key('predictive_scaling_policy_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appautoscaling_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appautoscaling_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appautoscaling_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appautoscaling_policy', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes step_scaling_policy_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appautoscaling_policy('opt', required_attrs.merge(step_scaling_policy_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_appautoscaling_policy('opt', required_attrs.merge(step_scaling_policy_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appautoscaling_policy', 'opt')
         expect(config).to have_key('step_scaling_policy_configuration')
@@ -110,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingPolicy do
       it 'includes target_tracking_scaling_policy_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appautoscaling_policy('opt', required_attrs.merge(target_tracking_scaling_policy_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_appautoscaling_policy('opt', required_attrs.merge(target_tracking_scaling_policy_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appautoscaling_policy', 'opt')
         expect(config).to have_key('target_tracking_scaling_policy_configuration')
@@ -171,7 +209,7 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingPolicy do
     resource_type: :aws_appautoscaling_policy,
     method: :aws_appautoscaling_policy,
     required_attrs: { name: 'test-value', resource_id: 'test-value', scalable_dimension: 'test-value', service_namespace: 'test-value' },
-    expected_outputs: [:id, :alarm_arns, :arn],
+    expected_outputs: [:id, :alarm_arns, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

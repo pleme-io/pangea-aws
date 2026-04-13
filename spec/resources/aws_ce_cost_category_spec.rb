@@ -61,7 +61,7 @@ RSpec.describe Pangea::Resources::AWSCeCostCategory do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ default_value: 'test-value', split_charge_rule: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ default_value: 'test-value', effective_start: 'test-value', split_charge_rule: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,8 +71,10 @@ RSpec.describe Pangea::Resources::AWSCeCostCategory do
 
         config = validate_resource_structure(result, 'aws_ce_cost_category', 'full')
         expect(config).to have_key('default_value')
+        expect(config).to have_key('effective_start')
         expect(config).to have_key('split_charge_rule')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -93,6 +95,23 @@ RSpec.describe Pangea::Resources::AWSCeCostCategory do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ce_cost_category', 'minimal')
         expect(config).not_to have_key('default_value')
+      end
+      it 'includes effective_start when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ce_cost_category('opt', required_attrs.merge(effective_start: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ce_cost_category', 'opt')
+        expect(config).to have_key('effective_start')
+      end
+
+      it 'omits effective_start when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ce_cost_category('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ce_cost_category', 'minimal')
+        expect(config).not_to have_key('effective_start')
       end
       it 'includes split_charge_rule when provided' do
         synth = create_synthesizer
@@ -127,6 +146,23 @@ RSpec.describe Pangea::Resources::AWSCeCostCategory do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ce_cost_category', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ce_cost_category('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ce_cost_category', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ce_cost_category('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ce_cost_category', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 

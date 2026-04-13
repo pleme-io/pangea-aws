@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSAppconfigEnvironment do
         expect(ref.arn).to eq("${aws_appconfig_environment.test.arn}")
         expect(ref.description).to eq("${aws_appconfig_environment.test.description}")
         expect(ref.environment_id).to eq("${aws_appconfig_environment.test.environment_id}")
+        expect(ref.region).to eq("${aws_appconfig_environment.test.region}")
         expect(ref.state).to eq("${aws_appconfig_environment.test.state}")
         expect(ref.tags_all).to eq("${aws_appconfig_environment.test.tags_all}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSAppconfigEnvironment do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('description')
         expect(config).not_to have_key('environment_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ monitor: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', monitor: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,12 +74,31 @@ RSpec.describe Pangea::Resources::AWSAppconfigEnvironment do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_appconfig_environment', 'full')
+        expect(config).to have_key('description')
         expect(config).to have_key('monitor')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_environment('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_environment', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_environment', 'minimal')
+        expect(config).not_to have_key('description')
+      end
       it 'includes monitor when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -94,6 +115,23 @@ RSpec.describe Pangea::Resources::AWSAppconfigEnvironment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appconfig_environment', 'minimal')
         expect(config).not_to have_key('monitor')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_environment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_environment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_environment', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -157,7 +195,7 @@ RSpec.describe Pangea::Resources::AWSAppconfigEnvironment do
     resource_type: :aws_appconfig_environment,
     method: :aws_appconfig_environment,
     required_attrs: { application_id: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :description, :environment_id, :state, :tags_all],
+    expected_outputs: [:id, :arn, :description, :environment_id, :region, :state, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

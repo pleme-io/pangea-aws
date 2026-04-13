@@ -61,7 +61,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontPublicKey do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ comment: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ comment: 'test-value', name: 'test-value', name_prefix: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +71,8 @@ RSpec.describe Pangea::Resources::AWSCloudfrontPublicKey do
 
         config = validate_resource_structure(result, 'aws_cloudfront_public_key', 'full')
         expect(config).to have_key('comment')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
       end
     end
 
@@ -91,6 +93,40 @@ RSpec.describe Pangea::Resources::AWSCloudfrontPublicKey do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudfront_public_key', 'minimal')
         expect(config).not_to have_key('comment')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_public_key('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_public_key', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_public_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_public_key', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_public_key('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_public_key', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_public_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_public_key', 'minimal')
+        expect(config).not_to have_key('name_prefix')
       end
     end
 

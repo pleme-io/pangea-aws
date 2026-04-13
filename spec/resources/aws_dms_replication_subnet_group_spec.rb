@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationSubnetGroup do
         ref = synth.aws_dms_replication_subnet_group('test', required_attrs)
 
         expect(ref.id).to eq("${aws_dms_replication_subnet_group.test.id}")
+        expect(ref.region).to eq("${aws_dms_replication_subnet_group.test.region}")
         expect(ref.replication_subnet_group_arn).to eq("${aws_dms_replication_subnet_group.test.replication_subnet_group_arn}")
         expect(ref.tags_all).to eq("${aws_dms_replication_subnet_group.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_dms_replication_subnet_group.test.vpc_id}")
@@ -52,6 +53,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationSubnetGroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_dms_replication_subnet_group', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('replication_subnet_group_arn')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
@@ -59,7 +61,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationSubnetGroup do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,11 +70,30 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationSubnetGroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_dms_replication_subnet_group', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_subnet_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_subnet_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_subnet_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_subnet_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -89,6 +110,23 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationSubnetGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_replication_subnet_group', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_subnet_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_subnet_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_subnet_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_subnet_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -136,7 +174,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationSubnetGroup do
     resource_type: :aws_dms_replication_subnet_group,
     method: :aws_dms_replication_subnet_group,
     required_attrs: { replication_subnet_group_description: 'test-value', replication_subnet_group_id: 'test-value', subnet_ids: ['test-value'] },
-    expected_outputs: [:id, :replication_subnet_group_arn, :tags_all, :vpc_id],
+    expected_outputs: [:id, :region, :replication_subnet_group_arn, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

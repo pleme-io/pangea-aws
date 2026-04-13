@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_securitylake_aws_log_source,
       attributes_class: AWS::Types::SecuritylakeAwsLogSourceAttributes,
       outputs: { id: :id },
-      map_present: [:source]
+      map_present: [:region, :source]
   end
   module AWS
     include AWSSecuritylakeAwsLogSource

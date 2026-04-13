@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSConnectQueue do
         expect(ref.id).to eq("${aws_connect_queue.test.id}")
         expect(ref.arn).to eq("${aws_connect_queue.test.arn}")
         expect(ref.queue_id).to eq("${aws_connect_queue.test.queue_id}")
+        expect(ref.region).to eq("${aws_connect_queue.test.region}")
         expect(ref.status).to eq("${aws_connect_queue.test.status}")
         expect(ref.tags_all).to eq("${aws_connect_queue.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSConnectQueue do
         config = validate_resource_structure(result, 'aws_connect_queue', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('queue_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', max_contacts: 3.14, outbound_caller_config: [{ 'key1' => 'val1' }], quick_connect_ids: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', max_contacts: 3.14, outbound_caller_config: { 'key1' => 'val1' }, quick_connect_ids: ['test-value'], region: 'test-value', status: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,7 +76,10 @@ RSpec.describe Pangea::Resources::AWSConnectQueue do
         expect(config).to have_key('max_contacts')
         expect(config).to have_key('outbound_caller_config')
         expect(config).to have_key('quick_connect_ids')
+        expect(config).to have_key('region')
+        expect(config).to have_key('status')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -116,7 +121,7 @@ RSpec.describe Pangea::Resources::AWSConnectQueue do
       it 'includes outbound_caller_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_connect_queue('opt', required_attrs.merge(outbound_caller_config: [{ 'key1' => 'val1' }]))
+        synth.aws_connect_queue('opt', required_attrs.merge(outbound_caller_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_connect_queue', 'opt')
         expect(config).to have_key('outbound_caller_config')
@@ -147,6 +152,40 @@ RSpec.describe Pangea::Resources::AWSConnectQueue do
         config = validate_resource_structure(result, 'aws_connect_queue', 'minimal')
         expect(config).not_to have_key('quick_connect_ids')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_queue('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_queue', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_queue', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_queue('opt', required_attrs.merge(status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_queue', 'opt')
+        expect(config).to have_key('status')
+      end
+
+      it 'omits status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_queue', 'minimal')
+        expect(config).not_to have_key('status')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -163,6 +202,23 @@ RSpec.describe Pangea::Resources::AWSConnectQueue do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_connect_queue', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_queue('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_queue', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_queue', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -210,7 +266,7 @@ RSpec.describe Pangea::Resources::AWSConnectQueue do
     resource_type: :aws_connect_queue,
     method: :aws_connect_queue,
     required_attrs: { hours_of_operation_id: 'test-value', instance_id: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :queue_id, :status, :tags_all],
+    expected_outputs: [:id, :arn, :queue_id, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

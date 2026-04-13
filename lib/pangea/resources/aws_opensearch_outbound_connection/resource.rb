@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OpensearchOutboundConnectionAttributes,
       outputs: { id: :id },
       map: [:connection_alias, :local_domain_info, :remote_domain_info],
-      map_present: [:connection_mode, :connection_properties],
+      map_present: [:connection_mode, :connection_properties, :region],
       map_bool: [:accept_connection]
   end
   module AWS

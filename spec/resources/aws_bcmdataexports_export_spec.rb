@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSBcmdataexportsExport do
         ref = synth.aws_bcmdataexports_export('test', required_attrs)
 
         expect(ref.id).to eq("${aws_bcmdataexports_export.test.id}")
+        expect(ref.arn).to eq("${aws_bcmdataexports_export.test.arn}")
         expect(ref.tags_all).to eq("${aws_bcmdataexports_export.test.tags_all}")
       end
     end
@@ -50,6 +51,7 @@ RSpec.describe Pangea::Resources::AWSBcmdataexportsExport do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_bcmdataexports_export', 'test')
+        expect(config).not_to have_key('arn')
         expect(config).not_to have_key('tags_all')
       end
     end
@@ -147,7 +149,7 @@ RSpec.describe Pangea::Resources::AWSBcmdataexportsExport do
     resource_type: :aws_bcmdataexports_export,
     method: :aws_bcmdataexports_export,
     required_attrs: {},
-    expected_outputs: [:id, :tags_all],
+    expected_outputs: [:id, :arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_cloudwatch_log_data_protection_policy,
       attributes_class: AWS::Types::CloudwatchLogDataProtectionPolicyAttributes,
       outputs: { id: :id },
-      map: [:log_group_name, :policy_document]
+      map: [:log_group_name, :policy_document],
+      map_present: [:region]
   end
   module AWS
     include AWSCloudwatchLogDataProtectionPolicy

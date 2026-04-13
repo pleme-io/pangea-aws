@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DetectiveOrganizationConfigurationAttributes,
       outputs: { id: :id },
       map: [:graph_arn],
+      map_present: [:region],
       map_bool: [:auto_enable]
   end
   module AWS

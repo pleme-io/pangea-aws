@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElasticBeanstalkConfigurationTemplateAttributes,
       outputs: { id: :id },
       map: [:application, :name],
-      map_present: [:description, :environment_id, :setting, :solution_stack_name]
+      map_present: [:description, :environment_id, :region, :setting, :solution_stack_name]
   end
   module AWS
     include AWSElasticBeanstalkConfigurationTemplate

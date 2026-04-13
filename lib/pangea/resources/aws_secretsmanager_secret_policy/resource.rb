@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SecretsmanagerSecretPolicyAttributes,
       outputs: { id: :id },
       map: [:policy, :secret_arn],
+      map_present: [:region],
       map_bool: [:block_public_policy]
   end
   module AWS

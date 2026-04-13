@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CleanroomsCollaborationAttributes,
       outputs: { id: :id },
       map: [:creator_display_name, :creator_member_abilities, :description, :name, :query_log_status],
-      map_present: [:data_encryption_metadata, :member, :tags, :tags_all]
+      map_present: [:analytics_engine, :data_encryption_metadata, :member, :region, :tags, :tags_all]
   end
   module AWS
     include AWSCleanroomsCollaboration

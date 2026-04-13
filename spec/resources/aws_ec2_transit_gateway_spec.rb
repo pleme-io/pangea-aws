@@ -40,8 +40,10 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGateway do
         expect(ref.id).to eq("${aws_ec2_transit_gateway.test.id}")
         expect(ref.arn).to eq("${aws_ec2_transit_gateway.test.arn}")
         expect(ref.association_default_route_table_id).to eq("${aws_ec2_transit_gateway.test.association_default_route_table_id}")
+        expect(ref.encryption_support).to eq("${aws_ec2_transit_gateway.test.encryption_support}")
         expect(ref.owner_id).to eq("${aws_ec2_transit_gateway.test.owner_id}")
         expect(ref.propagation_default_route_table_id).to eq("${aws_ec2_transit_gateway.test.propagation_default_route_table_id}")
+        expect(ref.region).to eq("${aws_ec2_transit_gateway.test.region}")
         expect(ref.tags_all).to eq("${aws_ec2_transit_gateway.test.tags_all}")
       end
     end
@@ -56,14 +58,16 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGateway do
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('association_default_route_table_id')
+        expect(config).not_to have_key('encryption_support')
         expect(config).not_to have_key('owner_id')
         expect(config).not_to have_key('propagation_default_route_table_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ amazon_side_asn: 3.14, auto_accept_shared_attachments: 'test-value', default_route_table_association: 'test-value', default_route_table_propagation: 'test-value', description: 'test-value', dns_support: 'test-value', multicast_support: 'test-value', security_group_referencing_support: 'test-value', tags: { 'key1' => 'val1' }, transit_gateway_cidr_blocks: ['test-value'], vpn_ecmp_support: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ amazon_side_asn: 3.14, auto_accept_shared_attachments: 'test-value', default_route_table_association: 'test-value', default_route_table_propagation: 'test-value', description: 'test-value', dns_support: 'test-value', encryption_support: 'test-value', multicast_support: 'test-value', region: 'test-value', security_group_referencing_support: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, transit_gateway_cidr_blocks: ['test-value'], vpn_ecmp_support: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,9 +82,12 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGateway do
         expect(config).to have_key('default_route_table_propagation')
         expect(config).to have_key('description')
         expect(config).to have_key('dns_support')
+        expect(config).to have_key('encryption_support')
         expect(config).to have_key('multicast_support')
+        expect(config).to have_key('region')
         expect(config).to have_key('security_group_referencing_support')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('transit_gateway_cidr_blocks')
         expect(config).to have_key('vpn_ecmp_support')
       end
@@ -189,6 +196,23 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGateway do
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway', 'minimal')
         expect(config).not_to have_key('dns_support')
       end
+      it 'includes encryption_support when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway('opt', required_attrs.merge(encryption_support: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway', 'opt')
+        expect(config).to have_key('encryption_support')
+      end
+
+      it 'omits encryption_support when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway', 'minimal')
+        expect(config).not_to have_key('encryption_support')
+      end
       it 'includes multicast_support when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -205,6 +229,23 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGateway do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway', 'minimal')
         expect(config).not_to have_key('multicast_support')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes security_group_referencing_support when provided' do
         synth = create_synthesizer
@@ -239,6 +280,23 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGateway do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes transit_gateway_cidr_blocks when provided' do
         synth = create_synthesizer
@@ -317,7 +375,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGateway do
     resource_type: :aws_ec2_transit_gateway,
     method: :aws_ec2_transit_gateway,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :association_default_route_table_id, :owner_id, :propagation_default_route_table_id, :tags_all],
+    expected_outputs: [:id, :arn, :association_default_route_table_id, :encryption_support, :owner_id, :propagation_default_route_table_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

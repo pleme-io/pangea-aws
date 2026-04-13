@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSCognitoResourceServer do
         ref = synth.aws_cognito_resource_server('test', required_attrs)
 
         expect(ref.id).to eq("${aws_cognito_resource_server.test.id}")
+        expect(ref.region).to eq("${aws_cognito_resource_server.test.region}")
         expect(ref.scope_identifiers).to eq("${aws_cognito_resource_server.test.scope_identifiers}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSCognitoResourceServer do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cognito_resource_server', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('scope_identifiers')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ scope: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', scope: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,11 +66,29 @@ RSpec.describe Pangea::Resources::AWSCognitoResourceServer do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cognito_resource_server', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('scope')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_resource_server('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_resource_server', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_resource_server('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_resource_server', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes scope when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -132,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSCognitoResourceServer do
     resource_type: :aws_cognito_resource_server,
     method: :aws_cognito_resource_server,
     required_attrs: { identifier: 'test-value', name: 'test-value', user_pool_id: 'test-value' },
-    expected_outputs: [:id, :scope_identifiers],
+    expected_outputs: [:id, :region, :scope_identifiers],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

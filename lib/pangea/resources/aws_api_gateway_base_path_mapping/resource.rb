@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayBasePathMappingAttributes,
       outputs: { id: :id },
       map: [:api_id, :domain_name],
-      map_present: [:base_path, :domain_name_id, :stage_name]
+      map_present: [:base_path, :domain_name_id, :region, :stage_name]
   end
   module AWS
     include AWSApiGatewayBasePathMapping

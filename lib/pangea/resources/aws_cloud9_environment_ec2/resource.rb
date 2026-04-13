@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Cloud9EnvironmentEc2Attributes,
       outputs: { id: :id },
       map: [:image_id, :instance_type, :name],
-      map_present: [:automatic_stop_time_minutes, :connection_type, :description, :owner_arn, :subnet_id, :tags, :tags_all]
+      map_present: [:automatic_stop_time_minutes, :connection_type, :description, :owner_arn, :region, :subnet_id, :tags, :tags_all]
   end
   module AWS
     include AWSCloud9EnvironmentEc2

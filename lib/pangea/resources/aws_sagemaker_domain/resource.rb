@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerDomainAttributes,
       outputs: { id: :id },
       map: [:auth_mode, :default_user_settings, :domain_name, :subnet_ids, :vpc_id],
-      map_present: [:app_network_access_type, :app_security_group_management, :default_space_settings, :domain_settings, :kms_key_id, :retention_policy, :tag_propagation, :tags, :tags_all]
+      map_present: [:app_network_access_type, :app_security_group_management, :default_space_settings, :domain_settings, :kms_key_id, :region, :retention_policy, :tag_propagation, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerDomain

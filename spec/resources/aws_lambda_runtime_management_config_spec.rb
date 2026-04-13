@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSLambdaRuntimeManagementConfig do
 
         expect(ref.id).to eq("${aws_lambda_runtime_management_config.test.id}")
         expect(ref.function_arn).to eq("${aws_lambda_runtime_management_config.test.function_arn}")
+        expect(ref.region).to eq("${aws_lambda_runtime_management_config.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSLambdaRuntimeManagementConfig do
 
         config = validate_resource_structure(result, 'aws_lambda_runtime_management_config', 'test')
         expect(config).not_to have_key('function_arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ qualifier: 'test-value', runtime_version_arn: 'test-value', update_runtime_on: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ qualifier: 'test-value', region: 'test-value', runtime_version_arn: 'test-value', update_runtime_on: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSLambdaRuntimeManagementConfig do
 
         config = validate_resource_structure(result, 'aws_lambda_runtime_management_config', 'full')
         expect(config).to have_key('qualifier')
+        expect(config).to have_key('region')
         expect(config).to have_key('runtime_version_arn')
         expect(config).to have_key('update_runtime_on')
       end
@@ -87,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSLambdaRuntimeManagementConfig do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_runtime_management_config', 'minimal')
         expect(config).not_to have_key('qualifier')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_runtime_management_config('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_runtime_management_config', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_runtime_management_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_runtime_management_config', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes runtime_version_arn when provided' do
         synth = create_synthesizer
@@ -166,7 +186,7 @@ RSpec.describe Pangea::Resources::AWSLambdaRuntimeManagementConfig do
     resource_type: :aws_lambda_runtime_management_config,
     method: :aws_lambda_runtime_management_config,
     required_attrs: { function_name: 'test-value' },
-    expected_outputs: [:id, :function_arn],
+    expected_outputs: [:id, :function_arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotSchedule do
         expect(ref.arn).to eq("${aws_redshift_snapshot_schedule.test.arn}")
         expect(ref.identifier).to eq("${aws_redshift_snapshot_schedule.test.identifier}")
         expect(ref.identifier_prefix).to eq("${aws_redshift_snapshot_schedule.test.identifier_prefix}")
+        expect(ref.region).to eq("${aws_redshift_snapshot_schedule.test.region}")
         expect(ref.tags_all).to eq("${aws_redshift_snapshot_schedule.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotSchedule do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('identifier')
         expect(config).not_to have_key('identifier_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', force_destroy: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', force_destroy: true, identifier: 'test-value', identifier_prefix: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,7 +74,11 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotSchedule do
         config = validate_resource_structure(result, 'aws_redshift_snapshot_schedule', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('force_destroy')
+        expect(config).to have_key('identifier')
+        expect(config).to have_key('identifier_prefix')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -111,6 +117,57 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotSchedule do
         config = validate_resource_structure(result, 'aws_redshift_snapshot_schedule', 'minimal')
         expect(config).not_to have_key('force_destroy')
       end
+      it 'includes identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_schedule('opt', required_attrs.merge(identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_schedule', 'opt')
+        expect(config).to have_key('identifier')
+      end
+
+      it 'omits identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_schedule', 'minimal')
+        expect(config).not_to have_key('identifier')
+      end
+      it 'includes identifier_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_schedule('opt', required_attrs.merge(identifier_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_schedule', 'opt')
+        expect(config).to have_key('identifier_prefix')
+      end
+
+      it 'omits identifier_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_schedule', 'minimal')
+        expect(config).not_to have_key('identifier_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_schedule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_schedule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_schedule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -127,6 +184,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotSchedule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_snapshot_schedule', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_schedule('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_schedule', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_schedule', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -186,7 +260,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotSchedule do
     resource_type: :aws_redshift_snapshot_schedule,
     method: :aws_redshift_snapshot_schedule,
     required_attrs: { definitions: ['test-value'] },
-    expected_outputs: [:id, :arn, :identifier, :identifier_prefix, :tags_all],
+    expected_outputs: [:id, :arn, :identifier, :identifier_prefix, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:force_destroy]

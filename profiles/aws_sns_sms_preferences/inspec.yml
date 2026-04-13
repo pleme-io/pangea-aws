@@ -1,0 +1,8 @@
+name: aws_sns_sms_preferences
+title: Manages a aws_sns_sms_preferences resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

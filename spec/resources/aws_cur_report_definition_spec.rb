@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCurReportDefinition do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { additional_schema_elements: ['test-value'], compression: 'test-value', format: 'test-value', report_name: 'test-value', s3_bucket: 'test-value', s3_region: 'test-value', time_unit: 'test-value' } }
+  let(:required_attrs) { { additional_schema_elements: ['test-value'], compression: 'test-value', format: 'test-value', report_name: 'test-value', s3_bucket: 'test-value', s3_prefix: 'test-value', s3_region: 'test-value', time_unit: 'test-value' } }
 
   describe ':aws_cur_report_definition' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSCurReportDefinition do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_cur_report_definition', 'test')
-        validate_required_attributes(config, [:additional_schema_elements, :compression, :format, :report_name, :s3_bucket, :s3_region, :time_unit])
+        validate_required_attributes(config, [:additional_schema_elements, :compression, :format, :report_name, :s3_bucket, :s3_prefix, :s3_region, :time_unit])
       end
 
       it 'returns a ResourceReference' do
@@ -57,7 +57,7 @@ RSpec.describe Pangea::Resources::AWSCurReportDefinition do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ additional_artifacts: ['test-value'], refresh_closed_reports: true, report_versioning: 'test-value', s3_prefix: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ additional_artifacts: ['test-value'], refresh_closed_reports: true, report_versioning: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,8 +69,8 @@ RSpec.describe Pangea::Resources::AWSCurReportDefinition do
         expect(config).to have_key('additional_artifacts')
         expect(config).to have_key('refresh_closed_reports')
         expect(config).to have_key('report_versioning')
-        expect(config).to have_key('s3_prefix')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -126,23 +126,6 @@ RSpec.describe Pangea::Resources::AWSCurReportDefinition do
         config = validate_resource_structure(result, 'aws_cur_report_definition', 'minimal')
         expect(config).not_to have_key('report_versioning')
       end
-      it 'includes s3_prefix when provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_cur_report_definition('opt', required_attrs.merge(s3_prefix: 'test-value'))
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_cur_report_definition', 'opt')
-        expect(config).to have_key('s3_prefix')
-      end
-
-      it 'omits s3_prefix when not provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_cur_report_definition('minimal', required_attrs)
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_cur_report_definition', 'minimal')
-        expect(config).not_to have_key('s3_prefix')
-      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -159,6 +142,23 @@ RSpec.describe Pangea::Resources::AWSCurReportDefinition do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cur_report_definition', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cur_report_definition('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cur_report_definition', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cur_report_definition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cur_report_definition', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -189,6 +189,7 @@ RSpec.describe Pangea::Resources::AWSCurReportDefinition do
         expect(config['format']).to be_a(String)
         expect(config['report_name']).to be_a(String)
         expect(config['s3_bucket']).to be_a(String)
+        expect(config['s3_prefix']).to be_a(String)
         expect(config['s3_region']).to be_a(String)
         expect(config['time_unit']).to be_a(String)
       end
@@ -223,7 +224,7 @@ RSpec.describe Pangea::Resources::AWSCurReportDefinition do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_cur_report_definition,
     method: :aws_cur_report_definition,
-    required_attrs: { additional_schema_elements: ['test-value'], compression: 'test-value', format: 'test-value', report_name: 'test-value', s3_bucket: 'test-value', s3_region: 'test-value', time_unit: 'test-value' },
+    required_attrs: { additional_schema_elements: ['test-value'], compression: 'test-value', format: 'test-value', report_name: 'test-value', s3_bucket: 'test-value', s3_prefix: 'test-value', s3_region: 'test-value', time_unit: 'test-value' },
     expected_outputs: [:id, :arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WafregionalXssMatchSetAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:xss_match_tuple]
+      map_present: [:region, :xss_match_tuple]
   end
   module AWS
     include AWSWafregionalXssMatchSet

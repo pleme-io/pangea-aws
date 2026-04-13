@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_efs_replication_configuration,
       attributes_class: AWS::Types::EfsReplicationConfigurationAttributes,
       outputs: { id: :id },
-      map: [:destination, :source_file_system_id]
+      map: [:destination, :source_file_system_id],
+      map_present: [:region]
   end
   module AWS
     include AWSEfsReplicationConfiguration

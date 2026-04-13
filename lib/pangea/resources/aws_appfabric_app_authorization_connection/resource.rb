@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppfabricAppAuthorizationConnectionAttributes,
       outputs: { id: :id },
       map: [:app_authorization_arn, :app_bundle_arn],
-      map_present: [:auth_request]
+      map_present: [:auth_request, :region]
   end
   module AWS
     include AWSAppfabricAppAuthorizationConnection

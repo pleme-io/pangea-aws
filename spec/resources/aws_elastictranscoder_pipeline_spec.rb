@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPipeline do
         expect(ref.arn).to eq("${aws_elastictranscoder_pipeline.test.arn}")
         expect(ref.name).to eq("${aws_elastictranscoder_pipeline.test.name}")
         expect(ref.output_bucket).to eq("${aws_elastictranscoder_pipeline.test.output_bucket}")
+        expect(ref.region).to eq("${aws_elastictranscoder_pipeline.test.region}")
       end
     end
 
@@ -55,11 +56,12 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPipeline do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('output_bucket')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ aws_kms_key_arn: 'test-value', content_config: [{ 'key1' => 'val1' }], content_config_permissions: [{ 'key1' => 'val1' }], notifications: [{ 'key1' => 'val1' }], thumbnail_config: [{ 'key1' => 'val1' }], thumbnail_config_permissions: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ aws_kms_key_arn: 'test-value', content_config: { 'key1' => 'val1' }, content_config_permissions: [{ 'key1' => 'val1' }], name: 'test-value', notifications: { 'key1' => 'val1' }, output_bucket: 'test-value', region: 'test-value', thumbnail_config: { 'key1' => 'val1' }, thumbnail_config_permissions: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,7 +73,10 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPipeline do
         expect(config).to have_key('aws_kms_key_arn')
         expect(config).to have_key('content_config')
         expect(config).to have_key('content_config_permissions')
+        expect(config).to have_key('name')
         expect(config).to have_key('notifications')
+        expect(config).to have_key('output_bucket')
+        expect(config).to have_key('region')
         expect(config).to have_key('thumbnail_config')
         expect(config).to have_key('thumbnail_config_permissions')
       end
@@ -98,7 +103,7 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPipeline do
       it 'includes content_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elastictranscoder_pipeline('opt', required_attrs.merge(content_config: [{ 'key1' => 'val1' }]))
+        synth.aws_elastictranscoder_pipeline('opt', required_attrs.merge(content_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elastictranscoder_pipeline', 'opt')
         expect(config).to have_key('content_config')
@@ -129,10 +134,27 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPipeline do
         config = validate_resource_structure(result, 'aws_elastictranscoder_pipeline', 'minimal')
         expect(config).not_to have_key('content_config_permissions')
       end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastictranscoder_pipeline('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastictranscoder_pipeline', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastictranscoder_pipeline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastictranscoder_pipeline', 'minimal')
+        expect(config).not_to have_key('name')
+      end
       it 'includes notifications when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elastictranscoder_pipeline('opt', required_attrs.merge(notifications: [{ 'key1' => 'val1' }]))
+        synth.aws_elastictranscoder_pipeline('opt', required_attrs.merge(notifications: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elastictranscoder_pipeline', 'opt')
         expect(config).to have_key('notifications')
@@ -146,10 +168,44 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPipeline do
         config = validate_resource_structure(result, 'aws_elastictranscoder_pipeline', 'minimal')
         expect(config).not_to have_key('notifications')
       end
+      it 'includes output_bucket when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastictranscoder_pipeline('opt', required_attrs.merge(output_bucket: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastictranscoder_pipeline', 'opt')
+        expect(config).to have_key('output_bucket')
+      end
+
+      it 'omits output_bucket when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastictranscoder_pipeline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastictranscoder_pipeline', 'minimal')
+        expect(config).not_to have_key('output_bucket')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastictranscoder_pipeline('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastictranscoder_pipeline', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastictranscoder_pipeline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastictranscoder_pipeline', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes thumbnail_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elastictranscoder_pipeline('opt', required_attrs.merge(thumbnail_config: [{ 'key1' => 'val1' }]))
+        synth.aws_elastictranscoder_pipeline('opt', required_attrs.merge(thumbnail_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elastictranscoder_pipeline', 'opt')
         expect(config).to have_key('thumbnail_config')
@@ -225,7 +281,7 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPipeline do
     resource_type: :aws_elastictranscoder_pipeline,
     method: :aws_elastictranscoder_pipeline,
     required_attrs: { input_bucket: 'test-value', role: 'test-value' },
-    expected_outputs: [:id, :arn, :name, :output_bucket],
+    expected_outputs: [:id, :arn, :name, :output_bucket, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

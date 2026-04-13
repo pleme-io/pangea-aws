@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VolumeAttachmentAttributes,
       outputs: { id: :id },
       map: [:device_name, :instance_id, :volume_id],
+      map_present: [:region],
       map_bool: [:force_detach, :skip_destroy, :stop_instance_before_detaching]
   end
   module AWS

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IdentitystoreGroupAttributes,
       outputs: { id: :id },
       map: [:display_name, :identity_store_id],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSIdentitystoreGroup

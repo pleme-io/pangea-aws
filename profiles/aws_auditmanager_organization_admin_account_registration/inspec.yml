@@ -1,0 +1,8 @@
+name: aws_auditmanager_organization_admin_account_registration
+title: Manages a aws_auditmanager_organization_admin_account_registration resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

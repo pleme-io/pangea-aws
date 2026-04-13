@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayApiKey do
         expect(ref.arn).to eq("${aws_api_gateway_api_key.test.arn}")
         expect(ref.created_date).to eq("${aws_api_gateway_api_key.test.created_date}")
         expect(ref.last_updated_date).to eq("${aws_api_gateway_api_key.test.last_updated_date}")
+        expect(ref.region).to eq("${aws_api_gateway_api_key.test.region}")
         expect(ref.tags_all).to eq("${aws_api_gateway_api_key.test.tags_all}")
         expect(ref.value).to eq("${aws_api_gateway_api_key.test.value}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSApiGatewayApiKey do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created_date')
         expect(config).not_to have_key('last_updated_date')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('value')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ customer_id: 'test-value', description: 'test-value', enabled: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ customer_id: 'test-value', description: 'test-value', enabled: true, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, value: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,7 +77,10 @@ RSpec.describe Pangea::Resources::AWSApiGatewayApiKey do
         expect(config).to have_key('customer_id')
         expect(config).to have_key('description')
         expect(config).to have_key('enabled')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('value')
       end
     end
 
@@ -131,6 +136,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayApiKey do
         config = validate_resource_structure(result, 'aws_api_gateway_api_key', 'minimal')
         expect(config).not_to have_key('enabled')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_api_key('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_api_key', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_api_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_api_key', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -147,6 +169,40 @@ RSpec.describe Pangea::Resources::AWSApiGatewayApiKey do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_api_key', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_api_key('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_api_key', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_api_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_api_key', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes value when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_api_key('opt', required_attrs.merge(value: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_api_key', 'opt')
+        expect(config).to have_key('value')
+      end
+
+      it 'omits value when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_api_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_api_key', 'minimal')
+        expect(config).not_to have_key('value')
       end
     end
 
@@ -213,7 +269,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayApiKey do
     resource_type: :aws_api_gateway_api_key,
     method: :aws_api_gateway_api_key,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :created_date, :last_updated_date, :tags_all, :value],
+    expected_outputs: [:id, :arn, :created_date, :last_updated_date, :region, :tags_all, :value],
     sensitive_fields: [:value],
     immutable_fields: [],
     boolean_fields: [:enabled]

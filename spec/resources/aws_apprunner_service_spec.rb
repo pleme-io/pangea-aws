@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSApprunnerService do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { service_name: 'test-value', source_configuration: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { service_name: 'test-value', source_configuration: { 'key1' => 'val1' } } }
 
   describe ':aws_apprunner_service' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerService do
         expect(ref.id).to eq("${aws_apprunner_service.test.id}")
         expect(ref.arn).to eq("${aws_apprunner_service.test.arn}")
         expect(ref.auto_scaling_configuration_arn).to eq("${aws_apprunner_service.test.auto_scaling_configuration_arn}")
+        expect(ref.region).to eq("${aws_apprunner_service.test.region}")
         expect(ref.service_id).to eq("${aws_apprunner_service.test.service_id}")
         expect(ref.service_url).to eq("${aws_apprunner_service.test.service_url}")
         expect(ref.status).to eq("${aws_apprunner_service.test.status}")
@@ -57,6 +58,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerService do
         config = validate_resource_structure(result, 'aws_apprunner_service', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('auto_scaling_configuration_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('service_id')
         expect(config).not_to have_key('service_url')
         expect(config).not_to have_key('status')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerService do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ encryption_configuration: [{ 'key1' => 'val1' }], health_check_configuration: [{ 'key1' => 'val1' }], instance_configuration: [{ 'key1' => 'val1' }], network_configuration: [{ 'key1' => 'val1' }], observability_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ auto_scaling_configuration_arn: 'test-value', encryption_configuration: { 'key1' => 'val1' }, health_check_configuration: { 'key1' => 'val1' }, instance_configuration: { 'key1' => 'val1' }, network_configuration: { 'key1' => 'val1' }, observability_configuration: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,20 +76,40 @@ RSpec.describe Pangea::Resources::AWSApprunnerService do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_apprunner_service', 'full')
+        expect(config).to have_key('auto_scaling_configuration_arn')
         expect(config).to have_key('encryption_configuration')
         expect(config).to have_key('health_check_configuration')
         expect(config).to have_key('instance_configuration')
         expect(config).to have_key('network_configuration')
         expect(config).to have_key('observability_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes auto_scaling_configuration_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_service('opt', required_attrs.merge(auto_scaling_configuration_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_service', 'opt')
+        expect(config).to have_key('auto_scaling_configuration_arn')
+      end
+
+      it 'omits auto_scaling_configuration_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_service', 'minimal')
+        expect(config).not_to have_key('auto_scaling_configuration_arn')
+      end
       it 'includes encryption_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_apprunner_service('opt', required_attrs.merge(encryption_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_apprunner_service('opt', required_attrs.merge(encryption_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apprunner_service', 'opt')
         expect(config).to have_key('encryption_configuration')
@@ -104,7 +126,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerService do
       it 'includes health_check_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_apprunner_service('opt', required_attrs.merge(health_check_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_apprunner_service('opt', required_attrs.merge(health_check_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apprunner_service', 'opt')
         expect(config).to have_key('health_check_configuration')
@@ -121,7 +143,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerService do
       it 'includes instance_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_apprunner_service('opt', required_attrs.merge(instance_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_apprunner_service('opt', required_attrs.merge(instance_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apprunner_service', 'opt')
         expect(config).to have_key('instance_configuration')
@@ -138,7 +160,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerService do
       it 'includes network_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_apprunner_service('opt', required_attrs.merge(network_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_apprunner_service('opt', required_attrs.merge(network_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apprunner_service', 'opt')
         expect(config).to have_key('network_configuration')
@@ -155,7 +177,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerService do
       it 'includes observability_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_apprunner_service('opt', required_attrs.merge(observability_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_apprunner_service('opt', required_attrs.merge(observability_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apprunner_service', 'opt')
         expect(config).to have_key('observability_configuration')
@@ -168,6 +190,23 @@ RSpec.describe Pangea::Resources::AWSApprunnerService do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apprunner_service', 'minimal')
         expect(config).not_to have_key('observability_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_service('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_service', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_service', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -186,6 +225,23 @@ RSpec.describe Pangea::Resources::AWSApprunnerService do
         config = validate_resource_structure(result, 'aws_apprunner_service', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_service('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_service', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_service', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -197,7 +253,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerService do
 
         config = validate_resource_structure(result, 'aws_apprunner_service', 'typed')
         expect(config['service_name']).to be_a(String)
-        expect(config['source_configuration']).to be_a(Array)
+        expect(config['source_configuration']).to be_a(Hash)
       end
     end
 
@@ -230,8 +286,8 @@ RSpec.describe Pangea::Resources::AWSApprunnerService do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_apprunner_service,
     method: :aws_apprunner_service,
-    required_attrs: { service_name: 'test-value', source_configuration: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :auto_scaling_configuration_arn, :service_id, :service_url, :status, :tags_all],
+    required_attrs: { service_name: 'test-value', source_configuration: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :auto_scaling_configuration_arn, :region, :service_id, :service_url, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSS3BucketLogging do
         ref = synth.aws_s3_bucket_logging('test', required_attrs)
 
         expect(ref.id).to eq("${aws_s3_bucket_logging.test.id}")
+        expect(ref.region).to eq("${aws_s3_bucket_logging.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_logging('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_s3_bucket_logging', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ expected_bucket_owner: 'test-value', target_grant: [{ 'key1' => 'val1' }], target_object_key_format: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ expected_bucket_owner: 'test-value', region: 'test-value', target_grant: [{ 'key1' => 'val1' }], target_object_key_format: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketLogging do
 
         config = validate_resource_structure(result, 'aws_s3_bucket_logging', 'full')
         expect(config).to have_key('expected_bucket_owner')
+        expect(config).to have_key('region')
         expect(config).to have_key('target_grant')
         expect(config).to have_key('target_object_key_format')
       end
@@ -75,6 +89,23 @@ RSpec.describe Pangea::Resources::AWSS3BucketLogging do
         config = validate_resource_structure(result, 'aws_s3_bucket_logging', 'minimal')
         expect(config).not_to have_key('expected_bucket_owner')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_logging('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_logging', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_logging('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_logging', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes target_grant when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -95,7 +126,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketLogging do
       it 'includes target_object_key_format when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket_logging('opt', required_attrs.merge(target_object_key_format: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket_logging('opt', required_attrs.merge(target_object_key_format: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_logging', 'opt')
         expect(config).to have_key('target_object_key_format')
@@ -155,7 +186,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketLogging do
     resource_type: :aws_s3_bucket_logging,
     method: :aws_s3_bucket_logging,
     required_attrs: { bucket: 'test-value', target_bucket: 'test-value', target_prefix: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BedrockagentAgentAttributes,
       outputs: { id: :id },
       map: [:agent_name, :agent_resource_role_arn, :foundation_model],
-      map_present: [:agent_collaboration, :customer_encryption_key_arn, :description, :guardrail_configuration, :idle_session_ttl_in_seconds, :instruction, :memory_configuration, :prompt_override_configuration, :tags],
+      map_present: [:agent_collaboration, :customer_encryption_key_arn, :description, :guardrail_configuration, :idle_session_ttl_in_seconds, :instruction, :memory_configuration, :prompt_override_configuration, :region, :tags],
       map_bool: [:prepare_agent, :skip_resource_in_use_check]
   end
   module AWS

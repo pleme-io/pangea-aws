@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SesConfigurationSetAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:delivery_options, :tracking_options],
+      map_present: [:delivery_options, :region, :tracking_options],
       map_bool: [:reputation_metrics_enabled, :sending_enabled]
   end
   module AWS

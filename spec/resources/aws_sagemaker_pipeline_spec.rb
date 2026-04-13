@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerPipeline do
 
         expect(ref.id).to eq("${aws_sagemaker_pipeline.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_pipeline.test.arn}")
+        expect(ref.region).to eq("${aws_sagemaker_pipeline.test.region}")
         expect(ref.tags_all).to eq("${aws_sagemaker_pipeline.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSSagemakerPipeline do
 
         config = validate_resource_structure(result, 'aws_sagemaker_pipeline', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ parallelism_configuration: [{ 'key1' => 'val1' }], pipeline_definition: 'test-value', pipeline_definition_s3_location: [{ 'key1' => 'val1' }], pipeline_description: 'test-value', role_arn: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ parallelism_configuration: { 'key1' => 'val1' }, pipeline_definition: 'test-value', pipeline_definition_s3_location: { 'key1' => 'val1' }, pipeline_description: 'test-value', region: 'test-value', role_arn: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,8 +72,10 @@ RSpec.describe Pangea::Resources::AWSSagemakerPipeline do
         expect(config).to have_key('pipeline_definition')
         expect(config).to have_key('pipeline_definition_s3_location')
         expect(config).to have_key('pipeline_description')
+        expect(config).to have_key('region')
         expect(config).to have_key('role_arn')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -79,7 +83,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerPipeline do
       it 'includes parallelism_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_pipeline('opt', required_attrs.merge(parallelism_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_pipeline('opt', required_attrs.merge(parallelism_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_pipeline', 'opt')
         expect(config).to have_key('parallelism_configuration')
@@ -113,7 +117,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerPipeline do
       it 'includes pipeline_definition_s3_location when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_pipeline('opt', required_attrs.merge(pipeline_definition_s3_location: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_pipeline('opt', required_attrs.merge(pipeline_definition_s3_location: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_pipeline', 'opt')
         expect(config).to have_key('pipeline_definition_s3_location')
@@ -143,6 +147,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerPipeline do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_pipeline', 'minimal')
         expect(config).not_to have_key('pipeline_description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_pipeline('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_pipeline', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_pipeline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_pipeline', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes role_arn when provided' do
         synth = create_synthesizer
@@ -177,6 +198,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerPipeline do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_pipeline', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_pipeline('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_pipeline', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_pipeline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_pipeline', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -223,7 +261,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerPipeline do
     resource_type: :aws_sagemaker_pipeline,
     method: :aws_sagemaker_pipeline,
     required_attrs: { pipeline_display_name: 'test-value', pipeline_name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

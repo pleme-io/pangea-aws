@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_sesv2_account_suppression_attributes,
       attributes_class: AWS::Types::Sesv2AccountSuppressionAttributesAttributes,
       outputs: { id: :id },
-      map: [:suppressed_reasons]
+      map: [:suppressed_reasons],
+      map_present: [:region]
   end
   module AWS
     include AWSSesv2AccountSuppressionAttributes

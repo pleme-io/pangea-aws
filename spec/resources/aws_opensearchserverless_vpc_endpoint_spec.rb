@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessVpcEndpoint do
         ref = synth.aws_opensearchserverless_vpc_endpoint('test', required_attrs)
 
         expect(ref.id).to eq("${aws_opensearchserverless_vpc_endpoint.test.id}")
+        expect(ref.region).to eq("${aws_opensearchserverless_vpc_endpoint.test.region}")
         expect(ref.security_group_ids).to eq("${aws_opensearchserverless_vpc_endpoint.test.security_group_ids}")
       end
     end
@@ -50,6 +51,59 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessVpcEndpoint do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_opensearchserverless_vpc_endpoint', 'test')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('security_group_ids')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', security_group_ids: ['test-value'] }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_vpc_endpoint('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_opensearchserverless_vpc_endpoint', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_group_ids')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_vpc_endpoint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_vpc_endpoint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_vpc_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_vpc_endpoint', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_vpc_endpoint('opt', required_attrs.merge(security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_vpc_endpoint', 'opt')
+        expect(config).to have_key('security_group_ids')
+      end
+
+      it 'omits security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_vpc_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_vpc_endpoint', 'minimal')
         expect(config).not_to have_key('security_group_ids')
       end
     end
@@ -98,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessVpcEndpoint do
     resource_type: :aws_opensearchserverless_vpc_endpoint,
     method: :aws_opensearchserverless_vpc_endpoint,
     required_attrs: { name: 'test-value', subnet_ids: ['test-value'], vpc_id: 'test-value' },
-    expected_outputs: [:id, :security_group_ids],
+    expected_outputs: [:id, :region, :security_group_ids],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

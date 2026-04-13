@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventRule do
         expect(ref.arn).to eq("${aws_cloudwatch_event_rule.test.arn}")
         expect(ref.name).to eq("${aws_cloudwatch_event_rule.test.name}")
         expect(ref.name_prefix).to eq("${aws_cloudwatch_event_rule.test.name_prefix}")
+        expect(ref.region).to eq("${aws_cloudwatch_event_rule.test.region}")
         expect(ref.tags_all).to eq("${aws_cloudwatch_event_rule.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventRule do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', event_bus_name: 'test-value', event_pattern: 'test-value', force_destroy: true, is_enabled: true, role_arn: 'test-value', schedule_expression: 'test-value', state: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', event_bus_name: 'test-value', event_pattern: 'test-value', force_destroy: true, is_enabled: true, name: 'test-value', name_prefix: 'test-value', region: 'test-value', role_arn: 'test-value', schedule_expression: 'test-value', state: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,10 +77,14 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventRule do
         expect(config).to have_key('event_pattern')
         expect(config).to have_key('force_destroy')
         expect(config).to have_key('is_enabled')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
         expect(config).to have_key('role_arn')
         expect(config).to have_key('schedule_expression')
         expect(config).to have_key('state')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -168,6 +174,57 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventRule do
         config = validate_resource_structure(result, 'aws_cloudwatch_event_rule', 'minimal')
         expect(config).not_to have_key('is_enabled')
       end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_rule('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_rule', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_rule', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_rule('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_rule', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_rule', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_rule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes role_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -235,6 +292,23 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventRule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_rule', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_rule('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_rule', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_rule', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -304,7 +378,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventRule do
     resource_type: :aws_cloudwatch_event_rule,
     method: :aws_cloudwatch_event_rule,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :name, :name_prefix, :tags_all],
+    expected_outputs: [:id, :arn, :name, :name_prefix, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:force_destroy, :is_enabled]

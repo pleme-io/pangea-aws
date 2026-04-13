@@ -40,7 +40,9 @@ RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigCluster do
         expect(ref.id).to eq("${aws_route53recoverycontrolconfig_cluster.test.id}")
         expect(ref.arn).to eq("${aws_route53recoverycontrolconfig_cluster.test.arn}")
         expect(ref.cluster_endpoints).to eq("${aws_route53recoverycontrolconfig_cluster.test.cluster_endpoints}")
+        expect(ref.network_type).to eq("${aws_route53recoverycontrolconfig_cluster.test.network_type}")
         expect(ref.status).to eq("${aws_route53recoverycontrolconfig_cluster.test.status}")
+        expect(ref.tags_all).to eq("${aws_route53recoverycontrolconfig_cluster.test.tags_all}")
       end
     end
 
@@ -54,7 +56,79 @@ RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigCluster do
         config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_cluster', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('cluster_endpoints')
+        expect(config).not_to have_key('network_type')
         expect(config).not_to have_key('status')
+        expect(config).not_to have_key('tags_all')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ network_type: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_cluster('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_cluster', 'full')
+        expect(config).to have_key('network_type')
+        expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes network_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_cluster('opt', required_attrs.merge(network_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_cluster', 'opt')
+        expect(config).to have_key('network_type')
+      end
+
+      it 'omits network_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_cluster', 'minimal')
+        expect(config).not_to have_key('network_type')
+      end
+      it 'includes tags when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_cluster('opt', required_attrs.merge(tags: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_cluster', 'opt')
+        expect(config).to have_key('tags')
+      end
+
+      it 'omits tags when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_cluster', 'minimal')
+        expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -100,7 +174,7 @@ RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigCluster do
     resource_type: :aws_route53recoverycontrolconfig_cluster,
     method: :aws_route53recoverycontrolconfig_cluster,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :cluster_endpoints, :status],
+    expected_outputs: [:id, :arn, :cluster_endpoints, :network_type, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

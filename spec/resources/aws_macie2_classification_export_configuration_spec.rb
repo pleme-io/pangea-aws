@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSMacie2ClassificationExportConfiguration do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { {} }
+  let(:required_attrs) { { s3_destination: { 'key1' => 'val1' } } }
 
   describe ':aws_macie2_classification_export_configuration' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSMacie2ClassificationExportConfiguration do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_macie2_classification_export_configuration', 'test')
-        validate_required_attributes(config, [])
+        validate_required_attributes(config, [:s3_destination])
       end
 
       it 'returns a ResourceReference' do
@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSMacie2ClassificationExportConfiguration do
         ref = synth.aws_macie2_classification_export_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_macie2_classification_export_configuration.test.id}")
+        expect(ref.region).to eq("${aws_macie2_classification_export_configuration.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_export_configuration('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_macie2_classification_export_configuration', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ s3_destination: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -51,27 +64,27 @@ RSpec.describe Pangea::Resources::AWSMacie2ClassificationExportConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_macie2_classification_export_configuration', 'full')
-        expect(config).to have_key('s3_destination')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
-      it 'includes s3_destination when provided' do
+      it 'includes region when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_macie2_classification_export_configuration('opt', required_attrs.merge(s3_destination: [{ 'key1' => 'val1' }]))
+        synth.aws_macie2_classification_export_configuration('opt', required_attrs.merge(region: 'test-value'))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_macie2_classification_export_configuration', 'opt')
-        expect(config).to have_key('s3_destination')
+        expect(config).to have_key('region')
       end
 
-      it 'omits s3_destination when not provided' do
+      it 'omits region when not provided' do
         synth = create_synthesizer
         synth.extend(described_class)
         synth.aws_macie2_classification_export_configuration('minimal', required_attrs)
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_macie2_classification_export_configuration', 'minimal')
-        expect(config).not_to have_key('s3_destination')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -83,6 +96,7 @@ RSpec.describe Pangea::Resources::AWSMacie2ClassificationExportConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_macie2_classification_export_configuration', 'typed')
+        expect(config['s3_destination']).to be_a(Hash)
       end
     end
 
@@ -115,8 +129,8 @@ RSpec.describe Pangea::Resources::AWSMacie2ClassificationExportConfiguration do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_macie2_classification_export_configuration,
     method: :aws_macie2_classification_export_configuration,
-    required_attrs: {},
-    expected_outputs: [:id],
+    required_attrs: { s3_destination: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

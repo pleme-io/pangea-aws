@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSS3BucketInventory do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { bucket: 'test-value', destination: [{ 'key1' => 'val1' }], included_object_versions: 'test-value', name: 'test-value', schedule: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { bucket: 'test-value', destination: { 'key1' => 'val1' }, included_object_versions: 'test-value', name: 'test-value', schedule: { 'key1' => 'val1' } } }
 
   describe ':aws_s3_bucket_inventory' do
     context 'with required attributes only' do
@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSS3BucketInventory do
         ref = synth.aws_s3_bucket_inventory('test', required_attrs)
 
         expect(ref.id).to eq("${aws_s3_bucket_inventory.test.id}")
+        expect(ref.region).to eq("${aws_s3_bucket_inventory.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_inventory('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_s3_bucket_inventory', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enabled: true, filter: [{ 'key1' => 'val1' }], optional_fields: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ enabled: true, filter: { 'key1' => 'val1' }, optional_fields: ['test-value'], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -54,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketInventory do
         expect(config).to have_key('enabled')
         expect(config).to have_key('filter')
         expect(config).to have_key('optional_fields')
+        expect(config).to have_key('region')
       end
     end
 
@@ -78,7 +92,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketInventory do
       it 'includes filter when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket_inventory('opt', required_attrs.merge(filter: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket_inventory('opt', required_attrs.merge(filter: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_inventory', 'opt')
         expect(config).to have_key('filter')
@@ -109,6 +123,23 @@ RSpec.describe Pangea::Resources::AWSS3BucketInventory do
         config = validate_resource_structure(result, 'aws_s3_bucket_inventory', 'minimal')
         expect(config).not_to have_key('optional_fields')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_inventory('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_inventory', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_inventory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_inventory', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'boolean fields' do
@@ -134,10 +165,10 @@ RSpec.describe Pangea::Resources::AWSS3BucketInventory do
 
         config = validate_resource_structure(result, 'aws_s3_bucket_inventory', 'typed')
         expect(config['bucket']).to be_a(String)
-        expect(config['destination']).to be_a(Array)
+        expect(config['destination']).to be_a(Hash)
         expect(config['included_object_versions']).to be_a(String)
         expect(config['name']).to be_a(String)
-        expect(config['schedule']).to be_a(Array)
+        expect(config['schedule']).to be_a(Hash)
       end
     end
 
@@ -170,8 +201,8 @@ RSpec.describe Pangea::Resources::AWSS3BucketInventory do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_s3_bucket_inventory,
     method: :aws_s3_bucket_inventory,
-    required_attrs: { bucket: 'test-value', destination: [{ 'key1' => 'val1' }], included_object_versions: 'test-value', name: 'test-value', schedule: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id],
+    required_attrs: { bucket: 'test-value', destination: { 'key1' => 'val1' }, included_object_versions: 'test-value', name: 'test-value', schedule: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled]

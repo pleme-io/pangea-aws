@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSEksNodeGroup do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { cluster_name: 'test-value', node_role_arn: 'test-value', scaling_config: [{ 'key1' => 'val1' }], subnet_ids: ['test-value'] } }
+  let(:required_attrs) { { cluster_name: 'test-value', node_role_arn: 'test-value', scaling_config: { 'key1' => 'val1' }, subnet_ids: ['test-value'] } }
 
   describe ':aws_eks_node_group' do
     context 'with required attributes only' do
@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSEksNodeGroup do
         expect(ref.instance_types).to eq("${aws_eks_node_group.test.instance_types}")
         expect(ref.node_group_name).to eq("${aws_eks_node_group.test.node_group_name}")
         expect(ref.node_group_name_prefix).to eq("${aws_eks_node_group.test.node_group_name_prefix}")
+        expect(ref.region).to eq("${aws_eks_node_group.test.region}")
         expect(ref.release_version).to eq("${aws_eks_node_group.test.release_version}")
         expect(ref.resources).to eq("${aws_eks_node_group.test.resources}")
         expect(ref.status).to eq("${aws_eks_node_group.test.status}")
@@ -68,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSEksNodeGroup do
         expect(config).not_to have_key('instance_types')
         expect(config).not_to have_key('node_group_name')
         expect(config).not_to have_key('node_group_name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('release_version')
         expect(config).not_to have_key('resources')
         expect(config).not_to have_key('status')
@@ -77,7 +79,7 @@ RSpec.describe Pangea::Resources::AWSEksNodeGroup do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ force_update_version: true, labels: { 'key1' => 'val1' }, launch_template: [{ 'key1' => 'val1' }], node_repair_config: [{ 'key1' => 'val1' }], remote_access: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, taint: [{ 'key1' => 'val1' }], update_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ ami_type: 'test-value', capacity_type: 'test-value', disk_size: 3.14, force_update_version: true, instance_types: ['test-value'], labels: { 'key1' => 'val1' }, launch_template: { 'key1' => 'val1' }, node_group_name: 'test-value', node_group_name_prefix: 'test-value', node_repair_config: { 'key1' => 'val1' }, region: 'test-value', release_version: 'test-value', remote_access: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, taint: [{ 'key1' => 'val1' }], update_config: { 'key1' => 'val1' }, version: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -86,18 +88,79 @@ RSpec.describe Pangea::Resources::AWSEksNodeGroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_eks_node_group', 'full')
+        expect(config).to have_key('ami_type')
+        expect(config).to have_key('capacity_type')
+        expect(config).to have_key('disk_size')
         expect(config).to have_key('force_update_version')
+        expect(config).to have_key('instance_types')
         expect(config).to have_key('labels')
         expect(config).to have_key('launch_template')
+        expect(config).to have_key('node_group_name')
+        expect(config).to have_key('node_group_name_prefix')
         expect(config).to have_key('node_repair_config')
+        expect(config).to have_key('region')
+        expect(config).to have_key('release_version')
         expect(config).to have_key('remote_access')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('taint')
         expect(config).to have_key('update_config')
+        expect(config).to have_key('version')
       end
     end
 
     context 'optional attributes' do
+      it 'includes ami_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('opt', required_attrs.merge(ami_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
+        expect(config).to have_key('ami_type')
+      end
+
+      it 'omits ami_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
+        expect(config).not_to have_key('ami_type')
+      end
+      it 'includes capacity_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('opt', required_attrs.merge(capacity_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
+        expect(config).to have_key('capacity_type')
+      end
+
+      it 'omits capacity_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
+        expect(config).not_to have_key('capacity_type')
+      end
+      it 'includes disk_size when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('opt', required_attrs.merge(disk_size: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
+        expect(config).to have_key('disk_size')
+      end
+
+      it 'omits disk_size when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
+        expect(config).not_to have_key('disk_size')
+      end
       it 'includes force_update_version when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -114,6 +177,23 @@ RSpec.describe Pangea::Resources::AWSEksNodeGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
         expect(config).not_to have_key('force_update_version')
+      end
+      it 'includes instance_types when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('opt', required_attrs.merge(instance_types: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
+        expect(config).to have_key('instance_types')
+      end
+
+      it 'omits instance_types when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
+        expect(config).not_to have_key('instance_types')
       end
       it 'includes labels when provided' do
         synth = create_synthesizer
@@ -135,7 +215,7 @@ RSpec.describe Pangea::Resources::AWSEksNodeGroup do
       it 'includes launch_template when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_node_group('opt', required_attrs.merge(launch_template: [{ 'key1' => 'val1' }]))
+        synth.aws_eks_node_group('opt', required_attrs.merge(launch_template: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
         expect(config).to have_key('launch_template')
@@ -149,10 +229,44 @@ RSpec.describe Pangea::Resources::AWSEksNodeGroup do
         config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
         expect(config).not_to have_key('launch_template')
       end
+      it 'includes node_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('opt', required_attrs.merge(node_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
+        expect(config).to have_key('node_group_name')
+      end
+
+      it 'omits node_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
+        expect(config).not_to have_key('node_group_name')
+      end
+      it 'includes node_group_name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('opt', required_attrs.merge(node_group_name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
+        expect(config).to have_key('node_group_name_prefix')
+      end
+
+      it 'omits node_group_name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
+        expect(config).not_to have_key('node_group_name_prefix')
+      end
       it 'includes node_repair_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_node_group('opt', required_attrs.merge(node_repair_config: [{ 'key1' => 'val1' }]))
+        synth.aws_eks_node_group('opt', required_attrs.merge(node_repair_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
         expect(config).to have_key('node_repair_config')
@@ -166,10 +280,44 @@ RSpec.describe Pangea::Resources::AWSEksNodeGroup do
         config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
         expect(config).not_to have_key('node_repair_config')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes release_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('opt', required_attrs.merge(release_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
+        expect(config).to have_key('release_version')
+      end
+
+      it 'omits release_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
+        expect(config).not_to have_key('release_version')
+      end
       it 'includes remote_access when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_node_group('opt', required_attrs.merge(remote_access: [{ 'key1' => 'val1' }]))
+        synth.aws_eks_node_group('opt', required_attrs.merge(remote_access: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
         expect(config).to have_key('remote_access')
@@ -200,6 +348,23 @@ RSpec.describe Pangea::Resources::AWSEksNodeGroup do
         config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes taint when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -220,7 +385,7 @@ RSpec.describe Pangea::Resources::AWSEksNodeGroup do
       it 'includes update_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_node_group('opt', required_attrs.merge(update_config: [{ 'key1' => 'val1' }]))
+        synth.aws_eks_node_group('opt', required_attrs.merge(update_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
         expect(config).to have_key('update_config')
@@ -233,6 +398,23 @@ RSpec.describe Pangea::Resources::AWSEksNodeGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
         expect(config).not_to have_key('update_config')
+      end
+      it 'includes version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('opt', required_attrs.merge(version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'opt')
+        expect(config).to have_key('version')
+      end
+
+      it 'omits version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_node_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_node_group', 'minimal')
+        expect(config).not_to have_key('version')
       end
     end
 
@@ -260,7 +442,7 @@ RSpec.describe Pangea::Resources::AWSEksNodeGroup do
         config = validate_resource_structure(result, 'aws_eks_node_group', 'typed')
         expect(config['cluster_name']).to be_a(String)
         expect(config['node_role_arn']).to be_a(String)
-        expect(config['scaling_config']).to be_a(Array)
+        expect(config['scaling_config']).to be_a(Hash)
         expect(config['subnet_ids']).to be_a(Array)
       end
     end
@@ -294,8 +476,8 @@ RSpec.describe Pangea::Resources::AWSEksNodeGroup do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_eks_node_group,
     method: :aws_eks_node_group,
-    required_attrs: { cluster_name: 'test-value', node_role_arn: 'test-value', scaling_config: [{ 'key1' => 'val1' }], subnet_ids: ['test-value'] },
-    expected_outputs: [:id, :ami_type, :arn, :capacity_type, :disk_size, :instance_types, :node_group_name, :node_group_name_prefix, :release_version, :resources, :status, :tags_all, :version],
+    required_attrs: { cluster_name: 'test-value', node_role_arn: 'test-value', scaling_config: { 'key1' => 'val1' }, subnet_ids: ['test-value'] },
+    expected_outputs: [:id, :ami_type, :arn, :capacity_type, :disk_size, :instance_types, :node_group_name, :node_group_name_prefix, :region, :release_version, :resources, :status, :tags_all, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:force_update_version]

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppsyncDatasourceAttributes,
       outputs: { id: :id },
       map: [:api_id, :name, :type],
-      map_present: [:description, :dynamodb_config, :elasticsearch_config, :event_bridge_config, :http_config, :lambda_config, :opensearchservice_config, :relational_database_config, :service_role_arn]
+      map_present: [:description, :dynamodb_config, :elasticsearch_config, :event_bridge_config, :http_config, :lambda_config, :opensearchservice_config, :region, :relational_database_config, :service_role_arn]
   end
   module AWS
     include AWSAppsyncDatasource

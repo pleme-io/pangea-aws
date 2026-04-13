@@ -41,9 +41,12 @@ RSpec.describe Pangea::Resources::AWSSubnet do
         expect(ref.arn).to eq("${aws_subnet.test.arn}")
         expect(ref.availability_zone).to eq("${aws_subnet.test.availability_zone}")
         expect(ref.availability_zone_id).to eq("${aws_subnet.test.availability_zone_id}")
+        expect(ref.cidr_block).to eq("${aws_subnet.test.cidr_block}")
+        expect(ref.ipv6_cidr_block).to eq("${aws_subnet.test.ipv6_cidr_block}")
         expect(ref.ipv6_cidr_block_association_id).to eq("${aws_subnet.test.ipv6_cidr_block_association_id}")
         expect(ref.owner_id).to eq("${aws_subnet.test.owner_id}")
         expect(ref.private_dns_hostname_type_on_launch).to eq("${aws_subnet.test.private_dns_hostname_type_on_launch}")
+        expect(ref.region).to eq("${aws_subnet.test.region}")
         expect(ref.tags_all).to eq("${aws_subnet.test.tags_all}")
       end
     end
@@ -59,15 +62,18 @@ RSpec.describe Pangea::Resources::AWSSubnet do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('availability_zone')
         expect(config).not_to have_key('availability_zone_id')
+        expect(config).not_to have_key('cidr_block')
+        expect(config).not_to have_key('ipv6_cidr_block')
         expect(config).not_to have_key('ipv6_cidr_block_association_id')
         expect(config).not_to have_key('owner_id')
         expect(config).not_to have_key('private_dns_hostname_type_on_launch')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ assign_ipv6_address_on_creation: true, cidr_block: 'test-value', customer_owned_ipv4_pool: 'test-value', enable_dns64: true, enable_lni_at_device_index: 3.14, enable_resource_name_dns_a_record_on_launch: true, enable_resource_name_dns_aaaa_record_on_launch: true, ipv6_cidr_block: 'test-value', ipv6_native: true, map_customer_owned_ip_on_launch: true, map_public_ip_on_launch: true, outpost_arn: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ assign_ipv6_address_on_creation: true, availability_zone: 'test-value', availability_zone_id: 'test-value', cidr_block: 'test-value', customer_owned_ipv4_pool: 'test-value', enable_dns64: true, enable_lni_at_device_index: 3.14, enable_resource_name_dns_a_record_on_launch: true, enable_resource_name_dns_aaaa_record_on_launch: true, ipv4_ipam_pool_id: 'test-value', ipv4_netmask_length: 3.14, ipv6_cidr_block: 'test-value', ipv6_ipam_pool_id: 'test-value', ipv6_native: true, ipv6_netmask_length: 3.14, map_customer_owned_ip_on_launch: true, map_public_ip_on_launch: true, outpost_arn: 'test-value', private_dns_hostname_type_on_launch: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,18 +83,27 @@ RSpec.describe Pangea::Resources::AWSSubnet do
 
         config = validate_resource_structure(result, 'aws_subnet', 'full')
         expect(config).to have_key('assign_ipv6_address_on_creation')
+        expect(config).to have_key('availability_zone')
+        expect(config).to have_key('availability_zone_id')
         expect(config).to have_key('cidr_block')
         expect(config).to have_key('customer_owned_ipv4_pool')
         expect(config).to have_key('enable_dns64')
         expect(config).to have_key('enable_lni_at_device_index')
         expect(config).to have_key('enable_resource_name_dns_a_record_on_launch')
         expect(config).to have_key('enable_resource_name_dns_aaaa_record_on_launch')
+        expect(config).to have_key('ipv4_ipam_pool_id')
+        expect(config).to have_key('ipv4_netmask_length')
         expect(config).to have_key('ipv6_cidr_block')
+        expect(config).to have_key('ipv6_ipam_pool_id')
         expect(config).to have_key('ipv6_native')
+        expect(config).to have_key('ipv6_netmask_length')
         expect(config).to have_key('map_customer_owned_ip_on_launch')
         expect(config).to have_key('map_public_ip_on_launch')
         expect(config).to have_key('outpost_arn')
+        expect(config).to have_key('private_dns_hostname_type_on_launch')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -109,6 +124,40 @@ RSpec.describe Pangea::Resources::AWSSubnet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_subnet', 'minimal')
         expect(config).not_to have_key('assign_ipv6_address_on_creation')
+      end
+      it 'includes availability_zone when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('opt', required_attrs.merge(availability_zone: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'opt')
+        expect(config).to have_key('availability_zone')
+      end
+
+      it 'omits availability_zone when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'minimal')
+        expect(config).not_to have_key('availability_zone')
+      end
+      it 'includes availability_zone_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('opt', required_attrs.merge(availability_zone_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'opt')
+        expect(config).to have_key('availability_zone_id')
+      end
+
+      it 'omits availability_zone_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'minimal')
+        expect(config).not_to have_key('availability_zone_id')
       end
       it 'includes cidr_block when provided' do
         synth = create_synthesizer
@@ -212,6 +261,40 @@ RSpec.describe Pangea::Resources::AWSSubnet do
         config = validate_resource_structure(result, 'aws_subnet', 'minimal')
         expect(config).not_to have_key('enable_resource_name_dns_aaaa_record_on_launch')
       end
+      it 'includes ipv4_ipam_pool_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('opt', required_attrs.merge(ipv4_ipam_pool_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'opt')
+        expect(config).to have_key('ipv4_ipam_pool_id')
+      end
+
+      it 'omits ipv4_ipam_pool_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'minimal')
+        expect(config).not_to have_key('ipv4_ipam_pool_id')
+      end
+      it 'includes ipv4_netmask_length when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('opt', required_attrs.merge(ipv4_netmask_length: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'opt')
+        expect(config).to have_key('ipv4_netmask_length')
+      end
+
+      it 'omits ipv4_netmask_length when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'minimal')
+        expect(config).not_to have_key('ipv4_netmask_length')
+      end
       it 'includes ipv6_cidr_block when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -229,6 +312,23 @@ RSpec.describe Pangea::Resources::AWSSubnet do
         config = validate_resource_structure(result, 'aws_subnet', 'minimal')
         expect(config).not_to have_key('ipv6_cidr_block')
       end
+      it 'includes ipv6_ipam_pool_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('opt', required_attrs.merge(ipv6_ipam_pool_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'opt')
+        expect(config).to have_key('ipv6_ipam_pool_id')
+      end
+
+      it 'omits ipv6_ipam_pool_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'minimal')
+        expect(config).not_to have_key('ipv6_ipam_pool_id')
+      end
       it 'includes ipv6_native when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -245,6 +345,23 @@ RSpec.describe Pangea::Resources::AWSSubnet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_subnet', 'minimal')
         expect(config).not_to have_key('ipv6_native')
+      end
+      it 'includes ipv6_netmask_length when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('opt', required_attrs.merge(ipv6_netmask_length: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'opt')
+        expect(config).to have_key('ipv6_netmask_length')
+      end
+
+      it 'omits ipv6_netmask_length when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'minimal')
+        expect(config).not_to have_key('ipv6_netmask_length')
       end
       it 'includes map_customer_owned_ip_on_launch when provided' do
         synth = create_synthesizer
@@ -297,6 +414,40 @@ RSpec.describe Pangea::Resources::AWSSubnet do
         config = validate_resource_structure(result, 'aws_subnet', 'minimal')
         expect(config).not_to have_key('outpost_arn')
       end
+      it 'includes private_dns_hostname_type_on_launch when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('opt', required_attrs.merge(private_dns_hostname_type_on_launch: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'opt')
+        expect(config).to have_key('private_dns_hostname_type_on_launch')
+      end
+
+      it 'omits private_dns_hostname_type_on_launch when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'minimal')
+        expect(config).not_to have_key('private_dns_hostname_type_on_launch')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -313,6 +464,23 @@ RSpec.describe Pangea::Resources::AWSSubnet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_subnet', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_subnet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_subnet', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -438,7 +606,7 @@ RSpec.describe Pangea::Resources::AWSSubnet do
     resource_type: :aws_subnet,
     method: :aws_subnet,
     required_attrs: { vpc_id: 'test-value' },
-    expected_outputs: [:id, :arn, :availability_zone, :availability_zone_id, :ipv6_cidr_block_association_id, :owner_id, :private_dns_hostname_type_on_launch, :tags_all],
+    expected_outputs: [:id, :arn, :availability_zone, :availability_zone_id, :cidr_block, :ipv6_cidr_block, :ipv6_cidr_block_association_id, :owner_id, :private_dns_hostname_type_on_launch, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:assign_ipv6_address_on_creation, :enable_dns64, :enable_resource_name_dns_a_record_on_launch, :enable_resource_name_dns_aaaa_record_on_launch, :ipv6_native, :map_customer_owned_ip_on_launch, :map_public_ip_on_launch]

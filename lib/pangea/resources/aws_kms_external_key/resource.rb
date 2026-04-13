@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_kms_external_key,
       attributes_class: AWS::Types::KmsExternalKeyAttributes,
       outputs: { id: :id },
-      map_present: [:deletion_window_in_days, :description, :key_material_base64, :policy, :tags, :tags_all, :valid_to],
+      map_present: [:deletion_window_in_days, :description, :key_material_base64, :key_spec, :key_usage, :policy, :region, :tags, :tags_all, :valid_to],
       map_bool: [:bypass_policy_lockout_safety_check, :enabled, :multi_region]
   end
   module AWS

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEmrserverlessApplication do
 
         expect(ref.id).to eq("${aws_emrserverless_application.test.id}")
         expect(ref.arn).to eq("${aws_emrserverless_application.test.arn}")
+        expect(ref.region).to eq("${aws_emrserverless_application.test.region}")
         expect(ref.tags_all).to eq("${aws_emrserverless_application.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSEmrserverlessApplication do
 
         config = validate_resource_structure(result, 'aws_emrserverless_application', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ architecture: 'test-value', auto_start_configuration: [{ 'key1' => 'val1' }], auto_stop_configuration: [{ 'key1' => 'val1' }], image_configuration: [{ 'key1' => 'val1' }], initial_capacity: [{ 'key1' => 'val1' }], interactive_configuration: [{ 'key1' => 'val1' }], maximum_capacity: [{ 'key1' => 'val1' }], network_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ architecture: 'test-value', auto_start_configuration: { 'key1' => 'val1' }, auto_stop_configuration: { 'key1' => 'val1' }, image_configuration: { 'key1' => 'val1' }, initial_capacity: [{ 'key1' => 'val1' }], interactive_configuration: { 'key1' => 'val1' }, job_level_cost_allocation_configuration: { 'key1' => 'val1' }, maximum_capacity: { 'key1' => 'val1' }, monitoring_configuration: { 'key1' => 'val1' }, network_configuration: { 'key1' => 'val1' }, region: 'test-value', runtime_configuration: [{ 'key1' => 'val1' }], scheduler_configuration: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,9 +74,15 @@ RSpec.describe Pangea::Resources::AWSEmrserverlessApplication do
         expect(config).to have_key('image_configuration')
         expect(config).to have_key('initial_capacity')
         expect(config).to have_key('interactive_configuration')
+        expect(config).to have_key('job_level_cost_allocation_configuration')
         expect(config).to have_key('maximum_capacity')
+        expect(config).to have_key('monitoring_configuration')
         expect(config).to have_key('network_configuration')
+        expect(config).to have_key('region')
+        expect(config).to have_key('runtime_configuration')
+        expect(config).to have_key('scheduler_configuration')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -99,7 +107,7 @@ RSpec.describe Pangea::Resources::AWSEmrserverlessApplication do
       it 'includes auto_start_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emrserverless_application('opt', required_attrs.merge(auto_start_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_emrserverless_application('opt', required_attrs.merge(auto_start_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emrserverless_application', 'opt')
         expect(config).to have_key('auto_start_configuration')
@@ -116,7 +124,7 @@ RSpec.describe Pangea::Resources::AWSEmrserverlessApplication do
       it 'includes auto_stop_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emrserverless_application('opt', required_attrs.merge(auto_stop_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_emrserverless_application('opt', required_attrs.merge(auto_stop_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emrserverless_application', 'opt')
         expect(config).to have_key('auto_stop_configuration')
@@ -133,7 +141,7 @@ RSpec.describe Pangea::Resources::AWSEmrserverlessApplication do
       it 'includes image_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emrserverless_application('opt', required_attrs.merge(image_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_emrserverless_application('opt', required_attrs.merge(image_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emrserverless_application', 'opt')
         expect(config).to have_key('image_configuration')
@@ -167,7 +175,7 @@ RSpec.describe Pangea::Resources::AWSEmrserverlessApplication do
       it 'includes interactive_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emrserverless_application('opt', required_attrs.merge(interactive_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_emrserverless_application('opt', required_attrs.merge(interactive_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emrserverless_application', 'opt')
         expect(config).to have_key('interactive_configuration')
@@ -181,10 +189,27 @@ RSpec.describe Pangea::Resources::AWSEmrserverlessApplication do
         config = validate_resource_structure(result, 'aws_emrserverless_application', 'minimal')
         expect(config).not_to have_key('interactive_configuration')
       end
+      it 'includes job_level_cost_allocation_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrserverless_application('opt', required_attrs.merge(job_level_cost_allocation_configuration: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrserverless_application', 'opt')
+        expect(config).to have_key('job_level_cost_allocation_configuration')
+      end
+
+      it 'omits job_level_cost_allocation_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrserverless_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrserverless_application', 'minimal')
+        expect(config).not_to have_key('job_level_cost_allocation_configuration')
+      end
       it 'includes maximum_capacity when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emrserverless_application('opt', required_attrs.merge(maximum_capacity: [{ 'key1' => 'val1' }]))
+        synth.aws_emrserverless_application('opt', required_attrs.merge(maximum_capacity: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emrserverless_application', 'opt')
         expect(config).to have_key('maximum_capacity')
@@ -198,10 +223,27 @@ RSpec.describe Pangea::Resources::AWSEmrserverlessApplication do
         config = validate_resource_structure(result, 'aws_emrserverless_application', 'minimal')
         expect(config).not_to have_key('maximum_capacity')
       end
+      it 'includes monitoring_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrserverless_application('opt', required_attrs.merge(monitoring_configuration: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrserverless_application', 'opt')
+        expect(config).to have_key('monitoring_configuration')
+      end
+
+      it 'omits monitoring_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrserverless_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrserverless_application', 'minimal')
+        expect(config).not_to have_key('monitoring_configuration')
+      end
       it 'includes network_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emrserverless_application('opt', required_attrs.merge(network_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_emrserverless_application('opt', required_attrs.merge(network_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emrserverless_application', 'opt')
         expect(config).to have_key('network_configuration')
@@ -214,6 +256,57 @@ RSpec.describe Pangea::Resources::AWSEmrserverlessApplication do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emrserverless_application', 'minimal')
         expect(config).not_to have_key('network_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrserverless_application('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrserverless_application', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrserverless_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrserverless_application', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes runtime_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrserverless_application('opt', required_attrs.merge(runtime_configuration: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrserverless_application', 'opt')
+        expect(config).to have_key('runtime_configuration')
+      end
+
+      it 'omits runtime_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrserverless_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrserverless_application', 'minimal')
+        expect(config).not_to have_key('runtime_configuration')
+      end
+      it 'includes scheduler_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrserverless_application('opt', required_attrs.merge(scheduler_configuration: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrserverless_application', 'opt')
+        expect(config).to have_key('scheduler_configuration')
+      end
+
+      it 'omits scheduler_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrserverless_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrserverless_application', 'minimal')
+        expect(config).not_to have_key('scheduler_configuration')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -231,6 +324,23 @@ RSpec.describe Pangea::Resources::AWSEmrserverlessApplication do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emrserverless_application', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrserverless_application('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrserverless_application', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrserverless_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrserverless_application', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -278,7 +388,7 @@ RSpec.describe Pangea::Resources::AWSEmrserverlessApplication do
     resource_type: :aws_emrserverless_application,
     method: :aws_emrserverless_application,
     required_attrs: { name: 'test-value', release_label: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightIngestion do
         expect(ref.arn).to eq("${aws_quicksight_ingestion.test.arn}")
         expect(ref.aws_account_id).to eq("${aws_quicksight_ingestion.test.aws_account_id}")
         expect(ref.ingestion_status).to eq("${aws_quicksight_ingestion.test.ingestion_status}")
+        expect(ref.region).to eq("${aws_quicksight_ingestion.test.region}")
       end
     end
 
@@ -55,6 +56,59 @@ RSpec.describe Pangea::Resources::AWSQuicksightIngestion do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('aws_account_id')
         expect(config).not_to have_key('ingestion_status')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ aws_account_id: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_ingestion('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_quicksight_ingestion', 'full')
+        expect(config).to have_key('aws_account_id')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes aws_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_ingestion('opt', required_attrs.merge(aws_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_ingestion', 'opt')
+        expect(config).to have_key('aws_account_id')
+      end
+
+      it 'omits aws_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_ingestion('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_ingestion', 'minimal')
+        expect(config).not_to have_key('aws_account_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_ingestion('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_ingestion', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_ingestion('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_ingestion', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -102,7 +156,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightIngestion do
     resource_type: :aws_quicksight_ingestion,
     method: :aws_quicksight_ingestion,
     required_attrs: { data_set_id: 'test-value', ingestion_id: 'test-value', ingestion_type: 'test-value' },
-    expected_outputs: [:id, :arn, :aws_account_id, :ingestion_status],
+    expected_outputs: [:id, :arn, :aws_account_id, :ingestion_status, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSXrayEncryptionConfig do
         ref = synth.aws_xray_encryption_config('test', required_attrs)
 
         expect(ref.id).to eq("${aws_xray_encryption_config.test.id}")
+        expect(ref.region).to eq("${aws_xray_encryption_config.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_xray_encryption_config('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_xray_encryption_config', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ key_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ key_id: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSXrayEncryptionConfig do
 
         config = validate_resource_structure(result, 'aws_xray_encryption_config', 'full')
         expect(config).to have_key('key_id')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSXrayEncryptionConfig do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_xray_encryption_config', 'minimal')
         expect(config).not_to have_key('key_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_xray_encryption_config('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_xray_encryption_config', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_xray_encryption_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_xray_encryption_config', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -117,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSXrayEncryptionConfig do
     resource_type: :aws_xray_encryption_config,
     method: :aws_xray_encryption_config,
     required_attrs: { type: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

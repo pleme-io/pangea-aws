@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CustomerGatewayAttributes,
       outputs: { id: :id },
       map: [:type],
-      map_present: [:bgp_asn, :bgp_asn_extended, :certificate_arn, :device_name, :ip_address, :tags, :tags_all]
+      map_present: [:bgp_asn, :bgp_asn_extended, :certificate_arn, :device_name, :ip_address, :region, :tags, :tags_all]
   end
   module AWS
     include AWSCustomerGateway

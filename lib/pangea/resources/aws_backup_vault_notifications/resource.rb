@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_backup_vault_notifications,
       attributes_class: AWS::Types::BackupVaultNotificationsAttributes,
       outputs: { id: :id },
-      map: [:backup_vault_events, :backup_vault_name, :sns_topic_arn]
+      map: [:backup_vault_events, :backup_vault_name, :sns_topic_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSBackupVaultNotifications

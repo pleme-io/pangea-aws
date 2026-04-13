@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotCopyGrant do
         expect(ref.id).to eq("${aws_redshift_snapshot_copy_grant.test.id}")
         expect(ref.arn).to eq("${aws_redshift_snapshot_copy_grant.test.arn}")
         expect(ref.kms_key_id).to eq("${aws_redshift_snapshot_copy_grant.test.kms_key_id}")
+        expect(ref.region).to eq("${aws_redshift_snapshot_copy_grant.test.region}")
         expect(ref.tags_all).to eq("${aws_redshift_snapshot_copy_grant.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotCopyGrant do
         config = validate_resource_structure(result, 'aws_redshift_snapshot_copy_grant', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('kms_key_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ kms_key_id: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,11 +70,48 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotCopyGrant do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_redshift_snapshot_copy_grant', 'full')
+        expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_copy_grant('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_copy_grant', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_copy_grant('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_copy_grant', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_copy_grant('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_copy_grant', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_copy_grant('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_copy_grant', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -89,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotCopyGrant do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_snapshot_copy_grant', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_copy_grant('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_copy_grant', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_copy_grant('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_copy_grant', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -134,7 +190,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotCopyGrant do
     resource_type: :aws_redshift_snapshot_copy_grant,
     method: :aws_redshift_snapshot_copy_grant,
     required_attrs: { snapshot_copy_grant_name: 'test-value' },
-    expected_outputs: [:id, :arn, :kms_key_id, :tags_all],
+    expected_outputs: [:id, :arn, :kms_key_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

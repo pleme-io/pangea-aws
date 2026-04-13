@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DbSnapshotCopyAttributes,
       outputs: { id: :id },
       map: [:source_db_snapshot_identifier, :target_db_snapshot_identifier],
-      map_present: [:destination_region, :kms_key_id, :option_group_name, :presigned_url, :shared_accounts, :tags, :tags_all, :target_custom_availability_zone],
+      map_present: [:destination_region, :kms_key_id, :option_group_name, :presigned_url, :region, :shared_accounts, :tags, :tags_all, :target_custom_availability_zone],
       map_bool: [:copy_tags]
   end
   module AWS

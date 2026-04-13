@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSCleanroomsCollaboration do
         expect(ref.id).to eq("${aws_cleanrooms_collaboration.test.id}")
         expect(ref.arn).to eq("${aws_cleanrooms_collaboration.test.arn}")
         expect(ref.create_time).to eq("${aws_cleanrooms_collaboration.test.create_time}")
+        expect(ref.region).to eq("${aws_cleanrooms_collaboration.test.region}")
         expect(ref.tags_all).to eq("${aws_cleanrooms_collaboration.test.tags_all}")
         expect(ref.update_time).to eq("${aws_cleanrooms_collaboration.test.update_time}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSCleanroomsCollaboration do
         config = validate_resource_structure(result, 'aws_cleanrooms_collaboration', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('create_time')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('update_time')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ data_encryption_metadata: [{ 'key1' => 'val1' }], member: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ analytics_engine: 'test-value', data_encryption_metadata: { 'key1' => 'val1' }, member: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,17 +72,37 @@ RSpec.describe Pangea::Resources::AWSCleanroomsCollaboration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cleanrooms_collaboration', 'full')
+        expect(config).to have_key('analytics_engine')
         expect(config).to have_key('data_encryption_metadata')
         expect(config).to have_key('member')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes analytics_engine when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cleanrooms_collaboration('opt', required_attrs.merge(analytics_engine: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cleanrooms_collaboration', 'opt')
+        expect(config).to have_key('analytics_engine')
+      end
+
+      it 'omits analytics_engine when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cleanrooms_collaboration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cleanrooms_collaboration', 'minimal')
+        expect(config).not_to have_key('analytics_engine')
+      end
       it 'includes data_encryption_metadata when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cleanrooms_collaboration('opt', required_attrs.merge(data_encryption_metadata: [{ 'key1' => 'val1' }]))
+        synth.aws_cleanrooms_collaboration('opt', required_attrs.merge(data_encryption_metadata: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cleanrooms_collaboration', 'opt')
         expect(config).to have_key('data_encryption_metadata')
@@ -111,6 +133,23 @@ RSpec.describe Pangea::Resources::AWSCleanroomsCollaboration do
         config = validate_resource_structure(result, 'aws_cleanrooms_collaboration', 'minimal')
         expect(config).not_to have_key('member')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cleanrooms_collaboration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cleanrooms_collaboration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cleanrooms_collaboration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cleanrooms_collaboration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -127,6 +166,23 @@ RSpec.describe Pangea::Resources::AWSCleanroomsCollaboration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cleanrooms_collaboration', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cleanrooms_collaboration('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cleanrooms_collaboration', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cleanrooms_collaboration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cleanrooms_collaboration', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -176,7 +232,7 @@ RSpec.describe Pangea::Resources::AWSCleanroomsCollaboration do
     resource_type: :aws_cleanrooms_collaboration,
     method: :aws_cleanrooms_collaboration,
     required_attrs: { creator_display_name: 'test-value', creator_member_abilities: ['test-value'], description: 'test-value', name: 'test-value', query_log_status: 'test-value' },
-    expected_outputs: [:id, :arn, :create_time, :tags_all, :update_time],
+    expected_outputs: [:id, :arn, :create_time, :region, :tags_all, :update_time],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

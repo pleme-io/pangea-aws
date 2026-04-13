@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSCodestarconnectionsConnection do
         expect(ref.arn).to eq("${aws_codestarconnections_connection.test.arn}")
         expect(ref.connection_status).to eq("${aws_codestarconnections_connection.test.connection_status}")
         expect(ref.provider_type).to eq("${aws_codestarconnections_connection.test.provider_type}")
+        expect(ref.region).to eq("${aws_codestarconnections_connection.test.region}")
         expect(ref.tags_all).to eq("${aws_codestarconnections_connection.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSCodestarconnectionsConnection do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('connection_status')
         expect(config).not_to have_key('provider_type')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ host_arn: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ host_arn: 'test-value', provider_type: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,7 +73,10 @@ RSpec.describe Pangea::Resources::AWSCodestarconnectionsConnection do
 
         config = validate_resource_structure(result, 'aws_codestarconnections_connection', 'full')
         expect(config).to have_key('host_arn')
+        expect(config).to have_key('provider_type')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -93,6 +98,40 @@ RSpec.describe Pangea::Resources::AWSCodestarconnectionsConnection do
         config = validate_resource_structure(result, 'aws_codestarconnections_connection', 'minimal')
         expect(config).not_to have_key('host_arn')
       end
+      it 'includes provider_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codestarconnections_connection('opt', required_attrs.merge(provider_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codestarconnections_connection', 'opt')
+        expect(config).to have_key('provider_type')
+      end
+
+      it 'omits provider_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codestarconnections_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codestarconnections_connection', 'minimal')
+        expect(config).not_to have_key('provider_type')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codestarconnections_connection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codestarconnections_connection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codestarconnections_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codestarconnections_connection', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -109,6 +148,23 @@ RSpec.describe Pangea::Resources::AWSCodestarconnectionsConnection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codestarconnections_connection', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codestarconnections_connection('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codestarconnections_connection', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codestarconnections_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codestarconnections_connection', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -154,7 +210,7 @@ RSpec.describe Pangea::Resources::AWSCodestarconnectionsConnection do
     resource_type: :aws_codestarconnections_connection,
     method: :aws_codestarconnections_connection,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :connection_status, :provider_type, :tags_all],
+    expected_outputs: [:id, :arn, :connection_status, :provider_type, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

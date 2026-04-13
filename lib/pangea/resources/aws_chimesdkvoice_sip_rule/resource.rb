@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ChimesdkvoiceSipRuleAttributes,
       outputs: { id: :id },
       map: [:name, :target_applications, :trigger_type, :trigger_value],
+      map_present: [:region],
       map_bool: [:disabled]
   end
   module AWS

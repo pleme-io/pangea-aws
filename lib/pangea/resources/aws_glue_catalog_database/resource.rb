@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueCatalogDatabaseAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:catalog_id, :create_table_default_permission, :description, :federated_database, :location_uri, :parameters, :tags, :tags_all, :target_database]
+      map_present: [:catalog_id, :create_table_default_permission, :description, :federated_database, :location_uri, :parameters, :region, :tags, :tags_all, :target_database]
   end
   module AWS
     include AWSGlueCatalogDatabase

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentPrompt do
         expect(ref.id).to eq("${aws_bedrockagent_prompt.test.id}")
         expect(ref.arn).to eq("${aws_bedrockagent_prompt.test.arn}")
         expect(ref.created_at).to eq("${aws_bedrockagent_prompt.test.created_at}")
+        expect(ref.region).to eq("${aws_bedrockagent_prompt.test.region}")
         expect(ref.tags_all).to eq("${aws_bedrockagent_prompt.test.tags_all}")
         expect(ref.updated_at).to eq("${aws_bedrockagent_prompt.test.updated_at}")
         expect(ref.version).to eq("${aws_bedrockagent_prompt.test.version}")
@@ -56,6 +57,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentPrompt do
         config = validate_resource_structure(result, 'aws_bedrockagent_prompt', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created_at')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('updated_at')
         expect(config).not_to have_key('version')
@@ -63,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentPrompt do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ customer_encryption_key_arn: 'test-value', default_variant: 'test-value', description: 'test-value', tags: { 'key1' => 'val1' }, variant: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ customer_encryption_key_arn: 'test-value', default_variant: 'test-value', description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, variant: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,6 +77,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentPrompt do
         expect(config).to have_key('customer_encryption_key_arn')
         expect(config).to have_key('default_variant')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
         expect(config).to have_key('variant')
       end
@@ -131,6 +134,23 @@ RSpec.describe Pangea::Resources::AWSBedrockagentPrompt do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_bedrockagent_prompt', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_prompt('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_prompt', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_prompt('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_prompt', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -210,7 +230,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentPrompt do
     resource_type: :aws_bedrockagent_prompt,
     method: :aws_bedrockagent_prompt,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :created_at, :tags_all, :updated_at, :version],
+    expected_outputs: [:id, :arn, :created_at, :region, :tags_all, :updated_at, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

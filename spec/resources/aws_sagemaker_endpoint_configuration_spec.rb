@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerEndpointConfiguration do
         expect(ref.arn).to eq("${aws_sagemaker_endpoint_configuration.test.arn}")
         expect(ref.name).to eq("${aws_sagemaker_endpoint_configuration.test.name}")
         expect(ref.name_prefix).to eq("${aws_sagemaker_endpoint_configuration.test.name_prefix}")
+        expect(ref.region).to eq("${aws_sagemaker_endpoint_configuration.test.region}")
         expect(ref.tags_all).to eq("${aws_sagemaker_endpoint_configuration.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSSagemakerEndpointConfiguration do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ async_inference_config: [{ 'key1' => 'val1' }], data_capture_config: [{ 'key1' => 'val1' }], kms_key_arn: 'test-value', shadow_production_variants: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ async_inference_config: { 'key1' => 'val1' }, data_capture_config: { 'key1' => 'val1' }, execution_role_arn: 'test-value', kms_key_arn: 'test-value', name: 'test-value', name_prefix: 'test-value', region: 'test-value', shadow_production_variants: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,9 +74,14 @@ RSpec.describe Pangea::Resources::AWSSagemakerEndpointConfiguration do
         config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'full')
         expect(config).to have_key('async_inference_config')
         expect(config).to have_key('data_capture_config')
+        expect(config).to have_key('execution_role_arn')
         expect(config).to have_key('kms_key_arn')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
         expect(config).to have_key('shadow_production_variants')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -82,7 +89,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerEndpointConfiguration do
       it 'includes async_inference_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_endpoint_configuration('opt', required_attrs.merge(async_inference_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_endpoint_configuration('opt', required_attrs.merge(async_inference_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'opt')
         expect(config).to have_key('async_inference_config')
@@ -99,7 +106,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerEndpointConfiguration do
       it 'includes data_capture_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_endpoint_configuration('opt', required_attrs.merge(data_capture_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_endpoint_configuration('opt', required_attrs.merge(data_capture_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'opt')
         expect(config).to have_key('data_capture_config')
@@ -112,6 +119,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerEndpointConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'minimal')
         expect(config).not_to have_key('data_capture_config')
+      end
+      it 'includes execution_role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_endpoint_configuration('opt', required_attrs.merge(execution_role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'opt')
+        expect(config).to have_key('execution_role_arn')
+      end
+
+      it 'omits execution_role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_endpoint_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'minimal')
+        expect(config).not_to have_key('execution_role_arn')
       end
       it 'includes kms_key_arn when provided' do
         synth = create_synthesizer
@@ -129,6 +153,57 @@ RSpec.describe Pangea::Resources::AWSSagemakerEndpointConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'minimal')
         expect(config).not_to have_key('kms_key_arn')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_endpoint_configuration('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_endpoint_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_endpoint_configuration('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_endpoint_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_endpoint_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_endpoint_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes shadow_production_variants when provided' do
         synth = create_synthesizer
@@ -163,6 +238,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerEndpointConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_endpoint_configuration('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_endpoint_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_endpoint_configuration', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -208,7 +300,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerEndpointConfiguration do
     resource_type: :aws_sagemaker_endpoint_configuration,
     method: :aws_sagemaker_endpoint_configuration,
     required_attrs: { production_variants: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :name, :name_prefix, :tags_all],
+    expected_outputs: [:id, :arn, :name, :name_prefix, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

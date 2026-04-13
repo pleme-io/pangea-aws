@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSConfigConfigRule do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { name: 'test-value', source: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { name: 'test-value', source: { 'key1' => 'val1' } } }
 
   describe ':aws_config_config_rule' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSConfigConfigRule do
 
         expect(ref.id).to eq("${aws_config_config_rule.test.id}")
         expect(ref.arn).to eq("${aws_config_config_rule.test.arn}")
+        expect(ref.region).to eq("${aws_config_config_rule.test.region}")
         expect(ref.rule_id).to eq("${aws_config_config_rule.test.rule_id}")
         expect(ref.tags_all).to eq("${aws_config_config_rule.test.tags_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSConfigConfigRule do
 
         config = validate_resource_structure(result, 'aws_config_config_rule', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('rule_id')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', evaluation_mode: [{ 'key1' => 'val1' }], input_parameters: 'test-value', maximum_execution_frequency: 'test-value', scope: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', evaluation_mode: [{ 'key1' => 'val1' }], input_parameters: 'test-value', maximum_execution_frequency: 'test-value', region: 'test-value', scope: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,8 +74,10 @@ RSpec.describe Pangea::Resources::AWSConfigConfigRule do
         expect(config).to have_key('evaluation_mode')
         expect(config).to have_key('input_parameters')
         expect(config).to have_key('maximum_execution_frequency')
+        expect(config).to have_key('region')
         expect(config).to have_key('scope')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -146,10 +150,27 @@ RSpec.describe Pangea::Resources::AWSConfigConfigRule do
         config = validate_resource_structure(result, 'aws_config_config_rule', 'minimal')
         expect(config).not_to have_key('maximum_execution_frequency')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_config_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_config_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_config_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_config_rule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes scope when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_config_config_rule('opt', required_attrs.merge(scope: [{ 'key1' => 'val1' }]))
+        synth.aws_config_config_rule('opt', required_attrs.merge(scope: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_config_rule', 'opt')
         expect(config).to have_key('scope')
@@ -180,6 +201,23 @@ RSpec.describe Pangea::Resources::AWSConfigConfigRule do
         config = validate_resource_structure(result, 'aws_config_config_rule', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_config_rule('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_config_rule', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_config_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_config_rule', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -191,7 +229,7 @@ RSpec.describe Pangea::Resources::AWSConfigConfigRule do
 
         config = validate_resource_structure(result, 'aws_config_config_rule', 'typed')
         expect(config['name']).to be_a(String)
-        expect(config['source']).to be_a(Array)
+        expect(config['source']).to be_a(Hash)
       end
     end
 
@@ -224,8 +262,8 @@ RSpec.describe Pangea::Resources::AWSConfigConfigRule do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_config_config_rule,
     method: :aws_config_config_rule,
-    required_attrs: { name: 'test-value', source: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :rule_id, :tags_all],
+    required_attrs: { name: 'test-value', source: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :region, :rule_id, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

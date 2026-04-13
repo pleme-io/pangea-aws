@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightTheme do
         expect(ref.aws_account_id).to eq("${aws_quicksight_theme.test.aws_account_id}")
         expect(ref.created_time).to eq("${aws_quicksight_theme.test.created_time}")
         expect(ref.last_updated_time).to eq("${aws_quicksight_theme.test.last_updated_time}")
+        expect(ref.region).to eq("${aws_quicksight_theme.test.region}")
         expect(ref.status).to eq("${aws_quicksight_theme.test.status}")
         expect(ref.tags_all).to eq("${aws_quicksight_theme.test.tags_all}")
         expect(ref.version_number).to eq("${aws_quicksight_theme.test.version_number}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightTheme do
         expect(config).not_to have_key('aws_account_id')
         expect(config).not_to have_key('created_time')
         expect(config).not_to have_key('last_updated_time')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('version_number')
@@ -67,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightTheme do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ configuration: [{ 'key1' => 'val1' }], permissions: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, version_description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ aws_account_id: 'test-value', configuration: { 'key1' => 'val1' }, permissions: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, version_description: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,18 +78,38 @@ RSpec.describe Pangea::Resources::AWSQuicksightTheme do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_quicksight_theme', 'full')
+        expect(config).to have_key('aws_account_id')
         expect(config).to have_key('configuration')
         expect(config).to have_key('permissions')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('version_description')
       end
     end
 
     context 'optional attributes' do
+      it 'includes aws_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_theme('opt', required_attrs.merge(aws_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_theme', 'opt')
+        expect(config).to have_key('aws_account_id')
+      end
+
+      it 'omits aws_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_theme('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_theme', 'minimal')
+        expect(config).not_to have_key('aws_account_id')
+      end
       it 'includes configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_quicksight_theme('opt', required_attrs.merge(configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_quicksight_theme('opt', required_attrs.merge(configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_theme', 'opt')
         expect(config).to have_key('configuration')
@@ -118,6 +140,23 @@ RSpec.describe Pangea::Resources::AWSQuicksightTheme do
         config = validate_resource_structure(result, 'aws_quicksight_theme', 'minimal')
         expect(config).not_to have_key('permissions')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_theme('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_theme', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_theme('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_theme', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -134,6 +173,23 @@ RSpec.describe Pangea::Resources::AWSQuicksightTheme do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_theme', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_theme('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_theme', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_theme('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_theme', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes version_description when provided' do
         synth = create_synthesizer
@@ -198,7 +254,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightTheme do
     resource_type: :aws_quicksight_theme,
     method: :aws_quicksight_theme,
     required_attrs: { base_theme_id: 'test-value', name: 'test-value', theme_id: 'test-value' },
-    expected_outputs: [:id, :arn, :aws_account_id, :created_time, :last_updated_time, :status, :tags_all, :version_number],
+    expected_outputs: [:id, :arn, :aws_account_id, :created_time, :last_updated_time, :region, :status, :tags_all, :version_number],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

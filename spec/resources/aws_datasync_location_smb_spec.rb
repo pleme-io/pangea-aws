@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationSmb do
         expect(ref.id).to eq("${aws_datasync_location_smb.test.id}")
         expect(ref.arn).to eq("${aws_datasync_location_smb.test.arn}")
         expect(ref.domain).to eq("${aws_datasync_location_smb.test.domain}")
+        expect(ref.region).to eq("${aws_datasync_location_smb.test.region}")
         expect(ref.tags_all).to eq("${aws_datasync_location_smb.test.tags_all}")
         expect(ref.uri).to eq("${aws_datasync_location_smb.test.uri}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationSmb do
         config = validate_resource_structure(result, 'aws_datasync_location_smb', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('domain')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('uri')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ mount_options: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ domain: 'test-value', mount_options: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,16 +72,36 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationSmb do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_datasync_location_smb', 'full')
+        expect(config).to have_key('domain')
         expect(config).to have_key('mount_options')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes domain when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_smb('opt', required_attrs.merge(domain: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_smb', 'opt')
+        expect(config).to have_key('domain')
+      end
+
+      it 'omits domain when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_smb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_smb', 'minimal')
+        expect(config).not_to have_key('domain')
+      end
       it 'includes mount_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_datasync_location_smb('opt', required_attrs.merge(mount_options: [{ 'key1' => 'val1' }]))
+        synth.aws_datasync_location_smb('opt', required_attrs.merge(mount_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_location_smb', 'opt')
         expect(config).to have_key('mount_options')
@@ -92,6 +114,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationSmb do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_location_smb', 'minimal')
         expect(config).not_to have_key('mount_options')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_smb('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_smb', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_smb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_smb', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -109,6 +148,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationSmb do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_location_smb', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_smb('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_smb', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_smb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_smb', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -165,7 +221,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationSmb do
     resource_type: :aws_datasync_location_smb,
     method: :aws_datasync_location_smb,
     required_attrs: { agent_arns: ['test-value'], password: 'test-value', server_hostname: 'test-value', subdirectory: 'test-value', user: 'test-value' },
-    expected_outputs: [:id, :arn, :domain, :tags_all, :uri],
+    expected_outputs: [:id, :arn, :domain, :region, :tags_all, :uri],
     sensitive_fields: [:password],
     immutable_fields: [],
     boolean_fields: []

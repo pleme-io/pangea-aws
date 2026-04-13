@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerHub do
 
         expect(ref.id).to eq("${aws_sagemaker_hub.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_hub.test.arn}")
+        expect(ref.region).to eq("${aws_sagemaker_hub.test.region}")
         expect(ref.tags_all).to eq("${aws_sagemaker_hub.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSSagemakerHub do
 
         config = validate_resource_structure(result, 'aws_sagemaker_hub', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ hub_display_name: 'test-value', hub_search_keywords: ['test-value'], s3_storage_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ hub_display_name: 'test-value', hub_search_keywords: ['test-value'], region: 'test-value', s3_storage_config: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,8 +70,10 @@ RSpec.describe Pangea::Resources::AWSSagemakerHub do
         config = validate_resource_structure(result, 'aws_sagemaker_hub', 'full')
         expect(config).to have_key('hub_display_name')
         expect(config).to have_key('hub_search_keywords')
+        expect(config).to have_key('region')
         expect(config).to have_key('s3_storage_config')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -108,10 +112,27 @@ RSpec.describe Pangea::Resources::AWSSagemakerHub do
         config = validate_resource_structure(result, 'aws_sagemaker_hub', 'minimal')
         expect(config).not_to have_key('hub_search_keywords')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_hub('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_hub', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_hub('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_hub', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes s3_storage_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_hub('opt', required_attrs.merge(s3_storage_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_hub('opt', required_attrs.merge(s3_storage_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_hub', 'opt')
         expect(config).to have_key('s3_storage_config')
@@ -141,6 +162,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerHub do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_hub', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_hub('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_hub', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_hub('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_hub', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -187,7 +225,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerHub do
     resource_type: :aws_sagemaker_hub,
     method: :aws_sagemaker_hub,
     required_attrs: { hub_description: 'test-value', hub_name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

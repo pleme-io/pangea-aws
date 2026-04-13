@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSBackupSelection do
 
         expect(ref.id).to eq("${aws_backup_selection.test.id}")
         expect(ref.not_resources).to eq("${aws_backup_selection.test.not_resources}")
+        expect(ref.region).to eq("${aws_backup_selection.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSBackupSelection do
 
         config = validate_resource_structure(result, 'aws_backup_selection', 'test')
         expect(config).not_to have_key('not_resources')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ condition: [{ 'key1' => 'val1' }], resources: ['test-value'], selection_tag: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ condition: [{ 'key1' => 'val1' }], not_resources: ['test-value'], region: 'test-value', resources: ['test-value'], selection_tag: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,8 @@ RSpec.describe Pangea::Resources::AWSBackupSelection do
 
         config = validate_resource_structure(result, 'aws_backup_selection', 'full')
         expect(config).to have_key('condition')
+        expect(config).to have_key('not_resources')
+        expect(config).to have_key('region')
         expect(config).to have_key('resources')
         expect(config).to have_key('selection_tag')
       end
@@ -87,6 +91,40 @@ RSpec.describe Pangea::Resources::AWSBackupSelection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_backup_selection', 'minimal')
         expect(config).not_to have_key('condition')
+      end
+      it 'includes not_resources when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_selection('opt', required_attrs.merge(not_resources: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_selection', 'opt')
+        expect(config).to have_key('not_resources')
+      end
+
+      it 'omits not_resources when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_selection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_selection', 'minimal')
+        expect(config).not_to have_key('not_resources')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_selection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_selection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_selection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_selection', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes resources when provided' do
         synth = create_synthesizer
@@ -168,7 +206,7 @@ RSpec.describe Pangea::Resources::AWSBackupSelection do
     resource_type: :aws_backup_selection,
     method: :aws_backup_selection,
     required_attrs: { iam_role_arn: 'test-value', name: 'test-value', plan_id: 'test-value' },
-    expected_outputs: [:id, :not_resources],
+    expected_outputs: [:id, :not_resources, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

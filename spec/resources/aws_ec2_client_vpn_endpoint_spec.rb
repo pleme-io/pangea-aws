@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { authentication_options: [{ 'key1' => 'val1' }], client_cidr_block: 'test-value', connection_log_options: [{ 'key1' => 'val1' }], server_certificate_arn: 'test-value' } }
+  let(:required_attrs) { { authentication_options: [{ 'key1' => 'val1' }], connection_log_options: { 'key1' => 'val1' }, server_certificate_arn: 'test-value' } }
 
   describe ':aws_ec2_client_vpn_endpoint' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'test')
-        validate_required_attributes(config, [:authentication_options, :client_cidr_block, :connection_log_options, :server_certificate_arn])
+        validate_required_attributes(config, [:authentication_options, :connection_log_options, :server_certificate_arn])
       end
 
       it 'returns a ResourceReference' do
@@ -41,9 +41,12 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
         expect(ref.arn).to eq("${aws_ec2_client_vpn_endpoint.test.arn}")
         expect(ref.disconnect_on_session_timeout).to eq("${aws_ec2_client_vpn_endpoint.test.disconnect_on_session_timeout}")
         expect(ref.dns_name).to eq("${aws_ec2_client_vpn_endpoint.test.dns_name}")
+        expect(ref.endpoint_ip_address_type).to eq("${aws_ec2_client_vpn_endpoint.test.endpoint_ip_address_type}")
+        expect(ref.region).to eq("${aws_ec2_client_vpn_endpoint.test.region}")
         expect(ref.security_group_ids).to eq("${aws_ec2_client_vpn_endpoint.test.security_group_ids}")
         expect(ref.self_service_portal_url).to eq("${aws_ec2_client_vpn_endpoint.test.self_service_portal_url}")
         expect(ref.tags_all).to eq("${aws_ec2_client_vpn_endpoint.test.tags_all}")
+        expect(ref.traffic_ip_address_type).to eq("${aws_ec2_client_vpn_endpoint.test.traffic_ip_address_type}")
         expect(ref.vpc_id).to eq("${aws_ec2_client_vpn_endpoint.test.vpc_id}")
       end
     end
@@ -59,15 +62,18 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('disconnect_on_session_timeout')
         expect(config).not_to have_key('dns_name')
+        expect(config).not_to have_key('endpoint_ip_address_type')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_group_ids')
         expect(config).not_to have_key('self_service_portal_url')
         expect(config).not_to have_key('tags_all')
+        expect(config).not_to have_key('traffic_ip_address_type')
         expect(config).not_to have_key('vpc_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ client_connect_options: [{ 'key1' => 'val1' }], client_login_banner_options: [{ 'key1' => 'val1' }], client_route_enforcement_options: [{ 'key1' => 'val1' }], description: 'test-value', dns_servers: ['test-value'], self_service_portal: 'test-value', session_timeout_hours: 3.14, split_tunnel: true, tags: { 'key1' => 'val1' }, transport_protocol: 'test-value', vpn_port: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ client_cidr_block: 'test-value', client_connect_options: { 'key1' => 'val1' }, client_login_banner_options: { 'key1' => 'val1' }, client_route_enforcement_options: { 'key1' => 'val1' }, description: 'test-value', disconnect_on_session_timeout: true, dns_servers: ['test-value'], endpoint_ip_address_type: 'test-value', region: 'test-value', security_group_ids: ['test-value'], self_service_portal: 'test-value', session_timeout_hours: 3.14, split_tunnel: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, traffic_ip_address_type: 'test-value', transport_protocol: 'test-value', vpc_id: 'test-value', vpn_port: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,25 +82,50 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'full')
+        expect(config).to have_key('client_cidr_block')
         expect(config).to have_key('client_connect_options')
         expect(config).to have_key('client_login_banner_options')
         expect(config).to have_key('client_route_enforcement_options')
         expect(config).to have_key('description')
+        expect(config).to have_key('disconnect_on_session_timeout')
         expect(config).to have_key('dns_servers')
+        expect(config).to have_key('endpoint_ip_address_type')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_group_ids')
         expect(config).to have_key('self_service_portal')
         expect(config).to have_key('session_timeout_hours')
         expect(config).to have_key('split_tunnel')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('traffic_ip_address_type')
         expect(config).to have_key('transport_protocol')
+        expect(config).to have_key('vpc_id')
         expect(config).to have_key('vpn_port')
       end
     end
 
     context 'optional attributes' do
+      it 'includes client_cidr_block when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(client_cidr_block: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'opt')
+        expect(config).to have_key('client_cidr_block')
+      end
+
+      it 'omits client_cidr_block when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'minimal')
+        expect(config).not_to have_key('client_cidr_block')
+      end
       it 'includes client_connect_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(client_connect_options: [{ 'key1' => 'val1' }]))
+        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(client_connect_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'opt')
         expect(config).to have_key('client_connect_options')
@@ -111,7 +142,7 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
       it 'includes client_login_banner_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(client_login_banner_options: [{ 'key1' => 'val1' }]))
+        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(client_login_banner_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'opt')
         expect(config).to have_key('client_login_banner_options')
@@ -128,7 +159,7 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
       it 'includes client_route_enforcement_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(client_route_enforcement_options: [{ 'key1' => 'val1' }]))
+        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(client_route_enforcement_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'opt')
         expect(config).to have_key('client_route_enforcement_options')
@@ -159,6 +190,23 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
         config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes disconnect_on_session_timeout when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(disconnect_on_session_timeout: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'opt')
+        expect(config).to have_key('disconnect_on_session_timeout')
+      end
+
+      it 'omits disconnect_on_session_timeout when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'minimal')
+        expect(config).not_to have_key('disconnect_on_session_timeout')
+      end
       it 'includes dns_servers when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -175,6 +223,57 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'minimal')
         expect(config).not_to have_key('dns_servers')
+      end
+      it 'includes endpoint_ip_address_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(endpoint_ip_address_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'opt')
+        expect(config).to have_key('endpoint_ip_address_type')
+      end
+
+      it 'omits endpoint_ip_address_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'minimal')
+        expect(config).not_to have_key('endpoint_ip_address_type')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'opt')
+        expect(config).to have_key('security_group_ids')
+      end
+
+      it 'omits security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'minimal')
+        expect(config).not_to have_key('security_group_ids')
       end
       it 'includes self_service_portal when provided' do
         synth = create_synthesizer
@@ -244,6 +343,40 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
         config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes traffic_ip_address_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(traffic_ip_address_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'opt')
+        expect(config).to have_key('traffic_ip_address_type')
+      end
+
+      it 'omits traffic_ip_address_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'minimal')
+        expect(config).not_to have_key('traffic_ip_address_type')
+      end
       it 'includes transport_protocol when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -260,6 +393,23 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'minimal')
         expect(config).not_to have_key('transport_protocol')
+      end
+      it 'includes vpc_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('opt', required_attrs.merge(vpc_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'opt')
+        expect(config).to have_key('vpc_id')
+      end
+
+      it 'omits vpc_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'minimal')
+        expect(config).not_to have_key('vpc_id')
       end
       it 'includes vpn_port when provided' do
         synth = create_synthesizer
@@ -282,6 +432,17 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
 
     context 'boolean fields' do
       [true, false].each do |val|
+        it "accepts disconnect_on_session_timeout=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(disconnect_on_session_timeout: val)
+          synth.aws_ec2_client_vpn_endpoint("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', "bool_#{val}")
+          expect(config['disconnect_on_session_timeout']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
         it "accepts split_tunnel=#{val}" do
           synth = create_synthesizer
           synth.extend(described_class)
@@ -303,8 +464,7 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
 
         config = validate_resource_structure(result, 'aws_ec2_client_vpn_endpoint', 'typed')
         expect(config['authentication_options']).to be_a(Array)
-        expect(config['client_cidr_block']).to be_a(String)
-        expect(config['connection_log_options']).to be_a(Array)
+        expect(config['connection_log_options']).to be_a(Hash)
         expect(config['server_certificate_arn']).to be_a(String)
       end
     end
@@ -338,9 +498,9 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnEndpoint do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_ec2_client_vpn_endpoint,
     method: :aws_ec2_client_vpn_endpoint,
-    required_attrs: { authentication_options: [{ 'key1' => 'val1' }], client_cidr_block: 'test-value', connection_log_options: [{ 'key1' => 'val1' }], server_certificate_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :disconnect_on_session_timeout, :dns_name, :security_group_ids, :self_service_portal_url, :tags_all, :vpc_id],
+    required_attrs: { authentication_options: [{ 'key1' => 'val1' }], connection_log_options: { 'key1' => 'val1' }, server_certificate_arn: 'test-value' },
+    expected_outputs: [:id, :arn, :disconnect_on_session_timeout, :dns_name, :endpoint_ip_address_type, :region, :security_group_ids, :self_service_portal_url, :tags_all, :traffic_ip_address_type, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:split_tunnel]
+    boolean_fields: [:disconnect_on_session_timeout, :split_tunnel]
 end

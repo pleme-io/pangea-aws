@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSGlacierVault do
         expect(ref.id).to eq("${aws_glacier_vault.test.id}")
         expect(ref.arn).to eq("${aws_glacier_vault.test.arn}")
         expect(ref.location).to eq("${aws_glacier_vault.test.location}")
+        expect(ref.region).to eq("${aws_glacier_vault.test.region}")
         expect(ref.tags_all).to eq("${aws_glacier_vault.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSGlacierVault do
         config = validate_resource_structure(result, 'aws_glacier_vault', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('location')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_policy: 'test-value', notification: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ access_policy: 'test-value', notification: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,7 +72,9 @@ RSpec.describe Pangea::Resources::AWSGlacierVault do
         config = validate_resource_structure(result, 'aws_glacier_vault', 'full')
         expect(config).to have_key('access_policy')
         expect(config).to have_key('notification')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -95,7 +99,7 @@ RSpec.describe Pangea::Resources::AWSGlacierVault do
       it 'includes notification when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glacier_vault('opt', required_attrs.merge(notification: [{ 'key1' => 'val1' }]))
+        synth.aws_glacier_vault('opt', required_attrs.merge(notification: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glacier_vault', 'opt')
         expect(config).to have_key('notification')
@@ -108,6 +112,23 @@ RSpec.describe Pangea::Resources::AWSGlacierVault do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glacier_vault', 'minimal')
         expect(config).not_to have_key('notification')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glacier_vault('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glacier_vault', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glacier_vault('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glacier_vault', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -125,6 +146,23 @@ RSpec.describe Pangea::Resources::AWSGlacierVault do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glacier_vault', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glacier_vault('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glacier_vault', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glacier_vault('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glacier_vault', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -170,7 +208,7 @@ RSpec.describe Pangea::Resources::AWSGlacierVault do
     resource_type: :aws_glacier_vault,
     method: :aws_glacier_vault,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :location, :tags_all],
+    expected_outputs: [:id, :arn, :location, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

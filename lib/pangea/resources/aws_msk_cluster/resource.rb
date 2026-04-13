@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MskClusterAttributes,
       outputs: { id: :id },
       map: [:broker_node_group_info, :cluster_name, :kafka_version, :number_of_broker_nodes],
-      map_present: [:client_authentication, :configuration_info, :encryption_info, :enhanced_monitoring, :logging_info, :open_monitoring, :storage_mode, :tags, :tags_all]
+      map_present: [:client_authentication, :configuration_info, :encryption_info, :enhanced_monitoring, :logging_info, :open_monitoring, :rebalancing, :region, :storage_mode, :tags, :tags_all]
   end
   module AWS
     include AWSMskCluster

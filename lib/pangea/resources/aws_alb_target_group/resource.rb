@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_alb_target_group,
       attributes_class: AWS::Types::AlbTargetGroupAttributes,
       outputs: { id: :id },
-      map_present: [:deregistration_delay, :health_check, :ip_address_type, :load_balancing_algorithm_type, :load_balancing_anomaly_mitigation, :load_balancing_cross_zone_enabled, :name, :name_prefix, :port, :preserve_client_ip, :protocol, :protocol_version, :slow_start, :stickiness, :tags, :tags_all, :target_failover, :target_group_health, :target_health_state, :target_type, :vpc_id],
+      map_present: [:deregistration_delay, :health_check, :ip_address_type, :load_balancing_algorithm_type, :load_balancing_anomaly_mitigation, :load_balancing_cross_zone_enabled, :name, :name_prefix, :port, :preserve_client_ip, :protocol, :protocol_version, :region, :slow_start, :stickiness, :tags, :tags_all, :target_control_port, :target_failover, :target_group_health, :target_health_state, :target_type, :vpc_id],
       map_bool: [:connection_termination, :lambda_multi_value_headers_enabled, :proxy_protocol_v2]
   end
   module AWS

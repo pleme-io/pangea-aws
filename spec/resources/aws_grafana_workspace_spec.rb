@@ -42,7 +42,9 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspace do
         expect(ref.configuration).to eq("${aws_grafana_workspace.test.configuration}")
         expect(ref.endpoint).to eq("${aws_grafana_workspace.test.endpoint}")
         expect(ref.grafana_version).to eq("${aws_grafana_workspace.test.grafana_version}")
+        expect(ref.kms_key_id).to eq("${aws_grafana_workspace.test.kms_key_id}")
         expect(ref.name).to eq("${aws_grafana_workspace.test.name}")
+        expect(ref.region).to eq("${aws_grafana_workspace.test.region}")
         expect(ref.saml_configuration_status).to eq("${aws_grafana_workspace.test.saml_configuration_status}")
         expect(ref.tags_all).to eq("${aws_grafana_workspace.test.tags_all}")
       end
@@ -60,14 +62,16 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspace do
         expect(config).not_to have_key('configuration')
         expect(config).not_to have_key('endpoint')
         expect(config).not_to have_key('grafana_version')
+        expect(config).not_to have_key('kms_key_id')
         expect(config).not_to have_key('name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('saml_configuration_status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ data_sources: ['test-value'], description: 'test-value', network_access_control: [{ 'key1' => 'val1' }], notification_destinations: ['test-value'], organization_role_name: 'test-value', organizational_units: ['test-value'], role_arn: 'test-value', stack_set_name: 'test-value', tags: { 'key1' => 'val1' }, vpc_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ configuration: 'test-value', data_sources: ['test-value'], description: 'test-value', grafana_version: 'test-value', kms_key_id: 'test-value', name: 'test-value', network_access_control: { 'key1' => 'val1' }, notification_destinations: ['test-value'], organization_role_name: 'test-value', organizational_units: ['test-value'], region: 'test-value', role_arn: 'test-value', stack_set_name: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_configuration: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,20 +80,43 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspace do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_grafana_workspace', 'full')
+        expect(config).to have_key('configuration')
         expect(config).to have_key('data_sources')
         expect(config).to have_key('description')
+        expect(config).to have_key('grafana_version')
+        expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('name')
         expect(config).to have_key('network_access_control')
         expect(config).to have_key('notification_destinations')
         expect(config).to have_key('organization_role_name')
         expect(config).to have_key('organizational_units')
+        expect(config).to have_key('region')
         expect(config).to have_key('role_arn')
         expect(config).to have_key('stack_set_name')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc_configuration')
       end
     end
 
     context 'optional attributes' do
+      it 'includes configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace('opt', required_attrs.merge(configuration: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace', 'opt')
+        expect(config).to have_key('configuration')
+      end
+
+      it 'omits configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace', 'minimal')
+        expect(config).not_to have_key('configuration')
+      end
       it 'includes data_sources when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -124,10 +151,61 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspace do
         config = validate_resource_structure(result, 'aws_grafana_workspace', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes grafana_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace('opt', required_attrs.merge(grafana_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace', 'opt')
+        expect(config).to have_key('grafana_version')
+      end
+
+      it 'omits grafana_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace', 'minimal')
+        expect(config).not_to have_key('grafana_version')
+      end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace', 'minimal')
+        expect(config).not_to have_key('name')
+      end
       it 'includes network_access_control when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_grafana_workspace('opt', required_attrs.merge(network_access_control: [{ 'key1' => 'val1' }]))
+        synth.aws_grafana_workspace('opt', required_attrs.merge(network_access_control: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_grafana_workspace', 'opt')
         expect(config).to have_key('network_access_control')
@@ -192,6 +270,23 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspace do
         config = validate_resource_structure(result, 'aws_grafana_workspace', 'minimal')
         expect(config).not_to have_key('organizational_units')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes role_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -243,10 +338,27 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspace do
         config = validate_resource_structure(result, 'aws_grafana_workspace', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes vpc_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_grafana_workspace('opt', required_attrs.merge(vpc_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_grafana_workspace('opt', required_attrs.merge(vpc_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_grafana_workspace', 'opt')
         expect(config).to have_key('vpc_configuration')
@@ -306,7 +418,7 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspace do
     resource_type: :aws_grafana_workspace,
     method: :aws_grafana_workspace,
     required_attrs: { account_access_type: 'test-value', authentication_providers: ['test-value'], permission_type: 'test-value' },
-    expected_outputs: [:id, :arn, :configuration, :endpoint, :grafana_version, :name, :saml_configuration_status, :tags_all],
+    expected_outputs: [:id, :arn, :configuration, :endpoint, :grafana_version, :kms_key_id, :name, :region, :saml_configuration_status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

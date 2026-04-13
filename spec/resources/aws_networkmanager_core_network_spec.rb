@@ -65,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerCoreNetwork do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ base_policy_document: 'test-value', base_policy_region: 'test-value', base_policy_regions: ['test-value'], create_base_policy: true, description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ base_policy_document: 'test-value', base_policy_regions: ['test-value'], create_base_policy: true, description: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,11 +75,11 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerCoreNetwork do
 
         config = validate_resource_structure(result, 'aws_networkmanager_core_network', 'full')
         expect(config).to have_key('base_policy_document')
-        expect(config).to have_key('base_policy_region')
         expect(config).to have_key('base_policy_regions')
         expect(config).to have_key('create_base_policy')
         expect(config).to have_key('description')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -100,23 +100,6 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerCoreNetwork do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkmanager_core_network', 'minimal')
         expect(config).not_to have_key('base_policy_document')
-      end
-      it 'includes base_policy_region when provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_networkmanager_core_network('opt', required_attrs.merge(base_policy_region: 'test-value'))
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_networkmanager_core_network', 'opt')
-        expect(config).to have_key('base_policy_region')
-      end
-
-      it 'omits base_policy_region when not provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_networkmanager_core_network('minimal', required_attrs)
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_networkmanager_core_network', 'minimal')
-        expect(config).not_to have_key('base_policy_region')
       end
       it 'includes base_policy_regions when provided' do
         synth = create_synthesizer
@@ -185,6 +168,23 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerCoreNetwork do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkmanager_core_network', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_core_network('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_core_network', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_core_network('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_core_network', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 

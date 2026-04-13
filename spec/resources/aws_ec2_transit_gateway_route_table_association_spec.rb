@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayRouteTableAssociation do
         ref = synth.aws_ec2_transit_gateway_route_table_association('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ec2_transit_gateway_route_table_association.test.id}")
+        expect(ref.region).to eq("${aws_ec2_transit_gateway_route_table_association.test.region}")
         expect(ref.resource_id).to eq("${aws_ec2_transit_gateway_route_table_association.test.resource_id}")
         expect(ref.resource_type).to eq("${aws_ec2_transit_gateway_route_table_association.test.resource_type}")
       end
@@ -51,13 +52,14 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayRouteTableAssociation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_route_table_association', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_id')
         expect(config).not_to have_key('resource_type')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ replace_existing_association: true }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', replace_existing_association: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,11 +68,29 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayRouteTableAssociation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_route_table_association', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('replace_existing_association')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_route_table_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_route_table_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_route_table_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_route_table_association', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes replace_existing_association when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -147,7 +167,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayRouteTableAssociation do
     resource_type: :aws_ec2_transit_gateway_route_table_association,
     method: :aws_ec2_transit_gateway_route_table_association,
     required_attrs: { transit_gateway_attachment_id: 'test-value', transit_gateway_route_table_id: 'test-value' },
-    expected_outputs: [:id, :resource_id, :resource_type],
+    expected_outputs: [:id, :region, :resource_id, :resource_type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:replace_existing_association]

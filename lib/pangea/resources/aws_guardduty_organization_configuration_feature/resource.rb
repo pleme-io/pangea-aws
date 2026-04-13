@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GuarddutyOrganizationConfigurationFeatureAttributes,
       outputs: { id: :id },
       map: [:auto_enable, :detector_id, :name],
-      map_present: [:additional_configuration]
+      map_present: [:additional_configuration, :region]
   end
   module AWS
     include AWSGuarddutyOrganizationConfigurationFeature

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSWafWebAcl do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { default_action: [{ 'key1' => 'val1' }], metric_name: 'test-value', name: 'test-value' } }
+  let(:required_attrs) { { default_action: { 'key1' => 'val1' }, metric_name: 'test-value', name: 'test-value' } }
 
   describe ':aws_waf_web_acl' do
     context 'with required attributes only' do
@@ -57,7 +57,7 @@ RSpec.describe Pangea::Resources::AWSWafWebAcl do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ logging_configuration: [{ 'key1' => 'val1' }], rules: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ logging_configuration: { 'key1' => 'val1' }, rules: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSWafWebAcl do
         expect(config).to have_key('logging_configuration')
         expect(config).to have_key('rules')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -76,7 +77,7 @@ RSpec.describe Pangea::Resources::AWSWafWebAcl do
       it 'includes logging_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_waf_web_acl('opt', required_attrs.merge(logging_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_waf_web_acl('opt', required_attrs.merge(logging_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_waf_web_acl', 'opt')
         expect(config).to have_key('logging_configuration')
@@ -124,6 +125,23 @@ RSpec.describe Pangea::Resources::AWSWafWebAcl do
         config = validate_resource_structure(result, 'aws_waf_web_acl', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_waf_web_acl('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_waf_web_acl', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_waf_web_acl('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_waf_web_acl', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -134,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSWafWebAcl do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_waf_web_acl', 'typed')
-        expect(config['default_action']).to be_a(Array)
+        expect(config['default_action']).to be_a(Hash)
         expect(config['metric_name']).to be_a(String)
         expect(config['name']).to be_a(String)
       end
@@ -169,7 +187,7 @@ RSpec.describe Pangea::Resources::AWSWafWebAcl do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_waf_web_acl,
     method: :aws_waf_web_acl,
-    required_attrs: { default_action: [{ 'key1' => 'val1' }], metric_name: 'test-value', name: 'test-value' },
+    required_attrs: { default_action: { 'key1' => 'val1' }, metric_name: 'test-value', name: 'test-value' },
     expected_outputs: [:id, :arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],

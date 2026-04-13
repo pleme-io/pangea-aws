@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSLbListener do
         expect(ref.id).to eq("${aws_lb_listener.test.id}")
         expect(ref.arn).to eq("${aws_lb_listener.test.arn}")
         expect(ref.protocol).to eq("${aws_lb_listener.test.protocol}")
+        expect(ref.region).to eq("${aws_lb_listener.test.region}")
         expect(ref.routing_http_request_x_amzn_mtls_clientcert_header_name).to eq("${aws_lb_listener.test.routing_http_request_x_amzn_mtls_clientcert_header_name}")
         expect(ref.routing_http_request_x_amzn_mtls_clientcert_issuer_header_name).to eq("${aws_lb_listener.test.routing_http_request_x_amzn_mtls_clientcert_issuer_header_name}")
         expect(ref.routing_http_request_x_amzn_mtls_clientcert_leaf_header_name).to eq("${aws_lb_listener.test.routing_http_request_x_amzn_mtls_clientcert_leaf_header_name}")
@@ -75,6 +76,7 @@ RSpec.describe Pangea::Resources::AWSLbListener do
         config = validate_resource_structure(result, 'aws_lb_listener', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('protocol')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('routing_http_request_x_amzn_mtls_clientcert_header_name')
         expect(config).not_to have_key('routing_http_request_x_amzn_mtls_clientcert_issuer_header_name')
         expect(config).not_to have_key('routing_http_request_x_amzn_mtls_clientcert_leaf_header_name')
@@ -101,7 +103,7 @@ RSpec.describe Pangea::Resources::AWSLbListener do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ alpn_policy: 'test-value', certificate_arn: 'test-value', mutual_authentication: [{ 'key1' => 'val1' }], port: 3.14, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ alpn_policy: 'test-value', certificate_arn: 'test-value', mutual_authentication: { 'key1' => 'val1' }, port: 3.14, protocol: 'test-value', region: 'test-value', routing_http_request_x_amzn_mtls_clientcert_header_name: 'test-value', routing_http_request_x_amzn_mtls_clientcert_issuer_header_name: 'test-value', routing_http_request_x_amzn_mtls_clientcert_leaf_header_name: 'test-value', routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name: 'test-value', routing_http_request_x_amzn_mtls_clientcert_subject_header_name: 'test-value', routing_http_request_x_amzn_mtls_clientcert_validity_header_name: 'test-value', routing_http_request_x_amzn_tls_cipher_suite_header_name: 'test-value', routing_http_request_x_amzn_tls_version_header_name: 'test-value', routing_http_response_access_control_allow_credentials_header_value: 'test-value', routing_http_response_access_control_allow_headers_header_value: 'test-value', routing_http_response_access_control_allow_methods_header_value: 'test-value', routing_http_response_access_control_allow_origin_header_value: 'test-value', routing_http_response_access_control_expose_headers_header_value: 'test-value', routing_http_response_access_control_max_age_header_value: 'test-value', routing_http_response_content_security_policy_header_value: 'test-value', routing_http_response_server_enabled: true, routing_http_response_strict_transport_security_header_value: 'test-value', routing_http_response_x_content_type_options_header_value: 'test-value', routing_http_response_x_frame_options_header_value: 'test-value', ssl_policy: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tcp_idle_timeout_seconds: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -114,7 +116,31 @@ RSpec.describe Pangea::Resources::AWSLbListener do
         expect(config).to have_key('certificate_arn')
         expect(config).to have_key('mutual_authentication')
         expect(config).to have_key('port')
+        expect(config).to have_key('protocol')
+        expect(config).to have_key('region')
+        expect(config).to have_key('routing_http_request_x_amzn_mtls_clientcert_header_name')
+        expect(config).to have_key('routing_http_request_x_amzn_mtls_clientcert_issuer_header_name')
+        expect(config).to have_key('routing_http_request_x_amzn_mtls_clientcert_leaf_header_name')
+        expect(config).to have_key('routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name')
+        expect(config).to have_key('routing_http_request_x_amzn_mtls_clientcert_subject_header_name')
+        expect(config).to have_key('routing_http_request_x_amzn_mtls_clientcert_validity_header_name')
+        expect(config).to have_key('routing_http_request_x_amzn_tls_cipher_suite_header_name')
+        expect(config).to have_key('routing_http_request_x_amzn_tls_version_header_name')
+        expect(config).to have_key('routing_http_response_access_control_allow_credentials_header_value')
+        expect(config).to have_key('routing_http_response_access_control_allow_headers_header_value')
+        expect(config).to have_key('routing_http_response_access_control_allow_methods_header_value')
+        expect(config).to have_key('routing_http_response_access_control_allow_origin_header_value')
+        expect(config).to have_key('routing_http_response_access_control_expose_headers_header_value')
+        expect(config).to have_key('routing_http_response_access_control_max_age_header_value')
+        expect(config).to have_key('routing_http_response_content_security_policy_header_value')
+        expect(config).to have_key('routing_http_response_server_enabled')
+        expect(config).to have_key('routing_http_response_strict_transport_security_header_value')
+        expect(config).to have_key('routing_http_response_x_content_type_options_header_value')
+        expect(config).to have_key('routing_http_response_x_frame_options_header_value')
+        expect(config).to have_key('ssl_policy')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('tcp_idle_timeout_seconds')
       end
     end
 
@@ -156,7 +182,7 @@ RSpec.describe Pangea::Resources::AWSLbListener do
       it 'includes mutual_authentication when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lb_listener('opt', required_attrs.merge(mutual_authentication: [{ 'key1' => 'val1' }]))
+        synth.aws_lb_listener('opt', required_attrs.merge(mutual_authentication: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
         expect(config).to have_key('mutual_authentication')
@@ -187,6 +213,380 @@ RSpec.describe Pangea::Resources::AWSLbListener do
         config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
         expect(config).not_to have_key('port')
       end
+      it 'includes protocol when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(protocol: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('protocol')
+      end
+
+      it 'omits protocol when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('protocol')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes routing_http_request_x_amzn_mtls_clientcert_header_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_request_x_amzn_mtls_clientcert_header_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_request_x_amzn_mtls_clientcert_header_name')
+      end
+
+      it 'omits routing_http_request_x_amzn_mtls_clientcert_header_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_request_x_amzn_mtls_clientcert_header_name')
+      end
+      it 'includes routing_http_request_x_amzn_mtls_clientcert_issuer_header_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_request_x_amzn_mtls_clientcert_issuer_header_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_request_x_amzn_mtls_clientcert_issuer_header_name')
+      end
+
+      it 'omits routing_http_request_x_amzn_mtls_clientcert_issuer_header_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_request_x_amzn_mtls_clientcert_issuer_header_name')
+      end
+      it 'includes routing_http_request_x_amzn_mtls_clientcert_leaf_header_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_request_x_amzn_mtls_clientcert_leaf_header_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_request_x_amzn_mtls_clientcert_leaf_header_name')
+      end
+
+      it 'omits routing_http_request_x_amzn_mtls_clientcert_leaf_header_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_request_x_amzn_mtls_clientcert_leaf_header_name')
+      end
+      it 'includes routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name')
+      end
+
+      it 'omits routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name')
+      end
+      it 'includes routing_http_request_x_amzn_mtls_clientcert_subject_header_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_request_x_amzn_mtls_clientcert_subject_header_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_request_x_amzn_mtls_clientcert_subject_header_name')
+      end
+
+      it 'omits routing_http_request_x_amzn_mtls_clientcert_subject_header_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_request_x_amzn_mtls_clientcert_subject_header_name')
+      end
+      it 'includes routing_http_request_x_amzn_mtls_clientcert_validity_header_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_request_x_amzn_mtls_clientcert_validity_header_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_request_x_amzn_mtls_clientcert_validity_header_name')
+      end
+
+      it 'omits routing_http_request_x_amzn_mtls_clientcert_validity_header_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_request_x_amzn_mtls_clientcert_validity_header_name')
+      end
+      it 'includes routing_http_request_x_amzn_tls_cipher_suite_header_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_request_x_amzn_tls_cipher_suite_header_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_request_x_amzn_tls_cipher_suite_header_name')
+      end
+
+      it 'omits routing_http_request_x_amzn_tls_cipher_suite_header_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_request_x_amzn_tls_cipher_suite_header_name')
+      end
+      it 'includes routing_http_request_x_amzn_tls_version_header_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_request_x_amzn_tls_version_header_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_request_x_amzn_tls_version_header_name')
+      end
+
+      it 'omits routing_http_request_x_amzn_tls_version_header_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_request_x_amzn_tls_version_header_name')
+      end
+      it 'includes routing_http_response_access_control_allow_credentials_header_value when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_response_access_control_allow_credentials_header_value: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_response_access_control_allow_credentials_header_value')
+      end
+
+      it 'omits routing_http_response_access_control_allow_credentials_header_value when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_response_access_control_allow_credentials_header_value')
+      end
+      it 'includes routing_http_response_access_control_allow_headers_header_value when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_response_access_control_allow_headers_header_value: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_response_access_control_allow_headers_header_value')
+      end
+
+      it 'omits routing_http_response_access_control_allow_headers_header_value when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_response_access_control_allow_headers_header_value')
+      end
+      it 'includes routing_http_response_access_control_allow_methods_header_value when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_response_access_control_allow_methods_header_value: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_response_access_control_allow_methods_header_value')
+      end
+
+      it 'omits routing_http_response_access_control_allow_methods_header_value when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_response_access_control_allow_methods_header_value')
+      end
+      it 'includes routing_http_response_access_control_allow_origin_header_value when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_response_access_control_allow_origin_header_value: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_response_access_control_allow_origin_header_value')
+      end
+
+      it 'omits routing_http_response_access_control_allow_origin_header_value when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_response_access_control_allow_origin_header_value')
+      end
+      it 'includes routing_http_response_access_control_expose_headers_header_value when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_response_access_control_expose_headers_header_value: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_response_access_control_expose_headers_header_value')
+      end
+
+      it 'omits routing_http_response_access_control_expose_headers_header_value when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_response_access_control_expose_headers_header_value')
+      end
+      it 'includes routing_http_response_access_control_max_age_header_value when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_response_access_control_max_age_header_value: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_response_access_control_max_age_header_value')
+      end
+
+      it 'omits routing_http_response_access_control_max_age_header_value when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_response_access_control_max_age_header_value')
+      end
+      it 'includes routing_http_response_content_security_policy_header_value when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_response_content_security_policy_header_value: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_response_content_security_policy_header_value')
+      end
+
+      it 'omits routing_http_response_content_security_policy_header_value when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_response_content_security_policy_header_value')
+      end
+      it 'includes routing_http_response_server_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_response_server_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_response_server_enabled')
+      end
+
+      it 'omits routing_http_response_server_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_response_server_enabled')
+      end
+      it 'includes routing_http_response_strict_transport_security_header_value when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_response_strict_transport_security_header_value: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_response_strict_transport_security_header_value')
+      end
+
+      it 'omits routing_http_response_strict_transport_security_header_value when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_response_strict_transport_security_header_value')
+      end
+      it 'includes routing_http_response_x_content_type_options_header_value when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_response_x_content_type_options_header_value: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_response_x_content_type_options_header_value')
+      end
+
+      it 'omits routing_http_response_x_content_type_options_header_value when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_response_x_content_type_options_header_value')
+      end
+      it 'includes routing_http_response_x_frame_options_header_value when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(routing_http_response_x_frame_options_header_value: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('routing_http_response_x_frame_options_header_value')
+      end
+
+      it 'omits routing_http_response_x_frame_options_header_value when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('routing_http_response_x_frame_options_header_value')
+      end
+      it 'includes ssl_policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(ssl_policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('ssl_policy')
+      end
+
+      it 'omits ssl_policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('ssl_policy')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -203,6 +603,54 @@ RSpec.describe Pangea::Resources::AWSLbListener do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes tcp_idle_timeout_seconds when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('opt', required_attrs.merge(tcp_idle_timeout_seconds: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'opt')
+        expect(config).to have_key('tcp_idle_timeout_seconds')
+      end
+
+      it 'omits tcp_idle_timeout_seconds when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_listener', 'minimal')
+        expect(config).not_to have_key('tcp_idle_timeout_seconds')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts routing_http_response_server_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(routing_http_response_server_enabled: val)
+          synth.aws_lb_listener("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_lb_listener', "bool_#{val}")
+          expect(config['routing_http_response_server_enabled']).to eq(val)
+        end
       end
     end
 
@@ -249,8 +697,8 @@ RSpec.describe Pangea::Resources::AWSLbListener do
     resource_type: :aws_lb_listener,
     method: :aws_lb_listener,
     required_attrs: { default_action: [{ 'key1' => 'val1' }], load_balancer_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :protocol, :routing_http_request_x_amzn_mtls_clientcert_header_name, :routing_http_request_x_amzn_mtls_clientcert_issuer_header_name, :routing_http_request_x_amzn_mtls_clientcert_leaf_header_name, :routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name, :routing_http_request_x_amzn_mtls_clientcert_subject_header_name, :routing_http_request_x_amzn_mtls_clientcert_validity_header_name, :routing_http_request_x_amzn_tls_cipher_suite_header_name, :routing_http_request_x_amzn_tls_version_header_name, :routing_http_response_access_control_allow_credentials_header_value, :routing_http_response_access_control_allow_headers_header_value, :routing_http_response_access_control_allow_methods_header_value, :routing_http_response_access_control_allow_origin_header_value, :routing_http_response_access_control_expose_headers_header_value, :routing_http_response_access_control_max_age_header_value, :routing_http_response_content_security_policy_header_value, :routing_http_response_server_enabled, :routing_http_response_strict_transport_security_header_value, :routing_http_response_x_content_type_options_header_value, :routing_http_response_x_frame_options_header_value, :ssl_policy, :tags_all, :tcp_idle_timeout_seconds],
+    expected_outputs: [:id, :arn, :protocol, :region, :routing_http_request_x_amzn_mtls_clientcert_header_name, :routing_http_request_x_amzn_mtls_clientcert_issuer_header_name, :routing_http_request_x_amzn_mtls_clientcert_leaf_header_name, :routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name, :routing_http_request_x_amzn_mtls_clientcert_subject_header_name, :routing_http_request_x_amzn_mtls_clientcert_validity_header_name, :routing_http_request_x_amzn_tls_cipher_suite_header_name, :routing_http_request_x_amzn_tls_version_header_name, :routing_http_response_access_control_allow_credentials_header_value, :routing_http_response_access_control_allow_headers_header_value, :routing_http_response_access_control_allow_methods_header_value, :routing_http_response_access_control_allow_origin_header_value, :routing_http_response_access_control_expose_headers_header_value, :routing_http_response_access_control_max_age_header_value, :routing_http_response_content_security_policy_header_value, :routing_http_response_server_enabled, :routing_http_response_strict_transport_security_header_value, :routing_http_response_x_content_type_options_header_value, :routing_http_response_x_frame_options_header_value, :ssl_policy, :tags_all, :tcp_idle_timeout_seconds],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:routing_http_response_server_enabled]
 end

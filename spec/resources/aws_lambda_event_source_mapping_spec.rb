@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
         expect(ref.maximum_record_age_in_seconds).to eq("${aws_lambda_event_source_mapping.test.maximum_record_age_in_seconds}")
         expect(ref.maximum_retry_attempts).to eq("${aws_lambda_event_source_mapping.test.maximum_retry_attempts}")
         expect(ref.parallelization_factor).to eq("${aws_lambda_event_source_mapping.test.parallelization_factor}")
+        expect(ref.region).to eq("${aws_lambda_event_source_mapping.test.region}")
         expect(ref.state).to eq("${aws_lambda_event_source_mapping.test.state}")
         expect(ref.state_transition_reason).to eq("${aws_lambda_event_source_mapping.test.state_transition_reason}")
         expect(ref.tags_all).to eq("${aws_lambda_event_source_mapping.test.tags_all}")
@@ -67,6 +68,7 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
         expect(config).not_to have_key('maximum_record_age_in_seconds')
         expect(config).not_to have_key('maximum_retry_attempts')
         expect(config).not_to have_key('parallelization_factor')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('state_transition_reason')
         expect(config).not_to have_key('tags_all')
@@ -75,7 +77,7 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ amazon_managed_kafka_event_source_config: [{ 'key1' => 'val1' }], batch_size: 3.14, bisect_batch_on_function_error: true, destination_config: [{ 'key1' => 'val1' }], document_db_event_source_config: [{ 'key1' => 'val1' }], enabled: true, event_source_arn: 'test-value', filter_criteria: [{ 'key1' => 'val1' }], function_response_types: ['test-value'], kms_key_arn: 'test-value', maximum_batching_window_in_seconds: 3.14, metrics_config: [{ 'key1' => 'val1' }], provisioned_poller_config: [{ 'key1' => 'val1' }], queues: ['test-value'], scaling_config: [{ 'key1' => 'val1' }], self_managed_event_source: [{ 'key1' => 'val1' }], self_managed_kafka_event_source_config: [{ 'key1' => 'val1' }], source_access_configuration: [{ 'key1' => 'val1' }], starting_position: 'test-value', starting_position_timestamp: 'test-value', tags: { 'key1' => 'val1' }, topics: ['test-value'], tumbling_window_in_seconds: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ amazon_managed_kafka_event_source_config: { 'key1' => 'val1' }, batch_size: 3.14, bisect_batch_on_function_error: true, destination_config: { 'key1' => 'val1' }, document_db_event_source_config: { 'key1' => 'val1' }, enabled: true, event_source_arn: 'test-value', filter_criteria: { 'key1' => 'val1' }, function_response_types: ['test-value'], kms_key_arn: 'test-value', maximum_batching_window_in_seconds: 3.14, maximum_record_age_in_seconds: 3.14, maximum_retry_attempts: 3.14, metrics_config: { 'key1' => 'val1' }, parallelization_factor: 3.14, provisioned_poller_config: { 'key1' => 'val1' }, queues: ['test-value'], region: 'test-value', scaling_config: { 'key1' => 'val1' }, self_managed_event_source: { 'key1' => 'val1' }, self_managed_kafka_event_source_config: { 'key1' => 'val1' }, source_access_configuration: [{ 'key1' => 'val1' }], starting_position: 'test-value', starting_position_timestamp: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, topics: ['test-value'], tumbling_window_in_seconds: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -95,9 +97,13 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
         expect(config).to have_key('function_response_types')
         expect(config).to have_key('kms_key_arn')
         expect(config).to have_key('maximum_batching_window_in_seconds')
+        expect(config).to have_key('maximum_record_age_in_seconds')
+        expect(config).to have_key('maximum_retry_attempts')
         expect(config).to have_key('metrics_config')
+        expect(config).to have_key('parallelization_factor')
         expect(config).to have_key('provisioned_poller_config')
         expect(config).to have_key('queues')
+        expect(config).to have_key('region')
         expect(config).to have_key('scaling_config')
         expect(config).to have_key('self_managed_event_source')
         expect(config).to have_key('self_managed_kafka_event_source_config')
@@ -105,6 +111,7 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
         expect(config).to have_key('starting_position')
         expect(config).to have_key('starting_position_timestamp')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('topics')
         expect(config).to have_key('tumbling_window_in_seconds')
       end
@@ -114,7 +121,7 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
       it 'includes amazon_managed_kafka_event_source_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(amazon_managed_kafka_event_source_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(amazon_managed_kafka_event_source_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
         expect(config).to have_key('amazon_managed_kafka_event_source_config')
@@ -165,7 +172,7 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
       it 'includes destination_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(destination_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(destination_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
         expect(config).to have_key('destination_config')
@@ -182,7 +189,7 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
       it 'includes document_db_event_source_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(document_db_event_source_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(document_db_event_source_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
         expect(config).to have_key('document_db_event_source_config')
@@ -233,7 +240,7 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
       it 'includes filter_criteria when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(filter_criteria: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(filter_criteria: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
         expect(config).to have_key('filter_criteria')
@@ -298,10 +305,44 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
         config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'minimal')
         expect(config).not_to have_key('maximum_batching_window_in_seconds')
       end
+      it 'includes maximum_record_age_in_seconds when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(maximum_record_age_in_seconds: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
+        expect(config).to have_key('maximum_record_age_in_seconds')
+      end
+
+      it 'omits maximum_record_age_in_seconds when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_event_source_mapping('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'minimal')
+        expect(config).not_to have_key('maximum_record_age_in_seconds')
+      end
+      it 'includes maximum_retry_attempts when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(maximum_retry_attempts: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
+        expect(config).to have_key('maximum_retry_attempts')
+      end
+
+      it 'omits maximum_retry_attempts when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_event_source_mapping('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'minimal')
+        expect(config).not_to have_key('maximum_retry_attempts')
+      end
       it 'includes metrics_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(metrics_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(metrics_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
         expect(config).to have_key('metrics_config')
@@ -315,10 +356,27 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
         config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'minimal')
         expect(config).not_to have_key('metrics_config')
       end
+      it 'includes parallelization_factor when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(parallelization_factor: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
+        expect(config).to have_key('parallelization_factor')
+      end
+
+      it 'omits parallelization_factor when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_event_source_mapping('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'minimal')
+        expect(config).not_to have_key('parallelization_factor')
+      end
       it 'includes provisioned_poller_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(provisioned_poller_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(provisioned_poller_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
         expect(config).to have_key('provisioned_poller_config')
@@ -349,10 +407,27 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
         config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'minimal')
         expect(config).not_to have_key('queues')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_event_source_mapping('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes scaling_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(scaling_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(scaling_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
         expect(config).to have_key('scaling_config')
@@ -369,7 +444,7 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
       it 'includes self_managed_event_source when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(self_managed_event_source: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(self_managed_event_source: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
         expect(config).to have_key('self_managed_event_source')
@@ -386,7 +461,7 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
       it 'includes self_managed_kafka_event_source_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(self_managed_kafka_event_source_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(self_managed_kafka_event_source_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
         expect(config).to have_key('self_managed_kafka_event_source_config')
@@ -467,6 +542,23 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_event_source_mapping('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_event_source_mapping('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_event_source_mapping', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes topics when provided' do
         synth = create_synthesizer
@@ -571,7 +663,7 @@ RSpec.describe Pangea::Resources::AWSLambdaEventSourceMapping do
     resource_type: :aws_lambda_event_source_mapping,
     method: :aws_lambda_event_source_mapping,
     required_attrs: { function_name: 'test-value' },
-    expected_outputs: [:id, :arn, :function_arn, :last_modified, :last_processing_result, :maximum_record_age_in_seconds, :maximum_retry_attempts, :parallelization_factor, :state, :state_transition_reason, :tags_all, :uuid],
+    expected_outputs: [:id, :arn, :function_arn, :last_modified, :last_processing_result, :maximum_record_age_in_seconds, :maximum_retry_attempts, :parallelization_factor, :region, :state, :state_transition_reason, :tags_all, :uuid],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:bisect_batch_on_function_error, :enabled]

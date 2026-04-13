@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSFsxDataRepositoryAssociation do
         expect(ref.arn).to eq("${aws_fsx_data_repository_association.test.arn}")
         expect(ref.association_id).to eq("${aws_fsx_data_repository_association.test.association_id}")
         expect(ref.imported_file_chunk_size).to eq("${aws_fsx_data_repository_association.test.imported_file_chunk_size}")
+        expect(ref.region).to eq("${aws_fsx_data_repository_association.test.region}")
         expect(ref.tags_all).to eq("${aws_fsx_data_repository_association.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSFsxDataRepositoryAssociation do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('association_id')
         expect(config).not_to have_key('imported_file_chunk_size')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ batch_import_meta_data_on_create: true, delete_data_in_filesystem: true, s3: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ batch_import_meta_data_on_create: true, delete_data_in_filesystem: true, imported_file_chunk_size: 3.14, region: 'test-value', s3: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,8 +74,11 @@ RSpec.describe Pangea::Resources::AWSFsxDataRepositoryAssociation do
         config = validate_resource_structure(result, 'aws_fsx_data_repository_association', 'full')
         expect(config).to have_key('batch_import_meta_data_on_create')
         expect(config).to have_key('delete_data_in_filesystem')
+        expect(config).to have_key('imported_file_chunk_size')
+        expect(config).to have_key('region')
         expect(config).to have_key('s3')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -112,10 +117,44 @@ RSpec.describe Pangea::Resources::AWSFsxDataRepositoryAssociation do
         config = validate_resource_structure(result, 'aws_fsx_data_repository_association', 'minimal')
         expect(config).not_to have_key('delete_data_in_filesystem')
       end
+      it 'includes imported_file_chunk_size when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_data_repository_association('opt', required_attrs.merge(imported_file_chunk_size: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_data_repository_association', 'opt')
+        expect(config).to have_key('imported_file_chunk_size')
+      end
+
+      it 'omits imported_file_chunk_size when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_data_repository_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_data_repository_association', 'minimal')
+        expect(config).not_to have_key('imported_file_chunk_size')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_data_repository_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_data_repository_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_data_repository_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_data_repository_association', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes s3 when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_data_repository_association('opt', required_attrs.merge(s3: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_data_repository_association('opt', required_attrs.merge(s3: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_data_repository_association', 'opt')
         expect(config).to have_key('s3')
@@ -145,6 +184,23 @@ RSpec.describe Pangea::Resources::AWSFsxDataRepositoryAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_data_repository_association', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_data_repository_association('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_data_repository_association', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_data_repository_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_data_repository_association', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -217,7 +273,7 @@ RSpec.describe Pangea::Resources::AWSFsxDataRepositoryAssociation do
     resource_type: :aws_fsx_data_repository_association,
     method: :aws_fsx_data_repository_association,
     required_attrs: { data_repository_path: 'test-value', file_system_id: 'test-value', file_system_path: 'test-value' },
-    expected_outputs: [:id, :arn, :association_id, :imported_file_chunk_size, :tags_all],
+    expected_outputs: [:id, :arn, :association_id, :imported_file_chunk_size, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:batch_import_meta_data_on_create, :delete_data_in_filesystem]

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerApp do
 
         expect(ref.id).to eq("${aws_sagemaker_app.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_app.test.arn}")
+        expect(ref.region).to eq("${aws_sagemaker_app.test.region}")
         expect(ref.tags_all).to eq("${aws_sagemaker_app.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSSagemakerApp do
 
         config = validate_resource_structure(result, 'aws_sagemaker_app', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ resource_spec: [{ 'key1' => 'val1' }], space_name: 'test-value', tags: { 'key1' => 'val1' }, user_profile_name: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', resource_spec: { 'key1' => 'val1' }, space_name: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, user_profile_name: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,18 +68,37 @@ RSpec.describe Pangea::Resources::AWSSagemakerApp do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_sagemaker_app', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('resource_spec')
         expect(config).to have_key('space_name')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('user_profile_name')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_app('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_app', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_app('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_app', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes resource_spec when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_app('opt', required_attrs.merge(resource_spec: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_app('opt', required_attrs.merge(resource_spec: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_app', 'opt')
         expect(config).to have_key('resource_spec')
@@ -124,6 +145,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerApp do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_app', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_app('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_app', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_app('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_app', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes user_profile_name when provided' do
         synth = create_synthesizer
@@ -188,7 +226,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerApp do
     resource_type: :aws_sagemaker_app,
     method: :aws_sagemaker_app,
     required_attrs: { app_name: 'test-value', app_type: 'test-value', domain_id: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

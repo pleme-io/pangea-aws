@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSDataexchangeRevisionAssets do
         expect(ref.arn).to eq("${aws_dataexchange_revision_assets.test.arn}")
         expect(ref.created_at).to eq("${aws_dataexchange_revision_assets.test.created_at}")
         expect(ref.finalized).to eq("${aws_dataexchange_revision_assets.test.finalized}")
+        expect(ref.region).to eq("${aws_dataexchange_revision_assets.test.region}")
         expect(ref.tags_all).to eq("${aws_dataexchange_revision_assets.test.tags_all}")
         expect(ref.updated_at).to eq("${aws_dataexchange_revision_assets.test.updated_at}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSDataexchangeRevisionAssets do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created_at')
         expect(config).not_to have_key('finalized')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('updated_at')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ asset: [{ 'key1' => 'val1' }], comment: 'test-value', force_destroy: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ asset: [{ 'key1' => 'val1' }], comment: 'test-value', finalized: true, force_destroy: true, region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,7 +76,9 @@ RSpec.describe Pangea::Resources::AWSDataexchangeRevisionAssets do
         config = validate_resource_structure(result, 'aws_dataexchange_revision_assets', 'full')
         expect(config).to have_key('asset')
         expect(config).to have_key('comment')
+        expect(config).to have_key('finalized')
         expect(config).to have_key('force_destroy')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -114,6 +118,23 @@ RSpec.describe Pangea::Resources::AWSDataexchangeRevisionAssets do
         config = validate_resource_structure(result, 'aws_dataexchange_revision_assets', 'minimal')
         expect(config).not_to have_key('comment')
       end
+      it 'includes finalized when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dataexchange_revision_assets('opt', required_attrs.merge(finalized: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dataexchange_revision_assets', 'opt')
+        expect(config).to have_key('finalized')
+      end
+
+      it 'omits finalized when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dataexchange_revision_assets('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dataexchange_revision_assets', 'minimal')
+        expect(config).not_to have_key('finalized')
+      end
       it 'includes force_destroy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -130,6 +151,23 @@ RSpec.describe Pangea::Resources::AWSDataexchangeRevisionAssets do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dataexchange_revision_assets', 'minimal')
         expect(config).not_to have_key('force_destroy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dataexchange_revision_assets('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dataexchange_revision_assets', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dataexchange_revision_assets('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dataexchange_revision_assets', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -151,6 +189,17 @@ RSpec.describe Pangea::Resources::AWSDataexchangeRevisionAssets do
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts finalized=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(finalized: val)
+          synth.aws_dataexchange_revision_assets("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_dataexchange_revision_assets', "bool_#{val}")
+          expect(config['finalized']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts force_destroy=#{val}" do
           synth = create_synthesizer
@@ -206,8 +255,8 @@ RSpec.describe Pangea::Resources::AWSDataexchangeRevisionAssets do
     resource_type: :aws_dataexchange_revision_assets,
     method: :aws_dataexchange_revision_assets,
     required_attrs: { data_set_id: 'test-value' },
-    expected_outputs: [:id, :arn, :created_at, :finalized, :tags_all, :updated_at],
+    expected_outputs: [:id, :arn, :created_at, :finalized, :region, :tags_all, :updated_at],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:force_destroy]
+    boolean_fields: [:finalized, :force_destroy]
 end

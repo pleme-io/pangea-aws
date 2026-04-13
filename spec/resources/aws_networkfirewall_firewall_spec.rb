@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSNetworkfirewallFirewall do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { firewall_policy_arn: 'test-value', name: 'test-value', subnet_mapping: [{ 'key1' => 'val1' }], vpc_id: 'test-value' } }
+  let(:required_attrs) { { firewall_policy_arn: 'test-value', name: 'test-value' } }
 
   describe ':aws_networkfirewall_firewall' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallFirewall do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'test')
-        validate_required_attributes(config, [:firewall_policy_arn, :name, :subnet_mapping, :vpc_id])
+        validate_required_attributes(config, [:firewall_policy_arn, :name])
       end
 
       it 'returns a ResourceReference' do
@@ -40,7 +40,9 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallFirewall do
         expect(ref.id).to eq("${aws_networkfirewall_firewall.test.id}")
         expect(ref.arn).to eq("${aws_networkfirewall_firewall.test.arn}")
         expect(ref.firewall_status).to eq("${aws_networkfirewall_firewall.test.firewall_status}")
+        expect(ref.region).to eq("${aws_networkfirewall_firewall.test.region}")
         expect(ref.tags_all).to eq("${aws_networkfirewall_firewall.test.tags_all}")
+        expect(ref.transit_gateway_owner_account_id).to eq("${aws_networkfirewall_firewall.test.transit_gateway_owner_account_id}")
         expect(ref.update_token).to eq("${aws_networkfirewall_firewall.test.update_token}")
       end
     end
@@ -55,13 +57,15 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallFirewall do
         config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('firewall_status')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
+        expect(config).not_to have_key('transit_gateway_owner_account_id')
         expect(config).not_to have_key('update_token')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ delete_protection: true, description: 'test-value', enabled_analysis_types: ['test-value'], encryption_configuration: [{ 'key1' => 'val1' }], firewall_policy_change_protection: true, subnet_change_protection: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ availability_zone_change_protection: true, availability_zone_mapping: [{ 'key1' => 'val1' }], delete_protection: true, description: 'test-value', enabled_analysis_types: ['test-value'], encryption_configuration: { 'key1' => 'val1' }, firewall_policy_change_protection: true, region: 'test-value', subnet_change_protection: true, subnet_mapping: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, transit_gateway_id: 'test-value', vpc_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,17 +74,58 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallFirewall do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'full')
+        expect(config).to have_key('availability_zone_change_protection')
+        expect(config).to have_key('availability_zone_mapping')
         expect(config).to have_key('delete_protection')
         expect(config).to have_key('description')
         expect(config).to have_key('enabled_analysis_types')
         expect(config).to have_key('encryption_configuration')
         expect(config).to have_key('firewall_policy_change_protection')
+        expect(config).to have_key('region')
         expect(config).to have_key('subnet_change_protection')
+        expect(config).to have_key('subnet_mapping')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('transit_gateway_id')
+        expect(config).to have_key('vpc_id')
       end
     end
 
     context 'optional attributes' do
+      it 'includes availability_zone_change_protection when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('opt', required_attrs.merge(availability_zone_change_protection: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'opt')
+        expect(config).to have_key('availability_zone_change_protection')
+      end
+
+      it 'omits availability_zone_change_protection when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'minimal')
+        expect(config).not_to have_key('availability_zone_change_protection')
+      end
+      it 'includes availability_zone_mapping when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('opt', required_attrs.merge(availability_zone_mapping: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'opt')
+        expect(config).to have_key('availability_zone_mapping')
+      end
+
+      it 'omits availability_zone_mapping when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'minimal')
+        expect(config).not_to have_key('availability_zone_mapping')
+      end
       it 'includes delete_protection when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -135,7 +180,7 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallFirewall do
       it 'includes encryption_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_networkfirewall_firewall('opt', required_attrs.merge(encryption_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_networkfirewall_firewall('opt', required_attrs.merge(encryption_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'opt')
         expect(config).to have_key('encryption_configuration')
@@ -166,6 +211,23 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallFirewall do
         config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'minimal')
         expect(config).not_to have_key('firewall_policy_change_protection')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes subnet_change_protection when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -182,6 +244,23 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallFirewall do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'minimal')
         expect(config).not_to have_key('subnet_change_protection')
+      end
+      it 'includes subnet_mapping when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('opt', required_attrs.merge(subnet_mapping: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'opt')
+        expect(config).to have_key('subnet_mapping')
+      end
+
+      it 'omits subnet_mapping when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'minimal')
+        expect(config).not_to have_key('subnet_mapping')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -200,9 +279,71 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallFirewall do
         config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes transit_gateway_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('opt', required_attrs.merge(transit_gateway_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'opt')
+        expect(config).to have_key('transit_gateway_id')
+      end
+
+      it 'omits transit_gateway_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'minimal')
+        expect(config).not_to have_key('transit_gateway_id')
+      end
+      it 'includes vpc_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('opt', required_attrs.merge(vpc_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'opt')
+        expect(config).to have_key('vpc_id')
+      end
+
+      it 'omits vpc_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_firewall('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'minimal')
+        expect(config).not_to have_key('vpc_id')
+      end
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts availability_zone_change_protection=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(availability_zone_change_protection: val)
+          synth.aws_networkfirewall_firewall("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_networkfirewall_firewall', "bool_#{val}")
+          expect(config['availability_zone_change_protection']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts delete_protection=#{val}" do
           synth = create_synthesizer
@@ -248,8 +389,6 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallFirewall do
         config = validate_resource_structure(result, 'aws_networkfirewall_firewall', 'typed')
         expect(config['firewall_policy_arn']).to be_a(String)
         expect(config['name']).to be_a(String)
-        expect(config['subnet_mapping']).to be_a(Array)
-        expect(config['vpc_id']).to be_a(String)
       end
     end
 
@@ -282,9 +421,9 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallFirewall do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_networkfirewall_firewall,
     method: :aws_networkfirewall_firewall,
-    required_attrs: { firewall_policy_arn: 'test-value', name: 'test-value', subnet_mapping: [{ 'key1' => 'val1' }], vpc_id: 'test-value' },
-    expected_outputs: [:id, :arn, :firewall_status, :tags_all, :update_token],
+    required_attrs: { firewall_policy_arn: 'test-value', name: 'test-value' },
+    expected_outputs: [:id, :arn, :firewall_status, :region, :tags_all, :transit_gateway_owner_account_id, :update_token],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:delete_protection, :firewall_policy_change_protection, :subnet_change_protection]
+    boolean_fields: [:availability_zone_change_protection, :delete_protection, :firewall_policy_change_protection, :subnet_change_protection]
 end

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessmentReport do
 
         expect(ref.id).to eq("${aws_auditmanager_assessment_report.test.id}")
         expect(ref.author).to eq("${aws_auditmanager_assessment_report.test.author}")
+        expect(ref.region).to eq("${aws_auditmanager_assessment_report.test.region}")
         expect(ref.status).to eq("${aws_auditmanager_assessment_report.test.status}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessmentReport do
 
         config = validate_resource_structure(result, 'aws_auditmanager_assessment_report', 'test')
         expect(config).not_to have_key('author')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessmentReport do
 
         config = validate_resource_structure(result, 'aws_auditmanager_assessment_report', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -87,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessmentReport do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_auditmanager_assessment_report', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_assessment_report('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_assessment_report', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_assessment_report('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_assessment_report', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -133,7 +153,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessmentReport do
     resource_type: :aws_auditmanager_assessment_report,
     method: :aws_auditmanager_assessment_report,
     required_attrs: { assessment_id: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :author, :status],
+    expected_outputs: [:id, :author, :region, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

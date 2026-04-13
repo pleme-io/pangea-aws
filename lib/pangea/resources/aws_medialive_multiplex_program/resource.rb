@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MedialiveMultiplexProgramAttributes,
       outputs: { id: :id },
       map: [:multiplex_id, :program_name],
-      map_present: [:multiplex_program_settings]
+      map_present: [:multiplex_program_settings, :region]
   end
   module AWS
     include AWSMedialiveMultiplexProgram

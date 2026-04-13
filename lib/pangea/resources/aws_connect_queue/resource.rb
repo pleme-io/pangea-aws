@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConnectQueueAttributes,
       outputs: { id: :id },
       map: [:hours_of_operation_id, :instance_id, :name],
-      map_present: [:description, :max_contacts, :outbound_caller_config, :quick_connect_ids, :status, :tags, :tags_all]
+      map_present: [:description, :max_contacts, :outbound_caller_config, :quick_connect_ids, :region, :status, :tags, :tags_all]
   end
   module AWS
     include AWSConnectQueue

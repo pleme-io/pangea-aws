@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSOamLink do
         expect(ref.arn).to eq("${aws_oam_link.test.arn}")
         expect(ref.label).to eq("${aws_oam_link.test.label}")
         expect(ref.link_id).to eq("${aws_oam_link.test.link_id}")
+        expect(ref.region).to eq("${aws_oam_link.test.region}")
         expect(ref.sink_arn).to eq("${aws_oam_link.test.sink_arn}")
         expect(ref.tags_all).to eq("${aws_oam_link.test.tags_all}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSOamLink do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('label')
         expect(config).not_to have_key('link_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('sink_arn')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ link_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ link_configuration: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,9 @@ RSpec.describe Pangea::Resources::AWSOamLink do
 
         config = validate_resource_structure(result, 'aws_oam_link', 'full')
         expect(config).to have_key('link_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -81,7 +85,7 @@ RSpec.describe Pangea::Resources::AWSOamLink do
       it 'includes link_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_oam_link('opt', required_attrs.merge(link_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_oam_link('opt', required_attrs.merge(link_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_oam_link', 'opt')
         expect(config).to have_key('link_configuration')
@@ -94,6 +98,23 @@ RSpec.describe Pangea::Resources::AWSOamLink do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_oam_link', 'minimal')
         expect(config).not_to have_key('link_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_oam_link('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_oam_link', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_oam_link('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_oam_link', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -111,6 +132,23 @@ RSpec.describe Pangea::Resources::AWSOamLink do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_oam_link', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_oam_link('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_oam_link', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_oam_link('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_oam_link', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -158,7 +196,7 @@ RSpec.describe Pangea::Resources::AWSOamLink do
     resource_type: :aws_oam_link,
     method: :aws_oam_link,
     required_attrs: { label_template: 'test-value', resource_types: ['test-value'], sink_identifier: 'test-value' },
-    expected_outputs: [:id, :arn, :label, :link_id, :sink_arn, :tags_all],
+    expected_outputs: [:id, :arn, :label, :link_id, :region, :sink_arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

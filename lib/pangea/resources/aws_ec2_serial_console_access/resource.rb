@@ -13,6 +13,7 @@ module Pangea::Resources
     define_resource :aws_ec2_serial_console_access,
       attributes_class: AWS::Types::Ec2SerialConsoleAccessAttributes,
       outputs: { id: :id },
+      map_present: [:region],
       map_bool: [:enabled]
   end
   module AWS

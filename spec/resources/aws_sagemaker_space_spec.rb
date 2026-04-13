@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerSpace do
         expect(ref.id).to eq("${aws_sagemaker_space.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_space.test.arn}")
         expect(ref.home_efs_file_system_uid).to eq("${aws_sagemaker_space.test.home_efs_file_system_uid}")
+        expect(ref.region).to eq("${aws_sagemaker_space.test.region}")
         expect(ref.tags_all).to eq("${aws_sagemaker_space.test.tags_all}")
         expect(ref.url).to eq("${aws_sagemaker_space.test.url}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSSagemakerSpace do
         config = validate_resource_structure(result, 'aws_sagemaker_space', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('home_efs_file_system_uid')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('url')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ ownership_settings: [{ 'key1' => 'val1' }], space_display_name: 'test-value', space_settings: [{ 'key1' => 'val1' }], space_sharing_settings: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ ownership_settings: { 'key1' => 'val1' }, region: 'test-value', space_display_name: 'test-value', space_settings: { 'key1' => 'val1' }, space_sharing_settings: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,10 +73,12 @@ RSpec.describe Pangea::Resources::AWSSagemakerSpace do
 
         config = validate_resource_structure(result, 'aws_sagemaker_space', 'full')
         expect(config).to have_key('ownership_settings')
+        expect(config).to have_key('region')
         expect(config).to have_key('space_display_name')
         expect(config).to have_key('space_settings')
         expect(config).to have_key('space_sharing_settings')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -82,7 +86,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerSpace do
       it 'includes ownership_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_space('opt', required_attrs.merge(ownership_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_space('opt', required_attrs.merge(ownership_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_space', 'opt')
         expect(config).to have_key('ownership_settings')
@@ -95,6 +99,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerSpace do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_space', 'minimal')
         expect(config).not_to have_key('ownership_settings')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_space('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_space', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_space('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_space', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes space_display_name when provided' do
         synth = create_synthesizer
@@ -116,7 +137,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerSpace do
       it 'includes space_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_space('opt', required_attrs.merge(space_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_space('opt', required_attrs.merge(space_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_space', 'opt')
         expect(config).to have_key('space_settings')
@@ -133,7 +154,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerSpace do
       it 'includes space_sharing_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_space('opt', required_attrs.merge(space_sharing_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_space('opt', required_attrs.merge(space_sharing_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_space', 'opt')
         expect(config).to have_key('space_sharing_settings')
@@ -163,6 +184,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerSpace do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_space', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_space('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_space', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_space('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_space', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -209,7 +247,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerSpace do
     resource_type: :aws_sagemaker_space,
     method: :aws_sagemaker_space,
     required_attrs: { domain_id: 'test-value', space_name: 'test-value' },
-    expected_outputs: [:id, :arn, :home_efs_file_system_uid, :tags_all, :url],
+    expected_outputs: [:id, :arn, :home_efs_file_system_uid, :region, :tags_all, :url],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

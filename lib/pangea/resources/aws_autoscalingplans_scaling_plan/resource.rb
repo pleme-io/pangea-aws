@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_autoscalingplans_scaling_plan,
       attributes_class: AWS::Types::AutoscalingplansScalingPlanAttributes,
       outputs: { id: :id },
-      map: [:application_source, :name, :scaling_instruction]
+      map: [:application_source, :name, :scaling_instruction],
+      map_present: [:region]
   end
   module AWS
     include AWSAutoscalingplansScalingPlan

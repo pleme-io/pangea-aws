@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_servicecatalog_budget_resource_association,
       attributes_class: AWS::Types::ServicecatalogBudgetResourceAssociationAttributes,
       outputs: { id: :id },
-      map: [:budget_name, :resource_id]
+      map: [:budget_name, :resource_id],
+      map_present: [:region]
   end
   module AWS
     include AWSServicecatalogBudgetResourceAssociation

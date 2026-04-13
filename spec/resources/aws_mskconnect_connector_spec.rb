@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSMskconnectConnector do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { capacity: [{ 'key1' => 'val1' }], connector_configuration: { 'key1' => 'val1' }, kafka_cluster: [{ 'key1' => 'val1' }], kafka_cluster_client_authentication: [{ 'key1' => 'val1' }], kafka_cluster_encryption_in_transit: [{ 'key1' => 'val1' }], kafkaconnect_version: 'test-value', name: 'test-value', plugin: [{ 'key1' => 'val1' }], service_execution_role_arn: 'test-value' } }
+  let(:required_attrs) { { capacity: { 'key1' => 'val1' }, connector_configuration: { 'key1' => 'val1' }, kafka_cluster: { 'key1' => 'val1' }, kafka_cluster_client_authentication: { 'key1' => 'val1' }, kafka_cluster_encryption_in_transit: { 'key1' => 'val1' }, kafkaconnect_version: 'test-value', name: 'test-value', plugin: [{ 'key1' => 'val1' }], service_execution_role_arn: 'test-value' } }
 
   describe ':aws_mskconnect_connector' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSMskconnectConnector do
 
         expect(ref.id).to eq("${aws_mskconnect_connector.test.id}")
         expect(ref.arn).to eq("${aws_mskconnect_connector.test.arn}")
+        expect(ref.region).to eq("${aws_mskconnect_connector.test.region}")
         expect(ref.tags_all).to eq("${aws_mskconnect_connector.test.tags_all}")
         expect(ref.version).to eq("${aws_mskconnect_connector.test.version}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSMskconnectConnector do
 
         config = validate_resource_structure(result, 'aws_mskconnect_connector', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('version')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', log_delivery: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, worker_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', log_delivery: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, worker_configuration: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,7 +72,9 @@ RSpec.describe Pangea::Resources::AWSMskconnectConnector do
         config = validate_resource_structure(result, 'aws_mskconnect_connector', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('log_delivery')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('worker_configuration')
       end
     end
@@ -96,7 +100,7 @@ RSpec.describe Pangea::Resources::AWSMskconnectConnector do
       it 'includes log_delivery when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_mskconnect_connector('opt', required_attrs.merge(log_delivery: [{ 'key1' => 'val1' }]))
+        synth.aws_mskconnect_connector('opt', required_attrs.merge(log_delivery: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mskconnect_connector', 'opt')
         expect(config).to have_key('log_delivery')
@@ -109,6 +113,23 @@ RSpec.describe Pangea::Resources::AWSMskconnectConnector do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mskconnect_connector', 'minimal')
         expect(config).not_to have_key('log_delivery')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mskconnect_connector('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mskconnect_connector', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mskconnect_connector('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mskconnect_connector', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -127,10 +148,27 @@ RSpec.describe Pangea::Resources::AWSMskconnectConnector do
         config = validate_resource_structure(result, 'aws_mskconnect_connector', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mskconnect_connector('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mskconnect_connector', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mskconnect_connector('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mskconnect_connector', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes worker_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_mskconnect_connector('opt', required_attrs.merge(worker_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_mskconnect_connector('opt', required_attrs.merge(worker_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mskconnect_connector', 'opt')
         expect(config).to have_key('worker_configuration')
@@ -154,11 +192,11 @@ RSpec.describe Pangea::Resources::AWSMskconnectConnector do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_mskconnect_connector', 'typed')
-        expect(config['capacity']).to be_a(Array)
+        expect(config['capacity']).to be_a(Hash)
         expect(config['connector_configuration']).to be_a(Hash)
-        expect(config['kafka_cluster']).to be_a(Array)
-        expect(config['kafka_cluster_client_authentication']).to be_a(Array)
-        expect(config['kafka_cluster_encryption_in_transit']).to be_a(Array)
+        expect(config['kafka_cluster']).to be_a(Hash)
+        expect(config['kafka_cluster_client_authentication']).to be_a(Hash)
+        expect(config['kafka_cluster_encryption_in_transit']).to be_a(Hash)
         expect(config['kafkaconnect_version']).to be_a(String)
         expect(config['name']).to be_a(String)
         expect(config['plugin']).to be_a(Array)
@@ -195,8 +233,8 @@ RSpec.describe Pangea::Resources::AWSMskconnectConnector do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_mskconnect_connector,
     method: :aws_mskconnect_connector,
-    required_attrs: { capacity: [{ 'key1' => 'val1' }], connector_configuration: { 'key1' => 'val1' }, kafka_cluster: [{ 'key1' => 'val1' }], kafka_cluster_client_authentication: [{ 'key1' => 'val1' }], kafka_cluster_encryption_in_transit: [{ 'key1' => 'val1' }], kafkaconnect_version: 'test-value', name: 'test-value', plugin: [{ 'key1' => 'val1' }], service_execution_role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all, :version],
+    required_attrs: { capacity: { 'key1' => 'val1' }, connector_configuration: { 'key1' => 'val1' }, kafka_cluster: { 'key1' => 'val1' }, kafka_cluster_client_authentication: { 'key1' => 'val1' }, kafka_cluster_encryption_in_transit: { 'key1' => 'val1' }, kafkaconnect_version: 'test-value', name: 'test-value', plugin: [{ 'key1' => 'val1' }], service_execution_role_arn: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :tags_all, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSTransferConnector do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { access_role: 'test-value', url: 'test-value' } }
+  let(:required_attrs) { { access_role: 'test-value' } }
 
   describe ':aws_transfer_connector' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSTransferConnector do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_transfer_connector', 'test')
-        validate_required_attributes(config, [:access_role, :url])
+        validate_required_attributes(config, [:access_role])
       end
 
       it 'returns a ResourceReference' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSTransferConnector do
         expect(ref.id).to eq("${aws_transfer_connector.test.id}")
         expect(ref.arn).to eq("${aws_transfer_connector.test.arn}")
         expect(ref.connector_id).to eq("${aws_transfer_connector.test.connector_id}")
+        expect(ref.region).to eq("${aws_transfer_connector.test.region}")
         expect(ref.security_policy_name).to eq("${aws_transfer_connector.test.security_policy_name}")
         expect(ref.tags_all).to eq("${aws_transfer_connector.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSTransferConnector do
         config = validate_resource_structure(result, 'aws_transfer_connector', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('connector_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_policy_name')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ as2_config: [{ 'key1' => 'val1' }], logging_role: 'test-value', sftp_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ as2_config: { 'key1' => 'val1' }, egress_config: { 'key1' => 'val1' }, logging_role: 'test-value', region: 'test-value', security_policy_name: 'test-value', sftp_config: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, url: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,9 +73,14 @@ RSpec.describe Pangea::Resources::AWSTransferConnector do
 
         config = validate_resource_structure(result, 'aws_transfer_connector', 'full')
         expect(config).to have_key('as2_config')
+        expect(config).to have_key('egress_config')
         expect(config).to have_key('logging_role')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_policy_name')
         expect(config).to have_key('sftp_config')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('url')
       end
     end
 
@@ -81,7 +88,7 @@ RSpec.describe Pangea::Resources::AWSTransferConnector do
       it 'includes as2_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_transfer_connector('opt', required_attrs.merge(as2_config: [{ 'key1' => 'val1' }]))
+        synth.aws_transfer_connector('opt', required_attrs.merge(as2_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_transfer_connector', 'opt')
         expect(config).to have_key('as2_config')
@@ -94,6 +101,23 @@ RSpec.describe Pangea::Resources::AWSTransferConnector do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_transfer_connector', 'minimal')
         expect(config).not_to have_key('as2_config')
+      end
+      it 'includes egress_config when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_connector('opt', required_attrs.merge(egress_config: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_connector', 'opt')
+        expect(config).to have_key('egress_config')
+      end
+
+      it 'omits egress_config when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_connector('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_connector', 'minimal')
+        expect(config).not_to have_key('egress_config')
       end
       it 'includes logging_role when provided' do
         synth = create_synthesizer
@@ -112,10 +136,44 @@ RSpec.describe Pangea::Resources::AWSTransferConnector do
         config = validate_resource_structure(result, 'aws_transfer_connector', 'minimal')
         expect(config).not_to have_key('logging_role')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_connector('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_connector', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_connector('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_connector', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_policy_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_connector('opt', required_attrs.merge(security_policy_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_connector', 'opt')
+        expect(config).to have_key('security_policy_name')
+      end
+
+      it 'omits security_policy_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_connector('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_connector', 'minimal')
+        expect(config).not_to have_key('security_policy_name')
+      end
       it 'includes sftp_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_transfer_connector('opt', required_attrs.merge(sftp_config: [{ 'key1' => 'val1' }]))
+        synth.aws_transfer_connector('opt', required_attrs.merge(sftp_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_transfer_connector', 'opt')
         expect(config).to have_key('sftp_config')
@@ -146,6 +204,40 @@ RSpec.describe Pangea::Resources::AWSTransferConnector do
         config = validate_resource_structure(result, 'aws_transfer_connector', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_connector('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_connector', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_connector('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_connector', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes url when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_connector('opt', required_attrs.merge(url: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_connector', 'opt')
+        expect(config).to have_key('url')
+      end
+
+      it 'omits url when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_connector('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_connector', 'minimal')
+        expect(config).not_to have_key('url')
+      end
     end
 
     context 'attribute types' do
@@ -157,7 +249,6 @@ RSpec.describe Pangea::Resources::AWSTransferConnector do
 
         config = validate_resource_structure(result, 'aws_transfer_connector', 'typed')
         expect(config['access_role']).to be_a(String)
-        expect(config['url']).to be_a(String)
       end
     end
 
@@ -190,8 +281,8 @@ RSpec.describe Pangea::Resources::AWSTransferConnector do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_transfer_connector,
     method: :aws_transfer_connector,
-    required_attrs: { access_role: 'test-value', url: 'test-value' },
-    expected_outputs: [:id, :arn, :connector_id, :security_policy_name, :tags_all],
+    required_attrs: { access_role: 'test-value' },
+    expected_outputs: [:id, :arn, :connector_id, :region, :security_policy_name, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

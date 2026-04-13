@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSIotThing do
         expect(ref.id).to eq("${aws_iot_thing.test.id}")
         expect(ref.arn).to eq("${aws_iot_thing.test.arn}")
         expect(ref.default_client_id).to eq("${aws_iot_thing.test.default_client_id}")
+        expect(ref.region).to eq("${aws_iot_thing.test.region}")
         expect(ref.version).to eq("${aws_iot_thing.test.version}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSIotThing do
         config = validate_resource_structure(result, 'aws_iot_thing', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('default_client_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('version')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ attributes: { 'key1' => 'val1' }, thing_type_name: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ attributes: { 'key1' => 'val1' }, region: 'test-value', thing_type_name: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSIotThing do
 
         config = validate_resource_structure(result, 'aws_iot_thing', 'full')
         expect(config).to have_key('attributes')
+        expect(config).to have_key('region')
         expect(config).to have_key('thing_type_name')
       end
     end
@@ -90,6 +93,23 @@ RSpec.describe Pangea::Resources::AWSIotThing do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_thing', 'minimal')
         expect(config).not_to have_key('attributes')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_thing('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_thing', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_thing('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_thing', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes thing_type_name when provided' do
         synth = create_synthesizer
@@ -152,7 +172,7 @@ RSpec.describe Pangea::Resources::AWSIotThing do
     resource_type: :aws_iot_thing,
     method: :aws_iot_thing,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :default_client_id, :version],
+    expected_outputs: [:id, :arn, :default_client_id, :region, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

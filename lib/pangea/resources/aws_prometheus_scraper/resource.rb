@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::PrometheusScraperAttributes,
       outputs: { id: :id },
       map: [:scrape_configuration],
-      map_present: [:alias, :destination, :role_configuration, :source, :tags]
+      map_present: [:alias, :destination, :region, :role_configuration, :source, :tags]
   end
   module AWS
     include AWSPrometheusScraper

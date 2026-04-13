@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSPrometheusWorkspaceConfiguration do
         ref = synth.aws_prometheus_workspace_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_prometheus_workspace_configuration.test.id}")
+        expect(ref.region).to eq("${aws_prometheus_workspace_configuration.test.region}")
         expect(ref.retention_period_in_days).to eq("${aws_prometheus_workspace_configuration.test.retention_period_in_days}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSPrometheusWorkspaceConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_prometheus_workspace_configuration', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('retention_period_in_days')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ limits_per_label_set: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ limits_per_label_set: [{ 'key1' => 'val1' }], region: 'test-value', retention_period_in_days: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,8 @@ RSpec.describe Pangea::Resources::AWSPrometheusWorkspaceConfiguration do
 
         config = validate_resource_structure(result, 'aws_prometheus_workspace_configuration', 'full')
         expect(config).to have_key('limits_per_label_set')
+        expect(config).to have_key('region')
+        expect(config).to have_key('retention_period_in_days')
       end
     end
 
@@ -85,6 +89,40 @@ RSpec.describe Pangea::Resources::AWSPrometheusWorkspaceConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_prometheus_workspace_configuration', 'minimal')
         expect(config).not_to have_key('limits_per_label_set')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_prometheus_workspace_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_prometheus_workspace_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_prometheus_workspace_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_prometheus_workspace_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes retention_period_in_days when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_prometheus_workspace_configuration('opt', required_attrs.merge(retention_period_in_days: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_prometheus_workspace_configuration', 'opt')
+        expect(config).to have_key('retention_period_in_days')
+      end
+
+      it 'omits retention_period_in_days when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_prometheus_workspace_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_prometheus_workspace_configuration', 'minimal')
+        expect(config).not_to have_key('retention_period_in_days')
       end
     end
 
@@ -130,7 +168,7 @@ RSpec.describe Pangea::Resources::AWSPrometheusWorkspaceConfiguration do
     resource_type: :aws_prometheus_workspace_configuration,
     method: :aws_prometheus_workspace_configuration,
     required_attrs: { workspace_id: 'test-value' },
-    expected_outputs: [:id, :retention_period_in_days],
+    expected_outputs: [:id, :region, :retention_period_in_days],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

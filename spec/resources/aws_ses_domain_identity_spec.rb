@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSesDomainIdentity do
 
         expect(ref.id).to eq("${aws_ses_domain_identity.test.id}")
         expect(ref.arn).to eq("${aws_ses_domain_identity.test.arn}")
+        expect(ref.region).to eq("${aws_ses_domain_identity.test.region}")
         expect(ref.verification_token).to eq("${aws_ses_domain_identity.test.verification_token}")
       end
     end
@@ -52,7 +53,42 @@ RSpec.describe Pangea::Resources::AWSSesDomainIdentity do
 
         config = validate_resource_structure(result, 'aws_ses_domain_identity', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('verification_token')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_domain_identity('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ses_domain_identity', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_domain_identity('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_domain_identity', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_domain_identity('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_domain_identity', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -98,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSSesDomainIdentity do
     resource_type: :aws_ses_domain_identity,
     method: :aws_ses_domain_identity,
     required_attrs: { domain: 'test-value' },
-    expected_outputs: [:id, :arn, :verification_token],
+    expected_outputs: [:id, :arn, :region, :verification_token],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

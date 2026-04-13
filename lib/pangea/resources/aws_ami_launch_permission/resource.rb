@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AmiLaunchPermissionAttributes,
       outputs: { id: :id },
       map: [:image_id],
-      map_present: [:account_id, :group, :organization_arn, :organizational_unit_arn]
+      map_present: [:account_id, :group, :organization_arn, :organizational_unit_arn, :region]
   end
   module AWS
     include AWSAmiLaunchPermission

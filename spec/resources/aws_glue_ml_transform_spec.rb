@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSGlueMlTransform do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { input_record_tables: [{ 'key1' => 'val1' }], name: 'test-value', parameters: [{ 'key1' => 'val1' }], role_arn: 'test-value' } }
+  let(:required_attrs) { { input_record_tables: [{ 'key1' => 'val1' }], name: 'test-value', parameters: { 'key1' => 'val1' }, role_arn: 'test-value' } }
 
   describe ':aws_glue_ml_transform' do
     context 'with required attributes only' do
@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSGlueMlTransform do
         expect(ref.glue_version).to eq("${aws_glue_ml_transform.test.glue_version}")
         expect(ref.label_count).to eq("${aws_glue_ml_transform.test.label_count}")
         expect(ref.max_capacity).to eq("${aws_glue_ml_transform.test.max_capacity}")
+        expect(ref.region).to eq("${aws_glue_ml_transform.test.region}")
         expect(ref.schema).to eq("${aws_glue_ml_transform.test.schema}")
         expect(ref.tags_all).to eq("${aws_glue_ml_transform.test.tags_all}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSGlueMlTransform do
         expect(config).not_to have_key('glue_version')
         expect(config).not_to have_key('label_count')
         expect(config).not_to have_key('max_capacity')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('schema')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', max_retries: 3.14, number_of_workers: 3.14, tags: { 'key1' => 'val1' }, timeout: 3.14, worker_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', glue_version: 'test-value', max_capacity: 3.14, max_retries: 3.14, number_of_workers: 3.14, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, timeout: 3.14, worker_type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,9 +77,13 @@ RSpec.describe Pangea::Resources::AWSGlueMlTransform do
 
         config = validate_resource_structure(result, 'aws_glue_ml_transform', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('glue_version')
+        expect(config).to have_key('max_capacity')
         expect(config).to have_key('max_retries')
         expect(config).to have_key('number_of_workers')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('timeout')
         expect(config).to have_key('worker_type')
       end
@@ -100,6 +106,40 @@ RSpec.describe Pangea::Resources::AWSGlueMlTransform do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_ml_transform', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes glue_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_ml_transform('opt', required_attrs.merge(glue_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_ml_transform', 'opt')
+        expect(config).to have_key('glue_version')
+      end
+
+      it 'omits glue_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_ml_transform('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_ml_transform', 'minimal')
+        expect(config).not_to have_key('glue_version')
+      end
+      it 'includes max_capacity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_ml_transform('opt', required_attrs.merge(max_capacity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_ml_transform', 'opt')
+        expect(config).to have_key('max_capacity')
+      end
+
+      it 'omits max_capacity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_ml_transform('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_ml_transform', 'minimal')
+        expect(config).not_to have_key('max_capacity')
       end
       it 'includes max_retries when provided' do
         synth = create_synthesizer
@@ -135,6 +175,23 @@ RSpec.describe Pangea::Resources::AWSGlueMlTransform do
         config = validate_resource_structure(result, 'aws_glue_ml_transform', 'minimal')
         expect(config).not_to have_key('number_of_workers')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_ml_transform('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_ml_transform', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_ml_transform('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_ml_transform', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -151,6 +208,23 @@ RSpec.describe Pangea::Resources::AWSGlueMlTransform do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_ml_transform', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_ml_transform('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_ml_transform', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_ml_transform('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_ml_transform', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes timeout when provided' do
         synth = create_synthesizer
@@ -198,7 +272,7 @@ RSpec.describe Pangea::Resources::AWSGlueMlTransform do
         config = validate_resource_structure(result, 'aws_glue_ml_transform', 'typed')
         expect(config['input_record_tables']).to be_a(Array)
         expect(config['name']).to be_a(String)
-        expect(config['parameters']).to be_a(Array)
+        expect(config['parameters']).to be_a(Hash)
         expect(config['role_arn']).to be_a(String)
       end
     end
@@ -232,8 +306,8 @@ RSpec.describe Pangea::Resources::AWSGlueMlTransform do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_glue_ml_transform,
     method: :aws_glue_ml_transform,
-    required_attrs: { input_record_tables: [{ 'key1' => 'val1' }], name: 'test-value', parameters: [{ 'key1' => 'val1' }], role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :glue_version, :label_count, :max_capacity, :schema, :tags_all],
+    required_attrs: { input_record_tables: [{ 'key1' => 'val1' }], name: 'test-value', parameters: { 'key1' => 'val1' }, role_arn: 'test-value' },
+    expected_outputs: [:id, :arn, :glue_version, :label_count, :max_capacity, :region, :schema, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

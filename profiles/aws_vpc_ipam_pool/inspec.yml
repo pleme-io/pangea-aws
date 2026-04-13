@@ -1,0 +1,8 @@
+name: aws_vpc_ipam_pool
+title: Manages a aws_vpc_ipam_pool resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

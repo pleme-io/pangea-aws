@@ -59,7 +59,7 @@ RSpec.describe Pangea::Resources::AWSCeAnomalySubscription do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' }, threshold_expression: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ account_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, threshold_expression: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,12 +68,31 @@ RSpec.describe Pangea::Resources::AWSCeAnomalySubscription do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ce_anomaly_subscription', 'full')
+        expect(config).to have_key('account_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('threshold_expression')
       end
     end
 
     context 'optional attributes' do
+      it 'includes account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ce_anomaly_subscription('opt', required_attrs.merge(account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ce_anomaly_subscription', 'opt')
+        expect(config).to have_key('account_id')
+      end
+
+      it 'omits account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ce_anomaly_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ce_anomaly_subscription', 'minimal')
+        expect(config).not_to have_key('account_id')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -91,10 +110,27 @@ RSpec.describe Pangea::Resources::AWSCeAnomalySubscription do
         config = validate_resource_structure(result, 'aws_ce_anomaly_subscription', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ce_anomaly_subscription('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ce_anomaly_subscription', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ce_anomaly_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ce_anomaly_subscription', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes threshold_expression when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ce_anomaly_subscription('opt', required_attrs.merge(threshold_expression: [{ 'key1' => 'val1' }]))
+        synth.aws_ce_anomaly_subscription('opt', required_attrs.merge(threshold_expression: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ce_anomaly_subscription', 'opt')
         expect(config).to have_key('threshold_expression')

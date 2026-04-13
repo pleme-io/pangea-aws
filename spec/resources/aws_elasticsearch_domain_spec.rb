@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
         expect(ref.domain_id).to eq("${aws_elasticsearch_domain.test.domain_id}")
         expect(ref.endpoint).to eq("${aws_elasticsearch_domain.test.endpoint}")
         expect(ref.kibana_endpoint).to eq("${aws_elasticsearch_domain.test.kibana_endpoint}")
+        expect(ref.region).to eq("${aws_elasticsearch_domain.test.region}")
         expect(ref.tags_all).to eq("${aws_elasticsearch_domain.test.tags_all}")
       end
     end
@@ -62,12 +63,13 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
         expect(config).not_to have_key('domain_id')
         expect(config).not_to have_key('endpoint')
         expect(config).not_to have_key('kibana_endpoint')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ advanced_security_options: [{ 'key1' => 'val1' }], auto_tune_options: [{ 'key1' => 'val1' }], cluster_config: [{ 'key1' => 'val1' }], cognito_options: [{ 'key1' => 'val1' }], domain_endpoint_options: [{ 'key1' => 'val1' }], ebs_options: [{ 'key1' => 'val1' }], elasticsearch_version: 'test-value', encrypt_at_rest: [{ 'key1' => 'val1' }], log_publishing_options: [{ 'key1' => 'val1' }], node_to_node_encryption: [{ 'key1' => 'val1' }], snapshot_options: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, vpc_options: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ access_policies: 'test-value', advanced_options: { 'key1' => 'val1' }, advanced_security_options: { 'key1' => 'val1' }, auto_tune_options: { 'key1' => 'val1' }, cluster_config: { 'key1' => 'val1' }, cognito_options: { 'key1' => 'val1' }, domain_endpoint_options: { 'key1' => 'val1' }, ebs_options: { 'key1' => 'val1' }, elasticsearch_version: 'test-value', encrypt_at_rest: { 'key1' => 'val1' }, log_publishing_options: [{ 'key1' => 'val1' }], node_to_node_encryption: { 'key1' => 'val1' }, region: 'test-value', snapshot_options: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_options: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,6 +78,8 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'full')
+        expect(config).to have_key('access_policies')
+        expect(config).to have_key('advanced_options')
         expect(config).to have_key('advanced_security_options')
         expect(config).to have_key('auto_tune_options')
         expect(config).to have_key('cluster_config')
@@ -86,17 +90,53 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
         expect(config).to have_key('encrypt_at_rest')
         expect(config).to have_key('log_publishing_options')
         expect(config).to have_key('node_to_node_encryption')
+        expect(config).to have_key('region')
         expect(config).to have_key('snapshot_options')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc_options')
       end
     end
 
     context 'optional attributes' do
+      it 'includes access_policies when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(access_policies: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
+        expect(config).to have_key('access_policies')
+      end
+
+      it 'omits access_policies when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticsearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'minimal')
+        expect(config).not_to have_key('access_policies')
+      end
+      it 'includes advanced_options when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(advanced_options: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
+        expect(config).to have_key('advanced_options')
+      end
+
+      it 'omits advanced_options when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticsearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'minimal')
+        expect(config).not_to have_key('advanced_options')
+      end
       it 'includes advanced_security_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elasticsearch_domain('opt', required_attrs.merge(advanced_security_options: [{ 'key1' => 'val1' }]))
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(advanced_security_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
         expect(config).to have_key('advanced_security_options')
@@ -113,7 +153,7 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
       it 'includes auto_tune_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elasticsearch_domain('opt', required_attrs.merge(auto_tune_options: [{ 'key1' => 'val1' }]))
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(auto_tune_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
         expect(config).to have_key('auto_tune_options')
@@ -130,7 +170,7 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
       it 'includes cluster_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elasticsearch_domain('opt', required_attrs.merge(cluster_config: [{ 'key1' => 'val1' }]))
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(cluster_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
         expect(config).to have_key('cluster_config')
@@ -147,7 +187,7 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
       it 'includes cognito_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elasticsearch_domain('opt', required_attrs.merge(cognito_options: [{ 'key1' => 'val1' }]))
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(cognito_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
         expect(config).to have_key('cognito_options')
@@ -164,7 +204,7 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
       it 'includes domain_endpoint_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elasticsearch_domain('opt', required_attrs.merge(domain_endpoint_options: [{ 'key1' => 'val1' }]))
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(domain_endpoint_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
         expect(config).to have_key('domain_endpoint_options')
@@ -181,7 +221,7 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
       it 'includes ebs_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elasticsearch_domain('opt', required_attrs.merge(ebs_options: [{ 'key1' => 'val1' }]))
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(ebs_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
         expect(config).to have_key('ebs_options')
@@ -215,7 +255,7 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
       it 'includes encrypt_at_rest when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elasticsearch_domain('opt', required_attrs.merge(encrypt_at_rest: [{ 'key1' => 'val1' }]))
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(encrypt_at_rest: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
         expect(config).to have_key('encrypt_at_rest')
@@ -249,7 +289,7 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
       it 'includes node_to_node_encryption when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elasticsearch_domain('opt', required_attrs.merge(node_to_node_encryption: [{ 'key1' => 'val1' }]))
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(node_to_node_encryption: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
         expect(config).to have_key('node_to_node_encryption')
@@ -263,10 +303,27 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
         config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'minimal')
         expect(config).not_to have_key('node_to_node_encryption')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticsearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes snapshot_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elasticsearch_domain('opt', required_attrs.merge(snapshot_options: [{ 'key1' => 'val1' }]))
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(snapshot_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
         expect(config).to have_key('snapshot_options')
@@ -297,10 +354,27 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
         config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticsearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes vpc_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elasticsearch_domain('opt', required_attrs.merge(vpc_options: [{ 'key1' => 'val1' }]))
+        synth.aws_elasticsearch_domain('opt', required_attrs.merge(vpc_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticsearch_domain', 'opt')
         expect(config).to have_key('vpc_options')
@@ -358,7 +432,7 @@ RSpec.describe Pangea::Resources::AWSElasticsearchDomain do
     resource_type: :aws_elasticsearch_domain,
     method: :aws_elasticsearch_domain,
     required_attrs: { domain_name: 'test-value' },
-    expected_outputs: [:id, :access_policies, :advanced_options, :arn, :domain_id, :endpoint, :kibana_endpoint, :tags_all],
+    expected_outputs: [:id, :access_policies, :advanced_options, :arn, :domain_id, :endpoint, :kibana_endpoint, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

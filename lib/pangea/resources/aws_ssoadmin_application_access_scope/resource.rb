@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsoadminApplicationAccessScopeAttributes,
       outputs: { id: :id },
       map: [:application_arn, :scope],
-      map_present: [:authorized_targets]
+      map_present: [:authorized_targets, :region]
   end
   module AWS
     include AWSSsoadminApplicationAccessScope

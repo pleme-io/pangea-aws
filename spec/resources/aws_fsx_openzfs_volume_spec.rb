@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSFsxOpenzfsVolume do
         expect(ref.id).to eq("${aws_fsx_openzfs_volume.test.id}")
         expect(ref.arn).to eq("${aws_fsx_openzfs_volume.test.arn}")
         expect(ref.read_only).to eq("${aws_fsx_openzfs_volume.test.read_only}")
+        expect(ref.region).to eq("${aws_fsx_openzfs_volume.test.region}")
         expect(ref.storage_capacity_quota_gib).to eq("${aws_fsx_openzfs_volume.test.storage_capacity_quota_gib}")
         expect(ref.storage_capacity_reservation_gib).to eq("${aws_fsx_openzfs_volume.test.storage_capacity_reservation_gib}")
         expect(ref.tags_all).to eq("${aws_fsx_openzfs_volume.test.tags_all}")
@@ -56,6 +57,7 @@ RSpec.describe Pangea::Resources::AWSFsxOpenzfsVolume do
         config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('read_only')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('storage_capacity_quota_gib')
         expect(config).not_to have_key('storage_capacity_reservation_gib')
         expect(config).not_to have_key('tags_all')
@@ -63,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSFsxOpenzfsVolume do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ copy_tags_to_snapshots: true, data_compression_type: 'test-value', delete_volume_options: ['test-value'], nfs_exports: [{ 'key1' => 'val1' }], origin_snapshot: [{ 'key1' => 'val1' }], record_size_kib: 3.14, tags: { 'key1' => 'val1' }, user_and_group_quotas: [{ 'key1' => 'val1' }], volume_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ copy_tags_to_snapshots: true, data_compression_type: 'test-value', delete_volume_options: ['test-value'], nfs_exports: { 'key1' => 'val1' }, origin_snapshot: { 'key1' => 'val1' }, read_only: true, record_size_kib: 3.14, region: 'test-value', storage_capacity_quota_gib: 3.14, storage_capacity_reservation_gib: 3.14, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, user_and_group_quotas: [{ 'key1' => 'val1' }], volume_type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,8 +79,13 @@ RSpec.describe Pangea::Resources::AWSFsxOpenzfsVolume do
         expect(config).to have_key('delete_volume_options')
         expect(config).to have_key('nfs_exports')
         expect(config).to have_key('origin_snapshot')
+        expect(config).to have_key('read_only')
         expect(config).to have_key('record_size_kib')
+        expect(config).to have_key('region')
+        expect(config).to have_key('storage_capacity_quota_gib')
+        expect(config).to have_key('storage_capacity_reservation_gib')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('user_and_group_quotas')
         expect(config).to have_key('volume_type')
       end
@@ -139,7 +146,7 @@ RSpec.describe Pangea::Resources::AWSFsxOpenzfsVolume do
       it 'includes nfs_exports when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_openzfs_volume('opt', required_attrs.merge(nfs_exports: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_openzfs_volume('opt', required_attrs.merge(nfs_exports: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'opt')
         expect(config).to have_key('nfs_exports')
@@ -156,7 +163,7 @@ RSpec.describe Pangea::Resources::AWSFsxOpenzfsVolume do
       it 'includes origin_snapshot when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_openzfs_volume('opt', required_attrs.merge(origin_snapshot: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_openzfs_volume('opt', required_attrs.merge(origin_snapshot: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'opt')
         expect(config).to have_key('origin_snapshot')
@@ -169,6 +176,23 @@ RSpec.describe Pangea::Resources::AWSFsxOpenzfsVolume do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'minimal')
         expect(config).not_to have_key('origin_snapshot')
+      end
+      it 'includes read_only when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_openzfs_volume('opt', required_attrs.merge(read_only: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'opt')
+        expect(config).to have_key('read_only')
+      end
+
+      it 'omits read_only when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_openzfs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'minimal')
+        expect(config).not_to have_key('read_only')
       end
       it 'includes record_size_kib when provided' do
         synth = create_synthesizer
@@ -187,6 +211,57 @@ RSpec.describe Pangea::Resources::AWSFsxOpenzfsVolume do
         config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'minimal')
         expect(config).not_to have_key('record_size_kib')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_openzfs_volume('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_openzfs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes storage_capacity_quota_gib when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_openzfs_volume('opt', required_attrs.merge(storage_capacity_quota_gib: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'opt')
+        expect(config).to have_key('storage_capacity_quota_gib')
+      end
+
+      it 'omits storage_capacity_quota_gib when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_openzfs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'minimal')
+        expect(config).not_to have_key('storage_capacity_quota_gib')
+      end
+      it 'includes storage_capacity_reservation_gib when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_openzfs_volume('opt', required_attrs.merge(storage_capacity_reservation_gib: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'opt')
+        expect(config).to have_key('storage_capacity_reservation_gib')
+      end
+
+      it 'omits storage_capacity_reservation_gib when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_openzfs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'minimal')
+        expect(config).not_to have_key('storage_capacity_reservation_gib')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -203,6 +278,23 @@ RSpec.describe Pangea::Resources::AWSFsxOpenzfsVolume do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_openzfs_volume('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_openzfs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes user_and_group_quotas when provided' do
         synth = create_synthesizer
@@ -252,6 +344,17 @@ RSpec.describe Pangea::Resources::AWSFsxOpenzfsVolume do
           expect(config['copy_tags_to_snapshots']).to eq(val)
         end
       end
+      [true, false].each do |val|
+        it "accepts read_only=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(read_only: val)
+          synth.aws_fsx_openzfs_volume("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_fsx_openzfs_volume', "bool_#{val}")
+          expect(config['read_only']).to eq(val)
+        end
+      end
     end
 
     context 'attribute types' do
@@ -297,8 +400,8 @@ RSpec.describe Pangea::Resources::AWSFsxOpenzfsVolume do
     resource_type: :aws_fsx_openzfs_volume,
     method: :aws_fsx_openzfs_volume,
     required_attrs: { name: 'test-value', parent_volume_id: 'test-value' },
-    expected_outputs: [:id, :arn, :read_only, :storage_capacity_quota_gib, :storage_capacity_reservation_gib, :tags_all],
+    expected_outputs: [:id, :arn, :read_only, :region, :storage_capacity_quota_gib, :storage_capacity_reservation_gib, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:copy_tags_to_snapshots]
+    boolean_fields: [:copy_tags_to_snapshots, :read_only]
 end

@@ -39,9 +39,12 @@ RSpec.describe Pangea::Resources::AWSDsqlCluster do
 
         expect(ref.id).to eq("${aws_dsql_cluster.test.id}")
         expect(ref.arn).to eq("${aws_dsql_cluster.test.arn}")
+        expect(ref.deletion_protection_enabled).to eq("${aws_dsql_cluster.test.deletion_protection_enabled}")
         expect(ref.encryption_details).to eq("${aws_dsql_cluster.test.encryption_details}")
+        expect(ref.force_destroy).to eq("${aws_dsql_cluster.test.force_destroy}")
         expect(ref.identifier).to eq("${aws_dsql_cluster.test.identifier}")
         expect(ref.kms_encryption_key).to eq("${aws_dsql_cluster.test.kms_encryption_key}")
+        expect(ref.region).to eq("${aws_dsql_cluster.test.region}")
         expect(ref.tags_all).to eq("${aws_dsql_cluster.test.tags_all}")
         expect(ref.vpc_endpoint_service_name).to eq("${aws_dsql_cluster.test.vpc_endpoint_service_name}")
       end
@@ -56,16 +59,19 @@ RSpec.describe Pangea::Resources::AWSDsqlCluster do
 
         config = validate_resource_structure(result, 'aws_dsql_cluster', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('deletion_protection_enabled')
         expect(config).not_to have_key('encryption_details')
+        expect(config).not_to have_key('force_destroy')
         expect(config).not_to have_key('identifier')
         expect(config).not_to have_key('kms_encryption_key')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_endpoint_service_name')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ deletion_protection_enabled: true, multi_region_properties: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ deletion_protection_enabled: true, force_destroy: true, kms_encryption_key: 'test-value', multi_region_properties: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,7 +81,10 @@ RSpec.describe Pangea::Resources::AWSDsqlCluster do
 
         config = validate_resource_structure(result, 'aws_dsql_cluster', 'full')
         expect(config).to have_key('deletion_protection_enabled')
+        expect(config).to have_key('force_destroy')
+        expect(config).to have_key('kms_encryption_key')
         expect(config).to have_key('multi_region_properties')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -98,6 +107,40 @@ RSpec.describe Pangea::Resources::AWSDsqlCluster do
         config = validate_resource_structure(result, 'aws_dsql_cluster', 'minimal')
         expect(config).not_to have_key('deletion_protection_enabled')
       end
+      it 'includes force_destroy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dsql_cluster('opt', required_attrs.merge(force_destroy: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dsql_cluster', 'opt')
+        expect(config).to have_key('force_destroy')
+      end
+
+      it 'omits force_destroy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dsql_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dsql_cluster', 'minimal')
+        expect(config).not_to have_key('force_destroy')
+      end
+      it 'includes kms_encryption_key when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dsql_cluster('opt', required_attrs.merge(kms_encryption_key: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dsql_cluster', 'opt')
+        expect(config).to have_key('kms_encryption_key')
+      end
+
+      it 'omits kms_encryption_key when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dsql_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dsql_cluster', 'minimal')
+        expect(config).not_to have_key('kms_encryption_key')
+      end
       it 'includes multi_region_properties when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -114,6 +157,23 @@ RSpec.describe Pangea::Resources::AWSDsqlCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dsql_cluster', 'minimal')
         expect(config).not_to have_key('multi_region_properties')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dsql_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dsql_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dsql_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dsql_cluster', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -144,6 +204,17 @@ RSpec.describe Pangea::Resources::AWSDsqlCluster do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_dsql_cluster', "bool_#{val}")
           expect(config['deletion_protection_enabled']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts force_destroy=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(force_destroy: val)
+          synth.aws_dsql_cluster("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_dsql_cluster', "bool_#{val}")
+          expect(config['force_destroy']).to eq(val)
         end
       end
     end
@@ -189,8 +260,8 @@ RSpec.describe Pangea::Resources::AWSDsqlCluster do
     resource_type: :aws_dsql_cluster,
     method: :aws_dsql_cluster,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :encryption_details, :identifier, :kms_encryption_key, :tags_all, :vpc_endpoint_service_name],
+    expected_outputs: [:id, :arn, :deletion_protection_enabled, :encryption_details, :force_destroy, :identifier, :kms_encryption_key, :region, :tags_all, :vpc_endpoint_service_name],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:deletion_protection_enabled]
+    boolean_fields: [:deletion_protection_enabled, :force_destroy]
 end

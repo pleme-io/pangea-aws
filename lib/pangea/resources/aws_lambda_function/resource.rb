@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LambdaFunctionAttributes,
       outputs: { id: :id },
       map: [:function_name, :role],
-      map_present: [:architectures, :code_signing_config_arn, :dead_letter_config, :description, :environment, :ephemeral_storage, :file_system_config, :filename, :handler, :image_config, :image_uri, :kms_key_arn, :layers, :logging_config, :memory_size, :package_type, :replacement_security_group_ids, :reserved_concurrent_executions, :runtime, :s3_bucket, :s3_key, :s3_object_version, :snap_start, :source_code_hash, :tags, :tags_all, :timeout, :tracing_config, :vpc_config],
+      map_present: [:architectures, :capacity_provider_config, :code_sha256, :code_signing_config_arn, :dead_letter_config, :description, :durable_config, :environment, :ephemeral_storage, :file_system_config, :filename, :handler, :image_config, :image_uri, :kms_key_arn, :layers, :logging_config, :memory_size, :package_type, :publish_to, :region, :replacement_security_group_ids, :reserved_concurrent_executions, :runtime, :s3_bucket, :s3_key, :s3_object_version, :snap_start, :source_code_hash, :source_kms_key_arn, :tags, :tags_all, :tenancy_config, :timeout, :tracing_config, :vpc_config],
       map_bool: [:publish, :replace_security_groups_on_destroy, :skip_destroy]
   end
   module AWS

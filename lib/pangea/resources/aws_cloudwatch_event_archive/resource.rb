@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchEventArchiveAttributes,
       outputs: { id: :id },
       map: [:event_source_arn, :name],
-      map_present: [:description, :event_pattern, :retention_days]
+      map_present: [:description, :event_pattern, :kms_key_identifier, :region, :retention_days]
   end
   module AWS
     include AWSCloudwatchEventArchive

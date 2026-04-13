@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsAnalysis do
         expect(ref.explanations).to eq("${aws_ec2_network_insights_analysis.test.explanations}")
         expect(ref.forward_path_components).to eq("${aws_ec2_network_insights_analysis.test.forward_path_components}")
         expect(ref.path_found).to eq("${aws_ec2_network_insights_analysis.test.path_found}")
+        expect(ref.region).to eq("${aws_ec2_network_insights_analysis.test.region}")
         expect(ref.return_path_components).to eq("${aws_ec2_network_insights_analysis.test.return_path_components}")
         expect(ref.start_date).to eq("${aws_ec2_network_insights_analysis.test.start_date}")
         expect(ref.status).to eq("${aws_ec2_network_insights_analysis.test.status}")
@@ -65,6 +66,7 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsAnalysis do
         expect(config).not_to have_key('explanations')
         expect(config).not_to have_key('forward_path_components')
         expect(config).not_to have_key('path_found')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('return_path_components')
         expect(config).not_to have_key('start_date')
         expect(config).not_to have_key('status')
@@ -75,7 +77,7 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsAnalysis do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ filter_in_arns: ['test-value'], tags: { 'key1' => 'val1' }, wait_for_completion: true }) }
+      let(:all_attrs) { required_attrs.merge({ filter_in_arns: ['test-value'], region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, wait_for_completion: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -85,7 +87,9 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsAnalysis do
 
         config = validate_resource_structure(result, 'aws_ec2_network_insights_analysis', 'full')
         expect(config).to have_key('filter_in_arns')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('wait_for_completion')
       end
     end
@@ -108,6 +112,23 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsAnalysis do
         config = validate_resource_structure(result, 'aws_ec2_network_insights_analysis', 'minimal')
         expect(config).not_to have_key('filter_in_arns')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_network_insights_analysis('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_network_insights_analysis', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_network_insights_analysis('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_network_insights_analysis', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -124,6 +145,23 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsAnalysis do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_network_insights_analysis', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_network_insights_analysis('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_network_insights_analysis', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_network_insights_analysis('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_network_insights_analysis', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes wait_for_completion when provided' do
         synth = create_synthesizer
@@ -200,7 +238,7 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsAnalysis do
     resource_type: :aws_ec2_network_insights_analysis,
     method: :aws_ec2_network_insights_analysis,
     required_attrs: { network_insights_path_id: 'test-value' },
-    expected_outputs: [:id, :alternate_path_hints, :arn, :explanations, :forward_path_components, :path_found, :return_path_components, :start_date, :status, :status_message, :tags_all, :warning_message],
+    expected_outputs: [:id, :alternate_path_hints, :arn, :explanations, :forward_path_components, :path_found, :region, :return_path_components, :start_date, :status, :status_message, :tags_all, :warning_message],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:wait_for_completion]

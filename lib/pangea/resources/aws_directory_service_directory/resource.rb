@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DirectoryServiceDirectoryAttributes,
       outputs: { id: :id },
       map: [:name, :password],
-      map_present: [:alias, :connect_settings, :description, :desired_number_of_domain_controllers, :edition, :short_name, :size, :tags, :tags_all, :type, :vpc_settings],
+      map_present: [:alias, :connect_settings, :description, :desired_number_of_domain_controllers, :edition, :region, :short_name, :size, :tags, :tags_all, :type, :vpc_settings],
       map_bool: [:enable_sso]
   end
   module AWS

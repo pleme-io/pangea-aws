@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GameliftGameSessionQueueAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:custom_event_data, :destinations, :notification_target, :player_latency_policy, :tags, :tags_all, :timeout_in_seconds]
+      map_present: [:custom_event_data, :destinations, :notification_target, :player_latency_policy, :region, :tags, :tags_all, :timeout_in_seconds]
   end
   module AWS
     include AWSGameliftGameSessionQueue

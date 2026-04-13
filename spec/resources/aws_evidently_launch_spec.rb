@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSEvidentlyLaunch do
         expect(ref.created_time).to eq("${aws_evidently_launch.test.created_time}")
         expect(ref.execution).to eq("${aws_evidently_launch.test.execution}")
         expect(ref.last_updated_time).to eq("${aws_evidently_launch.test.last_updated_time}")
+        expect(ref.region).to eq("${aws_evidently_launch.test.region}")
         expect(ref.status).to eq("${aws_evidently_launch.test.status}")
         expect(ref.status_reason).to eq("${aws_evidently_launch.test.status_reason}")
         expect(ref.tags_all).to eq("${aws_evidently_launch.test.tags_all}")
@@ -61,6 +62,7 @@ RSpec.describe Pangea::Resources::AWSEvidentlyLaunch do
         expect(config).not_to have_key('created_time')
         expect(config).not_to have_key('execution')
         expect(config).not_to have_key('last_updated_time')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('status_reason')
         expect(config).not_to have_key('tags_all')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSEvidentlyLaunch do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', metric_monitors: [{ 'key1' => 'val1' }], randomization_salt: 'test-value', scheduled_splits_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', metric_monitors: [{ 'key1' => 'val1' }], randomization_salt: 'test-value', region: 'test-value', scheduled_splits_config: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -81,8 +83,10 @@ RSpec.describe Pangea::Resources::AWSEvidentlyLaunch do
         expect(config).to have_key('description')
         expect(config).to have_key('metric_monitors')
         expect(config).to have_key('randomization_salt')
+        expect(config).to have_key('region')
         expect(config).to have_key('scheduled_splits_config')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -138,10 +142,27 @@ RSpec.describe Pangea::Resources::AWSEvidentlyLaunch do
         config = validate_resource_structure(result, 'aws_evidently_launch', 'minimal')
         expect(config).not_to have_key('randomization_salt')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_evidently_launch('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_evidently_launch', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_evidently_launch('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_evidently_launch', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes scheduled_splits_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_evidently_launch('opt', required_attrs.merge(scheduled_splits_config: [{ 'key1' => 'val1' }]))
+        synth.aws_evidently_launch('opt', required_attrs.merge(scheduled_splits_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_evidently_launch', 'opt')
         expect(config).to have_key('scheduled_splits_config')
@@ -171,6 +192,23 @@ RSpec.describe Pangea::Resources::AWSEvidentlyLaunch do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_evidently_launch', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_evidently_launch('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_evidently_launch', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_evidently_launch('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_evidently_launch', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -218,7 +256,7 @@ RSpec.describe Pangea::Resources::AWSEvidentlyLaunch do
     resource_type: :aws_evidently_launch,
     method: :aws_evidently_launch,
     required_attrs: { groups: [{ 'key1' => 'val1' }], name: 'test-value', project: 'test-value' },
-    expected_outputs: [:id, :arn, :created_time, :execution, :last_updated_time, :status, :status_reason, :tags_all, :type],
+    expected_outputs: [:id, :arn, :created_time, :execution, :last_updated_time, :region, :status, :status_reason, :tags_all, :type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

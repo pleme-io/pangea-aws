@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointService do
         expect(ref.manages_vpc_endpoints).to eq("${aws_vpc_endpoint_service.test.manages_vpc_endpoints}")
         expect(ref.private_dns_name).to eq("${aws_vpc_endpoint_service.test.private_dns_name}")
         expect(ref.private_dns_name_configuration).to eq("${aws_vpc_endpoint_service.test.private_dns_name_configuration}")
+        expect(ref.region).to eq("${aws_vpc_endpoint_service.test.region}")
         expect(ref.service_name).to eq("${aws_vpc_endpoint_service.test.service_name}")
         expect(ref.service_type).to eq("${aws_vpc_endpoint_service.test.service_type}")
         expect(ref.state).to eq("${aws_vpc_endpoint_service.test.state}")
@@ -69,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointService do
         expect(config).not_to have_key('manages_vpc_endpoints')
         expect(config).not_to have_key('private_dns_name')
         expect(config).not_to have_key('private_dns_name_configuration')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('service_name')
         expect(config).not_to have_key('service_type')
         expect(config).not_to have_key('state')
@@ -79,7 +81,7 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointService do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ gateway_load_balancer_arns: ['test-value'], network_load_balancer_arns: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ allowed_principals: ['test-value'], gateway_load_balancer_arns: ['test-value'], network_load_balancer_arns: ['test-value'], private_dns_name: 'test-value', region: 'test-value', supported_ip_address_types: ['test-value'], supported_regions: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -88,13 +90,36 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointService do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'full')
+        expect(config).to have_key('allowed_principals')
         expect(config).to have_key('gateway_load_balancer_arns')
         expect(config).to have_key('network_load_balancer_arns')
+        expect(config).to have_key('private_dns_name')
+        expect(config).to have_key('region')
+        expect(config).to have_key('supported_ip_address_types')
+        expect(config).to have_key('supported_regions')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes allowed_principals when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service('opt', required_attrs.merge(allowed_principals: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'opt')
+        expect(config).to have_key('allowed_principals')
+      end
+
+      it 'omits allowed_principals when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'minimal')
+        expect(config).not_to have_key('allowed_principals')
+      end
       it 'includes gateway_load_balancer_arns when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -129,6 +154,74 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointService do
         config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'minimal')
         expect(config).not_to have_key('network_load_balancer_arns')
       end
+      it 'includes private_dns_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service('opt', required_attrs.merge(private_dns_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'opt')
+        expect(config).to have_key('private_dns_name')
+      end
+
+      it 'omits private_dns_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'minimal')
+        expect(config).not_to have_key('private_dns_name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes supported_ip_address_types when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service('opt', required_attrs.merge(supported_ip_address_types: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'opt')
+        expect(config).to have_key('supported_ip_address_types')
+      end
+
+      it 'omits supported_ip_address_types when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'minimal')
+        expect(config).not_to have_key('supported_ip_address_types')
+      end
+      it 'includes supported_regions when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service('opt', required_attrs.merge(supported_regions: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'opt')
+        expect(config).to have_key('supported_regions')
+      end
+
+      it 'omits supported_regions when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'minimal')
+        expect(config).not_to have_key('supported_regions')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -145,6 +238,23 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointService do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -204,7 +314,7 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointService do
     resource_type: :aws_vpc_endpoint_service,
     method: :aws_vpc_endpoint_service,
     required_attrs: { acceptance_required: true },
-    expected_outputs: [:id, :allowed_principals, :arn, :availability_zones, :base_endpoint_dns_names, :manages_vpc_endpoints, :private_dns_name, :private_dns_name_configuration, :service_name, :service_type, :state, :supported_ip_address_types, :supported_regions, :tags_all],
+    expected_outputs: [:id, :allowed_principals, :arn, :availability_zones, :base_endpoint_dns_names, :manages_vpc_endpoints, :private_dns_name, :private_dns_name_configuration, :region, :service_name, :service_type, :state, :supported_ip_address_types, :supported_regions, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:acceptance_required]

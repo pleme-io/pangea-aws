@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerHubAttributes,
       outputs: { id: :id },
       map: [:hub_description, :hub_name],
-      map_present: [:hub_display_name, :hub_search_keywords, :s3_storage_config, :tags, :tags_all]
+      map_present: [:hub_display_name, :hub_search_keywords, :region, :s3_storage_config, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerHub

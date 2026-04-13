@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EksAddonAttributes,
       outputs: { id: :id },
       map: [:addon_name, :cluster_name],
-      map_present: [:addon_version, :configuration_values, :pod_identity_association, :resolve_conflicts, :resolve_conflicts_on_create, :resolve_conflicts_on_update, :service_account_role_arn, :tags, :tags_all],
+      map_present: [:addon_version, :configuration_values, :pod_identity_association, :region, :resolve_conflicts_on_create, :resolve_conflicts_on_update, :service_account_role_arn, :tags, :tags_all],
       map_bool: [:preserve]
   end
   module AWS

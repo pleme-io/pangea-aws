@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueCatalogTableOptimizerAttributes,
       outputs: { id: :id },
       map: [:catalog_id, :database_name, :table_name, :type],
-      map_present: [:configuration]
+      map_present: [:configuration, :region]
   end
   module AWS
     include AWSGlueCatalogTableOptimizer

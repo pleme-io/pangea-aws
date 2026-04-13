@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogConstraint do
         expect(ref.id).to eq("${aws_servicecatalog_constraint.test.id}")
         expect(ref.description).to eq("${aws_servicecatalog_constraint.test.description}")
         expect(ref.owner).to eq("${aws_servicecatalog_constraint.test.owner}")
+        expect(ref.region).to eq("${aws_servicecatalog_constraint.test.region}")
         expect(ref.status).to eq("${aws_servicecatalog_constraint.test.status}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSServicecatalogConstraint do
         config = validate_resource_structure(result, 'aws_servicecatalog_constraint', 'test')
         expect(config).not_to have_key('description')
         expect(config).not_to have_key('owner')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ accept_language: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ accept_language: 'test-value', description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,8 @@ RSpec.describe Pangea::Resources::AWSServicecatalogConstraint do
 
         config = validate_resource_structure(result, 'aws_servicecatalog_constraint', 'full')
         expect(config).to have_key('accept_language')
+        expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -89,6 +93,40 @@ RSpec.describe Pangea::Resources::AWSServicecatalogConstraint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_servicecatalog_constraint', 'minimal')
         expect(config).not_to have_key('accept_language')
+      end
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_constraint('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_constraint', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_constraint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_constraint', 'minimal')
+        expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_constraint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_constraint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_constraint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_constraint', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -137,7 +175,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogConstraint do
     resource_type: :aws_servicecatalog_constraint,
     method: :aws_servicecatalog_constraint,
     required_attrs: { parameters: 'test-value', portfolio_id: 'test-value', product_id: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :description, :owner, :status],
+    expected_outputs: [:id, :description, :owner, :region, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

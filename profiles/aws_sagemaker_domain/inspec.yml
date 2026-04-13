@@ -1,0 +1,8 @@
+name: aws_sagemaker_domain
+title: Manages a aws_sagemaker_domain resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

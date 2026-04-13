@@ -47,6 +47,7 @@ RSpec.describe Pangea::Resources::AWSSqsQueue do
         expect(ref.policy).to eq("${aws_sqs_queue.test.policy}")
         expect(ref.redrive_allow_policy).to eq("${aws_sqs_queue.test.redrive_allow_policy}")
         expect(ref.redrive_policy).to eq("${aws_sqs_queue.test.redrive_policy}")
+        expect(ref.region).to eq("${aws_sqs_queue.test.region}")
         expect(ref.sqs_managed_sse_enabled).to eq("${aws_sqs_queue.test.sqs_managed_sse_enabled}")
         expect(ref.tags_all).to eq("${aws_sqs_queue.test.tags_all}")
         expect(ref.url).to eq("${aws_sqs_queue.test.url}")
@@ -70,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSSqsQueue do
         expect(config).not_to have_key('policy')
         expect(config).not_to have_key('redrive_allow_policy')
         expect(config).not_to have_key('redrive_policy')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('sqs_managed_sse_enabled')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('url')
@@ -77,7 +79,7 @@ RSpec.describe Pangea::Resources::AWSSqsQueue do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ content_based_deduplication: true, delay_seconds: 3.14, fifo_queue: true, kms_master_key_id: 'test-value', max_message_size: 3.14, message_retention_seconds: 3.14, receive_wait_time_seconds: 3.14, tags: { 'key1' => 'val1' }, visibility_timeout_seconds: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ content_based_deduplication: true, deduplication_scope: 'test-value', delay_seconds: 3.14, fifo_queue: true, fifo_throughput_limit: 'test-value', kms_data_key_reuse_period_seconds: 3.14, kms_master_key_id: 'test-value', max_message_size: 3.14, message_retention_seconds: 3.14, name: 'test-value', name_prefix: 'test-value', policy: 'test-value', receive_wait_time_seconds: 3.14, redrive_allow_policy: 'test-value', redrive_policy: 'test-value', region: 'test-value', sqs_managed_sse_enabled: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, visibility_timeout_seconds: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -87,13 +89,24 @@ RSpec.describe Pangea::Resources::AWSSqsQueue do
 
         config = validate_resource_structure(result, 'aws_sqs_queue', 'full')
         expect(config).to have_key('content_based_deduplication')
+        expect(config).to have_key('deduplication_scope')
         expect(config).to have_key('delay_seconds')
         expect(config).to have_key('fifo_queue')
+        expect(config).to have_key('fifo_throughput_limit')
+        expect(config).to have_key('kms_data_key_reuse_period_seconds')
         expect(config).to have_key('kms_master_key_id')
         expect(config).to have_key('max_message_size')
         expect(config).to have_key('message_retention_seconds')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('policy')
         expect(config).to have_key('receive_wait_time_seconds')
+        expect(config).to have_key('redrive_allow_policy')
+        expect(config).to have_key('redrive_policy')
+        expect(config).to have_key('region')
+        expect(config).to have_key('sqs_managed_sse_enabled')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('visibility_timeout_seconds')
       end
     end
@@ -115,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSSqsQueue do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
         expect(config).not_to have_key('content_based_deduplication')
+      end
+      it 'includes deduplication_scope when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('opt', required_attrs.merge(deduplication_scope: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'opt')
+        expect(config).to have_key('deduplication_scope')
+      end
+
+      it 'omits deduplication_scope when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
+        expect(config).not_to have_key('deduplication_scope')
       end
       it 'includes delay_seconds when provided' do
         synth = create_synthesizer
@@ -149,6 +179,40 @@ RSpec.describe Pangea::Resources::AWSSqsQueue do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
         expect(config).not_to have_key('fifo_queue')
+      end
+      it 'includes fifo_throughput_limit when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('opt', required_attrs.merge(fifo_throughput_limit: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'opt')
+        expect(config).to have_key('fifo_throughput_limit')
+      end
+
+      it 'omits fifo_throughput_limit when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
+        expect(config).not_to have_key('fifo_throughput_limit')
+      end
+      it 'includes kms_data_key_reuse_period_seconds when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('opt', required_attrs.merge(kms_data_key_reuse_period_seconds: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'opt')
+        expect(config).to have_key('kms_data_key_reuse_period_seconds')
+      end
+
+      it 'omits kms_data_key_reuse_period_seconds when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
+        expect(config).not_to have_key('kms_data_key_reuse_period_seconds')
       end
       it 'includes kms_master_key_id when provided' do
         synth = create_synthesizer
@@ -201,6 +265,57 @@ RSpec.describe Pangea::Resources::AWSSqsQueue do
         config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
         expect(config).not_to have_key('message_retention_seconds')
       end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('opt', required_attrs.merge(policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'opt')
+        expect(config).to have_key('policy')
+      end
+
+      it 'omits policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
+        expect(config).not_to have_key('policy')
+      end
       it 'includes receive_wait_time_seconds when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -218,6 +333,74 @@ RSpec.describe Pangea::Resources::AWSSqsQueue do
         config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
         expect(config).not_to have_key('receive_wait_time_seconds')
       end
+      it 'includes redrive_allow_policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('opt', required_attrs.merge(redrive_allow_policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'opt')
+        expect(config).to have_key('redrive_allow_policy')
+      end
+
+      it 'omits redrive_allow_policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
+        expect(config).not_to have_key('redrive_allow_policy')
+      end
+      it 'includes redrive_policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('opt', required_attrs.merge(redrive_policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'opt')
+        expect(config).to have_key('redrive_policy')
+      end
+
+      it 'omits redrive_policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
+        expect(config).not_to have_key('redrive_policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes sqs_managed_sse_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('opt', required_attrs.merge(sqs_managed_sse_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'opt')
+        expect(config).to have_key('sqs_managed_sse_enabled')
+      end
+
+      it 'omits sqs_managed_sse_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
+        expect(config).not_to have_key('sqs_managed_sse_enabled')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -234,6 +417,23 @@ RSpec.describe Pangea::Resources::AWSSqsQueue do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sqs_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sqs_queue', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes visibility_timeout_seconds when provided' do
         synth = create_synthesizer
@@ -275,6 +475,17 @@ RSpec.describe Pangea::Resources::AWSSqsQueue do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_sqs_queue', "bool_#{val}")
           expect(config['fifo_queue']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts sqs_managed_sse_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(sqs_managed_sse_enabled: val)
+          synth.aws_sqs_queue("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_sqs_queue', "bool_#{val}")
+          expect(config['sqs_managed_sse_enabled']).to eq(val)
         end
       end
     end
@@ -320,8 +531,8 @@ RSpec.describe Pangea::Resources::AWSSqsQueue do
     resource_type: :aws_sqs_queue,
     method: :aws_sqs_queue,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :deduplication_scope, :fifo_throughput_limit, :kms_data_key_reuse_period_seconds, :name, :name_prefix, :policy, :redrive_allow_policy, :redrive_policy, :sqs_managed_sse_enabled, :tags_all, :url],
+    expected_outputs: [:id, :arn, :deduplication_scope, :fifo_throughput_limit, :kms_data_key_reuse_period_seconds, :name, :name_prefix, :policy, :redrive_allow_policy, :redrive_policy, :region, :sqs_managed_sse_enabled, :tags_all, :url],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:content_based_deduplication, :fifo_queue]
+    boolean_fields: [:content_based_deduplication, :fifo_queue, :sqs_managed_sse_enabled]
 end

@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSEbsVolume do
         expect(ref.encrypted).to eq("${aws_ebs_volume.test.encrypted}")
         expect(ref.iops).to eq("${aws_ebs_volume.test.iops}")
         expect(ref.kms_key_id).to eq("${aws_ebs_volume.test.kms_key_id}")
+        expect(ref.region).to eq("${aws_ebs_volume.test.region}")
         expect(ref.size).to eq("${aws_ebs_volume.test.size}")
         expect(ref.snapshot_id).to eq("${aws_ebs_volume.test.snapshot_id}")
         expect(ref.tags_all).to eq("${aws_ebs_volume.test.tags_all}")
@@ -64,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSEbsVolume do
         expect(config).not_to have_key('encrypted')
         expect(config).not_to have_key('iops')
         expect(config).not_to have_key('kms_key_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('size')
         expect(config).not_to have_key('snapshot_id')
         expect(config).not_to have_key('tags_all')
@@ -73,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSEbsVolume do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ final_snapshot: true, multi_attach_enabled: true, outpost_arn: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ encrypted: true, final_snapshot: true, iops: 3.14, kms_key_id: 'test-value', multi_attach_enabled: true, outpost_arn: 'test-value', region: 'test-value', size: 3.14, snapshot_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, throughput: 3.14, type: 'test-value', volume_initialization_rate: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -82,14 +84,41 @@ RSpec.describe Pangea::Resources::AWSEbsVolume do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ebs_volume', 'full')
+        expect(config).to have_key('encrypted')
         expect(config).to have_key('final_snapshot')
+        expect(config).to have_key('iops')
+        expect(config).to have_key('kms_key_id')
         expect(config).to have_key('multi_attach_enabled')
         expect(config).to have_key('outpost_arn')
+        expect(config).to have_key('region')
+        expect(config).to have_key('size')
+        expect(config).to have_key('snapshot_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('throughput')
+        expect(config).to have_key('type')
+        expect(config).to have_key('volume_initialization_rate')
       end
     end
 
     context 'optional attributes' do
+      it 'includes encrypted when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('opt', required_attrs.merge(encrypted: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'opt')
+        expect(config).to have_key('encrypted')
+      end
+
+      it 'omits encrypted when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'minimal')
+        expect(config).not_to have_key('encrypted')
+      end
       it 'includes final_snapshot when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -106,6 +135,40 @@ RSpec.describe Pangea::Resources::AWSEbsVolume do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ebs_volume', 'minimal')
         expect(config).not_to have_key('final_snapshot')
+      end
+      it 'includes iops when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('opt', required_attrs.merge(iops: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'opt')
+        expect(config).to have_key('iops')
+      end
+
+      it 'omits iops when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'minimal')
+        expect(config).not_to have_key('iops')
+      end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
       end
       it 'includes multi_attach_enabled when provided' do
         synth = create_synthesizer
@@ -141,6 +204,57 @@ RSpec.describe Pangea::Resources::AWSEbsVolume do
         config = validate_resource_structure(result, 'aws_ebs_volume', 'minimal')
         expect(config).not_to have_key('outpost_arn')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes size when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('opt', required_attrs.merge(size: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'opt')
+        expect(config).to have_key('size')
+      end
+
+      it 'omits size when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'minimal')
+        expect(config).not_to have_key('size')
+      end
+      it 'includes snapshot_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('opt', required_attrs.merge(snapshot_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'opt')
+        expect(config).to have_key('snapshot_id')
+      end
+
+      it 'omits snapshot_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'minimal')
+        expect(config).not_to have_key('snapshot_id')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -158,9 +272,88 @@ RSpec.describe Pangea::Resources::AWSEbsVolume do
         config = validate_resource_structure(result, 'aws_ebs_volume', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes throughput when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('opt', required_attrs.merge(throughput: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'opt')
+        expect(config).to have_key('throughput')
+      end
+
+      it 'omits throughput when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'minimal')
+        expect(config).not_to have_key('throughput')
+      end
+      it 'includes type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('opt', required_attrs.merge(type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'opt')
+        expect(config).to have_key('type')
+      end
+
+      it 'omits type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'minimal')
+        expect(config).not_to have_key('type')
+      end
+      it 'includes volume_initialization_rate when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('opt', required_attrs.merge(volume_initialization_rate: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'opt')
+        expect(config).to have_key('volume_initialization_rate')
+      end
+
+      it 'omits volume_initialization_rate when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_volume', 'minimal')
+        expect(config).not_to have_key('volume_initialization_rate')
+      end
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts encrypted=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(encrypted: val)
+          synth.aws_ebs_volume("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_ebs_volume', "bool_#{val}")
+          expect(config['encrypted']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts final_snapshot=#{val}" do
           synth = create_synthesizer
@@ -227,8 +420,8 @@ RSpec.describe Pangea::Resources::AWSEbsVolume do
     resource_type: :aws_ebs_volume,
     method: :aws_ebs_volume,
     required_attrs: { availability_zone: 'test-value' },
-    expected_outputs: [:id, :arn, :create_time, :encrypted, :iops, :kms_key_id, :size, :snapshot_id, :tags_all, :throughput, :type],
+    expected_outputs: [:id, :arn, :create_time, :encrypted, :iops, :kms_key_id, :region, :size, :snapshot_id, :tags_all, :throughput, :type],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:final_snapshot, :multi_attach_enabled]
+    boolean_fields: [:encrypted, :final_snapshot, :multi_attach_enabled]
 end

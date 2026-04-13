@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCloudfrontDistribution do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { default_cache_behavior: [{ 'key1' => 'val1' }], enabled: true, origin: [{ 'key1' => 'val1' }], restrictions: [{ 'key1' => 'val1' }], viewer_certificate: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { default_cache_behavior: { 'key1' => 'val1' }, enabled: true, origin: [{ 'key1' => 'val1' }], restrictions: { 'key1' => 'val1' }, viewer_certificate: { 'key1' => 'val1' } } }
 
   describe ':aws_cloudfront_distribution' do
     context 'with required attributes only' do
@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontDistribution do
         expect(ref.hosted_zone_id).to eq("${aws_cloudfront_distribution.test.hosted_zone_id}")
         expect(ref.in_progress_validation_batches).to eq("${aws_cloudfront_distribution.test.in_progress_validation_batches}")
         expect(ref.last_modified_time).to eq("${aws_cloudfront_distribution.test.last_modified_time}")
+        expect(ref.logging_v1_enabled).to eq("${aws_cloudfront_distribution.test.logging_v1_enabled}")
         expect(ref.status).to eq("${aws_cloudfront_distribution.test.status}")
         expect(ref.tags_all).to eq("${aws_cloudfront_distribution.test.tags_all}")
         expect(ref.trusted_key_groups).to eq("${aws_cloudfront_distribution.test.trusted_key_groups}")
@@ -69,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontDistribution do
         expect(config).not_to have_key('hosted_zone_id')
         expect(config).not_to have_key('in_progress_validation_batches')
         expect(config).not_to have_key('last_modified_time')
+        expect(config).not_to have_key('logging_v1_enabled')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('trusted_key_groups')
@@ -77,7 +79,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontDistribution do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ aliases: ['test-value'], comment: 'test-value', custom_error_response: [{ 'key1' => 'val1' }], default_root_object: 'test-value', http_version: 'test-value', is_ipv6_enabled: true, logging_config: [{ 'key1' => 'val1' }], ordered_cache_behavior: [{ 'key1' => 'val1' }], origin_group: [{ 'key1' => 'val1' }], price_class: 'test-value', retain_on_delete: true, staging: true, tags: { 'key1' => 'val1' }, wait_for_deployment: true, web_acl_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ aliases: ['test-value'], anycast_ip_list_id: 'test-value', comment: 'test-value', connection_function_association: { 'key1' => 'val1' }, continuous_deployment_policy_id: 'test-value', custom_error_response: [{ 'key1' => 'val1' }], default_root_object: 'test-value', http_version: 'test-value', is_ipv6_enabled: true, logging_config: { 'key1' => 'val1' }, ordered_cache_behavior: [{ 'key1' => 'val1' }], origin_group: [{ 'key1' => 'val1' }], price_class: 'test-value', retain_on_delete: true, staging: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, viewer_mtls_config: { 'key1' => 'val1' }, wait_for_deployment: true, web_acl_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -87,7 +89,10 @@ RSpec.describe Pangea::Resources::AWSCloudfrontDistribution do
 
         config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'full')
         expect(config).to have_key('aliases')
+        expect(config).to have_key('anycast_ip_list_id')
         expect(config).to have_key('comment')
+        expect(config).to have_key('connection_function_association')
+        expect(config).to have_key('continuous_deployment_policy_id')
         expect(config).to have_key('custom_error_response')
         expect(config).to have_key('default_root_object')
         expect(config).to have_key('http_version')
@@ -99,6 +104,8 @@ RSpec.describe Pangea::Resources::AWSCloudfrontDistribution do
         expect(config).to have_key('retain_on_delete')
         expect(config).to have_key('staging')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('viewer_mtls_config')
         expect(config).to have_key('wait_for_deployment')
         expect(config).to have_key('web_acl_id')
       end
@@ -122,6 +129,23 @@ RSpec.describe Pangea::Resources::AWSCloudfrontDistribution do
         config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'minimal')
         expect(config).not_to have_key('aliases')
       end
+      it 'includes anycast_ip_list_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_distribution('opt', required_attrs.merge(anycast_ip_list_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'opt')
+        expect(config).to have_key('anycast_ip_list_id')
+      end
+
+      it 'omits anycast_ip_list_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_distribution('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'minimal')
+        expect(config).not_to have_key('anycast_ip_list_id')
+      end
       it 'includes comment when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -138,6 +162,40 @@ RSpec.describe Pangea::Resources::AWSCloudfrontDistribution do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'minimal')
         expect(config).not_to have_key('comment')
+      end
+      it 'includes connection_function_association when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_distribution('opt', required_attrs.merge(connection_function_association: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'opt')
+        expect(config).to have_key('connection_function_association')
+      end
+
+      it 'omits connection_function_association when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_distribution('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'minimal')
+        expect(config).not_to have_key('connection_function_association')
+      end
+      it 'includes continuous_deployment_policy_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_distribution('opt', required_attrs.merge(continuous_deployment_policy_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'opt')
+        expect(config).to have_key('continuous_deployment_policy_id')
+      end
+
+      it 'omits continuous_deployment_policy_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_distribution('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'minimal')
+        expect(config).not_to have_key('continuous_deployment_policy_id')
       end
       it 'includes custom_error_response when provided' do
         synth = create_synthesizer
@@ -210,7 +268,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontDistribution do
       it 'includes logging_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudfront_distribution('opt', required_attrs.merge(logging_config: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudfront_distribution('opt', required_attrs.merge(logging_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'opt')
         expect(config).to have_key('logging_config')
@@ -326,6 +384,40 @@ RSpec.describe Pangea::Resources::AWSCloudfrontDistribution do
         config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_distribution('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_distribution('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes viewer_mtls_config when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_distribution('opt', required_attrs.merge(viewer_mtls_config: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'opt')
+        expect(config).to have_key('viewer_mtls_config')
+      end
+
+      it 'omits viewer_mtls_config when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfront_distribution('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'minimal')
+        expect(config).not_to have_key('viewer_mtls_config')
+      end
       it 'includes wait_for_deployment when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -428,11 +520,11 @@ RSpec.describe Pangea::Resources::AWSCloudfrontDistribution do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudfront_distribution', 'typed')
-        expect(config['default_cache_behavior']).to be_a(Array)
+        expect(config['default_cache_behavior']).to be_a(Hash)
         expect([true, false]).to include(config['enabled'])
         expect(config['origin']).to be_a(Array)
-        expect(config['restrictions']).to be_a(Array)
-        expect(config['viewer_certificate']).to be_a(Array)
+        expect(config['restrictions']).to be_a(Hash)
+        expect(config['viewer_certificate']).to be_a(Hash)
       end
     end
 
@@ -465,8 +557,8 @@ RSpec.describe Pangea::Resources::AWSCloudfrontDistribution do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_cloudfront_distribution,
     method: :aws_cloudfront_distribution,
-    required_attrs: { default_cache_behavior: [{ 'key1' => 'val1' }], enabled: true, origin: [{ 'key1' => 'val1' }], restrictions: [{ 'key1' => 'val1' }], viewer_certificate: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :caller_reference, :continuous_deployment_policy_id, :domain_name, :etag, :hosted_zone_id, :in_progress_validation_batches, :last_modified_time, :status, :tags_all, :trusted_key_groups, :trusted_signers],
+    required_attrs: { default_cache_behavior: { 'key1' => 'val1' }, enabled: true, origin: [{ 'key1' => 'val1' }], restrictions: { 'key1' => 'val1' }, viewer_certificate: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :caller_reference, :continuous_deployment_policy_id, :domain_name, :etag, :hosted_zone_id, :in_progress_validation_batches, :last_modified_time, :logging_v1_enabled, :status, :tags_all, :trusted_key_groups, :trusted_signers],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled, :is_ipv6_enabled, :retain_on_delete, :staging, :wait_for_deployment]

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchEventApiDestinationAttributes,
       outputs: { id: :id },
       map: [:connection_arn, :http_method, :invocation_endpoint, :name],
-      map_present: [:description, :invocation_rate_limit_per_second]
+      map_present: [:description, :invocation_rate_limit_per_second, :region]
   end
   module AWS
     include AWSCloudwatchEventApiDestination

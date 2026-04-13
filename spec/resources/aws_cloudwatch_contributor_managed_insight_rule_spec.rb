@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchContributorManagedInsightRule do
 
         expect(ref.id).to eq("${aws_cloudwatch_contributor_managed_insight_rule.test.id}")
         expect(ref.arn).to eq("${aws_cloudwatch_contributor_managed_insight_rule.test.arn}")
+        expect(ref.region).to eq("${aws_cloudwatch_contributor_managed_insight_rule.test.region}")
         expect(ref.rule_name).to eq("${aws_cloudwatch_contributor_managed_insight_rule.test.rule_name}")
         expect(ref.state).to eq("${aws_cloudwatch_contributor_managed_insight_rule.test.state}")
         expect(ref.tags_all).to eq("${aws_cloudwatch_contributor_managed_insight_rule.test.tags_all}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchContributorManagedInsightRule do
 
         config = validate_resource_structure(result, 'aws_cloudwatch_contributor_managed_insight_rule', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('rule_name')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchContributorManagedInsightRule do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', state: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,11 +72,47 @@ RSpec.describe Pangea::Resources::AWSCloudwatchContributorManagedInsightRule do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudwatch_contributor_managed_insight_rule', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('state')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_contributor_managed_insight_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_contributor_managed_insight_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_contributor_managed_insight_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_contributor_managed_insight_rule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes state when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_contributor_managed_insight_rule('opt', required_attrs.merge(state: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_contributor_managed_insight_rule', 'opt')
+        expect(config).to have_key('state')
+      end
+
+      it 'omits state when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_contributor_managed_insight_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_contributor_managed_insight_rule', 'minimal')
+        expect(config).not_to have_key('state')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -137,7 +175,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchContributorManagedInsightRule do
     resource_type: :aws_cloudwatch_contributor_managed_insight_rule,
     method: :aws_cloudwatch_contributor_managed_insight_rule,
     required_attrs: { resource_arn: 'test-value', template_name: 'test-value' },
-    expected_outputs: [:id, :arn, :rule_name, :state, :tags_all],
+    expected_outputs: [:id, :arn, :region, :rule_name, :state, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

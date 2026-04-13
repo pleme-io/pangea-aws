@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EvidentlyProjectAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:data_delivery, :description, :tags, :tags_all]
+      map_present: [:data_delivery, :description, :region, :tags, :tags_all]
   end
   module AWS
     include AWSEvidentlyProject

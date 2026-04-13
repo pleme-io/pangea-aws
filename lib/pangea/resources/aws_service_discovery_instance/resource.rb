@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_service_discovery_instance,
       attributes_class: AWS::Types::ServiceDiscoveryInstanceAttributes,
       outputs: { id: :id },
-      map: [:attributes, :instance_id, :service_id]
+      map: [:attributes, :instance_id, :service_id],
+      map_present: [:region]
   end
   module AWS
     include AWSServiceDiscoveryInstance

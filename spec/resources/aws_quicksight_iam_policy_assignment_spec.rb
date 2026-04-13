@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightIamPolicyAssignment do
         expect(ref.assignment_id).to eq("${aws_quicksight_iam_policy_assignment.test.assignment_id}")
         expect(ref.aws_account_id).to eq("${aws_quicksight_iam_policy_assignment.test.aws_account_id}")
         expect(ref.namespace).to eq("${aws_quicksight_iam_policy_assignment.test.namespace}")
+        expect(ref.region).to eq("${aws_quicksight_iam_policy_assignment.test.region}")
       end
     end
 
@@ -55,11 +56,12 @@ RSpec.describe Pangea::Resources::AWSQuicksightIamPolicyAssignment do
         expect(config).not_to have_key('assignment_id')
         expect(config).not_to have_key('aws_account_id')
         expect(config).not_to have_key('namespace')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ identities: [{ 'key1' => 'val1' }], policy_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ aws_account_id: 'test-value', identities: [{ 'key1' => 'val1' }], namespace: 'test-value', policy_arn: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,12 +70,32 @@ RSpec.describe Pangea::Resources::AWSQuicksightIamPolicyAssignment do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_quicksight_iam_policy_assignment', 'full')
+        expect(config).to have_key('aws_account_id')
         expect(config).to have_key('identities')
+        expect(config).to have_key('namespace')
         expect(config).to have_key('policy_arn')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes aws_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_iam_policy_assignment('opt', required_attrs.merge(aws_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_iam_policy_assignment', 'opt')
+        expect(config).to have_key('aws_account_id')
+      end
+
+      it 'omits aws_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_iam_policy_assignment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_iam_policy_assignment', 'minimal')
+        expect(config).not_to have_key('aws_account_id')
+      end
       it 'includes identities when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -91,6 +113,23 @@ RSpec.describe Pangea::Resources::AWSQuicksightIamPolicyAssignment do
         config = validate_resource_structure(result, 'aws_quicksight_iam_policy_assignment', 'minimal')
         expect(config).not_to have_key('identities')
       end
+      it 'includes namespace when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_iam_policy_assignment('opt', required_attrs.merge(namespace: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_iam_policy_assignment', 'opt')
+        expect(config).to have_key('namespace')
+      end
+
+      it 'omits namespace when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_iam_policy_assignment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_iam_policy_assignment', 'minimal')
+        expect(config).not_to have_key('namespace')
+      end
       it 'includes policy_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -107,6 +146,23 @@ RSpec.describe Pangea::Resources::AWSQuicksightIamPolicyAssignment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_iam_policy_assignment', 'minimal')
         expect(config).not_to have_key('policy_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_iam_policy_assignment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_iam_policy_assignment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_iam_policy_assignment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_iam_policy_assignment', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -153,7 +209,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightIamPolicyAssignment do
     resource_type: :aws_quicksight_iam_policy_assignment,
     method: :aws_quicksight_iam_policy_assignment,
     required_attrs: { assignment_name: 'test-value', assignment_status: 'test-value' },
-    expected_outputs: [:id, :assignment_id, :aws_account_id, :namespace],
+    expected_outputs: [:id, :assignment_id, :aws_account_id, :namespace, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

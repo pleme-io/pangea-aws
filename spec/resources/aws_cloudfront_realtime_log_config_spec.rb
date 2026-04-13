@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCloudfrontRealtimeLogConfig do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { endpoint: [{ 'key1' => 'val1' }], fields: ['test-value'], name: 'test-value', sampling_rate: 3.14 } }
+  let(:required_attrs) { { endpoint: { 'key1' => 'val1' }, fields: ['test-value'], name: 'test-value', sampling_rate: 3.14 } }
 
   describe ':aws_cloudfront_realtime_log_config' do
     context 'with required attributes only' do
@@ -62,7 +62,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontRealtimeLogConfig do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudfront_realtime_log_config', 'typed')
-        expect(config['endpoint']).to be_a(Array)
+        expect(config['endpoint']).to be_a(Hash)
         expect(config['fields']).to be_a(Array)
         expect(config['name']).to be_a(String)
         expect(config['sampling_rate']).to be_a(Float)
@@ -98,7 +98,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontRealtimeLogConfig do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_cloudfront_realtime_log_config,
     method: :aws_cloudfront_realtime_log_config,
-    required_attrs: { endpoint: [{ 'key1' => 'val1' }], fields: ['test-value'], name: 'test-value', sampling_rate: 3.14 },
+    required_attrs: { endpoint: { 'key1' => 'val1' }, fields: ['test-value'], name: 'test-value', sampling_rate: 3.14 },
     expected_outputs: [:id, :arn],
     sensitive_fields: [],
     immutable_fields: [],

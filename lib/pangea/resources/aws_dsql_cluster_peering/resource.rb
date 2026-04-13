@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_dsql_cluster_peering,
       attributes_class: AWS::Types::DsqlClusterPeeringAttributes,
       outputs: { id: :id },
-      map: [:clusters, :identifier, :witness_region]
+      map: [:clusters, :identifier, :witness_region],
+      map_present: [:region]
   end
   module AWS
     include AWSDsqlClusterPeering

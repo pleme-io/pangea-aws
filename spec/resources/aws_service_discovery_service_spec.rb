@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSServiceDiscoveryService do
         expect(ref.id).to eq("${aws_service_discovery_service.test.id}")
         expect(ref.arn).to eq("${aws_service_discovery_service.test.arn}")
         expect(ref.namespace_id).to eq("${aws_service_discovery_service.test.namespace_id}")
+        expect(ref.region).to eq("${aws_service_discovery_service.test.region}")
         expect(ref.tags_all).to eq("${aws_service_discovery_service.test.tags_all}")
         expect(ref.type).to eq("${aws_service_discovery_service.test.type}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSServiceDiscoveryService do
         config = validate_resource_structure(result, 'aws_service_discovery_service', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('namespace_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('type')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', dns_config: [{ 'key1' => 'val1' }], force_destroy: true, health_check_config: [{ 'key1' => 'val1' }], health_check_custom_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', dns_config: { 'key1' => 'val1' }, force_destroy: true, health_check_config: { 'key1' => 'val1' }, health_check_custom_config: { 'key1' => 'val1' }, namespace_id: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,7 +77,11 @@ RSpec.describe Pangea::Resources::AWSServiceDiscoveryService do
         expect(config).to have_key('force_destroy')
         expect(config).to have_key('health_check_config')
         expect(config).to have_key('health_check_custom_config')
+        expect(config).to have_key('namespace_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('type')
       end
     end
 
@@ -100,7 +106,7 @@ RSpec.describe Pangea::Resources::AWSServiceDiscoveryService do
       it 'includes dns_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_service_discovery_service('opt', required_attrs.merge(dns_config: [{ 'key1' => 'val1' }]))
+        synth.aws_service_discovery_service('opt', required_attrs.merge(dns_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_service_discovery_service', 'opt')
         expect(config).to have_key('dns_config')
@@ -134,7 +140,7 @@ RSpec.describe Pangea::Resources::AWSServiceDiscoveryService do
       it 'includes health_check_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_service_discovery_service('opt', required_attrs.merge(health_check_config: [{ 'key1' => 'val1' }]))
+        synth.aws_service_discovery_service('opt', required_attrs.merge(health_check_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_service_discovery_service', 'opt')
         expect(config).to have_key('health_check_config')
@@ -151,7 +157,7 @@ RSpec.describe Pangea::Resources::AWSServiceDiscoveryService do
       it 'includes health_check_custom_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_service_discovery_service('opt', required_attrs.merge(health_check_custom_config: [{ 'key1' => 'val1' }]))
+        synth.aws_service_discovery_service('opt', required_attrs.merge(health_check_custom_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_service_discovery_service', 'opt')
         expect(config).to have_key('health_check_custom_config')
@@ -164,6 +170,40 @@ RSpec.describe Pangea::Resources::AWSServiceDiscoveryService do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_service_discovery_service', 'minimal')
         expect(config).not_to have_key('health_check_custom_config')
+      end
+      it 'includes namespace_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_service_discovery_service('opt', required_attrs.merge(namespace_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_service_discovery_service', 'opt')
+        expect(config).to have_key('namespace_id')
+      end
+
+      it 'omits namespace_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_service_discovery_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_service_discovery_service', 'minimal')
+        expect(config).not_to have_key('namespace_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_service_discovery_service('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_service_discovery_service', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_service_discovery_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_service_discovery_service', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -181,6 +221,40 @@ RSpec.describe Pangea::Resources::AWSServiceDiscoveryService do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_service_discovery_service', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_service_discovery_service('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_service_discovery_service', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_service_discovery_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_service_discovery_service', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_service_discovery_service('opt', required_attrs.merge(type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_service_discovery_service', 'opt')
+        expect(config).to have_key('type')
+      end
+
+      it 'omits type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_service_discovery_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_service_discovery_service', 'minimal')
+        expect(config).not_to have_key('type')
       end
     end
 
@@ -240,7 +314,7 @@ RSpec.describe Pangea::Resources::AWSServiceDiscoveryService do
     resource_type: :aws_service_discovery_service,
     method: :aws_service_discovery_service,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :namespace_id, :tags_all, :type],
+    expected_outputs: [:id, :arn, :namespace_id, :region, :tags_all, :type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:force_destroy]

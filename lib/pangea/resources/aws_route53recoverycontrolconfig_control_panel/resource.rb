@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_route53recoverycontrolconfig_control_panel,
       attributes_class: AWS::Types::Route53recoverycontrolconfigControlPanelAttributes,
       outputs: { id: :id },
-      map: [:cluster_arn, :name]
+      map: [:cluster_arn, :name],
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSRoute53recoverycontrolconfigControlPanel

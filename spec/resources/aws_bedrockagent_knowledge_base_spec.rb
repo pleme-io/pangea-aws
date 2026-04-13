@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentKnowledgeBase do
         expect(ref.arn).to eq("${aws_bedrockagent_knowledge_base.test.arn}")
         expect(ref.created_at).to eq("${aws_bedrockagent_knowledge_base.test.created_at}")
         expect(ref.failure_reasons).to eq("${aws_bedrockagent_knowledge_base.test.failure_reasons}")
+        expect(ref.region).to eq("${aws_bedrockagent_knowledge_base.test.region}")
         expect(ref.tags_all).to eq("${aws_bedrockagent_knowledge_base.test.tags_all}")
         expect(ref.updated_at).to eq("${aws_bedrockagent_knowledge_base.test.updated_at}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSBedrockagentKnowledgeBase do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created_at')
         expect(config).not_to have_key('failure_reasons')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('updated_at')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', knowledge_base_configuration: [{ 'key1' => 'val1' }], storage_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', knowledge_base_configuration: [{ 'key1' => 'val1' }], region: 'test-value', storage_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,6 +76,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentKnowledgeBase do
         config = validate_resource_structure(result, 'aws_bedrockagent_knowledge_base', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('knowledge_base_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('storage_configuration')
         expect(config).to have_key('tags')
       end
@@ -113,6 +116,23 @@ RSpec.describe Pangea::Resources::AWSBedrockagentKnowledgeBase do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_bedrockagent_knowledge_base', 'minimal')
         expect(config).not_to have_key('knowledge_base_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_knowledge_base('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_knowledge_base', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_knowledge_base('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_knowledge_base', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes storage_configuration when provided' do
         synth = create_synthesizer
@@ -193,7 +213,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentKnowledgeBase do
     resource_type: :aws_bedrockagent_knowledge_base,
     method: :aws_bedrockagent_knowledge_base,
     required_attrs: { name: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :created_at, :failure_reasons, :tags_all, :updated_at],
+    expected_outputs: [:id, :arn, :created_at, :failure_reasons, :region, :tags_all, :updated_at],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

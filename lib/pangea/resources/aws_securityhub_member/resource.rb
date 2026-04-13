@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SecurityhubMemberAttributes,
       outputs: { id: :id },
       map: [:account_id],
-      map_present: [:email],
+      map_present: [:email, :region],
       map_bool: [:invite]
   end
   module AWS

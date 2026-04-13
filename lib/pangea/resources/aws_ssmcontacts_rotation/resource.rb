@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsmcontactsRotationAttributes,
       outputs: { id: :id },
       map: [:contact_ids, :name, :time_zone_id],
-      map_present: [:recurrence, :start_time, :tags]
+      map_present: [:recurrence, :region, :start_time, :tags]
   end
   module AWS
     include AWSSsmcontactsRotation

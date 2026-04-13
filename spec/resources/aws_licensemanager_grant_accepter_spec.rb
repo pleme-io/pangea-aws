@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSLicensemanagerGrantAccepter do
         expect(ref.name).to eq("${aws_licensemanager_grant_accepter.test.name}")
         expect(ref.parent_arn).to eq("${aws_licensemanager_grant_accepter.test.parent_arn}")
         expect(ref.principal).to eq("${aws_licensemanager_grant_accepter.test.principal}")
+        expect(ref.region).to eq("${aws_licensemanager_grant_accepter.test.region}")
         expect(ref.status).to eq("${aws_licensemanager_grant_accepter.test.status}")
         expect(ref.version).to eq("${aws_licensemanager_grant_accepter.test.version}")
       end
@@ -63,8 +64,43 @@ RSpec.describe Pangea::Resources::AWSLicensemanagerGrantAccepter do
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('parent_arn')
         expect(config).not_to have_key('principal')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('version')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_licensemanager_grant_accepter('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_licensemanager_grant_accepter', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_licensemanager_grant_accepter('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_licensemanager_grant_accepter', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_licensemanager_grant_accepter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_licensemanager_grant_accepter', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -110,7 +146,7 @@ RSpec.describe Pangea::Resources::AWSLicensemanagerGrantAccepter do
     resource_type: :aws_licensemanager_grant_accepter,
     method: :aws_licensemanager_grant_accepter,
     required_attrs: { grant_arn: 'test-value' },
-    expected_outputs: [:id, :allowed_operations, :home_region, :license_arn, :name, :parent_arn, :principal, :status, :version],
+    expected_outputs: [:id, :allowed_operations, :home_region, :license_arn, :name, :parent_arn, :principal, :region, :status, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

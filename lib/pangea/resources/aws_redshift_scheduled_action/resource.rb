@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftScheduledActionAttributes,
       outputs: { id: :id },
       map: [:iam_role, :name, :schedule, :target_action],
-      map_present: [:description, :end_time, :start_time],
+      map_present: [:description, :end_time, :region, :start_time],
       map_bool: [:enable]
   end
   module AWS

@@ -1,0 +1,8 @@
+name: aws_pinpointsmsvoicev2_opt_out_list
+title: Manages a aws_pinpointsmsvoicev2_opt_out_list resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

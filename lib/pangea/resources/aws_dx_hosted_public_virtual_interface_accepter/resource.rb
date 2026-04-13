@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DxHostedPublicVirtualInterfaceAccepterAttributes,
       outputs: { id: :id },
       map: [:virtual_interface_id],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSDxHostedPublicVirtualInterfaceAccepter

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RdsReservedInstanceAttributes,
       outputs: { id: :id },
       map: [:offering_id],
-      map_present: [:instance_count, :reservation_id, :tags, :tags_all]
+      map_present: [:instance_count, :region, :reservation_id, :tags, :tags_all]
   end
   module AWS
     include AWSRdsReservedInstance

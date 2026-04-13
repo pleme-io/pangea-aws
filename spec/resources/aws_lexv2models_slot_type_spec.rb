@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsSlotType do
         ref = synth.aws_lexv2models_slot_type('test', required_attrs)
 
         expect(ref.id).to eq("${aws_lexv2models_slot_type.test.id}")
+        expect(ref.region).to eq("${aws_lexv2models_slot_type.test.region}")
         expect(ref.slot_type_id).to eq("${aws_lexv2models_slot_type.test.slot_type_id}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsSlotType do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lexv2models_slot_type', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('slot_type_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ composite_slot_type_setting: [{ 'key1' => 'val1' }], description: 'test-value', external_source_setting: [{ 'key1' => 'val1' }], parent_slot_type_signature: 'test-value', slot_type_values: [{ 'key1' => 'val1' }], value_selection_setting: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ composite_slot_type_setting: [{ 'key1' => 'val1' }], description: 'test-value', external_source_setting: [{ 'key1' => 'val1' }], parent_slot_type_signature: 'test-value', region: 'test-value', slot_type_values: [{ 'key1' => 'val1' }], value_selection_setting: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsSlotType do
         expect(config).to have_key('description')
         expect(config).to have_key('external_source_setting')
         expect(config).to have_key('parent_slot_type_signature')
+        expect(config).to have_key('region')
         expect(config).to have_key('slot_type_values')
         expect(config).to have_key('value_selection_setting')
       end
@@ -141,6 +144,23 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsSlotType do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lexv2models_slot_type', 'minimal')
         expect(config).not_to have_key('parent_slot_type_signature')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_slot_type('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_slot_type', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_slot_type('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_slot_type', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes slot_type_values when provided' do
         synth = create_synthesizer
@@ -223,7 +243,7 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsSlotType do
     resource_type: :aws_lexv2models_slot_type,
     method: :aws_lexv2models_slot_type,
     required_attrs: { bot_id: 'test-value', bot_version: 'test-value', locale_id: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :slot_type_id],
+    expected_outputs: [:id, :region, :slot_type_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

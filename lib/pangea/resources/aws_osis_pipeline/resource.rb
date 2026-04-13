@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OsisPipelineAttributes,
       outputs: { id: :id },
       map: [:max_units, :min_units, :pipeline_configuration_body, :pipeline_name],
-      map_present: [:buffer_options, :encryption_at_rest_options, :log_publishing_options, :tags, :vpc_options]
+      map_present: [:buffer_options, :encryption_at_rest_options, :log_publishing_options, :pipeline_role_arn, :region, :tags, :vpc_options]
   end
   module AWS
     include AWSOsisPipeline

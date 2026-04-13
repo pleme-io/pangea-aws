@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsoadminTrustedTokenIssuerAttributes,
       outputs: { id: :id },
       map: [:instance_arn, :name, :trusted_token_issuer_type],
-      map_present: [:client_token, :tags, :trusted_token_issuer_configuration]
+      map_present: [:client_token, :region, :tags, :trusted_token_issuer_configuration]
   end
   module AWS
     include AWSSsoadminTrustedTokenIssuer

@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSKmsKey do
         expect(ref.key_id).to eq("${aws_kms_key.test.key_id}")
         expect(ref.multi_region).to eq("${aws_kms_key.test.multi_region}")
         expect(ref.policy).to eq("${aws_kms_key.test.policy}")
+        expect(ref.region).to eq("${aws_kms_key.test.region}")
         expect(ref.rotation_period_in_days).to eq("${aws_kms_key.test.rotation_period_in_days}")
         expect(ref.tags_all).to eq("${aws_kms_key.test.tags_all}")
       end
@@ -61,13 +62,14 @@ RSpec.describe Pangea::Resources::AWSKmsKey do
         expect(config).not_to have_key('key_id')
         expect(config).not_to have_key('multi_region')
         expect(config).not_to have_key('policy')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('rotation_period_in_days')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ bypass_policy_lockout_safety_check: true, custom_key_store_id: 'test-value', customer_master_key_spec: 'test-value', deletion_window_in_days: 3.14, enable_key_rotation: true, is_enabled: true, key_usage: 'test-value', tags: { 'key1' => 'val1' }, xks_key_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ bypass_policy_lockout_safety_check: true, custom_key_store_id: 'test-value', customer_master_key_spec: 'test-value', deletion_window_in_days: 3.14, description: 'test-value', enable_key_rotation: true, is_enabled: true, key_usage: 'test-value', multi_region: true, policy: 'test-value', region: 'test-value', rotation_period_in_days: 3.14, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, xks_key_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,10 +82,16 @@ RSpec.describe Pangea::Resources::AWSKmsKey do
         expect(config).to have_key('custom_key_store_id')
         expect(config).to have_key('customer_master_key_spec')
         expect(config).to have_key('deletion_window_in_days')
+        expect(config).to have_key('description')
         expect(config).to have_key('enable_key_rotation')
         expect(config).to have_key('is_enabled')
         expect(config).to have_key('key_usage')
+        expect(config).to have_key('multi_region')
+        expect(config).to have_key('policy')
+        expect(config).to have_key('region')
+        expect(config).to have_key('rotation_period_in_days')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('xks_key_id')
       end
     end
@@ -157,6 +165,23 @@ RSpec.describe Pangea::Resources::AWSKmsKey do
         config = validate_resource_structure(result, 'aws_kms_key', 'minimal')
         expect(config).not_to have_key('deletion_window_in_days')
       end
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_key('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_key', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_key', 'minimal')
+        expect(config).not_to have_key('description')
+      end
       it 'includes enable_key_rotation when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -208,6 +233,74 @@ RSpec.describe Pangea::Resources::AWSKmsKey do
         config = validate_resource_structure(result, 'aws_kms_key', 'minimal')
         expect(config).not_to have_key('key_usage')
       end
+      it 'includes multi_region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_key('opt', required_attrs.merge(multi_region: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_key', 'opt')
+        expect(config).to have_key('multi_region')
+      end
+
+      it 'omits multi_region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_key', 'minimal')
+        expect(config).not_to have_key('multi_region')
+      end
+      it 'includes policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_key('opt', required_attrs.merge(policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_key', 'opt')
+        expect(config).to have_key('policy')
+      end
+
+      it 'omits policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_key', 'minimal')
+        expect(config).not_to have_key('policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_key('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_key', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_key', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes rotation_period_in_days when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_key('opt', required_attrs.merge(rotation_period_in_days: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_key', 'opt')
+        expect(config).to have_key('rotation_period_in_days')
+      end
+
+      it 'omits rotation_period_in_days when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_key', 'minimal')
+        expect(config).not_to have_key('rotation_period_in_days')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -224,6 +317,23 @@ RSpec.describe Pangea::Resources::AWSKmsKey do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kms_key', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_key('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_key', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_key', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes xks_key_id when provided' do
         synth = create_synthesizer
@@ -278,6 +388,17 @@ RSpec.describe Pangea::Resources::AWSKmsKey do
           expect(config['is_enabled']).to eq(val)
         end
       end
+      [true, false].each do |val|
+        it "accepts multi_region=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(multi_region: val)
+          synth.aws_kms_key("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_kms_key', "bool_#{val}")
+          expect(config['multi_region']).to eq(val)
+        end
+      end
     end
 
     context 'attribute types' do
@@ -321,8 +442,8 @@ RSpec.describe Pangea::Resources::AWSKmsKey do
     resource_type: :aws_kms_key,
     method: :aws_kms_key,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :description, :key_id, :multi_region, :policy, :rotation_period_in_days, :tags_all],
+    expected_outputs: [:id, :arn, :description, :key_id, :multi_region, :policy, :region, :rotation_period_in_days, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:bypass_policy_lockout_safety_check, :enable_key_rotation, :is_enabled]
+    boolean_fields: [:bypass_policy_lockout_safety_check, :enable_key_rotation, :is_enabled, :multi_region]
 end

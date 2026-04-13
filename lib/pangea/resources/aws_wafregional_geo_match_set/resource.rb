@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WafregionalGeoMatchSetAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:geo_match_constraint]
+      map_present: [:geo_match_constraint, :region]
   end
   module AWS
     include AWSWafregionalGeoMatchSet

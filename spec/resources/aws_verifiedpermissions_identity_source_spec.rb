@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsIdentitySource do
 
         expect(ref.id).to eq("${aws_verifiedpermissions_identity_source.test.id}")
         expect(ref.principal_entity_type).to eq("${aws_verifiedpermissions_identity_source.test.principal_entity_type}")
+        expect(ref.region).to eq("${aws_verifiedpermissions_identity_source.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsIdentitySource do
 
         config = validate_resource_structure(result, 'aws_verifiedpermissions_identity_source', 'test')
         expect(config).not_to have_key('principal_entity_type')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ configuration: [{ 'key1' => 'val1' }], principal_entity_type: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,8 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsIdentitySource do
 
         config = validate_resource_structure(result, 'aws_verifiedpermissions_identity_source', 'full')
         expect(config).to have_key('configuration')
+        expect(config).to have_key('principal_entity_type')
+        expect(config).to have_key('region')
       end
     end
 
@@ -85,6 +89,40 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsIdentitySource do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedpermissions_identity_source', 'minimal')
         expect(config).not_to have_key('configuration')
+      end
+      it 'includes principal_entity_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedpermissions_identity_source('opt', required_attrs.merge(principal_entity_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedpermissions_identity_source', 'opt')
+        expect(config).to have_key('principal_entity_type')
+      end
+
+      it 'omits principal_entity_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedpermissions_identity_source('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedpermissions_identity_source', 'minimal')
+        expect(config).not_to have_key('principal_entity_type')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedpermissions_identity_source('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedpermissions_identity_source', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedpermissions_identity_source('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedpermissions_identity_source', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -130,7 +168,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsIdentitySource do
     resource_type: :aws_verifiedpermissions_identity_source,
     method: :aws_verifiedpermissions_identity_source,
     required_attrs: { policy_store_id: 'test-value' },
-    expected_outputs: [:id, :principal_entity_type],
+    expected_outputs: [:id, :principal_entity_type, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

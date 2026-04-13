@@ -56,6 +56,40 @@ RSpec.describe Pangea::Resources::AWSRoute53ZoneAssociation do
       end
     end
 
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ vpc_region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_zone_association('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_route53_zone_association', 'full')
+        expect(config).to have_key('vpc_region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes vpc_region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_zone_association('opt', required_attrs.merge(vpc_region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_zone_association', 'opt')
+        expect(config).to have_key('vpc_region')
+      end
+
+      it 'omits vpc_region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_zone_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_zone_association', 'minimal')
+        expect(config).not_to have_key('vpc_region')
+      end
+    end
+
     context 'attribute types' do
       it 'validates expected attribute types' do
         synth = create_synthesizer

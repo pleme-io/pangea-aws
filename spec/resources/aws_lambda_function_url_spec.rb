@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunctionUrl do
         expect(ref.id).to eq("${aws_lambda_function_url.test.id}")
         expect(ref.function_arn).to eq("${aws_lambda_function_url.test.function_arn}")
         expect(ref.function_url).to eq("${aws_lambda_function_url.test.function_url}")
+        expect(ref.region).to eq("${aws_lambda_function_url.test.region}")
         expect(ref.url_id).to eq("${aws_lambda_function_url.test.url_id}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSLambdaFunctionUrl do
         config = validate_resource_structure(result, 'aws_lambda_function_url', 'test')
         expect(config).not_to have_key('function_arn')
         expect(config).not_to have_key('function_url')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('url_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cors: [{ 'key1' => 'val1' }], invoke_mode: 'test-value', qualifier: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ cors: { 'key1' => 'val1' }, invoke_mode: 'test-value', qualifier: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +73,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunctionUrl do
         expect(config).to have_key('cors')
         expect(config).to have_key('invoke_mode')
         expect(config).to have_key('qualifier')
+        expect(config).to have_key('region')
       end
     end
 
@@ -78,7 +81,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunctionUrl do
       it 'includes cors when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_function_url('opt', required_attrs.merge(cors: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_function_url('opt', required_attrs.merge(cors: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_function_url', 'opt')
         expect(config).to have_key('cors')
@@ -126,6 +129,23 @@ RSpec.describe Pangea::Resources::AWSLambdaFunctionUrl do
         config = validate_resource_structure(result, 'aws_lambda_function_url', 'minimal')
         expect(config).not_to have_key('qualifier')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function_url('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function_url', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function_url('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function_url', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'attribute types' do
@@ -171,7 +191,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunctionUrl do
     resource_type: :aws_lambda_function_url,
     method: :aws_lambda_function_url,
     required_attrs: { authorization_type: 'test-value', function_name: 'test-value' },
-    expected_outputs: [:id, :function_arn, :function_url, :url_id],
+    expected_outputs: [:id, :function_arn, :function_url, :region, :url_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

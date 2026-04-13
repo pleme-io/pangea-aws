@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_snapshot_create_volume_permission,
       attributes_class: AWS::Types::SnapshotCreateVolumePermissionAttributes,
       outputs: { id: :id },
-      map: [:account_id, :snapshot_id]
+      map: [:account_id, :snapshot_id],
+      map_present: [:region]
   end
   module AWS
     include AWSSnapshotCreateVolumePermission

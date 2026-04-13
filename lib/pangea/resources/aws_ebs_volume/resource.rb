@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EbsVolumeAttributes,
       outputs: { id: :id },
       map: [:availability_zone],
-      map_present: [:iops, :kms_key_id, :outpost_arn, :size, :snapshot_id, :tags, :tags_all, :throughput, :type],
+      map_present: [:iops, :kms_key_id, :outpost_arn, :region, :size, :snapshot_id, :tags, :tags_all, :throughput, :type, :volume_initialization_rate],
       map_bool: [:encrypted, :final_snapshot, :multi_attach_enabled]
   end
   module AWS

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GuarddutyMemberAttributes,
       outputs: { id: :id },
       map: [:account_id, :detector_id, :email],
-      map_present: [:invitation_message],
+      map_present: [:invitation_message, :region],
       map_bool: [:disable_email_notification, :invite]
   end
   module AWS

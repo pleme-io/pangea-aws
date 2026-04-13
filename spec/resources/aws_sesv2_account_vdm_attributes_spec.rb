@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSSesv2AccountVdmAttributes do
         ref = synth.aws_sesv2_account_vdm_attributes('test', required_attrs)
 
         expect(ref.id).to eq("${aws_sesv2_account_vdm_attributes.test.id}")
+        expect(ref.region).to eq("${aws_sesv2_account_vdm_attributes.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_account_vdm_attributes('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_sesv2_account_vdm_attributes', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ dashboard_attributes: [{ 'key1' => 'val1' }], guardian_attributes: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ dashboard_attributes: { 'key1' => 'val1' }, guardian_attributes: { 'key1' => 'val1' }, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -53,6 +66,7 @@ RSpec.describe Pangea::Resources::AWSSesv2AccountVdmAttributes do
         config = validate_resource_structure(result, 'aws_sesv2_account_vdm_attributes', 'full')
         expect(config).to have_key('dashboard_attributes')
         expect(config).to have_key('guardian_attributes')
+        expect(config).to have_key('region')
       end
     end
 
@@ -60,7 +74,7 @@ RSpec.describe Pangea::Resources::AWSSesv2AccountVdmAttributes do
       it 'includes dashboard_attributes when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sesv2_account_vdm_attributes('opt', required_attrs.merge(dashboard_attributes: [{ 'key1' => 'val1' }]))
+        synth.aws_sesv2_account_vdm_attributes('opt', required_attrs.merge(dashboard_attributes: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_account_vdm_attributes', 'opt')
         expect(config).to have_key('dashboard_attributes')
@@ -77,7 +91,7 @@ RSpec.describe Pangea::Resources::AWSSesv2AccountVdmAttributes do
       it 'includes guardian_attributes when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sesv2_account_vdm_attributes('opt', required_attrs.merge(guardian_attributes: [{ 'key1' => 'val1' }]))
+        synth.aws_sesv2_account_vdm_attributes('opt', required_attrs.merge(guardian_attributes: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_account_vdm_attributes', 'opt')
         expect(config).to have_key('guardian_attributes')
@@ -90,6 +104,23 @@ RSpec.describe Pangea::Resources::AWSSesv2AccountVdmAttributes do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_account_vdm_attributes', 'minimal')
         expect(config).not_to have_key('guardian_attributes')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_account_vdm_attributes('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_account_vdm_attributes', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_account_vdm_attributes('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_account_vdm_attributes', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -135,7 +166,7 @@ RSpec.describe Pangea::Resources::AWSSesv2AccountVdmAttributes do
     resource_type: :aws_sesv2_account_vdm_attributes,
     method: :aws_sesv2_account_vdm_attributes,
     required_attrs: { vdm_enabled: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

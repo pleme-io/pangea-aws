@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_appsync_type,
       attributes_class: AWS::Types::AppsyncTypeAttributes,
       outputs: { id: :id },
-      map: [:api_id, :definition, :format]
+      map: [:api_id, :definition, :format],
+      map_present: [:region]
   end
   module AWS
     include AWSAppsyncType

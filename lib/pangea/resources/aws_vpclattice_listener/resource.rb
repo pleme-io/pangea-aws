@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpclatticeListenerAttributes,
       outputs: { id: :id },
       map: [:default_action, :name, :protocol],
-      map_present: [:port, :service_arn, :service_identifier, :tags, :tags_all]
+      map_present: [:port, :region, :service_arn, :service_identifier, :tags, :tags_all]
   end
   module AWS
     include AWSVpclatticeListener

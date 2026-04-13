@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KmsReplicaExternalKeyAttributes,
       outputs: { id: :id },
       map: [:primary_key_arn],
-      map_present: [:deletion_window_in_days, :description, :key_material_base64, :policy, :tags, :tags_all, :valid_to],
+      map_present: [:deletion_window_in_days, :description, :key_material_base64, :policy, :region, :tags, :tags_all, :valid_to],
       map_bool: [:bypass_policy_lockout_safety_check, :enabled]
   end
   module AWS

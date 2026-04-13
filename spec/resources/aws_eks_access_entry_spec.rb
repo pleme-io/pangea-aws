@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSEksAccessEntry do
         expect(ref.created_at).to eq("${aws_eks_access_entry.test.created_at}")
         expect(ref.kubernetes_groups).to eq("${aws_eks_access_entry.test.kubernetes_groups}")
         expect(ref.modified_at).to eq("${aws_eks_access_entry.test.modified_at}")
+        expect(ref.region).to eq("${aws_eks_access_entry.test.region}")
         expect(ref.tags_all).to eq("${aws_eks_access_entry.test.tags_all}")
         expect(ref.user_name).to eq("${aws_eks_access_entry.test.user_name}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSEksAccessEntry do
         expect(config).not_to have_key('created_at')
         expect(config).not_to have_key('kubernetes_groups')
         expect(config).not_to have_key('modified_at')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('user_name')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' }, type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ kubernetes_groups: ['test-value'], region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, type: 'test-value', user_name: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,12 +76,50 @@ RSpec.describe Pangea::Resources::AWSEksAccessEntry do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_eks_access_entry', 'full')
+        expect(config).to have_key('kubernetes_groups')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('type')
+        expect(config).to have_key('user_name')
       end
     end
 
     context 'optional attributes' do
+      it 'includes kubernetes_groups when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_access_entry('opt', required_attrs.merge(kubernetes_groups: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_access_entry', 'opt')
+        expect(config).to have_key('kubernetes_groups')
+      end
+
+      it 'omits kubernetes_groups when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_access_entry('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_access_entry', 'minimal')
+        expect(config).not_to have_key('kubernetes_groups')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_access_entry('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_access_entry', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_access_entry('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_access_entry', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -97,6 +137,23 @@ RSpec.describe Pangea::Resources::AWSEksAccessEntry do
         config = validate_resource_structure(result, 'aws_eks_access_entry', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_access_entry('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_access_entry', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_access_entry('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_access_entry', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes type when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -113,6 +170,23 @@ RSpec.describe Pangea::Resources::AWSEksAccessEntry do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_access_entry', 'minimal')
         expect(config).not_to have_key('type')
+      end
+      it 'includes user_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_access_entry('opt', required_attrs.merge(user_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_access_entry', 'opt')
+        expect(config).to have_key('user_name')
+      end
+
+      it 'omits user_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_access_entry('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_access_entry', 'minimal')
+        expect(config).not_to have_key('user_name')
       end
     end
 
@@ -159,7 +233,7 @@ RSpec.describe Pangea::Resources::AWSEksAccessEntry do
     resource_type: :aws_eks_access_entry,
     method: :aws_eks_access_entry,
     required_attrs: { cluster_name: 'test-value', principal_arn: 'test-value' },
-    expected_outputs: [:id, :access_entry_arn, :created_at, :kubernetes_groups, :modified_at, :tags_all, :user_name],
+    expected_outputs: [:id, :access_entry_arn, :created_at, :kubernetes_groups, :modified_at, :region, :tags_all, :user_name],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

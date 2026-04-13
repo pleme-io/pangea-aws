@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkmanagerSiteToSiteVpnAttachmentAttributes,
       outputs: { id: :id },
       map: [:core_network_id, :vpn_connection_arn],
-      map_present: [:tags, :tags_all]
+      map_present: [:routing_policy_label, :tags, :tags_all]
   end
   module AWS
     include AWSNetworkmanagerSiteToSiteVpnAttachment

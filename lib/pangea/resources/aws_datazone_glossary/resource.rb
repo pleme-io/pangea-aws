@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatazoneGlossaryAttributes,
       outputs: { id: :id },
       map: [:domain_identifier, :name, :owning_project_identifier],
-      map_present: [:description, :status]
+      map_present: [:description, :region, :status]
   end
   module AWS
     include AWSDatazoneGlossary

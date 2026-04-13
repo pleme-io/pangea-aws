@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EbsSnapshotAttributes,
       outputs: { id: :id },
       map: [:volume_id],
-      map_present: [:description, :outpost_arn, :storage_tier, :tags, :tags_all, :temporary_restore_days],
+      map_present: [:description, :outpost_arn, :region, :storage_tier, :tags, :tags_all, :temporary_restore_days],
       map_bool: [:permanent_restore]
   end
   module AWS

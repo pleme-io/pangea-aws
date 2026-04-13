@@ -39,6 +39,8 @@ RSpec.describe Pangea::Resources::AWSKinesisStream do
 
         expect(ref.id).to eq("${aws_kinesis_stream.test.id}")
         expect(ref.arn).to eq("${aws_kinesis_stream.test.arn}")
+        expect(ref.max_record_size_in_kib).to eq("${aws_kinesis_stream.test.max_record_size_in_kib}")
+        expect(ref.region).to eq("${aws_kinesis_stream.test.region}")
         expect(ref.tags_all).to eq("${aws_kinesis_stream.test.tags_all}")
       end
     end
@@ -52,12 +54,14 @@ RSpec.describe Pangea::Resources::AWSKinesisStream do
 
         config = validate_resource_structure(result, 'aws_kinesis_stream', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('max_record_size_in_kib')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ encryption_type: 'test-value', enforce_consumer_deletion: true, kms_key_id: 'test-value', retention_period: 3.14, shard_count: 3.14, shard_level_metrics: ['test-value'], stream_mode_details: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ arn: 'test-value', encryption_type: 'test-value', enforce_consumer_deletion: true, kms_key_id: 'test-value', max_record_size_in_kib: 3.14, region: 'test-value', retention_period: 3.14, shard_count: 3.14, shard_level_metrics: ['test-value'], stream_mode_details: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,18 +70,39 @@ RSpec.describe Pangea::Resources::AWSKinesisStream do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_kinesis_stream', 'full')
+        expect(config).to have_key('arn')
         expect(config).to have_key('encryption_type')
         expect(config).to have_key('enforce_consumer_deletion')
         expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('max_record_size_in_kib')
+        expect(config).to have_key('region')
         expect(config).to have_key('retention_period')
         expect(config).to have_key('shard_count')
         expect(config).to have_key('shard_level_metrics')
         expect(config).to have_key('stream_mode_details')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream('opt', required_attrs.merge(arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream', 'opt')
+        expect(config).to have_key('arn')
+      end
+
+      it 'omits arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream', 'minimal')
+        expect(config).not_to have_key('arn')
+      end
       it 'includes encryption_type when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -128,6 +153,40 @@ RSpec.describe Pangea::Resources::AWSKinesisStream do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_stream', 'minimal')
         expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes max_record_size_in_kib when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream('opt', required_attrs.merge(max_record_size_in_kib: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream', 'opt')
+        expect(config).to have_key('max_record_size_in_kib')
+      end
+
+      it 'omits max_record_size_in_kib when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream', 'minimal')
+        expect(config).not_to have_key('max_record_size_in_kib')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes retention_period when provided' do
         synth = create_synthesizer
@@ -183,7 +242,7 @@ RSpec.describe Pangea::Resources::AWSKinesisStream do
       it 'includes stream_mode_details when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_stream('opt', required_attrs.merge(stream_mode_details: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_stream('opt', required_attrs.merge(stream_mode_details: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_stream', 'opt')
         expect(config).to have_key('stream_mode_details')
@@ -213,6 +272,23 @@ RSpec.describe Pangea::Resources::AWSKinesisStream do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_stream', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -272,7 +348,7 @@ RSpec.describe Pangea::Resources::AWSKinesisStream do
     resource_type: :aws_kinesis_stream,
     method: :aws_kinesis_stream,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :max_record_size_in_kib, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enforce_consumer_deletion]

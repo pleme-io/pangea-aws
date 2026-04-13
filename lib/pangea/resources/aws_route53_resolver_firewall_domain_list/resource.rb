@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Route53ResolverFirewallDomainListAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:domains, :tags, :tags_all]
+      map_present: [:domains, :region, :tags, :tags_all]
   end
   module AWS
     include AWSRoute53ResolverFirewallDomainList

@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_detective_graph,
       attributes_class: AWS::Types::DetectiveGraphAttributes,
       outputs: { id: :id },
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSDetectiveGraph

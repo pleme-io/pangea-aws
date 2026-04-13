@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerFeatureGroup do
 
         expect(ref.id).to eq("${aws_sagemaker_feature_group.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_feature_group.test.arn}")
+        expect(ref.region).to eq("${aws_sagemaker_feature_group.test.region}")
         expect(ref.tags_all).to eq("${aws_sagemaker_feature_group.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSSagemakerFeatureGroup do
 
         config = validate_resource_structure(result, 'aws_sagemaker_feature_group', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', offline_store_config: [{ 'key1' => 'val1' }], online_store_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, throughput_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', offline_store_config: { 'key1' => 'val1' }, online_store_config: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, throughput_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +71,9 @@ RSpec.describe Pangea::Resources::AWSSagemakerFeatureGroup do
         expect(config).to have_key('description')
         expect(config).to have_key('offline_store_config')
         expect(config).to have_key('online_store_config')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('throughput_config')
       end
     end
@@ -95,7 +99,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerFeatureGroup do
       it 'includes offline_store_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_feature_group('opt', required_attrs.merge(offline_store_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_feature_group('opt', required_attrs.merge(offline_store_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_feature_group', 'opt')
         expect(config).to have_key('offline_store_config')
@@ -112,7 +116,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerFeatureGroup do
       it 'includes online_store_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_feature_group('opt', required_attrs.merge(online_store_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_feature_group('opt', required_attrs.merge(online_store_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_feature_group', 'opt')
         expect(config).to have_key('online_store_config')
@@ -125,6 +129,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerFeatureGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_feature_group', 'minimal')
         expect(config).not_to have_key('online_store_config')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_feature_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_feature_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_feature_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_feature_group', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -143,10 +164,27 @@ RSpec.describe Pangea::Resources::AWSSagemakerFeatureGroup do
         config = validate_resource_structure(result, 'aws_sagemaker_feature_group', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_feature_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_feature_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_feature_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_feature_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes throughput_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_feature_group('opt', required_attrs.merge(throughput_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_feature_group('opt', required_attrs.merge(throughput_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_feature_group', 'opt')
         expect(config).to have_key('throughput_config')
@@ -208,7 +246,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerFeatureGroup do
     resource_type: :aws_sagemaker_feature_group,
     method: :aws_sagemaker_feature_group,
     required_attrs: { event_time_feature_name: 'test-value', feature_definition: [{ 'key1' => 'val1' }], feature_group_name: 'test-value', record_identifier_feature_name: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

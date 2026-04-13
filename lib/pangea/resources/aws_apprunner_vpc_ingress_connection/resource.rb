@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApprunnerVpcIngressConnectionAttributes,
       outputs: { id: :id },
       map: [:ingress_vpc_configuration, :name, :service_arn],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSApprunnerVpcIngressConnection

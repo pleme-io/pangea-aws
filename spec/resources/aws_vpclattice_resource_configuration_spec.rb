@@ -40,8 +40,12 @@ RSpec.describe Pangea::Resources::AWSVpclatticeResourceConfiguration do
         expect(ref.id).to eq("${aws_vpclattice_resource_configuration.test.id}")
         expect(ref.allow_association_to_shareable_service_network).to eq("${aws_vpclattice_resource_configuration.test.allow_association_to_shareable_service_network}")
         expect(ref.arn).to eq("${aws_vpclattice_resource_configuration.test.arn}")
+        expect(ref.domain_verification_arn).to eq("${aws_vpclattice_resource_configuration.test.domain_verification_arn}")
+        expect(ref.domain_verification_id).to eq("${aws_vpclattice_resource_configuration.test.domain_verification_id}")
+        expect(ref.domain_verification_status).to eq("${aws_vpclattice_resource_configuration.test.domain_verification_status}")
         expect(ref.port_ranges).to eq("${aws_vpclattice_resource_configuration.test.port_ranges}")
         expect(ref.protocol).to eq("${aws_vpclattice_resource_configuration.test.protocol}")
+        expect(ref.region).to eq("${aws_vpclattice_resource_configuration.test.region}")
         expect(ref.resource_gateway_identifier).to eq("${aws_vpclattice_resource_configuration.test.resource_gateway_identifier}")
         expect(ref.tags_all).to eq("${aws_vpclattice_resource_configuration.test.tags_all}")
         expect(ref.type).to eq("${aws_vpclattice_resource_configuration.test.type}")
@@ -58,8 +62,12 @@ RSpec.describe Pangea::Resources::AWSVpclatticeResourceConfiguration do
         config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'test')
         expect(config).not_to have_key('allow_association_to_shareable_service_network')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('domain_verification_arn')
+        expect(config).not_to have_key('domain_verification_id')
+        expect(config).not_to have_key('domain_verification_status')
         expect(config).not_to have_key('port_ranges')
         expect(config).not_to have_key('protocol')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_gateway_identifier')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('type')
@@ -67,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeResourceConfiguration do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ resource_configuration_definition: [{ 'key1' => 'val1' }], resource_configuration_group_id: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ allow_association_to_shareable_service_network: true, custom_domain_name: 'test-value', domain_verification_id: 'test-value', port_ranges: ['test-value'], protocol: 'test-value', region: 'test-value', resource_configuration_definition: [{ 'key1' => 'val1' }], resource_configuration_group_id: 'test-value', resource_gateway_identifier: 'test-value', tags: { 'key1' => 'val1' }, type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,13 +84,123 @@ RSpec.describe Pangea::Resources::AWSVpclatticeResourceConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'full')
+        expect(config).to have_key('allow_association_to_shareable_service_network')
+        expect(config).to have_key('custom_domain_name')
+        expect(config).to have_key('domain_verification_id')
+        expect(config).to have_key('port_ranges')
+        expect(config).to have_key('protocol')
+        expect(config).to have_key('region')
         expect(config).to have_key('resource_configuration_definition')
         expect(config).to have_key('resource_configuration_group_id')
+        expect(config).to have_key('resource_gateway_identifier')
         expect(config).to have_key('tags')
+        expect(config).to have_key('type')
       end
     end
 
     context 'optional attributes' do
+      it 'includes allow_association_to_shareable_service_network when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('opt', required_attrs.merge(allow_association_to_shareable_service_network: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'opt')
+        expect(config).to have_key('allow_association_to_shareable_service_network')
+      end
+
+      it 'omits allow_association_to_shareable_service_network when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'minimal')
+        expect(config).not_to have_key('allow_association_to_shareable_service_network')
+      end
+      it 'includes custom_domain_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('opt', required_attrs.merge(custom_domain_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'opt')
+        expect(config).to have_key('custom_domain_name')
+      end
+
+      it 'omits custom_domain_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'minimal')
+        expect(config).not_to have_key('custom_domain_name')
+      end
+      it 'includes domain_verification_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('opt', required_attrs.merge(domain_verification_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'opt')
+        expect(config).to have_key('domain_verification_id')
+      end
+
+      it 'omits domain_verification_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'minimal')
+        expect(config).not_to have_key('domain_verification_id')
+      end
+      it 'includes port_ranges when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('opt', required_attrs.merge(port_ranges: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'opt')
+        expect(config).to have_key('port_ranges')
+      end
+
+      it 'omits port_ranges when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'minimal')
+        expect(config).not_to have_key('port_ranges')
+      end
+      it 'includes protocol when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('opt', required_attrs.merge(protocol: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'opt')
+        expect(config).to have_key('protocol')
+      end
+
+      it 'omits protocol when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'minimal')
+        expect(config).not_to have_key('protocol')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes resource_configuration_definition when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -117,6 +235,23 @@ RSpec.describe Pangea::Resources::AWSVpclatticeResourceConfiguration do
         config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'minimal')
         expect(config).not_to have_key('resource_configuration_group_id')
       end
+      it 'includes resource_gateway_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('opt', required_attrs.merge(resource_gateway_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'opt')
+        expect(config).to have_key('resource_gateway_identifier')
+      end
+
+      it 'omits resource_gateway_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'minimal')
+        expect(config).not_to have_key('resource_gateway_identifier')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -133,6 +268,37 @@ RSpec.describe Pangea::Resources::AWSVpclatticeResourceConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('opt', required_attrs.merge(type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'opt')
+        expect(config).to have_key('type')
+      end
+
+      it 'omits type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', 'minimal')
+        expect(config).not_to have_key('type')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts allow_association_to_shareable_service_network=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(allow_association_to_shareable_service_network: val)
+          synth.aws_vpclattice_resource_configuration("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_vpclattice_resource_configuration', "bool_#{val}")
+          expect(config['allow_association_to_shareable_service_network']).to eq(val)
+        end
       end
     end
 
@@ -178,8 +344,8 @@ RSpec.describe Pangea::Resources::AWSVpclatticeResourceConfiguration do
     resource_type: :aws_vpclattice_resource_configuration,
     method: :aws_vpclattice_resource_configuration,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :allow_association_to_shareable_service_network, :arn, :port_ranges, :protocol, :resource_gateway_identifier, :tags_all, :type],
+    expected_outputs: [:id, :allow_association_to_shareable_service_network, :arn, :domain_verification_arn, :domain_verification_id, :domain_verification_status, :port_ranges, :protocol, :region, :resource_gateway_identifier, :tags_all, :type],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:allow_association_to_shareable_service_network]
 end

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebBrowserSettings do
         expect(ref.id).to eq("${aws_workspacesweb_browser_settings.test.id}")
         expect(ref.associated_portal_arns).to eq("${aws_workspacesweb_browser_settings.test.associated_portal_arns}")
         expect(ref.browser_settings_arn).to eq("${aws_workspacesweb_browser_settings.test.browser_settings_arn}")
+        expect(ref.region).to eq("${aws_workspacesweb_browser_settings.test.region}")
         expect(ref.tags_all).to eq("${aws_workspacesweb_browser_settings.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebBrowserSettings do
         config = validate_resource_structure(result, 'aws_workspacesweb_browser_settings', 'test')
         expect(config).not_to have_key('associated_portal_arns')
         expect(config).not_to have_key('browser_settings_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ additional_encryption_context: { 'key1' => 'val1' }, customer_managed_key: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ additional_encryption_context: { 'key1' => 'val1' }, customer_managed_key: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,6 +72,7 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebBrowserSettings do
         config = validate_resource_structure(result, 'aws_workspacesweb_browser_settings', 'full')
         expect(config).to have_key('additional_encryption_context')
         expect(config).to have_key('customer_managed_key')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -108,6 +111,23 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebBrowserSettings do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_workspacesweb_browser_settings', 'minimal')
         expect(config).not_to have_key('customer_managed_key')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspacesweb_browser_settings('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspacesweb_browser_settings', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspacesweb_browser_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspacesweb_browser_settings', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -170,7 +190,7 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebBrowserSettings do
     resource_type: :aws_workspacesweb_browser_settings,
     method: :aws_workspacesweb_browser_settings,
     required_attrs: { browser_policy: 'test-value' },
-    expected_outputs: [:id, :associated_portal_arns, :browser_settings_arn, :tags_all],
+    expected_outputs: [:id, :associated_portal_arns, :browser_settings_arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

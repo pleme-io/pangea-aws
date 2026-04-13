@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSEmrcontainersVirtualCluster do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { container_provider: [{ 'key1' => 'val1' }], name: 'test-value' } }
+  let(:required_attrs) { { container_provider: { 'key1' => 'val1' }, name: 'test-value' } }
 
   describe ':aws_emrcontainers_virtual_cluster' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEmrcontainersVirtualCluster do
 
         expect(ref.id).to eq("${aws_emrcontainers_virtual_cluster.test.id}")
         expect(ref.arn).to eq("${aws_emrcontainers_virtual_cluster.test.arn}")
+        expect(ref.region).to eq("${aws_emrcontainers_virtual_cluster.test.region}")
         expect(ref.tags_all).to eq("${aws_emrcontainers_virtual_cluster.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSEmrcontainersVirtualCluster do
 
         config = validate_resource_structure(result, 'aws_emrcontainers_virtual_cluster', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,11 +68,30 @@ RSpec.describe Pangea::Resources::AWSEmrcontainersVirtualCluster do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_emrcontainers_virtual_cluster', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrcontainers_virtual_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrcontainers_virtual_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrcontainers_virtual_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrcontainers_virtual_cluster', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -88,6 +109,23 @@ RSpec.describe Pangea::Resources::AWSEmrcontainersVirtualCluster do
         config = validate_resource_structure(result, 'aws_emrcontainers_virtual_cluster', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrcontainers_virtual_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrcontainers_virtual_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emrcontainers_virtual_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emrcontainers_virtual_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -98,7 +136,7 @@ RSpec.describe Pangea::Resources::AWSEmrcontainersVirtualCluster do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_emrcontainers_virtual_cluster', 'typed')
-        expect(config['container_provider']).to be_a(Array)
+        expect(config['container_provider']).to be_a(Hash)
         expect(config['name']).to be_a(String)
       end
     end
@@ -132,8 +170,8 @@ RSpec.describe Pangea::Resources::AWSEmrcontainersVirtualCluster do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_emrcontainers_virtual_cluster,
     method: :aws_emrcontainers_virtual_cluster,
-    required_attrs: { container_provider: [{ 'key1' => 'val1' }], name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    required_attrs: { container_provider: { 'key1' => 'val1' }, name: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

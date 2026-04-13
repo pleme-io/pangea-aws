@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Lexv2modelsSlotTypeAttributes,
       outputs: { id: :id },
       map: [:bot_id, :bot_version, :locale_id, :name],
-      map_present: [:composite_slot_type_setting, :description, :external_source_setting, :parent_slot_type_signature, :slot_type_values, :value_selection_setting]
+      map_present: [:composite_slot_type_setting, :description, :external_source_setting, :parent_slot_type_signature, :region, :slot_type_values, :value_selection_setting]
   end
   module AWS
     include AWSLexv2modelsSlotType

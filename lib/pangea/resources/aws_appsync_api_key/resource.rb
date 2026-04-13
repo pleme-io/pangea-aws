@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppsyncApiKeyAttributes,
       outputs: { id: :id },
       map: [:api_id],
-      map_present: [:description, :expires]
+      map_present: [:description, :expires, :region]
   end
   module AWS
     include AWSAppsyncApiKey

@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerObservabilityConfiguration do
         expect(ref.arn).to eq("${aws_apprunner_observability_configuration.test.arn}")
         expect(ref.latest).to eq("${aws_apprunner_observability_configuration.test.latest}")
         expect(ref.observability_configuration_revision).to eq("${aws_apprunner_observability_configuration.test.observability_configuration_revision}")
+        expect(ref.region).to eq("${aws_apprunner_observability_configuration.test.region}")
         expect(ref.status).to eq("${aws_apprunner_observability_configuration.test.status}")
         expect(ref.tags_all).to eq("${aws_apprunner_observability_configuration.test.tags_all}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSApprunnerObservabilityConfiguration do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('latest')
         expect(config).not_to have_key('observability_configuration_revision')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' }, trace_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, trace_configuration: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,12 +74,31 @@ RSpec.describe Pangea::Resources::AWSApprunnerObservabilityConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_apprunner_observability_configuration', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('trace_configuration')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_observability_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_observability_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_observability_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_observability_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -95,10 +116,27 @@ RSpec.describe Pangea::Resources::AWSApprunnerObservabilityConfiguration do
         config = validate_resource_structure(result, 'aws_apprunner_observability_configuration', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_observability_configuration('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_observability_configuration', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_observability_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_observability_configuration', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes trace_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_apprunner_observability_configuration('opt', required_attrs.merge(trace_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_apprunner_observability_configuration('opt', required_attrs.merge(trace_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apprunner_observability_configuration', 'opt')
         expect(config).to have_key('trace_configuration')
@@ -156,7 +194,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerObservabilityConfiguration do
     resource_type: :aws_apprunner_observability_configuration,
     method: :aws_apprunner_observability_configuration,
     required_attrs: { observability_configuration_name: 'test-value' },
-    expected_outputs: [:id, :arn, :latest, :observability_configuration_revision, :status, :tags_all],
+    expected_outputs: [:id, :arn, :latest, :observability_configuration_revision, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSApiGatewayIntegrationResponse do
         ref = synth.aws_api_gateway_integration_response('test', required_attrs)
 
         expect(ref.id).to eq("${aws_api_gateway_integration_response.test.id}")
+        expect(ref.region).to eq("${aws_api_gateway_integration_response.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_integration_response('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_api_gateway_integration_response', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ content_handling: 'test-value', response_parameters: { 'key1' => 'val1' }, response_templates: { 'key1' => 'val1' }, selection_pattern: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ content_handling: 'test-value', region: 'test-value', response_parameters: { 'key1' => 'val1' }, response_templates: { 'key1' => 'val1' }, selection_pattern: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayIntegrationResponse do
 
         config = validate_resource_structure(result, 'aws_api_gateway_integration_response', 'full')
         expect(config).to have_key('content_handling')
+        expect(config).to have_key('region')
         expect(config).to have_key('response_parameters')
         expect(config).to have_key('response_templates')
         expect(config).to have_key('selection_pattern')
@@ -75,6 +89,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayIntegrationResponse do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_integration_response', 'minimal')
         expect(config).not_to have_key('content_handling')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_integration_response('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_integration_response', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_integration_response('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_integration_response', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes response_parameters when provided' do
         synth = create_synthesizer
@@ -174,7 +205,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayIntegrationResponse do
     resource_type: :aws_api_gateway_integration_response,
     method: :aws_api_gateway_integration_response,
     required_attrs: { http_method: 'test-value', resource_id: 'test-value', rest_api_id: 'test-value', status_code: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

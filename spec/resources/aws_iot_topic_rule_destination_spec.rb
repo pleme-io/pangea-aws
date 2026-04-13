@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSIotTopicRuleDestination do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { vpc_configuration: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { vpc_configuration: { 'key1' => 'val1' } } }
 
   describe ':aws_iot_topic_rule_destination' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSIotTopicRuleDestination do
 
         expect(ref.id).to eq("${aws_iot_topic_rule_destination.test.id}")
         expect(ref.arn).to eq("${aws_iot_topic_rule_destination.test.arn}")
+        expect(ref.region).to eq("${aws_iot_topic_rule_destination.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSIotTopicRuleDestination do
 
         config = validate_resource_structure(result, 'aws_iot_topic_rule_destination', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enabled: true }) }
+      let(:all_attrs) { required_attrs.merge({ enabled: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSIotTopicRuleDestination do
 
         config = validate_resource_structure(result, 'aws_iot_topic_rule_destination', 'full')
         expect(config).to have_key('enabled')
+        expect(config).to have_key('region')
       end
     end
 
@@ -85,6 +88,23 @@ RSpec.describe Pangea::Resources::AWSIotTopicRuleDestination do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_topic_rule_destination', 'minimal')
         expect(config).not_to have_key('enabled')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_topic_rule_destination('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_topic_rule_destination', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_topic_rule_destination('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_topic_rule_destination', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -110,7 +130,7 @@ RSpec.describe Pangea::Resources::AWSIotTopicRuleDestination do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_iot_topic_rule_destination', 'typed')
-        expect(config['vpc_configuration']).to be_a(Array)
+        expect(config['vpc_configuration']).to be_a(Hash)
       end
     end
 
@@ -143,8 +163,8 @@ RSpec.describe Pangea::Resources::AWSIotTopicRuleDestination do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_iot_topic_rule_destination,
     method: :aws_iot_topic_rule_destination,
-    required_attrs: { vpc_configuration: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn],
+    required_attrs: { vpc_configuration: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled]

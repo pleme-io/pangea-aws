@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRdsExportTask do
         expect(ref.id).to eq("${aws_rds_export_task.test.id}")
         expect(ref.failure_cause).to eq("${aws_rds_export_task.test.failure_cause}")
         expect(ref.percent_progress).to eq("${aws_rds_export_task.test.percent_progress}")
+        expect(ref.region).to eq("${aws_rds_export_task.test.region}")
         expect(ref.s3_prefix).to eq("${aws_rds_export_task.test.s3_prefix}")
         expect(ref.snapshot_time).to eq("${aws_rds_export_task.test.snapshot_time}")
         expect(ref.source_type).to eq("${aws_rds_export_task.test.source_type}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSRdsExportTask do
         config = validate_resource_structure(result, 'aws_rds_export_task', 'test')
         expect(config).not_to have_key('failure_cause')
         expect(config).not_to have_key('percent_progress')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('s3_prefix')
         expect(config).not_to have_key('snapshot_time')
         expect(config).not_to have_key('source_type')
@@ -71,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSRdsExportTask do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ export_only: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ export_only: ['test-value'], region: 'test-value', s3_prefix: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -81,6 +83,8 @@ RSpec.describe Pangea::Resources::AWSRdsExportTask do
 
         config = validate_resource_structure(result, 'aws_rds_export_task', 'full')
         expect(config).to have_key('export_only')
+        expect(config).to have_key('region')
+        expect(config).to have_key('s3_prefix')
       end
     end
 
@@ -101,6 +105,40 @@ RSpec.describe Pangea::Resources::AWSRdsExportTask do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_export_task', 'minimal')
         expect(config).not_to have_key('export_only')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_export_task('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_export_task', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_export_task('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_export_task', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes s3_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_export_task('opt', required_attrs.merge(s3_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_export_task', 'opt')
+        expect(config).to have_key('s3_prefix')
+      end
+
+      it 'omits s3_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_export_task('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_export_task', 'minimal')
+        expect(config).not_to have_key('s3_prefix')
       end
     end
 
@@ -150,7 +188,7 @@ RSpec.describe Pangea::Resources::AWSRdsExportTask do
     resource_type: :aws_rds_export_task,
     method: :aws_rds_export_task,
     required_attrs: { export_task_identifier: 'test-value', iam_role_arn: 'test-value', kms_key_id: 'test-value', s3_bucket_name: 'test-value', source_arn: 'test-value' },
-    expected_outputs: [:id, :failure_cause, :percent_progress, :s3_prefix, :snapshot_time, :source_type, :status, :task_end_time, :task_start_time, :warning_message],
+    expected_outputs: [:id, :failure_cause, :percent_progress, :region, :s3_prefix, :snapshot_time, :source_type, :status, :task_end_time, :task_start_time, :warning_message],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

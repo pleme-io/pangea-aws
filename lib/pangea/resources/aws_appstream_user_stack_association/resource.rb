@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppstreamUserStackAssociationAttributes,
       outputs: { id: :id },
       map: [:authentication_type, :stack_name, :user_name],
+      map_present: [:region],
       map_bool: [:send_email_notification]
   end
   module AWS

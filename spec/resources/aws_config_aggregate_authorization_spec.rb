@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSConfigAggregateAuthorization do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { account_id: 'test-value', region: 'test-value' } }
+  let(:required_attrs) { { account_id: 'test-value' } }
 
   describe ':aws_config_aggregate_authorization' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSConfigAggregateAuthorization do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_config_aggregate_authorization', 'test')
-        validate_required_attributes(config, [:account_id, :region])
+        validate_required_attributes(config, [:account_id])
       end
 
       it 'returns a ResourceReference' do
@@ -57,7 +57,7 @@ RSpec.describe Pangea::Resources::AWSConfigAggregateAuthorization do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ authorized_aws_region: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,11 +66,48 @@ RSpec.describe Pangea::Resources::AWSConfigAggregateAuthorization do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_config_aggregate_authorization', 'full')
+        expect(config).to have_key('authorized_aws_region')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes authorized_aws_region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_aggregate_authorization('opt', required_attrs.merge(authorized_aws_region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_aggregate_authorization', 'opt')
+        expect(config).to have_key('authorized_aws_region')
+      end
+
+      it 'omits authorized_aws_region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_aggregate_authorization('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_aggregate_authorization', 'minimal')
+        expect(config).not_to have_key('authorized_aws_region')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_aggregate_authorization('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_aggregate_authorization', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_aggregate_authorization('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_aggregate_authorization', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -88,6 +125,23 @@ RSpec.describe Pangea::Resources::AWSConfigAggregateAuthorization do
         config = validate_resource_structure(result, 'aws_config_aggregate_authorization', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_aggregate_authorization('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_aggregate_authorization', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_aggregate_authorization('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_aggregate_authorization', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -99,7 +153,6 @@ RSpec.describe Pangea::Resources::AWSConfigAggregateAuthorization do
 
         config = validate_resource_structure(result, 'aws_config_aggregate_authorization', 'typed')
         expect(config['account_id']).to be_a(String)
-        expect(config['region']).to be_a(String)
       end
     end
 
@@ -132,7 +185,7 @@ RSpec.describe Pangea::Resources::AWSConfigAggregateAuthorization do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_config_aggregate_authorization,
     method: :aws_config_aggregate_authorization,
-    required_attrs: { account_id: 'test-value', region: 'test-value' },
+    required_attrs: { account_id: 'test-value' },
     expected_outputs: [:id, :arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],

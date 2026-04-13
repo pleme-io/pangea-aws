@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_auditmanager_assessment,
       attributes_class: AWS::Types::AuditmanagerAssessmentAttributes,
       outputs: { id: :id },
-      map: [:framework_id, :name, :roles],
-      map_present: [:assessment_reports_destination, :description, :scope, :tags]
+      map: [:framework_id, :name],
+      map_present: [:assessment_reports_destination, :description, :region, :roles, :scope, :tags]
   end
   module AWS
     include AWSAuditmanagerAssessment

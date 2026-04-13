@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::EksClusterAttributes,
       outputs: { id: :id },
       map: [:name, :role_arn, :vpc_config],
-      map_present: [:access_config, :compute_config, :enabled_cluster_log_types, :encryption_config, :kubernetes_network_config, :outpost_config, :remote_network_config, :storage_config, :tags, :tags_all, :upgrade_policy, :version, :zonal_shift_config],
-      map_bool: [:bootstrap_self_managed_addons, :force_update_version]
+      map_present: [:access_config, :compute_config, :control_plane_scaling_config, :enabled_cluster_log_types, :encryption_config, :kubernetes_network_config, :outpost_config, :region, :remote_network_config, :storage_config, :tags, :tags_all, :upgrade_policy, :version, :zonal_shift_config],
+      map_bool: [:bootstrap_self_managed_addons, :deletion_protection, :force_update_version]
   end
   module AWS
     include AWSEksCluster

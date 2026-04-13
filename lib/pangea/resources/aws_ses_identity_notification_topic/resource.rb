@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SesIdentityNotificationTopicAttributes,
       outputs: { id: :id },
       map: [:identity, :notification_type],
-      map_present: [:topic_arn],
+      map_present: [:region, :topic_arn],
       map_bool: [:include_original_headers]
   end
   module AWS

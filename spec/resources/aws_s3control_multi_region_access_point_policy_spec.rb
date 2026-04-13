@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSS3controlMultiRegionAccessPointPolicy do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { details: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { details: { 'key1' => 'val1' } } }
 
   describe ':aws_s3control_multi_region_access_point_policy' do
     context 'with required attributes only' do
@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSS3controlMultiRegionAccessPointPolicy do
         expect(ref.account_id).to eq("${aws_s3control_multi_region_access_point_policy.test.account_id}")
         expect(ref.established).to eq("${aws_s3control_multi_region_access_point_policy.test.established}")
         expect(ref.proposed).to eq("${aws_s3control_multi_region_access_point_policy.test.proposed}")
+        expect(ref.region).to eq("${aws_s3control_multi_region_access_point_policy.test.region}")
       end
     end
 
@@ -55,6 +56,59 @@ RSpec.describe Pangea::Resources::AWSS3controlMultiRegionAccessPointPolicy do
         expect(config).not_to have_key('account_id')
         expect(config).not_to have_key('established')
         expect(config).not_to have_key('proposed')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ account_id: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_multi_region_access_point_policy('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_s3control_multi_region_access_point_policy', 'full')
+        expect(config).to have_key('account_id')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_multi_region_access_point_policy('opt', required_attrs.merge(account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_multi_region_access_point_policy', 'opt')
+        expect(config).to have_key('account_id')
+      end
+
+      it 'omits account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_multi_region_access_point_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_multi_region_access_point_policy', 'minimal')
+        expect(config).not_to have_key('account_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_multi_region_access_point_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_multi_region_access_point_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_multi_region_access_point_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_multi_region_access_point_policy', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -66,7 +120,7 @@ RSpec.describe Pangea::Resources::AWSS3controlMultiRegionAccessPointPolicy do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_s3control_multi_region_access_point_policy', 'typed')
-        expect(config['details']).to be_a(Array)
+        expect(config['details']).to be_a(Hash)
       end
     end
 
@@ -99,8 +153,8 @@ RSpec.describe Pangea::Resources::AWSS3controlMultiRegionAccessPointPolicy do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_s3control_multi_region_access_point_policy,
     method: :aws_s3control_multi_region_access_point_policy,
-    required_attrs: { details: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :account_id, :established, :proposed],
+    required_attrs: { details: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :account_id, :established, :proposed, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

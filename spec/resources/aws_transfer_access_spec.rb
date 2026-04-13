@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSTransferAccess do
         ref = synth.aws_transfer_access('test', required_attrs)
 
         expect(ref.id).to eq("${aws_transfer_access.test.id}")
+        expect(ref.region).to eq("${aws_transfer_access.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_access('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_transfer_access', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ home_directory: 'test-value', home_directory_mappings: [{ 'key1' => 'val1' }], home_directory_type: 'test-value', policy: 'test-value', posix_profile: [{ 'key1' => 'val1' }], role: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ home_directory: 'test-value', home_directory_mappings: [{ 'key1' => 'val1' }], home_directory_type: 'test-value', policy: 'test-value', posix_profile: { 'key1' => 'val1' }, region: 'test-value', role: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -56,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSTransferAccess do
         expect(config).to have_key('home_directory_type')
         expect(config).to have_key('policy')
         expect(config).to have_key('posix_profile')
+        expect(config).to have_key('region')
         expect(config).to have_key('role')
       end
     end
@@ -132,7 +146,7 @@ RSpec.describe Pangea::Resources::AWSTransferAccess do
       it 'includes posix_profile when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_transfer_access('opt', required_attrs.merge(posix_profile: [{ 'key1' => 'val1' }]))
+        synth.aws_transfer_access('opt', required_attrs.merge(posix_profile: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_transfer_access', 'opt')
         expect(config).to have_key('posix_profile')
@@ -145,6 +159,23 @@ RSpec.describe Pangea::Resources::AWSTransferAccess do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_transfer_access', 'minimal')
         expect(config).not_to have_key('posix_profile')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_access('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_access', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_access('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_access', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes role when provided' do
         synth = create_synthesizer
@@ -208,7 +239,7 @@ RSpec.describe Pangea::Resources::AWSTransferAccess do
     resource_type: :aws_transfer_access,
     method: :aws_transfer_access,
     required_attrs: { external_id: 'test-value', server_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

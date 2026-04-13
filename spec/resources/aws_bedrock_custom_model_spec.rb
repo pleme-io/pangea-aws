@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSBedrockCustomModel do
         expect(ref.customization_type).to eq("${aws_bedrock_custom_model.test.customization_type}")
         expect(ref.job_arn).to eq("${aws_bedrock_custom_model.test.job_arn}")
         expect(ref.job_status).to eq("${aws_bedrock_custom_model.test.job_status}")
+        expect(ref.region).to eq("${aws_bedrock_custom_model.test.region}")
         expect(ref.tags_all).to eq("${aws_bedrock_custom_model.test.tags_all}")
         expect(ref.training_metrics).to eq("${aws_bedrock_custom_model.test.training_metrics}")
         expect(ref.validation_metrics).to eq("${aws_bedrock_custom_model.test.validation_metrics}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSBedrockCustomModel do
         expect(config).not_to have_key('customization_type')
         expect(config).not_to have_key('job_arn')
         expect(config).not_to have_key('job_status')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('training_metrics')
         expect(config).not_to have_key('validation_metrics')
@@ -67,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSBedrockCustomModel do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ custom_model_kms_key_id: 'test-value', output_data_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, training_data_config: [{ 'key1' => 'val1' }], validation_data_config: [{ 'key1' => 'val1' }], vpc_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ custom_model_kms_key_id: 'test-value', customization_type: 'test-value', output_data_config: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' }, training_data_config: [{ 'key1' => 'val1' }], validation_data_config: [{ 'key1' => 'val1' }], vpc_config: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,7 +79,9 @@ RSpec.describe Pangea::Resources::AWSBedrockCustomModel do
 
         config = validate_resource_structure(result, 'aws_bedrock_custom_model', 'full')
         expect(config).to have_key('custom_model_kms_key_id')
+        expect(config).to have_key('customization_type')
         expect(config).to have_key('output_data_config')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
         expect(config).to have_key('training_data_config')
         expect(config).to have_key('validation_data_config')
@@ -103,6 +107,23 @@ RSpec.describe Pangea::Resources::AWSBedrockCustomModel do
         config = validate_resource_structure(result, 'aws_bedrock_custom_model', 'minimal')
         expect(config).not_to have_key('custom_model_kms_key_id')
       end
+      it 'includes customization_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_custom_model('opt', required_attrs.merge(customization_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_custom_model', 'opt')
+        expect(config).to have_key('customization_type')
+      end
+
+      it 'omits customization_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_custom_model('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_custom_model', 'minimal')
+        expect(config).not_to have_key('customization_type')
+      end
       it 'includes output_data_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -119,6 +140,23 @@ RSpec.describe Pangea::Resources::AWSBedrockCustomModel do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_bedrock_custom_model', 'minimal')
         expect(config).not_to have_key('output_data_config')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_custom_model('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_custom_model', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_custom_model('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_custom_model', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -236,7 +274,7 @@ RSpec.describe Pangea::Resources::AWSBedrockCustomModel do
     resource_type: :aws_bedrock_custom_model,
     method: :aws_bedrock_custom_model,
     required_attrs: { base_model_identifier: 'test-value', custom_model_name: 'test-value', hyperparameters: { 'key1' => 'val1' }, job_name: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :custom_model_arn, :customization_type, :job_arn, :job_status, :tags_all, :training_metrics, :validation_metrics],
+    expected_outputs: [:id, :custom_model_arn, :customization_type, :job_arn, :job_status, :region, :tags_all, :training_metrics, :validation_metrics],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

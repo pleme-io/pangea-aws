@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BedrockagentPromptAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:customer_encryption_key_arn, :default_variant, :description, :tags, :variant]
+      map_present: [:customer_encryption_key_arn, :default_variant, :description, :region, :tags, :variant]
   end
   module AWS
     include AWSBedrockagentPrompt

@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSQldbLedger do
         expect(ref.arn).to eq("${aws_qldb_ledger.test.arn}")
         expect(ref.kms_key).to eq("${aws_qldb_ledger.test.kms_key}")
         expect(ref.name).to eq("${aws_qldb_ledger.test.name}")
+        expect(ref.region).to eq("${aws_qldb_ledger.test.region}")
         expect(ref.tags_all).to eq("${aws_qldb_ledger.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSQldbLedger do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('kms_key')
         expect(config).not_to have_key('name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ deletion_protection: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ deletion_protection: true, kms_key: 'test-value', name: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,7 +73,11 @@ RSpec.describe Pangea::Resources::AWSQldbLedger do
 
         config = validate_resource_structure(result, 'aws_qldb_ledger', 'full')
         expect(config).to have_key('deletion_protection')
+        expect(config).to have_key('kms_key')
+        expect(config).to have_key('name')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -93,6 +99,57 @@ RSpec.describe Pangea::Resources::AWSQldbLedger do
         config = validate_resource_structure(result, 'aws_qldb_ledger', 'minimal')
         expect(config).not_to have_key('deletion_protection')
       end
+      it 'includes kms_key when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_qldb_ledger('opt', required_attrs.merge(kms_key: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_qldb_ledger', 'opt')
+        expect(config).to have_key('kms_key')
+      end
+
+      it 'omits kms_key when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_qldb_ledger('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_qldb_ledger', 'minimal')
+        expect(config).not_to have_key('kms_key')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_qldb_ledger('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_qldb_ledger', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_qldb_ledger('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_qldb_ledger', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_qldb_ledger('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_qldb_ledger', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_qldb_ledger('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_qldb_ledger', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -109,6 +166,23 @@ RSpec.describe Pangea::Resources::AWSQldbLedger do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_qldb_ledger', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_qldb_ledger('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_qldb_ledger', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_qldb_ledger('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_qldb_ledger', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -168,7 +242,7 @@ RSpec.describe Pangea::Resources::AWSQldbLedger do
     resource_type: :aws_qldb_ledger,
     method: :aws_qldb_ledger,
     required_attrs: { permissions_mode: 'test-value' },
-    expected_outputs: [:id, :arn, :kms_key, :name, :tags_all],
+    expected_outputs: [:id, :arn, :kms_key, :name, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:deletion_protection]

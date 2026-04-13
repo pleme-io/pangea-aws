@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElasticacheUserGroupAttributes,
       outputs: { id: :id },
       map: [:engine, :user_group_id],
-      map_present: [:tags, :tags_all, :user_ids]
+      map_present: [:region, :tags, :tags_all, :user_ids]
   end
   module AWS
     include AWSElasticacheUserGroup

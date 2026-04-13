@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSCodeguruprofilerProfilingGroup do
         expect(ref.id).to eq("${aws_codeguruprofiler_profiling_group.test.id}")
         expect(ref.arn).to eq("${aws_codeguruprofiler_profiling_group.test.arn}")
         expect(ref.compute_platform).to eq("${aws_codeguruprofiler_profiling_group.test.compute_platform}")
+        expect(ref.region).to eq("${aws_codeguruprofiler_profiling_group.test.region}")
         expect(ref.tags_all).to eq("${aws_codeguruprofiler_profiling_group.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSCodeguruprofilerProfilingGroup do
         config = validate_resource_structure(result, 'aws_codeguruprofiler_profiling_group', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('compute_platform')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ agent_orchestration_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ agent_orchestration_config: [{ 'key1' => 'val1' }], compute_platform: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,8 @@ RSpec.describe Pangea::Resources::AWSCodeguruprofilerProfilingGroup do
 
         config = validate_resource_structure(result, 'aws_codeguruprofiler_profiling_group', 'full')
         expect(config).to have_key('agent_orchestration_config')
+        expect(config).to have_key('compute_platform')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -90,6 +94,40 @@ RSpec.describe Pangea::Resources::AWSCodeguruprofilerProfilingGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codeguruprofiler_profiling_group', 'minimal')
         expect(config).not_to have_key('agent_orchestration_config')
+      end
+      it 'includes compute_platform when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codeguruprofiler_profiling_group('opt', required_attrs.merge(compute_platform: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codeguruprofiler_profiling_group', 'opt')
+        expect(config).to have_key('compute_platform')
+      end
+
+      it 'omits compute_platform when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codeguruprofiler_profiling_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codeguruprofiler_profiling_group', 'minimal')
+        expect(config).not_to have_key('compute_platform')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codeguruprofiler_profiling_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codeguruprofiler_profiling_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codeguruprofiler_profiling_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codeguruprofiler_profiling_group', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -152,7 +190,7 @@ RSpec.describe Pangea::Resources::AWSCodeguruprofilerProfilingGroup do
     resource_type: :aws_codeguruprofiler_profiling_group,
     method: :aws_codeguruprofiler_profiling_group,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :compute_platform, :tags_all],
+    expected_outputs: [:id, :arn, :compute_platform, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

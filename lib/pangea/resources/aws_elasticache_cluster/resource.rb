@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElasticacheClusterAttributes,
       outputs: { id: :id },
       map: [:cluster_id],
-      map_present: [:auto_minor_version_upgrade, :availability_zone, :az_mode, :engine, :engine_version, :final_snapshot_identifier, :ip_discovery, :log_delivery_configuration, :maintenance_window, :network_type, :node_type, :notification_topic_arn, :num_cache_nodes, :outpost_mode, :parameter_group_name, :port, :preferred_availability_zones, :preferred_outpost_arn, :replication_group_id, :security_group_ids, :snapshot_arns, :snapshot_name, :snapshot_retention_limit, :snapshot_window, :subnet_group_name, :tags, :tags_all],
+      map_present: [:auto_minor_version_upgrade, :availability_zone, :az_mode, :engine, :engine_version, :final_snapshot_identifier, :ip_discovery, :log_delivery_configuration, :maintenance_window, :network_type, :node_type, :notification_topic_arn, :num_cache_nodes, :outpost_mode, :parameter_group_name, :port, :preferred_availability_zones, :preferred_outpost_arn, :region, :replication_group_id, :security_group_ids, :snapshot_arns, :snapshot_name, :snapshot_retention_limit, :snapshot_window, :subnet_group_name, :tags, :tags_all],
       map_bool: [:apply_immediately, :transit_encryption_enabled]
   end
   module AWS

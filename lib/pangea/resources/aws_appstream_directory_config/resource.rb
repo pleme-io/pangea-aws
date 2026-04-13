@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_appstream_directory_config,
       attributes_class: AWS::Types::AppstreamDirectoryConfigAttributes,
       outputs: { id: :id },
-      map: [:directory_name, :organizational_unit_distinguished_names, :service_account_credentials]
+      map: [:directory_name, :organizational_unit_distinguished_names, :service_account_credentials],
+      map_present: [:certificate_based_auth_properties, :region]
   end
   module AWS
     include AWSAppstreamDirectoryConfig

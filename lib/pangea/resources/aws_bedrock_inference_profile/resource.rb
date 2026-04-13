@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BedrockInferenceProfileAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:description, :model_source, :tags]
+      map_present: [:description, :model_source, :region, :tags]
   end
   module AWS
     include AWSBedrockInferenceProfile

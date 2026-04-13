@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeDataLake do
 
         expect(ref.id).to eq("${aws_securitylake_data_lake.test.id}")
         expect(ref.arn).to eq("${aws_securitylake_data_lake.test.arn}")
+        expect(ref.region).to eq("${aws_securitylake_data_lake.test.region}")
         expect(ref.s3_bucket_arn).to eq("${aws_securitylake_data_lake.test.s3_bucket_arn}")
         expect(ref.tags_all).to eq("${aws_securitylake_data_lake.test.tags_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeDataLake do
 
         config = validate_resource_structure(result, 'aws_securitylake_data_lake', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('s3_bucket_arn')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ configuration: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeDataLake do
 
         config = validate_resource_structure(result, 'aws_securitylake_data_lake', 'full')
         expect(config).to have_key('configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -90,6 +93,23 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeDataLake do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_securitylake_data_lake', 'minimal')
         expect(config).not_to have_key('configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securitylake_data_lake('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securitylake_data_lake', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securitylake_data_lake('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securitylake_data_lake', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -152,7 +172,7 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeDataLake do
     resource_type: :aws_securitylake_data_lake,
     method: :aws_securitylake_data_lake,
     required_attrs: { meta_store_manager_role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :s3_bucket_arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :s3_bucket_arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

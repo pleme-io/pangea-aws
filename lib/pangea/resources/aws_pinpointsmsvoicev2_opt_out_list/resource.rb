@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Pinpointsmsvoicev2OptOutListAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:tags]
+      map_present: [:region, :tags]
   end
   module AWS
     include AWSPinpointsmsvoicev2OptOutList

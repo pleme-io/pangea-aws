@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeCustomLogSource do
         expect(ref.id).to eq("${aws_securitylake_custom_log_source.test.id}")
         expect(ref.attributes).to eq("${aws_securitylake_custom_log_source.test.attributes}")
         expect(ref.provider_details).to eq("${aws_securitylake_custom_log_source.test.provider_details}")
+        expect(ref.region).to eq("${aws_securitylake_custom_log_source.test.region}")
         expect(ref.source_version).to eq("${aws_securitylake_custom_log_source.test.source_version}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeCustomLogSource do
         config = validate_resource_structure(result, 'aws_securitylake_custom_log_source', 'test')
         expect(config).not_to have_key('attributes')
         expect(config).not_to have_key('provider_details')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('source_version')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ configuration: [{ 'key1' => 'val1' }], event_classes: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ configuration: [{ 'key1' => 'val1' }], event_classes: ['test-value'], region: 'test-value', source_version: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,6 +72,8 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeCustomLogSource do
         config = validate_resource_structure(result, 'aws_securitylake_custom_log_source', 'full')
         expect(config).to have_key('configuration')
         expect(config).to have_key('event_classes')
+        expect(config).to have_key('region')
+        expect(config).to have_key('source_version')
       end
     end
 
@@ -107,6 +111,40 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeCustomLogSource do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_securitylake_custom_log_source', 'minimal')
         expect(config).not_to have_key('event_classes')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securitylake_custom_log_source('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securitylake_custom_log_source', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securitylake_custom_log_source('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securitylake_custom_log_source', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes source_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securitylake_custom_log_source('opt', required_attrs.merge(source_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securitylake_custom_log_source', 'opt')
+        expect(config).to have_key('source_version')
+      end
+
+      it 'omits source_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securitylake_custom_log_source('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securitylake_custom_log_source', 'minimal')
+        expect(config).not_to have_key('source_version')
       end
     end
 
@@ -152,7 +190,7 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeCustomLogSource do
     resource_type: :aws_securitylake_custom_log_source,
     method: :aws_securitylake_custom_log_source,
     required_attrs: { source_name: 'test-value' },
-    expected_outputs: [:id, :attributes, :provider_details, :source_version],
+    expected_outputs: [:id, :attributes, :provider_details, :region, :source_version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

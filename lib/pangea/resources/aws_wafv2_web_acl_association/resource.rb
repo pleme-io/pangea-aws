@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_wafv2_web_acl_association,
       attributes_class: AWS::Types::Wafv2WebAclAssociationAttributes,
       outputs: { id: :id },
-      map: [:resource_arn, :web_acl_arn]
+      map: [:resource_arn, :web_acl_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSWafv2WebAclAssociation

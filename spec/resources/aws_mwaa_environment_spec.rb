@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { dag_s3_path: 'test-value', execution_role_arn: 'test-value', name: 'test-value', network_configuration: [{ 'key1' => 'val1' }], source_bucket_arn: 'test-value' } }
+  let(:required_attrs) { { dag_s3_path: 'test-value', execution_role_arn: 'test-value', name: 'test-value', network_configuration: { 'key1' => 'val1' }, source_bucket_arn: 'test-value' } }
 
   describe ':aws_mwaa_environment' do
     context 'with required attributes only' do
@@ -50,6 +50,7 @@ RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
         expect(ref.min_webservers).to eq("${aws_mwaa_environment.test.min_webservers}")
         expect(ref.min_workers).to eq("${aws_mwaa_environment.test.min_workers}")
         expect(ref.plugins_s3_object_version).to eq("${aws_mwaa_environment.test.plugins_s3_object_version}")
+        expect(ref.region).to eq("${aws_mwaa_environment.test.region}")
         expect(ref.requirements_s3_object_version).to eq("${aws_mwaa_environment.test.requirements_s3_object_version}")
         expect(ref.schedulers).to eq("${aws_mwaa_environment.test.schedulers}")
         expect(ref.service_role_arn).to eq("${aws_mwaa_environment.test.service_role_arn}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
         expect(ref.webserver_url).to eq("${aws_mwaa_environment.test.webserver_url}")
         expect(ref.webserver_vpc_endpoint_service).to eq("${aws_mwaa_environment.test.webserver_vpc_endpoint_service}")
         expect(ref.weekly_maintenance_window_start).to eq("${aws_mwaa_environment.test.weekly_maintenance_window_start}")
+        expect(ref.worker_replacement_strategy).to eq("${aws_mwaa_environment.test.worker_replacement_strategy}")
       end
     end
 
@@ -83,6 +85,7 @@ RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
         expect(config).not_to have_key('min_webservers')
         expect(config).not_to have_key('min_workers')
         expect(config).not_to have_key('plugins_s3_object_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('requirements_s3_object_version')
         expect(config).not_to have_key('schedulers')
         expect(config).not_to have_key('service_role_arn')
@@ -93,11 +96,12 @@ RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
         expect(config).not_to have_key('webserver_url')
         expect(config).not_to have_key('webserver_vpc_endpoint_service')
         expect(config).not_to have_key('weekly_maintenance_window_start')
+        expect(config).not_to have_key('worker_replacement_strategy')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ airflow_configuration_options: { 'key1' => 'val1' }, kms_key: 'test-value', logging_configuration: [{ 'key1' => 'val1' }], plugins_s3_path: 'test-value', requirements_s3_path: 'test-value', startup_script_s3_path: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ airflow_configuration_options: { 'key1' => 'val1' }, airflow_version: 'test-value', endpoint_management: 'test-value', environment_class: 'test-value', kms_key: 'test-value', logging_configuration: { 'key1' => 'val1' }, max_webservers: 3.14, max_workers: 3.14, min_webservers: 3.14, min_workers: 3.14, plugins_s3_object_version: 'test-value', plugins_s3_path: 'test-value', region: 'test-value', requirements_s3_object_version: 'test-value', requirements_s3_path: 'test-value', schedulers: 3.14, startup_script_s3_object_version: 'test-value', startup_script_s3_path: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, webserver_access_mode: 'test-value', weekly_maintenance_window_start: 'test-value', worker_replacement_strategy: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -107,12 +111,28 @@ RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
 
         config = validate_resource_structure(result, 'aws_mwaa_environment', 'full')
         expect(config).to have_key('airflow_configuration_options')
+        expect(config).to have_key('airflow_version')
+        expect(config).to have_key('endpoint_management')
+        expect(config).to have_key('environment_class')
         expect(config).to have_key('kms_key')
         expect(config).to have_key('logging_configuration')
+        expect(config).to have_key('max_webservers')
+        expect(config).to have_key('max_workers')
+        expect(config).to have_key('min_webservers')
+        expect(config).to have_key('min_workers')
+        expect(config).to have_key('plugins_s3_object_version')
         expect(config).to have_key('plugins_s3_path')
+        expect(config).to have_key('region')
+        expect(config).to have_key('requirements_s3_object_version')
         expect(config).to have_key('requirements_s3_path')
+        expect(config).to have_key('schedulers')
+        expect(config).to have_key('startup_script_s3_object_version')
         expect(config).to have_key('startup_script_s3_path')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('webserver_access_mode')
+        expect(config).to have_key('weekly_maintenance_window_start')
+        expect(config).to have_key('worker_replacement_strategy')
       end
     end
 
@@ -134,6 +154,57 @@ RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
         config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
         expect(config).not_to have_key('airflow_configuration_options')
       end
+      it 'includes airflow_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(airflow_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('airflow_version')
+      end
+
+      it 'omits airflow_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('airflow_version')
+      end
+      it 'includes endpoint_management when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(endpoint_management: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('endpoint_management')
+      end
+
+      it 'omits endpoint_management when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('endpoint_management')
+      end
+      it 'includes environment_class when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(environment_class: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('environment_class')
+      end
+
+      it 'omits environment_class when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('environment_class')
+      end
       it 'includes kms_key when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -154,7 +225,7 @@ RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
       it 'includes logging_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_mwaa_environment('opt', required_attrs.merge(logging_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_mwaa_environment('opt', required_attrs.merge(logging_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
         expect(config).to have_key('logging_configuration')
@@ -167,6 +238,91 @@ RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
         expect(config).not_to have_key('logging_configuration')
+      end
+      it 'includes max_webservers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(max_webservers: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('max_webservers')
+      end
+
+      it 'omits max_webservers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('max_webservers')
+      end
+      it 'includes max_workers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(max_workers: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('max_workers')
+      end
+
+      it 'omits max_workers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('max_workers')
+      end
+      it 'includes min_webservers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(min_webservers: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('min_webservers')
+      end
+
+      it 'omits min_webservers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('min_webservers')
+      end
+      it 'includes min_workers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(min_workers: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('min_workers')
+      end
+
+      it 'omits min_workers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('min_workers')
+      end
+      it 'includes plugins_s3_object_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(plugins_s3_object_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('plugins_s3_object_version')
+      end
+
+      it 'omits plugins_s3_object_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('plugins_s3_object_version')
       end
       it 'includes plugins_s3_path when provided' do
         synth = create_synthesizer
@@ -185,6 +341,40 @@ RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
         config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
         expect(config).not_to have_key('plugins_s3_path')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes requirements_s3_object_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(requirements_s3_object_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('requirements_s3_object_version')
+      end
+
+      it 'omits requirements_s3_object_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('requirements_s3_object_version')
+      end
       it 'includes requirements_s3_path when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -201,6 +391,40 @@ RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
         expect(config).not_to have_key('requirements_s3_path')
+      end
+      it 'includes schedulers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(schedulers: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('schedulers')
+      end
+
+      it 'omits schedulers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('schedulers')
+      end
+      it 'includes startup_script_s3_object_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(startup_script_s3_object_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('startup_script_s3_object_version')
+      end
+
+      it 'omits startup_script_s3_object_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('startup_script_s3_object_version')
       end
       it 'includes startup_script_s3_path when provided' do
         synth = create_synthesizer
@@ -236,6 +460,74 @@ RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
         config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes webserver_access_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(webserver_access_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('webserver_access_mode')
+      end
+
+      it 'omits webserver_access_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('webserver_access_mode')
+      end
+      it 'includes weekly_maintenance_window_start when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(weekly_maintenance_window_start: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('weekly_maintenance_window_start')
+      end
+
+      it 'omits weekly_maintenance_window_start when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('weekly_maintenance_window_start')
+      end
+      it 'includes worker_replacement_strategy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('opt', required_attrs.merge(worker_replacement_strategy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'opt')
+        expect(config).to have_key('worker_replacement_strategy')
+      end
+
+      it 'omits worker_replacement_strategy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mwaa_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mwaa_environment', 'minimal')
+        expect(config).not_to have_key('worker_replacement_strategy')
+      end
     end
 
     context 'sensitive fields' do
@@ -256,7 +548,7 @@ RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
         expect(config['dag_s3_path']).to be_a(String)
         expect(config['execution_role_arn']).to be_a(String)
         expect(config['name']).to be_a(String)
-        expect(config['network_configuration']).to be_a(Array)
+        expect(config['network_configuration']).to be_a(Hash)
         expect(config['source_bucket_arn']).to be_a(String)
       end
     end
@@ -290,8 +582,8 @@ RSpec.describe Pangea::Resources::AWSMwaaEnvironment do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_mwaa_environment,
     method: :aws_mwaa_environment,
-    required_attrs: { dag_s3_path: 'test-value', execution_role_arn: 'test-value', name: 'test-value', network_configuration: [{ 'key1' => 'val1' }], source_bucket_arn: 'test-value' },
-    expected_outputs: [:id, :airflow_version, :arn, :created_at, :database_vpc_endpoint_service, :endpoint_management, :environment_class, :last_updated, :max_webservers, :max_workers, :min_webservers, :min_workers, :plugins_s3_object_version, :requirements_s3_object_version, :schedulers, :service_role_arn, :startup_script_s3_object_version, :status, :tags_all, :webserver_access_mode, :webserver_url, :webserver_vpc_endpoint_service, :weekly_maintenance_window_start],
+    required_attrs: { dag_s3_path: 'test-value', execution_role_arn: 'test-value', name: 'test-value', network_configuration: { 'key1' => 'val1' }, source_bucket_arn: 'test-value' },
+    expected_outputs: [:id, :airflow_version, :arn, :created_at, :database_vpc_endpoint_service, :endpoint_management, :environment_class, :last_updated, :max_webservers, :max_workers, :min_webservers, :min_workers, :plugins_s3_object_version, :region, :requirements_s3_object_version, :schedulers, :service_role_arn, :startup_script_s3_object_version, :status, :tags_all, :webserver_access_mode, :webserver_url, :webserver_vpc_endpoint_service, :weekly_maintenance_window_start, :worker_replacement_strategy],
     sensitive_fields: [:airflow_configuration_options],
     immutable_fields: [],
     boolean_fields: []

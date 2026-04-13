@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_organizations_organization,
       attributes_class: AWS::Types::OrganizationsOrganizationAttributes,
       outputs: { id: :id },
-      map_present: [:aws_service_access_principals, :enabled_policy_types, :feature_set]
+      map_present: [:aws_service_access_principals, :enabled_policy_types, :feature_set],
+      map_bool: [:return_organization_only]
   end
   module AWS
     include AWSOrganizationsOrganization

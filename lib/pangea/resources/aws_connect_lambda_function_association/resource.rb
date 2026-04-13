@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_connect_lambda_function_association,
       attributes_class: AWS::Types::ConnectLambdaFunctionAssociationAttributes,
       outputs: { id: :id },
-      map: [:function_arn, :instance_id]
+      map: [:function_arn, :instance_id],
+      map_present: [:region]
   end
   module AWS
     include AWSConnectLambdaFunctionAssociation

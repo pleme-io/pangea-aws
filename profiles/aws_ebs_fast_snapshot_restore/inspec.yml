@@ -1,0 +1,8 @@
+name: aws_ebs_fast_snapshot_restore
+title: Manages a aws_ebs_fast_snapshot_restore resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

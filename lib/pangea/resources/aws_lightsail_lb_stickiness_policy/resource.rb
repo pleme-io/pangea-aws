@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LightsailLbStickinessPolicyAttributes,
       outputs: { id: :id },
       map: [:cookie_duration, :lb_name],
+      map_present: [:region],
       map_bool: [:enabled]
   end
   module AWS

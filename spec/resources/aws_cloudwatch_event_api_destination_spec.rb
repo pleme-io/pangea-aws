@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventApiDestination do
 
         expect(ref.id).to eq("${aws_cloudwatch_event_api_destination.test.id}")
         expect(ref.arn).to eq("${aws_cloudwatch_event_api_destination.test.arn}")
+        expect(ref.region).to eq("${aws_cloudwatch_event_api_destination.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventApiDestination do
 
         config = validate_resource_structure(result, 'aws_cloudwatch_event_api_destination', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', invocation_rate_limit_per_second: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', invocation_rate_limit_per_second: 3.14, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,6 +68,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventApiDestination do
         config = validate_resource_structure(result, 'aws_cloudwatch_event_api_destination', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('invocation_rate_limit_per_second')
+        expect(config).to have_key('region')
       end
     end
 
@@ -103,6 +106,23 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventApiDestination do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_api_destination', 'minimal')
         expect(config).not_to have_key('invocation_rate_limit_per_second')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_api_destination('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_api_destination', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_api_destination('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_api_destination', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -151,7 +171,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventApiDestination do
     resource_type: :aws_cloudwatch_event_api_destination,
     method: :aws_cloudwatch_event_api_destination,
     required_attrs: { connection_arn: 'test-value', http_method: 'test-value', invocation_endpoint: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

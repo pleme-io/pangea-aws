@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSAppconfigConfigurationProfile do
         expect(ref.id).to eq("${aws_appconfig_configuration_profile.test.id}")
         expect(ref.arn).to eq("${aws_appconfig_configuration_profile.test.arn}")
         expect(ref.configuration_profile_id).to eq("${aws_appconfig_configuration_profile.test.configuration_profile_id}")
+        expect(ref.region).to eq("${aws_appconfig_configuration_profile.test.region}")
         expect(ref.tags_all).to eq("${aws_appconfig_configuration_profile.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSAppconfigConfigurationProfile do
         config = validate_resource_structure(result, 'aws_appconfig_configuration_profile', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('configuration_profile_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', kms_key_identifier: 'test-value', retrieval_role_arn: 'test-value', tags: { 'key1' => 'val1' }, type: 'test-value', validator: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', kms_key_identifier: 'test-value', region: 'test-value', retrieval_role_arn: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, type: 'test-value', validator: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,8 +72,10 @@ RSpec.describe Pangea::Resources::AWSAppconfigConfigurationProfile do
         config = validate_resource_structure(result, 'aws_appconfig_configuration_profile', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('kms_key_identifier')
+        expect(config).to have_key('region')
         expect(config).to have_key('retrieval_role_arn')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('type')
         expect(config).to have_key('validator')
       end
@@ -112,6 +116,23 @@ RSpec.describe Pangea::Resources::AWSAppconfigConfigurationProfile do
         config = validate_resource_structure(result, 'aws_appconfig_configuration_profile', 'minimal')
         expect(config).not_to have_key('kms_key_identifier')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_configuration_profile('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_configuration_profile', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_configuration_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_configuration_profile', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes retrieval_role_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -145,6 +166,23 @@ RSpec.describe Pangea::Resources::AWSAppconfigConfigurationProfile do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appconfig_configuration_profile', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_configuration_profile('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_configuration_profile', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_configuration_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_configuration_profile', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes type when provided' do
         synth = create_synthesizer
@@ -226,7 +264,7 @@ RSpec.describe Pangea::Resources::AWSAppconfigConfigurationProfile do
     resource_type: :aws_appconfig_configuration_profile,
     method: :aws_appconfig_configuration_profile,
     required_attrs: { application_id: 'test-value', location_uri: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :configuration_profile_id, :tags_all],
+    expected_outputs: [:id, :arn, :configuration_profile_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

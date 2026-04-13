@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSLocationRouteCalculator do
         expect(ref.id).to eq("${aws_location_route_calculator.test.id}")
         expect(ref.calculator_arn).to eq("${aws_location_route_calculator.test.calculator_arn}")
         expect(ref.create_time).to eq("${aws_location_route_calculator.test.create_time}")
+        expect(ref.region).to eq("${aws_location_route_calculator.test.region}")
         expect(ref.tags_all).to eq("${aws_location_route_calculator.test.tags_all}")
         expect(ref.update_time).to eq("${aws_location_route_calculator.test.update_time}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSLocationRouteCalculator do
         config = validate_resource_structure(result, 'aws_location_route_calculator', 'test')
         expect(config).not_to have_key('calculator_arn')
         expect(config).not_to have_key('create_time')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('update_time')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,7 +73,9 @@ RSpec.describe Pangea::Resources::AWSLocationRouteCalculator do
 
         config = validate_resource_structure(result, 'aws_location_route_calculator', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -93,6 +97,23 @@ RSpec.describe Pangea::Resources::AWSLocationRouteCalculator do
         config = validate_resource_structure(result, 'aws_location_route_calculator', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_location_route_calculator('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_location_route_calculator', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_location_route_calculator('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_location_route_calculator', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -109,6 +130,23 @@ RSpec.describe Pangea::Resources::AWSLocationRouteCalculator do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_location_route_calculator', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_location_route_calculator('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_location_route_calculator', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_location_route_calculator('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_location_route_calculator', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -155,7 +193,7 @@ RSpec.describe Pangea::Resources::AWSLocationRouteCalculator do
     resource_type: :aws_location_route_calculator,
     method: :aws_location_route_calculator,
     required_attrs: { calculator_name: 'test-value', data_source: 'test-value' },
-    expected_outputs: [:id, :calculator_arn, :create_time, :tags_all, :update_time],
+    expected_outputs: [:id, :calculator_arn, :create_time, :region, :tags_all, :update_time],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_route53_resolver_firewall_rule,
       attributes_class: AWS::Types::Route53ResolverFirewallRuleAttributes,
       outputs: { id: :id },
-      map: [:action, :firewall_domain_list_id, :firewall_rule_group_id, :name, :priority],
-      map_present: [:block_override_dns_type, :block_override_domain, :block_override_ttl, :block_response, :firewall_domain_redirection_action, :q_type]
+      map: [:action, :firewall_rule_group_id, :name, :priority],
+      map_present: [:block_override_dns_type, :block_override_domain, :block_override_ttl, :block_response, :confidence_threshold, :dns_threat_protection, :firewall_domain_list_id, :firewall_domain_redirection_action, :q_type, :region]
   end
   module AWS
     include AWSRoute53ResolverFirewallRule

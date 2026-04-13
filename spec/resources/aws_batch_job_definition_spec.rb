@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSBatchJobDefinition do
         expect(ref.id).to eq("${aws_batch_job_definition.test.id}")
         expect(ref.arn).to eq("${aws_batch_job_definition.test.arn}")
         expect(ref.arn_prefix).to eq("${aws_batch_job_definition.test.arn_prefix}")
+        expect(ref.region).to eq("${aws_batch_job_definition.test.region}")
         expect(ref.revision).to eq("${aws_batch_job_definition.test.revision}")
         expect(ref.tags_all).to eq("${aws_batch_job_definition.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSBatchJobDefinition do
         config = validate_resource_structure(result, 'aws_batch_job_definition', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('arn_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('revision')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ container_properties: 'test-value', deregister_on_new_revision: true, ecs_properties: 'test-value', eks_properties: [{ 'key1' => 'val1' }], node_properties: 'test-value', parameters: { 'key1' => 'val1' }, platform_capabilities: ['test-value'], propagate_tags: true, retry_strategy: [{ 'key1' => 'val1' }], scheduling_priority: 3.14, tags: { 'key1' => 'val1' }, timeout: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ container_properties: 'test-value', deregister_on_new_revision: true, ecs_properties: 'test-value', eks_properties: { 'key1' => 'val1' }, node_properties: 'test-value', parameters: { 'key1' => 'val1' }, platform_capabilities: ['test-value'], propagate_tags: true, region: 'test-value', retry_strategy: { 'key1' => 'val1' }, scheduling_priority: 3.14, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, timeout: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,9 +80,11 @@ RSpec.describe Pangea::Resources::AWSBatchJobDefinition do
         expect(config).to have_key('parameters')
         expect(config).to have_key('platform_capabilities')
         expect(config).to have_key('propagate_tags')
+        expect(config).to have_key('region')
         expect(config).to have_key('retry_strategy')
         expect(config).to have_key('scheduling_priority')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('timeout')
       end
     end
@@ -140,7 +144,7 @@ RSpec.describe Pangea::Resources::AWSBatchJobDefinition do
       it 'includes eks_properties when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_batch_job_definition('opt', required_attrs.merge(eks_properties: [{ 'key1' => 'val1' }]))
+        synth.aws_batch_job_definition('opt', required_attrs.merge(eks_properties: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_batch_job_definition', 'opt')
         expect(config).to have_key('eks_properties')
@@ -222,10 +226,27 @@ RSpec.describe Pangea::Resources::AWSBatchJobDefinition do
         config = validate_resource_structure(result, 'aws_batch_job_definition', 'minimal')
         expect(config).not_to have_key('propagate_tags')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_job_definition('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_job_definition', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_job_definition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_job_definition', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes retry_strategy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_batch_job_definition('opt', required_attrs.merge(retry_strategy: [{ 'key1' => 'val1' }]))
+        synth.aws_batch_job_definition('opt', required_attrs.merge(retry_strategy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_batch_job_definition', 'opt')
         expect(config).to have_key('retry_strategy')
@@ -273,10 +294,27 @@ RSpec.describe Pangea::Resources::AWSBatchJobDefinition do
         config = validate_resource_structure(result, 'aws_batch_job_definition', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_job_definition('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_job_definition', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_job_definition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_job_definition', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes timeout when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_batch_job_definition('opt', required_attrs.merge(timeout: [{ 'key1' => 'val1' }]))
+        synth.aws_batch_job_definition('opt', required_attrs.merge(timeout: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_batch_job_definition', 'opt')
         expect(config).to have_key('timeout')
@@ -360,7 +398,7 @@ RSpec.describe Pangea::Resources::AWSBatchJobDefinition do
     resource_type: :aws_batch_job_definition,
     method: :aws_batch_job_definition,
     required_attrs: { name: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :arn, :arn_prefix, :revision, :tags_all],
+    expected_outputs: [:id, :arn, :arn_prefix, :region, :revision, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:deregister_on_new_revision, :propagate_tags]

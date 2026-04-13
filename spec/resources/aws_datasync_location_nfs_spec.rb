@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSDatasyncLocationNfs do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { on_prem_config: [{ 'key1' => 'val1' }], server_hostname: 'test-value', subdirectory: 'test-value' } }
+  let(:required_attrs) { { on_prem_config: { 'key1' => 'val1' }, server_hostname: 'test-value', subdirectory: 'test-value' } }
 
   describe ':aws_datasync_location_nfs' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationNfs do
 
         expect(ref.id).to eq("${aws_datasync_location_nfs.test.id}")
         expect(ref.arn).to eq("${aws_datasync_location_nfs.test.arn}")
+        expect(ref.region).to eq("${aws_datasync_location_nfs.test.region}")
         expect(ref.tags_all).to eq("${aws_datasync_location_nfs.test.tags_all}")
         expect(ref.uri).to eq("${aws_datasync_location_nfs.test.uri}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationNfs do
 
         config = validate_resource_structure(result, 'aws_datasync_location_nfs', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('uri')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ mount_options: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ mount_options: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +71,9 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationNfs do
 
         config = validate_resource_structure(result, 'aws_datasync_location_nfs', 'full')
         expect(config).to have_key('mount_options')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -77,7 +81,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationNfs do
       it 'includes mount_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_datasync_location_nfs('opt', required_attrs.merge(mount_options: [{ 'key1' => 'val1' }]))
+        synth.aws_datasync_location_nfs('opt', required_attrs.merge(mount_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_location_nfs', 'opt')
         expect(config).to have_key('mount_options')
@@ -90,6 +94,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationNfs do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_location_nfs', 'minimal')
         expect(config).not_to have_key('mount_options')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_nfs('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_nfs', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_nfs('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_nfs', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -108,6 +129,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationNfs do
         config = validate_resource_structure(result, 'aws_datasync_location_nfs', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_nfs('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_nfs', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_nfs('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_nfs', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -118,7 +156,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationNfs do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_datasync_location_nfs', 'typed')
-        expect(config['on_prem_config']).to be_a(Array)
+        expect(config['on_prem_config']).to be_a(Hash)
         expect(config['server_hostname']).to be_a(String)
         expect(config['subdirectory']).to be_a(String)
       end
@@ -153,8 +191,8 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationNfs do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_datasync_location_nfs,
     method: :aws_datasync_location_nfs,
-    required_attrs: { on_prem_config: [{ 'key1' => 'val1' }], server_hostname: 'test-value', subdirectory: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all, :uri],
+    required_attrs: { on_prem_config: { 'key1' => 'val1' }, server_hostname: 'test-value', subdirectory: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :tags_all, :uri],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

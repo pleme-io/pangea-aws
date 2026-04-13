@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::TranscribeLanguageModelAttributes,
       outputs: { id: :id },
       map: [:base_model_name, :input_data_config, :language_code, :model_name],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSTranscribeLanguageModel

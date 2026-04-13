@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSLightsailCertificate do
         expect(ref.created_at).to eq("${aws_lightsail_certificate.test.created_at}")
         expect(ref.domain_name).to eq("${aws_lightsail_certificate.test.domain_name}")
         expect(ref.domain_validation_options).to eq("${aws_lightsail_certificate.test.domain_validation_options}")
+        expect(ref.region).to eq("${aws_lightsail_certificate.test.region}")
         expect(ref.subject_alternative_names).to eq("${aws_lightsail_certificate.test.subject_alternative_names}")
         expect(ref.tags_all).to eq("${aws_lightsail_certificate.test.tags_all}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSLightsailCertificate do
         expect(config).not_to have_key('created_at')
         expect(config).not_to have_key('domain_name')
         expect(config).not_to have_key('domain_validation_options')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('subject_alternative_names')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ domain_name: 'test-value', region: 'test-value', subject_alternative_names: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,11 +76,66 @@ RSpec.describe Pangea::Resources::AWSLightsailCertificate do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lightsail_certificate', 'full')
+        expect(config).to have_key('domain_name')
+        expect(config).to have_key('region')
+        expect(config).to have_key('subject_alternative_names')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes domain_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_certificate('opt', required_attrs.merge(domain_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_certificate', 'opt')
+        expect(config).to have_key('domain_name')
+      end
+
+      it 'omits domain_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_certificate', 'minimal')
+        expect(config).not_to have_key('domain_name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_certificate('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_certificate', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_certificate', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes subject_alternative_names when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_certificate('opt', required_attrs.merge(subject_alternative_names: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_certificate', 'opt')
+        expect(config).to have_key('subject_alternative_names')
+      end
+
+      it 'omits subject_alternative_names when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_certificate', 'minimal')
+        expect(config).not_to have_key('subject_alternative_names')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -95,6 +152,23 @@ RSpec.describe Pangea::Resources::AWSLightsailCertificate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_certificate', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_certificate('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_certificate', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_certificate', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -140,7 +214,7 @@ RSpec.describe Pangea::Resources::AWSLightsailCertificate do
     resource_type: :aws_lightsail_certificate,
     method: :aws_lightsail_certificate,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :created_at, :domain_name, :domain_validation_options, :subject_alternative_names, :tags_all],
+    expected_outputs: [:id, :arn, :created_at, :domain_name, :domain_validation_options, :region, :subject_alternative_names, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

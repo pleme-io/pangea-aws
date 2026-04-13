@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSKmsCustomKeyStore do
 
         expect(ref.id).to eq("${aws_kms_custom_key_store.test.id}")
         expect(ref.custom_key_store_type).to eq("${aws_kms_custom_key_store.test.custom_key_store_type}")
+        expect(ref.region).to eq("${aws_kms_custom_key_store.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSKmsCustomKeyStore do
 
         config = validate_resource_structure(result, 'aws_kms_custom_key_store', 'test')
         expect(config).not_to have_key('custom_key_store_type')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cloud_hsm_cluster_id: 'test-value', key_store_password: 'test-value', trust_anchor_certificate: 'test-value', xks_proxy_authentication_credential: [{ 'key1' => 'val1' }], xks_proxy_connectivity: 'test-value', xks_proxy_uri_endpoint: 'test-value', xks_proxy_uri_path: 'test-value', xks_proxy_vpc_endpoint_service_name: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ cloud_hsm_cluster_id: 'test-value', custom_key_store_type: 'test-value', key_store_password: 'test-value', region: 'test-value', trust_anchor_certificate: 'test-value', xks_proxy_authentication_credential: { 'key1' => 'val1' }, xks_proxy_connectivity: 'test-value', xks_proxy_uri_endpoint: 'test-value', xks_proxy_uri_path: 'test-value', xks_proxy_vpc_endpoint_service_name: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,7 +67,9 @@ RSpec.describe Pangea::Resources::AWSKmsCustomKeyStore do
 
         config = validate_resource_structure(result, 'aws_kms_custom_key_store', 'full')
         expect(config).to have_key('cloud_hsm_cluster_id')
+        expect(config).to have_key('custom_key_store_type')
         expect(config).to have_key('key_store_password')
+        expect(config).to have_key('region')
         expect(config).to have_key('trust_anchor_certificate')
         expect(config).to have_key('xks_proxy_authentication_credential')
         expect(config).to have_key('xks_proxy_connectivity')
@@ -93,6 +97,23 @@ RSpec.describe Pangea::Resources::AWSKmsCustomKeyStore do
         config = validate_resource_structure(result, 'aws_kms_custom_key_store', 'minimal')
         expect(config).not_to have_key('cloud_hsm_cluster_id')
       end
+      it 'includes custom_key_store_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_custom_key_store('opt', required_attrs.merge(custom_key_store_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_custom_key_store', 'opt')
+        expect(config).to have_key('custom_key_store_type')
+      end
+
+      it 'omits custom_key_store_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_custom_key_store('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_custom_key_store', 'minimal')
+        expect(config).not_to have_key('custom_key_store_type')
+      end
       it 'includes key_store_password when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -109,6 +130,23 @@ RSpec.describe Pangea::Resources::AWSKmsCustomKeyStore do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kms_custom_key_store', 'minimal')
         expect(config).not_to have_key('key_store_password')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_custom_key_store('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_custom_key_store', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_custom_key_store('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_custom_key_store', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes trust_anchor_certificate when provided' do
         synth = create_synthesizer
@@ -130,7 +168,7 @@ RSpec.describe Pangea::Resources::AWSKmsCustomKeyStore do
       it 'includes xks_proxy_authentication_credential when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kms_custom_key_store('opt', required_attrs.merge(xks_proxy_authentication_credential: [{ 'key1' => 'val1' }]))
+        synth.aws_kms_custom_key_store('opt', required_attrs.merge(xks_proxy_authentication_credential: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kms_custom_key_store', 'opt')
         expect(config).to have_key('xks_proxy_authentication_credential')
@@ -256,7 +294,7 @@ RSpec.describe Pangea::Resources::AWSKmsCustomKeyStore do
     resource_type: :aws_kms_custom_key_store,
     method: :aws_kms_custom_key_store,
     required_attrs: { custom_key_store_name: 'test-value' },
-    expected_outputs: [:id, :custom_key_store_type],
+    expected_outputs: [:id, :custom_key_store_type, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

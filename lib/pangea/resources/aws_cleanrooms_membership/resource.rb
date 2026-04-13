@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CleanroomsMembershipAttributes,
       outputs: { id: :id },
       map: [:collaboration_id, :query_log_status],
-      map_present: [:default_result_configuration, :payment_configuration, :tags]
+      map_present: [:default_result_configuration, :payment_configuration, :region, :tags]
   end
   module AWS
     include AWSCleanroomsMembership

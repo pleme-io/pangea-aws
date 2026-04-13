@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSPrometheusScraper do
 
         expect(ref.id).to eq("${aws_prometheus_scraper.test.id}")
         expect(ref.arn).to eq("${aws_prometheus_scraper.test.arn}")
+        expect(ref.region).to eq("${aws_prometheus_scraper.test.region}")
         expect(ref.role_arn).to eq("${aws_prometheus_scraper.test.role_arn}")
         expect(ref.tags_all).to eq("${aws_prometheus_scraper.test.tags_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSPrometheusScraper do
 
         config = validate_resource_structure(result, 'aws_prometheus_scraper', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('role_arn')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ alias: 'test-value', destination: [{ 'key1' => 'val1' }], role_configuration: [{ 'key1' => 'val1' }], source: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ alias: 'test-value', destination: [{ 'key1' => 'val1' }], region: 'test-value', role_configuration: [{ 'key1' => 'val1' }], source: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,6 +72,7 @@ RSpec.describe Pangea::Resources::AWSPrometheusScraper do
         config = validate_resource_structure(result, 'aws_prometheus_scraper', 'full')
         expect(config).to have_key('alias')
         expect(config).to have_key('destination')
+        expect(config).to have_key('region')
         expect(config).to have_key('role_configuration')
         expect(config).to have_key('source')
         expect(config).to have_key('tags')
@@ -110,6 +113,23 @@ RSpec.describe Pangea::Resources::AWSPrometheusScraper do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_prometheus_scraper', 'minimal')
         expect(config).not_to have_key('destination')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_prometheus_scraper('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_prometheus_scraper', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_prometheus_scraper('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_prometheus_scraper', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes role_configuration when provided' do
         synth = create_synthesizer
@@ -206,7 +226,7 @@ RSpec.describe Pangea::Resources::AWSPrometheusScraper do
     resource_type: :aws_prometheus_scraper,
     method: :aws_prometheus_scraper,
     required_attrs: { scrape_configuration: 'test-value' },
-    expected_outputs: [:id, :arn, :role_arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :role_arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

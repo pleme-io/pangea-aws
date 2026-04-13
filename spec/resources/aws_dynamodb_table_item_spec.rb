@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableItem do
         ref = synth.aws_dynamodb_table_item('test', required_attrs)
 
         expect(ref.id).to eq("${aws_dynamodb_table_item.test.id}")
+        expect(ref.region).to eq("${aws_dynamodb_table_item.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_item('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_dynamodb_table_item', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ range_key: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ range_key: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableItem do
 
         config = validate_resource_structure(result, 'aws_dynamodb_table_item', 'full')
         expect(config).to have_key('range_key')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableItem do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dynamodb_table_item', 'minimal')
         expect(config).not_to have_key('range_key')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_item('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_item', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_item('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_item', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -119,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableItem do
     resource_type: :aws_dynamodb_table_item,
     method: :aws_dynamodb_table_item,
     required_attrs: { hash_key: 'test-value', item: 'test-value', table_name: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

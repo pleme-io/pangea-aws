@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueDataCatalogEncryptionSettingsAttributes,
       outputs: { id: :id },
       map: [:data_catalog_encryption_settings],
-      map_present: [:catalog_id]
+      map_present: [:catalog_id, :region]
   end
   module AWS
     include AWSGlueDataCatalogEncryptionSettings

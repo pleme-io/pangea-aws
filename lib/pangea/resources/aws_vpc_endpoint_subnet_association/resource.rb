@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpc_endpoint_subnet_association,
       attributes_class: AWS::Types::VpcEndpointSubnetAssociationAttributes,
       outputs: { id: :id },
-      map: [:subnet_id, :vpc_endpoint_id]
+      map: [:subnet_id, :vpc_endpoint_id],
+      map_present: [:region]
   end
   module AWS
     include AWSVpcEndpointSubnetAssociation

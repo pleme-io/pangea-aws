@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSApiGatewayDocumentationPart do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { location: [{ 'key1' => 'val1' }], properties: 'test-value', rest_api_id: 'test-value' } }
+  let(:required_attrs) { { location: { 'key1' => 'val1' }, properties: 'test-value', rest_api_id: 'test-value' } }
 
   describe ':aws_api_gateway_documentation_part' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDocumentationPart do
 
         expect(ref.id).to eq("${aws_api_gateway_documentation_part.test.id}")
         expect(ref.documentation_part_id).to eq("${aws_api_gateway_documentation_part.test.documentation_part_id}")
+        expect(ref.region).to eq("${aws_api_gateway_documentation_part.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDocumentationPart do
 
         config = validate_resource_structure(result, 'aws_api_gateway_documentation_part', 'test')
         expect(config).not_to have_key('documentation_part_id')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_documentation_part('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_api_gateway_documentation_part', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_documentation_part('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_documentation_part', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_documentation_part('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_documentation_part', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -62,7 +98,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDocumentationPart do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_api_gateway_documentation_part', 'typed')
-        expect(config['location']).to be_a(Array)
+        expect(config['location']).to be_a(Hash)
         expect(config['properties']).to be_a(String)
         expect(config['rest_api_id']).to be_a(String)
       end
@@ -97,8 +133,8 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDocumentationPart do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_api_gateway_documentation_part,
     method: :aws_api_gateway_documentation_part,
-    required_attrs: { location: [{ 'key1' => 'val1' }], properties: 'test-value', rest_api_id: 'test-value' },
-    expected_outputs: [:id, :documentation_part_id],
+    required_attrs: { location: { 'key1' => 'val1' }, properties: 'test-value', rest_api_id: 'test-value' },
+    expected_outputs: [:id, :documentation_part_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

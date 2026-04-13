@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LambdaInvocationAttributes,
       outputs: { id: :id },
       map: [:function_name, :input],
-      map_present: [:lifecycle_scope, :qualifier, :terraform_key, :triggers]
+      map_present: [:lifecycle_scope, :qualifier, :region, :tenant_id, :terraform_key, :triggers]
   end
   module AWS
     include AWSLambdaInvocation

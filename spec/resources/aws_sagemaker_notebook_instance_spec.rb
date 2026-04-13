@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerNotebookInstance do
         expect(ref.arn).to eq("${aws_sagemaker_notebook_instance.test.arn}")
         expect(ref.network_interface_id).to eq("${aws_sagemaker_notebook_instance.test.network_interface_id}")
         expect(ref.platform_identifier).to eq("${aws_sagemaker_notebook_instance.test.platform_identifier}")
+        expect(ref.region).to eq("${aws_sagemaker_notebook_instance.test.region}")
         expect(ref.security_groups).to eq("${aws_sagemaker_notebook_instance.test.security_groups}")
         expect(ref.tags_all).to eq("${aws_sagemaker_notebook_instance.test.tags_all}")
         expect(ref.url).to eq("${aws_sagemaker_notebook_instance.test.url}")
@@ -58,6 +59,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerNotebookInstance do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('network_interface_id')
         expect(config).not_to have_key('platform_identifier')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_groups')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('url')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerNotebookInstance do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ accelerator_types: ['test-value'], additional_code_repositories: ['test-value'], default_code_repository: 'test-value', direct_internet_access: 'test-value', instance_metadata_service_configuration: [{ 'key1' => 'val1' }], kms_key_id: 'test-value', lifecycle_config_name: 'test-value', root_access: 'test-value', subnet_id: 'test-value', tags: { 'key1' => 'val1' }, volume_size: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ additional_code_repositories: ['test-value'], default_code_repository: 'test-value', direct_internet_access: 'test-value', instance_metadata_service_configuration: { 'key1' => 'val1' }, kms_key_id: 'test-value', lifecycle_config_name: 'test-value', platform_identifier: 'test-value', region: 'test-value', root_access: 'test-value', security_groups: ['test-value'], subnet_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, volume_size: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,38 +76,24 @@ RSpec.describe Pangea::Resources::AWSSagemakerNotebookInstance do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'full')
-        expect(config).to have_key('accelerator_types')
         expect(config).to have_key('additional_code_repositories')
         expect(config).to have_key('default_code_repository')
         expect(config).to have_key('direct_internet_access')
         expect(config).to have_key('instance_metadata_service_configuration')
         expect(config).to have_key('kms_key_id')
         expect(config).to have_key('lifecycle_config_name')
+        expect(config).to have_key('platform_identifier')
+        expect(config).to have_key('region')
         expect(config).to have_key('root_access')
+        expect(config).to have_key('security_groups')
         expect(config).to have_key('subnet_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('volume_size')
       end
     end
 
     context 'optional attributes' do
-      it 'includes accelerator_types when provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_sagemaker_notebook_instance('opt', required_attrs.merge(accelerator_types: ['test-value']))
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'opt')
-        expect(config).to have_key('accelerator_types')
-      end
-
-      it 'omits accelerator_types when not provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_sagemaker_notebook_instance('minimal', required_attrs)
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'minimal')
-        expect(config).not_to have_key('accelerator_types')
-      end
       it 'includes additional_code_repositories when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -160,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerNotebookInstance do
       it 'includes instance_metadata_service_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_notebook_instance('opt', required_attrs.merge(instance_metadata_service_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_notebook_instance('opt', required_attrs.merge(instance_metadata_service_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'opt')
         expect(config).to have_key('instance_metadata_service_configuration')
@@ -208,6 +196,40 @@ RSpec.describe Pangea::Resources::AWSSagemakerNotebookInstance do
         config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'minimal')
         expect(config).not_to have_key('lifecycle_config_name')
       end
+      it 'includes platform_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_notebook_instance('opt', required_attrs.merge(platform_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'opt')
+        expect(config).to have_key('platform_identifier')
+      end
+
+      it 'omits platform_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_notebook_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'minimal')
+        expect(config).not_to have_key('platform_identifier')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_notebook_instance('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_notebook_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes root_access when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -224,6 +246,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerNotebookInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'minimal')
         expect(config).not_to have_key('root_access')
+      end
+      it 'includes security_groups when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_notebook_instance('opt', required_attrs.merge(security_groups: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'opt')
+        expect(config).to have_key('security_groups')
+      end
+
+      it 'omits security_groups when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_notebook_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'minimal')
+        expect(config).not_to have_key('security_groups')
       end
       it 'includes subnet_id when provided' do
         synth = create_synthesizer
@@ -258,6 +297,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerNotebookInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_notebook_instance('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_notebook_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_notebook_instance', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes volume_size when provided' do
         synth = create_synthesizer
@@ -322,7 +378,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerNotebookInstance do
     resource_type: :aws_sagemaker_notebook_instance,
     method: :aws_sagemaker_notebook_instance,
     required_attrs: { instance_type: 'test-value', name: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :network_interface_id, :platform_identifier, :security_groups, :tags_all, :url],
+    expected_outputs: [:id, :arn, :network_interface_id, :platform_identifier, :region, :security_groups, :tags_all, :url],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

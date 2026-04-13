@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_rds_instance_state,
       attributes_class: AWS::Types::RdsInstanceStateAttributes,
       outputs: { id: :id },
-      map: [:identifier, :state]
+      map: [:identifier, :state],
+      map_present: [:region]
   end
   module AWS
     include AWSRdsInstanceState

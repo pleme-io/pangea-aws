@@ -49,6 +49,7 @@ RSpec.describe Pangea::Resources::AWSEfsFileSystem do
         expect(ref.number_of_mount_targets).to eq("${aws_efs_file_system.test.number_of_mount_targets}")
         expect(ref.owner_id).to eq("${aws_efs_file_system.test.owner_id}")
         expect(ref.performance_mode).to eq("${aws_efs_file_system.test.performance_mode}")
+        expect(ref.region).to eq("${aws_efs_file_system.test.region}")
         expect(ref.size_in_bytes).to eq("${aws_efs_file_system.test.size_in_bytes}")
         expect(ref.tags_all).to eq("${aws_efs_file_system.test.tags_all}")
       end
@@ -73,13 +74,14 @@ RSpec.describe Pangea::Resources::AWSEfsFileSystem do
         expect(config).not_to have_key('number_of_mount_targets')
         expect(config).not_to have_key('owner_id')
         expect(config).not_to have_key('performance_mode')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('size_in_bytes')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ lifecycle_policy: [{ 'key1' => 'val1' }], protection: [{ 'key1' => 'val1' }], provisioned_throughput_in_mibps: 3.14, tags: { 'key1' => 'val1' }, throughput_mode: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ availability_zone_name: 'test-value', creation_token: 'test-value', encrypted: true, kms_key_id: 'test-value', lifecycle_policy: [{ 'key1' => 'val1' }], performance_mode: 'test-value', protection: { 'key1' => 'val1' }, provisioned_throughput_in_mibps: 3.14, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, throughput_mode: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -88,15 +90,90 @@ RSpec.describe Pangea::Resources::AWSEfsFileSystem do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_efs_file_system', 'full')
+        expect(config).to have_key('availability_zone_name')
+        expect(config).to have_key('creation_token')
+        expect(config).to have_key('encrypted')
+        expect(config).to have_key('kms_key_id')
         expect(config).to have_key('lifecycle_policy')
+        expect(config).to have_key('performance_mode')
         expect(config).to have_key('protection')
         expect(config).to have_key('provisioned_throughput_in_mibps')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('throughput_mode')
       end
     end
 
     context 'optional attributes' do
+      it 'includes availability_zone_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('opt', required_attrs.merge(availability_zone_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'opt')
+        expect(config).to have_key('availability_zone_name')
+      end
+
+      it 'omits availability_zone_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'minimal')
+        expect(config).not_to have_key('availability_zone_name')
+      end
+      it 'includes creation_token when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('opt', required_attrs.merge(creation_token: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'opt')
+        expect(config).to have_key('creation_token')
+      end
+
+      it 'omits creation_token when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'minimal')
+        expect(config).not_to have_key('creation_token')
+      end
+      it 'includes encrypted when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('opt', required_attrs.merge(encrypted: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'opt')
+        expect(config).to have_key('encrypted')
+      end
+
+      it 'omits encrypted when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'minimal')
+        expect(config).not_to have_key('encrypted')
+      end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
       it 'includes lifecycle_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -114,10 +191,27 @@ RSpec.describe Pangea::Resources::AWSEfsFileSystem do
         config = validate_resource_structure(result, 'aws_efs_file_system', 'minimal')
         expect(config).not_to have_key('lifecycle_policy')
       end
+      it 'includes performance_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('opt', required_attrs.merge(performance_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'opt')
+        expect(config).to have_key('performance_mode')
+      end
+
+      it 'omits performance_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'minimal')
+        expect(config).not_to have_key('performance_mode')
+      end
       it 'includes protection when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_efs_file_system('opt', required_attrs.merge(protection: [{ 'key1' => 'val1' }]))
+        synth.aws_efs_file_system('opt', required_attrs.merge(protection: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_efs_file_system', 'opt')
         expect(config).to have_key('protection')
@@ -148,6 +242,23 @@ RSpec.describe Pangea::Resources::AWSEfsFileSystem do
         config = validate_resource_structure(result, 'aws_efs_file_system', 'minimal')
         expect(config).not_to have_key('provisioned_throughput_in_mibps')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -165,6 +276,23 @@ RSpec.describe Pangea::Resources::AWSEfsFileSystem do
         config = validate_resource_structure(result, 'aws_efs_file_system', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_file_system', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes throughput_mode when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -181,6 +309,20 @@ RSpec.describe Pangea::Resources::AWSEfsFileSystem do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_efs_file_system', 'minimal')
         expect(config).not_to have_key('throughput_mode')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts encrypted=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(encrypted: val)
+          synth.aws_efs_file_system("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_efs_file_system', "bool_#{val}")
+          expect(config['encrypted']).to eq(val)
+        end
       end
     end
 
@@ -225,8 +367,8 @@ RSpec.describe Pangea::Resources::AWSEfsFileSystem do
     resource_type: :aws_efs_file_system,
     method: :aws_efs_file_system,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :availability_zone_id, :availability_zone_name, :creation_token, :dns_name, :encrypted, :kms_key_id, :name, :number_of_mount_targets, :owner_id, :performance_mode, :size_in_bytes, :tags_all],
+    expected_outputs: [:id, :arn, :availability_zone_id, :availability_zone_name, :creation_token, :dns_name, :encrypted, :kms_key_id, :name, :number_of_mount_targets, :owner_id, :performance_mode, :region, :size_in_bytes, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:encrypted]
 end

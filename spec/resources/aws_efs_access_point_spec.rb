@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSEfsAccessPoint do
         expect(ref.arn).to eq("${aws_efs_access_point.test.arn}")
         expect(ref.file_system_arn).to eq("${aws_efs_access_point.test.file_system_arn}")
         expect(ref.owner_id).to eq("${aws_efs_access_point.test.owner_id}")
+        expect(ref.region).to eq("${aws_efs_access_point.test.region}")
         expect(ref.tags_all).to eq("${aws_efs_access_point.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSEfsAccessPoint do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('file_system_arn')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ posix_user: [{ 'key1' => 'val1' }], root_directory: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ posix_user: { 'key1' => 'val1' }, region: 'test-value', root_directory: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,8 +73,10 @@ RSpec.describe Pangea::Resources::AWSEfsAccessPoint do
 
         config = validate_resource_structure(result, 'aws_efs_access_point', 'full')
         expect(config).to have_key('posix_user')
+        expect(config).to have_key('region')
         expect(config).to have_key('root_directory')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -80,7 +84,7 @@ RSpec.describe Pangea::Resources::AWSEfsAccessPoint do
       it 'includes posix_user when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_efs_access_point('opt', required_attrs.merge(posix_user: [{ 'key1' => 'val1' }]))
+        synth.aws_efs_access_point('opt', required_attrs.merge(posix_user: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_efs_access_point', 'opt')
         expect(config).to have_key('posix_user')
@@ -94,10 +98,27 @@ RSpec.describe Pangea::Resources::AWSEfsAccessPoint do
         config = validate_resource_structure(result, 'aws_efs_access_point', 'minimal')
         expect(config).not_to have_key('posix_user')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_access_point('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_access_point', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_access_point('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_access_point', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes root_directory when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_efs_access_point('opt', required_attrs.merge(root_directory: [{ 'key1' => 'val1' }]))
+        synth.aws_efs_access_point('opt', required_attrs.merge(root_directory: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_efs_access_point', 'opt')
         expect(config).to have_key('root_directory')
@@ -127,6 +148,23 @@ RSpec.describe Pangea::Resources::AWSEfsAccessPoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_efs_access_point', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_access_point('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_access_point', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_access_point('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_access_point', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -172,7 +210,7 @@ RSpec.describe Pangea::Resources::AWSEfsAccessPoint do
     resource_type: :aws_efs_access_point,
     method: :aws_efs_access_point,
     required_attrs: { file_system_id: 'test-value' },
-    expected_outputs: [:id, :arn, :file_system_arn, :owner_id, :tags_all],
+    expected_outputs: [:id, :arn, :file_system_arn, :owner_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

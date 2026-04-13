@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_inspector2_member_association,
       attributes_class: AWS::Types::Inspector2MemberAssociationAttributes,
       outputs: { id: :id },
-      map: [:account_id]
+      map: [:account_id],
+      map_present: [:region]
   end
   module AWS
     include AWSInspector2MemberAssociation

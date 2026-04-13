@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_guardduty_invite_accepter,
       attributes_class: AWS::Types::GuarddutyInviteAccepterAttributes,
       outputs: { id: :id },
-      map: [:detector_id, :master_account_id]
+      map: [:detector_id, :master_account_id],
+      map_present: [:region]
   end
   module AWS
     include AWSGuarddutyInviteAccepter

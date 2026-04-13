@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftserverlessSnapshotAttributes,
       outputs: { id: :id },
       map: [:namespace_name, :snapshot_name],
-      map_present: [:retention_period]
+      map_present: [:region, :retention_period]
   end
   module AWS
     include AWSRedshiftserverlessSnapshot

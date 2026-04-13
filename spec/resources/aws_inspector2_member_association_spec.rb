@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSInspector2MemberAssociation do
 
         expect(ref.id).to eq("${aws_inspector2_member_association.test.id}")
         expect(ref.delegated_admin_account_id).to eq("${aws_inspector2_member_association.test.delegated_admin_account_id}")
+        expect(ref.region).to eq("${aws_inspector2_member_association.test.region}")
         expect(ref.relationship_status).to eq("${aws_inspector2_member_association.test.relationship_status}")
         expect(ref.updated_at).to eq("${aws_inspector2_member_association.test.updated_at}")
       end
@@ -53,8 +54,43 @@ RSpec.describe Pangea::Resources::AWSInspector2MemberAssociation do
 
         config = validate_resource_structure(result, 'aws_inspector2_member_association', 'test')
         expect(config).not_to have_key('delegated_admin_account_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('relationship_status')
         expect(config).not_to have_key('updated_at')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_inspector2_member_association('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_inspector2_member_association', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_inspector2_member_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_inspector2_member_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_inspector2_member_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_inspector2_member_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -100,7 +136,7 @@ RSpec.describe Pangea::Resources::AWSInspector2MemberAssociation do
     resource_type: :aws_inspector2_member_association,
     method: :aws_inspector2_member_association,
     required_attrs: { account_id: 'test-value' },
-    expected_outputs: [:id, :delegated_admin_account_id, :relationship_status, :updated_at],
+    expected_outputs: [:id, :delegated_admin_account_id, :region, :relationship_status, :updated_at],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

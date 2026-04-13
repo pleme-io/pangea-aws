@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSConfigRetentionConfiguration do
 
         expect(ref.id).to eq("${aws_config_retention_configuration.test.id}")
         expect(ref.name).to eq("${aws_config_retention_configuration.test.name}")
+        expect(ref.region).to eq("${aws_config_retention_configuration.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSConfigRetentionConfiguration do
 
         config = validate_resource_structure(result, 'aws_config_retention_configuration', 'test')
         expect(config).not_to have_key('name')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_retention_configuration('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_config_retention_configuration', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_retention_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_retention_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_retention_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_retention_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -96,7 +132,7 @@ RSpec.describe Pangea::Resources::AWSConfigRetentionConfiguration do
     resource_type: :aws_config_retention_configuration,
     method: :aws_config_retention_configuration,
     required_attrs: { retention_period_in_days: 3.14 },
-    expected_outputs: [:id, :name],
+    expected_outputs: [:id, :name, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

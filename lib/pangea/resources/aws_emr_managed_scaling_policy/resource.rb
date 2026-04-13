@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_emr_managed_scaling_policy,
       attributes_class: AWS::Types::EmrManagedScalingPolicyAttributes,
       outputs: { id: :id },
-      map: [:cluster_id, :compute_limits]
+      map: [:cluster_id, :compute_limits],
+      map_present: [:region, :scaling_strategy, :utilization_performance_index]
   end
   module AWS
     include AWSEmrManagedScalingPolicy

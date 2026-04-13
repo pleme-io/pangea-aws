@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSGlueSchema do
         expect(ref.arn).to eq("${aws_glue_schema.test.arn}")
         expect(ref.latest_schema_version).to eq("${aws_glue_schema.test.latest_schema_version}")
         expect(ref.next_schema_version).to eq("${aws_glue_schema.test.next_schema_version}")
+        expect(ref.region).to eq("${aws_glue_schema.test.region}")
         expect(ref.registry_arn).to eq("${aws_glue_schema.test.registry_arn}")
         expect(ref.registry_name).to eq("${aws_glue_schema.test.registry_name}")
         expect(ref.schema_checkpoint).to eq("${aws_glue_schema.test.schema_checkpoint}")
@@ -59,6 +60,7 @@ RSpec.describe Pangea::Resources::AWSGlueSchema do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('latest_schema_version')
         expect(config).not_to have_key('next_schema_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('registry_arn')
         expect(config).not_to have_key('registry_name')
         expect(config).not_to have_key('schema_checkpoint')
@@ -67,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSGlueSchema do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', registry_arn: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,7 +79,10 @@ RSpec.describe Pangea::Resources::AWSGlueSchema do
 
         config = validate_resource_structure(result, 'aws_glue_schema', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
+        expect(config).to have_key('registry_arn')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -99,6 +104,40 @@ RSpec.describe Pangea::Resources::AWSGlueSchema do
         config = validate_resource_structure(result, 'aws_glue_schema', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_schema('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_schema', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_schema('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_schema', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes registry_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_schema('opt', required_attrs.merge(registry_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_schema', 'opt')
+        expect(config).to have_key('registry_arn')
+      end
+
+      it 'omits registry_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_schema('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_schema', 'minimal')
+        expect(config).not_to have_key('registry_arn')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -115,6 +154,23 @@ RSpec.describe Pangea::Resources::AWSGlueSchema do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_schema', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_schema('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_schema', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_schema('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_schema', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -163,7 +219,7 @@ RSpec.describe Pangea::Resources::AWSGlueSchema do
     resource_type: :aws_glue_schema,
     method: :aws_glue_schema,
     required_attrs: { compatibility: 'test-value', data_format: 'test-value', schema_definition: 'test-value', schema_name: 'test-value' },
-    expected_outputs: [:id, :arn, :latest_schema_version, :next_schema_version, :registry_arn, :registry_name, :schema_checkpoint, :tags_all],
+    expected_outputs: [:id, :arn, :latest_schema_version, :next_schema_version, :region, :registry_arn, :registry_name, :schema_checkpoint, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_cloudwatch_log_resource_policy,
       attributes_class: AWS::Types::CloudwatchLogResourcePolicyAttributes,
       outputs: { id: :id },
-      map: [:policy_document, :policy_name]
+      map: [:policy_document],
+      map_present: [:policy_name, :region, :resource_arn]
   end
   module AWS
     include AWSCloudwatchLogResourcePolicy

@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricStream do
         expect(ref.last_update_date).to eq("${aws_cloudwatch_metric_stream.test.last_update_date}")
         expect(ref.name).to eq("${aws_cloudwatch_metric_stream.test.name}")
         expect(ref.name_prefix).to eq("${aws_cloudwatch_metric_stream.test.name_prefix}")
+        expect(ref.region).to eq("${aws_cloudwatch_metric_stream.test.region}")
         expect(ref.state).to eq("${aws_cloudwatch_metric_stream.test.state}")
         expect(ref.tags_all).to eq("${aws_cloudwatch_metric_stream.test.tags_all}")
       end
@@ -61,13 +62,14 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricStream do
         expect(config).not_to have_key('last_update_date')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ exclude_filter: [{ 'key1' => 'val1' }], include_filter: [{ 'key1' => 'val1' }], include_linked_accounts_metrics: true, statistics_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ exclude_filter: [{ 'key1' => 'val1' }], include_filter: [{ 'key1' => 'val1' }], include_linked_accounts_metrics: true, name: 'test-value', name_prefix: 'test-value', region: 'test-value', statistics_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,8 +81,12 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricStream do
         expect(config).to have_key('exclude_filter')
         expect(config).to have_key('include_filter')
         expect(config).to have_key('include_linked_accounts_metrics')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
         expect(config).to have_key('statistics_configuration')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -136,6 +142,57 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricStream do
         config = validate_resource_structure(result, 'aws_cloudwatch_metric_stream', 'minimal')
         expect(config).not_to have_key('include_linked_accounts_metrics')
       end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_stream('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_stream', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_stream', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_stream('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_stream', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_stream', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_stream('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_stream', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_stream', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes statistics_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -169,6 +226,23 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricStream do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_metric_stream', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_stream('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_stream', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_stream', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -230,7 +304,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricStream do
     resource_type: :aws_cloudwatch_metric_stream,
     method: :aws_cloudwatch_metric_stream,
     required_attrs: { firehose_arn: 'test-value', output_format: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :creation_date, :last_update_date, :name, :name_prefix, :state, :tags_all],
+    expected_outputs: [:id, :arn, :creation_date, :last_update_date, :name, :name_prefix, :region, :state, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:include_linked_accounts_metrics]

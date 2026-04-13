@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodepipelineAttributes,
       outputs: { id: :id },
       map: [:artifact_store, :name, :role_arn, :stage],
-      map_present: [:execution_mode, :pipeline_type, :tags, :tags_all, :trigger, :variable]
+      map_present: [:execution_mode, :pipeline_type, :region, :tags, :tags_all, :trigger, :variable]
   end
   module AWS
     include AWSCodepipeline

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSGameliftScript do
 
         expect(ref.id).to eq("${aws_gamelift_script.test.id}")
         expect(ref.arn).to eq("${aws_gamelift_script.test.arn}")
+        expect(ref.region).to eq("${aws_gamelift_script.test.region}")
         expect(ref.tags_all).to eq("${aws_gamelift_script.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSGameliftScript do
 
         config = validate_resource_structure(result, 'aws_gamelift_script', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ storage_location: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, version: 'test-value', zip_file: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', storage_location: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, version: 'test-value', zip_file: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,18 +68,37 @@ RSpec.describe Pangea::Resources::AWSGameliftScript do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_gamelift_script', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('storage_location')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('version')
         expect(config).to have_key('zip_file')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_script('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_script', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_script('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_script', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes storage_location when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_gamelift_script('opt', required_attrs.merge(storage_location: [{ 'key1' => 'val1' }]))
+        synth.aws_gamelift_script('opt', required_attrs.merge(storage_location: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_gamelift_script', 'opt')
         expect(config).to have_key('storage_location')
@@ -107,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSGameliftScript do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_gamelift_script', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_script('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_script', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_script('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_script', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes version when provided' do
         synth = create_synthesizer
@@ -186,7 +224,7 @@ RSpec.describe Pangea::Resources::AWSGameliftScript do
     resource_type: :aws_gamelift_script,
     method: :aws_gamelift_script,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkmanagerConnectAttachmentAttributes,
       outputs: { id: :id },
       map: [:core_network_id, :edge_location, :options, :transport_attachment_id],
-      map_present: [:tags, :tags_all]
+      map_present: [:routing_policy_label, :tags, :tags_all]
   end
   module AWS
     include AWSNetworkmanagerConnectAttachment

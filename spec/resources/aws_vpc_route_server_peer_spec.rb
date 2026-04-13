@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServerPeer do
         expect(ref.arn).to eq("${aws_vpc_route_server_peer.test.arn}")
         expect(ref.endpoint_eni_address).to eq("${aws_vpc_route_server_peer.test.endpoint_eni_address}")
         expect(ref.endpoint_eni_id).to eq("${aws_vpc_route_server_peer.test.endpoint_eni_id}")
+        expect(ref.region).to eq("${aws_vpc_route_server_peer.test.region}")
         expect(ref.route_server_id).to eq("${aws_vpc_route_server_peer.test.route_server_id}")
         expect(ref.route_server_peer_id).to eq("${aws_vpc_route_server_peer.test.route_server_peer_id}")
         expect(ref.subnet_id).to eq("${aws_vpc_route_server_peer.test.subnet_id}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServerPeer do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('endpoint_eni_address')
         expect(config).not_to have_key('endpoint_eni_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('route_server_id')
         expect(config).not_to have_key('route_server_peer_id')
         expect(config).not_to have_key('subnet_id')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServerPeer do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ bgp_options: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ bgp_options: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,6 +81,7 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServerPeer do
 
         config = validate_resource_structure(result, 'aws_vpc_route_server_peer', 'full')
         expect(config).to have_key('bgp_options')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -100,6 +103,23 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServerPeer do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_route_server_peer', 'minimal')
         expect(config).not_to have_key('bgp_options')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_route_server_peer('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_route_server_peer', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_route_server_peer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_route_server_peer', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -163,7 +183,7 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServerPeer do
     resource_type: :aws_vpc_route_server_peer,
     method: :aws_vpc_route_server_peer,
     required_attrs: { peer_address: 'test-value', route_server_endpoint_id: 'test-value' },
-    expected_outputs: [:id, :arn, :endpoint_eni_address, :endpoint_eni_id, :route_server_id, :route_server_peer_id, :subnet_id, :tags_all, :vpc_id],
+    expected_outputs: [:id, :arn, :endpoint_eni_address, :endpoint_eni_id, :region, :route_server_id, :route_server_peer_id, :subnet_id, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

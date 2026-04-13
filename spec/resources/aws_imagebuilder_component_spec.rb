@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderComponent do
         expect(ref.date_created).to eq("${aws_imagebuilder_component.test.date_created}")
         expect(ref.encrypted).to eq("${aws_imagebuilder_component.test.encrypted}")
         expect(ref.owner).to eq("${aws_imagebuilder_component.test.owner}")
+        expect(ref.region).to eq("${aws_imagebuilder_component.test.region}")
         expect(ref.tags_all).to eq("${aws_imagebuilder_component.test.tags_all}")
         expect(ref.type).to eq("${aws_imagebuilder_component.test.type}")
       end
@@ -61,13 +62,14 @@ RSpec.describe Pangea::Resources::AWSImagebuilderComponent do
         expect(config).not_to have_key('date_created')
         expect(config).not_to have_key('encrypted')
         expect(config).not_to have_key('owner')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('type')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ change_description: 'test-value', description: 'test-value', kms_key_id: 'test-value', skip_destroy: true, supported_os_versions: ['test-value'], tags: { 'key1' => 'val1' }, uri: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ change_description: 'test-value', data: 'test-value', description: 'test-value', kms_key_id: 'test-value', region: 'test-value', skip_destroy: true, supported_os_versions: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, uri: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,11 +79,14 @@ RSpec.describe Pangea::Resources::AWSImagebuilderComponent do
 
         config = validate_resource_structure(result, 'aws_imagebuilder_component', 'full')
         expect(config).to have_key('change_description')
+        expect(config).to have_key('data')
         expect(config).to have_key('description')
         expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('skip_destroy')
         expect(config).to have_key('supported_os_versions')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('uri')
       end
     end
@@ -103,6 +108,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderComponent do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_component', 'minimal')
         expect(config).not_to have_key('change_description')
+      end
+      it 'includes data when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_component('opt', required_attrs.merge(data: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_component', 'opt')
+        expect(config).to have_key('data')
+      end
+
+      it 'omits data when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_component('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_component', 'minimal')
+        expect(config).not_to have_key('data')
       end
       it 'includes description when provided' do
         synth = create_synthesizer
@@ -137,6 +159,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderComponent do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_component', 'minimal')
         expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_component('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_component', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_component('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_component', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes skip_destroy when provided' do
         synth = create_synthesizer
@@ -188,6 +227,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderComponent do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_component', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_component('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_component', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_component('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_component', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes uri when provided' do
         synth = create_synthesizer
@@ -266,7 +322,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderComponent do
     resource_type: :aws_imagebuilder_component,
     method: :aws_imagebuilder_component,
     required_attrs: { name: 'test-value', platform: 'test-value', version: 'test-value' },
-    expected_outputs: [:id, :arn, :data, :date_created, :encrypted, :owner, :tags_all, :type],
+    expected_outputs: [:id, :arn, :data, :date_created, :encrypted, :owner, :region, :tags_all, :type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:skip_destroy]

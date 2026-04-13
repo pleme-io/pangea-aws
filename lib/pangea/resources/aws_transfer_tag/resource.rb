@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_transfer_tag,
       attributes_class: AWS::Types::TransferTagAttributes,
       outputs: { id: :id },
-      map: [:key, :resource_arn, :value]
+      map: [:key, :resource_arn, :value],
+      map_present: [:region]
   end
   module AWS
     include AWSTransferTag

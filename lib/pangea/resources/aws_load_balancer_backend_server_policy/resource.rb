@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LoadBalancerBackendServerPolicyAttributes,
       outputs: { id: :id },
       map: [:instance_port, :load_balancer_name],
-      map_present: [:policy_names]
+      map_present: [:policy_names, :region]
   end
   module AWS
     include AWSLoadBalancerBackendServerPolicy

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AthenaNamedQueryAttributes,
       outputs: { id: :id },
       map: [:database, :name, :query],
-      map_present: [:description, :workgroup]
+      map_present: [:description, :region, :workgroup]
   end
   module AWS
     include AWSAthenaNamedQuery

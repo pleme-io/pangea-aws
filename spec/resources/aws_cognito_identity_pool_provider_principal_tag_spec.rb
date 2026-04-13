@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSCognitoIdentityPoolProviderPrincipalTag do
         ref = synth.aws_cognito_identity_pool_provider_principal_tag('test', required_attrs)
 
         expect(ref.id).to eq("${aws_cognito_identity_pool_provider_principal_tag.test.id}")
+        expect(ref.region).to eq("${aws_cognito_identity_pool_provider_principal_tag.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_identity_pool_provider_principal_tag('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_cognito_identity_pool_provider_principal_tag', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ principal_tags: { 'key1' => 'val1' }, use_defaults: true }) }
+      let(:all_attrs) { required_attrs.merge({ principal_tags: { 'key1' => 'val1' }, region: 'test-value', use_defaults: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSCognitoIdentityPoolProviderPrincipalTag do
 
         config = validate_resource_structure(result, 'aws_cognito_identity_pool_provider_principal_tag', 'full')
         expect(config).to have_key('principal_tags')
+        expect(config).to have_key('region')
         expect(config).to have_key('use_defaults')
       end
     end
@@ -73,6 +87,23 @@ RSpec.describe Pangea::Resources::AWSCognitoIdentityPoolProviderPrincipalTag do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_identity_pool_provider_principal_tag', 'minimal')
         expect(config).not_to have_key('principal_tags')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_identity_pool_provider_principal_tag('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_identity_pool_provider_principal_tag', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_identity_pool_provider_principal_tag('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_identity_pool_provider_principal_tag', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes use_defaults when provided' do
         synth = create_synthesizer
@@ -150,7 +181,7 @@ RSpec.describe Pangea::Resources::AWSCognitoIdentityPoolProviderPrincipalTag do
     resource_type: :aws_cognito_identity_pool_provider_principal_tag,
     method: :aws_cognito_identity_pool_provider_principal_tag,
     required_attrs: { identity_pool_id: 'test-value', identity_provider_name: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:use_defaults]

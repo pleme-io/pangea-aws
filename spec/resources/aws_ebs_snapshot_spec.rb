@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSEbsSnapshot do
         expect(ref.kms_key_id).to eq("${aws_ebs_snapshot.test.kms_key_id}")
         expect(ref.owner_alias).to eq("${aws_ebs_snapshot.test.owner_alias}")
         expect(ref.owner_id).to eq("${aws_ebs_snapshot.test.owner_id}")
+        expect(ref.region).to eq("${aws_ebs_snapshot.test.region}")
         expect(ref.storage_tier).to eq("${aws_ebs_snapshot.test.storage_tier}")
         expect(ref.tags_all).to eq("${aws_ebs_snapshot.test.tags_all}")
         expect(ref.volume_size).to eq("${aws_ebs_snapshot.test.volume_size}")
@@ -64,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSEbsSnapshot do
         expect(config).not_to have_key('kms_key_id')
         expect(config).not_to have_key('owner_alias')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('storage_tier')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('volume_size')
@@ -71,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSEbsSnapshot do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', outpost_arn: 'test-value', permanent_restore: true, tags: { 'key1' => 'val1' }, temporary_restore_days: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', outpost_arn: 'test-value', permanent_restore: true, region: 'test-value', storage_tier: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, temporary_restore_days: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -83,7 +85,10 @@ RSpec.describe Pangea::Resources::AWSEbsSnapshot do
         expect(config).to have_key('description')
         expect(config).to have_key('outpost_arn')
         expect(config).to have_key('permanent_restore')
+        expect(config).to have_key('region')
+        expect(config).to have_key('storage_tier')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('temporary_restore_days')
       end
     end
@@ -140,6 +145,40 @@ RSpec.describe Pangea::Resources::AWSEbsSnapshot do
         config = validate_resource_structure(result, 'aws_ebs_snapshot', 'minimal')
         expect(config).not_to have_key('permanent_restore')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_snapshot('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_snapshot', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_snapshot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_snapshot', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes storage_tier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_snapshot('opt', required_attrs.merge(storage_tier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_snapshot', 'opt')
+        expect(config).to have_key('storage_tier')
+      end
+
+      it 'omits storage_tier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_snapshot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_snapshot', 'minimal')
+        expect(config).not_to have_key('storage_tier')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -156,6 +195,23 @@ RSpec.describe Pangea::Resources::AWSEbsSnapshot do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ebs_snapshot', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_snapshot('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_snapshot', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_snapshot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_snapshot', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes temporary_restore_days when provided' do
         synth = create_synthesizer
@@ -232,7 +288,7 @@ RSpec.describe Pangea::Resources::AWSEbsSnapshot do
     resource_type: :aws_ebs_snapshot,
     method: :aws_ebs_snapshot,
     required_attrs: { volume_id: 'test-value' },
-    expected_outputs: [:id, :arn, :data_encryption_key_id, :encrypted, :kms_key_id, :owner_alias, :owner_id, :storage_tier, :tags_all, :volume_size],
+    expected_outputs: [:id, :arn, :data_encryption_key_id, :encrypted, :kms_key_id, :owner_alias, :owner_id, :region, :storage_tier, :tags_all, :volume_size],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:permanent_restore]

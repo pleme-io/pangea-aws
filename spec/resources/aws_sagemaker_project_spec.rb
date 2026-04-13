@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSagemakerProject do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { project_name: 'test-value', service_catalog_provisioning_details: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { project_name: 'test-value', service_catalog_provisioning_details: { 'key1' => 'val1' } } }
 
   describe ':aws_sagemaker_project' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerProject do
         expect(ref.id).to eq("${aws_sagemaker_project.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_project.test.arn}")
         expect(ref.project_id).to eq("${aws_sagemaker_project.test.project_id}")
+        expect(ref.region).to eq("${aws_sagemaker_project.test.region}")
         expect(ref.tags_all).to eq("${aws_sagemaker_project.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSSagemakerProject do
         config = validate_resource_structure(result, 'aws_sagemaker_project', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('project_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ project_description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ project_description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +71,9 @@ RSpec.describe Pangea::Resources::AWSSagemakerProject do
 
         config = validate_resource_structure(result, 'aws_sagemaker_project', 'full')
         expect(config).to have_key('project_description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -91,6 +95,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerProject do
         config = validate_resource_structure(result, 'aws_sagemaker_project', 'minimal')
         expect(config).not_to have_key('project_description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_project('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_project', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_project('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_project', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -108,6 +129,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerProject do
         config = validate_resource_structure(result, 'aws_sagemaker_project', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_project('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_project', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_project('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_project', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -119,7 +157,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerProject do
 
         config = validate_resource_structure(result, 'aws_sagemaker_project', 'typed')
         expect(config['project_name']).to be_a(String)
-        expect(config['service_catalog_provisioning_details']).to be_a(Array)
+        expect(config['service_catalog_provisioning_details']).to be_a(Hash)
       end
     end
 
@@ -152,8 +190,8 @@ RSpec.describe Pangea::Resources::AWSSagemakerProject do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_sagemaker_project,
     method: :aws_sagemaker_project,
-    required_attrs: { project_name: 'test-value', service_catalog_provisioning_details: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :project_id, :tags_all],
+    required_attrs: { project_name: 'test-value', service_catalog_provisioning_details: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :project_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

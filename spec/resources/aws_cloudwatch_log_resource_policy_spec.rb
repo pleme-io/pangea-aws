@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCloudwatchLogResourcePolicy do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { policy_document: 'test-value', policy_name: 'test-value' } }
+  let(:required_attrs) { { policy_document: 'test-value' } }
 
   describe ':aws_cloudwatch_log_resource_policy' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogResourcePolicy do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_cloudwatch_log_resource_policy', 'test')
-        validate_required_attributes(config, [:policy_document, :policy_name])
+        validate_required_attributes(config, [:policy_document])
       end
 
       it 'returns a ResourceReference' do
@@ -38,6 +38,93 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogResourcePolicy do
         ref = synth.aws_cloudwatch_log_resource_policy('test', required_attrs)
 
         expect(ref.id).to eq("${aws_cloudwatch_log_resource_policy.test.id}")
+        expect(ref.policy_scope).to eq("${aws_cloudwatch_log_resource_policy.test.policy_scope}")
+        expect(ref.region).to eq("${aws_cloudwatch_log_resource_policy.test.region}")
+        expect(ref.revision_id).to eq("${aws_cloudwatch_log_resource_policy.test.revision_id}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_resource_policy('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_resource_policy', 'test')
+        expect(config).not_to have_key('policy_scope')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('revision_id')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ policy_name: 'test-value', region: 'test-value', resource_arn: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_resource_policy('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_resource_policy', 'full')
+        expect(config).to have_key('policy_name')
+        expect(config).to have_key('region')
+        expect(config).to have_key('resource_arn')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes policy_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_resource_policy('opt', required_attrs.merge(policy_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_resource_policy', 'opt')
+        expect(config).to have_key('policy_name')
+      end
+
+      it 'omits policy_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_resource_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_resource_policy', 'minimal')
+        expect(config).not_to have_key('policy_name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_resource_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_resource_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_resource_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_resource_policy', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes resource_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_resource_policy('opt', required_attrs.merge(resource_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_resource_policy', 'opt')
+        expect(config).to have_key('resource_arn')
+      end
+
+      it 'omits resource_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_resource_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_resource_policy', 'minimal')
+        expect(config).not_to have_key('resource_arn')
       end
     end
 
@@ -50,7 +137,6 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogResourcePolicy do
 
         config = validate_resource_structure(result, 'aws_cloudwatch_log_resource_policy', 'typed')
         expect(config['policy_document']).to be_a(String)
-        expect(config['policy_name']).to be_a(String)
       end
     end
 
@@ -83,8 +169,8 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogResourcePolicy do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_cloudwatch_log_resource_policy,
     method: :aws_cloudwatch_log_resource_policy,
-    required_attrs: { policy_document: 'test-value', policy_name: 'test-value' },
-    expected_outputs: [:id],
+    required_attrs: { policy_document: 'test-value' },
+    expected_outputs: [:id, :policy_scope, :region, :revision_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

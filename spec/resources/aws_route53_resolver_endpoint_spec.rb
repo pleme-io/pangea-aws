@@ -41,8 +41,11 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverEndpoint do
         expect(ref.arn).to eq("${aws_route53_resolver_endpoint.test.arn}")
         expect(ref.host_vpc_id).to eq("${aws_route53_resolver_endpoint.test.host_vpc_id}")
         expect(ref.protocols).to eq("${aws_route53_resolver_endpoint.test.protocols}")
+        expect(ref.region).to eq("${aws_route53_resolver_endpoint.test.region}")
         expect(ref.resolver_endpoint_type).to eq("${aws_route53_resolver_endpoint.test.resolver_endpoint_type}")
+        expect(ref.rni_enhanced_metrics_enabled).to eq("${aws_route53_resolver_endpoint.test.rni_enhanced_metrics_enabled}")
         expect(ref.tags_all).to eq("${aws_route53_resolver_endpoint.test.tags_all}")
+        expect(ref.target_name_server_metrics_enabled).to eq("${aws_route53_resolver_endpoint.test.target_name_server_metrics_enabled}")
       end
     end
 
@@ -57,13 +60,16 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverEndpoint do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('host_vpc_id')
         expect(config).not_to have_key('protocols')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resolver_endpoint_type')
+        expect(config).not_to have_key('rni_enhanced_metrics_enabled')
         expect(config).not_to have_key('tags_all')
+        expect(config).not_to have_key('target_name_server_metrics_enabled')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ name: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ name: 'test-value', protocols: ['test-value'], region: 'test-value', resolver_endpoint_type: 'test-value', rni_enhanced_metrics_enabled: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target_name_server_metrics_enabled: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +79,13 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverEndpoint do
 
         config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'full')
         expect(config).to have_key('name')
+        expect(config).to have_key('protocols')
+        expect(config).to have_key('region')
+        expect(config).to have_key('resolver_endpoint_type')
+        expect(config).to have_key('rni_enhanced_metrics_enabled')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('target_name_server_metrics_enabled')
       end
     end
 
@@ -95,6 +107,74 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverEndpoint do
         config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'minimal')
         expect(config).not_to have_key('name')
       end
+      it 'includes protocols when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_endpoint('opt', required_attrs.merge(protocols: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'opt')
+        expect(config).to have_key('protocols')
+      end
+
+      it 'omits protocols when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'minimal')
+        expect(config).not_to have_key('protocols')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_endpoint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes resolver_endpoint_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_endpoint('opt', required_attrs.merge(resolver_endpoint_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'opt')
+        expect(config).to have_key('resolver_endpoint_type')
+      end
+
+      it 'omits resolver_endpoint_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'minimal')
+        expect(config).not_to have_key('resolver_endpoint_type')
+      end
+      it 'includes rni_enhanced_metrics_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_endpoint('opt', required_attrs.merge(rni_enhanced_metrics_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'opt')
+        expect(config).to have_key('rni_enhanced_metrics_enabled')
+      end
+
+      it 'omits rni_enhanced_metrics_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'minimal')
+        expect(config).not_to have_key('rni_enhanced_metrics_enabled')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -111,6 +191,65 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverEndpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_endpoint('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes target_name_server_metrics_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_endpoint('opt', required_attrs.merge(target_name_server_metrics_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'opt')
+        expect(config).to have_key('target_name_server_metrics_enabled')
+      end
+
+      it 'omits target_name_server_metrics_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', 'minimal')
+        expect(config).not_to have_key('target_name_server_metrics_enabled')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts rni_enhanced_metrics_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(rni_enhanced_metrics_enabled: val)
+          synth.aws_route53_resolver_endpoint("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', "bool_#{val}")
+          expect(config['rni_enhanced_metrics_enabled']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts target_name_server_metrics_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(target_name_server_metrics_enabled: val)
+          synth.aws_route53_resolver_endpoint("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_route53_resolver_endpoint', "bool_#{val}")
+          expect(config['target_name_server_metrics_enabled']).to eq(val)
+        end
       end
     end
 
@@ -158,8 +297,8 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverEndpoint do
     resource_type: :aws_route53_resolver_endpoint,
     method: :aws_route53_resolver_endpoint,
     required_attrs: { direction: 'test-value', ip_address: [{ 'key1' => 'val1' }], security_group_ids: ['test-value'] },
-    expected_outputs: [:id, :arn, :host_vpc_id, :protocols, :resolver_endpoint_type, :tags_all],
+    expected_outputs: [:id, :arn, :host_vpc_id, :protocols, :region, :resolver_endpoint_type, :rni_enhanced_metrics_enabled, :tags_all, :target_name_server_metrics_enabled],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:rni_enhanced_metrics_enabled, :target_name_server_metrics_enabled]
 end

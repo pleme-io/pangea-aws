@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_ivschat_room,
       attributes_class: AWS::Types::IvschatRoomAttributes,
       outputs: { id: :id },
-      map_present: [:logging_configuration_identifiers, :maximum_message_length, :maximum_message_rate_per_second, :message_review_handler, :name, :tags, :tags_all]
+      map_present: [:logging_configuration_identifiers, :maximum_message_length, :maximum_message_rate_per_second, :message_review_handler, :name, :region, :tags, :tags_all]
   end
   module AWS
     include AWSIvschatRoom

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSEksAccessPolicyAssociation do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { access_scope: [{ 'key1' => 'val1' }], cluster_name: 'test-value', policy_arn: 'test-value', principal_arn: 'test-value' } }
+  let(:required_attrs) { { access_scope: { 'key1' => 'val1' }, cluster_name: 'test-value', policy_arn: 'test-value', principal_arn: 'test-value' } }
 
   describe ':aws_eks_access_policy_association' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSEksAccessPolicyAssociation do
         expect(ref.id).to eq("${aws_eks_access_policy_association.test.id}")
         expect(ref.associated_at).to eq("${aws_eks_access_policy_association.test.associated_at}")
         expect(ref.modified_at).to eq("${aws_eks_access_policy_association.test.modified_at}")
+        expect(ref.region).to eq("${aws_eks_access_policy_association.test.region}")
       end
     end
 
@@ -53,6 +54,41 @@ RSpec.describe Pangea::Resources::AWSEksAccessPolicyAssociation do
         config = validate_resource_structure(result, 'aws_eks_access_policy_association', 'test')
         expect(config).not_to have_key('associated_at')
         expect(config).not_to have_key('modified_at')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_access_policy_association('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_eks_access_policy_association', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_access_policy_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_access_policy_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_access_policy_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_access_policy_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -64,7 +100,7 @@ RSpec.describe Pangea::Resources::AWSEksAccessPolicyAssociation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_eks_access_policy_association', 'typed')
-        expect(config['access_scope']).to be_a(Array)
+        expect(config['access_scope']).to be_a(Hash)
         expect(config['cluster_name']).to be_a(String)
         expect(config['policy_arn']).to be_a(String)
         expect(config['principal_arn']).to be_a(String)
@@ -100,8 +136,8 @@ RSpec.describe Pangea::Resources::AWSEksAccessPolicyAssociation do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_eks_access_policy_association,
     method: :aws_eks_access_policy_association,
-    required_attrs: { access_scope: [{ 'key1' => 'val1' }], cluster_name: 'test-value', policy_arn: 'test-value', principal_arn: 'test-value' },
-    expected_outputs: [:id, :associated_at, :modified_at],
+    required_attrs: { access_scope: { 'key1' => 'val1' }, cluster_name: 'test-value', policy_arn: 'test-value', principal_arn: 'test-value' },
+    expected_outputs: [:id, :associated_at, :modified_at, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

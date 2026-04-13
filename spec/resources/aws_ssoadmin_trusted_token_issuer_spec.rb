@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSsoadminTrustedTokenIssuer do
 
         expect(ref.id).to eq("${aws_ssoadmin_trusted_token_issuer.test.id}")
         expect(ref.arn).to eq("${aws_ssoadmin_trusted_token_issuer.test.arn}")
+        expect(ref.region).to eq("${aws_ssoadmin_trusted_token_issuer.test.region}")
         expect(ref.tags_all).to eq("${aws_ssoadmin_trusted_token_issuer.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSSsoadminTrustedTokenIssuer do
 
         config = validate_resource_structure(result, 'aws_ssoadmin_trusted_token_issuer', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ client_token: 'test-value', tags: { 'key1' => 'val1' }, trusted_token_issuer_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ client_token: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, trusted_token_issuer_configuration: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSSsoadminTrustedTokenIssuer do
 
         config = validate_resource_structure(result, 'aws_ssoadmin_trusted_token_issuer', 'full')
         expect(config).to have_key('client_token')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
         expect(config).to have_key('trusted_token_issuer_configuration')
       end
@@ -89,6 +92,23 @@ RSpec.describe Pangea::Resources::AWSSsoadminTrustedTokenIssuer do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssoadmin_trusted_token_issuer', 'minimal')
         expect(config).not_to have_key('client_token')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_trusted_token_issuer('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_trusted_token_issuer', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_trusted_token_issuer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_trusted_token_issuer', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -170,7 +190,7 @@ RSpec.describe Pangea::Resources::AWSSsoadminTrustedTokenIssuer do
     resource_type: :aws_ssoadmin_trusted_token_issuer,
     method: :aws_ssoadmin_trusted_token_issuer,
     required_attrs: { instance_arn: 'test-value', name: 'test-value', trusted_token_issuer_type: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

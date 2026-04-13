@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DmsEndpointAttributes,
       outputs: { id: :id },
       map: [:endpoint_id, :endpoint_type, :engine_name],
-      map_present: [:certificate_arn, :database_name, :elasticsearch_settings, :extra_connection_attributes, :kafka_settings, :kinesis_settings, :kms_key_arn, :mongodb_settings, :password, :port, :postgres_settings, :redis_settings, :redshift_settings, :s3_settings, :secrets_manager_access_role_arn, :secrets_manager_arn, :server_name, :service_access_role, :ssl_mode, :tags, :tags_all, :username],
+      map_present: [:certificate_arn, :database_name, :elasticsearch_settings, :extra_connection_attributes, :kafka_settings, :kinesis_settings, :kms_key_arn, :mongodb_settings, :mysql_settings, :oracle_settings, :password, :port, :postgres_settings, :redis_settings, :redshift_settings, :region, :secrets_manager_access_role_arn, :secrets_manager_arn, :server_name, :service_access_role, :ssl_mode, :tags, :tags_all, :username],
       map_bool: [:pause_replication_tasks]
   end
   module AWS

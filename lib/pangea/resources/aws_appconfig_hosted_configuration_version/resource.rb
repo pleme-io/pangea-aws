@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppconfigHostedConfigurationVersionAttributes,
       outputs: { id: :id },
       map: [:application_id, :configuration_profile_id, :content, :content_type],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSAppconfigHostedConfigurationVersion

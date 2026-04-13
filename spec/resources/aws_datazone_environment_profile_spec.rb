@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneEnvironmentProfile do
         expect(ref.created_at).to eq("${aws_datazone_environment_profile.test.created_at}")
         expect(ref.created_by).to eq("${aws_datazone_environment_profile.test.created_by}")
         expect(ref.description).to eq("${aws_datazone_environment_profile.test.description}")
+        expect(ref.region).to eq("${aws_datazone_environment_profile.test.region}")
         expect(ref.updated_at).to eq("${aws_datazone_environment_profile.test.updated_at}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSDatazoneEnvironmentProfile do
         expect(config).not_to have_key('created_at')
         expect(config).not_to have_key('created_by')
         expect(config).not_to have_key('description')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('updated_at')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ user_parameters: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ aws_account_id: 'test-value', description: 'test-value', region: 'test-value', user_parameters: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,11 +74,65 @@ RSpec.describe Pangea::Resources::AWSDatazoneEnvironmentProfile do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_datazone_environment_profile', 'full')
+        expect(config).to have_key('aws_account_id')
+        expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('user_parameters')
       end
     end
 
     context 'optional attributes' do
+      it 'includes aws_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment_profile('opt', required_attrs.merge(aws_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment_profile', 'opt')
+        expect(config).to have_key('aws_account_id')
+      end
+
+      it 'omits aws_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment_profile', 'minimal')
+        expect(config).not_to have_key('aws_account_id')
+      end
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment_profile('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment_profile', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment_profile', 'minimal')
+        expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment_profile('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment_profile', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment_profile', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes user_parameters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -142,7 +198,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneEnvironmentProfile do
     resource_type: :aws_datazone_environment_profile,
     method: :aws_datazone_environment_profile,
     required_attrs: { aws_account_region: 'test-value', domain_identifier: 'test-value', environment_blueprint_identifier: 'test-value', name: 'test-value', project_identifier: 'test-value' },
-    expected_outputs: [:id, :aws_account_id, :created_at, :created_by, :description, :updated_at],
+    expected_outputs: [:id, :aws_account_id, :created_at, :created_by, :description, :region, :updated_at],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

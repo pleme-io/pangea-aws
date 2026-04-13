@@ -65,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSIamServerCertificate do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ certificate_chain: 'test-value', path: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ certificate_chain: 'test-value', name: 'test-value', name_prefix: 'test-value', path: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,8 +75,11 @@ RSpec.describe Pangea::Resources::AWSIamServerCertificate do
 
         config = validate_resource_structure(result, 'aws_iam_server_certificate', 'full')
         expect(config).to have_key('certificate_chain')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
         expect(config).to have_key('path')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -97,6 +100,40 @@ RSpec.describe Pangea::Resources::AWSIamServerCertificate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iam_server_certificate', 'minimal')
         expect(config).not_to have_key('certificate_chain')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_server_certificate('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_server_certificate', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_server_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_server_certificate', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_server_certificate('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_server_certificate', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_server_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_server_certificate', 'minimal')
+        expect(config).not_to have_key('name_prefix')
       end
       it 'includes path when provided' do
         synth = create_synthesizer
@@ -131,6 +168,23 @@ RSpec.describe Pangea::Resources::AWSIamServerCertificate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iam_server_certificate', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_server_certificate('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_server_certificate', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_server_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_server_certificate', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 

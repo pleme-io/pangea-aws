@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ssoadmin_application_assignment,
       attributes_class: AWS::Types::SsoadminApplicationAssignmentAttributes,
       outputs: { id: :id },
-      map: [:application_arn, :principal_id, :principal_type]
+      map: [:application_arn, :principal_id, :principal_type],
+      map_present: [:region]
   end
   module AWS
     include AWSSsoadminApplicationAssignment

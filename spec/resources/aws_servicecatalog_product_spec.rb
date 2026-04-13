@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSServicecatalogProduct do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { name: 'test-value', owner: 'test-value', provisioning_artifact_parameters: [{ 'key1' => 'val1' }], type: 'test-value' } }
+  let(:required_attrs) { { name: 'test-value', owner: 'test-value', provisioning_artifact_parameters: { 'key1' => 'val1' }, type: 'test-value' } }
 
   describe ':aws_servicecatalog_product' do
     context 'with required attributes only' do
@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProduct do
         expect(ref.description).to eq("${aws_servicecatalog_product.test.description}")
         expect(ref.distributor).to eq("${aws_servicecatalog_product.test.distributor}")
         expect(ref.has_default_path).to eq("${aws_servicecatalog_product.test.has_default_path}")
+        expect(ref.region).to eq("${aws_servicecatalog_product.test.region}")
         expect(ref.status).to eq("${aws_servicecatalog_product.test.status}")
         expect(ref.support_description).to eq("${aws_servicecatalog_product.test.support_description}")
         expect(ref.support_email).to eq("${aws_servicecatalog_product.test.support_email}")
@@ -64,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProduct do
         expect(config).not_to have_key('description')
         expect(config).not_to have_key('distributor')
         expect(config).not_to have_key('has_default_path')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('support_description')
         expect(config).not_to have_key('support_email')
@@ -73,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProduct do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ accept_language: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ accept_language: 'test-value', description: 'test-value', distributor: 'test-value', region: 'test-value', support_description: 'test-value', support_email: 'test-value', support_url: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -83,7 +85,14 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProduct do
 
         config = validate_resource_structure(result, 'aws_servicecatalog_product', 'full')
         expect(config).to have_key('accept_language')
+        expect(config).to have_key('description')
+        expect(config).to have_key('distributor')
+        expect(config).to have_key('region')
+        expect(config).to have_key('support_description')
+        expect(config).to have_key('support_email')
+        expect(config).to have_key('support_url')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -105,6 +114,108 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProduct do
         config = validate_resource_structure(result, 'aws_servicecatalog_product', 'minimal')
         expect(config).not_to have_key('accept_language')
       end
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'minimal')
+        expect(config).not_to have_key('description')
+      end
+      it 'includes distributor when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('opt', required_attrs.merge(distributor: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'opt')
+        expect(config).to have_key('distributor')
+      end
+
+      it 'omits distributor when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'minimal')
+        expect(config).not_to have_key('distributor')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes support_description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('opt', required_attrs.merge(support_description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'opt')
+        expect(config).to have_key('support_description')
+      end
+
+      it 'omits support_description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'minimal')
+        expect(config).not_to have_key('support_description')
+      end
+      it 'includes support_email when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('opt', required_attrs.merge(support_email: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'opt')
+        expect(config).to have_key('support_email')
+      end
+
+      it 'omits support_email when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'minimal')
+        expect(config).not_to have_key('support_email')
+      end
+      it 'includes support_url when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('opt', required_attrs.merge(support_url: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'opt')
+        expect(config).to have_key('support_url')
+      end
+
+      it 'omits support_url when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'minimal')
+        expect(config).not_to have_key('support_url')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -122,6 +233,23 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProduct do
         config = validate_resource_structure(result, 'aws_servicecatalog_product', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_product('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_product', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -134,7 +262,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProduct do
         config = validate_resource_structure(result, 'aws_servicecatalog_product', 'typed')
         expect(config['name']).to be_a(String)
         expect(config['owner']).to be_a(String)
-        expect(config['provisioning_artifact_parameters']).to be_a(Array)
+        expect(config['provisioning_artifact_parameters']).to be_a(Hash)
         expect(config['type']).to be_a(String)
       end
     end
@@ -168,8 +296,8 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProduct do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_servicecatalog_product,
     method: :aws_servicecatalog_product,
-    required_attrs: { name: 'test-value', owner: 'test-value', provisioning_artifact_parameters: [{ 'key1' => 'val1' }], type: 'test-value' },
-    expected_outputs: [:id, :arn, :created_time, :description, :distributor, :has_default_path, :status, :support_description, :support_email, :support_url, :tags_all],
+    required_attrs: { name: 'test-value', owner: 'test-value', provisioning_artifact_parameters: { 'key1' => 'val1' }, type: 'test-value' },
+    expected_outputs: [:id, :arn, :created_time, :description, :distributor, :has_default_path, :region, :status, :support_description, :support_email, :support_url, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

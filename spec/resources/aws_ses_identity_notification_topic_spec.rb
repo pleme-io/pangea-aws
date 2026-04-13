@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSSesIdentityNotificationTopic do
         ref = synth.aws_ses_identity_notification_topic('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ses_identity_notification_topic.test.id}")
+        expect(ref.region).to eq("${aws_ses_identity_notification_topic.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_identity_notification_topic('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ses_identity_notification_topic', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ include_original_headers: true, topic_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ include_original_headers: true, region: 'test-value', topic_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSSesIdentityNotificationTopic do
 
         config = validate_resource_structure(result, 'aws_ses_identity_notification_topic', 'full')
         expect(config).to have_key('include_original_headers')
+        expect(config).to have_key('region')
         expect(config).to have_key('topic_arn')
       end
     end
@@ -73,6 +87,23 @@ RSpec.describe Pangea::Resources::AWSSesIdentityNotificationTopic do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ses_identity_notification_topic', 'minimal')
         expect(config).not_to have_key('include_original_headers')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_identity_notification_topic('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_identity_notification_topic', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_identity_notification_topic('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_identity_notification_topic', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes topic_arn when provided' do
         synth = create_synthesizer
@@ -150,7 +181,7 @@ RSpec.describe Pangea::Resources::AWSSesIdentityNotificationTopic do
     resource_type: :aws_ses_identity_notification_topic,
     method: :aws_ses_identity_notification_topic,
     required_attrs: { identity: 'test-value', notification_type: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:include_original_headers]

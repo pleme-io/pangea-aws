@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSGameliftFleet do
         expect(ref.log_paths).to eq("${aws_gamelift_fleet.test.log_paths}")
         expect(ref.metric_groups).to eq("${aws_gamelift_fleet.test.metric_groups}")
         expect(ref.operating_system).to eq("${aws_gamelift_fleet.test.operating_system}")
+        expect(ref.region).to eq("${aws_gamelift_fleet.test.region}")
         expect(ref.script_arn).to eq("${aws_gamelift_fleet.test.script_arn}")
         expect(ref.tags_all).to eq("${aws_gamelift_fleet.test.tags_all}")
       end
@@ -61,13 +62,14 @@ RSpec.describe Pangea::Resources::AWSGameliftFleet do
         expect(config).not_to have_key('log_paths')
         expect(config).not_to have_key('metric_groups')
         expect(config).not_to have_key('operating_system')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('script_arn')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ build_id: 'test-value', certificate_configuration: [{ 'key1' => 'val1' }], description: 'test-value', ec2_inbound_permission: [{ 'key1' => 'val1' }], fleet_type: 'test-value', instance_role_arn: 'test-value', new_game_session_protection_policy: 'test-value', resource_creation_limit_policy: [{ 'key1' => 'val1' }], runtime_configuration: [{ 'key1' => 'val1' }], script_id: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ build_id: 'test-value', certificate_configuration: { 'key1' => 'val1' }, description: 'test-value', ec2_inbound_permission: [{ 'key1' => 'val1' }], fleet_type: 'test-value', instance_role_arn: 'test-value', metric_groups: ['test-value'], new_game_session_protection_policy: 'test-value', region: 'test-value', resource_creation_limit_policy: { 'key1' => 'val1' }, runtime_configuration: { 'key1' => 'val1' }, script_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -82,11 +84,14 @@ RSpec.describe Pangea::Resources::AWSGameliftFleet do
         expect(config).to have_key('ec2_inbound_permission')
         expect(config).to have_key('fleet_type')
         expect(config).to have_key('instance_role_arn')
+        expect(config).to have_key('metric_groups')
         expect(config).to have_key('new_game_session_protection_policy')
+        expect(config).to have_key('region')
         expect(config).to have_key('resource_creation_limit_policy')
         expect(config).to have_key('runtime_configuration')
         expect(config).to have_key('script_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -111,7 +116,7 @@ RSpec.describe Pangea::Resources::AWSGameliftFleet do
       it 'includes certificate_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_gamelift_fleet('opt', required_attrs.merge(certificate_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_gamelift_fleet('opt', required_attrs.merge(certificate_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_gamelift_fleet', 'opt')
         expect(config).to have_key('certificate_configuration')
@@ -193,6 +198,23 @@ RSpec.describe Pangea::Resources::AWSGameliftFleet do
         config = validate_resource_structure(result, 'aws_gamelift_fleet', 'minimal')
         expect(config).not_to have_key('instance_role_arn')
       end
+      it 'includes metric_groups when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_fleet('opt', required_attrs.merge(metric_groups: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_fleet', 'opt')
+        expect(config).to have_key('metric_groups')
+      end
+
+      it 'omits metric_groups when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_fleet', 'minimal')
+        expect(config).not_to have_key('metric_groups')
+      end
       it 'includes new_game_session_protection_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -210,10 +232,27 @@ RSpec.describe Pangea::Resources::AWSGameliftFleet do
         config = validate_resource_structure(result, 'aws_gamelift_fleet', 'minimal')
         expect(config).not_to have_key('new_game_session_protection_policy')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_fleet('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_fleet', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_fleet', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes resource_creation_limit_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_gamelift_fleet('opt', required_attrs.merge(resource_creation_limit_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_gamelift_fleet('opt', required_attrs.merge(resource_creation_limit_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_gamelift_fleet', 'opt')
         expect(config).to have_key('resource_creation_limit_policy')
@@ -230,7 +269,7 @@ RSpec.describe Pangea::Resources::AWSGameliftFleet do
       it 'includes runtime_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_gamelift_fleet('opt', required_attrs.merge(runtime_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_gamelift_fleet('opt', required_attrs.merge(runtime_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_gamelift_fleet', 'opt')
         expect(config).to have_key('runtime_configuration')
@@ -278,6 +317,23 @@ RSpec.describe Pangea::Resources::AWSGameliftFleet do
         config = validate_resource_structure(result, 'aws_gamelift_fleet', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_fleet('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_fleet', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_fleet', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -323,7 +379,7 @@ RSpec.describe Pangea::Resources::AWSGameliftFleet do
     resource_type: :aws_gamelift_fleet,
     method: :aws_gamelift_fleet,
     required_attrs: { ec2_instance_type: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :build_arn, :log_paths, :metric_groups, :operating_system, :script_arn, :tags_all],
+    expected_outputs: [:id, :arn, :build_arn, :log_paths, :metric_groups, :operating_system, :region, :script_arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

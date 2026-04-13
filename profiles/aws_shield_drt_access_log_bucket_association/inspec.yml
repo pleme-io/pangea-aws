@@ -1,0 +1,8 @@
+name: aws_shield_drt_access_log_bucket_association
+title: Manages a aws_shield_drt_access_log_bucket_association resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

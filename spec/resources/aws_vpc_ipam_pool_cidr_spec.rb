@@ -40,6 +40,8 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPoolCidr do
         expect(ref.id).to eq("${aws_vpc_ipam_pool_cidr.test.id}")
         expect(ref.cidr).to eq("${aws_vpc_ipam_pool_cidr.test.cidr}")
         expect(ref.ipam_pool_cidr_id).to eq("${aws_vpc_ipam_pool_cidr.test.ipam_pool_cidr_id}")
+        expect(ref.netmask_length).to eq("${aws_vpc_ipam_pool_cidr.test.netmask_length}")
+        expect(ref.region).to eq("${aws_vpc_ipam_pool_cidr.test.region}")
       end
     end
 
@@ -53,11 +55,13 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPoolCidr do
         config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr', 'test')
         expect(config).not_to have_key('cidr')
         expect(config).not_to have_key('ipam_pool_cidr_id')
+        expect(config).not_to have_key('netmask_length')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cidr_authorization_context: [{ 'key1' => 'val1' }], netmask_length: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ cidr: 'test-value', cidr_authorization_context: { 'key1' => 'val1' }, netmask_length: 3.14, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,16 +70,35 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPoolCidr do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr', 'full')
+        expect(config).to have_key('cidr')
         expect(config).to have_key('cidr_authorization_context')
         expect(config).to have_key('netmask_length')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes cidr when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool_cidr('opt', required_attrs.merge(cidr: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr', 'opt')
+        expect(config).to have_key('cidr')
+      end
+
+      it 'omits cidr when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool_cidr('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr', 'minimal')
+        expect(config).not_to have_key('cidr')
+      end
       it 'includes cidr_authorization_context when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_vpc_ipam_pool_cidr('opt', required_attrs.merge(cidr_authorization_context: [{ 'key1' => 'val1' }]))
+        synth.aws_vpc_ipam_pool_cidr('opt', required_attrs.merge(cidr_authorization_context: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr', 'opt')
         expect(config).to have_key('cidr_authorization_context')
@@ -105,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPoolCidr do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr', 'minimal')
         expect(config).not_to have_key('netmask_length')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool_cidr('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool_cidr('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -150,7 +190,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPoolCidr do
     resource_type: :aws_vpc_ipam_pool_cidr,
     method: :aws_vpc_ipam_pool_cidr,
     required_attrs: { ipam_pool_id: 'test-value' },
-    expected_outputs: [:id, :cidr, :ipam_pool_cidr_id],
+    expected_outputs: [:id, :cidr, :ipam_pool_cidr_id, :netmask_length, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

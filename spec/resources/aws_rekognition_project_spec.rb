@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRekognitionProject do
         expect(ref.id).to eq("${aws_rekognition_project.test.id}")
         expect(ref.arn).to eq("${aws_rekognition_project.test.arn}")
         expect(ref.auto_update).to eq("${aws_rekognition_project.test.auto_update}")
+        expect(ref.region).to eq("${aws_rekognition_project.test.region}")
         expect(ref.tags_all).to eq("${aws_rekognition_project.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSRekognitionProject do
         config = validate_resource_structure(result, 'aws_rekognition_project', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('auto_update')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ feature: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ auto_update: 'test-value', feature: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,12 +70,31 @@ RSpec.describe Pangea::Resources::AWSRekognitionProject do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_rekognition_project', 'full')
+        expect(config).to have_key('auto_update')
         expect(config).to have_key('feature')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes auto_update when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rekognition_project('opt', required_attrs.merge(auto_update: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rekognition_project', 'opt')
+        expect(config).to have_key('auto_update')
+      end
+
+      it 'omits auto_update when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rekognition_project('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rekognition_project', 'minimal')
+        expect(config).not_to have_key('auto_update')
+      end
       it 'includes feature when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -90,6 +111,23 @@ RSpec.describe Pangea::Resources::AWSRekognitionProject do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rekognition_project', 'minimal')
         expect(config).not_to have_key('feature')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rekognition_project('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rekognition_project', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rekognition_project('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rekognition_project', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -152,7 +190,7 @@ RSpec.describe Pangea::Resources::AWSRekognitionProject do
     resource_type: :aws_rekognition_project,
     method: :aws_rekognition_project,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :auto_update, :tags_all],
+    expected_outputs: [:id, :arn, :auto_update, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

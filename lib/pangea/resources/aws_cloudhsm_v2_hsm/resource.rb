@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudhsmV2HsmAttributes,
       outputs: { id: :id },
       map: [:cluster_id],
-      map_present: [:availability_zone, :ip_address, :subnet_id]
+      map_present: [:availability_zone, :ip_address, :region, :subnet_id]
   end
   module AWS
     include AWSCloudhsmV2Hsm

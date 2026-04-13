@@ -67,6 +67,7 @@ module Pangea
       include AWSApigatewayv2Model
       include AWSApigatewayv2Route
       include AWSApigatewayv2RouteResponse
+      include AWSApigatewayv2RoutingRule
       include AWSApigatewayv2Stage
       include AWSApigatewayv2VpcLink
       include AWSAppCookieStickinessPolicy
@@ -114,8 +115,10 @@ module Pangea
       include AWSAppstreamStack
       include AWSAppstreamUser
       include AWSAppstreamUserStackAssociation
+      include AWSAppsyncApi
       include AWSAppsyncApiCache
       include AWSAppsyncApiKey
+      include AWSAppsyncChannelNamespace
       include AWSAppsyncDatasource
       include AWSAppsyncDomainName
       include AWSAppsyncDomainNameApiAssociation
@@ -124,6 +127,7 @@ module Pangea
       include AWSAppsyncResolver
       include AWSAppsyncSourceApiAssociation
       include AWSAppsyncType
+      include AWSArcregionswitchPlan
       include AWSAthenaCapacityReservation
       include AWSAthenaDataCatalog
       include AWSAthenaDatabase
@@ -177,8 +181,22 @@ module Pangea
       include AWSBedrockagentAgentCollaborator
       include AWSBedrockagentAgentKnowledgeBaseAssociation
       include AWSBedrockagentDataSource
+      include AWSBedrockagentFlow
       include AWSBedrockagentKnowledgeBase
       include AWSBedrockagentPrompt
+      include AWSBedrockagentcoreAgentRuntime
+      include AWSBedrockagentcoreAgentRuntimeEndpoint
+      include AWSBedrockagentcoreApiKeyCredentialProvider
+      include AWSBedrockagentcoreBrowser
+      include AWSBedrockagentcoreCodeInterpreter
+      include AWSBedrockagentcoreGateway
+      include AWSBedrockagentcoreGatewayTarget
+      include AWSBedrockagentcoreMemory
+      include AWSBedrockagentcoreMemoryStrategy
+      include AWSBedrockagentcoreOauth2CredentialProvider
+      include AWSBedrockagentcoreTokenVaultCmk
+      include AWSBedrockagentcoreWorkloadIdentity
+      include AWSBillingView
       include AWSBudgetsBudget
       include AWSBudgetsBudgetAction
       include AWSCeAnomalyMonitor
@@ -210,21 +228,27 @@ module Pangea
       include AWSCloudformationStackSet
       include AWSCloudformationStackSetInstance
       include AWSCloudformationType
+      include AWSCloudfrontAnycastIpList
       include AWSCloudfrontCachePolicy
+      include AWSCloudfrontConnectionFunction
+      include AWSCloudfrontConnectionGroup
       include AWSCloudfrontContinuousDeploymentPolicy
       include AWSCloudfrontDistribution
+      include AWSCloudfrontDistributionTenant
       include AWSCloudfrontFieldLevelEncryptionConfig
       include AWSCloudfrontFieldLevelEncryptionProfile
       include AWSCloudfrontFunction
       include AWSCloudfrontKeyGroup
       include AWSCloudfrontKeyValueStore
       include AWSCloudfrontMonitoringSubscription
+      include AWSCloudfrontMultitenantDistribution
       include AWSCloudfrontOriginAccessControl
       include AWSCloudfrontOriginAccessIdentity
       include AWSCloudfrontOriginRequestPolicy
       include AWSCloudfrontPublicKey
       include AWSCloudfrontRealtimeLogConfig
       include AWSCloudfrontResponseHeadersPolicy
+      include AWSCloudfrontTrustStore
       include AWSCloudfrontVpcOrigin
       include AWSCloudfrontkeyvaluestoreKey
       include AWSCloudfrontkeyvaluestoreKeysExclusive
@@ -263,6 +287,7 @@ module Pangea
       include AWSCloudwatchLogResourcePolicy
       include AWSCloudwatchLogStream
       include AWSCloudwatchLogSubscriptionFilter
+      include AWSCloudwatchLogTransformer
       include AWSCloudwatchMetricAlarm
       include AWSCloudwatchMetricStream
       include AWSCloudwatchQueryDefinition
@@ -300,6 +325,8 @@ module Pangea
       include AWSCognitoIdentityPoolProviderPrincipalTag
       include AWSCognitoIdentityPoolRolesAttachment
       include AWSCognitoIdentityProvider
+      include AWSCognitoLogDeliveryConfiguration
+      include AWSCognitoManagedLoginBranding
       include AWSCognitoManagedUserPoolClient
       include AWSCognitoResourceServer
       include AWSCognitoRiskConfiguration
@@ -335,6 +362,7 @@ module Pangea
       include AWSConnectInstanceStorageConfig
       include AWSConnectLambdaFunctionAssociation
       include AWSConnectPhoneNumber
+      include AWSConnectPhoneNumberContactFlowAssociation
       include AWSConnectQueue
       include AWSConnectQuickConnect
       include AWSConnectRoutingProfile
@@ -343,6 +371,7 @@ module Pangea
       include AWSConnectUserHierarchyGroup
       include AWSConnectUserHierarchyStructure
       include AWSConnectVocabulary
+      include AWSControltowerBaseline
       include AWSControltowerControl
       include AWSControltowerLandingZone
       include AWSCostoptimizationhubEnrollmentStatus
@@ -466,6 +495,7 @@ module Pangea
       include AWSDxPublicVirtualInterface
       include AWSDxTransitVirtualInterface
       include AWSDynamodbContributorInsights
+      include AWSDynamodbGlobalSecondaryIndex
       include AWSDynamodbGlobalTable
       include AWSDynamodbKinesisStreamingDestination
       include AWSDynamodbResourcePolicy
@@ -482,6 +512,7 @@ module Pangea
       include AWSEbsSnapshotCopy
       include AWSEbsSnapshotImport
       include AWSEbsVolume
+      include AWSEc2AllowedImagesSettings
       include AWSEc2AvailabilityZoneGroup
       include AWSEc2CapacityBlockReservation
       include AWSEc2CapacityReservation
@@ -503,6 +534,8 @@ module Pangea
       include AWSEc2ManagedPrefixListEntry
       include AWSEc2NetworkInsightsAnalysis
       include AWSEc2NetworkInsightsPath
+      include AWSEc2SecondaryNetwork
+      include AWSEc2SecondarySubnet
       include AWSEc2SerialConsoleAccess
       include AWSEc2SubnetCidrReservation
       include AWSEc2Tag
@@ -515,6 +548,8 @@ module Pangea
       include AWSEc2TransitGatewayConnectPeer
       include AWSEc2TransitGatewayDefaultRouteTableAssociation
       include AWSEc2TransitGatewayDefaultRouteTablePropagation
+      include AWSEc2TransitGatewayMeteringPolicy
+      include AWSEc2TransitGatewayMeteringPolicyEntry
       include AWSEc2TransitGatewayMulticastDomain
       include AWSEc2TransitGatewayMulticastDomainAssociation
       include AWSEc2TransitGatewayMulticastGroupMember
@@ -533,6 +568,7 @@ module Pangea
       include AWSEcrAccountSetting
       include AWSEcrLifecyclePolicy
       include AWSEcrPullThroughCacheRule
+      include AWSEcrPullTimeUpdateExclusion
       include AWSEcrRegistryPolicy
       include AWSEcrRegistryScanningConfiguration
       include AWSEcrReplicationConfiguration
@@ -545,6 +581,7 @@ module Pangea
       include AWSEcsCapacityProvider
       include AWSEcsCluster
       include AWSEcsClusterCapacityProviders
+      include AWSEcsExpressGatewayService
       include AWSEcsService
       include AWSEcsTag
       include AWSEcsTaskDefinition
@@ -562,6 +599,7 @@ module Pangea
       include AWSEksAccessEntry
       include AWSEksAccessPolicyAssociation
       include AWSEksAddon
+      include AWSEksCapability
       include AWSEksCluster
       include AWSEksFargateProfile
       include AWSEksIdentityProviderConfig
@@ -612,6 +650,7 @@ module Pangea
       include AWSFinspaceKxUser
       include AWSFinspaceKxVolume
       include AWSFisExperimentTemplate
+      include AWSFisTargetAccountConfiguration
       include AWSFlowLog
       include AWSFmsAdminAccount
       include AWSFmsPolicy
@@ -626,6 +665,7 @@ module Pangea
       include AWSFsxOpenzfsFileSystem
       include AWSFsxOpenzfsSnapshot
       include AWSFsxOpenzfsVolume
+      include AWSFsxS3AccessPointAttachment
       include AWSFsxWindowsFileSystem
       include AWSGameliftAlias
       include AWSGameliftBuild
@@ -694,6 +734,7 @@ module Pangea
       include AWSIamInstanceProfile
       include AWSIamOpenidConnectProvider
       include AWSIamOrganizationsFeatures
+      include AWSIamOutboundWebIdentityFederation
       include AWSIamPolicy
       include AWSIamPolicyAttachment
       include AWSIamRole
@@ -740,6 +781,7 @@ module Pangea
       include AWSInternetGateway
       include AWSInternetGatewayAttachment
       include AWSInternetmonitorMonitor
+      include AWSInvoicingInvoiceUnit
       include AWSIotAuthorizer
       include AWSIotBillingGroup
       include AWSIotCaCertificate
@@ -792,13 +834,16 @@ module Pangea
       include AWSKmsReplicaKey
       include AWSLakeformationDataCellsFilter
       include AWSLakeformationDataLakeSettings
+      include AWSLakeformationIdentityCenterConfiguration
       include AWSLakeformationLfTag
+      include AWSLakeformationLfTagExpression
       include AWSLakeformationOptIn
       include AWSLakeformationPermissions
       include AWSLakeformationResource
       include AWSLakeformationResourceLfTag
       include AWSLakeformationResourceLfTags
       include AWSLambdaAlias
+      include AWSLambdaCapacityProvider
       include AWSLambdaCodeSigningConfig
       include AWSLambdaEventSourceMapping
       include AWSLambdaFunction
@@ -908,12 +953,14 @@ module Pangea
       include AWSMskScramSecretAssociation
       include AWSMskServerlessCluster
       include AWSMskSingleScramSecretAssociation
+      include AWSMskTopic
       include AWSMskVpcConnection
       include AWSMskconnectConnector
       include AWSMskconnectCustomPlugin
       include AWSMskconnectWorkerConfiguration
       include AWSMwaaEnvironment
       include AWSNatGateway
+      include AWSNatGatewayEipAssociation
       include AWSNeptuneCluster
       include AWSNeptuneClusterEndpoint
       include AWSNeptuneClusterInstance
@@ -933,11 +980,16 @@ module Pangea
       include AWSNetworkInterfaceSgAttachment
       include AWSNetworkfirewallFirewall
       include AWSNetworkfirewallFirewallPolicy
+      include AWSNetworkfirewallFirewallTransitGatewayAttachmentAccepter
       include AWSNetworkfirewallLoggingConfiguration
       include AWSNetworkfirewallResourcePolicy
       include AWSNetworkfirewallRuleGroup
       include AWSNetworkfirewallTlsInspectionConfiguration
+      include AWSNetworkfirewallVpcEndpointAssociation
+      include AWSNetworkflowmonitorMonitor
+      include AWSNetworkflowmonitorScope
       include AWSNetworkmanagerAttachmentAccepter
+      include AWSNetworkmanagerAttachmentRoutingPolicyLabel
       include AWSNetworkmanagerConnectAttachment
       include AWSNetworkmanagerConnectPeer
       include AWSNetworkmanagerConnection
@@ -949,6 +1001,7 @@ module Pangea
       include AWSNetworkmanagerGlobalNetwork
       include AWSNetworkmanagerLink
       include AWSNetworkmanagerLinkAssociation
+      include AWSNetworkmanagerPrefixListAssociation
       include AWSNetworkmanagerSite
       include AWSNetworkmanagerSiteToSiteVpnAttachment
       include AWSNetworkmanagerTransitGatewayConnectPeerAssociation
@@ -960,12 +1013,25 @@ module Pangea
       include AWSNetworkmonitorProbe
       include AWSNotificationsChannelAssociation
       include AWSNotificationsEventRule
+      include AWSNotificationsManagedNotificationAccountContactAssociation
+      include AWSNotificationsManagedNotificationAdditionalChannelAssociation
       include AWSNotificationsNotificationConfiguration
       include AWSNotificationsNotificationHub
+      include AWSNotificationsOrganizationalUnitAssociation
+      include AWSNotificationsOrganizationsAccess
       include AWSNotificationscontactsEmailContact
       include AWSOamLink
       include AWSOamSink
       include AWSOamSinkPolicy
+      include AWSObservabilityadminCentralizationRuleForOrganization
+      include AWSObservabilityadminTelemetryEnrichment
+      include AWSObservabilityadminTelemetryPipeline
+      include AWSOdbCloudAutonomousVmCluster
+      include AWSOdbCloudExadataInfrastructure
+      include AWSOdbCloudVmCluster
+      include AWSOdbNetwork
+      include AWSOdbNetworkPeeringConnection
+      include AWSOpensearchApplication
       include AWSOpensearchAuthorizeVpcEndpointAccess
       include AWSOpensearchDomain
       include AWSOpensearchDomainPolicy
@@ -977,34 +1043,20 @@ module Pangea
       include AWSOpensearchVpcEndpoint
       include AWSOpensearchserverlessAccessPolicy
       include AWSOpensearchserverlessCollection
+      include AWSOpensearchserverlessCollectionGroup
       include AWSOpensearchserverlessLifecyclePolicy
       include AWSOpensearchserverlessSecurityConfig
       include AWSOpensearchserverlessSecurityPolicy
       include AWSOpensearchserverlessVpcEndpoint
-      include AWSOpsworksApplication
-      include AWSOpsworksCustomLayer
-      include AWSOpsworksEcsClusterLayer
-      include AWSOpsworksGangliaLayer
-      include AWSOpsworksHaproxyLayer
-      include AWSOpsworksInstance
-      include AWSOpsworksJavaAppLayer
-      include AWSOpsworksMemcachedLayer
-      include AWSOpsworksMysqlLayer
-      include AWSOpsworksNodejsAppLayer
-      include AWSOpsworksPermission
-      include AWSOpsworksPhpAppLayer
-      include AWSOpsworksRailsAppLayer
-      include AWSOpsworksRdsDbInstance
-      include AWSOpsworksStack
-      include AWSOpsworksStaticWebLayer
-      include AWSOpsworksUserProfile
       include AWSOrganizationsAccount
+      include AWSOrganizationsAwsServiceAccess
       include AWSOrganizationsDelegatedAdministrator
       include AWSOrganizationsOrganization
       include AWSOrganizationsOrganizationalUnit
       include AWSOrganizationsPolicy
       include AWSOrganizationsPolicyAttachment
       include AWSOrganizationsResourcePolicy
+      include AWSOrganizationsTag
       include AWSOsisPipeline
       include AWSPaymentcryptographyKey
       include AWSPaymentcryptographyKeyAlias
@@ -1026,6 +1078,8 @@ module Pangea
       include AWSPipesPipe
       include AWSPlacementGroup
       include AWSPrometheusAlertManagerDefinition
+      include AWSPrometheusQueryLoggingConfiguration
+      include AWSPrometheusResourcePolicy
       include AWSPrometheusRuleGroupNamespace
       include AWSPrometheusScraper
       include AWSPrometheusWorkspace
@@ -1037,6 +1091,7 @@ module Pangea
       include AWSQuicksightAccountSettings
       include AWSQuicksightAccountSubscription
       include AWSQuicksightAnalysis
+      include AWSQuicksightCustomPermissions
       include AWSQuicksightDashboard
       include AWSQuicksightDataSet
       include AWSQuicksightDataSource
@@ -1046,18 +1101,24 @@ module Pangea
       include AWSQuicksightGroupMembership
       include AWSQuicksightIamPolicyAssignment
       include AWSQuicksightIngestion
+      include AWSQuicksightIpRestriction
+      include AWSQuicksightKeyRegistration
       include AWSQuicksightNamespace
       include AWSQuicksightRefreshSchedule
+      include AWSQuicksightRoleCustomPermission
       include AWSQuicksightRoleMembership
       include AWSQuicksightTemplate
       include AWSQuicksightTemplateAlias
       include AWSQuicksightTheme
       include AWSQuicksightUser
+      include AWSQuicksightUserCustomPermission
       include AWSQuicksightVpcConnection
+      include AWSRamPermission
       include AWSRamPrincipalAssociation
       include AWSRamResourceAssociation
       include AWSRamResourceShare
       include AWSRamResourceShareAccepter
+      include AWSRamResourceShareAssociationsExclusive
       include AWSRamSharingWithOrganization
       include AWSRbinRule
       include AWSRdsCertificate
@@ -1086,6 +1147,7 @@ module Pangea
       include AWSRedshiftEventSubscription
       include AWSRedshiftHsmClientCertificate
       include AWSRedshiftHsmConfiguration
+      include AWSRedshiftIdcApplication
       include AWSRedshiftIntegration
       include AWSRedshiftLogging
       include AWSRedshiftParameterGroup
@@ -1164,6 +1226,7 @@ module Pangea
       include AWSS3AccessPoint
       include AWSS3AccountPublicAccessBlock
       include AWSS3Bucket
+      include AWSS3BucketAbac
       include AWSS3BucketAccelerateConfiguration
       include AWSS3BucketAcl
       include AWSS3BucketAnalyticsConfiguration
@@ -1172,6 +1235,7 @@ module Pangea
       include AWSS3BucketInventory
       include AWSS3BucketLifecycleConfiguration
       include AWSS3BucketLogging
+      include AWSS3BucketMetadataConfiguration
       include AWSS3BucketMetric
       include AWSS3BucketNotification
       include AWSS3BucketObject
@@ -1201,12 +1265,23 @@ module Pangea
       include AWSS3controlObjectLambdaAccessPoint
       include AWSS3controlObjectLambdaAccessPointPolicy
       include AWSS3controlStorageLensConfiguration
+      include AWSS3filesAccessPoint
+      include AWSS3filesFileSystem
+      include AWSS3filesFileSystemPolicy
+      include AWSS3filesMountTarget
+      include AWSS3filesSynchronizationConfiguration
       include AWSS3outpostsEndpoint
       include AWSS3tablesNamespace
       include AWSS3tablesTable
       include AWSS3tablesTableBucket
       include AWSS3tablesTableBucketPolicy
+      include AWSS3tablesTableBucketReplication
       include AWSS3tablesTablePolicy
+      include AWSS3tablesTableReplication
+      include AWSS3vectorsIndex
+      include AWSS3vectorsVectorBucket
+      include AWSS3vectorsVectorBucketPolicy
+      include AWSSagemakerAlgorithm
       include AWSSagemakerApp
       include AWSSagemakerAppImageConfig
       include AWSSagemakerCodeRepository
@@ -1222,8 +1297,12 @@ module Pangea
       include AWSSagemakerHumanTaskUi
       include AWSSagemakerImage
       include AWSSagemakerImageVersion
+      include AWSSagemakerLabelingJob
+      include AWSSagemakerMlflowApp
       include AWSSagemakerMlflowTrackingServer
       include AWSSagemakerModel
+      include AWSSagemakerModelCard
+      include AWSSagemakerModelCardExportJob
       include AWSSagemakerModelPackageGroup
       include AWSSagemakerModelPackageGroupPolicy
       include AWSSagemakerMonitoringSchedule
@@ -1234,9 +1313,11 @@ module Pangea
       include AWSSagemakerServicecatalogPortfolioStatus
       include AWSSagemakerSpace
       include AWSSagemakerStudioLifecycleConfig
+      include AWSSagemakerTrainingJob
       include AWSSagemakerUserProfile
       include AWSSagemakerWorkforce
       include AWSSagemakerWorkteam
+      include AWSSavingsplansSavingsPlan
       include AWSSchedulerSchedule
       include AWSSchedulerScheduleGroup
       include AWSSchemasDiscoverer
@@ -1247,6 +1328,7 @@ module Pangea
       include AWSSecretsmanagerSecretPolicy
       include AWSSecretsmanagerSecretRotation
       include AWSSecretsmanagerSecretVersion
+      include AWSSecretsmanagerTag
       include AWSSecurityGroup
       include AWSSecurityGroupRule
       include AWSSecurityhubAccount
@@ -1291,6 +1373,7 @@ module Pangea
       include AWSServicecatalogappregistryApplication
       include AWSServicecatalogappregistryAttributeGroup
       include AWSServicecatalogappregistryAttributeGroupAssociation
+      include AWSServicequotasAutoManagement
       include AWSServicequotasServiceQuota
       include AWSServicequotasTemplate
       include AWSServicequotasTemplateAssociation
@@ -1319,6 +1402,8 @@ module Pangea
       include AWSSesv2EmailIdentityFeedbackAttributes
       include AWSSesv2EmailIdentityMailFromAttributes
       include AWSSesv2EmailIdentityPolicy
+      include AWSSesv2Tenant
+      include AWSSesv2TenantResourceAssociation
       include AWSSfnActivity
       include AWSSfnAlias
       include AWSSfnStateMachine
@@ -1333,7 +1418,6 @@ module Pangea
       include AWSSignerSigningJob
       include AWSSignerSigningProfile
       include AWSSignerSigningProfilePermission
-      include AWSSimpledbDomain
       include AWSSnapshotCreateVolumePermission
       include AWSSnsPlatformApplication
       include AWSSnsSmsPreferences
@@ -1373,8 +1457,10 @@ module Pangea
       include AWSSsoadminApplicationAssignment
       include AWSSsoadminApplicationAssignmentConfiguration
       include AWSSsoadminCustomerManagedPolicyAttachment
+      include AWSSsoadminCustomerManagedPolicyAttachmentsExclusive
       include AWSSsoadminInstanceAccessControlAttributes
       include AWSSsoadminManagedPolicyAttachment
+      include AWSSsoadminManagedPolicyAttachmentsExclusive
       include AWSSsoadminPermissionSet
       include AWSSsoadminPermissionSetInlinePolicy
       include AWSSsoadminPermissionsBoundaryAttachment
@@ -1394,6 +1480,7 @@ module Pangea
       include AWSSyntheticsCanary
       include AWSSyntheticsGroup
       include AWSSyntheticsGroupAssociation
+      include AWSTimestreaminfluxdbDbCluster
       include AWSTimestreaminfluxdbDbInstance
       include AWSTimestreamqueryScheduledQuery
       include AWSTimestreamwriteDatabase
@@ -1406,12 +1493,16 @@ module Pangea
       include AWSTransferAgreement
       include AWSTransferCertificate
       include AWSTransferConnector
+      include AWSTransferHostKey
       include AWSTransferProfile
       include AWSTransferServer
       include AWSTransferSshKey
       include AWSTransferTag
       include AWSTransferUser
+      include AWSTransferWebApp
+      include AWSTransferWebAppCustomization
       include AWSTransferWorkflow
+      include AWSUxcAccountCustomizations
       include AWSVerifiedaccessEndpoint
       include AWSVerifiedaccessGroup
       include AWSVerifiedaccessInstance
@@ -1429,6 +1520,7 @@ module Pangea
       include AWSVpcBlockPublicAccessOptions
       include AWSVpcDhcpOptions
       include AWSVpcDhcpOptionsAssociation
+      include AWSVpcEncryptionControl
       include AWSVpcEndpoint
       include AWSVpcEndpointConnectionAccepter
       include AWSVpcEndpointConnectionNotification
@@ -1462,9 +1554,11 @@ module Pangea
       include AWSVpcRouteServerVpcAssociation
       include AWSVpcSecurityGroupEgressRule
       include AWSVpcSecurityGroupIngressRule
+      include AWSVpcSecurityGroupRulesExclusive
       include AWSVpcSecurityGroupVpcAssociation
       include AWSVpclatticeAccessLogSubscription
       include AWSVpclatticeAuthPolicy
+      include AWSVpclatticeDomainVerification
       include AWSVpclatticeListener
       include AWSVpclatticeListenerRule
       include AWSVpclatticeResourceConfiguration
@@ -1477,6 +1571,7 @@ module Pangea
       include AWSVpclatticeServiceNetworkVpcAssociation
       include AWSVpclatticeTargetGroup
       include AWSVpclatticeTargetGroupAttachment
+      include AWSVpnConcentrator
       include AWSVpnConnection
       include AWSVpnConnectionRoute
       include AWSVpnGateway
@@ -1514,18 +1609,35 @@ module Pangea
       include AWSWafv2WebAcl
       include AWSWafv2WebAclAssociation
       include AWSWafv2WebAclLoggingConfiguration
-      include AWSWorklinkFleet
-      include AWSWorklinkWebsiteCertificateAuthorityAssociation
+      include AWSWafv2WebAclRule
+      include AWSWafv2WebAclRuleGroupAssociation
+      include AWSWorkmailDefaultDomain
+      include AWSWorkmailDomain
+      include AWSWorkmailGroup
+      include AWSWorkmailOrganization
+      include AWSWorkmailUser
       include AWSWorkspacesConnectionAlias
       include AWSWorkspacesDirectory
       include AWSWorkspacesIpGroup
       include AWSWorkspacesWorkspace
       include AWSWorkspaceswebBrowserSettings
+      include AWSWorkspaceswebBrowserSettingsAssociation
       include AWSWorkspaceswebDataProtectionSettings
+      include AWSWorkspaceswebDataProtectionSettingsAssociation
+      include AWSWorkspaceswebIdentityProvider
       include AWSWorkspaceswebIpAccessSettings
+      include AWSWorkspaceswebIpAccessSettingsAssociation
       include AWSWorkspaceswebNetworkSettings
+      include AWSWorkspaceswebNetworkSettingsAssociation
+      include AWSWorkspaceswebPortal
+      include AWSWorkspaceswebSessionLogger
+      include AWSWorkspaceswebSessionLoggerAssociation
+      include AWSWorkspaceswebTrustStore
+      include AWSWorkspaceswebTrustStoreAssociation
       include AWSWorkspaceswebUserAccessLoggingSettings
+      include AWSWorkspaceswebUserAccessLoggingSettingsAssociation
       include AWSWorkspaceswebUserSettings
+      include AWSWorkspaceswebUserSettingsAssociation
       include AWSXrayEncryptionConfig
       include AWSXrayGroup
       include AWSXrayResourcePolicy

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDevicefarmNetworkProfile do
 
         expect(ref.id).to eq("${aws_devicefarm_network_profile.test.id}")
         expect(ref.arn).to eq("${aws_devicefarm_network_profile.test.arn}")
+        expect(ref.region).to eq("${aws_devicefarm_network_profile.test.region}")
         expect(ref.tags_all).to eq("${aws_devicefarm_network_profile.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSDevicefarmNetworkProfile do
 
         config = validate_resource_structure(result, 'aws_devicefarm_network_profile', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', downlink_bandwidth_bits: 3.14, downlink_delay_ms: 3.14, downlink_jitter_ms: 3.14, downlink_loss_percent: 3.14, tags: { 'key1' => 'val1' }, type: 'test-value', uplink_bandwidth_bits: 3.14, uplink_delay_ms: 3.14, uplink_jitter_ms: 3.14, uplink_loss_percent: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', downlink_bandwidth_bits: 3.14, downlink_delay_ms: 3.14, downlink_jitter_ms: 3.14, downlink_loss_percent: 3.14, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, type: 'test-value', uplink_bandwidth_bits: 3.14, uplink_delay_ms: 3.14, uplink_jitter_ms: 3.14, uplink_loss_percent: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,7 +73,9 @@ RSpec.describe Pangea::Resources::AWSDevicefarmNetworkProfile do
         expect(config).to have_key('downlink_delay_ms')
         expect(config).to have_key('downlink_jitter_ms')
         expect(config).to have_key('downlink_loss_percent')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('type')
         expect(config).to have_key('uplink_bandwidth_bits')
         expect(config).to have_key('uplink_delay_ms')
@@ -166,6 +170,23 @@ RSpec.describe Pangea::Resources::AWSDevicefarmNetworkProfile do
         config = validate_resource_structure(result, 'aws_devicefarm_network_profile', 'minimal')
         expect(config).not_to have_key('downlink_loss_percent')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devicefarm_network_profile('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_devicefarm_network_profile', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devicefarm_network_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_devicefarm_network_profile', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -182,6 +203,23 @@ RSpec.describe Pangea::Resources::AWSDevicefarmNetworkProfile do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_devicefarm_network_profile', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devicefarm_network_profile('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_devicefarm_network_profile', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devicefarm_network_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_devicefarm_network_profile', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes type when provided' do
         synth = create_synthesizer
@@ -313,7 +351,7 @@ RSpec.describe Pangea::Resources::AWSDevicefarmNetworkProfile do
     resource_type: :aws_devicefarm_network_profile,
     method: :aws_devicefarm_network_profile,
     required_attrs: { name: 'test-value', project_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DbProxyTargetAttributes,
       outputs: { id: :id },
       map: [:db_proxy_name, :target_group_name],
-      map_present: [:db_cluster_identifier, :db_instance_identifier]
+      map_present: [:db_cluster_identifier, :db_instance_identifier, :region]
   end
   module AWS
     include AWSDbProxyTarget

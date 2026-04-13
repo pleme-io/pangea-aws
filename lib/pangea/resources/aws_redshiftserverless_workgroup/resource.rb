@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftserverlessWorkgroupAttributes,
       outputs: { id: :id },
       map: [:namespace_name, :workgroup_name],
-      map_present: [:base_capacity, :config_parameter, :max_capacity, :port, :price_performance_target, :security_group_ids, :subnet_ids, :tags, :tags_all, :track_name],
+      map_present: [:base_capacity, :config_parameter, :max_capacity, :port, :price_performance_target, :region, :security_group_ids, :subnet_ids, :tags, :tags_all, :track_name],
       map_bool: [:enhanced_vpc_routing, :publicly_accessible]
   end
   module AWS

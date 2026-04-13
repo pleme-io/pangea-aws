@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableExport do
         expect(ref.export_type).to eq("${aws_dynamodb_table_export.test.export_type}")
         expect(ref.item_count).to eq("${aws_dynamodb_table_export.test.item_count}")
         expect(ref.manifest_files_s3_key).to eq("${aws_dynamodb_table_export.test.manifest_files_s3_key}")
+        expect(ref.region).to eq("${aws_dynamodb_table_export.test.region}")
         expect(ref.s3_bucket_owner).to eq("${aws_dynamodb_table_export.test.s3_bucket_owner}")
         expect(ref.s3_prefix).to eq("${aws_dynamodb_table_export.test.s3_prefix}")
         expect(ref.s3_sse_algorithm).to eq("${aws_dynamodb_table_export.test.s3_sse_algorithm}")
@@ -69,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableExport do
         expect(config).not_to have_key('export_type')
         expect(config).not_to have_key('item_count')
         expect(config).not_to have_key('manifest_files_s3_key')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('s3_bucket_owner')
         expect(config).not_to have_key('s3_prefix')
         expect(config).not_to have_key('s3_sse_algorithm')
@@ -77,7 +79,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableExport do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ export_format: 'test-value', incremental_export_specification: [{ 'key1' => 'val1' }], s3_sse_kms_key_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ export_format: 'test-value', export_time: 'test-value', export_type: 'test-value', incremental_export_specification: { 'key1' => 'val1' }, region: 'test-value', s3_bucket_owner: 'test-value', s3_prefix: 'test-value', s3_sse_algorithm: 'test-value', s3_sse_kms_key_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -87,7 +89,13 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableExport do
 
         config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'full')
         expect(config).to have_key('export_format')
+        expect(config).to have_key('export_time')
+        expect(config).to have_key('export_type')
         expect(config).to have_key('incremental_export_specification')
+        expect(config).to have_key('region')
+        expect(config).to have_key('s3_bucket_owner')
+        expect(config).to have_key('s3_prefix')
+        expect(config).to have_key('s3_sse_algorithm')
         expect(config).to have_key('s3_sse_kms_key_id')
       end
     end
@@ -110,10 +118,44 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableExport do
         config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'minimal')
         expect(config).not_to have_key('export_format')
       end
+      it 'includes export_time when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_export('opt', required_attrs.merge(export_time: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'opt')
+        expect(config).to have_key('export_time')
+      end
+
+      it 'omits export_time when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_export('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'minimal')
+        expect(config).not_to have_key('export_time')
+      end
+      it 'includes export_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_export('opt', required_attrs.merge(export_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'opt')
+        expect(config).to have_key('export_type')
+      end
+
+      it 'omits export_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_export('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'minimal')
+        expect(config).not_to have_key('export_type')
+      end
       it 'includes incremental_export_specification when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dynamodb_table_export('opt', required_attrs.merge(incremental_export_specification: [{ 'key1' => 'val1' }]))
+        synth.aws_dynamodb_table_export('opt', required_attrs.merge(incremental_export_specification: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'opt')
         expect(config).to have_key('incremental_export_specification')
@@ -126,6 +168,74 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableExport do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'minimal')
         expect(config).not_to have_key('incremental_export_specification')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_export('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_export('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes s3_bucket_owner when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_export('opt', required_attrs.merge(s3_bucket_owner: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'opt')
+        expect(config).to have_key('s3_bucket_owner')
+      end
+
+      it 'omits s3_bucket_owner when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_export('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'minimal')
+        expect(config).not_to have_key('s3_bucket_owner')
+      end
+      it 'includes s3_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_export('opt', required_attrs.merge(s3_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'opt')
+        expect(config).to have_key('s3_prefix')
+      end
+
+      it 'omits s3_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_export('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'minimal')
+        expect(config).not_to have_key('s3_prefix')
+      end
+      it 'includes s3_sse_algorithm when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_export('opt', required_attrs.merge(s3_sse_algorithm: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'opt')
+        expect(config).to have_key('s3_sse_algorithm')
+      end
+
+      it 'omits s3_sse_algorithm when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table_export('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table_export', 'minimal')
+        expect(config).not_to have_key('s3_sse_algorithm')
       end
       it 'includes s3_sse_kms_key_id when provided' do
         synth = create_synthesizer
@@ -189,7 +299,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTableExport do
     resource_type: :aws_dynamodb_table_export,
     method: :aws_dynamodb_table_export,
     required_attrs: { s3_bucket: 'test-value', table_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :billed_size_in_bytes, :end_time, :export_status, :export_time, :export_type, :item_count, :manifest_files_s3_key, :s3_bucket_owner, :s3_prefix, :s3_sse_algorithm, :start_time],
+    expected_outputs: [:id, :arn, :billed_size_in_bytes, :end_time, :export_status, :export_time, :export_type, :item_count, :manifest_files_s3_key, :region, :s3_bucket_owner, :s3_prefix, :s3_sse_algorithm, :start_time],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

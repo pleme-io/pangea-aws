@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSServicequotasTemplate do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { quota_code: 'test-value', region: 'test-value', service_code: 'test-value', value: 3.14 } }
+  let(:required_attrs) { { quota_code: 'test-value', service_code: 'test-value', value: 3.14 } }
 
   describe ':aws_servicequotas_template' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSServicequotasTemplate do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_servicequotas_template', 'test')
-        validate_required_attributes(config, [:quota_code, :region, :service_code, :value])
+        validate_required_attributes(config, [:quota_code, :service_code, :value])
       end
 
       it 'returns a ResourceReference' do
@@ -38,8 +38,10 @@ RSpec.describe Pangea::Resources::AWSServicequotasTemplate do
         ref = synth.aws_servicequotas_template('test', required_attrs)
 
         expect(ref.id).to eq("${aws_servicequotas_template.test.id}")
+        expect(ref.aws_region).to eq("${aws_servicequotas_template.test.aws_region}")
         expect(ref.global_quota).to eq("${aws_servicequotas_template.test.global_quota}")
         expect(ref.quota_name).to eq("${aws_servicequotas_template.test.quota_name}")
+        expect(ref.region).to eq("${aws_servicequotas_template.test.region}")
         expect(ref.service_name).to eq("${aws_servicequotas_template.test.service_name}")
         expect(ref.unit).to eq("${aws_servicequotas_template.test.unit}")
       end
@@ -53,10 +55,64 @@ RSpec.describe Pangea::Resources::AWSServicequotasTemplate do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_servicequotas_template', 'test')
+        expect(config).not_to have_key('aws_region')
         expect(config).not_to have_key('global_quota')
         expect(config).not_to have_key('quota_name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('service_name')
         expect(config).not_to have_key('unit')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ aws_region: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicequotas_template('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_servicequotas_template', 'full')
+        expect(config).to have_key('aws_region')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes aws_region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicequotas_template('opt', required_attrs.merge(aws_region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicequotas_template', 'opt')
+        expect(config).to have_key('aws_region')
+      end
+
+      it 'omits aws_region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicequotas_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicequotas_template', 'minimal')
+        expect(config).not_to have_key('aws_region')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicequotas_template('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicequotas_template', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicequotas_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicequotas_template', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -69,7 +125,6 @@ RSpec.describe Pangea::Resources::AWSServicequotasTemplate do
 
         config = validate_resource_structure(result, 'aws_servicequotas_template', 'typed')
         expect(config['quota_code']).to be_a(String)
-        expect(config['region']).to be_a(String)
         expect(config['service_code']).to be_a(String)
         expect(config['value']).to be_a(Float)
       end
@@ -104,8 +159,8 @@ RSpec.describe Pangea::Resources::AWSServicequotasTemplate do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_servicequotas_template,
     method: :aws_servicequotas_template,
-    required_attrs: { quota_code: 'test-value', region: 'test-value', service_code: 'test-value', value: 3.14 },
-    expected_outputs: [:id, :global_quota, :quota_name, :service_name, :unit],
+    required_attrs: { quota_code: 'test-value', service_code: 'test-value', value: 3.14 },
+    expected_outputs: [:id, :aws_region, :global_quota, :quota_name, :region, :service_name, :unit],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

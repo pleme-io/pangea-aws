@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_securityhub_product_subscription,
       attributes_class: AWS::Types::SecurityhubProductSubscriptionAttributes,
       outputs: { id: :id },
-      map: [:product_arn]
+      map: [:product_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSSecurityhubProductSubscription

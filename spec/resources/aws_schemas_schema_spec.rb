@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSchemasSchema do
         expect(ref.id).to eq("${aws_schemas_schema.test.id}")
         expect(ref.arn).to eq("${aws_schemas_schema.test.arn}")
         expect(ref.last_modified).to eq("${aws_schemas_schema.test.last_modified}")
+        expect(ref.region).to eq("${aws_schemas_schema.test.region}")
         expect(ref.tags_all).to eq("${aws_schemas_schema.test.tags_all}")
         expect(ref.version).to eq("${aws_schemas_schema.test.version}")
         expect(ref.version_created_date).to eq("${aws_schemas_schema.test.version_created_date}")
@@ -56,6 +57,7 @@ RSpec.describe Pangea::Resources::AWSSchemasSchema do
         config = validate_resource_structure(result, 'aws_schemas_schema', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('last_modified')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('version')
         expect(config).not_to have_key('version_created_date')
@@ -63,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSSchemasSchema do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,9 @@ RSpec.describe Pangea::Resources::AWSSchemasSchema do
 
         config = validate_resource_structure(result, 'aws_schemas_schema', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -95,6 +99,23 @@ RSpec.describe Pangea::Resources::AWSSchemasSchema do
         config = validate_resource_structure(result, 'aws_schemas_schema', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_schemas_schema('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_schemas_schema', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_schemas_schema('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_schemas_schema', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -111,6 +132,23 @@ RSpec.describe Pangea::Resources::AWSSchemasSchema do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_schemas_schema', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_schemas_schema('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_schemas_schema', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_schemas_schema('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_schemas_schema', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -159,7 +197,7 @@ RSpec.describe Pangea::Resources::AWSSchemasSchema do
     resource_type: :aws_schemas_schema,
     method: :aws_schemas_schema,
     required_attrs: { content: 'test-value', name: 'test-value', registry_name: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :arn, :last_modified, :tags_all, :version, :version_created_date],
+    expected_outputs: [:id, :arn, :last_modified, :region, :tags_all, :version, :version_created_date],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

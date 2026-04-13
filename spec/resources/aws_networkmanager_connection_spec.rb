@@ -57,7 +57,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerConnection do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ connected_link_id: 'test-value', description: 'test-value', link_id: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ connected_link_id: 'test-value', description: 'test-value', link_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerConnection do
         expect(config).to have_key('description')
         expect(config).to have_key('link_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -141,6 +142,23 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerConnection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkmanager_connection', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_connection('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_connection', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_connection', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 

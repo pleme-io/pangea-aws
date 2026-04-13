@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_ec2_client_vpn_endpoint,
       attributes_class: AWS::Types::Ec2ClientVpnEndpointAttributes,
       outputs: { id: :id },
-      map: [:authentication_options, :client_cidr_block, :connection_log_options, :server_certificate_arn],
-      map_present: [:client_connect_options, :client_login_banner_options, :client_route_enforcement_options, :description, :dns_servers, :security_group_ids, :self_service_portal, :session_timeout_hours, :tags, :tags_all, :transport_protocol, :vpc_id, :vpn_port],
+      map: [:authentication_options, :connection_log_options, :server_certificate_arn],
+      map_present: [:client_cidr_block, :client_connect_options, :client_login_banner_options, :client_route_enforcement_options, :description, :dns_servers, :endpoint_ip_address_type, :region, :security_group_ids, :self_service_portal, :session_timeout_hours, :tags, :tags_all, :traffic_ip_address_type, :transport_protocol, :vpc_id, :vpn_port],
       map_bool: [:disconnect_on_session_timeout, :split_tunnel]
   end
   module AWS

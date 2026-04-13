@@ -57,7 +57,7 @@ RSpec.describe Pangea::Resources::AWSRoute53Record do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ alias: [{ 'key1' => 'val1' }], cidr_routing_policy: [{ 'key1' => 'val1' }], failover_routing_policy: [{ 'key1' => 'val1' }], geolocation_routing_policy: [{ 'key1' => 'val1' }], geoproximity_routing_policy: [{ 'key1' => 'val1' }], health_check_id: 'test-value', latency_routing_policy: [{ 'key1' => 'val1' }], multivalue_answer_routing_policy: true, records: ['test-value'], set_identifier: 'test-value', ttl: 3.14, weighted_routing_policy: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ alias: { 'key1' => 'val1' }, allow_overwrite: true, cidr_routing_policy: { 'key1' => 'val1' }, failover_routing_policy: { 'key1' => 'val1' }, geolocation_routing_policy: { 'key1' => 'val1' }, geoproximity_routing_policy: { 'key1' => 'val1' }, health_check_id: 'test-value', latency_routing_policy: { 'key1' => 'val1' }, multivalue_answer_routing_policy: true, records: ['test-value'], set_identifier: 'test-value', ttl: 3.14, weighted_routing_policy: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSRoute53Record do
 
         config = validate_resource_structure(result, 'aws_route53_record', 'full')
         expect(config).to have_key('alias')
+        expect(config).to have_key('allow_overwrite')
         expect(config).to have_key('cidr_routing_policy')
         expect(config).to have_key('failover_routing_policy')
         expect(config).to have_key('geolocation_routing_policy')
@@ -85,7 +86,7 @@ RSpec.describe Pangea::Resources::AWSRoute53Record do
       it 'includes alias when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_route53_record('opt', required_attrs.merge(alias: [{ 'key1' => 'val1' }]))
+        synth.aws_route53_record('opt', required_attrs.merge(alias: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53_record', 'opt')
         expect(config).to have_key('alias')
@@ -99,10 +100,27 @@ RSpec.describe Pangea::Resources::AWSRoute53Record do
         config = validate_resource_structure(result, 'aws_route53_record', 'minimal')
         expect(config).not_to have_key('alias')
       end
+      it 'includes allow_overwrite when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_record('opt', required_attrs.merge(allow_overwrite: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_record', 'opt')
+        expect(config).to have_key('allow_overwrite')
+      end
+
+      it 'omits allow_overwrite when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_record('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_record', 'minimal')
+        expect(config).not_to have_key('allow_overwrite')
+      end
       it 'includes cidr_routing_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_route53_record('opt', required_attrs.merge(cidr_routing_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_route53_record('opt', required_attrs.merge(cidr_routing_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53_record', 'opt')
         expect(config).to have_key('cidr_routing_policy')
@@ -119,7 +137,7 @@ RSpec.describe Pangea::Resources::AWSRoute53Record do
       it 'includes failover_routing_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_route53_record('opt', required_attrs.merge(failover_routing_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_route53_record('opt', required_attrs.merge(failover_routing_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53_record', 'opt')
         expect(config).to have_key('failover_routing_policy')
@@ -136,7 +154,7 @@ RSpec.describe Pangea::Resources::AWSRoute53Record do
       it 'includes geolocation_routing_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_route53_record('opt', required_attrs.merge(geolocation_routing_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_route53_record('opt', required_attrs.merge(geolocation_routing_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53_record', 'opt')
         expect(config).to have_key('geolocation_routing_policy')
@@ -153,7 +171,7 @@ RSpec.describe Pangea::Resources::AWSRoute53Record do
       it 'includes geoproximity_routing_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_route53_record('opt', required_attrs.merge(geoproximity_routing_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_route53_record('opt', required_attrs.merge(geoproximity_routing_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53_record', 'opt')
         expect(config).to have_key('geoproximity_routing_policy')
@@ -187,7 +205,7 @@ RSpec.describe Pangea::Resources::AWSRoute53Record do
       it 'includes latency_routing_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_route53_record('opt', required_attrs.merge(latency_routing_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_route53_record('opt', required_attrs.merge(latency_routing_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53_record', 'opt')
         expect(config).to have_key('latency_routing_policy')
@@ -272,7 +290,7 @@ RSpec.describe Pangea::Resources::AWSRoute53Record do
       it 'includes weighted_routing_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_route53_record('opt', required_attrs.merge(weighted_routing_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_route53_record('opt', required_attrs.merge(weighted_routing_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53_record', 'opt')
         expect(config).to have_key('weighted_routing_policy')
@@ -289,6 +307,17 @@ RSpec.describe Pangea::Resources::AWSRoute53Record do
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts allow_overwrite=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(allow_overwrite: val)
+          synth.aws_route53_record("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_route53_record', "bool_#{val}")
+          expect(config['allow_overwrite']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts multivalue_answer_routing_policy=#{val}" do
           synth = create_synthesizer
@@ -349,5 +378,5 @@ RSpec.describe Pangea::Resources::AWSRoute53Record do
     expected_outputs: [:id, :allow_overwrite, :fqdn],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:multivalue_answer_routing_policy]
+    boolean_fields: [:allow_overwrite, :multivalue_answer_routing_policy]
 end

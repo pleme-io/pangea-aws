@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LightsailLbAttributes,
       outputs: { id: :id },
       map: [:instance_port, :name],
-      map_present: [:health_check_path, :ip_address_type, :tags, :tags_all]
+      map_present: [:health_check_path, :ip_address_type, :region, :tags, :tags_all]
   end
   module AWS
     include AWSLightsailLb

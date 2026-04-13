@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ChimeVoiceConnectorTerminationAttributes,
       outputs: { id: :id },
       map: [:calling_regions, :cidr_allow_list, :voice_connector_id],
-      map_present: [:cps_limit, :default_phone_number],
+      map_present: [:cps_limit, :default_phone_number, :region],
       map_bool: [:disabled]
   end
   module AWS

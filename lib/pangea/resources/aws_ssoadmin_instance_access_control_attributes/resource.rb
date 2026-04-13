@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ssoadmin_instance_access_control_attributes,
       attributes_class: AWS::Types::SsoadminInstanceAccessControlAttributesAttributes,
       outputs: { id: :id },
-      map: [:attribute, :instance_arn]
+      map: [:attribute, :instance_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSSsoadminInstanceAccessControlAttributes

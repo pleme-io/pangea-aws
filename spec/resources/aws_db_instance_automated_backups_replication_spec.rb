@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDbInstanceAutomatedBackupsReplication do
 
         expect(ref.id).to eq("${aws_db_instance_automated_backups_replication.test.id}")
         expect(ref.kms_key_id).to eq("${aws_db_instance_automated_backups_replication.test.kms_key_id}")
+        expect(ref.region).to eq("${aws_db_instance_automated_backups_replication.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSDbInstanceAutomatedBackupsReplication do
 
         config = validate_resource_structure(result, 'aws_db_instance_automated_backups_replication', 'test')
         expect(config).not_to have_key('kms_key_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ pre_signed_url: 'test-value', retention_period: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ kms_key_id: 'test-value', pre_signed_url: 'test-value', region: 'test-value', retention_period: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,12 +66,31 @@ RSpec.describe Pangea::Resources::AWSDbInstanceAutomatedBackupsReplication do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_db_instance_automated_backups_replication', 'full')
+        expect(config).to have_key('kms_key_id')
         expect(config).to have_key('pre_signed_url')
+        expect(config).to have_key('region')
         expect(config).to have_key('retention_period')
       end
     end
 
     context 'optional attributes' do
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance_automated_backups_replication('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance_automated_backups_replication', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance_automated_backups_replication('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance_automated_backups_replication', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
       it 'includes pre_signed_url when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -86,6 +107,23 @@ RSpec.describe Pangea::Resources::AWSDbInstanceAutomatedBackupsReplication do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_instance_automated_backups_replication', 'minimal')
         expect(config).not_to have_key('pre_signed_url')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance_automated_backups_replication('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance_automated_backups_replication', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance_automated_backups_replication('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance_automated_backups_replication', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes retention_period when provided' do
         synth = create_synthesizer
@@ -148,7 +186,7 @@ RSpec.describe Pangea::Resources::AWSDbInstanceAutomatedBackupsReplication do
     resource_type: :aws_db_instance_automated_backups_replication,
     method: :aws_db_instance_automated_backups_replication,
     required_attrs: { source_db_instance_arn: 'test-value' },
-    expected_outputs: [:id, :kms_key_id],
+    expected_outputs: [:id, :kms_key_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_api_gateway_resource,
       attributes_class: AWS::Types::ApiGatewayResourceAttributes,
       outputs: { id: :id },
-      map: [:parent_id, :path_part, :rest_api_id]
+      map: [:parent_id, :path_part, :rest_api_id],
+      map_present: [:region]
   end
   module AWS
     include AWSApiGatewayResource

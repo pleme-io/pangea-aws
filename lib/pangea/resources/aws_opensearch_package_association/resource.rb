@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_opensearch_package_association,
       attributes_class: AWS::Types::OpensearchPackageAssociationAttributes,
       outputs: { id: :id },
-      map: [:domain_name, :package_id]
+      map: [:domain_name, :package_id],
+      map_present: [:region]
   end
   module AWS
     include AWSOpensearchPackageAssociation

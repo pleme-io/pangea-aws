@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSEcsTaskDefinition do
         expect(ref.arn_without_revision).to eq("${aws_ecs_task_definition.test.arn_without_revision}")
         expect(ref.enable_fault_injection).to eq("${aws_ecs_task_definition.test.enable_fault_injection}")
         expect(ref.network_mode).to eq("${aws_ecs_task_definition.test.network_mode}")
+        expect(ref.region).to eq("${aws_ecs_task_definition.test.region}")
         expect(ref.revision).to eq("${aws_ecs_task_definition.test.revision}")
         expect(ref.tags_all).to eq("${aws_ecs_task_definition.test.tags_all}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSEcsTaskDefinition do
         expect(config).not_to have_key('arn_without_revision')
         expect(config).not_to have_key('enable_fault_injection')
         expect(config).not_to have_key('network_mode')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('revision')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cpu: 'test-value', ephemeral_storage: [{ 'key1' => 'val1' }], execution_role_arn: 'test-value', inference_accelerator: [{ 'key1' => 'val1' }], ipc_mode: 'test-value', memory: 'test-value', pid_mode: 'test-value', placement_constraints: [{ 'key1' => 'val1' }], proxy_configuration: [{ 'key1' => 'val1' }], requires_compatibilities: ['test-value'], runtime_platform: [{ 'key1' => 'val1' }], skip_destroy: true, tags: { 'key1' => 'val1' }, task_role_arn: 'test-value', track_latest: true, volume: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ cpu: 'test-value', enable_fault_injection: true, ephemeral_storage: { 'key1' => 'val1' }, execution_role_arn: 'test-value', ipc_mode: 'test-value', memory: 'test-value', network_mode: 'test-value', pid_mode: 'test-value', placement_constraints: [{ 'key1' => 'val1' }], proxy_configuration: { 'key1' => 'val1' }, region: 'test-value', requires_compatibilities: ['test-value'], runtime_platform: { 'key1' => 'val1' }, skip_destroy: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, task_role_arn: 'test-value', track_latest: true, volume: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,18 +77,21 @@ RSpec.describe Pangea::Resources::AWSEcsTaskDefinition do
 
         config = validate_resource_structure(result, 'aws_ecs_task_definition', 'full')
         expect(config).to have_key('cpu')
+        expect(config).to have_key('enable_fault_injection')
         expect(config).to have_key('ephemeral_storage')
         expect(config).to have_key('execution_role_arn')
-        expect(config).to have_key('inference_accelerator')
         expect(config).to have_key('ipc_mode')
         expect(config).to have_key('memory')
+        expect(config).to have_key('network_mode')
         expect(config).to have_key('pid_mode')
         expect(config).to have_key('placement_constraints')
         expect(config).to have_key('proxy_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('requires_compatibilities')
         expect(config).to have_key('runtime_platform')
         expect(config).to have_key('skip_destroy')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('task_role_arn')
         expect(config).to have_key('track_latest')
         expect(config).to have_key('volume')
@@ -111,10 +116,27 @@ RSpec.describe Pangea::Resources::AWSEcsTaskDefinition do
         config = validate_resource_structure(result, 'aws_ecs_task_definition', 'minimal')
         expect(config).not_to have_key('cpu')
       end
+      it 'includes enable_fault_injection when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_definition('opt', required_attrs.merge(enable_fault_injection: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_definition', 'opt')
+        expect(config).to have_key('enable_fault_injection')
+      end
+
+      it 'omits enable_fault_injection when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_definition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_definition', 'minimal')
+        expect(config).not_to have_key('enable_fault_injection')
+      end
       it 'includes ephemeral_storage when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_task_definition('opt', required_attrs.merge(ephemeral_storage: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_task_definition('opt', required_attrs.merge(ephemeral_storage: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_task_definition', 'opt')
         expect(config).to have_key('ephemeral_storage')
@@ -144,23 +166,6 @@ RSpec.describe Pangea::Resources::AWSEcsTaskDefinition do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_task_definition', 'minimal')
         expect(config).not_to have_key('execution_role_arn')
-      end
-      it 'includes inference_accelerator when provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_ecs_task_definition('opt', required_attrs.merge(inference_accelerator: [{ 'key1' => 'val1' }]))
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_ecs_task_definition', 'opt')
-        expect(config).to have_key('inference_accelerator')
-      end
-
-      it 'omits inference_accelerator when not provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_ecs_task_definition('minimal', required_attrs)
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_ecs_task_definition', 'minimal')
-        expect(config).not_to have_key('inference_accelerator')
       end
       it 'includes ipc_mode when provided' do
         synth = create_synthesizer
@@ -195,6 +200,23 @@ RSpec.describe Pangea::Resources::AWSEcsTaskDefinition do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_task_definition', 'minimal')
         expect(config).not_to have_key('memory')
+      end
+      it 'includes network_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_definition('opt', required_attrs.merge(network_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_definition', 'opt')
+        expect(config).to have_key('network_mode')
+      end
+
+      it 'omits network_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_definition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_definition', 'minimal')
+        expect(config).not_to have_key('network_mode')
       end
       it 'includes pid_mode when provided' do
         synth = create_synthesizer
@@ -233,7 +255,7 @@ RSpec.describe Pangea::Resources::AWSEcsTaskDefinition do
       it 'includes proxy_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_task_definition('opt', required_attrs.merge(proxy_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_task_definition('opt', required_attrs.merge(proxy_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_task_definition', 'opt')
         expect(config).to have_key('proxy_configuration')
@@ -246,6 +268,23 @@ RSpec.describe Pangea::Resources::AWSEcsTaskDefinition do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_task_definition', 'minimal')
         expect(config).not_to have_key('proxy_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_definition('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_definition', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_definition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_definition', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes requires_compatibilities when provided' do
         synth = create_synthesizer
@@ -267,7 +306,7 @@ RSpec.describe Pangea::Resources::AWSEcsTaskDefinition do
       it 'includes runtime_platform when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_task_definition('opt', required_attrs.merge(runtime_platform: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_task_definition('opt', required_attrs.merge(runtime_platform: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_task_definition', 'opt')
         expect(config).to have_key('runtime_platform')
@@ -314,6 +353,23 @@ RSpec.describe Pangea::Resources::AWSEcsTaskDefinition do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_task_definition', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_definition('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_definition', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_definition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_definition', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes task_role_arn when provided' do
         synth = create_synthesizer
@@ -369,6 +425,17 @@ RSpec.describe Pangea::Resources::AWSEcsTaskDefinition do
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts enable_fault_injection=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enable_fault_injection: val)
+          synth.aws_ecs_task_definition("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_ecs_task_definition', "bool_#{val}")
+          expect(config['enable_fault_injection']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts skip_destroy=#{val}" do
           synth = create_synthesizer
@@ -436,8 +503,8 @@ RSpec.describe Pangea::Resources::AWSEcsTaskDefinition do
     resource_type: :aws_ecs_task_definition,
     method: :aws_ecs_task_definition,
     required_attrs: { container_definitions: 'test-value', family: 'test-value' },
-    expected_outputs: [:id, :arn, :arn_without_revision, :enable_fault_injection, :network_mode, :revision, :tags_all],
+    expected_outputs: [:id, :arn, :arn_without_revision, :enable_fault_injection, :network_mode, :region, :revision, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:skip_destroy, :track_latest]
+    boolean_fields: [:enable_fault_injection, :skip_destroy, :track_latest]
 end

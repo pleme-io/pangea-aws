@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogDatabase do
         expect(ref.arn).to eq("${aws_glue_catalog_database.test.arn}")
         expect(ref.catalog_id).to eq("${aws_glue_catalog_database.test.catalog_id}")
         expect(ref.location_uri).to eq("${aws_glue_catalog_database.test.location_uri}")
+        expect(ref.region).to eq("${aws_glue_catalog_database.test.region}")
         expect(ref.tags_all).to eq("${aws_glue_catalog_database.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogDatabase do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('catalog_id')
         expect(config).not_to have_key('location_uri')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ create_table_default_permission: [{ 'key1' => 'val1' }], description: 'test-value', federated_database: [{ 'key1' => 'val1' }], parameters: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, target_database: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ catalog_id: 'test-value', create_table_default_permission: [{ 'key1' => 'val1' }], description: 'test-value', federated_database: { 'key1' => 'val1' }, location_uri: 'test-value', parameters: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target_database: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,16 +72,37 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogDatabase do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_glue_catalog_database', 'full')
+        expect(config).to have_key('catalog_id')
         expect(config).to have_key('create_table_default_permission')
         expect(config).to have_key('description')
         expect(config).to have_key('federated_database')
+        expect(config).to have_key('location_uri')
         expect(config).to have_key('parameters')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('target_database')
       end
     end
 
     context 'optional attributes' do
+      it 'includes catalog_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_database('opt', required_attrs.merge(catalog_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_database', 'opt')
+        expect(config).to have_key('catalog_id')
+      end
+
+      it 'omits catalog_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_database('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_database', 'minimal')
+        expect(config).not_to have_key('catalog_id')
+      end
       it 'includes create_table_default_permission when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -117,7 +140,7 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogDatabase do
       it 'includes federated_database when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_catalog_database('opt', required_attrs.merge(federated_database: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_catalog_database('opt', required_attrs.merge(federated_database: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_catalog_database', 'opt')
         expect(config).to have_key('federated_database')
@@ -130,6 +153,23 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogDatabase do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_catalog_database', 'minimal')
         expect(config).not_to have_key('federated_database')
+      end
+      it 'includes location_uri when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_database('opt', required_attrs.merge(location_uri: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_database', 'opt')
+        expect(config).to have_key('location_uri')
+      end
+
+      it 'omits location_uri when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_database('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_database', 'minimal')
+        expect(config).not_to have_key('location_uri')
       end
       it 'includes parameters when provided' do
         synth = create_synthesizer
@@ -148,6 +188,23 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogDatabase do
         config = validate_resource_structure(result, 'aws_glue_catalog_database', 'minimal')
         expect(config).not_to have_key('parameters')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_database('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_database', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_database('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_database', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -165,10 +222,27 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogDatabase do
         config = validate_resource_structure(result, 'aws_glue_catalog_database', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_database('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_database', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_catalog_database('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_catalog_database', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes target_database when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_catalog_database('opt', required_attrs.merge(target_database: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_catalog_database('opt', required_attrs.merge(target_database: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_catalog_database', 'opt')
         expect(config).to have_key('target_database')
@@ -226,7 +300,7 @@ RSpec.describe Pangea::Resources::AWSGlueCatalogDatabase do
     resource_type: :aws_glue_catalog_database,
     method: :aws_glue_catalog_database,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :catalog_id, :location_uri, :tags_all],
+    expected_outputs: [:id, :arn, :catalog_id, :location_uri, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkfirewallFirewallPolicyAttributes,
       outputs: { id: :id },
       map: [:firewall_policy, :name],
-      map_present: [:description, :encryption_configuration, :tags, :tags_all]
+      map_present: [:description, :encryption_configuration, :region, :tags, :tags_all]
   end
   module AWS
     include AWSNetworkfirewallFirewallPolicy

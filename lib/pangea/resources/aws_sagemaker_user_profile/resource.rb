@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerUserProfileAttributes,
       outputs: { id: :id },
       map: [:domain_id, :user_profile_name],
-      map_present: [:single_sign_on_user_identifier, :single_sign_on_user_value, :tags, :tags_all, :user_settings]
+      map_present: [:region, :single_sign_on_user_identifier, :single_sign_on_user_value, :tags, :tags_all, :user_settings]
   end
   module AWS
     include AWSSagemakerUserProfile

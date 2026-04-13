@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_sns_sms_preferences,
       attributes_class: AWS::Types::SnsSmsPreferencesAttributes,
       outputs: { id: :id },
-      map_present: [:default_sender_id, :default_sms_type, :delivery_status_iam_role_arn, :delivery_status_success_sampling_rate, :monthly_spend_limit, :usage_report_s3_bucket]
+      map_present: [:default_sender_id, :default_sms_type, :delivery_status_iam_role_arn, :delivery_status_success_sampling_rate, :monthly_spend_limit, :region, :usage_report_s3_bucket]
   end
   module AWS
     include AWSSnsSmsPreferences

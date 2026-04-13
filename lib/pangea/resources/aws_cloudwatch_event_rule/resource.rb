@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_cloudwatch_event_rule,
       attributes_class: AWS::Types::CloudwatchEventRuleAttributes,
       outputs: { id: :id },
-      map_present: [:description, :event_bus_name, :event_pattern, :name, :name_prefix, :role_arn, :schedule_expression, :state, :tags, :tags_all],
+      map_present: [:description, :event_bus_name, :event_pattern, :name, :name_prefix, :region, :role_arn, :schedule_expression, :state, :tags, :tags_all],
       map_bool: [:force_destroy, :is_enabled]
   end
   module AWS

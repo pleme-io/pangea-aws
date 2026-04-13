@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WorkspaceswebUserAccessLoggingSettingsAttributes,
       outputs: { id: :id },
       map: [:kinesis_stream_arn],
-      map_present: [:tags]
+      map_present: [:region, :tags]
   end
   module AWS
     include AWSWorkspaceswebUserAccessLoggingSettings

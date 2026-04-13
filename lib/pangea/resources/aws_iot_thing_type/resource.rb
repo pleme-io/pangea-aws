@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IotThingTypeAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:properties, :tags, :tags_all],
+      map_present: [:properties, :region, :tags, :tags_all],
       map_bool: [:deprecated]
   end
   module AWS

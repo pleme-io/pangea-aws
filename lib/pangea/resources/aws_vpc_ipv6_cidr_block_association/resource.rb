@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcIpv6CidrBlockAssociationAttributes,
       outputs: { id: :id },
       map: [:vpc_id],
-      map_present: [:ipv6_cidr_block, :ipv6_ipam_pool_id, :ipv6_netmask_length, :ipv6_pool],
+      map_present: [:ipv6_cidr_block, :ipv6_ipam_pool_id, :ipv6_netmask_length, :ipv6_pool, :region],
       map_bool: [:assign_generated_ipv6_cidr_block]
   end
   module AWS

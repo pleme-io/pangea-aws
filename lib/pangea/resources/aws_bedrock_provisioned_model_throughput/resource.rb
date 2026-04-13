@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BedrockProvisionedModelThroughputAttributes,
       outputs: { id: :id },
       map: [:model_arn, :model_units, :provisioned_model_name],
-      map_present: [:commitment_duration, :tags]
+      map_present: [:commitment_duration, :region, :tags]
   end
   module AWS
     include AWSBedrockProvisionedModelThroughput

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RdsClusterSnapshotCopyAttributes,
       outputs: { id: :id },
       map: [:source_db_cluster_snapshot_identifier, :target_db_cluster_snapshot_identifier],
-      map_present: [:destination_region, :kms_key_id, :presigned_url, :shared_accounts, :tags],
+      map_present: [:destination_region, :kms_key_id, :presigned_url, :region, :shared_accounts, :tags],
       map_bool: [:copy_tags]
   end
   module AWS

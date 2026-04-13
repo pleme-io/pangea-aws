@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
         ref = synth.aws_cloudwatch_event_target('test', required_attrs)
 
         expect(ref.id).to eq("${aws_cloudwatch_event_target.test.id}")
+        expect(ref.region).to eq("${aws_cloudwatch_event_target.test.region}")
         expect(ref.target_id).to eq("${aws_cloudwatch_event_target.test.target_id}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('target_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ appsync_target: [{ 'key1' => 'val1' }], batch_target: [{ 'key1' => 'val1' }], dead_letter_config: [{ 'key1' => 'val1' }], ecs_target: [{ 'key1' => 'val1' }], event_bus_name: 'test-value', force_destroy: true, http_target: [{ 'key1' => 'val1' }], input: 'test-value', input_path: 'test-value', input_transformer: [{ 'key1' => 'val1' }], kinesis_target: [{ 'key1' => 'val1' }], redshift_target: [{ 'key1' => 'val1' }], retry_policy: [{ 'key1' => 'val1' }], role_arn: 'test-value', run_command_targets: [{ 'key1' => 'val1' }], sagemaker_pipeline_target: [{ 'key1' => 'val1' }], sqs_target: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ appsync_target: { 'key1' => 'val1' }, batch_target: { 'key1' => 'val1' }, dead_letter_config: { 'key1' => 'val1' }, ecs_target: { 'key1' => 'val1' }, event_bus_name: 'test-value', force_destroy: true, http_target: { 'key1' => 'val1' }, input: 'test-value', input_path: 'test-value', input_transformer: { 'key1' => 'val1' }, kinesis_target: { 'key1' => 'val1' }, redshift_target: { 'key1' => 'val1' }, region: 'test-value', retry_policy: { 'key1' => 'val1' }, role_arn: 'test-value', run_command_targets: [{ 'key1' => 'val1' }], sagemaker_pipeline_target: { 'key1' => 'val1' }, sqs_target: { 'key1' => 'val1' }, target_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,11 +78,13 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
         expect(config).to have_key('input_transformer')
         expect(config).to have_key('kinesis_target')
         expect(config).to have_key('redshift_target')
+        expect(config).to have_key('region')
         expect(config).to have_key('retry_policy')
         expect(config).to have_key('role_arn')
         expect(config).to have_key('run_command_targets')
         expect(config).to have_key('sagemaker_pipeline_target')
         expect(config).to have_key('sqs_target')
+        expect(config).to have_key('target_id')
       end
     end
 
@@ -88,7 +92,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
       it 'includes appsync_target when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(appsync_target: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(appsync_target: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'opt')
         expect(config).to have_key('appsync_target')
@@ -105,7 +109,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
       it 'includes batch_target when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(batch_target: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(batch_target: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'opt')
         expect(config).to have_key('batch_target')
@@ -122,7 +126,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
       it 'includes dead_letter_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(dead_letter_config: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(dead_letter_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'opt')
         expect(config).to have_key('dead_letter_config')
@@ -139,7 +143,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
       it 'includes ecs_target when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(ecs_target: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(ecs_target: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'opt')
         expect(config).to have_key('ecs_target')
@@ -190,7 +194,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
       it 'includes http_target when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(http_target: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(http_target: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'opt')
         expect(config).to have_key('http_target')
@@ -241,7 +245,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
       it 'includes input_transformer when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(input_transformer: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(input_transformer: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'opt')
         expect(config).to have_key('input_transformer')
@@ -258,7 +262,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
       it 'includes kinesis_target when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(kinesis_target: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(kinesis_target: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'opt')
         expect(config).to have_key('kinesis_target')
@@ -275,7 +279,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
       it 'includes redshift_target when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(redshift_target: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(redshift_target: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'opt')
         expect(config).to have_key('redshift_target')
@@ -289,10 +293,27 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'minimal')
         expect(config).not_to have_key('redshift_target')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_target('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes retry_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(retry_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(retry_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'opt')
         expect(config).to have_key('retry_policy')
@@ -343,7 +364,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
       it 'includes sagemaker_pipeline_target when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(sagemaker_pipeline_target: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(sagemaker_pipeline_target: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'opt')
         expect(config).to have_key('sagemaker_pipeline_target')
@@ -360,7 +381,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
       it 'includes sqs_target when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(sqs_target: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(sqs_target: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'opt')
         expect(config).to have_key('sqs_target')
@@ -373,6 +394,23 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'minimal')
         expect(config).not_to have_key('sqs_target')
+      end
+      it 'includes target_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_target('opt', required_attrs.merge(target_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'opt')
+        expect(config).to have_key('target_id')
+      end
+
+      it 'omits target_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_target('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_target', 'minimal')
+        expect(config).not_to have_key('target_id')
       end
     end
 
@@ -433,7 +471,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventTarget do
     resource_type: :aws_cloudwatch_event_target,
     method: :aws_cloudwatch_event_target,
     required_attrs: { arn: 'test-value', rule: 'test-value' },
-    expected_outputs: [:id, :target_id],
+    expected_outputs: [:id, :region, :target_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:force_destroy]

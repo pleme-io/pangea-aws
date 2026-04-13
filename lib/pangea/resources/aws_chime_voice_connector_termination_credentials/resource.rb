@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_chime_voice_connector_termination_credentials,
       attributes_class: AWS::Types::ChimeVoiceConnectorTerminationCredentialsAttributes,
       outputs: { id: :id },
-      map: [:credentials, :voice_connector_id]
+      map: [:credentials, :voice_connector_id],
+      map_present: [:region]
   end
   module AWS
     include AWSChimeVoiceConnectorTerminationCredentials

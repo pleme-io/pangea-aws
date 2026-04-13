@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSVpnGateway do
         expect(ref.id).to eq("${aws_vpn_gateway.test.id}")
         expect(ref.amazon_side_asn).to eq("${aws_vpn_gateway.test.amazon_side_asn}")
         expect(ref.arn).to eq("${aws_vpn_gateway.test.arn}")
+        expect(ref.region).to eq("${aws_vpn_gateway.test.region}")
         expect(ref.tags_all).to eq("${aws_vpn_gateway.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_vpn_gateway.test.vpc_id}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSVpnGateway do
         config = validate_resource_structure(result, 'aws_vpn_gateway', 'test')
         expect(config).not_to have_key('amazon_side_asn')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ availability_zone: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ amazon_side_asn: 'test-value', availability_zone: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,12 +72,33 @@ RSpec.describe Pangea::Resources::AWSVpnGateway do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpn_gateway', 'full')
+        expect(config).to have_key('amazon_side_asn')
         expect(config).to have_key('availability_zone')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('vpc_id')
       end
     end
 
     context 'optional attributes' do
+      it 'includes amazon_side_asn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_gateway('opt', required_attrs.merge(amazon_side_asn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_gateway', 'opt')
+        expect(config).to have_key('amazon_side_asn')
+      end
+
+      it 'omits amazon_side_asn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_gateway', 'minimal')
+        expect(config).not_to have_key('amazon_side_asn')
+      end
       it 'includes availability_zone when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -93,6 +116,23 @@ RSpec.describe Pangea::Resources::AWSVpnGateway do
         config = validate_resource_structure(result, 'aws_vpn_gateway', 'minimal')
         expect(config).not_to have_key('availability_zone')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_gateway('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_gateway', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_gateway', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -109,6 +149,40 @@ RSpec.describe Pangea::Resources::AWSVpnGateway do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpn_gateway', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_gateway('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_gateway', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_gateway', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes vpc_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_gateway('opt', required_attrs.merge(vpc_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_gateway', 'opt')
+        expect(config).to have_key('vpc_id')
+      end
+
+      it 'omits vpc_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpn_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpn_gateway', 'minimal')
+        expect(config).not_to have_key('vpc_id')
       end
     end
 
@@ -153,7 +227,7 @@ RSpec.describe Pangea::Resources::AWSVpnGateway do
     resource_type: :aws_vpn_gateway,
     method: :aws_vpn_gateway,
     required_attrs: {},
-    expected_outputs: [:id, :amazon_side_asn, :arn, :tags_all, :vpc_id],
+    expected_outputs: [:id, :amazon_side_asn, :arn, :region, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSConfigOrganizationCustomPolicyRule do
 
         expect(ref.id).to eq("${aws_config_organization_custom_policy_rule.test.id}")
         expect(ref.arn).to eq("${aws_config_organization_custom_policy_rule.test.arn}")
+        expect(ref.region).to eq("${aws_config_organization_custom_policy_rule.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSConfigOrganizationCustomPolicyRule do
 
         config = validate_resource_structure(result, 'aws_config_organization_custom_policy_rule', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ debug_log_delivery_accounts: ['test-value'], description: 'test-value', excluded_accounts: ['test-value'], input_parameters: 'test-value', maximum_execution_frequency: 'test-value', resource_id_scope: 'test-value', resource_types_scope: ['test-value'], tag_key_scope: 'test-value', tag_value_scope: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ debug_log_delivery_accounts: ['test-value'], description: 'test-value', excluded_accounts: ['test-value'], input_parameters: 'test-value', maximum_execution_frequency: 'test-value', region: 'test-value', resource_id_scope: 'test-value', resource_types_scope: ['test-value'], tag_key_scope: 'test-value', tag_value_scope: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSConfigOrganizationCustomPolicyRule do
         expect(config).to have_key('excluded_accounts')
         expect(config).to have_key('input_parameters')
         expect(config).to have_key('maximum_execution_frequency')
+        expect(config).to have_key('region')
         expect(config).to have_key('resource_id_scope')
         expect(config).to have_key('resource_types_scope')
         expect(config).to have_key('tag_key_scope')
@@ -161,6 +164,23 @@ RSpec.describe Pangea::Resources::AWSConfigOrganizationCustomPolicyRule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_organization_custom_policy_rule', 'minimal')
         expect(config).not_to have_key('maximum_execution_frequency')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_organization_custom_policy_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_organization_custom_policy_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_organization_custom_policy_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_organization_custom_policy_rule', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes resource_id_scope when provided' do
         synth = create_synthesizer
@@ -277,7 +297,7 @@ RSpec.describe Pangea::Resources::AWSConfigOrganizationCustomPolicyRule do
     resource_type: :aws_config_organization_custom_policy_rule,
     method: :aws_config_organization_custom_policy_rule,
     required_attrs: { name: 'test-value', policy_runtime: 'test-value', policy_text: 'test-value', trigger_types: ['test-value'] },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

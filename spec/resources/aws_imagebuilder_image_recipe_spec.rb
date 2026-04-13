@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImageRecipe do
         expect(ref.date_created).to eq("${aws_imagebuilder_image_recipe.test.date_created}")
         expect(ref.owner).to eq("${aws_imagebuilder_image_recipe.test.owner}")
         expect(ref.platform).to eq("${aws_imagebuilder_image_recipe.test.platform}")
+        expect(ref.region).to eq("${aws_imagebuilder_image_recipe.test.region}")
         expect(ref.tags_all).to eq("${aws_imagebuilder_image_recipe.test.tags_all}")
         expect(ref.user_data_base64).to eq("${aws_imagebuilder_image_recipe.test.user_data_base64}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImageRecipe do
         expect(config).not_to have_key('date_created')
         expect(config).not_to have_key('owner')
         expect(config).not_to have_key('platform')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('user_data_base64')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ block_device_mapping: [{ 'key1' => 'val1' }], description: 'test-value', systems_manager_agent: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, working_directory: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ ami_tags: { 'key1' => 'val1' }, block_device_mapping: [{ 'key1' => 'val1' }], description: 'test-value', region: 'test-value', systems_manager_agent: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, user_data_base64: 'test-value', working_directory: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,15 +76,36 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImageRecipe do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_imagebuilder_image_recipe', 'full')
+        expect(config).to have_key('ami_tags')
         expect(config).to have_key('block_device_mapping')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('systems_manager_agent')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('user_data_base64')
         expect(config).to have_key('working_directory')
       end
     end
 
     context 'optional attributes' do
+      it 'includes ami_tags when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_recipe('opt', required_attrs.merge(ami_tags: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_recipe', 'opt')
+        expect(config).to have_key('ami_tags')
+      end
+
+      it 'omits ami_tags when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_recipe('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_recipe', 'minimal')
+        expect(config).not_to have_key('ami_tags')
+      end
       it 'includes block_device_mapping when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -117,10 +140,27 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImageRecipe do
         config = validate_resource_structure(result, 'aws_imagebuilder_image_recipe', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_recipe('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_recipe', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_recipe('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_recipe', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes systems_manager_agent when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_imagebuilder_image_recipe('opt', required_attrs.merge(systems_manager_agent: [{ 'key1' => 'val1' }]))
+        synth.aws_imagebuilder_image_recipe('opt', required_attrs.merge(systems_manager_agent: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_image_recipe', 'opt')
         expect(config).to have_key('systems_manager_agent')
@@ -150,6 +190,40 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImageRecipe do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_image_recipe', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_recipe('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_recipe', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_recipe('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_recipe', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes user_data_base64 when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_recipe('opt', required_attrs.merge(user_data_base64: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_recipe', 'opt')
+        expect(config).to have_key('user_data_base64')
+      end
+
+      it 'omits user_data_base64 when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_recipe('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_recipe', 'minimal')
+        expect(config).not_to have_key('user_data_base64')
       end
       it 'includes working_directory when provided' do
         synth = create_synthesizer
@@ -215,7 +289,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImageRecipe do
     resource_type: :aws_imagebuilder_image_recipe,
     method: :aws_imagebuilder_image_recipe,
     required_attrs: { component: [{ 'key1' => 'val1' }], name: 'test-value', parent_image: 'test-value', version: 'test-value' },
-    expected_outputs: [:id, :arn, :date_created, :owner, :platform, :tags_all, :user_data_base64],
+    expected_outputs: [:id, :arn, :date_created, :owner, :platform, :region, :tags_all, :user_data_base64],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

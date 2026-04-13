@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSRekognitionStreamProcessor do
 
         expect(ref.id).to eq("${aws_rekognition_stream_processor.test.id}")
         expect(ref.arn).to eq("${aws_rekognition_stream_processor.test.arn}")
+        expect(ref.region).to eq("${aws_rekognition_stream_processor.test.region}")
         expect(ref.stream_processor_arn).to eq("${aws_rekognition_stream_processor.test.stream_processor_arn}")
         expect(ref.tags_all).to eq("${aws_rekognition_stream_processor.test.tags_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSRekognitionStreamProcessor do
 
         config = validate_resource_structure(result, 'aws_rekognition_stream_processor', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('stream_processor_arn')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ data_sharing_preference: [{ 'key1' => 'val1' }], input: [{ 'key1' => 'val1' }], kms_key_id: 'test-value', notification_channel: [{ 'key1' => 'val1' }], output: [{ 'key1' => 'val1' }], regions_of_interest: [{ 'key1' => 'val1' }], settings: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ data_sharing_preference: [{ 'key1' => 'val1' }], input: [{ 'key1' => 'val1' }], kms_key_id: 'test-value', notification_channel: [{ 'key1' => 'val1' }], output: [{ 'key1' => 'val1' }], region: 'test-value', regions_of_interest: [{ 'key1' => 'val1' }], settings: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,6 +75,7 @@ RSpec.describe Pangea::Resources::AWSRekognitionStreamProcessor do
         expect(config).to have_key('kms_key_id')
         expect(config).to have_key('notification_channel')
         expect(config).to have_key('output')
+        expect(config).to have_key('region')
         expect(config).to have_key('regions_of_interest')
         expect(config).to have_key('settings')
         expect(config).to have_key('tags')
@@ -164,6 +167,23 @@ RSpec.describe Pangea::Resources::AWSRekognitionStreamProcessor do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rekognition_stream_processor', 'minimal')
         expect(config).not_to have_key('output')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rekognition_stream_processor('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rekognition_stream_processor', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rekognition_stream_processor('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rekognition_stream_processor', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes regions_of_interest when provided' do
         synth = create_synthesizer
@@ -261,7 +281,7 @@ RSpec.describe Pangea::Resources::AWSRekognitionStreamProcessor do
     resource_type: :aws_rekognition_stream_processor,
     method: :aws_rekognition_stream_processor,
     required_attrs: { name: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :stream_processor_arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :stream_processor_arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

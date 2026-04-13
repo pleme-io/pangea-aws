@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftDataShareAuthorizationAttributes,
       outputs: { id: :id },
       map: [:consumer_identifier, :data_share_arn],
+      map_present: [:region],
       map_bool: [:allow_writes]
   end
   module AWS

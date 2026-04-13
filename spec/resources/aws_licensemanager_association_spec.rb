@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSLicensemanagerAssociation do
         ref = synth.aws_licensemanager_association('test', required_attrs)
 
         expect(ref.id).to eq("${aws_licensemanager_association.test.id}")
+        expect(ref.region).to eq("${aws_licensemanager_association.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_licensemanager_association('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_licensemanager_association', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_licensemanager_association('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_licensemanager_association', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_licensemanager_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_licensemanager_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_licensemanager_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_licensemanager_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -84,7 +131,7 @@ RSpec.describe Pangea::Resources::AWSLicensemanagerAssociation do
     resource_type: :aws_licensemanager_association,
     method: :aws_licensemanager_association,
     required_attrs: { license_configuration_arn: 'test-value', resource_arn: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAppfabricAppBundle do
 
         expect(ref.id).to eq("${aws_appfabric_app_bundle.test.id}")
         expect(ref.arn).to eq("${aws_appfabric_app_bundle.test.arn}")
+        expect(ref.region).to eq("${aws_appfabric_app_bundle.test.region}")
         expect(ref.tags_all).to eq("${aws_appfabric_app_bundle.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSAppfabricAppBundle do
 
         config = validate_resource_structure(result, 'aws_appfabric_app_bundle', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ customer_managed_key_arn: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ customer_managed_key_arn: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSAppfabricAppBundle do
 
         config = validate_resource_structure(result, 'aws_appfabric_app_bundle', 'full')
         expect(config).to have_key('customer_managed_key_arn')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -88,6 +91,23 @@ RSpec.describe Pangea::Resources::AWSAppfabricAppBundle do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appfabric_app_bundle', 'minimal')
         expect(config).not_to have_key('customer_managed_key_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appfabric_app_bundle('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appfabric_app_bundle', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appfabric_app_bundle('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appfabric_app_bundle', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -149,7 +169,7 @@ RSpec.describe Pangea::Resources::AWSAppfabricAppBundle do
     resource_type: :aws_appfabric_app_bundle,
     method: :aws_appfabric_app_bundle,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

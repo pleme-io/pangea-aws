@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WafregionalSizeConstraintSetAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:size_constraints]
+      map_present: [:region, :size_constraints]
   end
   module AWS
     include AWSWafregionalSizeConstraintSet

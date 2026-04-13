@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Apigatewayv2RouteAttributes,
       outputs: { id: :id },
       map: [:api_id, :route_key],
-      map_present: [:authorization_scopes, :authorization_type, :authorizer_id, :model_selection_expression, :operation_name, :request_models, :request_parameter, :route_response_selection_expression, :target],
+      map_present: [:authorization_scopes, :authorization_type, :authorizer_id, :model_selection_expression, :operation_name, :region, :request_models, :request_parameter, :route_response_selection_expression, :target],
       map_bool: [:api_key_required]
   end
   module AWS

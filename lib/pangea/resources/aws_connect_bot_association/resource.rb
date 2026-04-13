@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_connect_bot_association,
       attributes_class: AWS::Types::ConnectBotAssociationAttributes,
       outputs: { id: :id },
-      map: [:instance_id, :lex_bot]
+      map: [:instance_id, :lex_bot],
+      map_present: [:region]
   end
   module AWS
     include AWSConnectBotAssociation

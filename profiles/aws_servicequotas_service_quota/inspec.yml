@@ -1,0 +1,8 @@
+name: aws_servicequotas_service_quota
+title: Manages a aws_servicequotas_service_quota resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

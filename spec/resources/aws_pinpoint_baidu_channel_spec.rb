@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSPinpointBaiduChannel do
         ref = synth.aws_pinpoint_baidu_channel('test', required_attrs)
 
         expect(ref.id).to eq("${aws_pinpoint_baidu_channel.test.id}")
+        expect(ref.region).to eq("${aws_pinpoint_baidu_channel.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpoint_baidu_channel('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_pinpoint_baidu_channel', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enabled: true }) }
+      let(:all_attrs) { required_attrs.merge({ enabled: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSPinpointBaiduChannel do
 
         config = validate_resource_structure(result, 'aws_pinpoint_baidu_channel', 'full')
         expect(config).to have_key('enabled')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSPinpointBaiduChannel do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_pinpoint_baidu_channel', 'minimal')
         expect(config).not_to have_key('enabled')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpoint_baidu_channel('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpoint_baidu_channel', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpoint_baidu_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpoint_baidu_channel', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -141,7 +172,7 @@ RSpec.describe Pangea::Resources::AWSPinpointBaiduChannel do
     resource_type: :aws_pinpoint_baidu_channel,
     method: :aws_pinpoint_baidu_channel,
     required_attrs: { api_key: 'test-value', application_id: 'test-value', secret_key: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [:api_key, :secret_key],
     immutable_fields: [],
     boolean_fields: [:enabled]

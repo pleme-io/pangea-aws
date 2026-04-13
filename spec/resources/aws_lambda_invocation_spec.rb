@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSLambdaInvocation do
         ref = synth.aws_lambda_invocation('test', required_attrs)
 
         expect(ref.id).to eq("${aws_lambda_invocation.test.id}")
+        expect(ref.region).to eq("${aws_lambda_invocation.test.region}")
         expect(ref.result).to eq("${aws_lambda_invocation.test.result}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSLambdaInvocation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lambda_invocation', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('result')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ lifecycle_scope: 'test-value', qualifier: 'test-value', terraform_key: 'test-value', triggers: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ lifecycle_scope: 'test-value', qualifier: 'test-value', region: 'test-value', tenant_id: 'test-value', terraform_key: 'test-value', triggers: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,6 +68,8 @@ RSpec.describe Pangea::Resources::AWSLambdaInvocation do
         config = validate_resource_structure(result, 'aws_lambda_invocation', 'full')
         expect(config).to have_key('lifecycle_scope')
         expect(config).to have_key('qualifier')
+        expect(config).to have_key('region')
+        expect(config).to have_key('tenant_id')
         expect(config).to have_key('terraform_key')
         expect(config).to have_key('triggers')
       end
@@ -105,6 +109,40 @@ RSpec.describe Pangea::Resources::AWSLambdaInvocation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_invocation', 'minimal')
         expect(config).not_to have_key('qualifier')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_invocation('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_invocation', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_invocation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_invocation', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes tenant_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_invocation('opt', required_attrs.merge(tenant_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_invocation', 'opt')
+        expect(config).to have_key('tenant_id')
+      end
+
+      it 'omits tenant_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_invocation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_invocation', 'minimal')
+        expect(config).not_to have_key('tenant_id')
       end
       it 'includes terraform_key when provided' do
         synth = create_synthesizer
@@ -185,7 +223,7 @@ RSpec.describe Pangea::Resources::AWSLambdaInvocation do
     resource_type: :aws_lambda_invocation,
     method: :aws_lambda_invocation,
     required_attrs: { function_name: 'test-value', input: 'test-value' },
-    expected_outputs: [:id, :result],
+    expected_outputs: [:id, :region, :result],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

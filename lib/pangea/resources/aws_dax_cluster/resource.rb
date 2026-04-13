@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DaxClusterAttributes,
       outputs: { id: :id },
       map: [:cluster_name, :iam_role_arn, :node_type, :replication_factor],
-      map_present: [:availability_zones, :cluster_endpoint_encryption_type, :description, :maintenance_window, :notification_topic_arn, :parameter_group_name, :security_group_ids, :server_side_encryption, :subnet_group_name, :tags, :tags_all]
+      map_present: [:availability_zones, :cluster_endpoint_encryption_type, :description, :maintenance_window, :notification_topic_arn, :parameter_group_name, :region, :security_group_ids, :server_side_encryption, :subnet_group_name, :tags, :tags_all]
   end
   module AWS
     include AWSDaxCluster

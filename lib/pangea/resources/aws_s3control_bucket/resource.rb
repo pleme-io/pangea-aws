@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3controlBucketAttributes,
       outputs: { id: :id },
       map: [:bucket, :outpost_id],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSS3controlBucket

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCloudwatchEventEndpoint do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { event_bus: [{ 'key1' => 'val1' }], name: 'test-value', routing_config: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { event_bus: [{ 'key1' => 'val1' }], name: 'test-value', routing_config: { 'key1' => 'val1' } } }
 
   describe ':aws_cloudwatch_event_endpoint' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventEndpoint do
         expect(ref.id).to eq("${aws_cloudwatch_event_endpoint.test.id}")
         expect(ref.arn).to eq("${aws_cloudwatch_event_endpoint.test.arn}")
         expect(ref.endpoint_url).to eq("${aws_cloudwatch_event_endpoint.test.endpoint_url}")
+        expect(ref.region).to eq("${aws_cloudwatch_event_endpoint.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventEndpoint do
         config = validate_resource_structure(result, 'aws_cloudwatch_event_endpoint', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('endpoint_url')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', replication_config: [{ 'key1' => 'val1' }], role_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', replication_config: { 'key1' => 'val1' }, role_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventEndpoint do
 
         config = validate_resource_structure(result, 'aws_cloudwatch_event_endpoint', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('replication_config')
         expect(config).to have_key('role_arn')
       end
@@ -90,10 +93,27 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventEndpoint do
         config = validate_resource_structure(result, 'aws_cloudwatch_event_endpoint', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_endpoint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_endpoint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_endpoint', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes replication_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudwatch_event_endpoint('opt', required_attrs.merge(replication_config: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudwatch_event_endpoint('opt', required_attrs.merge(replication_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_endpoint', 'opt')
         expect(config).to have_key('replication_config')
@@ -136,7 +156,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventEndpoint do
         config = validate_resource_structure(result, 'aws_cloudwatch_event_endpoint', 'typed')
         expect(config['event_bus']).to be_a(Array)
         expect(config['name']).to be_a(String)
-        expect(config['routing_config']).to be_a(Array)
+        expect(config['routing_config']).to be_a(Hash)
       end
     end
 
@@ -169,8 +189,8 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventEndpoint do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_cloudwatch_event_endpoint,
     method: :aws_cloudwatch_event_endpoint,
-    required_attrs: { event_bus: [{ 'key1' => 'val1' }], name: 'test-value', routing_config: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :endpoint_url],
+    required_attrs: { event_bus: [{ 'key1' => 'val1' }], name: 'test-value', routing_config: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :endpoint_url, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

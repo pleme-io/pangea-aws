@@ -59,7 +59,7 @@ RSpec.describe Pangea::Resources::AWSNotificationsNotificationConfiguration do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ aggregation_duration: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,11 +68,29 @@ RSpec.describe Pangea::Resources::AWSNotificationsNotificationConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_notifications_notification_configuration', 'full')
+        expect(config).to have_key('aggregation_duration')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes aggregation_duration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_notifications_notification_configuration('opt', required_attrs.merge(aggregation_duration: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_notifications_notification_configuration', 'opt')
+        expect(config).to have_key('aggregation_duration')
+      end
+
+      it 'omits aggregation_duration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_notifications_notification_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_notifications_notification_configuration', 'minimal')
+        expect(config).not_to have_key('aggregation_duration')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)

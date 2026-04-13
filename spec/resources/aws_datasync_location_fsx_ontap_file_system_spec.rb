@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSDatasyncLocationFsxOntapFileSystem do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { protocol: [{ 'key1' => 'val1' }], security_group_arns: ['test-value'], storage_virtual_machine_arn: 'test-value' } }
+  let(:required_attrs) { { protocol: { 'key1' => 'val1' }, security_group_arns: ['test-value'], storage_virtual_machine_arn: 'test-value' } }
 
   describe ':aws_datasync_location_fsx_ontap_file_system' do
     context 'with required attributes only' do
@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationFsxOntapFileSystem do
         expect(ref.arn).to eq("${aws_datasync_location_fsx_ontap_file_system.test.arn}")
         expect(ref.creation_time).to eq("${aws_datasync_location_fsx_ontap_file_system.test.creation_time}")
         expect(ref.fsx_filesystem_arn).to eq("${aws_datasync_location_fsx_ontap_file_system.test.fsx_filesystem_arn}")
+        expect(ref.region).to eq("${aws_datasync_location_fsx_ontap_file_system.test.region}")
         expect(ref.subdirectory).to eq("${aws_datasync_location_fsx_ontap_file_system.test.subdirectory}")
         expect(ref.tags_all).to eq("${aws_datasync_location_fsx_ontap_file_system.test.tags_all}")
         expect(ref.uri).to eq("${aws_datasync_location_fsx_ontap_file_system.test.uri}")
@@ -58,6 +59,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationFsxOntapFileSystem do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('creation_time')
         expect(config).not_to have_key('fsx_filesystem_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('subdirectory')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('uri')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationFsxOntapFileSystem do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', subdirectory: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,11 +76,48 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationFsxOntapFileSystem do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_datasync_location_fsx_ontap_file_system', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('subdirectory')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_fsx_ontap_file_system('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_fsx_ontap_file_system', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_fsx_ontap_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_fsx_ontap_file_system', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes subdirectory when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_fsx_ontap_file_system('opt', required_attrs.merge(subdirectory: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_fsx_ontap_file_system', 'opt')
+        expect(config).to have_key('subdirectory')
+      end
+
+      it 'omits subdirectory when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_fsx_ontap_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_fsx_ontap_file_system', 'minimal')
+        expect(config).not_to have_key('subdirectory')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -96,6 +135,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationFsxOntapFileSystem do
         config = validate_resource_structure(result, 'aws_datasync_location_fsx_ontap_file_system', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_fsx_ontap_file_system('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_fsx_ontap_file_system', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_fsx_ontap_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_fsx_ontap_file_system', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -106,7 +162,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationFsxOntapFileSystem do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_datasync_location_fsx_ontap_file_system', 'typed')
-        expect(config['protocol']).to be_a(Array)
+        expect(config['protocol']).to be_a(Hash)
         expect(config['security_group_arns']).to be_a(Array)
         expect(config['storage_virtual_machine_arn']).to be_a(String)
       end
@@ -141,8 +197,8 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationFsxOntapFileSystem do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_datasync_location_fsx_ontap_file_system,
     method: :aws_datasync_location_fsx_ontap_file_system,
-    required_attrs: { protocol: [{ 'key1' => 'val1' }], security_group_arns: ['test-value'], storage_virtual_machine_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :creation_time, :fsx_filesystem_arn, :subdirectory, :tags_all, :uri],
+    required_attrs: { protocol: { 'key1' => 'val1' }, security_group_arns: ['test-value'], storage_virtual_machine_arn: 'test-value' },
+    expected_outputs: [:id, :arn, :creation_time, :fsx_filesystem_arn, :region, :subdirectory, :tags_all, :uri],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

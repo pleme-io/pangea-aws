@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSPinpointsmsvoicev2PhoneNumber do
         expect(ref.monthly_leasing_price).to eq("${aws_pinpointsmsvoicev2_phone_number.test.monthly_leasing_price}")
         expect(ref.opt_out_list_name).to eq("${aws_pinpointsmsvoicev2_phone_number.test.opt_out_list_name}")
         expect(ref.phone_number).to eq("${aws_pinpointsmsvoicev2_phone_number.test.phone_number}")
+        expect(ref.region).to eq("${aws_pinpointsmsvoicev2_phone_number.test.region}")
         expect(ref.self_managed_opt_outs_enabled).to eq("${aws_pinpointsmsvoicev2_phone_number.test.self_managed_opt_outs_enabled}")
         expect(ref.tags_all).to eq("${aws_pinpointsmsvoicev2_phone_number.test.tags_all}")
         expect(ref.two_way_channel_enabled).to eq("${aws_pinpointsmsvoicev2_phone_number.test.two_way_channel_enabled}")
@@ -62,6 +63,7 @@ RSpec.describe Pangea::Resources::AWSPinpointsmsvoicev2PhoneNumber do
         expect(config).not_to have_key('monthly_leasing_price')
         expect(config).not_to have_key('opt_out_list_name')
         expect(config).not_to have_key('phone_number')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('self_managed_opt_outs_enabled')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('two_way_channel_enabled')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSPinpointsmsvoicev2PhoneNumber do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ registration_id: 'test-value', tags: { 'key1' => 'val1' }, two_way_channel_arn: 'test-value', two_way_channel_role: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ deletion_protection_enabled: true, opt_out_list_name: 'test-value', region: 'test-value', registration_id: 'test-value', self_managed_opt_outs_enabled: true, tags: { 'key1' => 'val1' }, two_way_channel_arn: 'test-value', two_way_channel_enabled: true, two_way_channel_role: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,14 +80,70 @@ RSpec.describe Pangea::Resources::AWSPinpointsmsvoicev2PhoneNumber do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'full')
+        expect(config).to have_key('deletion_protection_enabled')
+        expect(config).to have_key('opt_out_list_name')
+        expect(config).to have_key('region')
         expect(config).to have_key('registration_id')
+        expect(config).to have_key('self_managed_opt_outs_enabled')
         expect(config).to have_key('tags')
         expect(config).to have_key('two_way_channel_arn')
+        expect(config).to have_key('two_way_channel_enabled')
         expect(config).to have_key('two_way_channel_role')
       end
     end
 
     context 'optional attributes' do
+      it 'includes deletion_protection_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpointsmsvoicev2_phone_number('opt', required_attrs.merge(deletion_protection_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'opt')
+        expect(config).to have_key('deletion_protection_enabled')
+      end
+
+      it 'omits deletion_protection_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpointsmsvoicev2_phone_number('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'minimal')
+        expect(config).not_to have_key('deletion_protection_enabled')
+      end
+      it 'includes opt_out_list_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpointsmsvoicev2_phone_number('opt', required_attrs.merge(opt_out_list_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'opt')
+        expect(config).to have_key('opt_out_list_name')
+      end
+
+      it 'omits opt_out_list_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpointsmsvoicev2_phone_number('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'minimal')
+        expect(config).not_to have_key('opt_out_list_name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpointsmsvoicev2_phone_number('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpointsmsvoicev2_phone_number('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes registration_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -102,6 +160,23 @@ RSpec.describe Pangea::Resources::AWSPinpointsmsvoicev2PhoneNumber do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'minimal')
         expect(config).not_to have_key('registration_id')
+      end
+      it 'includes self_managed_opt_outs_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpointsmsvoicev2_phone_number('opt', required_attrs.merge(self_managed_opt_outs_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'opt')
+        expect(config).to have_key('self_managed_opt_outs_enabled')
+      end
+
+      it 'omits self_managed_opt_outs_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpointsmsvoicev2_phone_number('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'minimal')
+        expect(config).not_to have_key('self_managed_opt_outs_enabled')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -137,6 +212,23 @@ RSpec.describe Pangea::Resources::AWSPinpointsmsvoicev2PhoneNumber do
         config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'minimal')
         expect(config).not_to have_key('two_way_channel_arn')
       end
+      it 'includes two_way_channel_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpointsmsvoicev2_phone_number('opt', required_attrs.merge(two_way_channel_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'opt')
+        expect(config).to have_key('two_way_channel_enabled')
+      end
+
+      it 'omits two_way_channel_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpointsmsvoicev2_phone_number('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'minimal')
+        expect(config).not_to have_key('two_way_channel_enabled')
+      end
       it 'includes two_way_channel_role when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -153,6 +245,42 @@ RSpec.describe Pangea::Resources::AWSPinpointsmsvoicev2PhoneNumber do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', 'minimal')
         expect(config).not_to have_key('two_way_channel_role')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts deletion_protection_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(deletion_protection_enabled: val)
+          synth.aws_pinpointsmsvoicev2_phone_number("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', "bool_#{val}")
+          expect(config['deletion_protection_enabled']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts self_managed_opt_outs_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(self_managed_opt_outs_enabled: val)
+          synth.aws_pinpointsmsvoicev2_phone_number("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', "bool_#{val}")
+          expect(config['self_managed_opt_outs_enabled']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts two_way_channel_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(two_way_channel_enabled: val)
+          synth.aws_pinpointsmsvoicev2_phone_number("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_pinpointsmsvoicev2_phone_number', "bool_#{val}")
+          expect(config['two_way_channel_enabled']).to eq(val)
+        end
       end
     end
 
@@ -201,8 +329,8 @@ RSpec.describe Pangea::Resources::AWSPinpointsmsvoicev2PhoneNumber do
     resource_type: :aws_pinpointsmsvoicev2_phone_number,
     method: :aws_pinpointsmsvoicev2_phone_number,
     required_attrs: { iso_country_code: 'test-value', message_type: 'test-value', number_capabilities: ['test-value'], number_type: 'test-value' },
-    expected_outputs: [:id, :arn, :deletion_protection_enabled, :monthly_leasing_price, :opt_out_list_name, :phone_number, :self_managed_opt_outs_enabled, :tags_all, :two_way_channel_enabled],
+    expected_outputs: [:id, :arn, :deletion_protection_enabled, :monthly_leasing_price, :opt_out_list_name, :phone_number, :region, :self_managed_opt_outs_enabled, :tags_all, :two_way_channel_enabled],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:deletion_protection_enabled, :self_managed_opt_outs_enabled, :two_way_channel_enabled]
 end

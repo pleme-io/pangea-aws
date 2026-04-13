@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeAccessLogSubscription do
 
         expect(ref.id).to eq("${aws_vpclattice_access_log_subscription.test.id}")
         expect(ref.arn).to eq("${aws_vpclattice_access_log_subscription.test.arn}")
+        expect(ref.region).to eq("${aws_vpclattice_access_log_subscription.test.region}")
         expect(ref.resource_arn).to eq("${aws_vpclattice_access_log_subscription.test.resource_arn}")
         expect(ref.service_network_log_type).to eq("${aws_vpclattice_access_log_subscription.test.service_network_log_type}")
         expect(ref.tags_all).to eq("${aws_vpclattice_access_log_subscription.test.tags_all}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeAccessLogSubscription do
 
         config = validate_resource_structure(result, 'aws_vpclattice_access_log_subscription', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_arn')
         expect(config).not_to have_key('service_network_log_type')
         expect(config).not_to have_key('tags_all')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeAccessLogSubscription do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', service_network_log_type: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,11 +72,48 @@ RSpec.describe Pangea::Resources::AWSVpclatticeAccessLogSubscription do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpclattice_access_log_subscription', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('service_network_log_type')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_access_log_subscription('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_access_log_subscription', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_access_log_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_access_log_subscription', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes service_network_log_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_access_log_subscription('opt', required_attrs.merge(service_network_log_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_access_log_subscription', 'opt')
+        expect(config).to have_key('service_network_log_type')
+      end
+
+      it 'omits service_network_log_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_access_log_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_access_log_subscription', 'minimal')
+        expect(config).not_to have_key('service_network_log_type')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -91,6 +130,23 @@ RSpec.describe Pangea::Resources::AWSVpclatticeAccessLogSubscription do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpclattice_access_log_subscription', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_access_log_subscription('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_access_log_subscription', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_access_log_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_access_log_subscription', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -137,7 +193,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeAccessLogSubscription do
     resource_type: :aws_vpclattice_access_log_subscription,
     method: :aws_vpclattice_access_log_subscription,
     required_attrs: { destination_arn: 'test-value', resource_identifier: 'test-value' },
-    expected_outputs: [:id, :arn, :resource_arn, :service_network_log_type, :tags_all],
+    expected_outputs: [:id, :arn, :region, :resource_arn, :service_network_log_type, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

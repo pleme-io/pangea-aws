@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_elasticsearch_domain_policy,
       attributes_class: AWS::Types::ElasticsearchDomainPolicyAttributes,
       outputs: { id: :id },
-      map: [:access_policies, :domain_name]
+      map: [:access_policies, :domain_name],
+      map_present: [:region]
   end
   module AWS
     include AWSElasticsearchDomainPolicy

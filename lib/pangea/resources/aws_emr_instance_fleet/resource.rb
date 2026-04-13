@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EmrInstanceFleetAttributes,
       outputs: { id: :id },
       map: [:cluster_id],
-      map_present: [:instance_type_configs, :launch_specifications, :name, :target_on_demand_capacity, :target_spot_capacity]
+      map_present: [:instance_type_configs, :launch_specifications, :name, :region, :target_on_demand_capacity, :target_spot_capacity]
   end
   module AWS
     include AWSEmrInstanceFleet

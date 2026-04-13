@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftClusterSnapshotAttributes,
       outputs: { id: :id },
       map: [:cluster_identifier, :snapshot_identifier],
-      map_present: [:manual_snapshot_retention_period, :tags, :tags_all]
+      map_present: [:manual_snapshot_retention_period, :region, :tags, :tags_all]
   end
   module AWS
     include AWSRedshiftClusterSnapshot

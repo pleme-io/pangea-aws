@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSLexIntent do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { fulfillment_activity: [{ 'key1' => 'val1' }], name: 'test-value' } }
+  let(:required_attrs) { { fulfillment_activity: { 'key1' => 'val1' }, name: 'test-value' } }
 
   describe ':aws_lex_intent' do
     context 'with required attributes only' do
@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSLexIntent do
         expect(ref.checksum).to eq("${aws_lex_intent.test.checksum}")
         expect(ref.created_date).to eq("${aws_lex_intent.test.created_date}")
         expect(ref.last_updated_date).to eq("${aws_lex_intent.test.last_updated_date}")
+        expect(ref.region).to eq("${aws_lex_intent.test.region}")
         expect(ref.version).to eq("${aws_lex_intent.test.version}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSLexIntent do
         expect(config).not_to have_key('checksum')
         expect(config).not_to have_key('created_date')
         expect(config).not_to have_key('last_updated_date')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('version')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ conclusion_statement: [{ 'key1' => 'val1' }], confirmation_prompt: [{ 'key1' => 'val1' }], create_version: true, description: 'test-value', dialog_code_hook: [{ 'key1' => 'val1' }], follow_up_prompt: [{ 'key1' => 'val1' }], parent_intent_signature: 'test-value', rejection_statement: [{ 'key1' => 'val1' }], sample_utterances: ['test-value'], slot: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ conclusion_statement: { 'key1' => 'val1' }, confirmation_prompt: { 'key1' => 'val1' }, create_version: true, description: 'test-value', dialog_code_hook: { 'key1' => 'val1' }, follow_up_prompt: { 'key1' => 'val1' }, parent_intent_signature: 'test-value', region: 'test-value', rejection_statement: { 'key1' => 'val1' }, sample_utterances: ['test-value'], slot: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,6 +81,7 @@ RSpec.describe Pangea::Resources::AWSLexIntent do
         expect(config).to have_key('dialog_code_hook')
         expect(config).to have_key('follow_up_prompt')
         expect(config).to have_key('parent_intent_signature')
+        expect(config).to have_key('region')
         expect(config).to have_key('rejection_statement')
         expect(config).to have_key('sample_utterances')
         expect(config).to have_key('slot')
@@ -89,7 +92,7 @@ RSpec.describe Pangea::Resources::AWSLexIntent do
       it 'includes conclusion_statement when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lex_intent('opt', required_attrs.merge(conclusion_statement: [{ 'key1' => 'val1' }]))
+        synth.aws_lex_intent('opt', required_attrs.merge(conclusion_statement: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lex_intent', 'opt')
         expect(config).to have_key('conclusion_statement')
@@ -106,7 +109,7 @@ RSpec.describe Pangea::Resources::AWSLexIntent do
       it 'includes confirmation_prompt when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lex_intent('opt', required_attrs.merge(confirmation_prompt: [{ 'key1' => 'val1' }]))
+        synth.aws_lex_intent('opt', required_attrs.merge(confirmation_prompt: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lex_intent', 'opt')
         expect(config).to have_key('confirmation_prompt')
@@ -157,7 +160,7 @@ RSpec.describe Pangea::Resources::AWSLexIntent do
       it 'includes dialog_code_hook when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lex_intent('opt', required_attrs.merge(dialog_code_hook: [{ 'key1' => 'val1' }]))
+        synth.aws_lex_intent('opt', required_attrs.merge(dialog_code_hook: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lex_intent', 'opt')
         expect(config).to have_key('dialog_code_hook')
@@ -174,7 +177,7 @@ RSpec.describe Pangea::Resources::AWSLexIntent do
       it 'includes follow_up_prompt when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lex_intent('opt', required_attrs.merge(follow_up_prompt: [{ 'key1' => 'val1' }]))
+        synth.aws_lex_intent('opt', required_attrs.merge(follow_up_prompt: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lex_intent', 'opt')
         expect(config).to have_key('follow_up_prompt')
@@ -205,10 +208,27 @@ RSpec.describe Pangea::Resources::AWSLexIntent do
         config = validate_resource_structure(result, 'aws_lex_intent', 'minimal')
         expect(config).not_to have_key('parent_intent_signature')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lex_intent('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lex_intent', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lex_intent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lex_intent', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes rejection_statement when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lex_intent('opt', required_attrs.merge(rejection_statement: [{ 'key1' => 'val1' }]))
+        synth.aws_lex_intent('opt', required_attrs.merge(rejection_statement: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lex_intent', 'opt')
         expect(config).to have_key('rejection_statement')
@@ -280,7 +300,7 @@ RSpec.describe Pangea::Resources::AWSLexIntent do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lex_intent', 'typed')
-        expect(config['fulfillment_activity']).to be_a(Array)
+        expect(config['fulfillment_activity']).to be_a(Hash)
         expect(config['name']).to be_a(String)
       end
     end
@@ -314,8 +334,8 @@ RSpec.describe Pangea::Resources::AWSLexIntent do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_lex_intent,
     method: :aws_lex_intent,
-    required_attrs: { fulfillment_activity: [{ 'key1' => 'val1' }], name: 'test-value' },
-    expected_outputs: [:id, :arn, :checksum, :created_date, :last_updated_date, :version],
+    required_attrs: { fulfillment_activity: { 'key1' => 'val1' }, name: 'test-value' },
+    expected_outputs: [:id, :arn, :checksum, :created_date, :last_updated_date, :region, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:create_version]

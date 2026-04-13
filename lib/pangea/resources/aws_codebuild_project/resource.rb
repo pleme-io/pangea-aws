@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodebuildProjectAttributes,
       outputs: { id: :id },
       map: [:artifacts, :environment, :name, :service_role, :source],
-      map_present: [:build_batch_config, :build_timeout, :cache, :concurrent_build_limit, :description, :encryption_key, :file_system_locations, :logs_config, :project_visibility, :queued_timeout, :resource_access_role, :secondary_artifacts, :secondary_source_version, :secondary_sources, :source_version, :tags, :tags_all, :vpc_config],
+      map_present: [:auto_retry_limit, :build_batch_config, :build_timeout, :cache, :concurrent_build_limit, :description, :encryption_key, :file_system_locations, :logs_config, :project_visibility, :queued_timeout, :region, :resource_access_role, :secondary_artifacts, :secondary_source_version, :secondary_sources, :source_version, :tags, :tags_all, :vpc_config],
       map_bool: [:badge_enabled]
   end
   module AWS

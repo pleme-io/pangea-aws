@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSBackupVaultLockConfiguration do
 
         expect(ref.id).to eq("${aws_backup_vault_lock_configuration.test.id}")
         expect(ref.backup_vault_arn).to eq("${aws_backup_vault_lock_configuration.test.backup_vault_arn}")
+        expect(ref.region).to eq("${aws_backup_vault_lock_configuration.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSBackupVaultLockConfiguration do
 
         config = validate_resource_structure(result, 'aws_backup_vault_lock_configuration', 'test')
         expect(config).not_to have_key('backup_vault_arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ changeable_for_days: 3.14, max_retention_days: 3.14, min_retention_days: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ changeable_for_days: 3.14, max_retention_days: 3.14, min_retention_days: 3.14, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSBackupVaultLockConfiguration do
         expect(config).to have_key('changeable_for_days')
         expect(config).to have_key('max_retention_days')
         expect(config).to have_key('min_retention_days')
+        expect(config).to have_key('region')
       end
     end
 
@@ -122,6 +125,23 @@ RSpec.describe Pangea::Resources::AWSBackupVaultLockConfiguration do
         config = validate_resource_structure(result, 'aws_backup_vault_lock_configuration', 'minimal')
         expect(config).not_to have_key('min_retention_days')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_vault_lock_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_vault_lock_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_vault_lock_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_vault_lock_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'attribute types' do
@@ -166,7 +186,7 @@ RSpec.describe Pangea::Resources::AWSBackupVaultLockConfiguration do
     resource_type: :aws_backup_vault_lock_configuration,
     method: :aws_backup_vault_lock_configuration,
     required_attrs: { backup_vault_name: 'test-value' },
-    expected_outputs: [:id, :backup_vault_arn],
+    expected_outputs: [:id, :backup_vault_arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

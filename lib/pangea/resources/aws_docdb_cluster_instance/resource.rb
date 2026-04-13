@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DocdbClusterInstanceAttributes,
       outputs: { id: :id },
       map: [:cluster_identifier, :instance_class],
-      map_present: [:availability_zone, :ca_cert_identifier, :engine, :identifier, :identifier_prefix, :performance_insights_kms_key_id, :preferred_maintenance_window, :promotion_tier, :tags, :tags_all],
+      map_present: [:availability_zone, :ca_cert_identifier, :certificate_rotation_restart, :engine, :identifier, :identifier_prefix, :performance_insights_kms_key_id, :preferred_maintenance_window, :promotion_tier, :region, :tags, :tags_all],
       map_bool: [:apply_immediately, :auto_minor_version_upgrade, :copy_tags_to_snapshot, :enable_performance_insights]
   end
   module AWS

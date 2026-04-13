@@ -13,8 +13,7 @@ module Pangea::Resources
     define_resource :aws_eip,
       attributes_class: AWS::Types::EipAttributes,
       outputs: { id: :id },
-      map_present: [:address, :associate_with_private_ip, :customer_owned_ipv4_pool, :domain, :instance, :ipam_pool_id, :network_border_group, :network_interface, :public_ipv4_pool, :tags, :tags_all],
-      map_bool: [:vpc]
+      map_present: [:address, :associate_with_private_ip, :customer_owned_ipv4_pool, :domain, :instance, :ipam_pool_id, :network_border_group, :network_interface, :public_ipv4_pool, :region, :tags, :tags_all]
   end
   module AWS
     include AWSEip

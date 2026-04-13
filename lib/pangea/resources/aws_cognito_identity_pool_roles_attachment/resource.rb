@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CognitoIdentityPoolRolesAttachmentAttributes,
       outputs: { id: :id },
       map: [:identity_pool_id, :roles],
-      map_present: [:role_mapping]
+      map_present: [:region, :role_mapping]
   end
   module AWS
     include AWSCognitoIdentityPoolRolesAttachment

@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_mq_broker,
       attributes_class: AWS::Types::MqBrokerAttributes,
       outputs: { id: :id },
-      map: [:broker_name, :engine_type, :engine_version, :host_instance_type, :user],
-      map_present: [:authentication_strategy, :configuration, :data_replication_mode, :data_replication_primary_broker_arn, :deployment_mode, :encryption_options, :ldap_server_metadata, :logs, :maintenance_window_start_time, :security_groups, :storage_type, :subnet_ids, :tags, :tags_all],
+      map: [:broker_name, :engine_type, :engine_version, :host_instance_type],
+      map_present: [:authentication_strategy, :configuration, :data_replication_mode, :data_replication_primary_broker_arn, :deployment_mode, :encryption_options, :ldap_server_metadata, :logs, :maintenance_window_start_time, :region, :security_groups, :storage_type, :subnet_ids, :tags, :tags_all, :user],
       map_bool: [:apply_immediately, :auto_minor_version_upgrade, :publicly_accessible]
   end
   module AWS

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueTriggerAttributes,
       outputs: { id: :id },
       map: [:actions, :name, :type],
-      map_present: [:description, :event_batching_condition, :predicate, :schedule, :tags, :tags_all, :workflow_name],
+      map_present: [:description, :event_batching_condition, :predicate, :region, :schedule, :tags, :tags_all, :workflow_name],
       map_bool: [:enabled, :start_on_creation]
   end
   module AWS

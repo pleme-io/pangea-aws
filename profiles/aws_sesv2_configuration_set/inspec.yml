@@ -1,0 +1,8 @@
+name: aws_sesv2_configuration_set
+title: Manages a aws_sesv2_configuration_set resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

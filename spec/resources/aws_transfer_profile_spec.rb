@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSTransferProfile do
         expect(ref.id).to eq("${aws_transfer_profile.test.id}")
         expect(ref.arn).to eq("${aws_transfer_profile.test.arn}")
         expect(ref.profile_id).to eq("${aws_transfer_profile.test.profile_id}")
+        expect(ref.region).to eq("${aws_transfer_profile.test.region}")
         expect(ref.tags_all).to eq("${aws_transfer_profile.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSTransferProfile do
         config = validate_resource_structure(result, 'aws_transfer_profile', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('profile_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ certificate_ids: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ certificate_ids: ['test-value'], region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +71,9 @@ RSpec.describe Pangea::Resources::AWSTransferProfile do
 
         config = validate_resource_structure(result, 'aws_transfer_profile', 'full')
         expect(config).to have_key('certificate_ids')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -91,6 +95,23 @@ RSpec.describe Pangea::Resources::AWSTransferProfile do
         config = validate_resource_structure(result, 'aws_transfer_profile', 'minimal')
         expect(config).not_to have_key('certificate_ids')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_profile('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_profile', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_profile', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -107,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSTransferProfile do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_transfer_profile', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_profile('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_profile', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_profile', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -153,7 +191,7 @@ RSpec.describe Pangea::Resources::AWSTransferProfile do
     resource_type: :aws_transfer_profile,
     method: :aws_transfer_profile,
     required_attrs: { as2_id: 'test-value', profile_type: 'test-value' },
-    expected_outputs: [:id, :arn, :profile_id, :tags_all],
+    expected_outputs: [:id, :arn, :profile_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

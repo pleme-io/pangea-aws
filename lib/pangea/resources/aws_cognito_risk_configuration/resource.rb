@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CognitoRiskConfigurationAttributes,
       outputs: { id: :id },
       map: [:user_pool_id],
-      map_present: [:account_takeover_risk_configuration, :client_id, :compromised_credentials_risk_configuration, :risk_exception_configuration]
+      map_present: [:account_takeover_risk_configuration, :client_id, :compromised_credentials_risk_configuration, :region, :risk_exception_configuration]
   end
   module AWS
     include AWSCognitoRiskConfiguration

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSChimesdkmediapipelinesMediaInsightsPipeline
 
         expect(ref.id).to eq("${aws_chimesdkmediapipelines_media_insights_pipeline_configuration.test.id}")
         expect(ref.arn).to eq("${aws_chimesdkmediapipelines_media_insights_pipeline_configuration.test.arn}")
+        expect(ref.region).to eq("${aws_chimesdkmediapipelines_media_insights_pipeline_configuration.test.region}")
         expect(ref.tags_all).to eq("${aws_chimesdkmediapipelines_media_insights_pipeline_configuration.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSChimesdkmediapipelinesMediaInsightsPipeline
 
         config = validate_resource_structure(result, 'aws_chimesdkmediapipelines_media_insights_pipeline_configuration', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ real_time_alert_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ real_time_alert_configuration: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,7 +69,9 @@ RSpec.describe Pangea::Resources::AWSChimesdkmediapipelinesMediaInsightsPipeline
 
         config = validate_resource_structure(result, 'aws_chimesdkmediapipelines_media_insights_pipeline_configuration', 'full')
         expect(config).to have_key('real_time_alert_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -75,7 +79,7 @@ RSpec.describe Pangea::Resources::AWSChimesdkmediapipelinesMediaInsightsPipeline
       it 'includes real_time_alert_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_chimesdkmediapipelines_media_insights_pipeline_configuration('opt', required_attrs.merge(real_time_alert_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_chimesdkmediapipelines_media_insights_pipeline_configuration('opt', required_attrs.merge(real_time_alert_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_chimesdkmediapipelines_media_insights_pipeline_configuration', 'opt')
         expect(config).to have_key('real_time_alert_configuration')
@@ -88,6 +92,23 @@ RSpec.describe Pangea::Resources::AWSChimesdkmediapipelinesMediaInsightsPipeline
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_chimesdkmediapipelines_media_insights_pipeline_configuration', 'minimal')
         expect(config).not_to have_key('real_time_alert_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chimesdkmediapipelines_media_insights_pipeline_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chimesdkmediapipelines_media_insights_pipeline_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chimesdkmediapipelines_media_insights_pipeline_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chimesdkmediapipelines_media_insights_pipeline_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -105,6 +126,23 @@ RSpec.describe Pangea::Resources::AWSChimesdkmediapipelinesMediaInsightsPipeline
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_chimesdkmediapipelines_media_insights_pipeline_configuration', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chimesdkmediapipelines_media_insights_pipeline_configuration('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chimesdkmediapipelines_media_insights_pipeline_configuration', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chimesdkmediapipelines_media_insights_pipeline_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chimesdkmediapipelines_media_insights_pipeline_configuration', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -152,7 +190,7 @@ RSpec.describe Pangea::Resources::AWSChimesdkmediapipelinesMediaInsightsPipeline
     resource_type: :aws_chimesdkmediapipelines_media_insights_pipeline_configuration,
     method: :aws_chimesdkmediapipelines_media_insights_pipeline_configuration,
     required_attrs: { elements: [{ 'key1' => 'val1' }], name: 'test-value', resource_access_role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

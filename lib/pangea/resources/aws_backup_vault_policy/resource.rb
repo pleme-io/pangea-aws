@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_backup_vault_policy,
       attributes_class: AWS::Types::BackupVaultPolicyAttributes,
       outputs: { id: :id },
-      map: [:backup_vault_name, :policy]
+      map: [:backup_vault_name, :policy],
+      map_present: [:region]
   end
   module AWS
     include AWSBackupVaultPolicy

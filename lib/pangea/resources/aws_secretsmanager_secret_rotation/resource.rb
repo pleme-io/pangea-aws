@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SecretsmanagerSecretRotationAttributes,
       outputs: { id: :id },
       map: [:rotation_rules, :secret_id],
-      map_present: [:rotation_lambda_arn],
+      map_present: [:region, :rotation_lambda_arn],
       map_bool: [:rotate_immediately]
   end
   module AWS

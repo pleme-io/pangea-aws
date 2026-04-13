@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Apigatewayv2RouteResponseAttributes,
       outputs: { id: :id },
       map: [:api_id, :route_id, :route_response_key],
-      map_present: [:model_selection_expression, :response_models]
+      map_present: [:model_selection_expression, :region, :response_models]
   end
   module AWS
     include AWSApigatewayv2RouteResponse

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightAccountSettings do
         expect(ref.id).to eq("${aws_quicksight_account_settings.test.id}")
         expect(ref.aws_account_id).to eq("${aws_quicksight_account_settings.test.aws_account_id}")
         expect(ref.default_namespace).to eq("${aws_quicksight_account_settings.test.default_namespace}")
+        expect(ref.region).to eq("${aws_quicksight_account_settings.test.region}")
         expect(ref.termination_protection_enabled).to eq("${aws_quicksight_account_settings.test.termination_protection_enabled}")
       end
     end
@@ -54,7 +55,121 @@ RSpec.describe Pangea::Resources::AWSQuicksightAccountSettings do
         config = validate_resource_structure(result, 'aws_quicksight_account_settings', 'test')
         expect(config).not_to have_key('aws_account_id')
         expect(config).not_to have_key('default_namespace')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('termination_protection_enabled')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ aws_account_id: 'test-value', default_namespace: 'test-value', region: 'test-value', termination_protection_enabled: true }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_settings('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_quicksight_account_settings', 'full')
+        expect(config).to have_key('aws_account_id')
+        expect(config).to have_key('default_namespace')
+        expect(config).to have_key('region')
+        expect(config).to have_key('termination_protection_enabled')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes aws_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_settings('opt', required_attrs.merge(aws_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_settings', 'opt')
+        expect(config).to have_key('aws_account_id')
+      end
+
+      it 'omits aws_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_settings', 'minimal')
+        expect(config).not_to have_key('aws_account_id')
+      end
+      it 'includes default_namespace when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_settings('opt', required_attrs.merge(default_namespace: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_settings', 'opt')
+        expect(config).to have_key('default_namespace')
+      end
+
+      it 'omits default_namespace when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_settings', 'minimal')
+        expect(config).not_to have_key('default_namespace')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_settings('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_settings', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_settings', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes termination_protection_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_settings('opt', required_attrs.merge(termination_protection_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_settings', 'opt')
+        expect(config).to have_key('termination_protection_enabled')
+      end
+
+      it 'omits termination_protection_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_settings', 'minimal')
+        expect(config).not_to have_key('termination_protection_enabled')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts termination_protection_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(termination_protection_enabled: val)
+          synth.aws_quicksight_account_settings("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_quicksight_account_settings', "bool_#{val}")
+          expect(config['termination_protection_enabled']).to eq(val)
+        end
+      end
+    end
+
+    context 'attribute types' do
+      it 'validates expected attribute types' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_settings('typed', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_quicksight_account_settings', 'typed')
       end
     end
 
@@ -88,8 +203,8 @@ RSpec.describe Pangea::Resources::AWSQuicksightAccountSettings do
     resource_type: :aws_quicksight_account_settings,
     method: :aws_quicksight_account_settings,
     required_attrs: {},
-    expected_outputs: [:id, :aws_account_id, :default_namespace, :termination_protection_enabled],
+    expected_outputs: [:id, :aws_account_id, :default_namespace, :region, :termination_protection_enabled],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:termination_protection_enabled]
 end

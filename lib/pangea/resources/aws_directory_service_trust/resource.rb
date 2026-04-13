@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DirectoryServiceTrustAttributes,
       outputs: { id: :id },
       map: [:directory_id, :remote_domain_name, :trust_direction, :trust_password],
-      map_present: [:conditional_forwarder_ip_addrs, :selective_auth, :trust_type],
+      map_present: [:conditional_forwarder_ip_addrs, :region, :selective_auth, :trust_type],
       map_bool: [:delete_associated_conditional_forwarder]
   end
   module AWS

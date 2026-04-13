@@ -39,7 +39,9 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsPolicyStore do
 
         expect(ref.id).to eq("${aws_verifiedpermissions_policy_store.test.id}")
         expect(ref.arn).to eq("${aws_verifiedpermissions_policy_store.test.arn}")
+        expect(ref.deletion_protection).to eq("${aws_verifiedpermissions_policy_store.test.deletion_protection}")
         expect(ref.policy_store_id).to eq("${aws_verifiedpermissions_policy_store.test.policy_store_id}")
+        expect(ref.region).to eq("${aws_verifiedpermissions_policy_store.test.region}")
         expect(ref.tags_all).to eq("${aws_verifiedpermissions_policy_store.test.tags_all}")
       end
     end
@@ -53,13 +55,15 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsPolicyStore do
 
         config = validate_resource_structure(result, 'aws_verifiedpermissions_policy_store', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('deletion_protection')
         expect(config).not_to have_key('policy_store_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' }, validation_settings: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ deletion_protection: 'test-value', description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, validation_settings: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,13 +72,32 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsPolicyStore do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_verifiedpermissions_policy_store', 'full')
+        expect(config).to have_key('deletion_protection')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
         expect(config).to have_key('validation_settings')
       end
     end
 
     context 'optional attributes' do
+      it 'includes deletion_protection when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedpermissions_policy_store('opt', required_attrs.merge(deletion_protection: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedpermissions_policy_store', 'opt')
+        expect(config).to have_key('deletion_protection')
+      end
+
+      it 'omits deletion_protection when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedpermissions_policy_store('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedpermissions_policy_store', 'minimal')
+        expect(config).not_to have_key('deletion_protection')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -91,6 +114,23 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsPolicyStore do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedpermissions_policy_store', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedpermissions_policy_store('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedpermissions_policy_store', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedpermissions_policy_store('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedpermissions_policy_store', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -169,7 +209,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsPolicyStore do
     resource_type: :aws_verifiedpermissions_policy_store,
     method: :aws_verifiedpermissions_policy_store,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :policy_store_id, :tags_all],
+    expected_outputs: [:id, :arn, :deletion_protection, :policy_store_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

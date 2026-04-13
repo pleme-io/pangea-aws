@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSConnectVocabulary do
         expect(ref.arn).to eq("${aws_connect_vocabulary.test.arn}")
         expect(ref.failure_reason).to eq("${aws_connect_vocabulary.test.failure_reason}")
         expect(ref.last_modified_time).to eq("${aws_connect_vocabulary.test.last_modified_time}")
+        expect(ref.region).to eq("${aws_connect_vocabulary.test.region}")
         expect(ref.state).to eq("${aws_connect_vocabulary.test.state}")
         expect(ref.tags_all).to eq("${aws_connect_vocabulary.test.tags_all}")
         expect(ref.vocabulary_id).to eq("${aws_connect_vocabulary.test.vocabulary_id}")
@@ -58,6 +59,7 @@ RSpec.describe Pangea::Resources::AWSConnectVocabulary do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('failure_reason')
         expect(config).not_to have_key('last_modified_time')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vocabulary_id')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSConnectVocabulary do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,11 +76,30 @@ RSpec.describe Pangea::Resources::AWSConnectVocabulary do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_connect_vocabulary', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_vocabulary('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_vocabulary', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_vocabulary('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_vocabulary', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -95,6 +116,23 @@ RSpec.describe Pangea::Resources::AWSConnectVocabulary do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_connect_vocabulary', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_vocabulary('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_vocabulary', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_vocabulary('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_vocabulary', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -143,7 +181,7 @@ RSpec.describe Pangea::Resources::AWSConnectVocabulary do
     resource_type: :aws_connect_vocabulary,
     method: :aws_connect_vocabulary,
     required_attrs: { content: 'test-value', instance_id: 'test-value', language_code: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :failure_reason, :last_modified_time, :state, :tags_all, :vocabulary_id],
+    expected_outputs: [:id, :arn, :failure_reason, :last_modified_time, :region, :state, :tags_all, :vocabulary_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

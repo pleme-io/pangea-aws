@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
         expect(ref.arn).to eq("${aws_dynamodb_table.test.arn}")
         expect(ref.hash_key).to eq("${aws_dynamodb_table.test.hash_key}")
         expect(ref.read_capacity).to eq("${aws_dynamodb_table.test.read_capacity}")
+        expect(ref.region).to eq("${aws_dynamodb_table.test.region}")
         expect(ref.stream_arn).to eq("${aws_dynamodb_table.test.stream_arn}")
         expect(ref.stream_label).to eq("${aws_dynamodb_table.test.stream_label}")
         expect(ref.stream_view_type).to eq("${aws_dynamodb_table.test.stream_view_type}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('hash_key')
         expect(config).not_to have_key('read_capacity')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('stream_arn')
         expect(config).not_to have_key('stream_label')
         expect(config).not_to have_key('stream_view_type')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ attribute: [{ 'key1' => 'val1' }], billing_mode: 'test-value', deletion_protection_enabled: true, global_secondary_index: [{ 'key1' => 'val1' }], import_table: [{ 'key1' => 'val1' }], local_secondary_index: [{ 'key1' => 'val1' }], on_demand_throughput: [{ 'key1' => 'val1' }], point_in_time_recovery: [{ 'key1' => 'val1' }], range_key: 'test-value', replica: [{ 'key1' => 'val1' }], restore_date_time: 'test-value', restore_source_name: 'test-value', restore_source_table_arn: 'test-value', restore_to_latest_time: true, server_side_encryption: [{ 'key1' => 'val1' }], stream_enabled: true, table_class: 'test-value', tags: { 'key1' => 'val1' }, ttl: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ attribute: [{ 'key1' => 'val1' }], billing_mode: 'test-value', deletion_protection_enabled: true, global_secondary_index: [{ 'key1' => 'val1' }], global_table_witness: { 'key1' => 'val1' }, hash_key: 'test-value', import_table: { 'key1' => 'val1' }, local_secondary_index: [{ 'key1' => 'val1' }], on_demand_throughput: { 'key1' => 'val1' }, point_in_time_recovery: { 'key1' => 'val1' }, range_key: 'test-value', read_capacity: 3.14, region: 'test-value', replica: [{ 'key1' => 'val1' }], restore_backup_arn: 'test-value', restore_date_time: 'test-value', restore_source_name: 'test-value', restore_source_table_arn: 'test-value', restore_to_latest_time: true, server_side_encryption: { 'key1' => 'val1' }, stream_enabled: true, stream_view_type: 'test-value', table_class: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, ttl: { 'key1' => 'val1' }, warm_throughput: { 'key1' => 'val1' }, write_capacity: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -82,21 +84,30 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
         expect(config).to have_key('billing_mode')
         expect(config).to have_key('deletion_protection_enabled')
         expect(config).to have_key('global_secondary_index')
+        expect(config).to have_key('global_table_witness')
+        expect(config).to have_key('hash_key')
         expect(config).to have_key('import_table')
         expect(config).to have_key('local_secondary_index')
         expect(config).to have_key('on_demand_throughput')
         expect(config).to have_key('point_in_time_recovery')
         expect(config).to have_key('range_key')
+        expect(config).to have_key('read_capacity')
+        expect(config).to have_key('region')
         expect(config).to have_key('replica')
+        expect(config).to have_key('restore_backup_arn')
         expect(config).to have_key('restore_date_time')
         expect(config).to have_key('restore_source_name')
         expect(config).to have_key('restore_source_table_arn')
         expect(config).to have_key('restore_to_latest_time')
         expect(config).to have_key('server_side_encryption')
         expect(config).to have_key('stream_enabled')
+        expect(config).to have_key('stream_view_type')
         expect(config).to have_key('table_class')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('ttl')
+        expect(config).to have_key('warm_throughput')
+        expect(config).to have_key('write_capacity')
       end
     end
 
@@ -169,10 +180,44 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
         config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
         expect(config).not_to have_key('global_secondary_index')
       end
+      it 'includes global_table_witness when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('opt', required_attrs.merge(global_table_witness: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
+        expect(config).to have_key('global_table_witness')
+      end
+
+      it 'omits global_table_witness when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
+        expect(config).not_to have_key('global_table_witness')
+      end
+      it 'includes hash_key when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('opt', required_attrs.merge(hash_key: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
+        expect(config).to have_key('hash_key')
+      end
+
+      it 'omits hash_key when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
+        expect(config).not_to have_key('hash_key')
+      end
       it 'includes import_table when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dynamodb_table('opt', required_attrs.merge(import_table: [{ 'key1' => 'val1' }]))
+        synth.aws_dynamodb_table('opt', required_attrs.merge(import_table: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
         expect(config).to have_key('import_table')
@@ -206,7 +251,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
       it 'includes on_demand_throughput when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dynamodb_table('opt', required_attrs.merge(on_demand_throughput: [{ 'key1' => 'val1' }]))
+        synth.aws_dynamodb_table('opt', required_attrs.merge(on_demand_throughput: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
         expect(config).to have_key('on_demand_throughput')
@@ -223,7 +268,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
       it 'includes point_in_time_recovery when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dynamodb_table('opt', required_attrs.merge(point_in_time_recovery: [{ 'key1' => 'val1' }]))
+        synth.aws_dynamodb_table('opt', required_attrs.merge(point_in_time_recovery: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
         expect(config).to have_key('point_in_time_recovery')
@@ -254,6 +299,40 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
         config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
         expect(config).not_to have_key('range_key')
       end
+      it 'includes read_capacity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('opt', required_attrs.merge(read_capacity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
+        expect(config).to have_key('read_capacity')
+      end
+
+      it 'omits read_capacity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
+        expect(config).not_to have_key('read_capacity')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes replica when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -270,6 +349,23 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
         expect(config).not_to have_key('replica')
+      end
+      it 'includes restore_backup_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('opt', required_attrs.merge(restore_backup_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
+        expect(config).to have_key('restore_backup_arn')
+      end
+
+      it 'omits restore_backup_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
+        expect(config).not_to have_key('restore_backup_arn')
       end
       it 'includes restore_date_time when provided' do
         synth = create_synthesizer
@@ -342,7 +438,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
       it 'includes server_side_encryption when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dynamodb_table('opt', required_attrs.merge(server_side_encryption: [{ 'key1' => 'val1' }]))
+        synth.aws_dynamodb_table('opt', required_attrs.merge(server_side_encryption: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
         expect(config).to have_key('server_side_encryption')
@@ -372,6 +468,23 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
         expect(config).not_to have_key('stream_enabled')
+      end
+      it 'includes stream_view_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('opt', required_attrs.merge(stream_view_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
+        expect(config).to have_key('stream_view_type')
+      end
+
+      it 'omits stream_view_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
+        expect(config).not_to have_key('stream_view_type')
       end
       it 'includes table_class when provided' do
         synth = create_synthesizer
@@ -407,10 +520,27 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
         config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes ttl when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dynamodb_table('opt', required_attrs.merge(ttl: [{ 'key1' => 'val1' }]))
+        synth.aws_dynamodb_table('opt', required_attrs.merge(ttl: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
         expect(config).to have_key('ttl')
@@ -423,6 +553,40 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
         expect(config).not_to have_key('ttl')
+      end
+      it 'includes warm_throughput when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('opt', required_attrs.merge(warm_throughput: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
+        expect(config).to have_key('warm_throughput')
+      end
+
+      it 'omits warm_throughput when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
+        expect(config).not_to have_key('warm_throughput')
+      end
+      it 'includes write_capacity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('opt', required_attrs.merge(write_capacity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'opt')
+        expect(config).to have_key('write_capacity')
+      end
+
+      it 'omits write_capacity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_table', 'minimal')
+        expect(config).not_to have_key('write_capacity')
       end
     end
 
@@ -504,7 +668,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbTable do
     resource_type: :aws_dynamodb_table,
     method: :aws_dynamodb_table,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :hash_key, :read_capacity, :stream_arn, :stream_label, :stream_view_type, :tags_all, :write_capacity],
+    expected_outputs: [:id, :arn, :hash_key, :read_capacity, :region, :stream_arn, :stream_label, :stream_view_type, :tags_all, :write_capacity],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:deletion_protection_enabled, :restore_to_latest_time, :stream_enabled]

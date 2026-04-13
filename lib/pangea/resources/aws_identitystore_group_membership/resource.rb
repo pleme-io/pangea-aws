@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_identitystore_group_membership,
       attributes_class: AWS::Types::IdentitystoreGroupMembershipAttributes,
       outputs: { id: :id },
-      map: [:group_id, :identity_store_id, :member_id]
+      map: [:group_id, :identity_store_id, :member_id],
+      map_present: [:region]
   end
   module AWS
     include AWSIdentitystoreGroupMembership

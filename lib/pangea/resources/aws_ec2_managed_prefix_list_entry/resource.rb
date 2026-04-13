@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2ManagedPrefixListEntryAttributes,
       outputs: { id: :id },
       map: [:cidr, :prefix_list_id],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSEc2ManagedPrefixListEntry

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_s3_bucket_policy,
       attributes_class: AWS::Types::S3BucketPolicyAttributes,
       outputs: { id: :id },
-      map: [:bucket, :policy]
+      map: [:bucket, :policy],
+      map_present: [:region]
   end
   module AWS
     include AWSS3BucketPolicy

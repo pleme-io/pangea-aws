@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RdsIntegrationAttributes,
       outputs: { id: :id },
       map: [:integration_name, :source_arn, :target_arn],
-      map_present: [:additional_encryption_context, :data_filter, :kms_key_id, :tags]
+      map_present: [:additional_encryption_context, :data_filter, :kms_key_id, :region, :tags]
   end
   module AWS
     include AWSRdsIntegration

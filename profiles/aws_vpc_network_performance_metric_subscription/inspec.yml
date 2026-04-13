@@ -1,0 +1,8 @@
+name: aws_vpc_network_performance_metric_subscription
+title: Manages a aws_vpc_network_performance_metric_subscription resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSLightsailInstance do
         expect(ref.private_ip_address).to eq("${aws_lightsail_instance.test.private_ip_address}")
         expect(ref.public_ip_address).to eq("${aws_lightsail_instance.test.public_ip_address}")
         expect(ref.ram_size).to eq("${aws_lightsail_instance.test.ram_size}")
+        expect(ref.region).to eq("${aws_lightsail_instance.test.region}")
         expect(ref.tags_all).to eq("${aws_lightsail_instance.test.tags_all}")
         expect(ref.username).to eq("${aws_lightsail_instance.test.username}")
       end
@@ -67,13 +68,14 @@ RSpec.describe Pangea::Resources::AWSLightsailInstance do
         expect(config).not_to have_key('private_ip_address')
         expect(config).not_to have_key('public_ip_address')
         expect(config).not_to have_key('ram_size')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('username')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ add_on: [{ 'key1' => 'val1' }], ip_address_type: 'test-value', key_pair_name: 'test-value', tags: { 'key1' => 'val1' }, user_data: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ add_on: { 'key1' => 'val1' }, ip_address_type: 'test-value', key_pair_name: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, user_data: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -85,7 +87,9 @@ RSpec.describe Pangea::Resources::AWSLightsailInstance do
         expect(config).to have_key('add_on')
         expect(config).to have_key('ip_address_type')
         expect(config).to have_key('key_pair_name')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('user_data')
       end
     end
@@ -94,7 +98,7 @@ RSpec.describe Pangea::Resources::AWSLightsailInstance do
       it 'includes add_on when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lightsail_instance('opt', required_attrs.merge(add_on: [{ 'key1' => 'val1' }]))
+        synth.aws_lightsail_instance('opt', required_attrs.merge(add_on: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_instance', 'opt')
         expect(config).to have_key('add_on')
@@ -142,6 +146,23 @@ RSpec.describe Pangea::Resources::AWSLightsailInstance do
         config = validate_resource_structure(result, 'aws_lightsail_instance', 'minimal')
         expect(config).not_to have_key('key_pair_name')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_instance('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_instance', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_instance', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -158,6 +179,23 @@ RSpec.describe Pangea::Resources::AWSLightsailInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_instance', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_instance('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_instance', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_instance', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes user_data when provided' do
         synth = create_synthesizer
@@ -223,7 +261,7 @@ RSpec.describe Pangea::Resources::AWSLightsailInstance do
     resource_type: :aws_lightsail_instance,
     method: :aws_lightsail_instance,
     required_attrs: { availability_zone: 'test-value', blueprint_id: 'test-value', bundle_id: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :cpu_count, :created_at, :ipv6_addresses, :is_static_ip, :private_ip_address, :public_ip_address, :ram_size, :tags_all, :username],
+    expected_outputs: [:id, :arn, :cpu_count, :created_at, :ipv6_addresses, :is_static_ip, :private_ip_address, :public_ip_address, :ram_size, :region, :tags_all, :username],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

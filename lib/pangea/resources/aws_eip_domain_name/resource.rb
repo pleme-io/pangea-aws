@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_eip_domain_name,
       attributes_class: AWS::Types::EipDomainNameAttributes,
       outputs: { id: :id },
-      map: [:allocation_id, :domain_name]
+      map: [:allocation_id, :domain_name],
+      map_present: [:region]
   end
   module AWS
     include AWSEipDomainName

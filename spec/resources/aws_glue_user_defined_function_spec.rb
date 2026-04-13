@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSGlueUserDefinedFunction do
         expect(ref.id).to eq("${aws_glue_user_defined_function.test.id}")
         expect(ref.arn).to eq("${aws_glue_user_defined_function.test.arn}")
         expect(ref.create_time).to eq("${aws_glue_user_defined_function.test.create_time}")
+        expect(ref.region).to eq("${aws_glue_user_defined_function.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSGlueUserDefinedFunction do
         config = validate_resource_structure(result, 'aws_glue_user_defined_function', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('create_time')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ catalog_id: 'test-value', resource_uris: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ catalog_id: 'test-value', region: 'test-value', resource_uris: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSGlueUserDefinedFunction do
 
         config = validate_resource_structure(result, 'aws_glue_user_defined_function', 'full')
         expect(config).to have_key('catalog_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('resource_uris')
       end
     end
@@ -88,6 +91,23 @@ RSpec.describe Pangea::Resources::AWSGlueUserDefinedFunction do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_user_defined_function', 'minimal')
         expect(config).not_to have_key('catalog_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_user_defined_function('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_user_defined_function', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_user_defined_function('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_user_defined_function', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes resource_uris when provided' do
         synth = create_synthesizer
@@ -154,7 +174,7 @@ RSpec.describe Pangea::Resources::AWSGlueUserDefinedFunction do
     resource_type: :aws_glue_user_defined_function,
     method: :aws_glue_user_defined_function,
     required_attrs: { class_name: 'test-value', database_name: 'test-value', name: 'test-value', owner_name: 'test-value', owner_type: 'test-value' },
-    expected_outputs: [:id, :arn, :create_time],
+    expected_outputs: [:id, :arn, :create_time, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::StoragegatewayTapePoolAttributes,
       outputs: { id: :id },
       map: [:pool_name, :storage_class],
-      map_present: [:retention_lock_time_in_days, :retention_lock_type, :tags, :tags_all]
+      map_present: [:region, :retention_lock_time_in_days, :retention_lock_type, :tags, :tags_all]
   end
   module AWS
     include AWSStoragegatewayTapePool

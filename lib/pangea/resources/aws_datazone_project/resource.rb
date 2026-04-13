@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatazoneProjectAttributes,
       outputs: { id: :id },
       map: [:domain_identifier, :name],
-      map_present: [:description, :glossary_terms],
+      map_present: [:description, :glossary_terms, :region],
       map_bool: [:skip_deletion_check]
   end
   module AWS

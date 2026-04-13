@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSsmResourceDataSync do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { name: 'test-value', s3_destination: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { name: 'test-value', s3_destination: { 'key1' => 'val1' } } }
 
   describe ':aws_ssm_resource_data_sync' do
     context 'with required attributes only' do
@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSSsmResourceDataSync do
         ref = synth.aws_ssm_resource_data_sync('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ssm_resource_data_sync.test.id}")
+        expect(ref.region).to eq("${aws_ssm_resource_data_sync.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_resource_data_sync('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ssm_resource_data_sync', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_resource_data_sync('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ssm_resource_data_sync', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_resource_data_sync('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_resource_data_sync', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_resource_data_sync('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_resource_data_sync', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -50,7 +97,7 @@ RSpec.describe Pangea::Resources::AWSSsmResourceDataSync do
 
         config = validate_resource_structure(result, 'aws_ssm_resource_data_sync', 'typed')
         expect(config['name']).to be_a(String)
-        expect(config['s3_destination']).to be_a(Array)
+        expect(config['s3_destination']).to be_a(Hash)
       end
     end
 
@@ -83,8 +130,8 @@ RSpec.describe Pangea::Resources::AWSSsmResourceDataSync do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_ssm_resource_data_sync,
     method: :aws_ssm_resource_data_sync,
-    required_attrs: { name: 'test-value', s3_destination: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id],
+    required_attrs: { name: 'test-value', s3_destination: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

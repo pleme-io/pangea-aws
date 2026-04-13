@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheServerlessCache do
         expect(ref.full_engine_version).to eq("${aws_elasticache_serverless_cache.test.full_engine_version}")
         expect(ref.major_engine_version).to eq("${aws_elasticache_serverless_cache.test.major_engine_version}")
         expect(ref.reader_endpoint).to eq("${aws_elasticache_serverless_cache.test.reader_endpoint}")
+        expect(ref.region).to eq("${aws_elasticache_serverless_cache.test.region}")
         expect(ref.security_group_ids).to eq("${aws_elasticache_serverless_cache.test.security_group_ids}")
         expect(ref.snapshot_retention_limit).to eq("${aws_elasticache_serverless_cache.test.snapshot_retention_limit}")
         expect(ref.status).to eq("${aws_elasticache_serverless_cache.test.status}")
@@ -70,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheServerlessCache do
         expect(config).not_to have_key('full_engine_version')
         expect(config).not_to have_key('major_engine_version')
         expect(config).not_to have_key('reader_endpoint')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_group_ids')
         expect(config).not_to have_key('snapshot_retention_limit')
         expect(config).not_to have_key('status')
@@ -79,7 +81,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheServerlessCache do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cache_usage_limits: [{ 'key1' => 'val1' }], kms_key_id: 'test-value', snapshot_arns_to_restore: ['test-value'], tags: { 'key1' => 'val1' }, user_group_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ cache_usage_limits: [{ 'key1' => 'val1' }], daily_snapshot_time: 'test-value', description: 'test-value', kms_key_id: 'test-value', major_engine_version: 'test-value', region: 'test-value', security_group_ids: ['test-value'], snapshot_arns_to_restore: ['test-value'], snapshot_retention_limit: 3.14, subnet_ids: ['test-value'], tags: { 'key1' => 'val1' }, user_group_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -89,8 +91,15 @@ RSpec.describe Pangea::Resources::AWSElasticacheServerlessCache do
 
         config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'full')
         expect(config).to have_key('cache_usage_limits')
+        expect(config).to have_key('daily_snapshot_time')
+        expect(config).to have_key('description')
         expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('major_engine_version')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_group_ids')
         expect(config).to have_key('snapshot_arns_to_restore')
+        expect(config).to have_key('snapshot_retention_limit')
+        expect(config).to have_key('subnet_ids')
         expect(config).to have_key('tags')
         expect(config).to have_key('user_group_id')
       end
@@ -114,6 +123,40 @@ RSpec.describe Pangea::Resources::AWSElasticacheServerlessCache do
         config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'minimal')
         expect(config).not_to have_key('cache_usage_limits')
       end
+      it 'includes daily_snapshot_time when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('opt', required_attrs.merge(daily_snapshot_time: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'opt')
+        expect(config).to have_key('daily_snapshot_time')
+      end
+
+      it 'omits daily_snapshot_time when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'minimal')
+        expect(config).not_to have_key('daily_snapshot_time')
+      end
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'minimal')
+        expect(config).not_to have_key('description')
+      end
       it 'includes kms_key_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -131,6 +174,57 @@ RSpec.describe Pangea::Resources::AWSElasticacheServerlessCache do
         config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'minimal')
         expect(config).not_to have_key('kms_key_id')
       end
+      it 'includes major_engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('opt', required_attrs.merge(major_engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'opt')
+        expect(config).to have_key('major_engine_version')
+      end
+
+      it 'omits major_engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'minimal')
+        expect(config).not_to have_key('major_engine_version')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('opt', required_attrs.merge(security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'opt')
+        expect(config).to have_key('security_group_ids')
+      end
+
+      it 'omits security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'minimal')
+        expect(config).not_to have_key('security_group_ids')
+      end
       it 'includes snapshot_arns_to_restore when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -147,6 +241,40 @@ RSpec.describe Pangea::Resources::AWSElasticacheServerlessCache do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'minimal')
         expect(config).not_to have_key('snapshot_arns_to_restore')
+      end
+      it 'includes snapshot_retention_limit when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('opt', required_attrs.merge(snapshot_retention_limit: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'opt')
+        expect(config).to have_key('snapshot_retention_limit')
+      end
+
+      it 'omits snapshot_retention_limit when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'minimal')
+        expect(config).not_to have_key('snapshot_retention_limit')
+      end
+      it 'includes subnet_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('opt', required_attrs.merge(subnet_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'opt')
+        expect(config).to have_key('subnet_ids')
+      end
+
+      it 'omits subnet_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_serverless_cache('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_serverless_cache', 'minimal')
+        expect(config).not_to have_key('subnet_ids')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -227,7 +355,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheServerlessCache do
     resource_type: :aws_elasticache_serverless_cache,
     method: :aws_elasticache_serverless_cache,
     required_attrs: { engine: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :create_time, :daily_snapshot_time, :description, :endpoint, :full_engine_version, :major_engine_version, :reader_endpoint, :security_group_ids, :snapshot_retention_limit, :status, :subnet_ids, :tags_all],
+    expected_outputs: [:id, :arn, :create_time, :daily_snapshot_time, :description, :endpoint, :full_engine_version, :major_engine_version, :reader_endpoint, :region, :security_group_ids, :snapshot_retention_limit, :status, :subnet_ids, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

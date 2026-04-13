@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRoute53profilesProfile do
         expect(ref.id).to eq("${aws_route53profiles_profile.test.id}")
         expect(ref.arn).to eq("${aws_route53profiles_profile.test.arn}")
         expect(ref.owner_id).to eq("${aws_route53profiles_profile.test.owner_id}")
+        expect(ref.region).to eq("${aws_route53profiles_profile.test.region}")
         expect(ref.share_status).to eq("${aws_route53profiles_profile.test.share_status}")
         expect(ref.status).to eq("${aws_route53profiles_profile.test.status}")
         expect(ref.status_message).to eq("${aws_route53profiles_profile.test.status_message}")
@@ -57,6 +58,7 @@ RSpec.describe Pangea::Resources::AWSRoute53profilesProfile do
         config = validate_resource_structure(result, 'aws_route53profiles_profile', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('share_status')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('status_message')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSRoute53profilesProfile do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,11 +76,29 @@ RSpec.describe Pangea::Resources::AWSRoute53profilesProfile do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_route53profiles_profile', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53profiles_profile('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53profiles_profile', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53profiles_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53profiles_profile', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -140,7 +160,7 @@ RSpec.describe Pangea::Resources::AWSRoute53profilesProfile do
     resource_type: :aws_route53profiles_profile,
     method: :aws_route53profiles_profile,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :owner_id, :share_status, :status, :status_message, :tags_all],
+    expected_outputs: [:id, :arn, :owner_id, :region, :share_status, :status, :status_message, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

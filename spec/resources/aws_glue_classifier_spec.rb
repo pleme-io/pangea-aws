@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSGlueClassifier do
         ref = synth.aws_glue_classifier('test', required_attrs)
 
         expect(ref.id).to eq("${aws_glue_classifier.test.id}")
+        expect(ref.region).to eq("${aws_glue_classifier.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_classifier('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_glue_classifier', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ csv_classifier: [{ 'key1' => 'val1' }], grok_classifier: [{ 'key1' => 'val1' }], json_classifier: [{ 'key1' => 'val1' }], xml_classifier: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ csv_classifier: { 'key1' => 'val1' }, grok_classifier: { 'key1' => 'val1' }, json_classifier: { 'key1' => 'val1' }, region: 'test-value', xml_classifier: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -54,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSGlueClassifier do
         expect(config).to have_key('csv_classifier')
         expect(config).to have_key('grok_classifier')
         expect(config).to have_key('json_classifier')
+        expect(config).to have_key('region')
         expect(config).to have_key('xml_classifier')
       end
     end
@@ -62,7 +76,7 @@ RSpec.describe Pangea::Resources::AWSGlueClassifier do
       it 'includes csv_classifier when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_classifier('opt', required_attrs.merge(csv_classifier: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_classifier('opt', required_attrs.merge(csv_classifier: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_classifier', 'opt')
         expect(config).to have_key('csv_classifier')
@@ -79,7 +93,7 @@ RSpec.describe Pangea::Resources::AWSGlueClassifier do
       it 'includes grok_classifier when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_classifier('opt', required_attrs.merge(grok_classifier: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_classifier('opt', required_attrs.merge(grok_classifier: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_classifier', 'opt')
         expect(config).to have_key('grok_classifier')
@@ -96,7 +110,7 @@ RSpec.describe Pangea::Resources::AWSGlueClassifier do
       it 'includes json_classifier when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_classifier('opt', required_attrs.merge(json_classifier: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_classifier('opt', required_attrs.merge(json_classifier: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_classifier', 'opt')
         expect(config).to have_key('json_classifier')
@@ -110,10 +124,27 @@ RSpec.describe Pangea::Resources::AWSGlueClassifier do
         config = validate_resource_structure(result, 'aws_glue_classifier', 'minimal')
         expect(config).not_to have_key('json_classifier')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_classifier('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_classifier', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_classifier('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_classifier', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes xml_classifier when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_classifier('opt', required_attrs.merge(xml_classifier: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_classifier('opt', required_attrs.merge(xml_classifier: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_classifier', 'opt')
         expect(config).to have_key('xml_classifier')
@@ -171,7 +202,7 @@ RSpec.describe Pangea::Resources::AWSGlueClassifier do
     resource_type: :aws_glue_classifier,
     method: :aws_glue_classifier,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::InspectorAssessmentTargetAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:resource_group_arn]
+      map_present: [:region, :resource_group_arn]
   end
   module AWS
     include AWSInspectorAssessmentTarget

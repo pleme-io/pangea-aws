@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCloudfrontFieldLevelEncryptionProfile do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { encryption_entities: [{ 'key1' => 'val1' }], name: 'test-value' } }
+  let(:required_attrs) { { encryption_entities: { 'key1' => 'val1' }, name: 'test-value' } }
 
   describe ':aws_cloudfront_field_level_encryption_profile' do
     context 'with required attributes only' do
@@ -100,7 +100,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontFieldLevelEncryptionProfile do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudfront_field_level_encryption_profile', 'typed')
-        expect(config['encryption_entities']).to be_a(Array)
+        expect(config['encryption_entities']).to be_a(Hash)
         expect(config['name']).to be_a(String)
       end
     end
@@ -134,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontFieldLevelEncryptionProfile do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_cloudfront_field_level_encryption_profile,
     method: :aws_cloudfront_field_level_encryption_profile,
-    required_attrs: { encryption_entities: [{ 'key1' => 'val1' }], name: 'test-value' },
+    required_attrs: { encryption_entities: { 'key1' => 'val1' }, name: 'test-value' },
     expected_outputs: [:id, :arn, :caller_reference, :etag],
     sensitive_fields: [],
     immutable_fields: [],

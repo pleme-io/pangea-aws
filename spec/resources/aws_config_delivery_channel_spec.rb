@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSConfigDeliveryChannel do
         ref = synth.aws_config_delivery_channel('test', required_attrs)
 
         expect(ref.id).to eq("${aws_config_delivery_channel.test.id}")
+        expect(ref.region).to eq("${aws_config_delivery_channel.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_delivery_channel('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_config_delivery_channel', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ name: 'test-value', s3_key_prefix: 'test-value', s3_kms_key_arn: 'test-value', snapshot_delivery_properties: [{ 'key1' => 'val1' }], sns_topic_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ name: 'test-value', region: 'test-value', s3_key_prefix: 'test-value', s3_kms_key_arn: 'test-value', snapshot_delivery_properties: { 'key1' => 'val1' }, sns_topic_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSConfigDeliveryChannel do
 
         config = validate_resource_structure(result, 'aws_config_delivery_channel', 'full')
         expect(config).to have_key('name')
+        expect(config).to have_key('region')
         expect(config).to have_key('s3_key_prefix')
         expect(config).to have_key('s3_kms_key_arn')
         expect(config).to have_key('snapshot_delivery_properties')
@@ -76,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSConfigDeliveryChannel do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_delivery_channel', 'minimal')
         expect(config).not_to have_key('name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_delivery_channel('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_delivery_channel', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_delivery_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_delivery_channel', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes s3_key_prefix when provided' do
         synth = create_synthesizer
@@ -114,7 +145,7 @@ RSpec.describe Pangea::Resources::AWSConfigDeliveryChannel do
       it 'includes snapshot_delivery_properties when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_config_delivery_channel('opt', required_attrs.merge(snapshot_delivery_properties: [{ 'key1' => 'val1' }]))
+        synth.aws_config_delivery_channel('opt', required_attrs.merge(snapshot_delivery_properties: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_delivery_channel', 'opt')
         expect(config).to have_key('snapshot_delivery_properties')
@@ -189,7 +220,7 @@ RSpec.describe Pangea::Resources::AWSConfigDeliveryChannel do
     resource_type: :aws_config_delivery_channel,
     method: :aws_config_delivery_channel,
     required_attrs: { s3_bucket_name: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

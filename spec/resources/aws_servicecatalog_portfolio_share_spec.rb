@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogPortfolioShare do
 
         expect(ref.id).to eq("${aws_servicecatalog_portfolio_share.test.id}")
         expect(ref.accepted).to eq("${aws_servicecatalog_portfolio_share.test.accepted}")
+        expect(ref.region).to eq("${aws_servicecatalog_portfolio_share.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSServicecatalogPortfolioShare do
 
         config = validate_resource_structure(result, 'aws_servicecatalog_portfolio_share', 'test')
         expect(config).not_to have_key('accepted')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ accept_language: 'test-value', share_principals: true, share_tag_options: true, wait_for_acceptance: true }) }
+      let(:all_attrs) { required_attrs.merge({ accept_language: 'test-value', region: 'test-value', share_principals: true, share_tag_options: true, wait_for_acceptance: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogPortfolioShare do
 
         config = validate_resource_structure(result, 'aws_servicecatalog_portfolio_share', 'full')
         expect(config).to have_key('accept_language')
+        expect(config).to have_key('region')
         expect(config).to have_key('share_principals')
         expect(config).to have_key('share_tag_options')
         expect(config).to have_key('wait_for_acceptance')
@@ -88,6 +91,23 @@ RSpec.describe Pangea::Resources::AWSServicecatalogPortfolioShare do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_servicecatalog_portfolio_share', 'minimal')
         expect(config).not_to have_key('accept_language')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_portfolio_share('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_portfolio_share', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_portfolio_share('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_portfolio_share', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes share_principals when provided' do
         synth = create_synthesizer
@@ -222,7 +242,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogPortfolioShare do
     resource_type: :aws_servicecatalog_portfolio_share,
     method: :aws_servicecatalog_portfolio_share,
     required_attrs: { portfolio_id: 'test-value', principal_id: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :accepted],
+    expected_outputs: [:id, :accepted, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:share_principals, :share_tag_options, :wait_for_acceptance]

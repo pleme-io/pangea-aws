@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftClusterIamRolesAttributes,
       outputs: { id: :id },
       map: [:cluster_identifier],
-      map_present: [:default_iam_role_arn, :iam_role_arns]
+      map_present: [:default_iam_role_arn, :iam_role_arns, :region]
   end
   module AWS
     include AWSRedshiftClusterIamRoles

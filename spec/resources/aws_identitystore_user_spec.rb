@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSIdentitystoreUser do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { display_name: 'test-value', identity_store_id: 'test-value', name: [{ 'key1' => 'val1' }], user_name: 'test-value' } }
+  let(:required_attrs) { { display_name: 'test-value', identity_store_id: 'test-value', name: { 'key1' => 'val1' }, user_name: 'test-value' } }
 
   describe ':aws_identitystore_user' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreUser do
 
         expect(ref.id).to eq("${aws_identitystore_user.test.id}")
         expect(ref.external_ids).to eq("${aws_identitystore_user.test.external_ids}")
+        expect(ref.region).to eq("${aws_identitystore_user.test.region}")
         expect(ref.user_id).to eq("${aws_identitystore_user.test.user_id}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreUser do
 
         config = validate_resource_structure(result, 'aws_identitystore_user', 'test')
         expect(config).not_to have_key('external_ids')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('user_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ addresses: [{ 'key1' => 'val1' }], emails: [{ 'key1' => 'val1' }], locale: 'test-value', nickname: 'test-value', phone_numbers: [{ 'key1' => 'val1' }], preferred_language: 'test-value', profile_url: 'test-value', timezone: 'test-value', title: 'test-value', user_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ addresses: { 'key1' => 'val1' }, emails: { 'key1' => 'val1' }, locale: 'test-value', nickname: 'test-value', phone_numbers: { 'key1' => 'val1' }, preferred_language: 'test-value', profile_url: 'test-value', region: 'test-value', timezone: 'test-value', title: 'test-value', user_type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,6 +75,7 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreUser do
         expect(config).to have_key('phone_numbers')
         expect(config).to have_key('preferred_language')
         expect(config).to have_key('profile_url')
+        expect(config).to have_key('region')
         expect(config).to have_key('timezone')
         expect(config).to have_key('title')
         expect(config).to have_key('user_type')
@@ -83,7 +86,7 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreUser do
       it 'includes addresses when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_identitystore_user('opt', required_attrs.merge(addresses: [{ 'key1' => 'val1' }]))
+        synth.aws_identitystore_user('opt', required_attrs.merge(addresses: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_identitystore_user', 'opt')
         expect(config).to have_key('addresses')
@@ -100,7 +103,7 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreUser do
       it 'includes emails when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_identitystore_user('opt', required_attrs.merge(emails: [{ 'key1' => 'val1' }]))
+        synth.aws_identitystore_user('opt', required_attrs.merge(emails: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_identitystore_user', 'opt')
         expect(config).to have_key('emails')
@@ -151,7 +154,7 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreUser do
       it 'includes phone_numbers when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_identitystore_user('opt', required_attrs.merge(phone_numbers: [{ 'key1' => 'val1' }]))
+        synth.aws_identitystore_user('opt', required_attrs.merge(phone_numbers: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_identitystore_user', 'opt')
         expect(config).to have_key('phone_numbers')
@@ -198,6 +201,23 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreUser do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_identitystore_user', 'minimal')
         expect(config).not_to have_key('profile_url')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_identitystore_user('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_identitystore_user', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_identitystore_user('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_identitystore_user', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes timezone when provided' do
         synth = create_synthesizer
@@ -262,7 +282,7 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreUser do
         config = validate_resource_structure(result, 'aws_identitystore_user', 'typed')
         expect(config['display_name']).to be_a(String)
         expect(config['identity_store_id']).to be_a(String)
-        expect(config['name']).to be_a(Array)
+        expect(config['name']).to be_a(Hash)
         expect(config['user_name']).to be_a(String)
       end
     end
@@ -296,8 +316,8 @@ RSpec.describe Pangea::Resources::AWSIdentitystoreUser do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_identitystore_user,
     method: :aws_identitystore_user,
-    required_attrs: { display_name: 'test-value', identity_store_id: 'test-value', name: [{ 'key1' => 'val1' }], user_name: 'test-value' },
-    expected_outputs: [:id, :external_ids, :user_id],
+    required_attrs: { display_name: 'test-value', identity_store_id: 'test-value', name: { 'key1' => 'val1' }, user_name: 'test-value' },
+    expected_outputs: [:id, :external_ids, :region, :user_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

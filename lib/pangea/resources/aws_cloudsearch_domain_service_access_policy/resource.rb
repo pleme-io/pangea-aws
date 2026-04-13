@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_cloudsearch_domain_service_access_policy,
       attributes_class: AWS::Types::CloudsearchDomainServiceAccessPolicyAttributes,
       outputs: { id: :id },
-      map: [:access_policy, :domain_name]
+      map: [:access_policy, :domain_name],
+      map_present: [:region]
   end
   module AWS
     include AWSCloudsearchDomainServiceAccessPolicy

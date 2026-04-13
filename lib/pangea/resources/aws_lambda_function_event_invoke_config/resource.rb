@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LambdaFunctionEventInvokeConfigAttributes,
       outputs: { id: :id },
       map: [:function_name],
-      map_present: [:destination_config, :maximum_event_age_in_seconds, :maximum_retry_attempts, :qualifier]
+      map_present: [:destination_config, :maximum_event_age_in_seconds, :maximum_retry_attempts, :qualifier, :region]
   end
   module AWS
     include AWSLambdaFunctionEventInvokeConfig

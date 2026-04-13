@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ComprehendEntityRecognizerAttributes,
       outputs: { id: :id },
       map: [:data_access_role_arn, :input_data_config, :language_code, :name],
-      map_present: [:model_kms_key_id, :tags, :tags_all, :version_name, :version_name_prefix, :volume_kms_key_id, :vpc_config]
+      map_present: [:model_kms_key_id, :region, :tags, :tags_all, :version_name, :version_name_prefix, :volume_kms_key_id, :vpc_config]
   end
   module AWS
     include AWSComprehendEntityRecognizer

@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_devopsguru_notification_channel,
       attributes_class: AWS::Types::DevopsguruNotificationChannelAttributes,
       outputs: { id: :id },
-      map_present: [:filters, :sns]
+      map_present: [:filters, :region, :sns]
   end
   module AWS
     include AWSDevopsguruNotificationChannel

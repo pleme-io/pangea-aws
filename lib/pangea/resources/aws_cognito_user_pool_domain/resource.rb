@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CognitoUserPoolDomainAttributes,
       outputs: { id: :id },
       map: [:domain, :user_pool_id],
-      map_present: [:certificate_arn, :managed_login_version]
+      map_present: [:certificate_arn, :managed_login_version, :region]
   end
   module AWS
     include AWSCognitoUserPoolDomain

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LightsailDistributionAttributes,
       outputs: { id: :id },
       map: [:bundle_id, :default_cache_behavior, :name, :origin],
-      map_present: [:cache_behavior, :cache_behavior_settings, :certificate_name, :ip_address_type, :tags, :tags_all],
+      map_present: [:cache_behavior, :cache_behavior_settings, :certificate_name, :ip_address_type, :region, :tags, :tags_all],
       map_bool: [:is_enabled]
   end
   module AWS

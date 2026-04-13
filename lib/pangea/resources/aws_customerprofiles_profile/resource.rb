@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CustomerprofilesProfileAttributes,
       outputs: { id: :id },
       map: [:domain_name],
-      map_present: [:account_number, :additional_information, :address, :attributes, :billing_address, :birth_date, :business_email_address, :business_name, :business_phone_number, :email_address, :first_name, :gender_string, :home_phone_number, :last_name, :mailing_address, :middle_name, :mobile_phone_number, :party_type_string, :personal_email_address, :phone_number, :shipping_address]
+      map_present: [:account_number, :additional_information, :address, :attributes, :billing_address, :birth_date, :business_email_address, :business_name, :business_phone_number, :email_address, :first_name, :gender_string, :home_phone_number, :last_name, :mailing_address, :middle_name, :mobile_phone_number, :party_type_string, :personal_email_address, :phone_number, :region, :shipping_address]
   end
   module AWS
     include AWSCustomerprofilesProfile

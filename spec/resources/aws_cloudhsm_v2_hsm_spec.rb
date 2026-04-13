@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSCloudhsmV2Hsm do
         expect(ref.hsm_id).to eq("${aws_cloudhsm_v2_hsm.test.hsm_id}")
         expect(ref.hsm_state).to eq("${aws_cloudhsm_v2_hsm.test.hsm_state}")
         expect(ref.ip_address).to eq("${aws_cloudhsm_v2_hsm.test.ip_address}")
+        expect(ref.region).to eq("${aws_cloudhsm_v2_hsm.test.region}")
         expect(ref.subnet_id).to eq("${aws_cloudhsm_v2_hsm.test.subnet_id}")
       end
     end
@@ -60,6 +61,95 @@ RSpec.describe Pangea::Resources::AWSCloudhsmV2Hsm do
         expect(config).not_to have_key('hsm_id')
         expect(config).not_to have_key('hsm_state')
         expect(config).not_to have_key('ip_address')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('subnet_id')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ availability_zone: 'test-value', ip_address: 'test-value', region: 'test-value', subnet_id: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_hsm('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_hsm', 'full')
+        expect(config).to have_key('availability_zone')
+        expect(config).to have_key('ip_address')
+        expect(config).to have_key('region')
+        expect(config).to have_key('subnet_id')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes availability_zone when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_hsm('opt', required_attrs.merge(availability_zone: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_hsm', 'opt')
+        expect(config).to have_key('availability_zone')
+      end
+
+      it 'omits availability_zone when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_hsm('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_hsm', 'minimal')
+        expect(config).not_to have_key('availability_zone')
+      end
+      it 'includes ip_address when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_hsm('opt', required_attrs.merge(ip_address: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_hsm', 'opt')
+        expect(config).to have_key('ip_address')
+      end
+
+      it 'omits ip_address when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_hsm('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_hsm', 'minimal')
+        expect(config).not_to have_key('ip_address')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_hsm('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_hsm', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_hsm('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_hsm', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes subnet_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_hsm('opt', required_attrs.merge(subnet_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_hsm', 'opt')
+        expect(config).to have_key('subnet_id')
+      end
+
+      it 'omits subnet_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_hsm('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_hsm', 'minimal')
         expect(config).not_to have_key('subnet_id')
       end
     end
@@ -106,7 +196,7 @@ RSpec.describe Pangea::Resources::AWSCloudhsmV2Hsm do
     resource_type: :aws_cloudhsm_v2_hsm,
     method: :aws_cloudhsm_v2_hsm,
     required_attrs: { cluster_id: 'test-value' },
-    expected_outputs: [:id, :availability_zone, :hsm_eni_id, :hsm_id, :hsm_state, :ip_address, :subnet_id],
+    expected_outputs: [:id, :availability_zone, :hsm_eni_id, :hsm_id, :hsm_state, :ip_address, :region, :subnet_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

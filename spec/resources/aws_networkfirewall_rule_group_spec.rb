@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallRuleGroup do
 
         expect(ref.id).to eq("${aws_networkfirewall_rule_group.test.id}")
         expect(ref.arn).to eq("${aws_networkfirewall_rule_group.test.arn}")
+        expect(ref.region).to eq("${aws_networkfirewall_rule_group.test.region}")
         expect(ref.tags_all).to eq("${aws_networkfirewall_rule_group.test.tags_all}")
         expect(ref.update_token).to eq("${aws_networkfirewall_rule_group.test.update_token}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallRuleGroup do
 
         config = validate_resource_structure(result, 'aws_networkfirewall_rule_group', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('update_token')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', encryption_configuration: [{ 'key1' => 'val1' }], rule_group: [{ 'key1' => 'val1' }], rules: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', encryption_configuration: { 'key1' => 'val1' }, region: 'test-value', rule_group: { 'key1' => 'val1' }, rules: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,9 +72,11 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallRuleGroup do
         config = validate_resource_structure(result, 'aws_networkfirewall_rule_group', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('encryption_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('rule_group')
         expect(config).to have_key('rules')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -97,7 +101,7 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallRuleGroup do
       it 'includes encryption_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_networkfirewall_rule_group('opt', required_attrs.merge(encryption_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_networkfirewall_rule_group('opt', required_attrs.merge(encryption_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkfirewall_rule_group', 'opt')
         expect(config).to have_key('encryption_configuration')
@@ -111,10 +115,27 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallRuleGroup do
         config = validate_resource_structure(result, 'aws_networkfirewall_rule_group', 'minimal')
         expect(config).not_to have_key('encryption_configuration')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_rule_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_rule_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_rule_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_rule_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes rule_group when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_networkfirewall_rule_group('opt', required_attrs.merge(rule_group: [{ 'key1' => 'val1' }]))
+        synth.aws_networkfirewall_rule_group('opt', required_attrs.merge(rule_group: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkfirewall_rule_group', 'opt')
         expect(config).to have_key('rule_group')
@@ -162,6 +183,23 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallRuleGroup do
         config = validate_resource_structure(result, 'aws_networkfirewall_rule_group', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_rule_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_rule_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_rule_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_rule_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -208,7 +246,7 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallRuleGroup do
     resource_type: :aws_networkfirewall_rule_group,
     method: :aws_networkfirewall_rule_group,
     required_attrs: { capacity: 3.14, name: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all, :update_token],
+    expected_outputs: [:id, :arn, :region, :tags_all, :update_token],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

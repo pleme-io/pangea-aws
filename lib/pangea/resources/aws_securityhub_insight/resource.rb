@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_securityhub_insight,
       attributes_class: AWS::Types::SecurityhubInsightAttributes,
       outputs: { id: :id },
-      map: [:filters, :group_by_attribute, :name]
+      map: [:filters, :group_by_attribute, :name],
+      map_present: [:region]
   end
   module AWS
     include AWSSecurityhubInsight

@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceTrust do
         expect(ref.created_date_time).to eq("${aws_directory_service_trust.test.created_date_time}")
         expect(ref.delete_associated_conditional_forwarder).to eq("${aws_directory_service_trust.test.delete_associated_conditional_forwarder}")
         expect(ref.last_updated_date_time).to eq("${aws_directory_service_trust.test.last_updated_date_time}")
+        expect(ref.region).to eq("${aws_directory_service_trust.test.region}")
         expect(ref.selective_auth).to eq("${aws_directory_service_trust.test.selective_auth}")
         expect(ref.state_last_updated_date_time).to eq("${aws_directory_service_trust.test.state_last_updated_date_time}")
         expect(ref.trust_state).to eq("${aws_directory_service_trust.test.trust_state}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceTrust do
         expect(config).not_to have_key('created_date_time')
         expect(config).not_to have_key('delete_associated_conditional_forwarder')
         expect(config).not_to have_key('last_updated_date_time')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('selective_auth')
         expect(config).not_to have_key('state_last_updated_date_time')
         expect(config).not_to have_key('trust_state')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceTrust do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ conditional_forwarder_ip_addrs: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ conditional_forwarder_ip_addrs: ['test-value'], delete_associated_conditional_forwarder: true, region: 'test-value', selective_auth: 'test-value', trust_type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,6 +81,10 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceTrust do
 
         config = validate_resource_structure(result, 'aws_directory_service_trust', 'full')
         expect(config).to have_key('conditional_forwarder_ip_addrs')
+        expect(config).to have_key('delete_associated_conditional_forwarder')
+        expect(config).to have_key('region')
+        expect(config).to have_key('selective_auth')
+        expect(config).to have_key('trust_type')
       end
     end
 
@@ -99,6 +105,88 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceTrust do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_directory_service_trust', 'minimal')
         expect(config).not_to have_key('conditional_forwarder_ip_addrs')
+      end
+      it 'includes delete_associated_conditional_forwarder when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_trust('opt', required_attrs.merge(delete_associated_conditional_forwarder: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_trust', 'opt')
+        expect(config).to have_key('delete_associated_conditional_forwarder')
+      end
+
+      it 'omits delete_associated_conditional_forwarder when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_trust('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_trust', 'minimal')
+        expect(config).not_to have_key('delete_associated_conditional_forwarder')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_trust('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_trust', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_trust('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_trust', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes selective_auth when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_trust('opt', required_attrs.merge(selective_auth: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_trust', 'opt')
+        expect(config).to have_key('selective_auth')
+      end
+
+      it 'omits selective_auth when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_trust('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_trust', 'minimal')
+        expect(config).not_to have_key('selective_auth')
+      end
+      it 'includes trust_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_trust('opt', required_attrs.merge(trust_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_trust', 'opt')
+        expect(config).to have_key('trust_type')
+      end
+
+      it 'omits trust_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_trust('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_trust', 'minimal')
+        expect(config).not_to have_key('trust_type')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts delete_associated_conditional_forwarder=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(delete_associated_conditional_forwarder: val)
+          synth.aws_directory_service_trust("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_directory_service_trust', "bool_#{val}")
+          expect(config['delete_associated_conditional_forwarder']).to eq(val)
+        end
       end
     end
 
@@ -147,8 +235,8 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceTrust do
     resource_type: :aws_directory_service_trust,
     method: :aws_directory_service_trust,
     required_attrs: { directory_id: 'test-value', remote_domain_name: 'test-value', trust_direction: 'test-value', trust_password: 'test-value' },
-    expected_outputs: [:id, :created_date_time, :delete_associated_conditional_forwarder, :last_updated_date_time, :selective_auth, :state_last_updated_date_time, :trust_state, :trust_state_reason, :trust_type],
+    expected_outputs: [:id, :created_date_time, :delete_associated_conditional_forwarder, :last_updated_date_time, :region, :selective_auth, :state_last_updated_date_time, :trust_state, :trust_state_reason, :trust_type],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:delete_associated_conditional_forwarder]
 end

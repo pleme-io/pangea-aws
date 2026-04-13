@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayRouteTablePropagation do
         ref = synth.aws_ec2_transit_gateway_route_table_propagation('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ec2_transit_gateway_route_table_propagation.test.id}")
+        expect(ref.region).to eq("${aws_ec2_transit_gateway_route_table_propagation.test.region}")
         expect(ref.resource_id).to eq("${aws_ec2_transit_gateway_route_table_propagation.test.resource_id}")
         expect(ref.resource_type).to eq("${aws_ec2_transit_gateway_route_table_propagation.test.resource_type}")
       end
@@ -51,8 +52,43 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayRouteTablePropagation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_route_table_propagation', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_id')
         expect(config).not_to have_key('resource_type')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_route_table_propagation('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_route_table_propagation', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_route_table_propagation('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_route_table_propagation', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_route_table_propagation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_route_table_propagation', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -99,7 +135,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayRouteTablePropagation do
     resource_type: :aws_ec2_transit_gateway_route_table_propagation,
     method: :aws_ec2_transit_gateway_route_table_propagation,
     required_attrs: { transit_gateway_attachment_id: 'test-value', transit_gateway_route_table_id: 'test-value' },
-    expected_outputs: [:id, :resource_id, :resource_type],
+    expected_outputs: [:id, :region, :resource_id, :resource_type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

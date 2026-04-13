@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_inspector2_enabler,
       attributes_class: AWS::Types::Inspector2EnablerAttributes,
       outputs: { id: :id },
-      map: [:account_ids, :resource_types]
+      map: [:account_ids, :resource_types],
+      map_present: [:region]
   end
   module AWS
     include AWSInspector2Enabler

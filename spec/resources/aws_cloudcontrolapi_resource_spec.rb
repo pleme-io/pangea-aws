@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCloudcontrolapiResource do
 
         expect(ref.id).to eq("${aws_cloudcontrolapi_resource.test.id}")
         expect(ref.properties).to eq("${aws_cloudcontrolapi_resource.test.properties}")
+        expect(ref.region).to eq("${aws_cloudcontrolapi_resource.test.region}")
         expect(ref.schema).to eq("${aws_cloudcontrolapi_resource.test.schema}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSCloudcontrolapiResource do
 
         config = validate_resource_structure(result, 'aws_cloudcontrolapi_resource', 'test')
         expect(config).not_to have_key('properties')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('schema')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ role_arn: 'test-value', type_version_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', role_arn: 'test-value', schema: 'test-value', type_version_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,12 +68,31 @@ RSpec.describe Pangea::Resources::AWSCloudcontrolapiResource do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudcontrolapi_resource', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('role_arn')
+        expect(config).to have_key('schema')
         expect(config).to have_key('type_version_id')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudcontrolapi_resource('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudcontrolapi_resource', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudcontrolapi_resource('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudcontrolapi_resource', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes role_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -88,6 +109,23 @@ RSpec.describe Pangea::Resources::AWSCloudcontrolapiResource do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudcontrolapi_resource', 'minimal')
         expect(config).not_to have_key('role_arn')
+      end
+      it 'includes schema when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudcontrolapi_resource('opt', required_attrs.merge(schema: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudcontrolapi_resource', 'opt')
+        expect(config).to have_key('schema')
+      end
+
+      it 'omits schema when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudcontrolapi_resource('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudcontrolapi_resource', 'minimal')
+        expect(config).not_to have_key('schema')
       end
       it 'includes type_version_id when provided' do
         synth = create_synthesizer
@@ -158,7 +196,7 @@ RSpec.describe Pangea::Resources::AWSCloudcontrolapiResource do
     resource_type: :aws_cloudcontrolapi_resource,
     method: :aws_cloudcontrolapi_resource,
     required_attrs: { desired_state: 'test-value', type_name: 'test-value' },
-    expected_outputs: [:id, :properties, :schema],
+    expected_outputs: [:id, :properties, :region, :schema],
     sensitive_fields: [:schema],
     immutable_fields: [],
     boolean_fields: []

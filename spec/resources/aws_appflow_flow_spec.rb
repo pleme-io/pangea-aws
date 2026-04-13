@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSAppflowFlow do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { destination_flow_config: [{ 'key1' => 'val1' }], name: 'test-value', source_flow_config: [{ 'key1' => 'val1' }], task: [{ 'key1' => 'val1' }], trigger_config: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { destination_flow_config: [{ 'key1' => 'val1' }], name: 'test-value', source_flow_config: { 'key1' => 'val1' }, task: [{ 'key1' => 'val1' }], trigger_config: { 'key1' => 'val1' } } }
 
   describe ':aws_appflow_flow' do
     context 'with required attributes only' do
@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSAppflowFlow do
         expect(ref.arn).to eq("${aws_appflow_flow.test.arn}")
         expect(ref.flow_status).to eq("${aws_appflow_flow.test.flow_status}")
         expect(ref.kms_arn).to eq("${aws_appflow_flow.test.kms_arn}")
+        expect(ref.region).to eq("${aws_appflow_flow.test.region}")
         expect(ref.tags_all).to eq("${aws_appflow_flow.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSAppflowFlow do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('flow_status')
         expect(config).not_to have_key('kms_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', metadata_catalog_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', kms_arn: 'test-value', metadata_catalog_config: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,8 +73,11 @@ RSpec.describe Pangea::Resources::AWSAppflowFlow do
 
         config = validate_resource_structure(result, 'aws_appflow_flow', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('kms_arn')
         expect(config).to have_key('metadata_catalog_config')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -94,10 +99,27 @@ RSpec.describe Pangea::Resources::AWSAppflowFlow do
         config = validate_resource_structure(result, 'aws_appflow_flow', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes kms_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appflow_flow('opt', required_attrs.merge(kms_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appflow_flow', 'opt')
+        expect(config).to have_key('kms_arn')
+      end
+
+      it 'omits kms_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appflow_flow('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appflow_flow', 'minimal')
+        expect(config).not_to have_key('kms_arn')
+      end
       it 'includes metadata_catalog_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appflow_flow('opt', required_attrs.merge(metadata_catalog_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appflow_flow('opt', required_attrs.merge(metadata_catalog_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appflow_flow', 'opt')
         expect(config).to have_key('metadata_catalog_config')
@@ -110,6 +132,23 @@ RSpec.describe Pangea::Resources::AWSAppflowFlow do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appflow_flow', 'minimal')
         expect(config).not_to have_key('metadata_catalog_config')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appflow_flow('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appflow_flow', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appflow_flow('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appflow_flow', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -128,6 +167,23 @@ RSpec.describe Pangea::Resources::AWSAppflowFlow do
         config = validate_resource_structure(result, 'aws_appflow_flow', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appflow_flow('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appflow_flow', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appflow_flow('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appflow_flow', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -140,9 +196,9 @@ RSpec.describe Pangea::Resources::AWSAppflowFlow do
         config = validate_resource_structure(result, 'aws_appflow_flow', 'typed')
         expect(config['destination_flow_config']).to be_a(Array)
         expect(config['name']).to be_a(String)
-        expect(config['source_flow_config']).to be_a(Array)
+        expect(config['source_flow_config']).to be_a(Hash)
         expect(config['task']).to be_a(Array)
-        expect(config['trigger_config']).to be_a(Array)
+        expect(config['trigger_config']).to be_a(Hash)
       end
     end
 
@@ -175,8 +231,8 @@ RSpec.describe Pangea::Resources::AWSAppflowFlow do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_appflow_flow,
     method: :aws_appflow_flow,
-    required_attrs: { destination_flow_config: [{ 'key1' => 'val1' }], name: 'test-value', source_flow_config: [{ 'key1' => 'val1' }], task: [{ 'key1' => 'val1' }], trigger_config: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :flow_status, :kms_arn, :tags_all],
+    required_attrs: { destination_flow_config: [{ 'key1' => 'val1' }], name: 'test-value', source_flow_config: { 'key1' => 'val1' }, task: [{ 'key1' => 'val1' }], trigger_config: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :flow_status, :kms_arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

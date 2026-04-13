@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayMulticastDomain do
         expect(ref.id).to eq("${aws_ec2_transit_gateway_multicast_domain.test.id}")
         expect(ref.arn).to eq("${aws_ec2_transit_gateway_multicast_domain.test.arn}")
         expect(ref.owner_id).to eq("${aws_ec2_transit_gateway_multicast_domain.test.owner_id}")
+        expect(ref.region).to eq("${aws_ec2_transit_gateway_multicast_domain.test.region}")
         expect(ref.tags_all).to eq("${aws_ec2_transit_gateway_multicast_domain.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayMulticastDomain do
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_multicast_domain', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ auto_accept_shared_associations: 'test-value', igmpv2_support: 'test-value', static_sources_support: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ auto_accept_shared_associations: 'test-value', igmpv2_support: 'test-value', region: 'test-value', static_sources_support: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,8 +72,10 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayMulticastDomain do
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_multicast_domain', 'full')
         expect(config).to have_key('auto_accept_shared_associations')
         expect(config).to have_key('igmpv2_support')
+        expect(config).to have_key('region')
         expect(config).to have_key('static_sources_support')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -110,6 +114,23 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayMulticastDomain do
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_multicast_domain', 'minimal')
         expect(config).not_to have_key('igmpv2_support')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_multicast_domain('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_multicast_domain', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_multicast_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_multicast_domain', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes static_sources_support when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -143,6 +164,23 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayMulticastDomain do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_multicast_domain', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_multicast_domain('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_multicast_domain', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_multicast_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_multicast_domain', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -188,7 +226,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayMulticastDomain do
     resource_type: :aws_ec2_transit_gateway_multicast_domain,
     method: :aws_ec2_transit_gateway_multicast_domain,
     required_attrs: { transit_gateway_id: 'test-value' },
-    expected_outputs: [:id, :arn, :owner_id, :tags_all],
+    expected_outputs: [:id, :arn, :owner_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

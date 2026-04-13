@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_docdb_cluster_snapshot,
       attributes_class: AWS::Types::DocdbClusterSnapshotAttributes,
       outputs: { id: :id },
-      map: [:db_cluster_identifier, :db_cluster_snapshot_identifier]
+      map: [:db_cluster_identifier, :db_cluster_snapshot_identifier],
+      map_present: [:region]
   end
   module AWS
     include AWSDocdbClusterSnapshot

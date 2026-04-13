@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayModelAttributes,
       outputs: { id: :id },
       map: [:content_type, :name, :rest_api_id],
-      map_present: [:description, :schema]
+      map_present: [:description, :region, :schema]
   end
   module AWS
     include AWSApiGatewayModel

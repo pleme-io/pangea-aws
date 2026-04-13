@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2CapacityBlockReservationAttributes,
       outputs: { id: :id },
       map: [:capacity_block_offering_id, :instance_platform],
-      map_present: [:tags]
+      map_present: [:region, :tags]
   end
   module AWS
     include AWSEc2CapacityBlockReservation

@@ -63,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSGlobalacceleratorCustomRoutingAccelerator d
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ attributes: [{ 'key1' => 'val1' }], enabled: true, ip_address_type: 'test-value', ip_addresses: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ attributes: { 'key1' => 'val1' }, enabled: true, ip_address_type: 'test-value', ip_addresses: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,6 +77,7 @@ RSpec.describe Pangea::Resources::AWSGlobalacceleratorCustomRoutingAccelerator d
         expect(config).to have_key('ip_address_type')
         expect(config).to have_key('ip_addresses')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -84,7 +85,7 @@ RSpec.describe Pangea::Resources::AWSGlobalacceleratorCustomRoutingAccelerator d
       it 'includes attributes when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_globalaccelerator_custom_routing_accelerator('opt', required_attrs.merge(attributes: [{ 'key1' => 'val1' }]))
+        synth.aws_globalaccelerator_custom_routing_accelerator('opt', required_attrs.merge(attributes: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_globalaccelerator_custom_routing_accelerator', 'opt')
         expect(config).to have_key('attributes')
@@ -165,6 +166,23 @@ RSpec.describe Pangea::Resources::AWSGlobalacceleratorCustomRoutingAccelerator d
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_globalaccelerator_custom_routing_accelerator', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_globalaccelerator_custom_routing_accelerator('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_globalaccelerator_custom_routing_accelerator', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_globalaccelerator_custom_routing_accelerator('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_globalaccelerator_custom_routing_accelerator', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 

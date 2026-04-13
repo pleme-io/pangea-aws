@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisioningArtifact do
         expect(ref.description).to eq("${aws_servicecatalog_provisioning_artifact.test.description}")
         expect(ref.name).to eq("${aws_servicecatalog_provisioning_artifact.test.name}")
         expect(ref.provisioning_artifact_id).to eq("${aws_servicecatalog_provisioning_artifact.test.provisioning_artifact_id}")
+        expect(ref.region).to eq("${aws_servicecatalog_provisioning_artifact.test.region}")
       end
     end
 
@@ -57,11 +58,12 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisioningArtifact do
         expect(config).not_to have_key('description')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('provisioning_artifact_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ accept_language: 'test-value', active: true, disable_template_validation: true, guidance: 'test-value', template_physical_id: 'test-value', template_url: 'test-value', type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ accept_language: 'test-value', active: true, description: 'test-value', disable_template_validation: true, guidance: 'test-value', name: 'test-value', region: 'test-value', template_physical_id: 'test-value', template_url: 'test-value', type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,8 +74,11 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisioningArtifact do
         config = validate_resource_structure(result, 'aws_servicecatalog_provisioning_artifact', 'full')
         expect(config).to have_key('accept_language')
         expect(config).to have_key('active')
+        expect(config).to have_key('description')
         expect(config).to have_key('disable_template_validation')
         expect(config).to have_key('guidance')
+        expect(config).to have_key('name')
+        expect(config).to have_key('region')
         expect(config).to have_key('template_physical_id')
         expect(config).to have_key('template_url')
         expect(config).to have_key('type')
@@ -115,6 +120,23 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisioningArtifact do
         config = validate_resource_structure(result, 'aws_servicecatalog_provisioning_artifact', 'minimal')
         expect(config).not_to have_key('active')
       end
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioning_artifact('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioning_artifact', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioning_artifact('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioning_artifact', 'minimal')
+        expect(config).not_to have_key('description')
+      end
       it 'includes disable_template_validation when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -148,6 +170,40 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisioningArtifact do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_servicecatalog_provisioning_artifact', 'minimal')
         expect(config).not_to have_key('guidance')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioning_artifact('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioning_artifact', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioning_artifact('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioning_artifact', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioning_artifact('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioning_artifact', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_provisioning_artifact('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_provisioning_artifact', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes template_physical_id when provided' do
         synth = create_synthesizer
@@ -269,7 +325,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogProvisioningArtifact do
     resource_type: :aws_servicecatalog_provisioning_artifact,
     method: :aws_servicecatalog_provisioning_artifact,
     required_attrs: { product_id: 'test-value' },
-    expected_outputs: [:id, :created_time, :description, :name, :provisioning_artifact_id],
+    expected_outputs: [:id, :created_time, :description, :name, :provisioning_artifact_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:active, :disable_template_validation]

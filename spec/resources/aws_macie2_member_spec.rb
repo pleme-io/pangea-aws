@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSMacie2Member do
         expect(ref.invite).to eq("${aws_macie2_member.test.invite}")
         expect(ref.invited_at).to eq("${aws_macie2_member.test.invited_at}")
         expect(ref.master_account_id).to eq("${aws_macie2_member.test.master_account_id}")
+        expect(ref.region).to eq("${aws_macie2_member.test.region}")
         expect(ref.relationship_status).to eq("${aws_macie2_member.test.relationship_status}")
         expect(ref.status).to eq("${aws_macie2_member.test.status}")
         expect(ref.tags_all).to eq("${aws_macie2_member.test.tags_all}")
@@ -63,6 +64,7 @@ RSpec.describe Pangea::Resources::AWSMacie2Member do
         expect(config).not_to have_key('invite')
         expect(config).not_to have_key('invited_at')
         expect(config).not_to have_key('master_account_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('relationship_status')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
@@ -71,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSMacie2Member do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ invitation_disable_email_notification: true, invitation_message: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ invitation_disable_email_notification: true, invitation_message: 'test-value', invite: true, region: 'test-value', status: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -82,7 +84,11 @@ RSpec.describe Pangea::Resources::AWSMacie2Member do
         config = validate_resource_structure(result, 'aws_macie2_member', 'full')
         expect(config).to have_key('invitation_disable_email_notification')
         expect(config).to have_key('invitation_message')
+        expect(config).to have_key('invite')
+        expect(config).to have_key('region')
+        expect(config).to have_key('status')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -121,6 +127,57 @@ RSpec.describe Pangea::Resources::AWSMacie2Member do
         config = validate_resource_structure(result, 'aws_macie2_member', 'minimal')
         expect(config).not_to have_key('invitation_message')
       end
+      it 'includes invite when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_member('opt', required_attrs.merge(invite: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_member', 'opt')
+        expect(config).to have_key('invite')
+      end
+
+      it 'omits invite when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_member('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_member', 'minimal')
+        expect(config).not_to have_key('invite')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_member('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_member', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_member('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_member', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_member('opt', required_attrs.merge(status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_member', 'opt')
+        expect(config).to have_key('status')
+      end
+
+      it 'omits status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_member('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_member', 'minimal')
+        expect(config).not_to have_key('status')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -138,6 +195,23 @@ RSpec.describe Pangea::Resources::AWSMacie2Member do
         config = validate_resource_structure(result, 'aws_macie2_member', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_member('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_member', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_member('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_member', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'boolean fields' do
@@ -150,6 +224,17 @@ RSpec.describe Pangea::Resources::AWSMacie2Member do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_macie2_member', "bool_#{val}")
           expect(config['invitation_disable_email_notification']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts invite=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(invite: val)
+          synth.aws_macie2_member("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_macie2_member', "bool_#{val}")
+          expect(config['invite']).to eq(val)
         end
       end
     end
@@ -197,8 +282,8 @@ RSpec.describe Pangea::Resources::AWSMacie2Member do
     resource_type: :aws_macie2_member,
     method: :aws_macie2_member,
     required_attrs: { account_id: 'test-value', email: 'test-value' },
-    expected_outputs: [:id, :administrator_account_id, :arn, :invite, :invited_at, :master_account_id, :relationship_status, :status, :tags_all, :updated_at],
+    expected_outputs: [:id, :administrator_account_id, :arn, :invite, :invited_at, :master_account_id, :region, :relationship_status, :status, :tags_all, :updated_at],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:invitation_disable_email_notification]
+    boolean_fields: [:invitation_disable_email_notification, :invite]
 end

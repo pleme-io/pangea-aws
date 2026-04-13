@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSFsxBackup do
         expect(ref.arn).to eq("${aws_fsx_backup.test.arn}")
         expect(ref.kms_key_id).to eq("${aws_fsx_backup.test.kms_key_id}")
         expect(ref.owner_id).to eq("${aws_fsx_backup.test.owner_id}")
+        expect(ref.region).to eq("${aws_fsx_backup.test.region}")
         expect(ref.tags_all).to eq("${aws_fsx_backup.test.tags_all}")
         expect(ref.type).to eq("${aws_fsx_backup.test.type}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSFsxBackup do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('kms_key_id')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('type')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ file_system_id: 'test-value', tags: { 'key1' => 'val1' }, volume_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ file_system_id: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, volume_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,9 @@ RSpec.describe Pangea::Resources::AWSFsxBackup do
 
         config = validate_resource_structure(result, 'aws_fsx_backup', 'full')
         expect(config).to have_key('file_system_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('volume_id')
       end
     end
@@ -96,6 +100,23 @@ RSpec.describe Pangea::Resources::AWSFsxBackup do
         config = validate_resource_structure(result, 'aws_fsx_backup', 'minimal')
         expect(config).not_to have_key('file_system_id')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_backup('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_backup', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_backup('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_backup', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -112,6 +133,23 @@ RSpec.describe Pangea::Resources::AWSFsxBackup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_backup', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_backup('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_backup', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_backup('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_backup', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes volume_id when provided' do
         synth = create_synthesizer
@@ -173,7 +211,7 @@ RSpec.describe Pangea::Resources::AWSFsxBackup do
     resource_type: :aws_fsx_backup,
     method: :aws_fsx_backup,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :kms_key_id, :owner_id, :tags_all, :type],
+    expected_outputs: [:id, :arn, :kms_key_id, :owner_id, :region, :tags_all, :type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

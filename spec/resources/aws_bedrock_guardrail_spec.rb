@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSBedrockGuardrail do
         expect(ref.description).to eq("${aws_bedrock_guardrail.test.description}")
         expect(ref.guardrail_arn).to eq("${aws_bedrock_guardrail.test.guardrail_arn}")
         expect(ref.guardrail_id).to eq("${aws_bedrock_guardrail.test.guardrail_id}")
+        expect(ref.region).to eq("${aws_bedrock_guardrail.test.region}")
         expect(ref.status).to eq("${aws_bedrock_guardrail.test.status}")
         expect(ref.tags_all).to eq("${aws_bedrock_guardrail.test.tags_all}")
         expect(ref.version).to eq("${aws_bedrock_guardrail.test.version}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSBedrockGuardrail do
         expect(config).not_to have_key('description')
         expect(config).not_to have_key('guardrail_arn')
         expect(config).not_to have_key('guardrail_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('version')
@@ -67,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSBedrockGuardrail do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ content_policy_config: [{ 'key1' => 'val1' }], contextual_grounding_policy_config: [{ 'key1' => 'val1' }], kms_key_arn: 'test-value', sensitive_information_policy_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, topic_policy_config: [{ 'key1' => 'val1' }], word_policy_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ content_policy_config: [{ 'key1' => 'val1' }], contextual_grounding_policy_config: [{ 'key1' => 'val1' }], cross_region_config: [{ 'key1' => 'val1' }], description: 'test-value', kms_key_arn: 'test-value', region: 'test-value', sensitive_information_policy_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, topic_policy_config: [{ 'key1' => 'val1' }], word_policy_config: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,7 +80,10 @@ RSpec.describe Pangea::Resources::AWSBedrockGuardrail do
         config = validate_resource_structure(result, 'aws_bedrock_guardrail', 'full')
         expect(config).to have_key('content_policy_config')
         expect(config).to have_key('contextual_grounding_policy_config')
+        expect(config).to have_key('cross_region_config')
+        expect(config).to have_key('description')
         expect(config).to have_key('kms_key_arn')
+        expect(config).to have_key('region')
         expect(config).to have_key('sensitive_information_policy_config')
         expect(config).to have_key('tags')
         expect(config).to have_key('topic_policy_config')
@@ -121,6 +126,40 @@ RSpec.describe Pangea::Resources::AWSBedrockGuardrail do
         config = validate_resource_structure(result, 'aws_bedrock_guardrail', 'minimal')
         expect(config).not_to have_key('contextual_grounding_policy_config')
       end
+      it 'includes cross_region_config when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_guardrail('opt', required_attrs.merge(cross_region_config: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_guardrail', 'opt')
+        expect(config).to have_key('cross_region_config')
+      end
+
+      it 'omits cross_region_config when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_guardrail('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_guardrail', 'minimal')
+        expect(config).not_to have_key('cross_region_config')
+      end
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_guardrail('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_guardrail', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_guardrail('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_guardrail', 'minimal')
+        expect(config).not_to have_key('description')
+      end
       it 'includes kms_key_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -137,6 +176,23 @@ RSpec.describe Pangea::Resources::AWSBedrockGuardrail do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_bedrock_guardrail', 'minimal')
         expect(config).not_to have_key('kms_key_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_guardrail('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_guardrail', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_guardrail('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_guardrail', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes sensitive_information_policy_config when provided' do
         synth = create_synthesizer
@@ -252,7 +308,7 @@ RSpec.describe Pangea::Resources::AWSBedrockGuardrail do
     resource_type: :aws_bedrock_guardrail,
     method: :aws_bedrock_guardrail,
     required_attrs: { blocked_input_messaging: 'test-value', blocked_outputs_messaging: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :created_at, :description, :guardrail_arn, :guardrail_id, :status, :tags_all, :version],
+    expected_outputs: [:id, :created_at, :description, :guardrail_arn, :guardrail_id, :region, :status, :tags_all, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

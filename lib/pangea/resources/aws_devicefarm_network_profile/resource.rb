@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DevicefarmNetworkProfileAttributes,
       outputs: { id: :id },
       map: [:name, :project_arn],
-      map_present: [:description, :downlink_bandwidth_bits, :downlink_delay_ms, :downlink_jitter_ms, :downlink_loss_percent, :tags, :tags_all, :type, :uplink_bandwidth_bits, :uplink_delay_ms, :uplink_jitter_ms, :uplink_loss_percent]
+      map_present: [:description, :downlink_bandwidth_bits, :downlink_delay_ms, :downlink_jitter_ms, :downlink_loss_percent, :region, :tags, :tags_all, :type, :uplink_bandwidth_bits, :uplink_delay_ms, :uplink_jitter_ms, :uplink_loss_percent]
   end
   module AWS
     include AWSDevicefarmNetworkProfile

@@ -1,0 +1,8 @@
+name: aws_chimesdkvoice_global_settings
+title: Manages a aws_chimesdkvoice_global_settings resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

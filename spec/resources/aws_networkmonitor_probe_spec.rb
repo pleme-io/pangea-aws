@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmonitorProbe do
         expect(ref.arn).to eq("${aws_networkmonitor_probe.test.arn}")
         expect(ref.packet_size).to eq("${aws_networkmonitor_probe.test.packet_size}")
         expect(ref.probe_id).to eq("${aws_networkmonitor_probe.test.probe_id}")
+        expect(ref.region).to eq("${aws_networkmonitor_probe.test.region}")
         expect(ref.tags_all).to eq("${aws_networkmonitor_probe.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_networkmonitor_probe.test.vpc_id}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSNetworkmonitorProbe do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('packet_size')
         expect(config).not_to have_key('probe_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ destination_port: 3.14, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ destination_port: 3.14, packet_size: 3.14, region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,6 +77,8 @@ RSpec.describe Pangea::Resources::AWSNetworkmonitorProbe do
 
         config = validate_resource_structure(result, 'aws_networkmonitor_probe', 'full')
         expect(config).to have_key('destination_port')
+        expect(config).to have_key('packet_size')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -96,6 +100,40 @@ RSpec.describe Pangea::Resources::AWSNetworkmonitorProbe do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkmonitor_probe', 'minimal')
         expect(config).not_to have_key('destination_port')
+      end
+      it 'includes packet_size when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmonitor_probe('opt', required_attrs.merge(packet_size: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmonitor_probe', 'opt')
+        expect(config).to have_key('packet_size')
+      end
+
+      it 'omits packet_size when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmonitor_probe('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmonitor_probe', 'minimal')
+        expect(config).not_to have_key('packet_size')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmonitor_probe('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmonitor_probe', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmonitor_probe('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmonitor_probe', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -161,7 +199,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmonitorProbe do
     resource_type: :aws_networkmonitor_probe,
     method: :aws_networkmonitor_probe,
     required_attrs: { destination: 'test-value', monitor_name: 'test-value', protocol: 'test-value', source_arn: 'test-value' },
-    expected_outputs: [:id, :address_family, :arn, :packet_size, :probe_id, :tags_all, :vpc_id],
+    expected_outputs: [:id, :address_family, :arn, :packet_size, :probe_id, :region, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

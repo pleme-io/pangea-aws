@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WafregionalByteMatchSetAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:byte_match_tuples]
+      map_present: [:byte_match_tuples, :region]
   end
   module AWS
     include AWSWafregionalByteMatchSet

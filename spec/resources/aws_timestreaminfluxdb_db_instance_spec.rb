@@ -47,6 +47,7 @@ RSpec.describe Pangea::Resources::AWSTimestreaminfluxdbDbInstance do
         expect(ref.network_type).to eq("${aws_timestreaminfluxdb_db_instance.test.network_type}")
         expect(ref.port).to eq("${aws_timestreaminfluxdb_db_instance.test.port}")
         expect(ref.publicly_accessible).to eq("${aws_timestreaminfluxdb_db_instance.test.publicly_accessible}")
+        expect(ref.region).to eq("${aws_timestreaminfluxdb_db_instance.test.region}")
         expect(ref.secondary_availability_zone).to eq("${aws_timestreaminfluxdb_db_instance.test.secondary_availability_zone}")
         expect(ref.tags_all).to eq("${aws_timestreaminfluxdb_db_instance.test.tags_all}")
       end
@@ -69,13 +70,14 @@ RSpec.describe Pangea::Resources::AWSTimestreaminfluxdbDbInstance do
         expect(config).not_to have_key('network_type')
         expect(config).not_to have_key('port')
         expect(config).not_to have_key('publicly_accessible')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('secondary_availability_zone')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ db_parameter_group_identifier: 'test-value', log_delivery_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ db_parameter_group_identifier: 'test-value', db_storage_type: 'test-value', deployment_type: 'test-value', log_delivery_configuration: [{ 'key1' => 'val1' }], network_type: 'test-value', port: 3.14, publicly_accessible: true, region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -85,7 +87,13 @@ RSpec.describe Pangea::Resources::AWSTimestreaminfluxdbDbInstance do
 
         config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'full')
         expect(config).to have_key('db_parameter_group_identifier')
+        expect(config).to have_key('db_storage_type')
+        expect(config).to have_key('deployment_type')
         expect(config).to have_key('log_delivery_configuration')
+        expect(config).to have_key('network_type')
+        expect(config).to have_key('port')
+        expect(config).to have_key('publicly_accessible')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -108,6 +116,40 @@ RSpec.describe Pangea::Resources::AWSTimestreaminfluxdbDbInstance do
         config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'minimal')
         expect(config).not_to have_key('db_parameter_group_identifier')
       end
+      it 'includes db_storage_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_timestreaminfluxdb_db_instance('opt', required_attrs.merge(db_storage_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'opt')
+        expect(config).to have_key('db_storage_type')
+      end
+
+      it 'omits db_storage_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_timestreaminfluxdb_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'minimal')
+        expect(config).not_to have_key('db_storage_type')
+      end
+      it 'includes deployment_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_timestreaminfluxdb_db_instance('opt', required_attrs.merge(deployment_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'opt')
+        expect(config).to have_key('deployment_type')
+      end
+
+      it 'omits deployment_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_timestreaminfluxdb_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'minimal')
+        expect(config).not_to have_key('deployment_type')
+      end
       it 'includes log_delivery_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -124,6 +166,74 @@ RSpec.describe Pangea::Resources::AWSTimestreaminfluxdbDbInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'minimal')
         expect(config).not_to have_key('log_delivery_configuration')
+      end
+      it 'includes network_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_timestreaminfluxdb_db_instance('opt', required_attrs.merge(network_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'opt')
+        expect(config).to have_key('network_type')
+      end
+
+      it 'omits network_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_timestreaminfluxdb_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'minimal')
+        expect(config).not_to have_key('network_type')
+      end
+      it 'includes port when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_timestreaminfluxdb_db_instance('opt', required_attrs.merge(port: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'opt')
+        expect(config).to have_key('port')
+      end
+
+      it 'omits port when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_timestreaminfluxdb_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'minimal')
+        expect(config).not_to have_key('port')
+      end
+      it 'includes publicly_accessible when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_timestreaminfluxdb_db_instance('opt', required_attrs.merge(publicly_accessible: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'opt')
+        expect(config).to have_key('publicly_accessible')
+      end
+
+      it 'omits publicly_accessible when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_timestreaminfluxdb_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'minimal')
+        expect(config).not_to have_key('publicly_accessible')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_timestreaminfluxdb_db_instance('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_timestreaminfluxdb_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -148,6 +258,20 @@ RSpec.describe Pangea::Resources::AWSTimestreaminfluxdbDbInstance do
       it 'documents sensitive attributes' do
         sensitive_fields = [:password]
         expect(sensitive_fields).to include(:password)
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts publicly_accessible=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(publicly_accessible: val)
+          synth.aws_timestreaminfluxdb_db_instance("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_timestreaminfluxdb_db_instance', "bool_#{val}")
+          expect(config['publicly_accessible']).to eq(val)
+        end
       end
     end
 
@@ -201,8 +325,8 @@ RSpec.describe Pangea::Resources::AWSTimestreaminfluxdbDbInstance do
     resource_type: :aws_timestreaminfluxdb_db_instance,
     method: :aws_timestreaminfluxdb_db_instance,
     required_attrs: { allocated_storage: 3.14, bucket: 'test-value', db_instance_type: 'test-value', name: 'test-value', organization: 'test-value', password: 'test-value', username: 'test-value', vpc_security_group_ids: ['test-value'], vpc_subnet_ids: ['test-value'] },
-    expected_outputs: [:id, :arn, :availability_zone, :db_storage_type, :deployment_type, :endpoint, :influx_auth_parameters_secret_arn, :network_type, :port, :publicly_accessible, :secondary_availability_zone, :tags_all],
+    expected_outputs: [:id, :arn, :availability_zone, :db_storage_type, :deployment_type, :endpoint, :influx_auth_parameters_secret_arn, :network_type, :port, :publicly_accessible, :region, :secondary_availability_zone, :tags_all],
     sensitive_fields: [:password],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:publicly_accessible]
 end

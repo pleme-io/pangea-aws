@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_transfer_connector,
       attributes_class: AWS::Types::TransferConnectorAttributes,
       outputs: { id: :id },
-      map: [:access_role, :url],
-      map_present: [:as2_config, :logging_role, :security_policy_name, :sftp_config, :tags, :tags_all]
+      map: [:access_role],
+      map_present: [:as2_config, :egress_config, :logging_role, :region, :security_policy_name, :sftp_config, :tags, :tags_all, :url]
   end
   module AWS
     include AWSTransferConnector

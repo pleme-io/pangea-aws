@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SecuritylakeCustomLogSourceAttributes,
       outputs: { id: :id },
       map: [:source_name],
-      map_present: [:configuration, :event_classes, :source_version]
+      map_present: [:configuration, :event_classes, :region, :source_version]
   end
   module AWS
     include AWSSecuritylakeCustomLogSource

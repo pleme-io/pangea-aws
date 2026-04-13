@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IamServiceSpecificCredentialAttributes,
       outputs: { id: :id },
       map: [:service_name, :user_name],
-      map_present: [:status]
+      map_present: [:credential_age_days, :status]
   end
   module AWS
     include AWSIamServiceSpecificCredential

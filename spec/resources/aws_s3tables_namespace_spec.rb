@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSS3tablesNamespace do
         expect(ref.created_at).to eq("${aws_s3tables_namespace.test.created_at}")
         expect(ref.created_by).to eq("${aws_s3tables_namespace.test.created_by}")
         expect(ref.owner_account_id).to eq("${aws_s3tables_namespace.test.owner_account_id}")
+        expect(ref.region).to eq("${aws_s3tables_namespace.test.region}")
       end
     end
 
@@ -55,6 +56,41 @@ RSpec.describe Pangea::Resources::AWSS3tablesNamespace do
         expect(config).not_to have_key('created_at')
         expect(config).not_to have_key('created_by')
         expect(config).not_to have_key('owner_account_id')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_namespace('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_s3tables_namespace', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_namespace('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_namespace', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_namespace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_namespace', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -101,7 +137,7 @@ RSpec.describe Pangea::Resources::AWSS3tablesNamespace do
     resource_type: :aws_s3tables_namespace,
     method: :aws_s3tables_namespace,
     required_attrs: { namespace: 'test-value', table_bucket_arn: 'test-value' },
-    expected_outputs: [:id, :created_at, :created_by, :owner_account_id],
+    expected_outputs: [:id, :created_at, :created_by, :owner_account_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

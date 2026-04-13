@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodebuildFleetAttributes,
       outputs: { id: :id },
       map: [:base_capacity, :compute_type, :environment_type, :name],
-      map_present: [:compute_configuration, :fleet_service_role, :image_id, :overflow_behavior, :scaling_configuration, :tags, :tags_all, :vpc_config]
+      map_present: [:compute_configuration, :fleet_service_role, :image_id, :overflow_behavior, :region, :scaling_configuration, :tags, :tags_all, :vpc_config]
   end
   module AWS
     include AWSCodebuildFleet

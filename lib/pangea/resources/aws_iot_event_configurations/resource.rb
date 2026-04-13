@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_iot_event_configurations,
       attributes_class: AWS::Types::IotEventConfigurationsAttributes,
       outputs: { id: :id },
-      map: [:event_configurations]
+      map: [:event_configurations],
+      map_present: [:region]
   end
   module AWS
     include AWSIotEventConfigurations

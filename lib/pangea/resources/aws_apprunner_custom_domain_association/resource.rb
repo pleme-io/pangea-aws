@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApprunnerCustomDomainAssociationAttributes,
       outputs: { id: :id },
       map: [:domain_name, :service_arn],
+      map_present: [:region],
       map_bool: [:enable_www_subdomain]
   end
   module AWS

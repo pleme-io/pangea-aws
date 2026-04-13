@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FisExperimentTemplateAttributes,
       outputs: { id: :id },
       map: [:action, :description, :role_arn, :stop_condition],
-      map_present: [:experiment_options, :experiment_report_configuration, :log_configuration, :tags, :tags_all, :target]
+      map_present: [:experiment_options, :experiment_report_configuration, :log_configuration, :region, :tags, :tags_all, :target]
   end
   module AWS
     include AWSFisExperimentTemplate

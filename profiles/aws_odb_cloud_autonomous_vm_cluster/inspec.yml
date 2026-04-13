@@ -1,0 +1,8 @@
+name: aws_odb_cloud_autonomous_vm_cluster
+title: Manages a aws_odb_cloud_autonomous_vm_cluster resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

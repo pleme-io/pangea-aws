@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElasticsearchDomainSamlOptionsAttributes,
       outputs: { id: :id },
       map: [:domain_name],
-      map_present: [:saml_options]
+      map_present: [:region, :saml_options]
   end
   module AWS
     include AWSElasticsearchDomainSamlOptions

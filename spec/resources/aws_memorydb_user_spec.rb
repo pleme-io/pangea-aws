@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSMemorydbUser do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { access_string: 'test-value', authentication_mode: [{ 'key1' => 'val1' }], user_name: 'test-value' } }
+  let(:required_attrs) { { access_string: 'test-value', authentication_mode: { 'key1' => 'val1' }, user_name: 'test-value' } }
 
   describe ':aws_memorydb_user' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSMemorydbUser do
         expect(ref.id).to eq("${aws_memorydb_user.test.id}")
         expect(ref.arn).to eq("${aws_memorydb_user.test.arn}")
         expect(ref.minimum_engine_version).to eq("${aws_memorydb_user.test.minimum_engine_version}")
+        expect(ref.region).to eq("${aws_memorydb_user.test.region}")
         expect(ref.tags_all).to eq("${aws_memorydb_user.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSMemorydbUser do
         config = validate_resource_structure(result, 'aws_memorydb_user', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('minimum_engine_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,11 +70,30 @@ RSpec.describe Pangea::Resources::AWSMemorydbUser do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_memorydb_user', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_user('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_user', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_user('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_user', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -90,6 +111,23 @@ RSpec.describe Pangea::Resources::AWSMemorydbUser do
         config = validate_resource_structure(result, 'aws_memorydb_user', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_user('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_user', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_user('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_user', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -101,7 +139,7 @@ RSpec.describe Pangea::Resources::AWSMemorydbUser do
 
         config = validate_resource_structure(result, 'aws_memorydb_user', 'typed')
         expect(config['access_string']).to be_a(String)
-        expect(config['authentication_mode']).to be_a(Array)
+        expect(config['authentication_mode']).to be_a(Hash)
         expect(config['user_name']).to be_a(String)
       end
     end
@@ -135,8 +173,8 @@ RSpec.describe Pangea::Resources::AWSMemorydbUser do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_memorydb_user,
     method: :aws_memorydb_user,
-    required_attrs: { access_string: 'test-value', authentication_mode: [{ 'key1' => 'val1' }], user_name: 'test-value' },
-    expected_outputs: [:id, :arn, :minimum_engine_version, :tags_all],
+    required_attrs: { access_string: 'test-value', authentication_mode: { 'key1' => 'val1' }, user_name: 'test-value' },
+    expected_outputs: [:id, :arn, :minimum_engine_version, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

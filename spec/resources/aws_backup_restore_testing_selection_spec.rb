@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSBackupRestoreTestingSelection do
 
         expect(ref.id).to eq("${aws_backup_restore_testing_selection.test.id}")
         expect(ref.protected_resource_arns).to eq("${aws_backup_restore_testing_selection.test.protected_resource_arns}")
+        expect(ref.region).to eq("${aws_backup_restore_testing_selection.test.region}")
         expect(ref.restore_metadata_overrides).to eq("${aws_backup_restore_testing_selection.test.restore_metadata_overrides}")
         expect(ref.validation_window_hours).to eq("${aws_backup_restore_testing_selection.test.validation_window_hours}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSBackupRestoreTestingSelection do
 
         config = validate_resource_structure(result, 'aws_backup_restore_testing_selection', 'test')
         expect(config).not_to have_key('protected_resource_arns')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('restore_metadata_overrides')
         expect(config).not_to have_key('validation_window_hours')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ protected_resource_conditions: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ protected_resource_arns: ['test-value'], protected_resource_conditions: [{ 'key1' => 'val1' }], region: 'test-value', restore_metadata_overrides: { 'key1' => 'val1' }, validation_window_hours: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,11 +70,32 @@ RSpec.describe Pangea::Resources::AWSBackupRestoreTestingSelection do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_backup_restore_testing_selection', 'full')
+        expect(config).to have_key('protected_resource_arns')
         expect(config).to have_key('protected_resource_conditions')
+        expect(config).to have_key('region')
+        expect(config).to have_key('restore_metadata_overrides')
+        expect(config).to have_key('validation_window_hours')
       end
     end
 
     context 'optional attributes' do
+      it 'includes protected_resource_arns when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_selection('opt', required_attrs.merge(protected_resource_arns: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_selection', 'opt')
+        expect(config).to have_key('protected_resource_arns')
+      end
+
+      it 'omits protected_resource_arns when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_selection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_selection', 'minimal')
+        expect(config).not_to have_key('protected_resource_arns')
+      end
       it 'includes protected_resource_conditions when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -89,6 +112,57 @@ RSpec.describe Pangea::Resources::AWSBackupRestoreTestingSelection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_backup_restore_testing_selection', 'minimal')
         expect(config).not_to have_key('protected_resource_conditions')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_selection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_selection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_selection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_selection', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes restore_metadata_overrides when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_selection('opt', required_attrs.merge(restore_metadata_overrides: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_selection', 'opt')
+        expect(config).to have_key('restore_metadata_overrides')
+      end
+
+      it 'omits restore_metadata_overrides when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_selection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_selection', 'minimal')
+        expect(config).not_to have_key('restore_metadata_overrides')
+      end
+      it 'includes validation_window_hours when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_selection('opt', required_attrs.merge(validation_window_hours: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_selection', 'opt')
+        expect(config).to have_key('validation_window_hours')
+      end
+
+      it 'omits validation_window_hours when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_selection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_selection', 'minimal')
+        expect(config).not_to have_key('validation_window_hours')
       end
     end
 
@@ -137,7 +211,7 @@ RSpec.describe Pangea::Resources::AWSBackupRestoreTestingSelection do
     resource_type: :aws_backup_restore_testing_selection,
     method: :aws_backup_restore_testing_selection,
     required_attrs: { iam_role_arn: 'test-value', name: 'test-value', protected_resource_type: 'test-value', restore_testing_plan_name: 'test-value' },
-    expected_outputs: [:id, :protected_resource_arns, :restore_metadata_overrides, :validation_window_hours],
+    expected_outputs: [:id, :protected_resource_arns, :region, :restore_metadata_overrides, :validation_window_hours],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

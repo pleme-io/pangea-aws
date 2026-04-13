@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketNotificationAttributes,
       outputs: { id: :id },
       map: [:bucket],
-      map_present: [:lambda_function, :queue, :topic],
+      map_present: [:lambda_function, :queue, :region, :topic],
       map_bool: [:eventbridge]
   end
   module AWS

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FinspaceKxEnvironmentAttributes,
       outputs: { id: :id },
       map: [:kms_key_id, :name],
-      map_present: [:custom_dns_configuration, :description, :tags, :tags_all, :transit_gateway_configuration]
+      map_present: [:custom_dns_configuration, :description, :region, :tags, :tags_all, :transit_gateway_configuration]
   end
   module AWS
     include AWSFinspaceKxEnvironment

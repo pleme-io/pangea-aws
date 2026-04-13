@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Lexv2modelsBotLocaleAttributes,
       outputs: { id: :id },
       map: [:bot_id, :bot_version, :locale_id, :n_lu_intent_confidence_threshold],
-      map_present: [:description, :name, :voice_settings]
+      map_present: [:description, :name, :region, :voice_settings]
   end
   module AWS
     include AWSLexv2modelsBotLocale

@@ -44,6 +44,8 @@ RSpec.describe Pangea::Resources::AWSDxGatewayAssociation do
         expect(ref.associated_gateway_type).to eq("${aws_dx_gateway_association.test.associated_gateway_type}")
         expect(ref.dx_gateway_association_id).to eq("${aws_dx_gateway_association.test.dx_gateway_association_id}")
         expect(ref.dx_gateway_owner_account_id).to eq("${aws_dx_gateway_association.test.dx_gateway_owner_account_id}")
+        expect(ref.region).to eq("${aws_dx_gateway_association.test.region}")
+        expect(ref.transit_gateway_attachment_id).to eq("${aws_dx_gateway_association.test.transit_gateway_attachment_id}")
       end
     end
 
@@ -61,11 +63,13 @@ RSpec.describe Pangea::Resources::AWSDxGatewayAssociation do
         expect(config).not_to have_key('associated_gateway_type')
         expect(config).not_to have_key('dx_gateway_association_id')
         expect(config).not_to have_key('dx_gateway_owner_account_id')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('transit_gateway_attachment_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ proposal_id: 'test-value', vpn_gateway_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ allowed_prefixes: ['test-value'], associated_gateway_id: 'test-value', associated_gateway_owner_account_id: 'test-value', proposal_id: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,12 +78,66 @@ RSpec.describe Pangea::Resources::AWSDxGatewayAssociation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_dx_gateway_association', 'full')
+        expect(config).to have_key('allowed_prefixes')
+        expect(config).to have_key('associated_gateway_id')
+        expect(config).to have_key('associated_gateway_owner_account_id')
         expect(config).to have_key('proposal_id')
-        expect(config).to have_key('vpn_gateway_id')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes allowed_prefixes when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway_association('opt', required_attrs.merge(allowed_prefixes: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway_association', 'opt')
+        expect(config).to have_key('allowed_prefixes')
+      end
+
+      it 'omits allowed_prefixes when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway_association', 'minimal')
+        expect(config).not_to have_key('allowed_prefixes')
+      end
+      it 'includes associated_gateway_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway_association('opt', required_attrs.merge(associated_gateway_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway_association', 'opt')
+        expect(config).to have_key('associated_gateway_id')
+      end
+
+      it 'omits associated_gateway_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway_association', 'minimal')
+        expect(config).not_to have_key('associated_gateway_id')
+      end
+      it 'includes associated_gateway_owner_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway_association('opt', required_attrs.merge(associated_gateway_owner_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway_association', 'opt')
+        expect(config).to have_key('associated_gateway_owner_account_id')
+      end
+
+      it 'omits associated_gateway_owner_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway_association', 'minimal')
+        expect(config).not_to have_key('associated_gateway_owner_account_id')
+      end
       it 'includes proposal_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -97,22 +155,22 @@ RSpec.describe Pangea::Resources::AWSDxGatewayAssociation do
         config = validate_resource_structure(result, 'aws_dx_gateway_association', 'minimal')
         expect(config).not_to have_key('proposal_id')
       end
-      it 'includes vpn_gateway_id when provided' do
+      it 'includes region when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dx_gateway_association('opt', required_attrs.merge(vpn_gateway_id: 'test-value'))
+        synth.aws_dx_gateway_association('opt', required_attrs.merge(region: 'test-value'))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dx_gateway_association', 'opt')
-        expect(config).to have_key('vpn_gateway_id')
+        expect(config).to have_key('region')
       end
 
-      it 'omits vpn_gateway_id when not provided' do
+      it 'omits region when not provided' do
         synth = create_synthesizer
         synth.extend(described_class)
         synth.aws_dx_gateway_association('minimal', required_attrs)
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dx_gateway_association', 'minimal')
-        expect(config).not_to have_key('vpn_gateway_id')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -158,7 +216,7 @@ RSpec.describe Pangea::Resources::AWSDxGatewayAssociation do
     resource_type: :aws_dx_gateway_association,
     method: :aws_dx_gateway_association,
     required_attrs: { dx_gateway_id: 'test-value' },
-    expected_outputs: [:id, :allowed_prefixes, :associated_gateway_id, :associated_gateway_owner_account_id, :associated_gateway_type, :dx_gateway_association_id, :dx_gateway_owner_account_id],
+    expected_outputs: [:id, :allowed_prefixes, :associated_gateway_id, :associated_gateway_owner_account_id, :associated_gateway_type, :dx_gateway_association_id, :dx_gateway_owner_account_id, :region, :transit_gateway_attachment_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

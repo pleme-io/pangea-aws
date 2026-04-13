@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ssm_patch_group,
       attributes_class: AWS::Types::SsmPatchGroupAttributes,
       outputs: { id: :id },
-      map: [:baseline_id, :patch_group]
+      map: [:baseline_id, :patch_group],
+      map_present: [:region]
   end
   module AWS
     include AWSSsmPatchGroup

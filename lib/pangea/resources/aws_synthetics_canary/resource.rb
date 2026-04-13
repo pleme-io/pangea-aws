@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SyntheticsCanaryAttributes,
       outputs: { id: :id },
       map: [:artifact_s3_location, :execution_role_arn, :handler, :name, :runtime_version, :schedule],
-      map_present: [:artifact_config, :failure_retention_period, :run_config, :s3_bucket, :s3_key, :s3_version, :success_retention_period, :tags, :tags_all, :vpc_config, :zip_file],
+      map_present: [:artifact_config, :failure_retention_period, :region, :run_config, :s3_bucket, :s3_key, :s3_version, :success_retention_period, :tags, :tags_all, :vpc_config, :zip_file],
       map_bool: [:delete_lambda, :start_canary]
   end
   module AWS

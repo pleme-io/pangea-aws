@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EfsAccessPointAttributes,
       outputs: { id: :id },
       map: [:file_system_id],
-      map_present: [:posix_user, :root_directory, :tags, :tags_all]
+      map_present: [:posix_user, :region, :root_directory, :tags, :tags_all]
   end
   module AWS
     include AWSEfsAccessPoint

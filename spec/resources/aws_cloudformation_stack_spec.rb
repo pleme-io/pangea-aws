@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationStack do
         expect(ref.outputs).to eq("${aws_cloudformation_stack.test.outputs}")
         expect(ref.parameters).to eq("${aws_cloudformation_stack.test.parameters}")
         expect(ref.policy_body).to eq("${aws_cloudformation_stack.test.policy_body}")
+        expect(ref.region).to eq("${aws_cloudformation_stack.test.region}")
         expect(ref.tags_all).to eq("${aws_cloudformation_stack.test.tags_all}")
         expect(ref.template_body).to eq("${aws_cloudformation_stack.test.template_body}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSCloudformationStack do
         expect(config).not_to have_key('outputs')
         expect(config).not_to have_key('parameters')
         expect(config).not_to have_key('policy_body')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('template_body')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ capabilities: ['test-value'], disable_rollback: true, iam_role_arn: 'test-value', notification_arns: ['test-value'], on_failure: 'test-value', policy_url: 'test-value', tags: { 'key1' => 'val1' }, template_url: 'test-value', timeout_in_minutes: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ capabilities: ['test-value'], disable_rollback: true, iam_role_arn: 'test-value', notification_arns: ['test-value'], on_failure: 'test-value', parameters: { 'key1' => 'val1' }, policy_body: 'test-value', policy_url: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, template_body: 'test-value', template_url: 'test-value', timeout_in_minutes: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,8 +79,13 @@ RSpec.describe Pangea::Resources::AWSCloudformationStack do
         expect(config).to have_key('iam_role_arn')
         expect(config).to have_key('notification_arns')
         expect(config).to have_key('on_failure')
+        expect(config).to have_key('parameters')
+        expect(config).to have_key('policy_body')
         expect(config).to have_key('policy_url')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('template_body')
         expect(config).to have_key('template_url')
         expect(config).to have_key('timeout_in_minutes')
       end
@@ -170,6 +177,40 @@ RSpec.describe Pangea::Resources::AWSCloudformationStack do
         config = validate_resource_structure(result, 'aws_cloudformation_stack', 'minimal')
         expect(config).not_to have_key('on_failure')
       end
+      it 'includes parameters when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack('opt', required_attrs.merge(parameters: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack', 'opt')
+        expect(config).to have_key('parameters')
+      end
+
+      it 'omits parameters when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack', 'minimal')
+        expect(config).not_to have_key('parameters')
+      end
+      it 'includes policy_body when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack('opt', required_attrs.merge(policy_body: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack', 'opt')
+        expect(config).to have_key('policy_body')
+      end
+
+      it 'omits policy_body when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack', 'minimal')
+        expect(config).not_to have_key('policy_body')
+      end
       it 'includes policy_url when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -187,6 +228,23 @@ RSpec.describe Pangea::Resources::AWSCloudformationStack do
         config = validate_resource_structure(result, 'aws_cloudformation_stack', 'minimal')
         expect(config).not_to have_key('policy_url')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -203,6 +261,40 @@ RSpec.describe Pangea::Resources::AWSCloudformationStack do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudformation_stack', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes template_body when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack('opt', required_attrs.merge(template_body: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack', 'opt')
+        expect(config).to have_key('template_body')
+      end
+
+      it 'omits template_body when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack', 'minimal')
+        expect(config).not_to have_key('template_body')
       end
       it 'includes template_url when provided' do
         synth = create_synthesizer
@@ -296,7 +388,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationStack do
     resource_type: :aws_cloudformation_stack,
     method: :aws_cloudformation_stack,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :outputs, :parameters, :policy_body, :tags_all, :template_body],
+    expected_outputs: [:id, :outputs, :parameters, :policy_body, :region, :tags_all, :template_body],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:disable_rollback]

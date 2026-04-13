@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentActionGroup do
         expect(ref.action_group_id).to eq("${aws_bedrockagent_agent_action_group.test.action_group_id}")
         expect(ref.action_group_state).to eq("${aws_bedrockagent_agent_action_group.test.action_group_state}")
         expect(ref.prepare_agent).to eq("${aws_bedrockagent_agent_action_group.test.prepare_agent}")
+        expect(ref.region).to eq("${aws_bedrockagent_agent_action_group.test.region}")
         expect(ref.skip_resource_in_use_check).to eq("${aws_bedrockagent_agent_action_group.test.skip_resource_in_use_check}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentActionGroup do
         expect(config).not_to have_key('action_group_id')
         expect(config).not_to have_key('action_group_state')
         expect(config).not_to have_key('prepare_agent')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('skip_resource_in_use_check')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ action_group_executor: [{ 'key1' => 'val1' }], api_schema: [{ 'key1' => 'val1' }], description: 'test-value', function_schema: [{ 'key1' => 'val1' }], parent_action_group_signature: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ action_group_executor: [{ 'key1' => 'val1' }], action_group_state: 'test-value', api_schema: [{ 'key1' => 'val1' }], description: 'test-value', function_schema: [{ 'key1' => 'val1' }], parent_action_group_signature: 'test-value', prepare_agent: true, region: 'test-value', skip_resource_in_use_check: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,10 +73,14 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentActionGroup do
 
         config = validate_resource_structure(result, 'aws_bedrockagent_agent_action_group', 'full')
         expect(config).to have_key('action_group_executor')
+        expect(config).to have_key('action_group_state')
         expect(config).to have_key('api_schema')
         expect(config).to have_key('description')
         expect(config).to have_key('function_schema')
         expect(config).to have_key('parent_action_group_signature')
+        expect(config).to have_key('prepare_agent')
+        expect(config).to have_key('region')
+        expect(config).to have_key('skip_resource_in_use_check')
       end
     end
 
@@ -95,6 +101,23 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentActionGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_bedrockagent_agent_action_group', 'minimal')
         expect(config).not_to have_key('action_group_executor')
+      end
+      it 'includes action_group_state when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_action_group('opt', required_attrs.merge(action_group_state: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_action_group', 'opt')
+        expect(config).to have_key('action_group_state')
+      end
+
+      it 'omits action_group_state when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_action_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_action_group', 'minimal')
+        expect(config).not_to have_key('action_group_state')
       end
       it 'includes api_schema when provided' do
         synth = create_synthesizer
@@ -164,6 +187,82 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentActionGroup do
         config = validate_resource_structure(result, 'aws_bedrockagent_agent_action_group', 'minimal')
         expect(config).not_to have_key('parent_action_group_signature')
       end
+      it 'includes prepare_agent when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_action_group('opt', required_attrs.merge(prepare_agent: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_action_group', 'opt')
+        expect(config).to have_key('prepare_agent')
+      end
+
+      it 'omits prepare_agent when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_action_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_action_group', 'minimal')
+        expect(config).not_to have_key('prepare_agent')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_action_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_action_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_action_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_action_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes skip_resource_in_use_check when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_action_group('opt', required_attrs.merge(skip_resource_in_use_check: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_action_group', 'opt')
+        expect(config).to have_key('skip_resource_in_use_check')
+      end
+
+      it 'omits skip_resource_in_use_check when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_action_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_action_group', 'minimal')
+        expect(config).not_to have_key('skip_resource_in_use_check')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts prepare_agent=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(prepare_agent: val)
+          synth.aws_bedrockagent_agent_action_group("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_bedrockagent_agent_action_group', "bool_#{val}")
+          expect(config['prepare_agent']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts skip_resource_in_use_check=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(skip_resource_in_use_check: val)
+          synth.aws_bedrockagent_agent_action_group("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_bedrockagent_agent_action_group', "bool_#{val}")
+          expect(config['skip_resource_in_use_check']).to eq(val)
+        end
+      end
     end
 
     context 'attribute types' do
@@ -210,8 +309,8 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentActionGroup do
     resource_type: :aws_bedrockagent_agent_action_group,
     method: :aws_bedrockagent_agent_action_group,
     required_attrs: { action_group_name: 'test-value', agent_id: 'test-value', agent_version: 'test-value' },
-    expected_outputs: [:id, :action_group_id, :action_group_state, :prepare_agent, :skip_resource_in_use_check],
+    expected_outputs: [:id, :action_group_id, :action_group_state, :prepare_agent, :region, :skip_resource_in_use_check],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:prepare_agent, :skip_resource_in_use_check]
 end

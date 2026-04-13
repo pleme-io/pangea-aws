@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MedialiveInputSecurityGroupAttributes,
       outputs: { id: :id },
       map: [:whitelist_rules],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSMedialiveInputSecurityGroup

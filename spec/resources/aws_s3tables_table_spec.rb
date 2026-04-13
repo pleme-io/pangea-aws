@@ -47,6 +47,8 @@ RSpec.describe Pangea::Resources::AWSS3tablesTable do
         expect(ref.modified_at).to eq("${aws_s3tables_table.test.modified_at}")
         expect(ref.modified_by).to eq("${aws_s3tables_table.test.modified_by}")
         expect(ref.owner_account_id).to eq("${aws_s3tables_table.test.owner_account_id}")
+        expect(ref.region).to eq("${aws_s3tables_table.test.region}")
+        expect(ref.tags_all).to eq("${aws_s3tables_table.test.tags_all}")
         expect(ref.type).to eq("${aws_s3tables_table.test.type}")
         expect(ref.version_token).to eq("${aws_s3tables_table.test.version_token}")
         expect(ref.warehouse_location).to eq("${aws_s3tables_table.test.warehouse_location}")
@@ -70,9 +72,117 @@ RSpec.describe Pangea::Resources::AWSS3tablesTable do
         expect(config).not_to have_key('modified_at')
         expect(config).not_to have_key('modified_by')
         expect(config).not_to have_key('owner_account_id')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('type')
         expect(config).not_to have_key('version_token')
         expect(config).not_to have_key('warehouse_location')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ encryption_configuration: { 'key1' => 'val1' }, maintenance_configuration: { 'key1' => 'val1' }, metadata: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' } }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_s3tables_table', 'full')
+        expect(config).to have_key('encryption_configuration')
+        expect(config).to have_key('maintenance_configuration')
+        expect(config).to have_key('metadata')
+        expect(config).to have_key('region')
+        expect(config).to have_key('tags')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes encryption_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table('opt', required_attrs.merge(encryption_configuration: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table', 'opt')
+        expect(config).to have_key('encryption_configuration')
+      end
+
+      it 'omits encryption_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table', 'minimal')
+        expect(config).not_to have_key('encryption_configuration')
+      end
+      it 'includes maintenance_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table('opt', required_attrs.merge(maintenance_configuration: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table', 'opt')
+        expect(config).to have_key('maintenance_configuration')
+      end
+
+      it 'omits maintenance_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table', 'minimal')
+        expect(config).not_to have_key('maintenance_configuration')
+      end
+      it 'includes metadata when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table('opt', required_attrs.merge(metadata: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table', 'opt')
+        expect(config).to have_key('metadata')
+      end
+
+      it 'omits metadata when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table', 'minimal')
+        expect(config).not_to have_key('metadata')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes tags when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table('opt', required_attrs.merge(tags: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table', 'opt')
+        expect(config).to have_key('tags')
+      end
+
+      it 'omits tags when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3tables_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3tables_table', 'minimal')
+        expect(config).not_to have_key('tags')
       end
     end
 
@@ -121,7 +231,7 @@ RSpec.describe Pangea::Resources::AWSS3tablesTable do
     resource_type: :aws_s3tables_table,
     method: :aws_s3tables_table,
     required_attrs: { format: 'test-value', name: 'test-value', namespace: 'test-value', table_bucket_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :created_at, :created_by, :encryption_configuration, :maintenance_configuration, :metadata_location, :modified_at, :modified_by, :owner_account_id, :type, :version_token, :warehouse_location],
+    expected_outputs: [:id, :arn, :created_at, :created_by, :encryption_configuration, :maintenance_configuration, :metadata_location, :modified_at, :modified_by, :owner_account_id, :region, :tags_all, :type, :version_token, :warehouse_location],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

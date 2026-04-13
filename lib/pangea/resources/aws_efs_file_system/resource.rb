@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_efs_file_system,
       attributes_class: AWS::Types::EfsFileSystemAttributes,
       outputs: { id: :id },
-      map_present: [:availability_zone_name, :creation_token, :kms_key_id, :lifecycle_policy, :performance_mode, :protection, :provisioned_throughput_in_mibps, :tags, :tags_all, :throughput_mode],
+      map_present: [:availability_zone_name, :creation_token, :kms_key_id, :lifecycle_policy, :performance_mode, :protection, :provisioned_throughput_in_mibps, :region, :tags, :tags_all, :throughput_mode],
       map_bool: [:encrypted]
   end
   module AWS

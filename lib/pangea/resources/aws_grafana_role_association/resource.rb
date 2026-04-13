@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GrafanaRoleAssociationAttributes,
       outputs: { id: :id },
       map: [:role, :workspace_id],
-      map_present: [:group_ids, :user_ids]
+      map_present: [:group_ids, :region, :user_ids]
   end
   module AWS
     include AWSGrafanaRoleAssociation

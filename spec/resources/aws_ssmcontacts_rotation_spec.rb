@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSsmcontactsRotation do
 
         expect(ref.id).to eq("${aws_ssmcontacts_rotation.test.id}")
         expect(ref.arn).to eq("${aws_ssmcontacts_rotation.test.arn}")
+        expect(ref.region).to eq("${aws_ssmcontacts_rotation.test.region}")
         expect(ref.tags_all).to eq("${aws_ssmcontacts_rotation.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSSsmcontactsRotation do
 
         config = validate_resource_structure(result, 'aws_ssmcontacts_rotation', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ recurrence: [{ 'key1' => 'val1' }], start_time: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ recurrence: [{ 'key1' => 'val1' }], region: 'test-value', start_time: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSSsmcontactsRotation do
 
         config = validate_resource_structure(result, 'aws_ssmcontacts_rotation', 'full')
         expect(config).to have_key('recurrence')
+        expect(config).to have_key('region')
         expect(config).to have_key('start_time')
         expect(config).to have_key('tags')
       end
@@ -89,6 +92,23 @@ RSpec.describe Pangea::Resources::AWSSsmcontactsRotation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssmcontacts_rotation', 'minimal')
         expect(config).not_to have_key('recurrence')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmcontacts_rotation('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmcontacts_rotation', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmcontacts_rotation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmcontacts_rotation', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes start_time when provided' do
         synth = create_synthesizer
@@ -170,7 +190,7 @@ RSpec.describe Pangea::Resources::AWSSsmcontactsRotation do
     resource_type: :aws_ssmcontacts_rotation,
     method: :aws_ssmcontacts_rotation,
     required_attrs: { contact_ids: ['test-value'], name: 'test-value', time_zone_id: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

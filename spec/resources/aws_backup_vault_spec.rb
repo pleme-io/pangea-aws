@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSBackupVault do
         expect(ref.arn).to eq("${aws_backup_vault.test.arn}")
         expect(ref.kms_key_arn).to eq("${aws_backup_vault.test.kms_key_arn}")
         expect(ref.recovery_points).to eq("${aws_backup_vault.test.recovery_points}")
+        expect(ref.region).to eq("${aws_backup_vault.test.region}")
         expect(ref.tags_all).to eq("${aws_backup_vault.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSBackupVault do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('kms_key_arn')
         expect(config).not_to have_key('recovery_points')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ force_destroy: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ force_destroy: true, kms_key_arn: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,7 +73,10 @@ RSpec.describe Pangea::Resources::AWSBackupVault do
 
         config = validate_resource_structure(result, 'aws_backup_vault', 'full')
         expect(config).to have_key('force_destroy')
+        expect(config).to have_key('kms_key_arn')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -93,6 +98,40 @@ RSpec.describe Pangea::Resources::AWSBackupVault do
         config = validate_resource_structure(result, 'aws_backup_vault', 'minimal')
         expect(config).not_to have_key('force_destroy')
       end
+      it 'includes kms_key_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_vault('opt', required_attrs.merge(kms_key_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_vault', 'opt')
+        expect(config).to have_key('kms_key_arn')
+      end
+
+      it 'omits kms_key_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_vault('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_vault', 'minimal')
+        expect(config).not_to have_key('kms_key_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_vault('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_vault', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_vault('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_vault', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -109,6 +148,23 @@ RSpec.describe Pangea::Resources::AWSBackupVault do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_backup_vault', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_vault('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_vault', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_vault('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_vault', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -168,7 +224,7 @@ RSpec.describe Pangea::Resources::AWSBackupVault do
     resource_type: :aws_backup_vault,
     method: :aws_backup_vault,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :kms_key_arn, :recovery_points, :tags_all],
+    expected_outputs: [:id, :arn, :kms_key_arn, :recovery_points, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:force_destroy]

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSOpensearchOutboundConnection do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { connection_alias: 'test-value', local_domain_info: [{ 'key1' => 'val1' }], remote_domain_info: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { connection_alias: 'test-value', local_domain_info: { 'key1' => 'val1' }, remote_domain_info: { 'key1' => 'val1' } } }
 
   describe ':aws_opensearch_outbound_connection' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchOutboundConnection do
         expect(ref.id).to eq("${aws_opensearch_outbound_connection.test.id}")
         expect(ref.connection_mode).to eq("${aws_opensearch_outbound_connection.test.connection_mode}")
         expect(ref.connection_status).to eq("${aws_opensearch_outbound_connection.test.connection_status}")
+        expect(ref.region).to eq("${aws_opensearch_outbound_connection.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSOpensearchOutboundConnection do
         config = validate_resource_structure(result, 'aws_opensearch_outbound_connection', 'test')
         expect(config).not_to have_key('connection_mode')
         expect(config).not_to have_key('connection_status')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ accept_connection: true, connection_properties: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ accept_connection: true, connection_mode: 'test-value', connection_properties: { 'key1' => 'val1' }, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,7 +69,9 @@ RSpec.describe Pangea::Resources::AWSOpensearchOutboundConnection do
 
         config = validate_resource_structure(result, 'aws_opensearch_outbound_connection', 'full')
         expect(config).to have_key('accept_connection')
+        expect(config).to have_key('connection_mode')
         expect(config).to have_key('connection_properties')
+        expect(config).to have_key('region')
       end
     end
 
@@ -89,10 +93,27 @@ RSpec.describe Pangea::Resources::AWSOpensearchOutboundConnection do
         config = validate_resource_structure(result, 'aws_opensearch_outbound_connection', 'minimal')
         expect(config).not_to have_key('accept_connection')
       end
+      it 'includes connection_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_outbound_connection('opt', required_attrs.merge(connection_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_outbound_connection', 'opt')
+        expect(config).to have_key('connection_mode')
+      end
+
+      it 'omits connection_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_outbound_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_outbound_connection', 'minimal')
+        expect(config).not_to have_key('connection_mode')
+      end
       it 'includes connection_properties when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_outbound_connection('opt', required_attrs.merge(connection_properties: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_outbound_connection('opt', required_attrs.merge(connection_properties: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_outbound_connection', 'opt')
         expect(config).to have_key('connection_properties')
@@ -105,6 +126,23 @@ RSpec.describe Pangea::Resources::AWSOpensearchOutboundConnection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_outbound_connection', 'minimal')
         expect(config).not_to have_key('connection_properties')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_outbound_connection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_outbound_connection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_outbound_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_outbound_connection', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -131,8 +169,8 @@ RSpec.describe Pangea::Resources::AWSOpensearchOutboundConnection do
 
         config = validate_resource_structure(result, 'aws_opensearch_outbound_connection', 'typed')
         expect(config['connection_alias']).to be_a(String)
-        expect(config['local_domain_info']).to be_a(Array)
-        expect(config['remote_domain_info']).to be_a(Array)
+        expect(config['local_domain_info']).to be_a(Hash)
+        expect(config['remote_domain_info']).to be_a(Hash)
       end
     end
 
@@ -165,8 +203,8 @@ RSpec.describe Pangea::Resources::AWSOpensearchOutboundConnection do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_opensearch_outbound_connection,
     method: :aws_opensearch_outbound_connection,
-    required_attrs: { connection_alias: 'test-value', local_domain_info: [{ 'key1' => 'val1' }], remote_domain_info: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :connection_mode, :connection_status],
+    required_attrs: { connection_alias: 'test-value', local_domain_info: { 'key1' => 'val1' }, remote_domain_info: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :connection_mode, :connection_status, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:accept_connection]

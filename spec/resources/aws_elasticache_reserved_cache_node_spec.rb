@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheReservedCacheNode do
         expect(ref.offering_type).to eq("${aws_elasticache_reserved_cache_node.test.offering_type}")
         expect(ref.product_description).to eq("${aws_elasticache_reserved_cache_node.test.product_description}")
         expect(ref.recurring_charges).to eq("${aws_elasticache_reserved_cache_node.test.recurring_charges}")
+        expect(ref.region).to eq("${aws_elasticache_reserved_cache_node.test.region}")
         expect(ref.start_time).to eq("${aws_elasticache_reserved_cache_node.test.start_time}")
         expect(ref.state).to eq("${aws_elasticache_reserved_cache_node.test.state}")
         expect(ref.tags_all).to eq("${aws_elasticache_reserved_cache_node.test.tags_all}")
@@ -69,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheReservedCacheNode do
         expect(config).not_to have_key('offering_type')
         expect(config).not_to have_key('product_description')
         expect(config).not_to have_key('recurring_charges')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('start_time')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
@@ -77,7 +79,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheReservedCacheNode do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ cache_node_count: 3.14, region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -86,11 +88,47 @@ RSpec.describe Pangea::Resources::AWSElasticacheReservedCacheNode do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_elasticache_reserved_cache_node', 'full')
+        expect(config).to have_key('cache_node_count')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes cache_node_count when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_reserved_cache_node('opt', required_attrs.merge(cache_node_count: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_reserved_cache_node', 'opt')
+        expect(config).to have_key('cache_node_count')
+      end
+
+      it 'omits cache_node_count when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_reserved_cache_node('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_reserved_cache_node', 'minimal')
+        expect(config).not_to have_key('cache_node_count')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_reserved_cache_node('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_reserved_cache_node', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_reserved_cache_node('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_reserved_cache_node', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -152,7 +190,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheReservedCacheNode do
     resource_type: :aws_elasticache_reserved_cache_node,
     method: :aws_elasticache_reserved_cache_node,
     required_attrs: { reserved_cache_nodes_offering_id: 'test-value' },
-    expected_outputs: [:id, :arn, :cache_node_count, :cache_node_type, :duration, :fixed_price, :offering_type, :product_description, :recurring_charges, :start_time, :state, :tags_all, :usage_price],
+    expected_outputs: [:id, :arn, :cache_node_count, :cache_node_type, :duration, :fixed_price, :offering_type, :product_description, :recurring_charges, :region, :start_time, :state, :tags_all, :usage_price],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

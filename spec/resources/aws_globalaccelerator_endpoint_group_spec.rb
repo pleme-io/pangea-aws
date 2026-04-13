@@ -61,7 +61,7 @@ RSpec.describe Pangea::Resources::AWSGlobalacceleratorEndpointGroup do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ endpoint_configuration: [{ 'key1' => 'val1' }], health_check_interval_seconds: 3.14, health_check_protocol: 'test-value', port_override: [{ 'key1' => 'val1' }], threshold_count: 3.14, traffic_dial_percentage: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ endpoint_configuration: [{ 'key1' => 'val1' }], endpoint_group_region: 'test-value', health_check_interval_seconds: 3.14, health_check_path: 'test-value', health_check_port: 3.14, health_check_protocol: 'test-value', port_override: [{ 'key1' => 'val1' }], threshold_count: 3.14, traffic_dial_percentage: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,7 +71,10 @@ RSpec.describe Pangea::Resources::AWSGlobalacceleratorEndpointGroup do
 
         config = validate_resource_structure(result, 'aws_globalaccelerator_endpoint_group', 'full')
         expect(config).to have_key('endpoint_configuration')
+        expect(config).to have_key('endpoint_group_region')
         expect(config).to have_key('health_check_interval_seconds')
+        expect(config).to have_key('health_check_path')
+        expect(config).to have_key('health_check_port')
         expect(config).to have_key('health_check_protocol')
         expect(config).to have_key('port_override')
         expect(config).to have_key('threshold_count')
@@ -97,6 +100,23 @@ RSpec.describe Pangea::Resources::AWSGlobalacceleratorEndpointGroup do
         config = validate_resource_structure(result, 'aws_globalaccelerator_endpoint_group', 'minimal')
         expect(config).not_to have_key('endpoint_configuration')
       end
+      it 'includes endpoint_group_region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_globalaccelerator_endpoint_group('opt', required_attrs.merge(endpoint_group_region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_globalaccelerator_endpoint_group', 'opt')
+        expect(config).to have_key('endpoint_group_region')
+      end
+
+      it 'omits endpoint_group_region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_globalaccelerator_endpoint_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_globalaccelerator_endpoint_group', 'minimal')
+        expect(config).not_to have_key('endpoint_group_region')
+      end
       it 'includes health_check_interval_seconds when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -113,6 +133,40 @@ RSpec.describe Pangea::Resources::AWSGlobalacceleratorEndpointGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_globalaccelerator_endpoint_group', 'minimal')
         expect(config).not_to have_key('health_check_interval_seconds')
+      end
+      it 'includes health_check_path when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_globalaccelerator_endpoint_group('opt', required_attrs.merge(health_check_path: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_globalaccelerator_endpoint_group', 'opt')
+        expect(config).to have_key('health_check_path')
+      end
+
+      it 'omits health_check_path when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_globalaccelerator_endpoint_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_globalaccelerator_endpoint_group', 'minimal')
+        expect(config).not_to have_key('health_check_path')
+      end
+      it 'includes health_check_port when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_globalaccelerator_endpoint_group('opt', required_attrs.merge(health_check_port: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_globalaccelerator_endpoint_group', 'opt')
+        expect(config).to have_key('health_check_port')
+      end
+
+      it 'omits health_check_port when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_globalaccelerator_endpoint_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_globalaccelerator_endpoint_group', 'minimal')
+        expect(config).not_to have_key('health_check_port')
       end
       it 'includes health_check_protocol when provided' do
         synth = create_synthesizer

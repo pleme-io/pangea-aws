@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigSafetyRule do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { control_panel_arn: 'test-value', name: 'test-value', rule_config: [{ 'key1' => 'val1' }], wait_period_ms: 3.14 } }
+  let(:required_attrs) { { control_panel_arn: 'test-value', name: 'test-value', rule_config: { 'key1' => 'val1' }, wait_period_ms: 3.14 } }
 
   describe ':aws_route53recoverycontrolconfig_safety_rule' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigSafetyRule do
         expect(ref.id).to eq("${aws_route53recoverycontrolconfig_safety_rule.test.id}")
         expect(ref.arn).to eq("${aws_route53recoverycontrolconfig_safety_rule.test.arn}")
         expect(ref.status).to eq("${aws_route53recoverycontrolconfig_safety_rule.test.status}")
+        expect(ref.tags_all).to eq("${aws_route53recoverycontrolconfig_safety_rule.test.tags_all}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigSafetyRule do
         config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_safety_rule', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('status')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ asserted_controls: ['test-value'], gating_controls: ['test-value'], target_controls: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ asserted_controls: ['test-value'], gating_controls: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target_controls: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,8 @@ RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigSafetyRule do
         config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_safety_rule', 'full')
         expect(config).to have_key('asserted_controls')
         expect(config).to have_key('gating_controls')
+        expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('target_controls')
       end
     end
@@ -107,6 +111,40 @@ RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigSafetyRule do
         config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_safety_rule', 'minimal')
         expect(config).not_to have_key('gating_controls')
       end
+      it 'includes tags when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_safety_rule('opt', required_attrs.merge(tags: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_safety_rule', 'opt')
+        expect(config).to have_key('tags')
+      end
+
+      it 'omits tags when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_safety_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_safety_rule', 'minimal')
+        expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_safety_rule('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_safety_rule', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_safety_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_safety_rule', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes target_controls when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -136,7 +174,7 @@ RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigSafetyRule do
         config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_safety_rule', 'typed')
         expect(config['control_panel_arn']).to be_a(String)
         expect(config['name']).to be_a(String)
-        expect(config['rule_config']).to be_a(Array)
+        expect(config['rule_config']).to be_a(Hash)
         expect(config['wait_period_ms']).to be_a(Float)
       end
     end
@@ -170,8 +208,8 @@ RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigSafetyRule do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_route53recoverycontrolconfig_safety_rule,
     method: :aws_route53recoverycontrolconfig_safety_rule,
-    required_attrs: { control_panel_arn: 'test-value', name: 'test-value', rule_config: [{ 'key1' => 'val1' }], wait_period_ms: 3.14 },
-    expected_outputs: [:id, :arn, :status],
+    required_attrs: { control_panel_arn: 'test-value', name: 'test-value', rule_config: { 'key1' => 'val1' }, wait_period_ms: 3.14 },
+    expected_outputs: [:id, :arn, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

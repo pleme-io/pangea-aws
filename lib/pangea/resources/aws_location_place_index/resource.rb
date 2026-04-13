@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LocationPlaceIndexAttributes,
       outputs: { id: :id },
       map: [:data_source, :index_name],
-      map_present: [:data_source_configuration, :description, :tags, :tags_all]
+      map_present: [:data_source_configuration, :description, :region, :tags, :tags_all]
   end
   module AWS
     include AWSLocationPlaceIndex

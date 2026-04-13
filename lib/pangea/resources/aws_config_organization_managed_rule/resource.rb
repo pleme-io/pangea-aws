@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConfigOrganizationManagedRuleAttributes,
       outputs: { id: :id },
       map: [:name, :rule_identifier],
-      map_present: [:description, :excluded_accounts, :input_parameters, :maximum_execution_frequency, :resource_id_scope, :resource_types_scope, :tag_key_scope, :tag_value_scope]
+      map_present: [:description, :excluded_accounts, :input_parameters, :maximum_execution_frequency, :region, :resource_id_scope, :resource_types_scope, :tag_key_scope, :tag_value_scope]
   end
   module AWS
     include AWSConfigOrganizationManagedRule

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerStudioLifecycleConfigAttributes,
       outputs: { id: :id },
       map: [:studio_lifecycle_config_app_type, :studio_lifecycle_config_content, :studio_lifecycle_config_name],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerStudioLifecycleConfig

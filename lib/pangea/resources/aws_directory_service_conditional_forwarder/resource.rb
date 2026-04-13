@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_directory_service_conditional_forwarder,
       attributes_class: AWS::Types::DirectoryServiceConditionalForwarderAttributes,
       outputs: { id: :id },
-      map: [:directory_id, :dns_ips, :remote_domain_name]
+      map: [:directory_id, :dns_ips, :remote_domain_name],
+      map_present: [:region]
   end
   module AWS
     include AWSDirectoryServiceConditionalForwarder

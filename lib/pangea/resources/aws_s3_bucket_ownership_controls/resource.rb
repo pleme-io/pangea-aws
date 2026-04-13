@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_s3_bucket_ownership_controls,
       attributes_class: AWS::Types::S3BucketOwnershipControlsAttributes,
       outputs: { id: :id },
-      map: [:bucket, :rule]
+      map: [:bucket, :rule],
+      map_present: [:region]
   end
   module AWS
     include AWSS3BucketOwnershipControls

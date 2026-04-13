@@ -43,11 +43,14 @@ RSpec.describe Pangea::Resources::AWSMemorydbCluster do
         expect(ref.engine).to eq("${aws_memorydb_cluster.test.engine}")
         expect(ref.engine_patch_version).to eq("${aws_memorydb_cluster.test.engine_patch_version}")
         expect(ref.engine_version).to eq("${aws_memorydb_cluster.test.engine_version}")
+        expect(ref.ip_discovery).to eq("${aws_memorydb_cluster.test.ip_discovery}")
         expect(ref.maintenance_window).to eq("${aws_memorydb_cluster.test.maintenance_window}")
         expect(ref.name).to eq("${aws_memorydb_cluster.test.name}")
         expect(ref.name_prefix).to eq("${aws_memorydb_cluster.test.name_prefix}")
+        expect(ref.network_type).to eq("${aws_memorydb_cluster.test.network_type}")
         expect(ref.parameter_group_name).to eq("${aws_memorydb_cluster.test.parameter_group_name}")
         expect(ref.port).to eq("${aws_memorydb_cluster.test.port}")
+        expect(ref.region).to eq("${aws_memorydb_cluster.test.region}")
         expect(ref.shards).to eq("${aws_memorydb_cluster.test.shards}")
         expect(ref.snapshot_retention_limit).to eq("${aws_memorydb_cluster.test.snapshot_retention_limit}")
         expect(ref.snapshot_window).to eq("${aws_memorydb_cluster.test.snapshot_window}")
@@ -69,11 +72,14 @@ RSpec.describe Pangea::Resources::AWSMemorydbCluster do
         expect(config).not_to have_key('engine')
         expect(config).not_to have_key('engine_patch_version')
         expect(config).not_to have_key('engine_version')
+        expect(config).not_to have_key('ip_discovery')
         expect(config).not_to have_key('maintenance_window')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('network_type')
         expect(config).not_to have_key('parameter_group_name')
         expect(config).not_to have_key('port')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('shards')
         expect(config).not_to have_key('snapshot_retention_limit')
         expect(config).not_to have_key('snapshot_window')
@@ -83,7 +89,7 @@ RSpec.describe Pangea::Resources::AWSMemorydbCluster do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ auto_minor_version_upgrade: true, data_tiering: true, description: 'test-value', final_snapshot_name: 'test-value', kms_key_arn: 'test-value', multi_region_cluster_name: 'test-value', num_replicas_per_shard: 3.14, num_shards: 3.14, security_group_ids: ['test-value'], snapshot_arns: ['test-value'], snapshot_name: 'test-value', sns_topic_arn: 'test-value', tags: { 'key1' => 'val1' }, tls_enabled: true }) }
+      let(:all_attrs) { required_attrs.merge({ auto_minor_version_upgrade: true, data_tiering: true, description: 'test-value', engine: 'test-value', engine_version: 'test-value', final_snapshot_name: 'test-value', ip_discovery: 'test-value', kms_key_arn: 'test-value', maintenance_window: 'test-value', multi_region_cluster_name: 'test-value', name: 'test-value', name_prefix: 'test-value', network_type: 'test-value', num_replicas_per_shard: 3.14, num_shards: 3.14, parameter_group_name: 'test-value', port: 3.14, region: 'test-value', security_group_ids: ['test-value'], snapshot_arns: ['test-value'], snapshot_name: 'test-value', snapshot_retention_limit: 3.14, snapshot_window: 'test-value', sns_topic_arn: 'test-value', subnet_group_name: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tls_enabled: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -95,16 +101,30 @@ RSpec.describe Pangea::Resources::AWSMemorydbCluster do
         expect(config).to have_key('auto_minor_version_upgrade')
         expect(config).to have_key('data_tiering')
         expect(config).to have_key('description')
+        expect(config).to have_key('engine')
+        expect(config).to have_key('engine_version')
         expect(config).to have_key('final_snapshot_name')
+        expect(config).to have_key('ip_discovery')
         expect(config).to have_key('kms_key_arn')
+        expect(config).to have_key('maintenance_window')
         expect(config).to have_key('multi_region_cluster_name')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('network_type')
         expect(config).to have_key('num_replicas_per_shard')
         expect(config).to have_key('num_shards')
+        expect(config).to have_key('parameter_group_name')
+        expect(config).to have_key('port')
+        expect(config).to have_key('region')
         expect(config).to have_key('security_group_ids')
         expect(config).to have_key('snapshot_arns')
         expect(config).to have_key('snapshot_name')
+        expect(config).to have_key('snapshot_retention_limit')
+        expect(config).to have_key('snapshot_window')
         expect(config).to have_key('sns_topic_arn')
+        expect(config).to have_key('subnet_group_name')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('tls_enabled')
       end
     end
@@ -161,6 +181,40 @@ RSpec.describe Pangea::Resources::AWSMemorydbCluster do
         config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes engine when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(engine: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('engine')
+      end
+
+      it 'omits engine when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('engine')
+      end
+      it 'includes engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('engine_version')
+      end
+
+      it 'omits engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('engine_version')
+      end
       it 'includes final_snapshot_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -177,6 +231,23 @@ RSpec.describe Pangea::Resources::AWSMemorydbCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
         expect(config).not_to have_key('final_snapshot_name')
+      end
+      it 'includes ip_discovery when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(ip_discovery: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('ip_discovery')
+      end
+
+      it 'omits ip_discovery when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('ip_discovery')
       end
       it 'includes kms_key_arn when provided' do
         synth = create_synthesizer
@@ -195,6 +266,23 @@ RSpec.describe Pangea::Resources::AWSMemorydbCluster do
         config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
         expect(config).not_to have_key('kms_key_arn')
       end
+      it 'includes maintenance_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(maintenance_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('maintenance_window')
+      end
+
+      it 'omits maintenance_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('maintenance_window')
+      end
       it 'includes multi_region_cluster_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -211,6 +299,57 @@ RSpec.describe Pangea::Resources::AWSMemorydbCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
         expect(config).not_to have_key('multi_region_cluster_name')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes network_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(network_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('network_type')
+      end
+
+      it 'omits network_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('network_type')
       end
       it 'includes num_replicas_per_shard when provided' do
         synth = create_synthesizer
@@ -245,6 +384,57 @@ RSpec.describe Pangea::Resources::AWSMemorydbCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
         expect(config).not_to have_key('num_shards')
+      end
+      it 'includes parameter_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(parameter_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('parameter_group_name')
+      end
+
+      it 'omits parameter_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('parameter_group_name')
+      end
+      it 'includes port when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(port: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('port')
+      end
+
+      it 'omits port when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('port')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes security_group_ids when provided' do
         synth = create_synthesizer
@@ -297,6 +487,40 @@ RSpec.describe Pangea::Resources::AWSMemorydbCluster do
         config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
         expect(config).not_to have_key('snapshot_name')
       end
+      it 'includes snapshot_retention_limit when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(snapshot_retention_limit: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('snapshot_retention_limit')
+      end
+
+      it 'omits snapshot_retention_limit when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('snapshot_retention_limit')
+      end
+      it 'includes snapshot_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(snapshot_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('snapshot_window')
+      end
+
+      it 'omits snapshot_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('snapshot_window')
+      end
       it 'includes sns_topic_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -314,6 +538,23 @@ RSpec.describe Pangea::Resources::AWSMemorydbCluster do
         config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
         expect(config).not_to have_key('sns_topic_arn')
       end
+      it 'includes subnet_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(subnet_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('subnet_group_name')
+      end
+
+      it 'omits subnet_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('subnet_group_name')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -330,6 +571,23 @@ RSpec.describe Pangea::Resources::AWSMemorydbCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_memorydb_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_memorydb_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes tls_enabled when provided' do
         synth = create_synthesizer
@@ -429,7 +687,7 @@ RSpec.describe Pangea::Resources::AWSMemorydbCluster do
     resource_type: :aws_memorydb_cluster,
     method: :aws_memorydb_cluster,
     required_attrs: { acl_name: 'test-value', node_type: 'test-value' },
-    expected_outputs: [:id, :arn, :cluster_endpoint, :engine, :engine_patch_version, :engine_version, :maintenance_window, :name, :name_prefix, :parameter_group_name, :port, :shards, :snapshot_retention_limit, :snapshot_window, :subnet_group_name, :tags_all],
+    expected_outputs: [:id, :arn, :cluster_endpoint, :engine, :engine_patch_version, :engine_version, :ip_discovery, :maintenance_window, :name, :name_prefix, :network_type, :parameter_group_name, :port, :region, :shards, :snapshot_retention_limit, :snapshot_window, :subnet_group_name, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:auto_minor_version_upgrade, :data_tiering, :tls_enabled]

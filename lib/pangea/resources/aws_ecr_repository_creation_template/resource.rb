@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EcrRepositoryCreationTemplateAttributes,
       outputs: { id: :id },
       map: [:applied_for, :prefix],
-      map_present: [:custom_role_arn, :description, :encryption_configuration, :image_tag_mutability, :lifecycle_policy, :repository_policy, :resource_tags]
+      map_present: [:custom_role_arn, :description, :encryption_configuration, :image_tag_mutability, :image_tag_mutability_exclusion_filter, :lifecycle_policy, :region, :repository_policy, :resource_tags]
   end
   module AWS
     include AWSEcrRepositoryCreationTemplate

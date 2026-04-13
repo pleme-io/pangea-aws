@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Route53recoverycontrolconfigSafetyRuleAttributes,
       outputs: { id: :id },
       map: [:control_panel_arn, :name, :rule_config, :wait_period_ms],
-      map_present: [:asserted_controls, :gating_controls, :target_controls]
+      map_present: [:asserted_controls, :gating_controls, :tags, :tags_all, :target_controls]
   end
   module AWS
     include AWSRoute53recoverycontrolconfigSafetyRule

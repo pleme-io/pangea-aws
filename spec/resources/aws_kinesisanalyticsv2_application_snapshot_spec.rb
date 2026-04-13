@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSKinesisanalyticsv2ApplicationSnapshot do
 
         expect(ref.id).to eq("${aws_kinesisanalyticsv2_application_snapshot.test.id}")
         expect(ref.application_version_id).to eq("${aws_kinesisanalyticsv2_application_snapshot.test.application_version_id}")
+        expect(ref.region).to eq("${aws_kinesisanalyticsv2_application_snapshot.test.region}")
         expect(ref.snapshot_creation_timestamp).to eq("${aws_kinesisanalyticsv2_application_snapshot.test.snapshot_creation_timestamp}")
       end
     end
@@ -52,7 +53,42 @@ RSpec.describe Pangea::Resources::AWSKinesisanalyticsv2ApplicationSnapshot do
 
         config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application_snapshot', 'test')
         expect(config).not_to have_key('application_version_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('snapshot_creation_timestamp')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesisanalyticsv2_application_snapshot('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application_snapshot', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesisanalyticsv2_application_snapshot('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application_snapshot', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesisanalyticsv2_application_snapshot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesisanalyticsv2_application_snapshot', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -99,7 +135,7 @@ RSpec.describe Pangea::Resources::AWSKinesisanalyticsv2ApplicationSnapshot do
     resource_type: :aws_kinesisanalyticsv2_application_snapshot,
     method: :aws_kinesisanalyticsv2_application_snapshot,
     required_attrs: { application_name: 'test-value', snapshot_name: 'test-value' },
-    expected_outputs: [:id, :application_version_id, :snapshot_creation_timestamp],
+    expected_outputs: [:id, :application_version_id, :region, :snapshot_creation_timestamp],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

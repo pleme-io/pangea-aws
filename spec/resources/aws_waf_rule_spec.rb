@@ -57,7 +57,7 @@ RSpec.describe Pangea::Resources::AWSWafRule do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ predicates: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ predicates: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +68,7 @@ RSpec.describe Pangea::Resources::AWSWafRule do
         config = validate_resource_structure(result, 'aws_waf_rule', 'full')
         expect(config).to have_key('predicates')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -105,6 +106,23 @@ RSpec.describe Pangea::Resources::AWSWafRule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_waf_rule', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_waf_rule('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_waf_rule', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_waf_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_waf_rule', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 

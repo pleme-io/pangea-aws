@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchCompositeAlarmAttributes,
       outputs: { id: :id },
       map: [:alarm_name, :alarm_rule],
-      map_present: [:actions_suppressor, :alarm_actions, :alarm_description, :insufficient_data_actions, :ok_actions, :tags, :tags_all],
+      map_present: [:actions_suppressor, :alarm_actions, :alarm_description, :insufficient_data_actions, :ok_actions, :region, :tags, :tags_all],
       map_bool: [:actions_enabled]
   end
   module AWS

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpclatticeResourceConfigurationAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:port_ranges, :protocol, :resource_configuration_definition, :resource_configuration_group_id, :resource_gateway_identifier, :tags, :type],
+      map_present: [:custom_domain_name, :domain_verification_id, :port_ranges, :protocol, :region, :resource_configuration_definition, :resource_configuration_group_id, :resource_gateway_identifier, :tags, :type],
       map_bool: [:allow_association_to_shareable_service_network]
   end
   module AWS

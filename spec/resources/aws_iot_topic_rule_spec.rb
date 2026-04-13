@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSIotTopicRule do
 
         expect(ref.id).to eq("${aws_iot_topic_rule.test.id}")
         expect(ref.arn).to eq("${aws_iot_topic_rule.test.arn}")
+        expect(ref.region).to eq("${aws_iot_topic_rule.test.region}")
         expect(ref.tags_all).to eq("${aws_iot_topic_rule.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSIotTopicRule do
 
         config = validate_resource_structure(result, 'aws_iot_topic_rule', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cloudwatch_alarm: [{ 'key1' => 'val1' }], cloudwatch_logs: [{ 'key1' => 'val1' }], cloudwatch_metric: [{ 'key1' => 'val1' }], description: 'test-value', dynamodb: [{ 'key1' => 'val1' }], dynamodbv2: [{ 'key1' => 'val1' }], elasticsearch: [{ 'key1' => 'val1' }], error_action: [{ 'key1' => 'val1' }], firehose: [{ 'key1' => 'val1' }], http: [{ 'key1' => 'val1' }], iot_analytics: [{ 'key1' => 'val1' }], iot_events: [{ 'key1' => 'val1' }], kafka: [{ 'key1' => 'val1' }], kinesis: [{ 'key1' => 'val1' }], lambda: [{ 'key1' => 'val1' }], republish: [{ 'key1' => 'val1' }], s3: [{ 'key1' => 'val1' }], sns: [{ 'key1' => 'val1' }], sqs: [{ 'key1' => 'val1' }], step_functions: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, timestream: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ cloudwatch_alarm: [{ 'key1' => 'val1' }], cloudwatch_logs: [{ 'key1' => 'val1' }], cloudwatch_metric: [{ 'key1' => 'val1' }], description: 'test-value', dynamodb: [{ 'key1' => 'val1' }], dynamodbv2: [{ 'key1' => 'val1' }], elasticsearch: [{ 'key1' => 'val1' }], error_action: { 'key1' => 'val1' }, firehose: [{ 'key1' => 'val1' }], http: [{ 'key1' => 'val1' }], iot_analytics: [{ 'key1' => 'val1' }], iot_events: [{ 'key1' => 'val1' }], kafka: [{ 'key1' => 'val1' }], kinesis: [{ 'key1' => 'val1' }], lambda: [{ 'key1' => 'val1' }], region: 'test-value', republish: [{ 'key1' => 'val1' }], s3: [{ 'key1' => 'val1' }], sns: [{ 'key1' => 'val1' }], sqs: [{ 'key1' => 'val1' }], step_functions: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, timestream: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -81,12 +83,14 @@ RSpec.describe Pangea::Resources::AWSIotTopicRule do
         expect(config).to have_key('kafka')
         expect(config).to have_key('kinesis')
         expect(config).to have_key('lambda')
+        expect(config).to have_key('region')
         expect(config).to have_key('republish')
         expect(config).to have_key('s3')
         expect(config).to have_key('sns')
         expect(config).to have_key('sqs')
         expect(config).to have_key('step_functions')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('timestream')
       end
     end
@@ -214,7 +218,7 @@ RSpec.describe Pangea::Resources::AWSIotTopicRule do
       it 'includes error_action when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_iot_topic_rule('opt', required_attrs.merge(error_action: [{ 'key1' => 'val1' }]))
+        synth.aws_iot_topic_rule('opt', required_attrs.merge(error_action: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_topic_rule', 'opt')
         expect(config).to have_key('error_action')
@@ -347,6 +351,23 @@ RSpec.describe Pangea::Resources::AWSIotTopicRule do
         config = validate_resource_structure(result, 'aws_iot_topic_rule', 'minimal')
         expect(config).not_to have_key('lambda')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_topic_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_topic_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_topic_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_topic_rule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes republish when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -449,6 +470,23 @@ RSpec.describe Pangea::Resources::AWSIotTopicRule do
         config = validate_resource_structure(result, 'aws_iot_topic_rule', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_topic_rule('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_topic_rule', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_topic_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_topic_rule', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes timestream when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -527,7 +565,7 @@ RSpec.describe Pangea::Resources::AWSIotTopicRule do
     resource_type: :aws_iot_topic_rule,
     method: :aws_iot_topic_rule,
     required_attrs: { enabled: true, name: 'test-value', sql: 'test-value', sql_version: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled]

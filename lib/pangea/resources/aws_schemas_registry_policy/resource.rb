@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_schemas_registry_policy,
       attributes_class: AWS::Types::SchemasRegistryPolicyAttributes,
       outputs: { id: :id },
-      map: [:policy, :registry_name]
+      map: [:policy, :registry_name],
+      map_present: [:region]
   end
   module AWS
     include AWSSchemasRegistryPolicy

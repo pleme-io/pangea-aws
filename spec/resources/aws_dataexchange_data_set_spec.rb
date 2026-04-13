@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDataexchangeDataSet do
 
         expect(ref.id).to eq("${aws_dataexchange_data_set.test.id}")
         expect(ref.arn).to eq("${aws_dataexchange_data_set.test.arn}")
+        expect(ref.region).to eq("${aws_dataexchange_data_set.test.region}")
         expect(ref.tags_all).to eq("${aws_dataexchange_data_set.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSDataexchangeDataSet do
 
         config = validate_resource_structure(result, 'aws_dataexchange_data_set', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,11 +68,30 @@ RSpec.describe Pangea::Resources::AWSDataexchangeDataSet do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_dataexchange_data_set', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dataexchange_data_set('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dataexchange_data_set', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dataexchange_data_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dataexchange_data_set', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -87,6 +108,23 @@ RSpec.describe Pangea::Resources::AWSDataexchangeDataSet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dataexchange_data_set', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dataexchange_data_set('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dataexchange_data_set', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dataexchange_data_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dataexchange_data_set', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -134,7 +172,7 @@ RSpec.describe Pangea::Resources::AWSDataexchangeDataSet do
     resource_type: :aws_dataexchange_data_set,
     method: :aws_dataexchange_data_set,
     required_attrs: { asset_type: 'test-value', description: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

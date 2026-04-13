@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationOptIn do
         expect(ref.id).to eq("${aws_lakeformation_opt_in.test.id}")
         expect(ref.last_modified).to eq("${aws_lakeformation_opt_in.test.last_modified}")
         expect(ref.last_updated_by).to eq("${aws_lakeformation_opt_in.test.last_updated_by}")
+        expect(ref.region).to eq("${aws_lakeformation_opt_in.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSLakeformationOptIn do
         config = validate_resource_structure(result, 'aws_lakeformation_opt_in', 'test')
         expect(config).not_to have_key('last_modified')
         expect(config).not_to have_key('last_updated_by')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ condition: [{ 'key1' => 'val1' }], principal: [{ 'key1' => 'val1' }], resource_data: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ condition: [{ 'key1' => 'val1' }], principal: [{ 'key1' => 'val1' }], region: 'test-value', resource_data: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationOptIn do
         config = validate_resource_structure(result, 'aws_lakeformation_opt_in', 'full')
         expect(config).to have_key('condition')
         expect(config).to have_key('principal')
+        expect(config).to have_key('region')
         expect(config).to have_key('resource_data')
       end
     end
@@ -106,6 +109,23 @@ RSpec.describe Pangea::Resources::AWSLakeformationOptIn do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lakeformation_opt_in', 'minimal')
         expect(config).not_to have_key('principal')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_opt_in('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_opt_in', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_opt_in('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_opt_in', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes resource_data when provided' do
         synth = create_synthesizer
@@ -167,7 +187,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationOptIn do
     resource_type: :aws_lakeformation_opt_in,
     method: :aws_lakeformation_opt_in,
     required_attrs: {},
-    expected_outputs: [:id, :last_modified, :last_updated_by],
+    expected_outputs: [:id, :last_modified, :last_updated_by, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

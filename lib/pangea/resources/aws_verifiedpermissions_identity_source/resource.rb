@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VerifiedpermissionsIdentitySourceAttributes,
       outputs: { id: :id },
       map: [:policy_store_id],
-      map_present: [:configuration, :principal_entity_type]
+      map_present: [:configuration, :principal_entity_type, :region]
   end
   module AWS
     include AWSVerifiedpermissionsIdentitySource

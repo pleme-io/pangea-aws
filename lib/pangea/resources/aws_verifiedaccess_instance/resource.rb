@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_verifiedaccess_instance,
       attributes_class: AWS::Types::VerifiedaccessInstanceAttributes,
       outputs: { id: :id },
-      map_present: [:cidr_endpoints_custom_subdomain, :description, :tags, :tags_all],
+      map_present: [:cidr_endpoints_custom_subdomain, :description, :region, :tags, :tags_all],
       map_bool: [:fips_enabled]
   end
   module AWS

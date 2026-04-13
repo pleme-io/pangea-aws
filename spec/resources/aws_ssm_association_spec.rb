@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSSsmAssociation do
         expect(ref.association_id).to eq("${aws_ssm_association.test.association_id}")
         expect(ref.document_version).to eq("${aws_ssm_association.test.document_version}")
         expect(ref.parameters).to eq("${aws_ssm_association.test.parameters}")
+        expect(ref.region).to eq("${aws_ssm_association.test.region}")
         expect(ref.tags_all).to eq("${aws_ssm_association.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSSsmAssociation do
         expect(config).not_to have_key('association_id')
         expect(config).not_to have_key('document_version')
         expect(config).not_to have_key('parameters')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ apply_only_at_cron_interval: true, association_name: 'test-value', automation_target_parameter_name: 'test-value', compliance_severity: 'test-value', instance_id: 'test-value', max_concurrency: 'test-value', max_errors: 'test-value', output_location: [{ 'key1' => 'val1' }], schedule_expression: 'test-value', sync_compliance: 'test-value', tags: { 'key1' => 'val1' }, targets: [{ 'key1' => 'val1' }], wait_for_success_timeout_seconds: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ apply_only_at_cron_interval: true, association_name: 'test-value', automation_target_parameter_name: 'test-value', calendar_names: ['test-value'], compliance_severity: 'test-value', document_version: 'test-value', max_concurrency: 'test-value', max_errors: 'test-value', output_location: { 'key1' => 'val1' }, parameters: { 'key1' => 'val1' }, region: 'test-value', schedule_expression: 'test-value', sync_compliance: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, targets: [{ 'key1' => 'val1' }], wait_for_success_timeout_seconds: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,14 +77,18 @@ RSpec.describe Pangea::Resources::AWSSsmAssociation do
         expect(config).to have_key('apply_only_at_cron_interval')
         expect(config).to have_key('association_name')
         expect(config).to have_key('automation_target_parameter_name')
+        expect(config).to have_key('calendar_names')
         expect(config).to have_key('compliance_severity')
-        expect(config).to have_key('instance_id')
+        expect(config).to have_key('document_version')
         expect(config).to have_key('max_concurrency')
         expect(config).to have_key('max_errors')
         expect(config).to have_key('output_location')
+        expect(config).to have_key('parameters')
+        expect(config).to have_key('region')
         expect(config).to have_key('schedule_expression')
         expect(config).to have_key('sync_compliance')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('targets')
         expect(config).to have_key('wait_for_success_timeout_seconds')
       end
@@ -140,6 +146,23 @@ RSpec.describe Pangea::Resources::AWSSsmAssociation do
         config = validate_resource_structure(result, 'aws_ssm_association', 'minimal')
         expect(config).not_to have_key('automation_target_parameter_name')
       end
+      it 'includes calendar_names when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_association('opt', required_attrs.merge(calendar_names: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_association', 'opt')
+        expect(config).to have_key('calendar_names')
+      end
+
+      it 'omits calendar_names when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_association', 'minimal')
+        expect(config).not_to have_key('calendar_names')
+      end
       it 'includes compliance_severity when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -157,22 +180,22 @@ RSpec.describe Pangea::Resources::AWSSsmAssociation do
         config = validate_resource_structure(result, 'aws_ssm_association', 'minimal')
         expect(config).not_to have_key('compliance_severity')
       end
-      it 'includes instance_id when provided' do
+      it 'includes document_version when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ssm_association('opt', required_attrs.merge(instance_id: 'test-value'))
+        synth.aws_ssm_association('opt', required_attrs.merge(document_version: 'test-value'))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_association', 'opt')
-        expect(config).to have_key('instance_id')
+        expect(config).to have_key('document_version')
       end
 
-      it 'omits instance_id when not provided' do
+      it 'omits document_version when not provided' do
         synth = create_synthesizer
         synth.extend(described_class)
         synth.aws_ssm_association('minimal', required_attrs)
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_association', 'minimal')
-        expect(config).not_to have_key('instance_id')
+        expect(config).not_to have_key('document_version')
       end
       it 'includes max_concurrency when provided' do
         synth = create_synthesizer
@@ -211,7 +234,7 @@ RSpec.describe Pangea::Resources::AWSSsmAssociation do
       it 'includes output_location when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ssm_association('opt', required_attrs.merge(output_location: [{ 'key1' => 'val1' }]))
+        synth.aws_ssm_association('opt', required_attrs.merge(output_location: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_association', 'opt')
         expect(config).to have_key('output_location')
@@ -224,6 +247,40 @@ RSpec.describe Pangea::Resources::AWSSsmAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_association', 'minimal')
         expect(config).not_to have_key('output_location')
+      end
+      it 'includes parameters when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_association('opt', required_attrs.merge(parameters: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_association', 'opt')
+        expect(config).to have_key('parameters')
+      end
+
+      it 'omits parameters when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_association', 'minimal')
+        expect(config).not_to have_key('parameters')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes schedule_expression when provided' do
         synth = create_synthesizer
@@ -275,6 +332,23 @@ RSpec.describe Pangea::Resources::AWSSsmAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_association', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_association('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_association', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_association', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes targets when provided' do
         synth = create_synthesizer
@@ -368,7 +442,7 @@ RSpec.describe Pangea::Resources::AWSSsmAssociation do
     resource_type: :aws_ssm_association,
     method: :aws_ssm_association,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :association_id, :document_version, :parameters, :tags_all],
+    expected_outputs: [:id, :arn, :association_id, :document_version, :parameters, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:apply_only_at_cron_interval]

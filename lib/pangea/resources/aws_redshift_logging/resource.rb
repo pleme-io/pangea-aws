@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftLoggingAttributes,
       outputs: { id: :id },
       map: [:cluster_identifier],
-      map_present: [:bucket_name, :log_destination_type, :log_exports, :s3_key_prefix]
+      map_present: [:bucket_name, :log_destination_type, :log_exports, :region, :s3_key_prefix]
   end
   module AWS
     include AWSRedshiftLogging

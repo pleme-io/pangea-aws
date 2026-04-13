@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSMqBroker do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { broker_name: 'test-value', engine_type: 'test-value', engine_version: 'test-value', host_instance_type: 'test-value', user: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { broker_name: 'test-value', engine_type: 'test-value', engine_version: 'test-value', host_instance_type: 'test-value' } }
 
   describe ':aws_mq_broker' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_mq_broker', 'test')
-        validate_required_attributes(config, [:broker_name, :engine_type, :engine_version, :host_instance_type, :user])
+        validate_required_attributes(config, [:broker_name, :engine_type, :engine_version, :host_instance_type])
       end
 
       it 'returns a ResourceReference' do
@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
         expect(ref.data_replication_mode).to eq("${aws_mq_broker.test.data_replication_mode}")
         expect(ref.instances).to eq("${aws_mq_broker.test.instances}")
         expect(ref.pending_data_replication_mode).to eq("${aws_mq_broker.test.pending_data_replication_mode}")
+        expect(ref.region).to eq("${aws_mq_broker.test.region}")
         expect(ref.storage_type).to eq("${aws_mq_broker.test.storage_type}")
         expect(ref.subnet_ids).to eq("${aws_mq_broker.test.subnet_ids}")
         expect(ref.tags_all).to eq("${aws_mq_broker.test.tags_all}")
@@ -62,6 +63,7 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
         expect(config).not_to have_key('data_replication_mode')
         expect(config).not_to have_key('instances')
         expect(config).not_to have_key('pending_data_replication_mode')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('storage_type')
         expect(config).not_to have_key('subnet_ids')
         expect(config).not_to have_key('tags_all')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ apply_immediately: true, auto_minor_version_upgrade: true, configuration: [{ 'key1' => 'val1' }], data_replication_primary_broker_arn: 'test-value', deployment_mode: 'test-value', encryption_options: [{ 'key1' => 'val1' }], ldap_server_metadata: [{ 'key1' => 'val1' }], logs: [{ 'key1' => 'val1' }], maintenance_window_start_time: [{ 'key1' => 'val1' }], publicly_accessible: true, security_groups: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ apply_immediately: true, authentication_strategy: 'test-value', auto_minor_version_upgrade: true, configuration: { 'key1' => 'val1' }, data_replication_mode: 'test-value', data_replication_primary_broker_arn: 'test-value', deployment_mode: 'test-value', encryption_options: { 'key1' => 'val1' }, ldap_server_metadata: { 'key1' => 'val1' }, logs: { 'key1' => 'val1' }, maintenance_window_start_time: { 'key1' => 'val1' }, publicly_accessible: true, region: 'test-value', security_groups: ['test-value'], storage_type: 'test-value', subnet_ids: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, user: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,8 +81,10 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
 
         config = validate_resource_structure(result, 'aws_mq_broker', 'full')
         expect(config).to have_key('apply_immediately')
+        expect(config).to have_key('authentication_strategy')
         expect(config).to have_key('auto_minor_version_upgrade')
         expect(config).to have_key('configuration')
+        expect(config).to have_key('data_replication_mode')
         expect(config).to have_key('data_replication_primary_broker_arn')
         expect(config).to have_key('deployment_mode')
         expect(config).to have_key('encryption_options')
@@ -88,8 +92,13 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
         expect(config).to have_key('logs')
         expect(config).to have_key('maintenance_window_start_time')
         expect(config).to have_key('publicly_accessible')
+        expect(config).to have_key('region')
         expect(config).to have_key('security_groups')
+        expect(config).to have_key('storage_type')
+        expect(config).to have_key('subnet_ids')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('user')
       end
     end
 
@@ -111,6 +120,23 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
         config = validate_resource_structure(result, 'aws_mq_broker', 'minimal')
         expect(config).not_to have_key('apply_immediately')
       end
+      it 'includes authentication_strategy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('opt', required_attrs.merge(authentication_strategy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'opt')
+        expect(config).to have_key('authentication_strategy')
+      end
+
+      it 'omits authentication_strategy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'minimal')
+        expect(config).not_to have_key('authentication_strategy')
+      end
       it 'includes auto_minor_version_upgrade when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -131,7 +157,7 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
       it 'includes configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_mq_broker('opt', required_attrs.merge(configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_mq_broker('opt', required_attrs.merge(configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mq_broker', 'opt')
         expect(config).to have_key('configuration')
@@ -144,6 +170,23 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mq_broker', 'minimal')
         expect(config).not_to have_key('configuration')
+      end
+      it 'includes data_replication_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('opt', required_attrs.merge(data_replication_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'opt')
+        expect(config).to have_key('data_replication_mode')
+      end
+
+      it 'omits data_replication_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'minimal')
+        expect(config).not_to have_key('data_replication_mode')
       end
       it 'includes data_replication_primary_broker_arn when provided' do
         synth = create_synthesizer
@@ -182,7 +225,7 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
       it 'includes encryption_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_mq_broker('opt', required_attrs.merge(encryption_options: [{ 'key1' => 'val1' }]))
+        synth.aws_mq_broker('opt', required_attrs.merge(encryption_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mq_broker', 'opt')
         expect(config).to have_key('encryption_options')
@@ -199,7 +242,7 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
       it 'includes ldap_server_metadata when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_mq_broker('opt', required_attrs.merge(ldap_server_metadata: [{ 'key1' => 'val1' }]))
+        synth.aws_mq_broker('opt', required_attrs.merge(ldap_server_metadata: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mq_broker', 'opt')
         expect(config).to have_key('ldap_server_metadata')
@@ -216,7 +259,7 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
       it 'includes logs when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_mq_broker('opt', required_attrs.merge(logs: [{ 'key1' => 'val1' }]))
+        synth.aws_mq_broker('opt', required_attrs.merge(logs: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mq_broker', 'opt')
         expect(config).to have_key('logs')
@@ -233,7 +276,7 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
       it 'includes maintenance_window_start_time when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_mq_broker('opt', required_attrs.merge(maintenance_window_start_time: [{ 'key1' => 'val1' }]))
+        synth.aws_mq_broker('opt', required_attrs.merge(maintenance_window_start_time: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mq_broker', 'opt')
         expect(config).to have_key('maintenance_window_start_time')
@@ -264,6 +307,23 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
         config = validate_resource_structure(result, 'aws_mq_broker', 'minimal')
         expect(config).not_to have_key('publicly_accessible')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes security_groups when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -281,6 +341,40 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
         config = validate_resource_structure(result, 'aws_mq_broker', 'minimal')
         expect(config).not_to have_key('security_groups')
       end
+      it 'includes storage_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('opt', required_attrs.merge(storage_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'opt')
+        expect(config).to have_key('storage_type')
+      end
+
+      it 'omits storage_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'minimal')
+        expect(config).not_to have_key('storage_type')
+      end
+      it 'includes subnet_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('opt', required_attrs.merge(subnet_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'opt')
+        expect(config).to have_key('subnet_ids')
+      end
+
+      it 'omits subnet_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'minimal')
+        expect(config).not_to have_key('subnet_ids')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -297,6 +391,40 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mq_broker', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes user when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('opt', required_attrs.merge(user: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'opt')
+        expect(config).to have_key('user')
+      end
+
+      it 'omits user when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_broker('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_broker', 'minimal')
+        expect(config).not_to have_key('user')
       end
     end
 
@@ -348,7 +476,6 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
         expect(config['engine_type']).to be_a(String)
         expect(config['engine_version']).to be_a(String)
         expect(config['host_instance_type']).to be_a(String)
-        expect(config['user']).to be_a(Array)
       end
     end
 
@@ -381,8 +508,8 @@ RSpec.describe Pangea::Resources::AWSMqBroker do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_mq_broker,
     method: :aws_mq_broker,
-    required_attrs: { broker_name: 'test-value', engine_type: 'test-value', engine_version: 'test-value', host_instance_type: 'test-value', user: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :authentication_strategy, :data_replication_mode, :instances, :pending_data_replication_mode, :storage_type, :subnet_ids, :tags_all],
+    required_attrs: { broker_name: 'test-value', engine_type: 'test-value', engine_version: 'test-value', host_instance_type: 'test-value' },
+    expected_outputs: [:id, :arn, :authentication_strategy, :data_replication_mode, :instances, :pending_data_replication_mode, :region, :storage_type, :subnet_ids, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:apply_immediately, :auto_minor_version_upgrade, :publicly_accessible]

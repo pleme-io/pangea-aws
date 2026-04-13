@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LightsailLbHttpsRedirectionPolicyAttributes,
       outputs: { id: :id },
       map: [:lb_name],
+      map_present: [:region],
       map_bool: [:enabled]
   end
   module AWS

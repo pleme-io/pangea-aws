@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppconfigConfigurationProfileAttributes,
       outputs: { id: :id },
       map: [:application_id, :location_uri, :name],
-      map_present: [:description, :kms_key_identifier, :retrieval_role_arn, :tags, :tags_all, :type, :validator]
+      map_present: [:description, :kms_key_identifier, :region, :retrieval_role_arn, :tags, :tags_all, :type, :validator]
   end
   module AWS
     include AWSAppconfigConfigurationProfile

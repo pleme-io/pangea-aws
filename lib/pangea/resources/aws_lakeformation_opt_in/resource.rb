@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_lakeformation_opt_in,
       attributes_class: AWS::Types::LakeformationOptInAttributes,
       outputs: { id: :id },
-      map_present: [:condition, :principal, :resource_data]
+      map_present: [:condition, :principal, :region, :resource_data]
   end
   module AWS
     include AWSLakeformationOptIn

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ecs_tag,
       attributes_class: AWS::Types::EcsTagAttributes,
       outputs: { id: :id },
-      map: [:key, :resource_arn, :value]
+      map: [:key, :resource_arn, :value],
+      map_present: [:region]
   end
   module AWS
     include AWSEcsTag

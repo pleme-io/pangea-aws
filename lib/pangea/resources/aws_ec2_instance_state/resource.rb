@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2InstanceStateAttributes,
       outputs: { id: :id },
       map: [:instance_id, :state],
+      map_present: [:region],
       map_bool: [:force]
   end
   module AWS

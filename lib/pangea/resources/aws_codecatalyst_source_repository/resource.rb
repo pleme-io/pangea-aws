@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodecatalystSourceRepositoryAttributes,
       outputs: { id: :id },
       map: [:name, :project_name, :space_name],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSCodecatalystSourceRepository

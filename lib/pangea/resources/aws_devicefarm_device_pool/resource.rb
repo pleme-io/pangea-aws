@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DevicefarmDevicePoolAttributes,
       outputs: { id: :id },
       map: [:name, :project_arn, :rule],
-      map_present: [:description, :max_devices, :tags, :tags_all]
+      map_present: [:description, :max_devices, :region, :tags, :tags_all]
   end
   module AWS
     include AWSDevicefarmDevicePool

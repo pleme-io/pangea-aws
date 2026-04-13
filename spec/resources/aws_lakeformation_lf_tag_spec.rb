@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationLfTag do
 
         expect(ref.id).to eq("${aws_lakeformation_lf_tag.test.id}")
         expect(ref.catalog_id).to eq("${aws_lakeformation_lf_tag.test.catalog_id}")
+        expect(ref.region).to eq("${aws_lakeformation_lf_tag.test.region}")
       end
     end
 
@@ -51,6 +52,59 @@ RSpec.describe Pangea::Resources::AWSLakeformationLfTag do
 
         config = validate_resource_structure(result, 'aws_lakeformation_lf_tag', 'test')
         expect(config).not_to have_key('catalog_id')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ catalog_id: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_lf_tag('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_lakeformation_lf_tag', 'full')
+        expect(config).to have_key('catalog_id')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes catalog_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_lf_tag('opt', required_attrs.merge(catalog_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_lf_tag', 'opt')
+        expect(config).to have_key('catalog_id')
+      end
+
+      it 'omits catalog_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_lf_tag('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_lf_tag', 'minimal')
+        expect(config).not_to have_key('catalog_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_lf_tag('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_lf_tag', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_lf_tag('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_lf_tag', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -97,7 +151,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationLfTag do
     resource_type: :aws_lakeformation_lf_tag,
     method: :aws_lakeformation_lf_tag,
     required_attrs: { key: 'test-value', values: ['test-value'] },
-    expected_outputs: [:id, :catalog_id],
+    expected_outputs: [:id, :catalog_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

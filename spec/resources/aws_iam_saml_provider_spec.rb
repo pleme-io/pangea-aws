@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSIamSamlProvider do
 
         expect(ref.id).to eq("${aws_iam_saml_provider.test.id}")
         expect(ref.arn).to eq("${aws_iam_saml_provider.test.arn}")
+        expect(ref.saml_provider_uuid).to eq("${aws_iam_saml_provider.test.saml_provider_uuid}")
         expect(ref.tags_all).to eq("${aws_iam_saml_provider.test.tags_all}")
         expect(ref.valid_until).to eq("${aws_iam_saml_provider.test.valid_until}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSIamSamlProvider do
 
         config = validate_resource_structure(result, 'aws_iam_saml_provider', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('saml_provider_uuid')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('valid_until')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSIamSamlProvider do
 
         config = validate_resource_structure(result, 'aws_iam_saml_provider', 'full')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -89,6 +92,23 @@ RSpec.describe Pangea::Resources::AWSIamSamlProvider do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iam_saml_provider', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_saml_provider('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_saml_provider', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_saml_provider('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_saml_provider', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -135,7 +155,7 @@ RSpec.describe Pangea::Resources::AWSIamSamlProvider do
     resource_type: :aws_iam_saml_provider,
     method: :aws_iam_saml_provider,
     required_attrs: { name: 'test-value', saml_metadata_document: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all, :valid_until],
+    expected_outputs: [:id, :arn, :saml_provider_uuid, :tags_all, :valid_until],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

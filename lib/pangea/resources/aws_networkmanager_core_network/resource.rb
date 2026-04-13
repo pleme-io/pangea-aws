@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkmanagerCoreNetworkAttributes,
       outputs: { id: :id },
       map: [:global_network_id],
-      map_present: [:base_policy_document, :base_policy_region, :base_policy_regions, :description, :tags, :tags_all],
+      map_present: [:base_policy_document, :base_policy_regions, :description, :tags, :tags_all],
       map_bool: [:create_base_policy]
   end
   module AWS

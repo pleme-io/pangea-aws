@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightRefreshSchedule do
         expect(ref.id).to eq("${aws_quicksight_refresh_schedule.test.id}")
         expect(ref.arn).to eq("${aws_quicksight_refresh_schedule.test.arn}")
         expect(ref.aws_account_id).to eq("${aws_quicksight_refresh_schedule.test.aws_account_id}")
+        expect(ref.region).to eq("${aws_quicksight_refresh_schedule.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSQuicksightRefreshSchedule do
         config = validate_resource_structure(result, 'aws_quicksight_refresh_schedule', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('aws_account_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ schedule: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ aws_account_id: 'test-value', region: 'test-value', schedule: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,11 +68,47 @@ RSpec.describe Pangea::Resources::AWSQuicksightRefreshSchedule do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_quicksight_refresh_schedule', 'full')
+        expect(config).to have_key('aws_account_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('schedule')
       end
     end
 
     context 'optional attributes' do
+      it 'includes aws_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_refresh_schedule('opt', required_attrs.merge(aws_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_refresh_schedule', 'opt')
+        expect(config).to have_key('aws_account_id')
+      end
+
+      it 'omits aws_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_refresh_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_refresh_schedule', 'minimal')
+        expect(config).not_to have_key('aws_account_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_refresh_schedule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_refresh_schedule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_refresh_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_refresh_schedule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes schedule when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -133,7 +171,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightRefreshSchedule do
     resource_type: :aws_quicksight_refresh_schedule,
     method: :aws_quicksight_refresh_schedule,
     required_attrs: { data_set_id: 'test-value', schedule_id: 'test-value' },
-    expected_outputs: [:id, :arn, :aws_account_id],
+    expected_outputs: [:id, :arn, :aws_account_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CustomerprofilesDomainAttributes,
       outputs: { id: :id },
       map: [:default_expiration_days, :domain_name],
-      map_present: [:dead_letter_queue_url, :default_encryption_key, :matching, :rule_based_matching, :tags, :tags_all]
+      map_present: [:dead_letter_queue_url, :default_encryption_key, :matching, :region, :rule_based_matching, :tags, :tags_all]
   end
   module AWS
     include AWSCustomerprofilesDomain

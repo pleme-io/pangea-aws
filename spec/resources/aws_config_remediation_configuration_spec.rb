@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSConfigRemediationConfiguration do
 
         expect(ref.id).to eq("${aws_config_remediation_configuration.test.id}")
         expect(ref.arn).to eq("${aws_config_remediation_configuration.test.arn}")
+        expect(ref.region).to eq("${aws_config_remediation_configuration.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSConfigRemediationConfiguration do
 
         config = validate_resource_structure(result, 'aws_config_remediation_configuration', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ automatic: true, execution_controls: [{ 'key1' => 'val1' }], maximum_automatic_attempts: 3.14, parameter: [{ 'key1' => 'val1' }], resource_type: 'test-value', retry_attempt_seconds: 3.14, target_version: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ automatic: true, execution_controls: { 'key1' => 'val1' }, maximum_automatic_attempts: 3.14, parameter: [{ 'key1' => 'val1' }], region: 'test-value', resource_type: 'test-value', retry_attempt_seconds: 3.14, target_version: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSConfigRemediationConfiguration do
         expect(config).to have_key('execution_controls')
         expect(config).to have_key('maximum_automatic_attempts')
         expect(config).to have_key('parameter')
+        expect(config).to have_key('region')
         expect(config).to have_key('resource_type')
         expect(config).to have_key('retry_attempt_seconds')
         expect(config).to have_key('target_version')
@@ -95,7 +98,7 @@ RSpec.describe Pangea::Resources::AWSConfigRemediationConfiguration do
       it 'includes execution_controls when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_config_remediation_configuration('opt', required_attrs.merge(execution_controls: [{ 'key1' => 'val1' }]))
+        synth.aws_config_remediation_configuration('opt', required_attrs.merge(execution_controls: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_remediation_configuration', 'opt')
         expect(config).to have_key('execution_controls')
@@ -142,6 +145,23 @@ RSpec.describe Pangea::Resources::AWSConfigRemediationConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_remediation_configuration', 'minimal')
         expect(config).not_to have_key('parameter')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_remediation_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_remediation_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_remediation_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_remediation_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes resource_type when provided' do
         synth = create_synthesizer
@@ -254,7 +274,7 @@ RSpec.describe Pangea::Resources::AWSConfigRemediationConfiguration do
     resource_type: :aws_config_remediation_configuration,
     method: :aws_config_remediation_configuration,
     required_attrs: { config_rule_name: 'test-value', target_id: 'test-value', target_type: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:automatic]

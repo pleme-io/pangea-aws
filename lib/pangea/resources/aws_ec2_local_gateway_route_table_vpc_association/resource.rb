@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2LocalGatewayRouteTableVpcAssociationAttributes,
       outputs: { id: :id },
       map: [:local_gateway_route_table_id, :vpc_id],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSEc2LocalGatewayRouteTableVpcAssociation

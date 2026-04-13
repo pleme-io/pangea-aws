@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OpensearchPackageAttributes,
       outputs: { id: :id },
       map: [:package_name, :package_source, :package_type],
-      map_present: [:package_description]
+      map_present: [:engine_version, :package_description, :region]
   end
   module AWS
     include AWSOpensearchPackage

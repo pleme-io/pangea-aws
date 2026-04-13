@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSControltowerControl do
 
         expect(ref.id).to eq("${aws_controltower_control.test.id}")
         expect(ref.arn).to eq("${aws_controltower_control.test.arn}")
+        expect(ref.region).to eq("${aws_controltower_control.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSControltowerControl do
 
         config = validate_resource_structure(result, 'aws_controltower_control', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ parameters: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ parameters: [{ 'key1' => 'val1' }], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSControltowerControl do
 
         config = validate_resource_structure(result, 'aws_controltower_control', 'full')
         expect(config).to have_key('parameters')
+        expect(config).to have_key('region')
       end
     end
 
@@ -85,6 +88,23 @@ RSpec.describe Pangea::Resources::AWSControltowerControl do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_controltower_control', 'minimal')
         expect(config).not_to have_key('parameters')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_controltower_control('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_controltower_control', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_controltower_control('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_controltower_control', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -131,7 +151,7 @@ RSpec.describe Pangea::Resources::AWSControltowerControl do
     resource_type: :aws_controltower_control,
     method: :aws_controltower_control,
     required_attrs: { control_identifier: 'test-value', target_identifier: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

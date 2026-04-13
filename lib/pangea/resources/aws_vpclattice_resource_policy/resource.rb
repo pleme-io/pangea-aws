@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpclattice_resource_policy,
       attributes_class: AWS::Types::VpclatticeResourcePolicyAttributes,
       outputs: { id: :id },
-      map: [:policy, :resource_arn]
+      map: [:policy, :resource_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSVpclatticeResourcePolicy

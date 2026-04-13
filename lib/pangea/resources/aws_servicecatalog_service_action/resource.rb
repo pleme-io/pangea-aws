@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ServicecatalogServiceActionAttributes,
       outputs: { id: :id },
       map: [:definition, :name],
-      map_present: [:accept_language, :description]
+      map_present: [:accept_language, :description, :region]
   end
   module AWS
     include AWSServicecatalogServiceAction

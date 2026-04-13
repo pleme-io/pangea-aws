@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSGuarddutyMember do
         ref = synth.aws_guardduty_member('test', required_attrs)
 
         expect(ref.id).to eq("${aws_guardduty_member.test.id}")
+        expect(ref.region).to eq("${aws_guardduty_member.test.region}")
         expect(ref.relationship_status).to eq("${aws_guardduty_member.test.relationship_status}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSGuarddutyMember do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_guardduty_member', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('relationship_status')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ disable_email_notification: true, invitation_message: 'test-value', invite: true }) }
+      let(:all_attrs) { required_attrs.merge({ disable_email_notification: true, invitation_message: 'test-value', invite: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSGuarddutyMember do
         expect(config).to have_key('disable_email_notification')
         expect(config).to have_key('invitation_message')
         expect(config).to have_key('invite')
+        expect(config).to have_key('region')
       end
     end
 
@@ -121,6 +124,23 @@ RSpec.describe Pangea::Resources::AWSGuarddutyMember do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_guardduty_member', 'minimal')
         expect(config).not_to have_key('invite')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_guardduty_member('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_guardduty_member', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_guardduty_member('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_guardduty_member', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -193,7 +213,7 @@ RSpec.describe Pangea::Resources::AWSGuarddutyMember do
     resource_type: :aws_guardduty_member,
     method: :aws_guardduty_member,
     required_attrs: { account_id: 'test-value', detector_id: 'test-value', email: 'test-value' },
-    expected_outputs: [:id, :relationship_status],
+    expected_outputs: [:id, :region, :relationship_status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:disable_email_notification, :invite]

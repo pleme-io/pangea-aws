@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CognitoUserPoolUiCustomizationAttributes,
       outputs: { id: :id },
       map: [:user_pool_id],
-      map_present: [:client_id, :css, :image_file]
+      map_present: [:client_id, :css, :image_file, :region]
   end
   module AWS
     include AWSCognitoUserPoolUiCustomization

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcNetworkPerformanceMetricSubscriptionAttributes,
       outputs: { id: :id },
       map: [:destination, :source],
-      map_present: [:metric, :statistic]
+      map_present: [:metric, :region, :statistic]
   end
   module AWS
     include AWSVpcNetworkPerformanceMetricSubscription

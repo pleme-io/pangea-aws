@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ec2_default_credit_specification,
       attributes_class: AWS::Types::Ec2DefaultCreditSpecificationAttributes,
       outputs: { id: :id },
-      map: [:cpu_credits, :instance_family]
+      map: [:cpu_credits, :instance_family],
+      map_present: [:region]
   end
   module AWS
     include AWSEc2DefaultCreditSpecification

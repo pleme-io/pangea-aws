@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudformationTypeAttributes,
       outputs: { id: :id },
       map: [:schema_handler_package, :type_name],
-      map_present: [:execution_role_arn, :logging_config, :type]
+      map_present: [:execution_role_arn, :logging_config, :region, :type]
   end
   module AWS
     include AWSCloudformationType

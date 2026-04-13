@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSBackupRestoreTestingPlan do
 
         expect(ref.id).to eq("${aws_backup_restore_testing_plan.test.id}")
         expect(ref.arn).to eq("${aws_backup_restore_testing_plan.test.arn}")
+        expect(ref.region).to eq("${aws_backup_restore_testing_plan.test.region}")
         expect(ref.schedule_expression_timezone).to eq("${aws_backup_restore_testing_plan.test.schedule_expression_timezone}")
         expect(ref.start_window_hours).to eq("${aws_backup_restore_testing_plan.test.start_window_hours}")
         expect(ref.tags_all).to eq("${aws_backup_restore_testing_plan.test.tags_all}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSBackupRestoreTestingPlan do
 
         config = validate_resource_structure(result, 'aws_backup_restore_testing_plan', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('schedule_expression_timezone')
         expect(config).not_to have_key('start_window_hours')
         expect(config).not_to have_key('tags_all')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSBackupRestoreTestingPlan do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ recovery_point_selection: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ recovery_point_selection: [{ 'key1' => 'val1' }], region: 'test-value', schedule_expression_timezone: 'test-value', start_window_hours: 3.14, tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +73,9 @@ RSpec.describe Pangea::Resources::AWSBackupRestoreTestingPlan do
 
         config = validate_resource_structure(result, 'aws_backup_restore_testing_plan', 'full')
         expect(config).to have_key('recovery_point_selection')
+        expect(config).to have_key('region')
+        expect(config).to have_key('schedule_expression_timezone')
+        expect(config).to have_key('start_window_hours')
         expect(config).to have_key('tags')
       end
     end
@@ -92,6 +97,57 @@ RSpec.describe Pangea::Resources::AWSBackupRestoreTestingPlan do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_backup_restore_testing_plan', 'minimal')
         expect(config).not_to have_key('recovery_point_selection')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_plan('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_plan', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_plan('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_plan', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes schedule_expression_timezone when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_plan('opt', required_attrs.merge(schedule_expression_timezone: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_plan', 'opt')
+        expect(config).to have_key('schedule_expression_timezone')
+      end
+
+      it 'omits schedule_expression_timezone when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_plan('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_plan', 'minimal')
+        expect(config).not_to have_key('schedule_expression_timezone')
+      end
+      it 'includes start_window_hours when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_plan('opt', required_attrs.merge(start_window_hours: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_plan', 'opt')
+        expect(config).to have_key('start_window_hours')
+      end
+
+      it 'omits start_window_hours when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_restore_testing_plan('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_restore_testing_plan', 'minimal')
+        expect(config).not_to have_key('start_window_hours')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -155,7 +211,7 @@ RSpec.describe Pangea::Resources::AWSBackupRestoreTestingPlan do
     resource_type: :aws_backup_restore_testing_plan,
     method: :aws_backup_restore_testing_plan,
     required_attrs: { name: 'test-value', schedule_expression: 'test-value' },
-    expected_outputs: [:id, :arn, :schedule_expression_timezone, :start_window_hours, :tags_all],
+    expected_outputs: [:id, :arn, :region, :schedule_expression_timezone, :start_window_hours, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

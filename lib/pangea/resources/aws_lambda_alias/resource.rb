@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LambdaAliasAttributes,
       outputs: { id: :id },
       map: [:function_name, :function_version, :name],
-      map_present: [:description, :routing_config]
+      map_present: [:description, :region, :routing_config]
   end
   module AWS
     include AWSLambdaAlias

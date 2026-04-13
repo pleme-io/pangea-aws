@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayVpcAttachment do
 
         expect(ref.id).to eq("${aws_ec2_transit_gateway_vpc_attachment.test.id}")
         expect(ref.arn).to eq("${aws_ec2_transit_gateway_vpc_attachment.test.arn}")
+        expect(ref.region).to eq("${aws_ec2_transit_gateway_vpc_attachment.test.region}")
         expect(ref.security_group_referencing_support).to eq("${aws_ec2_transit_gateway_vpc_attachment.test.security_group_referencing_support}")
         expect(ref.tags_all).to eq("${aws_ec2_transit_gateway_vpc_attachment.test.tags_all}")
         expect(ref.transit_gateway_default_route_table_association).to eq("${aws_ec2_transit_gateway_vpc_attachment.test.transit_gateway_default_route_table_association}")
@@ -56,6 +57,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayVpcAttachment do
 
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_group_referencing_support')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('transit_gateway_default_route_table_association')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayVpcAttachment do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ appliance_mode_support: 'test-value', dns_support: 'test-value', ipv6_support: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ appliance_mode_support: 'test-value', dns_support: 'test-value', ipv6_support: 'test-value', region: 'test-value', security_group_referencing_support: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, transit_gateway_default_route_table_association: true, transit_gateway_default_route_table_propagation: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,7 +79,12 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayVpcAttachment do
         expect(config).to have_key('appliance_mode_support')
         expect(config).to have_key('dns_support')
         expect(config).to have_key('ipv6_support')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_group_referencing_support')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('transit_gateway_default_route_table_association')
+        expect(config).to have_key('transit_gateway_default_route_table_propagation')
       end
     end
 
@@ -133,6 +140,40 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayVpcAttachment do
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', 'minimal')
         expect(config).not_to have_key('ipv6_support')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_vpc_attachment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_vpc_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_group_referencing_support when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_vpc_attachment('opt', required_attrs.merge(security_group_referencing_support: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', 'opt')
+        expect(config).to have_key('security_group_referencing_support')
+      end
+
+      it 'omits security_group_referencing_support when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_vpc_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', 'minimal')
+        expect(config).not_to have_key('security_group_referencing_support')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -149,6 +190,82 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayVpcAttachment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_vpc_attachment('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_vpc_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes transit_gateway_default_route_table_association when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_vpc_attachment('opt', required_attrs.merge(transit_gateway_default_route_table_association: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', 'opt')
+        expect(config).to have_key('transit_gateway_default_route_table_association')
+      end
+
+      it 'omits transit_gateway_default_route_table_association when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_vpc_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', 'minimal')
+        expect(config).not_to have_key('transit_gateway_default_route_table_association')
+      end
+      it 'includes transit_gateway_default_route_table_propagation when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_vpc_attachment('opt', required_attrs.merge(transit_gateway_default_route_table_propagation: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', 'opt')
+        expect(config).to have_key('transit_gateway_default_route_table_propagation')
+      end
+
+      it 'omits transit_gateway_default_route_table_propagation when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_vpc_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', 'minimal')
+        expect(config).not_to have_key('transit_gateway_default_route_table_propagation')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts transit_gateway_default_route_table_association=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(transit_gateway_default_route_table_association: val)
+          synth.aws_ec2_transit_gateway_vpc_attachment("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', "bool_#{val}")
+          expect(config['transit_gateway_default_route_table_association']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts transit_gateway_default_route_table_propagation=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(transit_gateway_default_route_table_propagation: val)
+          synth.aws_ec2_transit_gateway_vpc_attachment("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_ec2_transit_gateway_vpc_attachment', "bool_#{val}")
+          expect(config['transit_gateway_default_route_table_propagation']).to eq(val)
+        end
       end
     end
 
@@ -196,8 +313,8 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayVpcAttachment do
     resource_type: :aws_ec2_transit_gateway_vpc_attachment,
     method: :aws_ec2_transit_gateway_vpc_attachment,
     required_attrs: { subnet_ids: ['test-value'], transit_gateway_id: 'test-value', vpc_id: 'test-value' },
-    expected_outputs: [:id, :arn, :security_group_referencing_support, :tags_all, :transit_gateway_default_route_table_association, :transit_gateway_default_route_table_propagation, :vpc_owner_id],
+    expected_outputs: [:id, :arn, :region, :security_group_referencing_support, :tags_all, :transit_gateway_default_route_table_association, :transit_gateway_default_route_table_propagation, :vpc_owner_id],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:transit_gateway_default_route_table_association, :transit_gateway_default_route_table_propagation]
 end

@@ -47,6 +47,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
         expect(ref.endpoint).to eq("${aws_cognito_user_pool.test.endpoint}")
         expect(ref.estimated_number_of_users).to eq("${aws_cognito_user_pool.test.estimated_number_of_users}")
         expect(ref.last_modified_date).to eq("${aws_cognito_user_pool.test.last_modified_date}")
+        expect(ref.region).to eq("${aws_cognito_user_pool.test.region}")
         expect(ref.sms_verification_message).to eq("${aws_cognito_user_pool.test.sms_verification_message}")
         expect(ref.tags_all).to eq("${aws_cognito_user_pool.test.tags_all}")
         expect(ref.user_pool_tier).to eq("${aws_cognito_user_pool.test.user_pool_tier}")
@@ -70,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
         expect(config).not_to have_key('endpoint')
         expect(config).not_to have_key('estimated_number_of_users')
         expect(config).not_to have_key('last_modified_date')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('sms_verification_message')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('user_pool_tier')
@@ -77,7 +79,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ account_recovery_setting: [{ 'key1' => 'val1' }], admin_create_user_config: [{ 'key1' => 'val1' }], alias_attributes: ['test-value'], auto_verified_attributes: ['test-value'], deletion_protection: 'test-value', device_configuration: [{ 'key1' => 'val1' }], email_configuration: [{ 'key1' => 'val1' }], email_mfa_configuration: [{ 'key1' => 'val1' }], lambda_config: [{ 'key1' => 'val1' }], mfa_configuration: 'test-value', password_policy: [{ 'key1' => 'val1' }], schema: [{ 'key1' => 'val1' }], sign_in_policy: [{ 'key1' => 'val1' }], sms_authentication_message: 'test-value', sms_configuration: [{ 'key1' => 'val1' }], software_token_mfa_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, user_attribute_update_settings: [{ 'key1' => 'val1' }], user_pool_add_ons: [{ 'key1' => 'val1' }], username_attributes: ['test-value'], username_configuration: [{ 'key1' => 'val1' }], verification_message_template: [{ 'key1' => 'val1' }], web_authn_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ account_recovery_setting: { 'key1' => 'val1' }, admin_create_user_config: { 'key1' => 'val1' }, alias_attributes: ['test-value'], auto_verified_attributes: ['test-value'], deletion_protection: 'test-value', device_configuration: { 'key1' => 'val1' }, email_configuration: { 'key1' => 'val1' }, email_mfa_configuration: { 'key1' => 'val1' }, email_verification_message: 'test-value', email_verification_subject: 'test-value', lambda_config: { 'key1' => 'val1' }, mfa_configuration: 'test-value', password_policy: { 'key1' => 'val1' }, region: 'test-value', schema: [{ 'key1' => 'val1' }], sign_in_policy: { 'key1' => 'val1' }, sms_authentication_message: 'test-value', sms_configuration: { 'key1' => 'val1' }, sms_verification_message: 'test-value', software_token_mfa_configuration: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, user_attribute_update_settings: { 'key1' => 'val1' }, user_pool_add_ons: { 'key1' => 'val1' }, user_pool_tier: 'test-value', username_attributes: ['test-value'], username_configuration: { 'key1' => 'val1' }, verification_message_template: { 'key1' => 'val1' }, web_authn_configuration: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -94,17 +96,23 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
         expect(config).to have_key('device_configuration')
         expect(config).to have_key('email_configuration')
         expect(config).to have_key('email_mfa_configuration')
+        expect(config).to have_key('email_verification_message')
+        expect(config).to have_key('email_verification_subject')
         expect(config).to have_key('lambda_config')
         expect(config).to have_key('mfa_configuration')
         expect(config).to have_key('password_policy')
+        expect(config).to have_key('region')
         expect(config).to have_key('schema')
         expect(config).to have_key('sign_in_policy')
         expect(config).to have_key('sms_authentication_message')
         expect(config).to have_key('sms_configuration')
+        expect(config).to have_key('sms_verification_message')
         expect(config).to have_key('software_token_mfa_configuration')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('user_attribute_update_settings')
         expect(config).to have_key('user_pool_add_ons')
+        expect(config).to have_key('user_pool_tier')
         expect(config).to have_key('username_attributes')
         expect(config).to have_key('username_configuration')
         expect(config).to have_key('verification_message_template')
@@ -116,7 +124,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
       it 'includes account_recovery_setting when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(account_recovery_setting: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(account_recovery_setting: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('account_recovery_setting')
@@ -133,7 +141,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
       it 'includes admin_create_user_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(admin_create_user_config: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(admin_create_user_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('admin_create_user_config')
@@ -201,7 +209,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
       it 'includes device_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(device_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(device_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('device_configuration')
@@ -218,7 +226,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
       it 'includes email_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(email_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(email_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('email_configuration')
@@ -235,7 +243,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
       it 'includes email_mfa_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(email_mfa_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(email_mfa_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('email_mfa_configuration')
@@ -249,10 +257,44 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'minimal')
         expect(config).not_to have_key('email_mfa_configuration')
       end
+      it 'includes email_verification_message when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(email_verification_message: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
+        expect(config).to have_key('email_verification_message')
+      end
+
+      it 'omits email_verification_message when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool', 'minimal')
+        expect(config).not_to have_key('email_verification_message')
+      end
+      it 'includes email_verification_subject when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(email_verification_subject: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
+        expect(config).to have_key('email_verification_subject')
+      end
+
+      it 'omits email_verification_subject when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool', 'minimal')
+        expect(config).not_to have_key('email_verification_subject')
+      end
       it 'includes lambda_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(lambda_config: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(lambda_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('lambda_config')
@@ -286,7 +328,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
       it 'includes password_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(password_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(password_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('password_policy')
@@ -299,6 +341,23 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'minimal')
         expect(config).not_to have_key('password_policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes schema when provided' do
         synth = create_synthesizer
@@ -320,7 +379,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
       it 'includes sign_in_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(sign_in_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(sign_in_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('sign_in_policy')
@@ -354,7 +413,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
       it 'includes sms_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(sms_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(sms_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('sms_configuration')
@@ -368,10 +427,27 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'minimal')
         expect(config).not_to have_key('sms_configuration')
       end
+      it 'includes sms_verification_message when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(sms_verification_message: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
+        expect(config).to have_key('sms_verification_message')
+      end
+
+      it 'omits sms_verification_message when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool', 'minimal')
+        expect(config).not_to have_key('sms_verification_message')
+      end
       it 'includes software_token_mfa_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(software_token_mfa_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(software_token_mfa_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('software_token_mfa_configuration')
@@ -402,10 +478,27 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes user_attribute_update_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(user_attribute_update_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(user_attribute_update_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('user_attribute_update_settings')
@@ -422,7 +515,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
       it 'includes user_pool_add_ons when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(user_pool_add_ons: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(user_pool_add_ons: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('user_pool_add_ons')
@@ -435,6 +528,23 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'minimal')
         expect(config).not_to have_key('user_pool_add_ons')
+      end
+      it 'includes user_pool_tier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(user_pool_tier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
+        expect(config).to have_key('user_pool_tier')
+      end
+
+      it 'omits user_pool_tier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool', 'minimal')
+        expect(config).not_to have_key('user_pool_tier')
       end
       it 'includes username_attributes when provided' do
         synth = create_synthesizer
@@ -456,7 +566,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
       it 'includes username_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(username_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(username_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('username_configuration')
@@ -473,7 +583,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
       it 'includes verification_message_template when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(verification_message_template: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(verification_message_template: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('verification_message_template')
@@ -490,7 +600,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
       it 'includes web_authn_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cognito_user_pool('opt', required_attrs.merge(web_authn_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_cognito_user_pool('opt', required_attrs.merge(web_authn_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool', 'opt')
         expect(config).to have_key('web_authn_configuration')
@@ -548,7 +658,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPool do
     resource_type: :aws_cognito_user_pool,
     method: :aws_cognito_user_pool,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :creation_date, :custom_domain, :domain, :email_verification_message, :email_verification_subject, :endpoint, :estimated_number_of_users, :last_modified_date, :sms_verification_message, :tags_all, :user_pool_tier],
+    expected_outputs: [:id, :arn, :creation_date, :custom_domain, :domain, :email_verification_message, :email_verification_subject, :endpoint, :estimated_number_of_users, :last_modified_date, :region, :sms_verification_message, :tags_all, :user_pool_tier],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

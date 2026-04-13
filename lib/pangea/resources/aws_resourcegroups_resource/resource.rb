@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_resourcegroups_resource,
       attributes_class: AWS::Types::ResourcegroupsResourceAttributes,
       outputs: { id: :id },
-      map: [:group_arn, :resource_arn]
+      map: [:group_arn, :resource_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSResourcegroupsResource

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FsxDataRepositoryAssociationAttributes,
       outputs: { id: :id },
       map: [:data_repository_path, :file_system_id, :file_system_path],
-      map_present: [:imported_file_chunk_size, :s3, :tags, :tags_all],
+      map_present: [:imported_file_chunk_size, :region, :s3, :tags, :tags_all],
       map_bool: [:batch_import_meta_data_on_create, :delete_data_in_filesystem]
   end
   module AWS

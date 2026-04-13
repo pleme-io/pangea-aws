@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftUsageLimitAttributes,
       outputs: { id: :id },
       map: [:amount, :cluster_identifier, :feature_type, :limit_type],
-      map_present: [:breach_action, :period, :tags, :tags_all]
+      map_present: [:breach_action, :period, :region, :tags, :tags_all]
   end
   module AWS
     include AWSRedshiftUsageLimit

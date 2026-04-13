@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SecurityGroupRuleAttributes,
       outputs: { id: :id },
       map: [:from_port, :protocol, :security_group_id, :to_port, :type],
-      map_present: [:cidr_blocks, :description, :ipv6_cidr_blocks, :prefix_list_ids, :source_security_group_id],
+      map_present: [:cidr_blocks, :description, :ipv6_cidr_blocks, :prefix_list_ids, :region, :source_security_group_id],
       map_bool: [:self]
   end
   module AWS

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSDatasyncLocationObjectStorage do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { agent_arns: ['test-value'], bucket_name: 'test-value', server_hostname: 'test-value' } }
+  let(:required_attrs) { { bucket_name: 'test-value', server_hostname: 'test-value' } }
 
   describe ':aws_datasync_location_object_storage' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationObjectStorage do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'test')
-        validate_required_attributes(config, [:agent_arns, :bucket_name, :server_hostname])
+        validate_required_attributes(config, [:bucket_name, :server_hostname])
       end
 
       it 'returns a ResourceReference' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationObjectStorage do
 
         expect(ref.id).to eq("${aws_datasync_location_object_storage.test.id}")
         expect(ref.arn).to eq("${aws_datasync_location_object_storage.test.arn}")
+        expect(ref.region).to eq("${aws_datasync_location_object_storage.test.region}")
         expect(ref.subdirectory).to eq("${aws_datasync_location_object_storage.test.subdirectory}")
         expect(ref.tags_all).to eq("${aws_datasync_location_object_storage.test.tags_all}")
         expect(ref.uri).to eq("${aws_datasync_location_object_storage.test.uri}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationObjectStorage do
 
         config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('subdirectory')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('uri')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationObjectStorage do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_key: 'test-value', secret_key: 'test-value', server_certificate: 'test-value', server_port: 3.14, server_protocol: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ access_key: 'test-value', agent_arns: ['test-value'], region: 'test-value', secret_key: 'test-value', server_certificate: 'test-value', server_port: 3.14, server_protocol: 'test-value', subdirectory: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,11 +73,15 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationObjectStorage do
 
         config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'full')
         expect(config).to have_key('access_key')
+        expect(config).to have_key('agent_arns')
+        expect(config).to have_key('region')
         expect(config).to have_key('secret_key')
         expect(config).to have_key('server_certificate')
         expect(config).to have_key('server_port')
         expect(config).to have_key('server_protocol')
+        expect(config).to have_key('subdirectory')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -96,6 +102,40 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationObjectStorage do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'minimal')
         expect(config).not_to have_key('access_key')
+      end
+      it 'includes agent_arns when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_object_storage('opt', required_attrs.merge(agent_arns: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'opt')
+        expect(config).to have_key('agent_arns')
+      end
+
+      it 'omits agent_arns when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_object_storage('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'minimal')
+        expect(config).not_to have_key('agent_arns')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_object_storage('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_object_storage('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes secret_key when provided' do
         synth = create_synthesizer
@@ -165,6 +205,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationObjectStorage do
         config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'minimal')
         expect(config).not_to have_key('server_protocol')
       end
+      it 'includes subdirectory when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_object_storage('opt', required_attrs.merge(subdirectory: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'opt')
+        expect(config).to have_key('subdirectory')
+      end
+
+      it 'omits subdirectory when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_object_storage('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'minimal')
+        expect(config).not_to have_key('subdirectory')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -181,6 +238,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationObjectStorage do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_object_storage('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_object_storage('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -199,7 +273,6 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationObjectStorage do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_datasync_location_object_storage', 'typed')
-        expect(config['agent_arns']).to be_a(Array)
         expect(config['bucket_name']).to be_a(String)
         expect(config['server_hostname']).to be_a(String)
       end
@@ -234,8 +307,8 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationObjectStorage do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_datasync_location_object_storage,
     method: :aws_datasync_location_object_storage,
-    required_attrs: { agent_arns: ['test-value'], bucket_name: 'test-value', server_hostname: 'test-value' },
-    expected_outputs: [:id, :arn, :subdirectory, :tags_all, :uri],
+    required_attrs: { bucket_name: 'test-value', server_hostname: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :subdirectory, :tags_all, :uri],
     sensitive_fields: [:secret_key],
     immutable_fields: [],
     boolean_fields: []

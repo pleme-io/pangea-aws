@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointServicePrivateDnsVerification do
         ref = synth.aws_vpc_endpoint_service_private_dns_verification('test', required_attrs)
 
         expect(ref.id).to eq("${aws_vpc_endpoint_service_private_dns_verification.test.id}")
+        expect(ref.region).to eq("${aws_vpc_endpoint_service_private_dns_verification.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service_private_dns_verification('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service_private_dns_verification', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ wait_for_verification: true }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', wait_for_verification: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -51,11 +64,29 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointServicePrivateDnsVerification do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpc_endpoint_service_private_dns_verification', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('wait_for_verification')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service_private_dns_verification('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service_private_dns_verification', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_service_private_dns_verification('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_service_private_dns_verification', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes wait_for_verification when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -131,7 +162,7 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointServicePrivateDnsVerification do
     resource_type: :aws_vpc_endpoint_service_private_dns_verification,
     method: :aws_vpc_endpoint_service_private_dns_verification,
     required_attrs: { service_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:wait_for_verification]

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerEndpointConfigurationAttributes,
       outputs: { id: :id },
       map: [:production_variants],
-      map_present: [:async_inference_config, :data_capture_config, :kms_key_arn, :name, :name_prefix, :shadow_production_variants, :tags, :tags_all]
+      map_present: [:async_inference_config, :data_capture_config, :execution_role_arn, :kms_key_arn, :name, :name_prefix, :region, :shadow_production_variants, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerEndpointConfiguration

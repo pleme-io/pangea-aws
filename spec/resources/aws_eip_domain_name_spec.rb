@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEipDomainName do
 
         expect(ref.id).to eq("${aws_eip_domain_name.test.id}")
         expect(ref.ptr_record).to eq("${aws_eip_domain_name.test.ptr_record}")
+        expect(ref.region).to eq("${aws_eip_domain_name.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSEipDomainName do
 
         config = validate_resource_structure(result, 'aws_eip_domain_name', 'test')
         expect(config).not_to have_key('ptr_record')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_domain_name('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_eip_domain_name', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_domain_name('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_domain_name', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip_domain_name('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip_domain_name', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -97,7 +133,7 @@ RSpec.describe Pangea::Resources::AWSEipDomainName do
     resource_type: :aws_eip_domain_name,
     method: :aws_eip_domain_name,
     required_attrs: { allocation_id: 'test-value', domain_name: 'test-value' },
-    expected_outputs: [:id, :ptr_record],
+    expected_outputs: [:id, :ptr_record, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

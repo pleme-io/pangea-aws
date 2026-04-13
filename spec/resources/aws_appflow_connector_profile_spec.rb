@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSAppflowConnectorProfile do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { connection_mode: 'test-value', connector_profile_config: [{ 'key1' => 'val1' }], connector_type: 'test-value', name: 'test-value' } }
+  let(:required_attrs) { { connection_mode: 'test-value', connector_profile_config: { 'key1' => 'val1' }, connector_type: 'test-value', name: 'test-value' } }
 
   describe ':aws_appflow_connector_profile' do
     context 'with required attributes only' do
@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSAppflowConnectorProfile do
         expect(ref.arn).to eq("${aws_appflow_connector_profile.test.arn}")
         expect(ref.credentials_arn).to eq("${aws_appflow_connector_profile.test.credentials_arn}")
         expect(ref.kms_arn).to eq("${aws_appflow_connector_profile.test.kms_arn}")
+        expect(ref.region).to eq("${aws_appflow_connector_profile.test.region}")
       end
     end
 
@@ -55,11 +56,12 @@ RSpec.describe Pangea::Resources::AWSAppflowConnectorProfile do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('credentials_arn')
         expect(config).not_to have_key('kms_arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ connector_label: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ connector_label: 'test-value', kms_arn: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,8 @@ RSpec.describe Pangea::Resources::AWSAppflowConnectorProfile do
 
         config = validate_resource_structure(result, 'aws_appflow_connector_profile', 'full')
         expect(config).to have_key('connector_label')
+        expect(config).to have_key('kms_arn')
+        expect(config).to have_key('region')
       end
     end
 
@@ -90,6 +94,40 @@ RSpec.describe Pangea::Resources::AWSAppflowConnectorProfile do
         config = validate_resource_structure(result, 'aws_appflow_connector_profile', 'minimal')
         expect(config).not_to have_key('connector_label')
       end
+      it 'includes kms_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appflow_connector_profile('opt', required_attrs.merge(kms_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appflow_connector_profile', 'opt')
+        expect(config).to have_key('kms_arn')
+      end
+
+      it 'omits kms_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appflow_connector_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appflow_connector_profile', 'minimal')
+        expect(config).not_to have_key('kms_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appflow_connector_profile('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appflow_connector_profile', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appflow_connector_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appflow_connector_profile', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'attribute types' do
@@ -101,7 +139,7 @@ RSpec.describe Pangea::Resources::AWSAppflowConnectorProfile do
 
         config = validate_resource_structure(result, 'aws_appflow_connector_profile', 'typed')
         expect(config['connection_mode']).to be_a(String)
-        expect(config['connector_profile_config']).to be_a(Array)
+        expect(config['connector_profile_config']).to be_a(Hash)
         expect(config['connector_type']).to be_a(String)
         expect(config['name']).to be_a(String)
       end
@@ -136,8 +174,8 @@ RSpec.describe Pangea::Resources::AWSAppflowConnectorProfile do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_appflow_connector_profile,
     method: :aws_appflow_connector_profile,
-    required_attrs: { connection_mode: 'test-value', connector_profile_config: [{ 'key1' => 'val1' }], connector_type: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :credentials_arn, :kms_arn],
+    required_attrs: { connection_mode: 'test-value', connector_profile_config: { 'key1' => 'val1' }, connector_type: 'test-value', name: 'test-value' },
+    expected_outputs: [:id, :arn, :credentials_arn, :kms_arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

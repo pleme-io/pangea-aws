@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSApprunnerVpcIngressConnection do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { ingress_vpc_configuration: [{ 'key1' => 'val1' }], name: 'test-value', service_arn: 'test-value' } }
+  let(:required_attrs) { { ingress_vpc_configuration: { 'key1' => 'val1' }, name: 'test-value', service_arn: 'test-value' } }
 
   describe ':aws_apprunner_vpc_ingress_connection' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerVpcIngressConnection do
         expect(ref.id).to eq("${aws_apprunner_vpc_ingress_connection.test.id}")
         expect(ref.arn).to eq("${aws_apprunner_vpc_ingress_connection.test.arn}")
         expect(ref.domain_name).to eq("${aws_apprunner_vpc_ingress_connection.test.domain_name}")
+        expect(ref.region).to eq("${aws_apprunner_vpc_ingress_connection.test.region}")
         expect(ref.status).to eq("${aws_apprunner_vpc_ingress_connection.test.status}")
         expect(ref.tags_all).to eq("${aws_apprunner_vpc_ingress_connection.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSApprunnerVpcIngressConnection do
         config = validate_resource_structure(result, 'aws_apprunner_vpc_ingress_connection', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('domain_name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,11 +72,30 @@ RSpec.describe Pangea::Resources::AWSApprunnerVpcIngressConnection do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_apprunner_vpc_ingress_connection', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_vpc_ingress_connection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_vpc_ingress_connection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_vpc_ingress_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_vpc_ingress_connection', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -92,6 +113,23 @@ RSpec.describe Pangea::Resources::AWSApprunnerVpcIngressConnection do
         config = validate_resource_structure(result, 'aws_apprunner_vpc_ingress_connection', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_vpc_ingress_connection('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_vpc_ingress_connection', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_vpc_ingress_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_vpc_ingress_connection', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -102,7 +140,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerVpcIngressConnection do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_apprunner_vpc_ingress_connection', 'typed')
-        expect(config['ingress_vpc_configuration']).to be_a(Array)
+        expect(config['ingress_vpc_configuration']).to be_a(Hash)
         expect(config['name']).to be_a(String)
         expect(config['service_arn']).to be_a(String)
       end
@@ -137,8 +175,8 @@ RSpec.describe Pangea::Resources::AWSApprunnerVpcIngressConnection do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_apprunner_vpc_ingress_connection,
     method: :aws_apprunner_vpc_ingress_connection,
-    required_attrs: { ingress_vpc_configuration: [{ 'key1' => 'val1' }], name: 'test-value', service_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :domain_name, :status, :tags_all],
+    required_attrs: { ingress_vpc_configuration: { 'key1' => 'val1' }, name: 'test-value', service_arn: 'test-value' },
+    expected_outputs: [:id, :arn, :domain_name, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

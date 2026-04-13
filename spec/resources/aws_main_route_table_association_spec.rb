@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSMainRouteTableAssociation do
 
         expect(ref.id).to eq("${aws_main_route_table_association.test.id}")
         expect(ref.original_route_table_id).to eq("${aws_main_route_table_association.test.original_route_table_id}")
+        expect(ref.region).to eq("${aws_main_route_table_association.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSMainRouteTableAssociation do
 
         config = validate_resource_structure(result, 'aws_main_route_table_association', 'test')
         expect(config).not_to have_key('original_route_table_id')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_main_route_table_association('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_main_route_table_association', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_main_route_table_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_main_route_table_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_main_route_table_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_main_route_table_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -97,7 +133,7 @@ RSpec.describe Pangea::Resources::AWSMainRouteTableAssociation do
     resource_type: :aws_main_route_table_association,
     method: :aws_main_route_table_association,
     required_attrs: { route_table_id: 'test-value', vpc_id: 'test-value' },
-    expected_outputs: [:id, :original_route_table_id],
+    expected_outputs: [:id, :original_route_table_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

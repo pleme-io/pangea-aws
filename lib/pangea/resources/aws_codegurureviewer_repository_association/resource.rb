@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodegurureviewerRepositoryAssociationAttributes,
       outputs: { id: :id },
       map: [:repository],
-      map_present: [:kms_key_details, :tags, :tags_all]
+      map_present: [:kms_key_details, :region, :tags, :tags_all]
   end
   module AWS
     include AWSCodegurureviewerRepositoryAssociation

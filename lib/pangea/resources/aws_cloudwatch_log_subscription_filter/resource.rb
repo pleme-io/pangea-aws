@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchLogSubscriptionFilterAttributes,
       outputs: { id: :id },
       map: [:destination_arn, :filter_pattern, :log_group_name, :name],
-      map_present: [:distribution, :role_arn]
+      map_present: [:distribution, :emit_system_fields, :region, :role_arn],
+      map_bool: [:apply_on_transformed_logs]
   end
   module AWS
     include AWSCloudwatchLogSubscriptionFilter

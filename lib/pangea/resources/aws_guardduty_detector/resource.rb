@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_guardduty_detector,
       attributes_class: AWS::Types::GuarddutyDetectorAttributes,
       outputs: { id: :id },
-      map_present: [:datasources, :finding_publishing_frequency, :tags, :tags_all],
+      map_present: [:datasources, :finding_publishing_frequency, :region, :tags, :tags_all],
       map_bool: [:enable]
   end
   module AWS

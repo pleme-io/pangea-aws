@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketAnalyticsConfigurationAttributes,
       outputs: { id: :id },
       map: [:bucket, :name],
-      map_present: [:filter, :storage_class_analysis]
+      map_present: [:filter, :region, :storage_class_analysis]
   end
   module AWS
     include AWSS3BucketAnalyticsConfiguration

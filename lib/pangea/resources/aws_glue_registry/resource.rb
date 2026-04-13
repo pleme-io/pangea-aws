@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueRegistryAttributes,
       outputs: { id: :id },
       map: [:registry_name],
-      map_present: [:description, :tags, :tags_all]
+      map_present: [:description, :region, :tags, :tags_all]
   end
   module AWS
     include AWSGlueRegistry

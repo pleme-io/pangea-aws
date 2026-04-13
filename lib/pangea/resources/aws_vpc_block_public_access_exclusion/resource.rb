@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcBlockPublicAccessExclusionAttributes,
       outputs: { id: :id },
       map: [:internet_gateway_exclusion_mode],
-      map_present: [:subnet_id, :tags, :vpc_id]
+      map_present: [:region, :subnet_id, :tags, :vpc_id]
   end
   module AWS
     include AWSVpcBlockPublicAccessExclusion

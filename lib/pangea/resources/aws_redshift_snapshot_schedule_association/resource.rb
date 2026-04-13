@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_redshift_snapshot_schedule_association,
       attributes_class: AWS::Types::RedshiftSnapshotScheduleAssociationAttributes,
       outputs: { id: :id },
-      map: [:cluster_identifier, :schedule_identifier]
+      map: [:cluster_identifier, :schedule_identifier],
+      map_present: [:region]
   end
   module AWS
     include AWSRedshiftSnapshotScheduleAssociation

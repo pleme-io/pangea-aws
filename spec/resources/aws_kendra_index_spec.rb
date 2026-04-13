@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSKendraIndex do
         expect(ref.created_at).to eq("${aws_kendra_index.test.created_at}")
         expect(ref.error_message).to eq("${aws_kendra_index.test.error_message}")
         expect(ref.index_statistics).to eq("${aws_kendra_index.test.index_statistics}")
+        expect(ref.region).to eq("${aws_kendra_index.test.region}")
         expect(ref.status).to eq("${aws_kendra_index.test.status}")
         expect(ref.tags_all).to eq("${aws_kendra_index.test.tags_all}")
         expect(ref.updated_at).to eq("${aws_kendra_index.test.updated_at}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSKendraIndex do
         expect(config).not_to have_key('created_at')
         expect(config).not_to have_key('error_message')
         expect(config).not_to have_key('index_statistics')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('updated_at')
@@ -67,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSKendraIndex do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ capacity_units: [{ 'key1' => 'val1' }], description: 'test-value', document_metadata_configuration_updates: [{ 'key1' => 'val1' }], edition: 'test-value', server_side_encryption_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, user_context_policy: 'test-value', user_group_resolution_configuration: [{ 'key1' => 'val1' }], user_token_configurations: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ capacity_units: { 'key1' => 'val1' }, description: 'test-value', document_metadata_configuration_updates: [{ 'key1' => 'val1' }], edition: 'test-value', region: 'test-value', server_side_encryption_configuration: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, user_context_policy: 'test-value', user_group_resolution_configuration: { 'key1' => 'val1' }, user_token_configurations: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,8 +82,10 @@ RSpec.describe Pangea::Resources::AWSKendraIndex do
         expect(config).to have_key('description')
         expect(config).to have_key('document_metadata_configuration_updates')
         expect(config).to have_key('edition')
+        expect(config).to have_key('region')
         expect(config).to have_key('server_side_encryption_configuration')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('user_context_policy')
         expect(config).to have_key('user_group_resolution_configuration')
         expect(config).to have_key('user_token_configurations')
@@ -92,7 +96,7 @@ RSpec.describe Pangea::Resources::AWSKendraIndex do
       it 'includes capacity_units when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kendra_index('opt', required_attrs.merge(capacity_units: [{ 'key1' => 'val1' }]))
+        synth.aws_kendra_index('opt', required_attrs.merge(capacity_units: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kendra_index', 'opt')
         expect(config).to have_key('capacity_units')
@@ -157,10 +161,27 @@ RSpec.describe Pangea::Resources::AWSKendraIndex do
         config = validate_resource_structure(result, 'aws_kendra_index', 'minimal')
         expect(config).not_to have_key('edition')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kendra_index('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kendra_index', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kendra_index('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kendra_index', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes server_side_encryption_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kendra_index('opt', required_attrs.merge(server_side_encryption_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kendra_index('opt', required_attrs.merge(server_side_encryption_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kendra_index', 'opt')
         expect(config).to have_key('server_side_encryption_configuration')
@@ -191,6 +212,23 @@ RSpec.describe Pangea::Resources::AWSKendraIndex do
         config = validate_resource_structure(result, 'aws_kendra_index', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kendra_index('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kendra_index', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kendra_index('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kendra_index', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes user_context_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -211,7 +249,7 @@ RSpec.describe Pangea::Resources::AWSKendraIndex do
       it 'includes user_group_resolution_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kendra_index('opt', required_attrs.merge(user_group_resolution_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kendra_index('opt', required_attrs.merge(user_group_resolution_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kendra_index', 'opt')
         expect(config).to have_key('user_group_resolution_configuration')
@@ -228,7 +266,7 @@ RSpec.describe Pangea::Resources::AWSKendraIndex do
       it 'includes user_token_configurations when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kendra_index('opt', required_attrs.merge(user_token_configurations: [{ 'key1' => 'val1' }]))
+        synth.aws_kendra_index('opt', required_attrs.merge(user_token_configurations: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kendra_index', 'opt')
         expect(config).to have_key('user_token_configurations')
@@ -287,7 +325,7 @@ RSpec.describe Pangea::Resources::AWSKendraIndex do
     resource_type: :aws_kendra_index,
     method: :aws_kendra_index,
     required_attrs: { name: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :created_at, :error_message, :index_statistics, :status, :tags_all, :updated_at],
+    expected_outputs: [:id, :arn, :created_at, :error_message, :index_statistics, :region, :status, :tags_all, :updated_at],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

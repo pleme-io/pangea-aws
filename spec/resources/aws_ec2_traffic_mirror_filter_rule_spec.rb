@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEc2TrafficMirrorFilterRule do
 
         expect(ref.id).to eq("${aws_ec2_traffic_mirror_filter_rule.test.id}")
         expect(ref.arn).to eq("${aws_ec2_traffic_mirror_filter_rule.test.arn}")
+        expect(ref.region).to eq("${aws_ec2_traffic_mirror_filter_rule.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSEc2TrafficMirrorFilterRule do
 
         config = validate_resource_structure(result, 'aws_ec2_traffic_mirror_filter_rule', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', destination_port_range: [{ 'key1' => 'val1' }], protocol: 3.14, source_port_range: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', destination_port_range: { 'key1' => 'val1' }, protocol: 3.14, region: 'test-value', source_port_range: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSEc2TrafficMirrorFilterRule do
         expect(config).to have_key('description')
         expect(config).to have_key('destination_port_range')
         expect(config).to have_key('protocol')
+        expect(config).to have_key('region')
         expect(config).to have_key('source_port_range')
       end
     end
@@ -92,7 +95,7 @@ RSpec.describe Pangea::Resources::AWSEc2TrafficMirrorFilterRule do
       it 'includes destination_port_range when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ec2_traffic_mirror_filter_rule('opt', required_attrs.merge(destination_port_range: [{ 'key1' => 'val1' }]))
+        synth.aws_ec2_traffic_mirror_filter_rule('opt', required_attrs.merge(destination_port_range: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_traffic_mirror_filter_rule', 'opt')
         expect(config).to have_key('destination_port_range')
@@ -123,10 +126,27 @@ RSpec.describe Pangea::Resources::AWSEc2TrafficMirrorFilterRule do
         config = validate_resource_structure(result, 'aws_ec2_traffic_mirror_filter_rule', 'minimal')
         expect(config).not_to have_key('protocol')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_traffic_mirror_filter_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_traffic_mirror_filter_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_traffic_mirror_filter_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_traffic_mirror_filter_rule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes source_port_range when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ec2_traffic_mirror_filter_rule('opt', required_attrs.merge(source_port_range: [{ 'key1' => 'val1' }]))
+        synth.aws_ec2_traffic_mirror_filter_rule('opt', required_attrs.merge(source_port_range: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_traffic_mirror_filter_rule', 'opt')
         expect(config).to have_key('source_port_range')
@@ -189,7 +209,7 @@ RSpec.describe Pangea::Resources::AWSEc2TrafficMirrorFilterRule do
     resource_type: :aws_ec2_traffic_mirror_filter_rule,
     method: :aws_ec2_traffic_mirror_filter_rule,
     required_attrs: { destination_cidr_block: 'test-value', rule_action: 'test-value', rule_number: 3.14, source_cidr_block: 'test-value', traffic_direction: 'test-value', traffic_mirror_filter_id: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_lightsail_domain,
       attributes_class: AWS::Types::LightsailDomainAttributes,
       outputs: { id: :id },
-      map: [:domain_name]
+      map: [:domain_name],
+      map_present: [:region]
   end
   module AWS
     include AWSLightsailDomain

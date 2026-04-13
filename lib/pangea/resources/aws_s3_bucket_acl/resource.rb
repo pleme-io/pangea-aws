@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketAclAttributes,
       outputs: { id: :id },
       map: [:bucket],
-      map_present: [:access_control_policy, :acl, :expected_bucket_owner]
+      map_present: [:access_control_policy, :acl, :expected_bucket_owner, :region]
   end
   module AWS
     include AWSS3BucketAcl

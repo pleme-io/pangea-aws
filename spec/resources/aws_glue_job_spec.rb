@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSGlueJob do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { command: [{ 'key1' => 'val1' }], name: 'test-value', role_arn: 'test-value' } }
+  let(:required_attrs) { { command: { 'key1' => 'val1' }, name: 'test-value', role_arn: 'test-value' } }
 
   describe ':aws_glue_job' do
     context 'with required attributes only' do
@@ -40,8 +40,10 @@ RSpec.describe Pangea::Resources::AWSGlueJob do
         expect(ref.id).to eq("${aws_glue_job.test.id}")
         expect(ref.arn).to eq("${aws_glue_job.test.arn}")
         expect(ref.glue_version).to eq("${aws_glue_job.test.glue_version}")
+        expect(ref.job_mode).to eq("${aws_glue_job.test.job_mode}")
         expect(ref.max_capacity).to eq("${aws_glue_job.test.max_capacity}")
         expect(ref.number_of_workers).to eq("${aws_glue_job.test.number_of_workers}")
+        expect(ref.region).to eq("${aws_glue_job.test.region}")
         expect(ref.tags_all).to eq("${aws_glue_job.test.tags_all}")
         expect(ref.timeout).to eq("${aws_glue_job.test.timeout}")
         expect(ref.worker_type).to eq("${aws_glue_job.test.worker_type}")
@@ -58,8 +60,10 @@ RSpec.describe Pangea::Resources::AWSGlueJob do
         config = validate_resource_structure(result, 'aws_glue_job', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('glue_version')
+        expect(config).not_to have_key('job_mode')
         expect(config).not_to have_key('max_capacity')
         expect(config).not_to have_key('number_of_workers')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('timeout')
         expect(config).not_to have_key('worker_type')
@@ -67,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSGlueJob do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ connections: ['test-value'], default_arguments: { 'key1' => 'val1' }, description: 'test-value', execution_class: 'test-value', execution_property: [{ 'key1' => 'val1' }], job_run_queuing_enabled: true, maintenance_window: 'test-value', max_retries: 3.14, non_overridable_arguments: { 'key1' => 'val1' }, notification_property: [{ 'key1' => 'val1' }], security_configuration: 'test-value', source_control_details: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ connections: ['test-value'], default_arguments: { 'key1' => 'val1' }, description: 'test-value', execution_class: 'test-value', execution_property: { 'key1' => 'val1' }, glue_version: 'test-value', job_mode: 'test-value', job_run_queuing_enabled: true, maintenance_window: 'test-value', max_capacity: 3.14, max_retries: 3.14, non_overridable_arguments: { 'key1' => 'val1' }, notification_property: { 'key1' => 'val1' }, number_of_workers: 3.14, region: 'test-value', security_configuration: 'test-value', source_control_details: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, timeout: 3.14, worker_type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -81,14 +85,22 @@ RSpec.describe Pangea::Resources::AWSGlueJob do
         expect(config).to have_key('description')
         expect(config).to have_key('execution_class')
         expect(config).to have_key('execution_property')
+        expect(config).to have_key('glue_version')
+        expect(config).to have_key('job_mode')
         expect(config).to have_key('job_run_queuing_enabled')
         expect(config).to have_key('maintenance_window')
+        expect(config).to have_key('max_capacity')
         expect(config).to have_key('max_retries')
         expect(config).to have_key('non_overridable_arguments')
         expect(config).to have_key('notification_property')
+        expect(config).to have_key('number_of_workers')
+        expect(config).to have_key('region')
         expect(config).to have_key('security_configuration')
         expect(config).to have_key('source_control_details')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('timeout')
+        expect(config).to have_key('worker_type')
       end
     end
 
@@ -164,7 +176,7 @@ RSpec.describe Pangea::Resources::AWSGlueJob do
       it 'includes execution_property when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_job('opt', required_attrs.merge(execution_property: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_job('opt', required_attrs.merge(execution_property: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_job', 'opt')
         expect(config).to have_key('execution_property')
@@ -177,6 +189,40 @@ RSpec.describe Pangea::Resources::AWSGlueJob do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_job', 'minimal')
         expect(config).not_to have_key('execution_property')
+      end
+      it 'includes glue_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('opt', required_attrs.merge(glue_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'opt')
+        expect(config).to have_key('glue_version')
+      end
+
+      it 'omits glue_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'minimal')
+        expect(config).not_to have_key('glue_version')
+      end
+      it 'includes job_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('opt', required_attrs.merge(job_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'opt')
+        expect(config).to have_key('job_mode')
+      end
+
+      it 'omits job_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'minimal')
+        expect(config).not_to have_key('job_mode')
       end
       it 'includes job_run_queuing_enabled when provided' do
         synth = create_synthesizer
@@ -211,6 +257,23 @@ RSpec.describe Pangea::Resources::AWSGlueJob do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_job', 'minimal')
         expect(config).not_to have_key('maintenance_window')
+      end
+      it 'includes max_capacity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('opt', required_attrs.merge(max_capacity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'opt')
+        expect(config).to have_key('max_capacity')
+      end
+
+      it 'omits max_capacity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'minimal')
+        expect(config).not_to have_key('max_capacity')
       end
       it 'includes max_retries when provided' do
         synth = create_synthesizer
@@ -249,7 +312,7 @@ RSpec.describe Pangea::Resources::AWSGlueJob do
       it 'includes notification_property when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_job('opt', required_attrs.merge(notification_property: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_job('opt', required_attrs.merge(notification_property: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_job', 'opt')
         expect(config).to have_key('notification_property')
@@ -262,6 +325,40 @@ RSpec.describe Pangea::Resources::AWSGlueJob do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_job', 'minimal')
         expect(config).not_to have_key('notification_property')
+      end
+      it 'includes number_of_workers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('opt', required_attrs.merge(number_of_workers: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'opt')
+        expect(config).to have_key('number_of_workers')
+      end
+
+      it 'omits number_of_workers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'minimal')
+        expect(config).not_to have_key('number_of_workers')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes security_configuration when provided' do
         synth = create_synthesizer
@@ -283,7 +380,7 @@ RSpec.describe Pangea::Resources::AWSGlueJob do
       it 'includes source_control_details when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_job('opt', required_attrs.merge(source_control_details: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_job('opt', required_attrs.merge(source_control_details: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_job', 'opt')
         expect(config).to have_key('source_control_details')
@@ -314,6 +411,57 @@ RSpec.describe Pangea::Resources::AWSGlueJob do
         config = validate_resource_structure(result, 'aws_glue_job', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes timeout when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('opt', required_attrs.merge(timeout: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'opt')
+        expect(config).to have_key('timeout')
+      end
+
+      it 'omits timeout when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'minimal')
+        expect(config).not_to have_key('timeout')
+      end
+      it 'includes worker_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('opt', required_attrs.merge(worker_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'opt')
+        expect(config).to have_key('worker_type')
+      end
+
+      it 'omits worker_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_job', 'minimal')
+        expect(config).not_to have_key('worker_type')
+      end
     end
 
     context 'boolean fields' do
@@ -338,7 +486,7 @@ RSpec.describe Pangea::Resources::AWSGlueJob do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_glue_job', 'typed')
-        expect(config['command']).to be_a(Array)
+        expect(config['command']).to be_a(Hash)
         expect(config['name']).to be_a(String)
         expect(config['role_arn']).to be_a(String)
       end
@@ -373,8 +521,8 @@ RSpec.describe Pangea::Resources::AWSGlueJob do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_glue_job,
     method: :aws_glue_job,
-    required_attrs: { command: [{ 'key1' => 'val1' }], name: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :glue_version, :max_capacity, :number_of_workers, :tags_all, :timeout, :worker_type],
+    required_attrs: { command: { 'key1' => 'val1' }, name: 'test-value', role_arn: 'test-value' },
+    expected_outputs: [:id, :arn, :glue_version, :job_mode, :max_capacity, :number_of_workers, :region, :tags_all, :timeout, :worker_type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:job_run_queuing_enabled]

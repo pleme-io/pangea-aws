@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MediaPackagev2ChannelGroupAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:description, :tags]
+      map_present: [:description, :region, :tags]
   end
   module AWS
     include AWSMediaPackagev2ChannelGroup

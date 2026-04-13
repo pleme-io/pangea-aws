@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::M2ApplicationAttributes,
       outputs: { id: :id },
       map: [:engine_type, :name],
-      map_present: [:definition, :description, :kms_key_id, :role_arn, :tags]
+      map_present: [:definition, :description, :kms_key_id, :region, :role_arn, :tags]
   end
   module AWS
     include AWSM2Application

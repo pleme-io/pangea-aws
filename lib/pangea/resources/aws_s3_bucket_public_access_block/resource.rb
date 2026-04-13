@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketPublicAccessBlockAttributes,
       outputs: { id: :id },
       map: [:bucket],
-      map_bool: [:block_public_acls, :block_public_policy, :ignore_public_acls, :restrict_public_buckets]
+      map_present: [:region],
+      map_bool: [:block_public_acls, :block_public_policy, :ignore_public_acls, :restrict_public_buckets, :skip_destroy]
   end
   module AWS
     include AWSS3BucketPublicAccessBlock

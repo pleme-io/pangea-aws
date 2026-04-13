@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSTranscribeLanguageModel do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { base_model_name: 'test-value', input_data_config: [{ 'key1' => 'val1' }], language_code: 'test-value', model_name: 'test-value' } }
+  let(:required_attrs) { { base_model_name: 'test-value', input_data_config: { 'key1' => 'val1' }, language_code: 'test-value', model_name: 'test-value' } }
 
   describe ':aws_transcribe_language_model' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSTranscribeLanguageModel do
 
         expect(ref.id).to eq("${aws_transcribe_language_model.test.id}")
         expect(ref.arn).to eq("${aws_transcribe_language_model.test.arn}")
+        expect(ref.region).to eq("${aws_transcribe_language_model.test.region}")
         expect(ref.tags_all).to eq("${aws_transcribe_language_model.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSTranscribeLanguageModel do
 
         config = validate_resource_structure(result, 'aws_transcribe_language_model', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,11 +68,30 @@ RSpec.describe Pangea::Resources::AWSTranscribeLanguageModel do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_transcribe_language_model', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transcribe_language_model('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transcribe_language_model', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transcribe_language_model('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transcribe_language_model', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -88,6 +109,23 @@ RSpec.describe Pangea::Resources::AWSTranscribeLanguageModel do
         config = validate_resource_structure(result, 'aws_transcribe_language_model', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transcribe_language_model('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transcribe_language_model', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transcribe_language_model('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transcribe_language_model', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -99,7 +137,7 @@ RSpec.describe Pangea::Resources::AWSTranscribeLanguageModel do
 
         config = validate_resource_structure(result, 'aws_transcribe_language_model', 'typed')
         expect(config['base_model_name']).to be_a(String)
-        expect(config['input_data_config']).to be_a(Array)
+        expect(config['input_data_config']).to be_a(Hash)
         expect(config['language_code']).to be_a(String)
         expect(config['model_name']).to be_a(String)
       end
@@ -134,8 +172,8 @@ RSpec.describe Pangea::Resources::AWSTranscribeLanguageModel do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_transcribe_language_model,
     method: :aws_transcribe_language_model,
-    required_attrs: { base_model_name: 'test-value', input_data_config: [{ 'key1' => 'val1' }], language_code: 'test-value', model_name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    required_attrs: { base_model_name: 'test-value', input_data_config: { 'key1' => 'val1' }, language_code: 'test-value', model_name: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

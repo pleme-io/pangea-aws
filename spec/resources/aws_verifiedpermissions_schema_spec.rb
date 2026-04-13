@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsSchema do
 
         expect(ref.id).to eq("${aws_verifiedpermissions_schema.test.id}")
         expect(ref.namespaces).to eq("${aws_verifiedpermissions_schema.test.namespaces}")
+        expect(ref.region).to eq("${aws_verifiedpermissions_schema.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsSchema do
 
         config = validate_resource_structure(result, 'aws_verifiedpermissions_schema', 'test')
         expect(config).not_to have_key('namespaces')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ definition: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ definition: [{ 'key1' => 'val1' }], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsSchema do
 
         config = validate_resource_structure(result, 'aws_verifiedpermissions_schema', 'full')
         expect(config).to have_key('definition')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsSchema do
       it 'includes definition when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_verifiedpermissions_schema('opt', required_attrs.merge(definition: { 'key1' => 'val1' }))
+        synth.aws_verifiedpermissions_schema('opt', required_attrs.merge(definition: [{ 'key1' => 'val1' }]))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedpermissions_schema', 'opt')
         expect(config).to have_key('definition')
@@ -85,6 +88,23 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsSchema do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedpermissions_schema', 'minimal')
         expect(config).not_to have_key('definition')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedpermissions_schema('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedpermissions_schema', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedpermissions_schema('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedpermissions_schema', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -130,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedpermissionsSchema do
     resource_type: :aws_verifiedpermissions_schema,
     method: :aws_verifiedpermissions_schema,
     required_attrs: { policy_store_id: 'test-value' },
-    expected_outputs: [:id, :namespaces],
+    expected_outputs: [:id, :namespaces, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSesEventDestination do
 
         expect(ref.id).to eq("${aws_ses_event_destination.test.id}")
         expect(ref.arn).to eq("${aws_ses_event_destination.test.arn}")
+        expect(ref.region).to eq("${aws_ses_event_destination.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSSesEventDestination do
 
         config = validate_resource_structure(result, 'aws_ses_event_destination', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cloudwatch_destination: [{ 'key1' => 'val1' }], enabled: true, kinesis_destination: [{ 'key1' => 'val1' }], sns_destination: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ cloudwatch_destination: [{ 'key1' => 'val1' }], enabled: true, kinesis_destination: { 'key1' => 'val1' }, region: 'test-value', sns_destination: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSSesEventDestination do
         expect(config).to have_key('cloudwatch_destination')
         expect(config).to have_key('enabled')
         expect(config).to have_key('kinesis_destination')
+        expect(config).to have_key('region')
         expect(config).to have_key('sns_destination')
       end
     end
@@ -109,7 +112,7 @@ RSpec.describe Pangea::Resources::AWSSesEventDestination do
       it 'includes kinesis_destination when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ses_event_destination('opt', required_attrs.merge(kinesis_destination: [{ 'key1' => 'val1' }]))
+        synth.aws_ses_event_destination('opt', required_attrs.merge(kinesis_destination: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ses_event_destination', 'opt')
         expect(config).to have_key('kinesis_destination')
@@ -123,10 +126,27 @@ RSpec.describe Pangea::Resources::AWSSesEventDestination do
         config = validate_resource_structure(result, 'aws_ses_event_destination', 'minimal')
         expect(config).not_to have_key('kinesis_destination')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_event_destination('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_event_destination', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_event_destination('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_event_destination', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes sns_destination when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ses_event_destination('opt', required_attrs.merge(sns_destination: [{ 'key1' => 'val1' }]))
+        synth.aws_ses_event_destination('opt', required_attrs.merge(sns_destination: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ses_event_destination', 'opt')
         expect(config).to have_key('sns_destination')
@@ -200,7 +220,7 @@ RSpec.describe Pangea::Resources::AWSSesEventDestination do
     resource_type: :aws_ses_event_destination,
     method: :aws_ses_event_destination,
     required_attrs: { configuration_set_name: 'test-value', matching_types: ['test-value'], name: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled]

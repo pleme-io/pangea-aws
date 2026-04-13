@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::TranscribeVocabularyFilterAttributes,
       outputs: { id: :id },
       map: [:language_code, :vocabulary_filter_name],
-      map_present: [:tags, :tags_all, :vocabulary_filter_file_uri, :words]
+      map_present: [:region, :tags, :tags_all, :vocabulary_filter_file_uri, :words]
   end
   module AWS
     include AWSTranscribeVocabularyFilter

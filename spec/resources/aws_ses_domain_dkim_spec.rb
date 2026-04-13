@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSesDomainDkim do
 
         expect(ref.id).to eq("${aws_ses_domain_dkim.test.id}")
         expect(ref.dkim_tokens).to eq("${aws_ses_domain_dkim.test.dkim_tokens}")
+        expect(ref.region).to eq("${aws_ses_domain_dkim.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSSesDomainDkim do
 
         config = validate_resource_structure(result, 'aws_ses_domain_dkim', 'test')
         expect(config).not_to have_key('dkim_tokens')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_domain_dkim('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ses_domain_dkim', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_domain_dkim('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_domain_dkim', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_domain_dkim('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_domain_dkim', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -96,7 +132,7 @@ RSpec.describe Pangea::Resources::AWSSesDomainDkim do
     resource_type: :aws_ses_domain_dkim,
     method: :aws_ses_domain_dkim,
     required_attrs: { domain: 'test-value' },
-    expected_outputs: [:id, :dkim_tokens],
+    expected_outputs: [:id, :dkim_tokens, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

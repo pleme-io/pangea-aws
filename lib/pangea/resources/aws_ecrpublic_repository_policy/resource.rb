@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ecrpublic_repository_policy,
       attributes_class: AWS::Types::EcrpublicRepositoryPolicyAttributes,
       outputs: { id: :id },
-      map: [:policy, :repository_name]
+      map: [:policy, :repository_name],
+      map_present: [:region]
   end
   module AWS
     include AWSEcrpublicRepositoryPolicy

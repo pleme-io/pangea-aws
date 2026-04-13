@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ImagebuilderComponentAttributes,
       outputs: { id: :id },
       map: [:name, :platform, :version],
-      map_present: [:change_description, :data, :description, :kms_key_id, :supported_os_versions, :tags, :tags_all, :uri],
+      map_present: [:change_description, :data, :description, :kms_key_id, :region, :supported_os_versions, :tags, :tags_all, :uri],
       map_bool: [:skip_destroy]
   end
   module AWS

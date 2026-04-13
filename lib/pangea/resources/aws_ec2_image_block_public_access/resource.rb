@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ec2_image_block_public_access,
       attributes_class: AWS::Types::Ec2ImageBlockPublicAccessAttributes,
       outputs: { id: :id },
-      map: [:state]
+      map: [:state],
+      map_present: [:region]
   end
   module AWS
     include AWSEc2ImageBlockPublicAccess

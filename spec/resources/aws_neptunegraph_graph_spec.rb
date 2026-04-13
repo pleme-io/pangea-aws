@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSNeptunegraphGraph do
         expect(ref.graph_name).to eq("${aws_neptunegraph_graph.test.graph_name}")
         expect(ref.kms_key_identifier).to eq("${aws_neptunegraph_graph.test.kms_key_identifier}")
         expect(ref.public_connectivity).to eq("${aws_neptunegraph_graph.test.public_connectivity}")
+        expect(ref.region).to eq("${aws_neptunegraph_graph.test.region}")
         expect(ref.replica_count).to eq("${aws_neptunegraph_graph.test.replica_count}")
         expect(ref.tags_all).to eq("${aws_neptunegraph_graph.test.tags_all}")
       end
@@ -63,13 +64,14 @@ RSpec.describe Pangea::Resources::AWSNeptunegraphGraph do
         expect(config).not_to have_key('graph_name')
         expect(config).not_to have_key('kms_key_identifier')
         expect(config).not_to have_key('public_connectivity')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('replica_count')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ graph_name_prefix: 'test-value', tags: { 'key1' => 'val1' }, vector_search_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ deletion_protection: true, graph_name: 'test-value', graph_name_prefix: 'test-value', kms_key_identifier: 'test-value', public_connectivity: true, region: 'test-value', replica_count: 3.14, tags: { 'key1' => 'val1' }, vector_search_configuration: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,13 +80,53 @@ RSpec.describe Pangea::Resources::AWSNeptunegraphGraph do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'full')
+        expect(config).to have_key('deletion_protection')
+        expect(config).to have_key('graph_name')
         expect(config).to have_key('graph_name_prefix')
+        expect(config).to have_key('kms_key_identifier')
+        expect(config).to have_key('public_connectivity')
+        expect(config).to have_key('region')
+        expect(config).to have_key('replica_count')
         expect(config).to have_key('tags')
         expect(config).to have_key('vector_search_configuration')
       end
     end
 
     context 'optional attributes' do
+      it 'includes deletion_protection when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptunegraph_graph('opt', required_attrs.merge(deletion_protection: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'opt')
+        expect(config).to have_key('deletion_protection')
+      end
+
+      it 'omits deletion_protection when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptunegraph_graph('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'minimal')
+        expect(config).not_to have_key('deletion_protection')
+      end
+      it 'includes graph_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptunegraph_graph('opt', required_attrs.merge(graph_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'opt')
+        expect(config).to have_key('graph_name')
+      end
+
+      it 'omits graph_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptunegraph_graph('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'minimal')
+        expect(config).not_to have_key('graph_name')
+      end
       it 'includes graph_name_prefix when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -101,6 +143,74 @@ RSpec.describe Pangea::Resources::AWSNeptunegraphGraph do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'minimal')
         expect(config).not_to have_key('graph_name_prefix')
+      end
+      it 'includes kms_key_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptunegraph_graph('opt', required_attrs.merge(kms_key_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'opt')
+        expect(config).to have_key('kms_key_identifier')
+      end
+
+      it 'omits kms_key_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptunegraph_graph('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'minimal')
+        expect(config).not_to have_key('kms_key_identifier')
+      end
+      it 'includes public_connectivity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptunegraph_graph('opt', required_attrs.merge(public_connectivity: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'opt')
+        expect(config).to have_key('public_connectivity')
+      end
+
+      it 'omits public_connectivity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptunegraph_graph('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'minimal')
+        expect(config).not_to have_key('public_connectivity')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptunegraph_graph('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptunegraph_graph('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes replica_count when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptunegraph_graph('opt', required_attrs.merge(replica_count: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'opt')
+        expect(config).to have_key('replica_count')
+      end
+
+      it 'omits replica_count when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptunegraph_graph('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'minimal')
+        expect(config).not_to have_key('replica_count')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -135,6 +245,31 @@ RSpec.describe Pangea::Resources::AWSNeptunegraphGraph do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_neptunegraph_graph', 'minimal')
         expect(config).not_to have_key('vector_search_configuration')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts deletion_protection=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(deletion_protection: val)
+          synth.aws_neptunegraph_graph("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_neptunegraph_graph', "bool_#{val}")
+          expect(config['deletion_protection']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts public_connectivity=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(public_connectivity: val)
+          synth.aws_neptunegraph_graph("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_neptunegraph_graph', "bool_#{val}")
+          expect(config['public_connectivity']).to eq(val)
+        end
       end
     end
 
@@ -180,8 +315,8 @@ RSpec.describe Pangea::Resources::AWSNeptunegraphGraph do
     resource_type: :aws_neptunegraph_graph,
     method: :aws_neptunegraph_graph,
     required_attrs: { provisioned_memory: 3.14 },
-    expected_outputs: [:id, :arn, :deletion_protection, :endpoint, :graph_name, :kms_key_identifier, :public_connectivity, :replica_count, :tags_all],
+    expected_outputs: [:id, :arn, :deletion_protection, :endpoint, :graph_name, :kms_key_identifier, :public_connectivity, :region, :replica_count, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:deletion_protection, :public_connectivity]
 end

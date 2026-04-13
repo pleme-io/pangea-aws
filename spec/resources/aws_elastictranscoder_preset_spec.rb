@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPreset do
         expect(ref.id).to eq("${aws_elastictranscoder_preset.test.id}")
         expect(ref.arn).to eq("${aws_elastictranscoder_preset.test.arn}")
         expect(ref.name).to eq("${aws_elastictranscoder_preset.test.name}")
+        expect(ref.region).to eq("${aws_elastictranscoder_preset.test.region}")
         expect(ref.type).to eq("${aws_elastictranscoder_preset.test.type}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPreset do
         config = validate_resource_structure(result, 'aws_elastictranscoder_preset', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('type')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ audio: [{ 'key1' => 'val1' }], audio_codec_options: [{ 'key1' => 'val1' }], description: 'test-value', thumbnails: [{ 'key1' => 'val1' }], video: [{ 'key1' => 'val1' }], video_codec_options: { 'key1' => 'val1' }, video_watermarks: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ audio: { 'key1' => 'val1' }, audio_codec_options: { 'key1' => 'val1' }, description: 'test-value', name: 'test-value', region: 'test-value', thumbnails: { 'key1' => 'val1' }, type: 'test-value', video: { 'key1' => 'val1' }, video_codec_options: { 'key1' => 'val1' }, video_watermarks: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,7 +73,10 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPreset do
         expect(config).to have_key('audio')
         expect(config).to have_key('audio_codec_options')
         expect(config).to have_key('description')
+        expect(config).to have_key('name')
+        expect(config).to have_key('region')
         expect(config).to have_key('thumbnails')
+        expect(config).to have_key('type')
         expect(config).to have_key('video')
         expect(config).to have_key('video_codec_options')
         expect(config).to have_key('video_watermarks')
@@ -82,7 +87,7 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPreset do
       it 'includes audio when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elastictranscoder_preset('opt', required_attrs.merge(audio: [{ 'key1' => 'val1' }]))
+        synth.aws_elastictranscoder_preset('opt', required_attrs.merge(audio: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elastictranscoder_preset', 'opt')
         expect(config).to have_key('audio')
@@ -99,7 +104,7 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPreset do
       it 'includes audio_codec_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elastictranscoder_preset('opt', required_attrs.merge(audio_codec_options: [{ 'key1' => 'val1' }]))
+        synth.aws_elastictranscoder_preset('opt', required_attrs.merge(audio_codec_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elastictranscoder_preset', 'opt')
         expect(config).to have_key('audio_codec_options')
@@ -130,10 +135,44 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPreset do
         config = validate_resource_structure(result, 'aws_elastictranscoder_preset', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastictranscoder_preset('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastictranscoder_preset', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastictranscoder_preset('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastictranscoder_preset', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastictranscoder_preset('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastictranscoder_preset', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastictranscoder_preset('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastictranscoder_preset', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes thumbnails when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elastictranscoder_preset('opt', required_attrs.merge(thumbnails: [{ 'key1' => 'val1' }]))
+        synth.aws_elastictranscoder_preset('opt', required_attrs.merge(thumbnails: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elastictranscoder_preset', 'opt')
         expect(config).to have_key('thumbnails')
@@ -147,10 +186,27 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPreset do
         config = validate_resource_structure(result, 'aws_elastictranscoder_preset', 'minimal')
         expect(config).not_to have_key('thumbnails')
       end
+      it 'includes type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastictranscoder_preset('opt', required_attrs.merge(type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastictranscoder_preset', 'opt')
+        expect(config).to have_key('type')
+      end
+
+      it 'omits type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastictranscoder_preset('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastictranscoder_preset', 'minimal')
+        expect(config).not_to have_key('type')
+      end
       it 'includes video when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elastictranscoder_preset('opt', required_attrs.merge(video: [{ 'key1' => 'val1' }]))
+        synth.aws_elastictranscoder_preset('opt', required_attrs.merge(video: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elastictranscoder_preset', 'opt')
         expect(config).to have_key('video')
@@ -242,7 +298,7 @@ RSpec.describe Pangea::Resources::AWSElastictranscoderPreset do
     resource_type: :aws_elastictranscoder_preset,
     method: :aws_elastictranscoder_preset,
     required_attrs: { container: 'test-value' },
-    expected_outputs: [:id, :arn, :name, :type],
+    expected_outputs: [:id, :arn, :name, :region, :type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

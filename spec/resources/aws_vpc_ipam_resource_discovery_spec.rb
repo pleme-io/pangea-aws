@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamResourceDiscovery do
         expect(ref.ipam_resource_discovery_region).to eq("${aws_vpc_ipam_resource_discovery.test.ipam_resource_discovery_region}")
         expect(ref.is_default).to eq("${aws_vpc_ipam_resource_discovery.test.is_default}")
         expect(ref.owner_id).to eq("${aws_vpc_ipam_resource_discovery.test.owner_id}")
+        expect(ref.region).to eq("${aws_vpc_ipam_resource_discovery.test.region}")
         expect(ref.tags_all).to eq("${aws_vpc_ipam_resource_discovery.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSVpcIpamResourceDiscovery do
         expect(config).not_to have_key('ipam_resource_discovery_region')
         expect(config).not_to have_key('is_default')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', organizational_unit_exclusion: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,10 @@ RSpec.describe Pangea::Resources::AWSVpcIpamResourceDiscovery do
 
         config = validate_resource_structure(result, 'aws_vpc_ipam_resource_discovery', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('organizational_unit_exclusion')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -95,6 +100,40 @@ RSpec.describe Pangea::Resources::AWSVpcIpamResourceDiscovery do
         config = validate_resource_structure(result, 'aws_vpc_ipam_resource_discovery', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes organizational_unit_exclusion when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_resource_discovery('opt', required_attrs.merge(organizational_unit_exclusion: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_resource_discovery', 'opt')
+        expect(config).to have_key('organizational_unit_exclusion')
+      end
+
+      it 'omits organizational_unit_exclusion when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_resource_discovery('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_resource_discovery', 'minimal')
+        expect(config).not_to have_key('organizational_unit_exclusion')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_resource_discovery('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_resource_discovery', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_resource_discovery('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_resource_discovery', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -111,6 +150,23 @@ RSpec.describe Pangea::Resources::AWSVpcIpamResourceDiscovery do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_ipam_resource_discovery', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_resource_discovery('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_resource_discovery', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_resource_discovery('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_resource_discovery', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -156,7 +212,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamResourceDiscovery do
     resource_type: :aws_vpc_ipam_resource_discovery,
     method: :aws_vpc_ipam_resource_discovery,
     required_attrs: { operating_regions: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :ipam_resource_discovery_region, :is_default, :owner_id, :tags_all],
+    expected_outputs: [:id, :arn, :ipam_resource_discovery_region, :is_default, :owner_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

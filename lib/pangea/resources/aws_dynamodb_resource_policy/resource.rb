@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DynamodbResourcePolicyAttributes,
       outputs: { id: :id },
       map: [:policy, :resource_arn],
+      map_present: [:region],
       map_bool: [:confirm_remove_self_resource_access]
   end
   module AWS

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsPath do
         expect(ref.id).to eq("${aws_ec2_network_insights_path.test.id}")
         expect(ref.arn).to eq("${aws_ec2_network_insights_path.test.arn}")
         expect(ref.destination_arn).to eq("${aws_ec2_network_insights_path.test.destination_arn}")
+        expect(ref.region).to eq("${aws_ec2_network_insights_path.test.region}")
         expect(ref.source_arn).to eq("${aws_ec2_network_insights_path.test.source_arn}")
         expect(ref.tags_all).to eq("${aws_ec2_network_insights_path.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsPath do
         config = validate_resource_structure(result, 'aws_ec2_network_insights_path', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('destination_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('source_arn')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ destination: 'test-value', destination_ip: 'test-value', destination_port: 3.14, filter_at_destination: [{ 'key1' => 'val1' }], filter_at_source: [{ 'key1' => 'val1' }], source_ip: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ destination: 'test-value', destination_ip: 'test-value', destination_port: 3.14, filter_at_destination: { 'key1' => 'val1' }, filter_at_source: { 'key1' => 'val1' }, region: 'test-value', source_ip: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,8 +77,10 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsPath do
         expect(config).to have_key('destination_port')
         expect(config).to have_key('filter_at_destination')
         expect(config).to have_key('filter_at_source')
+        expect(config).to have_key('region')
         expect(config).to have_key('source_ip')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -135,7 +139,7 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsPath do
       it 'includes filter_at_destination when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ec2_network_insights_path('opt', required_attrs.merge(filter_at_destination: [{ 'key1' => 'val1' }]))
+        synth.aws_ec2_network_insights_path('opt', required_attrs.merge(filter_at_destination: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_network_insights_path', 'opt')
         expect(config).to have_key('filter_at_destination')
@@ -152,7 +156,7 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsPath do
       it 'includes filter_at_source when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ec2_network_insights_path('opt', required_attrs.merge(filter_at_source: [{ 'key1' => 'val1' }]))
+        synth.aws_ec2_network_insights_path('opt', required_attrs.merge(filter_at_source: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_network_insights_path', 'opt')
         expect(config).to have_key('filter_at_source')
@@ -165,6 +169,23 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsPath do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_network_insights_path', 'minimal')
         expect(config).not_to have_key('filter_at_source')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_network_insights_path('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_network_insights_path', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_network_insights_path('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_network_insights_path', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes source_ip when provided' do
         synth = create_synthesizer
@@ -199,6 +220,23 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsPath do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_network_insights_path', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_network_insights_path('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_network_insights_path', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_network_insights_path('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_network_insights_path', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -245,7 +283,7 @@ RSpec.describe Pangea::Resources::AWSEc2NetworkInsightsPath do
     resource_type: :aws_ec2_network_insights_path,
     method: :aws_ec2_network_insights_path,
     required_attrs: { protocol: 'test-value', source: 'test-value' },
-    expected_outputs: [:id, :arn, :destination_arn, :source_arn, :tags_all],
+    expected_outputs: [:id, :arn, :destination_arn, :region, :source_arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

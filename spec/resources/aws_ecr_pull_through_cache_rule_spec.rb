@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSEcrPullThroughCacheRule do
         ref = synth.aws_ecr_pull_through_cache_rule('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ecr_pull_through_cache_rule.test.id}")
+        expect(ref.region).to eq("${aws_ecr_pull_through_cache_rule.test.region}")
         expect(ref.registry_id).to eq("${aws_ecr_pull_through_cache_rule.test.registry_id}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSEcrPullThroughCacheRule do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ecr_pull_through_cache_rule', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('registry_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ credential_arn: 'test-value', custom_role_arn: 'test-value', upstream_repository_prefix: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ credential_arn: 'test-value', custom_role_arn: 'test-value', region: 'test-value', upstream_repository_prefix: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,6 +68,7 @@ RSpec.describe Pangea::Resources::AWSEcrPullThroughCacheRule do
         config = validate_resource_structure(result, 'aws_ecr_pull_through_cache_rule', 'full')
         expect(config).to have_key('credential_arn')
         expect(config).to have_key('custom_role_arn')
+        expect(config).to have_key('region')
         expect(config).to have_key('upstream_repository_prefix')
       end
     end
@@ -104,6 +107,23 @@ RSpec.describe Pangea::Resources::AWSEcrPullThroughCacheRule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecr_pull_through_cache_rule', 'minimal')
         expect(config).not_to have_key('custom_role_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_pull_through_cache_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_pull_through_cache_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_pull_through_cache_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_pull_through_cache_rule', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes upstream_repository_prefix when provided' do
         synth = create_synthesizer
@@ -167,7 +187,7 @@ RSpec.describe Pangea::Resources::AWSEcrPullThroughCacheRule do
     resource_type: :aws_ecr_pull_through_cache_rule,
     method: :aws_ecr_pull_through_cache_rule,
     required_attrs: { ecr_repository_prefix: 'test-value', upstream_registry_url: 'test-value' },
-    expected_outputs: [:id, :registry_id],
+    expected_outputs: [:id, :region, :registry_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

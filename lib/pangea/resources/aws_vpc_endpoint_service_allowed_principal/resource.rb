@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpc_endpoint_service_allowed_principal,
       attributes_class: AWS::Types::VpcEndpointServiceAllowedPrincipalAttributes,
       outputs: { id: :id },
-      map: [:principal_arn, :vpc_endpoint_service_id]
+      map: [:principal_arn, :vpc_endpoint_service_id],
+      map_present: [:region]
   end
   module AWS
     include AWSVpcEndpointServiceAllowedPrincipal

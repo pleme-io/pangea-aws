@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ssmcontacts_plan,
       attributes_class: AWS::Types::SsmcontactsPlanAttributes,
       outputs: { id: :id },
-      map: [:contact_id, :stage]
+      map: [:contact_id, :stage],
+      map_present: [:region]
   end
   module AWS
     include AWSSsmcontactsPlan

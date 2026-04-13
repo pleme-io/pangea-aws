@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueDevEndpointAttributes,
       outputs: { id: :id },
       map: [:name, :role_arn],
-      map_present: [:arguments, :extra_jars_s3_path, :extra_python_libs_s3_path, :glue_version, :number_of_nodes, :number_of_workers, :public_key, :public_keys, :security_configuration, :security_group_ids, :subnet_id, :tags, :tags_all, :worker_type]
+      map_present: [:arguments, :extra_jars_s3_path, :extra_python_libs_s3_path, :glue_version, :number_of_nodes, :number_of_workers, :public_key, :public_keys, :region, :security_configuration, :security_group_ids, :subnet_id, :tags, :tags_all, :worker_type]
   end
   module AWS
     include AWSGlueDevEndpoint

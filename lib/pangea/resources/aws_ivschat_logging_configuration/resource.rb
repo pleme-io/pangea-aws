@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_ivschat_logging_configuration,
       attributes_class: AWS::Types::IvschatLoggingConfigurationAttributes,
       outputs: { id: :id },
-      map_present: [:destination_configuration, :name, :tags, :tags_all]
+      map_present: [:destination_configuration, :name, :region, :tags, :tags_all]
   end
   module AWS
     include AWSIvschatLoggingConfiguration

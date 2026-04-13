@@ -39,7 +39,10 @@ RSpec.describe Pangea::Resources::AWSDatazoneDomain do
 
         expect(ref.id).to eq("${aws_datazone_domain.test.id}")
         expect(ref.arn).to eq("${aws_datazone_domain.test.arn}")
+        expect(ref.domain_version).to eq("${aws_datazone_domain.test.domain_version}")
         expect(ref.portal_url).to eq("${aws_datazone_domain.test.portal_url}")
+        expect(ref.region).to eq("${aws_datazone_domain.test.region}")
+        expect(ref.root_domain_unit_id).to eq("${aws_datazone_domain.test.root_domain_unit_id}")
         expect(ref.tags_all).to eq("${aws_datazone_domain.test.tags_all}")
       end
     end
@@ -53,13 +56,16 @@ RSpec.describe Pangea::Resources::AWSDatazoneDomain do
 
         config = validate_resource_structure(result, 'aws_datazone_domain', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('domain_version')
         expect(config).not_to have_key('portal_url')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('root_domain_unit_id')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', kms_key_identifier: 'test-value', single_sign_on: [{ 'key1' => 'val1' }], skip_deletion_check: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', domain_version: 'test-value', kms_key_identifier: 'test-value', region: 'test-value', service_role: 'test-value', single_sign_on: [{ 'key1' => 'val1' }], skip_deletion_check: true, tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +75,10 @@ RSpec.describe Pangea::Resources::AWSDatazoneDomain do
 
         config = validate_resource_structure(result, 'aws_datazone_domain', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('domain_version')
         expect(config).to have_key('kms_key_identifier')
+        expect(config).to have_key('region')
+        expect(config).to have_key('service_role')
         expect(config).to have_key('single_sign_on')
         expect(config).to have_key('skip_deletion_check')
         expect(config).to have_key('tags')
@@ -94,6 +103,23 @@ RSpec.describe Pangea::Resources::AWSDatazoneDomain do
         config = validate_resource_structure(result, 'aws_datazone_domain', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes domain_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_domain('opt', required_attrs.merge(domain_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_domain', 'opt')
+        expect(config).to have_key('domain_version')
+      end
+
+      it 'omits domain_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_domain', 'minimal')
+        expect(config).not_to have_key('domain_version')
+      end
       it 'includes kms_key_identifier when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -110,6 +136,40 @@ RSpec.describe Pangea::Resources::AWSDatazoneDomain do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datazone_domain', 'minimal')
         expect(config).not_to have_key('kms_key_identifier')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_domain('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_domain', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_domain', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes service_role when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_domain('opt', required_attrs.merge(service_role: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_domain', 'opt')
+        expect(config).to have_key('service_role')
+      end
+
+      it 'omits service_role when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_domain', 'minimal')
+        expect(config).not_to have_key('service_role')
       end
       it 'includes single_sign_on when provided' do
         synth = create_synthesizer
@@ -221,7 +281,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneDomain do
     resource_type: :aws_datazone_domain,
     method: :aws_datazone_domain,
     required_attrs: { domain_execution_role: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :portal_url, :tags_all],
+    expected_outputs: [:id, :arn, :domain_version, :portal_url, :region, :root_domain_unit_id, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:skip_deletion_check]

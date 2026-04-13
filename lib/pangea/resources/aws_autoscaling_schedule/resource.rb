@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AutoscalingScheduleAttributes,
       outputs: { id: :id },
       map: [:autoscaling_group_name, :scheduled_action_name],
-      map_present: [:desired_capacity, :end_time, :max_size, :min_size, :recurrence, :start_time, :time_zone]
+      map_present: [:desired_capacity, :end_time, :max_size, :min_size, :recurrence, :region, :start_time, :time_zone]
   end
   module AWS
     include AWSAutoscalingSchedule

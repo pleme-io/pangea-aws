@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Lexv2modelsBotAttributes,
       outputs: { id: :id },
       map: [:idle_session_ttl_in_seconds, :name, :role_arn],
-      map_present: [:data_privacy, :description, :members, :tags, :test_bot_alias_tags, :type]
+      map_present: [:data_privacy, :description, :members, :region, :tags, :test_bot_alias_tags, :type]
   end
   module AWS
     include AWSLexv2modelsBot

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebUserAccessLoggingSettings do
 
         expect(ref.id).to eq("${aws_workspacesweb_user_access_logging_settings.test.id}")
         expect(ref.associated_portal_arns).to eq("${aws_workspacesweb_user_access_logging_settings.test.associated_portal_arns}")
+        expect(ref.region).to eq("${aws_workspacesweb_user_access_logging_settings.test.region}")
         expect(ref.tags_all).to eq("${aws_workspacesweb_user_access_logging_settings.test.tags_all}")
         expect(ref.user_access_logging_settings_arn).to eq("${aws_workspacesweb_user_access_logging_settings.test.user_access_logging_settings_arn}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebUserAccessLoggingSettings do
 
         config = validate_resource_structure(result, 'aws_workspacesweb_user_access_logging_settings', 'test')
         expect(config).not_to have_key('associated_portal_arns')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('user_access_logging_settings_arn')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,11 +70,29 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebUserAccessLoggingSettings do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_workspacesweb_user_access_logging_settings', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspacesweb_user_access_logging_settings('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspacesweb_user_access_logging_settings', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspacesweb_user_access_logging_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspacesweb_user_access_logging_settings', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -134,7 +154,7 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebUserAccessLoggingSettings do
     resource_type: :aws_workspacesweb_user_access_logging_settings,
     method: :aws_workspacesweb_user_access_logging_settings,
     required_attrs: { kinesis_stream_arn: 'test-value' },
-    expected_outputs: [:id, :associated_portal_arns, :tags_all, :user_access_logging_settings_arn],
+    expected_outputs: [:id, :associated_portal_arns, :region, :tags_all, :user_access_logging_settings_arn],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

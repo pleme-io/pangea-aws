@@ -58,6 +58,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         expect(ref.master_password_secret_arn).to eq("${aws_redshift_cluster.test.master_password_secret_arn}")
         expect(ref.master_password_secret_kms_key_id).to eq("${aws_redshift_cluster.test.master_password_secret_kms_key_id}")
         expect(ref.preferred_maintenance_window).to eq("${aws_redshift_cluster.test.preferred_maintenance_window}")
+        expect(ref.region).to eq("${aws_redshift_cluster.test.region}")
         expect(ref.tags_all).to eq("${aws_redshift_cluster.test.tags_all}")
         expect(ref.vpc_security_group_ids).to eq("${aws_redshift_cluster.test.vpc_security_group_ids}")
       end
@@ -91,13 +92,14 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         expect(config).not_to have_key('master_password_secret_arn')
         expect(config).not_to have_key('master_password_secret_kms_key_id')
         expect(config).not_to have_key('preferred_maintenance_window')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allow_version_upgrade: true, apply_immediately: true, automated_snapshot_retention_period: 3.14, availability_zone_relocation_enabled: true, cluster_version: 'test-value', elastic_ip: 'test-value', encrypted: true, final_snapshot_identifier: 'test-value', logging: [{ 'key1' => 'val1' }], maintenance_track_name: 'test-value', manage_master_password: true, manual_snapshot_retention_period: 3.14, master_password: 'test-value', master_password_wo: 'test-value', master_password_wo_version: 3.14, master_username: 'test-value', multi_az: true, number_of_nodes: 3.14, owner_account: 'test-value', port: 3.14, publicly_accessible: true, skip_final_snapshot: true, snapshot_arn: 'test-value', snapshot_cluster_identifier: 'test-value', snapshot_copy: [{ 'key1' => 'val1' }], snapshot_identifier: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ allow_version_upgrade: true, apply_immediately: true, aqua_configuration_status: 'test-value', automated_snapshot_retention_period: 3.14, availability_zone: 'test-value', availability_zone_relocation_enabled: true, cluster_parameter_group_name: 'test-value', cluster_subnet_group_name: 'test-value', cluster_type: 'test-value', cluster_version: 'test-value', database_name: 'test-value', default_iam_role_arn: 'test-value', elastic_ip: 'test-value', encrypted: 'test-value', enhanced_vpc_routing: true, final_snapshot_identifier: 'test-value', iam_roles: ['test-value'], kms_key_id: 'test-value', maintenance_track_name: 'test-value', manage_master_password: true, manual_snapshot_retention_period: 3.14, master_password: 'test-value', master_password_secret_kms_key_id: 'test-value', master_password_wo: 'test-value', master_password_wo_version: 3.14, master_username: 'test-value', multi_az: true, number_of_nodes: 3.14, owner_account: 'test-value', port: 3.14, preferred_maintenance_window: 'test-value', publicly_accessible: true, region: 'test-value', skip_final_snapshot: true, snapshot_arn: 'test-value', snapshot_cluster_identifier: 'test-value', snapshot_identifier: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_security_group_ids: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -108,17 +110,27 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'full')
         expect(config).to have_key('allow_version_upgrade')
         expect(config).to have_key('apply_immediately')
+        expect(config).to have_key('aqua_configuration_status')
         expect(config).to have_key('automated_snapshot_retention_period')
+        expect(config).to have_key('availability_zone')
         expect(config).to have_key('availability_zone_relocation_enabled')
+        expect(config).to have_key('cluster_parameter_group_name')
+        expect(config).to have_key('cluster_subnet_group_name')
+        expect(config).to have_key('cluster_type')
         expect(config).to have_key('cluster_version')
+        expect(config).to have_key('database_name')
+        expect(config).to have_key('default_iam_role_arn')
         expect(config).to have_key('elastic_ip')
         expect(config).to have_key('encrypted')
+        expect(config).to have_key('enhanced_vpc_routing')
         expect(config).to have_key('final_snapshot_identifier')
-        expect(config).to have_key('logging')
+        expect(config).to have_key('iam_roles')
+        expect(config).to have_key('kms_key_id')
         expect(config).to have_key('maintenance_track_name')
         expect(config).to have_key('manage_master_password')
         expect(config).to have_key('manual_snapshot_retention_period')
         expect(config).to have_key('master_password')
+        expect(config).to have_key('master_password_secret_kms_key_id')
         expect(config).to have_key('master_password_wo')
         expect(config).to have_key('master_password_wo_version')
         expect(config).to have_key('master_username')
@@ -126,13 +138,16 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         expect(config).to have_key('number_of_nodes')
         expect(config).to have_key('owner_account')
         expect(config).to have_key('port')
+        expect(config).to have_key('preferred_maintenance_window')
         expect(config).to have_key('publicly_accessible')
+        expect(config).to have_key('region')
         expect(config).to have_key('skip_final_snapshot')
         expect(config).to have_key('snapshot_arn')
         expect(config).to have_key('snapshot_cluster_identifier')
-        expect(config).to have_key('snapshot_copy')
         expect(config).to have_key('snapshot_identifier')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('vpc_security_group_ids')
       end
     end
 
@@ -171,6 +186,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
         expect(config).not_to have_key('apply_immediately')
       end
+      it 'includes aqua_configuration_status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(aqua_configuration_status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('aqua_configuration_status')
+      end
+
+      it 'omits aqua_configuration_status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('aqua_configuration_status')
+      end
       it 'includes automated_snapshot_retention_period when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -187,6 +219,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
         expect(config).not_to have_key('automated_snapshot_retention_period')
+      end
+      it 'includes availability_zone when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(availability_zone: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('availability_zone')
+      end
+
+      it 'omits availability_zone when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('availability_zone')
       end
       it 'includes availability_zone_relocation_enabled when provided' do
         synth = create_synthesizer
@@ -205,6 +254,57 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
         expect(config).not_to have_key('availability_zone_relocation_enabled')
       end
+      it 'includes cluster_parameter_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(cluster_parameter_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('cluster_parameter_group_name')
+      end
+
+      it 'omits cluster_parameter_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('cluster_parameter_group_name')
+      end
+      it 'includes cluster_subnet_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(cluster_subnet_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('cluster_subnet_group_name')
+      end
+
+      it 'omits cluster_subnet_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('cluster_subnet_group_name')
+      end
+      it 'includes cluster_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(cluster_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('cluster_type')
+      end
+
+      it 'omits cluster_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('cluster_type')
+      end
       it 'includes cluster_version when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -221,6 +321,40 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
         expect(config).not_to have_key('cluster_version')
+      end
+      it 'includes database_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(database_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('database_name')
+      end
+
+      it 'omits database_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('database_name')
+      end
+      it 'includes default_iam_role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(default_iam_role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('default_iam_role_arn')
+      end
+
+      it 'omits default_iam_role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('default_iam_role_arn')
       end
       it 'includes elastic_ip when provided' do
         synth = create_synthesizer
@@ -242,7 +376,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
       it 'includes encrypted when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_redshift_cluster('opt', required_attrs.merge(encrypted: true))
+        synth.aws_redshift_cluster('opt', required_attrs.merge(encrypted: 'test-value'))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
         expect(config).to have_key('encrypted')
@@ -255,6 +389,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
         expect(config).not_to have_key('encrypted')
+      end
+      it 'includes enhanced_vpc_routing when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(enhanced_vpc_routing: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('enhanced_vpc_routing')
+      end
+
+      it 'omits enhanced_vpc_routing when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('enhanced_vpc_routing')
       end
       it 'includes final_snapshot_identifier when provided' do
         synth = create_synthesizer
@@ -273,22 +424,39 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
         expect(config).not_to have_key('final_snapshot_identifier')
       end
-      it 'includes logging when provided' do
+      it 'includes iam_roles when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_redshift_cluster('opt', required_attrs.merge(logging: [{ 'key1' => 'val1' }]))
+        synth.aws_redshift_cluster('opt', required_attrs.merge(iam_roles: ['test-value']))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
-        expect(config).to have_key('logging')
+        expect(config).to have_key('iam_roles')
       end
 
-      it 'omits logging when not provided' do
+      it 'omits iam_roles when not provided' do
         synth = create_synthesizer
         synth.extend(described_class)
         synth.aws_redshift_cluster('minimal', required_attrs)
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
-        expect(config).not_to have_key('logging')
+        expect(config).not_to have_key('iam_roles')
+      end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
       end
       it 'includes maintenance_track_name when provided' do
         synth = create_synthesizer
@@ -357,6 +525,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
         expect(config).not_to have_key('master_password')
+      end
+      it 'includes master_password_secret_kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(master_password_secret_kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('master_password_secret_kms_key_id')
+      end
+
+      it 'omits master_password_secret_kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('master_password_secret_kms_key_id')
       end
       it 'includes master_password_wo when provided' do
         synth = create_synthesizer
@@ -477,6 +662,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
         expect(config).not_to have_key('port')
       end
+      it 'includes preferred_maintenance_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(preferred_maintenance_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('preferred_maintenance_window')
+      end
+
+      it 'omits preferred_maintenance_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('preferred_maintenance_window')
+      end
       it 'includes publicly_accessible when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -493,6 +695,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
         expect(config).not_to have_key('publicly_accessible')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes skip_final_snapshot when provided' do
         synth = create_synthesizer
@@ -545,23 +764,6 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
         expect(config).not_to have_key('snapshot_cluster_identifier')
       end
-      it 'includes snapshot_copy when provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_redshift_cluster('opt', required_attrs.merge(snapshot_copy: [{ 'key1' => 'val1' }]))
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
-        expect(config).to have_key('snapshot_copy')
-      end
-
-      it 'omits snapshot_copy when not provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_redshift_cluster('minimal', required_attrs)
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
-        expect(config).not_to have_key('snapshot_copy')
-      end
       it 'includes snapshot_identifier when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -595,6 +797,40 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes vpc_security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('opt', required_attrs.merge(vpc_security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'opt')
+        expect(config).to have_key('vpc_security_group_ids')
+      end
+
+      it 'omits vpc_security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster', 'minimal')
+        expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
@@ -641,14 +877,14 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
         end
       end
       [true, false].each do |val|
-        it "accepts encrypted=#{val}" do
+        it "accepts enhanced_vpc_routing=#{val}" do
           synth = create_synthesizer
           synth.extend(described_class)
-          attrs = required_attrs.merge(encrypted: val)
+          attrs = required_attrs.merge(enhanced_vpc_routing: val)
           synth.aws_redshift_cluster("bool_#{val}", attrs)
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_redshift_cluster', "bool_#{val}")
-          expect(config['encrypted']).to eq(val)
+          expect(config['enhanced_vpc_routing']).to eq(val)
         end
       end
       [true, false].each do |val|
@@ -740,8 +976,8 @@ RSpec.describe Pangea::Resources::AWSRedshiftCluster do
     resource_type: :aws_redshift_cluster,
     method: :aws_redshift_cluster,
     required_attrs: { cluster_identifier: 'test-value', node_type: 'test-value' },
-    expected_outputs: [:id, :aqua_configuration_status, :arn, :availability_zone, :cluster_namespace_arn, :cluster_nodes, :cluster_parameter_group_name, :cluster_public_key, :cluster_revision_number, :cluster_subnet_group_name, :cluster_type, :database_name, :default_iam_role_arn, :dns_name, :endpoint, :enhanced_vpc_routing, :iam_roles, :kms_key_id, :master_password_secret_arn, :master_password_secret_kms_key_id, :preferred_maintenance_window, :tags_all, :vpc_security_group_ids],
+    expected_outputs: [:id, :aqua_configuration_status, :arn, :availability_zone, :cluster_namespace_arn, :cluster_nodes, :cluster_parameter_group_name, :cluster_public_key, :cluster_revision_number, :cluster_subnet_group_name, :cluster_type, :database_name, :default_iam_role_arn, :dns_name, :endpoint, :enhanced_vpc_routing, :iam_roles, :kms_key_id, :master_password_secret_arn, :master_password_secret_kms_key_id, :preferred_maintenance_window, :region, :tags_all, :vpc_security_group_ids],
     sensitive_fields: [:master_password, :master_password_wo],
     immutable_fields: [],
-    boolean_fields: [:allow_version_upgrade, :apply_immediately, :availability_zone_relocation_enabled, :encrypted, :manage_master_password, :multi_az, :publicly_accessible, :skip_final_snapshot]
+    boolean_fields: [:allow_version_upgrade, :apply_immediately, :availability_zone_relocation_enabled, :enhanced_vpc_routing, :manage_master_password, :multi_az, :publicly_accessible, :skip_final_snapshot]
 end

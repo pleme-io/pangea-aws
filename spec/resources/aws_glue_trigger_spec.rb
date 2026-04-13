@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSGlueTrigger do
 
         expect(ref.id).to eq("${aws_glue_trigger.test.id}")
         expect(ref.arn).to eq("${aws_glue_trigger.test.arn}")
+        expect(ref.region).to eq("${aws_glue_trigger.test.region}")
         expect(ref.state).to eq("${aws_glue_trigger.test.state}")
         expect(ref.tags_all).to eq("${aws_glue_trigger.test.tags_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSGlueTrigger do
 
         config = validate_resource_structure(result, 'aws_glue_trigger', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', enabled: true, event_batching_condition: [{ 'key1' => 'val1' }], predicate: [{ 'key1' => 'val1' }], schedule: 'test-value', start_on_creation: true, tags: { 'key1' => 'val1' }, workflow_name: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', enabled: true, event_batching_condition: [{ 'key1' => 'val1' }], predicate: { 'key1' => 'val1' }, region: 'test-value', schedule: 'test-value', start_on_creation: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, workflow_name: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,9 +74,11 @@ RSpec.describe Pangea::Resources::AWSGlueTrigger do
         expect(config).to have_key('enabled')
         expect(config).to have_key('event_batching_condition')
         expect(config).to have_key('predicate')
+        expect(config).to have_key('region')
         expect(config).to have_key('schedule')
         expect(config).to have_key('start_on_creation')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('workflow_name')
       end
     end
@@ -134,7 +138,7 @@ RSpec.describe Pangea::Resources::AWSGlueTrigger do
       it 'includes predicate when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_trigger('opt', required_attrs.merge(predicate: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_trigger('opt', required_attrs.merge(predicate: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_trigger', 'opt')
         expect(config).to have_key('predicate')
@@ -147,6 +151,23 @@ RSpec.describe Pangea::Resources::AWSGlueTrigger do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_trigger', 'minimal')
         expect(config).not_to have_key('predicate')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_trigger('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_trigger', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_trigger('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_trigger', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes schedule when provided' do
         synth = create_synthesizer
@@ -198,6 +219,23 @@ RSpec.describe Pangea::Resources::AWSGlueTrigger do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_trigger', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_trigger('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_trigger', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_trigger('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_trigger', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes workflow_name when provided' do
         synth = create_synthesizer
@@ -287,7 +325,7 @@ RSpec.describe Pangea::Resources::AWSGlueTrigger do
     resource_type: :aws_glue_trigger,
     method: :aws_glue_trigger,
     required_attrs: { actions: [{ 'key1' => 'val1' }], name: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :arn, :state, :tags_all],
+    expected_outputs: [:id, :arn, :region, :state, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled, :start_on_creation]

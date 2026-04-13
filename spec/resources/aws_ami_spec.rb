@@ -49,6 +49,7 @@ RSpec.describe Pangea::Resources::AWSAmi do
         expect(ref.platform).to eq("${aws_ami.test.platform}")
         expect(ref.platform_details).to eq("${aws_ami.test.platform_details}")
         expect(ref.public).to eq("${aws_ami.test.public}")
+        expect(ref.region).to eq("${aws_ami.test.region}")
         expect(ref.root_snapshot_id).to eq("${aws_ami.test.root_snapshot_id}")
         expect(ref.tags_all).to eq("${aws_ami.test.tags_all}")
         expect(ref.usage_operation).to eq("${aws_ami.test.usage_operation}")
@@ -74,6 +75,7 @@ RSpec.describe Pangea::Resources::AWSAmi do
         expect(config).not_to have_key('platform')
         expect(config).not_to have_key('platform_details')
         expect(config).not_to have_key('public')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('root_snapshot_id')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('usage_operation')
@@ -81,7 +83,7 @@ RSpec.describe Pangea::Resources::AWSAmi do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ architecture: 'test-value', boot_mode: 'test-value', deprecation_time: 'test-value', description: 'test-value', ebs_block_device: [{ 'key1' => 'val1' }], ena_support: true, ephemeral_block_device: [{ 'key1' => 'val1' }], imds_support: 'test-value', kernel_id: 'test-value', ramdisk_id: 'test-value', root_device_name: 'test-value', sriov_net_support: 'test-value', tags: { 'key1' => 'val1' }, tpm_support: 'test-value', uefi_data: 'test-value', virtualization_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ architecture: 'test-value', boot_mode: 'test-value', deprecation_time: 'test-value', description: 'test-value', ebs_block_device: [{ 'key1' => 'val1' }], ena_support: true, ephemeral_block_device: [{ 'key1' => 'val1' }], image_location: 'test-value', imds_support: 'test-value', kernel_id: 'test-value', ramdisk_id: 'test-value', region: 'test-value', root_device_name: 'test-value', sriov_net_support: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tpm_support: 'test-value', uefi_data: 'test-value', virtualization_type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -97,12 +99,15 @@ RSpec.describe Pangea::Resources::AWSAmi do
         expect(config).to have_key('ebs_block_device')
         expect(config).to have_key('ena_support')
         expect(config).to have_key('ephemeral_block_device')
+        expect(config).to have_key('image_location')
         expect(config).to have_key('imds_support')
         expect(config).to have_key('kernel_id')
         expect(config).to have_key('ramdisk_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('root_device_name')
         expect(config).to have_key('sriov_net_support')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('tpm_support')
         expect(config).to have_key('uefi_data')
         expect(config).to have_key('virtualization_type')
@@ -229,6 +234,23 @@ RSpec.describe Pangea::Resources::AWSAmi do
         config = validate_resource_structure(result, 'aws_ami', 'minimal')
         expect(config).not_to have_key('ephemeral_block_device')
       end
+      it 'includes image_location when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami('opt', required_attrs.merge(image_location: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami', 'opt')
+        expect(config).to have_key('image_location')
+      end
+
+      it 'omits image_location when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami', 'minimal')
+        expect(config).not_to have_key('image_location')
+      end
       it 'includes imds_support when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -280,6 +302,23 @@ RSpec.describe Pangea::Resources::AWSAmi do
         config = validate_resource_structure(result, 'aws_ami', 'minimal')
         expect(config).not_to have_key('ramdisk_id')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes root_device_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -330,6 +369,23 @@ RSpec.describe Pangea::Resources::AWSAmi do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ami', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes tpm_support when provided' do
         synth = create_synthesizer
@@ -440,7 +496,7 @@ RSpec.describe Pangea::Resources::AWSAmi do
     resource_type: :aws_ami,
     method: :aws_ami,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :hypervisor, :image_location, :image_owner_alias, :image_type, :last_launched_time, :manage_ebs_snapshots, :owner_id, :platform, :platform_details, :public, :root_snapshot_id, :tags_all, :usage_operation],
+    expected_outputs: [:id, :arn, :hypervisor, :image_location, :image_owner_alias, :image_type, :last_launched_time, :manage_ebs_snapshots, :owner_id, :platform, :platform_details, :public, :region, :root_snapshot_id, :tags_all, :usage_operation],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:ena_support]

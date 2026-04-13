@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSEc2AvailabilityZoneGroup do
         ref = synth.aws_ec2_availability_zone_group('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ec2_availability_zone_group.test.id}")
+        expect(ref.region).to eq("${aws_ec2_availability_zone_group.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_availability_zone_group('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ec2_availability_zone_group', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_availability_zone_group('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ec2_availability_zone_group', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_availability_zone_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_availability_zone_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_availability_zone_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_availability_zone_group', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -84,7 +131,7 @@ RSpec.describe Pangea::Resources::AWSEc2AvailabilityZoneGroup do
     resource_type: :aws_ec2_availability_zone_group,
     method: :aws_ec2_availability_zone_group,
     required_attrs: { group_name: 'test-value', opt_in_status: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

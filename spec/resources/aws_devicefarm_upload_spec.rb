@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSDevicefarmUpload do
         expect(ref.arn).to eq("${aws_devicefarm_upload.test.arn}")
         expect(ref.category).to eq("${aws_devicefarm_upload.test.category}")
         expect(ref.metadata).to eq("${aws_devicefarm_upload.test.metadata}")
+        expect(ref.region).to eq("${aws_devicefarm_upload.test.region}")
         expect(ref.url).to eq("${aws_devicefarm_upload.test.url}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSDevicefarmUpload do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('category')
         expect(config).not_to have_key('metadata')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('url')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ content_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ content_type: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +73,7 @@ RSpec.describe Pangea::Resources::AWSDevicefarmUpload do
 
         config = validate_resource_structure(result, 'aws_devicefarm_upload', 'full')
         expect(config).to have_key('content_type')
+        expect(config).to have_key('region')
       end
     end
 
@@ -91,6 +94,23 @@ RSpec.describe Pangea::Resources::AWSDevicefarmUpload do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_devicefarm_upload', 'minimal')
         expect(config).not_to have_key('content_type')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devicefarm_upload('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_devicefarm_upload', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devicefarm_upload('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_devicefarm_upload', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -138,7 +158,7 @@ RSpec.describe Pangea::Resources::AWSDevicefarmUpload do
     resource_type: :aws_devicefarm_upload,
     method: :aws_devicefarm_upload,
     required_attrs: { name: 'test-value', project_arn: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :arn, :category, :metadata, :url],
+    expected_outputs: [:id, :arn, :category, :metadata, :region, :url],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

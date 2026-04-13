@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerMlflowTrackingServer do
         expect(ref.id).to eq("${aws_sagemaker_mlflow_tracking_server.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_mlflow_tracking_server.test.arn}")
         expect(ref.mlflow_version).to eq("${aws_sagemaker_mlflow_tracking_server.test.mlflow_version}")
+        expect(ref.region).to eq("${aws_sagemaker_mlflow_tracking_server.test.region}")
         expect(ref.tags_all).to eq("${aws_sagemaker_mlflow_tracking_server.test.tags_all}")
         expect(ref.tracking_server_url).to eq("${aws_sagemaker_mlflow_tracking_server.test.tracking_server_url}")
         expect(ref.weekly_maintenance_window_start).to eq("${aws_sagemaker_mlflow_tracking_server.test.weekly_maintenance_window_start}")
@@ -56,6 +57,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerMlflowTrackingServer do
         config = validate_resource_structure(result, 'aws_sagemaker_mlflow_tracking_server', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('mlflow_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('tracking_server_url')
         expect(config).not_to have_key('weekly_maintenance_window_start')
@@ -63,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerMlflowTrackingServer do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ automatic_model_registration: true, tags: { 'key1' => 'val1' }, tracking_server_size: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ automatic_model_registration: true, mlflow_version: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tracking_server_size: 'test-value', weekly_maintenance_window_start: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,8 +75,12 @@ RSpec.describe Pangea::Resources::AWSSagemakerMlflowTrackingServer do
 
         config = validate_resource_structure(result, 'aws_sagemaker_mlflow_tracking_server', 'full')
         expect(config).to have_key('automatic_model_registration')
+        expect(config).to have_key('mlflow_version')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('tracking_server_size')
+        expect(config).to have_key('weekly_maintenance_window_start')
       end
     end
 
@@ -96,6 +102,40 @@ RSpec.describe Pangea::Resources::AWSSagemakerMlflowTrackingServer do
         config = validate_resource_structure(result, 'aws_sagemaker_mlflow_tracking_server', 'minimal')
         expect(config).not_to have_key('automatic_model_registration')
       end
+      it 'includes mlflow_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_mlflow_tracking_server('opt', required_attrs.merge(mlflow_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_mlflow_tracking_server', 'opt')
+        expect(config).to have_key('mlflow_version')
+      end
+
+      it 'omits mlflow_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_mlflow_tracking_server('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_mlflow_tracking_server', 'minimal')
+        expect(config).not_to have_key('mlflow_version')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_mlflow_tracking_server('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_mlflow_tracking_server', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_mlflow_tracking_server('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_mlflow_tracking_server', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -113,6 +153,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerMlflowTrackingServer do
         config = validate_resource_structure(result, 'aws_sagemaker_mlflow_tracking_server', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_mlflow_tracking_server('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_mlflow_tracking_server', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_mlflow_tracking_server('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_mlflow_tracking_server', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes tracking_server_size when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -129,6 +186,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerMlflowTrackingServer do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_mlflow_tracking_server', 'minimal')
         expect(config).not_to have_key('tracking_server_size')
+      end
+      it 'includes weekly_maintenance_window_start when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_mlflow_tracking_server('opt', required_attrs.merge(weekly_maintenance_window_start: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_mlflow_tracking_server', 'opt')
+        expect(config).to have_key('weekly_maintenance_window_start')
+      end
+
+      it 'omits weekly_maintenance_window_start when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_mlflow_tracking_server('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_mlflow_tracking_server', 'minimal')
+        expect(config).not_to have_key('weekly_maintenance_window_start')
       end
     end
 
@@ -190,7 +264,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerMlflowTrackingServer do
     resource_type: :aws_sagemaker_mlflow_tracking_server,
     method: :aws_sagemaker_mlflow_tracking_server,
     required_attrs: { artifact_store_uri: 'test-value', role_arn: 'test-value', tracking_server_name: 'test-value' },
-    expected_outputs: [:id, :arn, :mlflow_version, :tags_all, :tracking_server_url, :weekly_maintenance_window_start],
+    expected_outputs: [:id, :arn, :mlflow_version, :region, :tags_all, :tracking_server_url, :weekly_maintenance_window_start],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:automatic_model_registration]

@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSBedrockGuardrailVersion do
         ref = synth.aws_bedrock_guardrail_version('test', required_attrs)
 
         expect(ref.id).to eq("${aws_bedrock_guardrail_version.test.id}")
+        expect(ref.region).to eq("${aws_bedrock_guardrail_version.test.region}")
         expect(ref.version).to eq("${aws_bedrock_guardrail_version.test.version}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSBedrockGuardrailVersion do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_bedrock_guardrail_version', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('version')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', skip_destroy: true }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', skip_destroy: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSBedrockGuardrailVersion do
 
         config = validate_resource_structure(result, 'aws_bedrock_guardrail_version', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('skip_destroy')
       end
     end
@@ -86,6 +89,23 @@ RSpec.describe Pangea::Resources::AWSBedrockGuardrailVersion do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_bedrock_guardrail_version', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_guardrail_version('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_guardrail_version', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrock_guardrail_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrock_guardrail_version', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes skip_destroy when provided' do
         synth = create_synthesizer
@@ -162,7 +182,7 @@ RSpec.describe Pangea::Resources::AWSBedrockGuardrailVersion do
     resource_type: :aws_bedrock_guardrail_version,
     method: :aws_bedrock_guardrail_version,
     required_attrs: { guardrail_arn: 'test-value' },
-    expected_outputs: [:id, :version],
+    expected_outputs: [:id, :region, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:skip_destroy]

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSLambdaLayerVersionPermission do
 
         expect(ref.id).to eq("${aws_lambda_layer_version_permission.test.id}")
         expect(ref.policy).to eq("${aws_lambda_layer_version_permission.test.policy}")
+        expect(ref.region).to eq("${aws_lambda_layer_version_permission.test.region}")
         expect(ref.revision_id).to eq("${aws_lambda_layer_version_permission.test.revision_id}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSLambdaLayerVersionPermission do
 
         config = validate_resource_structure(result, 'aws_lambda_layer_version_permission', 'test')
         expect(config).not_to have_key('policy')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('revision_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ organization_id: 'test-value', skip_destroy: true }) }
+      let(:all_attrs) { required_attrs.merge({ organization_id: 'test-value', region: 'test-value', skip_destroy: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSLambdaLayerVersionPermission do
 
         config = validate_resource_structure(result, 'aws_lambda_layer_version_permission', 'full')
         expect(config).to have_key('organization_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('skip_destroy')
       end
     end
@@ -88,6 +91,23 @@ RSpec.describe Pangea::Resources::AWSLambdaLayerVersionPermission do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_layer_version_permission', 'minimal')
         expect(config).not_to have_key('organization_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_layer_version_permission('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_layer_version_permission', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_layer_version_permission('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_layer_version_permission', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes skip_destroy when provided' do
         synth = create_synthesizer
@@ -168,7 +188,7 @@ RSpec.describe Pangea::Resources::AWSLambdaLayerVersionPermission do
     resource_type: :aws_lambda_layer_version_permission,
     method: :aws_lambda_layer_version_permission,
     required_attrs: { action: 'test-value', layer_name: 'test-value', principal: 'test-value', statement_id: 'test-value', version_number: 3.14 },
-    expected_outputs: [:id, :policy, :revision_id],
+    expected_outputs: [:id, :policy, :region, :revision_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:skip_destroy]

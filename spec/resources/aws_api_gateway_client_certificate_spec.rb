@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayClientCertificate do
         expect(ref.created_date).to eq("${aws_api_gateway_client_certificate.test.created_date}")
         expect(ref.expiration_date).to eq("${aws_api_gateway_client_certificate.test.expiration_date}")
         expect(ref.pem_encoded_certificate).to eq("${aws_api_gateway_client_certificate.test.pem_encoded_certificate}")
+        expect(ref.region).to eq("${aws_api_gateway_client_certificate.test.region}")
         expect(ref.tags_all).to eq("${aws_api_gateway_client_certificate.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSApiGatewayClientCertificate do
         expect(config).not_to have_key('created_date')
         expect(config).not_to have_key('expiration_date')
         expect(config).not_to have_key('pem_encoded_certificate')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,9 @@ RSpec.describe Pangea::Resources::AWSApiGatewayClientCertificate do
 
         config = validate_resource_structure(result, 'aws_api_gateway_client_certificate', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -95,6 +99,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayClientCertificate do
         config = validate_resource_structure(result, 'aws_api_gateway_client_certificate', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_client_certificate('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_client_certificate', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_client_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_client_certificate', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -111,6 +132,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayClientCertificate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_client_certificate', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_client_certificate('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_client_certificate', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_client_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_client_certificate', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -155,7 +193,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayClientCertificate do
     resource_type: :aws_api_gateway_client_certificate,
     method: :aws_api_gateway_client_certificate,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :created_date, :expiration_date, :pem_encoded_certificate, :tags_all],
+    expected_outputs: [:id, :arn, :created_date, :expiration_date, :pem_encoded_certificate, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

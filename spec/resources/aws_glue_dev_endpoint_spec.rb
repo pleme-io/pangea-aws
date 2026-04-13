@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSGlueDevEndpoint do
         expect(ref.failure_reason).to eq("${aws_glue_dev_endpoint.test.failure_reason}")
         expect(ref.private_address).to eq("${aws_glue_dev_endpoint.test.private_address}")
         expect(ref.public_address).to eq("${aws_glue_dev_endpoint.test.public_address}")
+        expect(ref.region).to eq("${aws_glue_dev_endpoint.test.region}")
         expect(ref.status).to eq("${aws_glue_dev_endpoint.test.status}")
         expect(ref.tags_all).to eq("${aws_glue_dev_endpoint.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_glue_dev_endpoint.test.vpc_id}")
@@ -64,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSGlueDevEndpoint do
         expect(config).not_to have_key('failure_reason')
         expect(config).not_to have_key('private_address')
         expect(config).not_to have_key('public_address')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
@@ -73,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSGlueDevEndpoint do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ arguments: { 'key1' => 'val1' }, extra_jars_s3_path: 'test-value', extra_python_libs_s3_path: 'test-value', glue_version: 'test-value', number_of_nodes: 3.14, number_of_workers: 3.14, public_key: 'test-value', public_keys: ['test-value'], security_configuration: 'test-value', security_group_ids: ['test-value'], subnet_id: 'test-value', tags: { 'key1' => 'val1' }, worker_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ arguments: { 'key1' => 'val1' }, extra_jars_s3_path: 'test-value', extra_python_libs_s3_path: 'test-value', glue_version: 'test-value', number_of_nodes: 3.14, number_of_workers: 3.14, public_key: 'test-value', public_keys: ['test-value'], region: 'test-value', security_configuration: 'test-value', security_group_ids: ['test-value'], subnet_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, worker_type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -90,10 +92,12 @@ RSpec.describe Pangea::Resources::AWSGlueDevEndpoint do
         expect(config).to have_key('number_of_workers')
         expect(config).to have_key('public_key')
         expect(config).to have_key('public_keys')
+        expect(config).to have_key('region')
         expect(config).to have_key('security_configuration')
         expect(config).to have_key('security_group_ids')
         expect(config).to have_key('subnet_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('worker_type')
       end
     end
@@ -235,6 +239,23 @@ RSpec.describe Pangea::Resources::AWSGlueDevEndpoint do
         config = validate_resource_structure(result, 'aws_glue_dev_endpoint', 'minimal')
         expect(config).not_to have_key('public_keys')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_dev_endpoint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_dev_endpoint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_dev_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_dev_endpoint', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes security_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -303,6 +324,23 @@ RSpec.describe Pangea::Resources::AWSGlueDevEndpoint do
         config = validate_resource_structure(result, 'aws_glue_dev_endpoint', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_dev_endpoint('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_dev_endpoint', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_dev_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_dev_endpoint', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes worker_type when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -365,7 +403,7 @@ RSpec.describe Pangea::Resources::AWSGlueDevEndpoint do
     resource_type: :aws_glue_dev_endpoint,
     method: :aws_glue_dev_endpoint,
     required_attrs: { name: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :availability_zone, :failure_reason, :private_address, :public_address, :status, :tags_all, :vpc_id, :yarn_endpoint_address, :zeppelin_remote_spark_interpreter_port],
+    expected_outputs: [:id, :arn, :availability_zone, :failure_reason, :private_address, :public_address, :region, :status, :tags_all, :vpc_id, :yarn_endpoint_address, :zeppelin_remote_spark_interpreter_port],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketInventoryAttributes,
       outputs: { id: :id },
       map: [:bucket, :destination, :included_object_versions, :name, :schedule],
-      map_present: [:filter, :optional_fields],
+      map_present: [:filter, :optional_fields, :region],
       map_bool: [:enabled]
   end
   module AWS

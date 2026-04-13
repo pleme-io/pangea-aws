@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ebs_snapshot_block_public_access,
       attributes_class: AWS::Types::EbsSnapshotBlockPublicAccessAttributes,
       outputs: { id: :id },
-      map: [:state]
+      map: [:state],
+      map_present: [:region]
   end
   module AWS
     include AWSEbsSnapshotBlockPublicAccess

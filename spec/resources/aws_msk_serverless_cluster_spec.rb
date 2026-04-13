@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSMskServerlessCluster do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { client_authentication: [{ 'key1' => 'val1' }], cluster_name: 'test-value', vpc_config: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { client_authentication: { 'key1' => 'val1' }, cluster_name: 'test-value', vpc_config: [{ 'key1' => 'val1' }] } }
 
   describe ':aws_msk_serverless_cluster' do
     context 'with required attributes only' do
@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSMskServerlessCluster do
         expect(ref.arn).to eq("${aws_msk_serverless_cluster.test.arn}")
         expect(ref.bootstrap_brokers_sasl_iam).to eq("${aws_msk_serverless_cluster.test.bootstrap_brokers_sasl_iam}")
         expect(ref.cluster_uuid).to eq("${aws_msk_serverless_cluster.test.cluster_uuid}")
+        expect(ref.region).to eq("${aws_msk_serverless_cluster.test.region}")
         expect(ref.tags_all).to eq("${aws_msk_serverless_cluster.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSMskServerlessCluster do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('bootstrap_brokers_sasl_iam')
         expect(config).not_to have_key('cluster_uuid')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,11 +72,30 @@ RSpec.describe Pangea::Resources::AWSMskServerlessCluster do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_msk_serverless_cluster', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_serverless_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_serverless_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_serverless_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_serverless_cluster', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -92,6 +113,23 @@ RSpec.describe Pangea::Resources::AWSMskServerlessCluster do
         config = validate_resource_structure(result, 'aws_msk_serverless_cluster', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_serverless_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_serverless_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_serverless_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_serverless_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -102,7 +140,7 @@ RSpec.describe Pangea::Resources::AWSMskServerlessCluster do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_msk_serverless_cluster', 'typed')
-        expect(config['client_authentication']).to be_a(Array)
+        expect(config['client_authentication']).to be_a(Hash)
         expect(config['cluster_name']).to be_a(String)
         expect(config['vpc_config']).to be_a(Array)
       end
@@ -137,8 +175,8 @@ RSpec.describe Pangea::Resources::AWSMskServerlessCluster do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_msk_serverless_cluster,
     method: :aws_msk_serverless_cluster,
-    required_attrs: { client_authentication: [{ 'key1' => 'val1' }], cluster_name: 'test-value', vpc_config: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :bootstrap_brokers_sasl_iam, :cluster_uuid, :tags_all],
+    required_attrs: { client_authentication: { 'key1' => 'val1' }, cluster_name: 'test-value', vpc_config: [{ 'key1' => 'val1' }] },
+    expected_outputs: [:id, :arn, :bootstrap_brokers_sasl_iam, :cluster_uuid, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSLocationTracker do
 
         expect(ref.id).to eq("${aws_location_tracker.test.id}")
         expect(ref.create_time).to eq("${aws_location_tracker.test.create_time}")
+        expect(ref.region).to eq("${aws_location_tracker.test.region}")
         expect(ref.tags_all).to eq("${aws_location_tracker.test.tags_all}")
         expect(ref.tracker_arn).to eq("${aws_location_tracker.test.tracker_arn}")
         expect(ref.update_time).to eq("${aws_location_tracker.test.update_time}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSLocationTracker do
 
         config = validate_resource_structure(result, 'aws_location_tracker', 'test')
         expect(config).not_to have_key('create_time')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('tracker_arn')
         expect(config).not_to have_key('update_time')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSLocationTracker do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', kms_key_id: 'test-value', position_filtering: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', kms_key_id: 'test-value', position_filtering: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,9 @@ RSpec.describe Pangea::Resources::AWSLocationTracker do
         expect(config).to have_key('description')
         expect(config).to have_key('kms_key_id')
         expect(config).to have_key('position_filtering')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -129,6 +133,23 @@ RSpec.describe Pangea::Resources::AWSLocationTracker do
         config = validate_resource_structure(result, 'aws_location_tracker', 'minimal')
         expect(config).not_to have_key('position_filtering')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_location_tracker('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_location_tracker', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_location_tracker('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_location_tracker', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -145,6 +166,23 @@ RSpec.describe Pangea::Resources::AWSLocationTracker do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_location_tracker', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_location_tracker('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_location_tracker', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_location_tracker('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_location_tracker', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -190,7 +228,7 @@ RSpec.describe Pangea::Resources::AWSLocationTracker do
     resource_type: :aws_location_tracker,
     method: :aws_location_tracker,
     required_attrs: { tracker_name: 'test-value' },
-    expected_outputs: [:id, :create_time, :tags_all, :tracker_arn, :update_time],
+    expected_outputs: [:id, :create_time, :region, :tags_all, :tracker_arn, :update_time],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

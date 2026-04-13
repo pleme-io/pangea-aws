@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerAppAttributes,
       outputs: { id: :id },
       map: [:app_name, :app_type, :domain_id],
-      map_present: [:resource_spec, :space_name, :tags, :tags_all, :user_profile_name]
+      map_present: [:region, :resource_spec, :space_name, :tags, :tags_all, :user_profile_name]
   end
   module AWS
     include AWSSagemakerApp

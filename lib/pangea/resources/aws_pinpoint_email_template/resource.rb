@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::PinpointEmailTemplateAttributes,
       outputs: { id: :id },
       map: [:template_name],
-      map_present: [:email_template, :tags]
+      map_present: [:email_template, :region, :tags]
   end
   module AWS
     include AWSPinpointEmailTemplate

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WorkspaceswebDataProtectionSettingsAttributes,
       outputs: { id: :id },
       map: [:display_name],
-      map_present: [:additional_encryption_context, :customer_managed_key, :description, :inline_redaction_configuration, :tags]
+      map_present: [:additional_encryption_context, :customer_managed_key, :description, :inline_redaction_configuration, :region, :tags]
   end
   module AWS
     include AWSWorkspaceswebDataProtectionSettings

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSDefaultRouteTable do
         expect(ref.id).to eq("${aws_default_route_table.test.id}")
         expect(ref.arn).to eq("${aws_default_route_table.test.arn}")
         expect(ref.owner_id).to eq("${aws_default_route_table.test.owner_id}")
+        expect(ref.region).to eq("${aws_default_route_table.test.region}")
         expect(ref.route).to eq("${aws_default_route_table.test.route}")
         expect(ref.tags_all).to eq("${aws_default_route_table.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_default_route_table.test.vpc_id}")
@@ -56,6 +57,7 @@ RSpec.describe Pangea::Resources::AWSDefaultRouteTable do
         config = validate_resource_structure(result, 'aws_default_route_table', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('route')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
@@ -63,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSDefaultRouteTable do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ propagating_vgws: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ propagating_vgws: ['test-value'], region: 'test-value', route: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,10 @@ RSpec.describe Pangea::Resources::AWSDefaultRouteTable do
 
         config = validate_resource_structure(result, 'aws_default_route_table', 'full')
         expect(config).to have_key('propagating_vgws')
+        expect(config).to have_key('region')
+        expect(config).to have_key('route')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -95,6 +100,40 @@ RSpec.describe Pangea::Resources::AWSDefaultRouteTable do
         config = validate_resource_structure(result, 'aws_default_route_table', 'minimal')
         expect(config).not_to have_key('propagating_vgws')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_route_table('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_route_table', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_route_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_route_table', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes route when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_route_table('opt', required_attrs.merge(route: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_route_table', 'opt')
+        expect(config).to have_key('route')
+      end
+
+      it 'omits route when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_route_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_route_table', 'minimal')
+        expect(config).not_to have_key('route')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -111,6 +150,23 @@ RSpec.describe Pangea::Resources::AWSDefaultRouteTable do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_default_route_table', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_route_table('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_route_table', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_route_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_route_table', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -156,7 +212,7 @@ RSpec.describe Pangea::Resources::AWSDefaultRouteTable do
     resource_type: :aws_default_route_table,
     method: :aws_default_route_table,
     required_attrs: { default_route_table_id: 'test-value' },
-    expected_outputs: [:id, :arn, :owner_id, :route, :tags_all, :vpc_id],
+    expected_outputs: [:id, :arn, :owner_id, :region, :route, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

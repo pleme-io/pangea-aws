@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightTemplateAliasAttributes,
       outputs: { id: :id },
       map: [:alias_name, :template_id, :template_version_number],
-      map_present: [:aws_account_id]
+      map_present: [:aws_account_id, :region]
   end
   module AWS
     include AWSQuicksightTemplateAlias

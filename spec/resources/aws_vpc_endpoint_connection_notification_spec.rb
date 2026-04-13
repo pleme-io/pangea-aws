@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointConnectionNotification do
 
         expect(ref.id).to eq("${aws_vpc_endpoint_connection_notification.test.id}")
         expect(ref.notification_type).to eq("${aws_vpc_endpoint_connection_notification.test.notification_type}")
+        expect(ref.region).to eq("${aws_vpc_endpoint_connection_notification.test.region}")
         expect(ref.state).to eq("${aws_vpc_endpoint_connection_notification.test.state}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointConnectionNotification do
 
         config = validate_resource_structure(result, 'aws_vpc_endpoint_connection_notification', 'test')
         expect(config).not_to have_key('notification_type')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ vpc_endpoint_id: 'test-value', vpc_endpoint_service_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', vpc_endpoint_id: 'test-value', vpc_endpoint_service_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,12 +68,30 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointConnectionNotification do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpc_endpoint_connection_notification', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('vpc_endpoint_id')
         expect(config).to have_key('vpc_endpoint_service_id')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_connection_notification('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_connection_notification', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_connection_notification('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_connection_notification', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes vpc_endpoint_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -151,7 +171,7 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointConnectionNotification do
     resource_type: :aws_vpc_endpoint_connection_notification,
     method: :aws_vpc_endpoint_connection_notification,
     required_attrs: { connection_events: ['test-value'], connection_notification_arn: 'test-value' },
-    expected_outputs: [:id, :notification_type, :state],
+    expected_outputs: [:id, :notification_type, :region, :state],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

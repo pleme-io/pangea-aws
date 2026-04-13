@@ -13,6 +13,7 @@ module Pangea::Resources
     define_resource :aws_servicequotas_template_association,
       attributes_class: AWS::Types::ServicequotasTemplateAssociationAttributes,
       outputs: { id: :id },
+      map_present: [:region],
       map_bool: [:skip_destroy]
   end
   module AWS

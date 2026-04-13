@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSFmsPolicy do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { exclude_resource_tags: true, name: 'test-value', security_service_policy_data: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { exclude_resource_tags: true, name: 'test-value', security_service_policy_data: { 'key1' => 'val1' } } }
 
   describe ':aws_fms_policy' do
     context 'with required attributes only' do
@@ -40,7 +40,9 @@ RSpec.describe Pangea::Resources::AWSFmsPolicy do
         expect(ref.id).to eq("${aws_fms_policy.test.id}")
         expect(ref.arn).to eq("${aws_fms_policy.test.arn}")
         expect(ref.policy_update_token).to eq("${aws_fms_policy.test.policy_update_token}")
+        expect(ref.region).to eq("${aws_fms_policy.test.region}")
         expect(ref.resource_set_ids).to eq("${aws_fms_policy.test.resource_set_ids}")
+        expect(ref.resource_tag_logical_operator).to eq("${aws_fms_policy.test.resource_tag_logical_operator}")
         expect(ref.resource_type).to eq("${aws_fms_policy.test.resource_type}")
         expect(ref.resource_type_list).to eq("${aws_fms_policy.test.resource_type_list}")
         expect(ref.tags_all).to eq("${aws_fms_policy.test.tags_all}")
@@ -57,7 +59,9 @@ RSpec.describe Pangea::Resources::AWSFmsPolicy do
         config = validate_resource_structure(result, 'aws_fms_policy', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('policy_update_token')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_set_ids')
+        expect(config).not_to have_key('resource_tag_logical_operator')
         expect(config).not_to have_key('resource_type')
         expect(config).not_to have_key('resource_type_list')
         expect(config).not_to have_key('tags_all')
@@ -65,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSFmsPolicy do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ delete_all_policy_resources: true, delete_unused_fm_managed_resources: true, description: 'test-value', exclude_map: [{ 'key1' => 'val1' }], include_map: [{ 'key1' => 'val1' }], remediation_enabled: true, resource_tags: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ delete_all_policy_resources: true, delete_unused_fm_managed_resources: true, description: 'test-value', exclude_map: { 'key1' => 'val1' }, include_map: { 'key1' => 'val1' }, region: 'test-value', remediation_enabled: true, resource_set_ids: ['test-value'], resource_tag_logical_operator: 'test-value', resource_tags: { 'key1' => 'val1' }, resource_type: 'test-value', resource_type_list: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,9 +83,15 @@ RSpec.describe Pangea::Resources::AWSFmsPolicy do
         expect(config).to have_key('description')
         expect(config).to have_key('exclude_map')
         expect(config).to have_key('include_map')
+        expect(config).to have_key('region')
         expect(config).to have_key('remediation_enabled')
+        expect(config).to have_key('resource_set_ids')
+        expect(config).to have_key('resource_tag_logical_operator')
         expect(config).to have_key('resource_tags')
+        expect(config).to have_key('resource_type')
+        expect(config).to have_key('resource_type_list')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -140,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSFmsPolicy do
       it 'includes exclude_map when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fms_policy('opt', required_attrs.merge(exclude_map: [{ 'key1' => 'val1' }]))
+        synth.aws_fms_policy('opt', required_attrs.merge(exclude_map: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fms_policy', 'opt')
         expect(config).to have_key('exclude_map')
@@ -157,7 +167,7 @@ RSpec.describe Pangea::Resources::AWSFmsPolicy do
       it 'includes include_map when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fms_policy('opt', required_attrs.merge(include_map: [{ 'key1' => 'val1' }]))
+        synth.aws_fms_policy('opt', required_attrs.merge(include_map: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fms_policy', 'opt')
         expect(config).to have_key('include_map')
@@ -170,6 +180,23 @@ RSpec.describe Pangea::Resources::AWSFmsPolicy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fms_policy', 'minimal')
         expect(config).not_to have_key('include_map')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_policy', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes remediation_enabled when provided' do
         synth = create_synthesizer
@@ -188,6 +215,40 @@ RSpec.describe Pangea::Resources::AWSFmsPolicy do
         config = validate_resource_structure(result, 'aws_fms_policy', 'minimal')
         expect(config).not_to have_key('remediation_enabled')
       end
+      it 'includes resource_set_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_policy('opt', required_attrs.merge(resource_set_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_policy', 'opt')
+        expect(config).to have_key('resource_set_ids')
+      end
+
+      it 'omits resource_set_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_policy', 'minimal')
+        expect(config).not_to have_key('resource_set_ids')
+      end
+      it 'includes resource_tag_logical_operator when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_policy('opt', required_attrs.merge(resource_tag_logical_operator: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_policy', 'opt')
+        expect(config).to have_key('resource_tag_logical_operator')
+      end
+
+      it 'omits resource_tag_logical_operator when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_policy', 'minimal')
+        expect(config).not_to have_key('resource_tag_logical_operator')
+      end
       it 'includes resource_tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -205,6 +266,40 @@ RSpec.describe Pangea::Resources::AWSFmsPolicy do
         config = validate_resource_structure(result, 'aws_fms_policy', 'minimal')
         expect(config).not_to have_key('resource_tags')
       end
+      it 'includes resource_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_policy('opt', required_attrs.merge(resource_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_policy', 'opt')
+        expect(config).to have_key('resource_type')
+      end
+
+      it 'omits resource_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_policy', 'minimal')
+        expect(config).not_to have_key('resource_type')
+      end
+      it 'includes resource_type_list when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_policy('opt', required_attrs.merge(resource_type_list: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_policy', 'opt')
+        expect(config).to have_key('resource_type_list')
+      end
+
+      it 'omits resource_type_list when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_policy', 'minimal')
+        expect(config).not_to have_key('resource_type_list')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -221,6 +316,23 @@ RSpec.describe Pangea::Resources::AWSFmsPolicy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fms_policy', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_policy('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_policy', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fms_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fms_policy', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -281,7 +393,7 @@ RSpec.describe Pangea::Resources::AWSFmsPolicy do
         config = validate_resource_structure(result, 'aws_fms_policy', 'typed')
         expect([true, false]).to include(config['exclude_resource_tags'])
         expect(config['name']).to be_a(String)
-        expect(config['security_service_policy_data']).to be_a(Array)
+        expect(config['security_service_policy_data']).to be_a(Hash)
       end
     end
 
@@ -314,8 +426,8 @@ RSpec.describe Pangea::Resources::AWSFmsPolicy do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_fms_policy,
     method: :aws_fms_policy,
-    required_attrs: { exclude_resource_tags: true, name: 'test-value', security_service_policy_data: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :policy_update_token, :resource_set_ids, :resource_type, :resource_type_list, :tags_all],
+    required_attrs: { exclude_resource_tags: true, name: 'test-value', security_service_policy_data: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :policy_update_token, :region, :resource_set_ids, :resource_tag_logical_operator, :resource_type, :resource_type_list, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:exclude_resource_tags, :delete_all_policy_resources, :delete_unused_fm_managed_resources, :remediation_enabled]

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_synthetics_group_association,
       attributes_class: AWS::Types::SyntheticsGroupAssociationAttributes,
       outputs: { id: :id },
-      map: [:canary_arn, :group_name]
+      map: [:canary_arn, :group_name],
+      map_present: [:region]
   end
   module AWS
     include AWSSyntheticsGroupAssociation

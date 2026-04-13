@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AcmpcaCertificateAttributes,
       outputs: { id: :id },
       map: [:certificate_authority_arn, :certificate_signing_request, :signing_algorithm, :validity],
-      map_present: [:api_passthrough, :template_arn]
+      map_present: [:api_passthrough, :region, :template_arn]
   end
   module AWS
     include AWSAcmpcaCertificate

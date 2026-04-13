@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebUserSettings do
         expect(ref.id).to eq("${aws_workspacesweb_user_settings.test.id}")
         expect(ref.associated_portal_arns).to eq("${aws_workspacesweb_user_settings.test.associated_portal_arns}")
         expect(ref.deep_link_allowed).to eq("${aws_workspacesweb_user_settings.test.deep_link_allowed}")
+        expect(ref.region).to eq("${aws_workspacesweb_user_settings.test.region}")
         expect(ref.tags_all).to eq("${aws_workspacesweb_user_settings.test.tags_all}")
         expect(ref.user_settings_arn).to eq("${aws_workspacesweb_user_settings.test.user_settings_arn}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebUserSettings do
         config = validate_resource_structure(result, 'aws_workspacesweb_user_settings', 'test')
         expect(config).not_to have_key('associated_portal_arns')
         expect(config).not_to have_key('deep_link_allowed')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('user_settings_arn')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ additional_encryption_context: { 'key1' => 'val1' }, cookie_synchronization_configuration: [{ 'key1' => 'val1' }], customer_managed_key: 'test-value', disconnect_timeout_in_minutes: 3.14, idle_disconnect_timeout_in_minutes: 3.14, tags: { 'key1' => 'val1' }, toolbar_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ additional_encryption_context: { 'key1' => 'val1' }, cookie_synchronization_configuration: [{ 'key1' => 'val1' }], customer_managed_key: 'test-value', deep_link_allowed: 'test-value', disconnect_timeout_in_minutes: 3.14, idle_disconnect_timeout_in_minutes: 3.14, region: 'test-value', tags: { 'key1' => 'val1' }, toolbar_configuration: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,8 +75,10 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebUserSettings do
         expect(config).to have_key('additional_encryption_context')
         expect(config).to have_key('cookie_synchronization_configuration')
         expect(config).to have_key('customer_managed_key')
+        expect(config).to have_key('deep_link_allowed')
         expect(config).to have_key('disconnect_timeout_in_minutes')
         expect(config).to have_key('idle_disconnect_timeout_in_minutes')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
         expect(config).to have_key('toolbar_configuration')
       end
@@ -132,6 +136,23 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebUserSettings do
         config = validate_resource_structure(result, 'aws_workspacesweb_user_settings', 'minimal')
         expect(config).not_to have_key('customer_managed_key')
       end
+      it 'includes deep_link_allowed when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspacesweb_user_settings('opt', required_attrs.merge(deep_link_allowed: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspacesweb_user_settings', 'opt')
+        expect(config).to have_key('deep_link_allowed')
+      end
+
+      it 'omits deep_link_allowed when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspacesweb_user_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspacesweb_user_settings', 'minimal')
+        expect(config).not_to have_key('deep_link_allowed')
+      end
       it 'includes disconnect_timeout_in_minutes when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -165,6 +186,23 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebUserSettings do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_workspacesweb_user_settings', 'minimal')
         expect(config).not_to have_key('idle_disconnect_timeout_in_minutes')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspacesweb_user_settings('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspacesweb_user_settings', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_workspacesweb_user_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_workspacesweb_user_settings', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -248,7 +286,7 @@ RSpec.describe Pangea::Resources::AWSWorkspaceswebUserSettings do
     resource_type: :aws_workspacesweb_user_settings,
     method: :aws_workspacesweb_user_settings,
     required_attrs: { copy_allowed: 'test-value', download_allowed: 'test-value', paste_allowed: 'test-value', print_allowed: 'test-value', upload_allowed: 'test-value' },
-    expected_outputs: [:id, :associated_portal_arns, :deep_link_allowed, :tags_all, :user_settings_arn],
+    expected_outputs: [:id, :associated_portal_arns, :deep_link_allowed, :region, :tags_all, :user_settings_arn],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

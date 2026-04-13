@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RdsClusterInstanceAttributes,
       outputs: { id: :id },
       map: [:cluster_identifier, :engine, :instance_class],
-      map_present: [:availability_zone, :ca_cert_identifier, :custom_iam_instance_profile, :db_parameter_group_name, :db_subnet_group_name, :engine_version, :identifier, :identifier_prefix, :monitoring_interval, :monitoring_role_arn, :performance_insights_kms_key_id, :performance_insights_retention_period, :preferred_backup_window, :preferred_maintenance_window, :promotion_tier, :tags, :tags_all],
+      map_present: [:availability_zone, :ca_cert_identifier, :custom_iam_instance_profile, :db_parameter_group_name, :db_subnet_group_name, :engine_version, :identifier, :identifier_prefix, :monitoring_interval, :monitoring_role_arn, :performance_insights_kms_key_id, :performance_insights_retention_period, :preferred_backup_window, :preferred_maintenance_window, :promotion_tier, :region, :tags, :tags_all],
       map_bool: [:apply_immediately, :auto_minor_version_upgrade, :copy_tags_to_snapshot, :force_destroy, :performance_insights_enabled, :publicly_accessible]
   end
   module AWS

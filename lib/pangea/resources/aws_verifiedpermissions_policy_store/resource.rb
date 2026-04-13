@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_verifiedpermissions_policy_store,
       attributes_class: AWS::Types::VerifiedpermissionsPolicyStoreAttributes,
       outputs: { id: :id },
-      map_present: [:description, :tags, :validation_settings]
+      map_present: [:deletion_protection, :description, :region, :tags, :validation_settings]
   end
   module AWS
     include AWSVerifiedpermissionsPolicyStore

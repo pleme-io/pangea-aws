@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSCloud9EnvironmentEc2 do
         expect(ref.id).to eq("${aws_cloud9_environment_ec2.test.id}")
         expect(ref.arn).to eq("${aws_cloud9_environment_ec2.test.arn}")
         expect(ref.owner_arn).to eq("${aws_cloud9_environment_ec2.test.owner_arn}")
+        expect(ref.region).to eq("${aws_cloud9_environment_ec2.test.region}")
         expect(ref.tags_all).to eq("${aws_cloud9_environment_ec2.test.tags_all}")
         expect(ref.type).to eq("${aws_cloud9_environment_ec2.test.type}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSCloud9EnvironmentEc2 do
         config = validate_resource_structure(result, 'aws_cloud9_environment_ec2', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('owner_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('type')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ automatic_stop_time_minutes: 3.14, connection_type: 'test-value', description: 'test-value', subnet_id: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ automatic_stop_time_minutes: 3.14, connection_type: 'test-value', description: 'test-value', owner_arn: 'test-value', region: 'test-value', subnet_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,8 +75,11 @@ RSpec.describe Pangea::Resources::AWSCloud9EnvironmentEc2 do
         expect(config).to have_key('automatic_stop_time_minutes')
         expect(config).to have_key('connection_type')
         expect(config).to have_key('description')
+        expect(config).to have_key('owner_arn')
+        expect(config).to have_key('region')
         expect(config).to have_key('subnet_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -130,6 +135,40 @@ RSpec.describe Pangea::Resources::AWSCloud9EnvironmentEc2 do
         config = validate_resource_structure(result, 'aws_cloud9_environment_ec2', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes owner_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloud9_environment_ec2('opt', required_attrs.merge(owner_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloud9_environment_ec2', 'opt')
+        expect(config).to have_key('owner_arn')
+      end
+
+      it 'omits owner_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloud9_environment_ec2('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloud9_environment_ec2', 'minimal')
+        expect(config).not_to have_key('owner_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloud9_environment_ec2('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloud9_environment_ec2', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloud9_environment_ec2('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloud9_environment_ec2', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes subnet_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -163,6 +202,23 @@ RSpec.describe Pangea::Resources::AWSCloud9EnvironmentEc2 do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloud9_environment_ec2', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloud9_environment_ec2('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloud9_environment_ec2', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloud9_environment_ec2('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloud9_environment_ec2', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -210,7 +266,7 @@ RSpec.describe Pangea::Resources::AWSCloud9EnvironmentEc2 do
     resource_type: :aws_cloud9_environment_ec2,
     method: :aws_cloud9_environment_ec2,
     required_attrs: { image_id: 'test-value', instance_type: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :owner_arn, :tags_all, :type],
+    expected_outputs: [:id, :arn, :owner_arn, :region, :tags_all, :type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

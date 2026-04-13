@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSesConfigurationSet do
         expect(ref.id).to eq("${aws_ses_configuration_set.test.id}")
         expect(ref.arn).to eq("${aws_ses_configuration_set.test.arn}")
         expect(ref.last_fresh_start).to eq("${aws_ses_configuration_set.test.last_fresh_start}")
+        expect(ref.region).to eq("${aws_ses_configuration_set.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSSesConfigurationSet do
         config = validate_resource_structure(result, 'aws_ses_configuration_set', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('last_fresh_start')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ delivery_options: [{ 'key1' => 'val1' }], reputation_metrics_enabled: true, sending_enabled: true, tracking_options: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ delivery_options: { 'key1' => 'val1' }, region: 'test-value', reputation_metrics_enabled: true, sending_enabled: true, tracking_options: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSSesConfigurationSet do
 
         config = validate_resource_structure(result, 'aws_ses_configuration_set', 'full')
         expect(config).to have_key('delivery_options')
+        expect(config).to have_key('region')
         expect(config).to have_key('reputation_metrics_enabled')
         expect(config).to have_key('sending_enabled')
         expect(config).to have_key('tracking_options')
@@ -77,7 +80,7 @@ RSpec.describe Pangea::Resources::AWSSesConfigurationSet do
       it 'includes delivery_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ses_configuration_set('opt', required_attrs.merge(delivery_options: [{ 'key1' => 'val1' }]))
+        synth.aws_ses_configuration_set('opt', required_attrs.merge(delivery_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ses_configuration_set', 'opt')
         expect(config).to have_key('delivery_options')
@@ -90,6 +93,23 @@ RSpec.describe Pangea::Resources::AWSSesConfigurationSet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ses_configuration_set', 'minimal')
         expect(config).not_to have_key('delivery_options')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_configuration_set('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_configuration_set', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_configuration_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_configuration_set', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes reputation_metrics_enabled when provided' do
         synth = create_synthesizer
@@ -128,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSSesConfigurationSet do
       it 'includes tracking_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ses_configuration_set('opt', required_attrs.merge(tracking_options: [{ 'key1' => 'val1' }]))
+        synth.aws_ses_configuration_set('opt', required_attrs.merge(tracking_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ses_configuration_set', 'opt')
         expect(config).to have_key('tracking_options')
@@ -211,7 +231,7 @@ RSpec.describe Pangea::Resources::AWSSesConfigurationSet do
     resource_type: :aws_ses_configuration_set,
     method: :aws_ses_configuration_set,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :last_fresh_start],
+    expected_outputs: [:id, :arn, :last_fresh_start, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:reputation_metrics_enabled, :sending_enabled]

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ServicecatalogProvisionedProductAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:accept_language, :notification_arns, :path_id, :path_name, :product_id, :product_name, :provisioning_artifact_id, :provisioning_artifact_name, :provisioning_parameters, :stack_set_provisioning_preferences, :tags, :tags_all],
+      map_present: [:accept_language, :notification_arns, :path_id, :path_name, :product_id, :product_name, :provisioning_artifact_id, :provisioning_artifact_name, :provisioning_parameters, :region, :stack_set_provisioning_preferences, :tags, :tags_all],
       map_bool: [:ignore_errors, :retain_physical_resources]
   end
   module AWS

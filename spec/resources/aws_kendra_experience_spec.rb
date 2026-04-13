@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSKendraExperience do
         expect(ref.arn).to eq("${aws_kendra_experience.test.arn}")
         expect(ref.endpoints).to eq("${aws_kendra_experience.test.endpoints}")
         expect(ref.experience_id).to eq("${aws_kendra_experience.test.experience_id}")
+        expect(ref.region).to eq("${aws_kendra_experience.test.region}")
         expect(ref.status).to eq("${aws_kendra_experience.test.status}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSKendraExperience do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('endpoints')
         expect(config).not_to have_key('experience_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ configuration: [{ 'key1' => 'val1' }], description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ configuration: { 'key1' => 'val1' }, description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,6 +74,7 @@ RSpec.describe Pangea::Resources::AWSKendraExperience do
         config = validate_resource_structure(result, 'aws_kendra_experience', 'full')
         expect(config).to have_key('configuration')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -79,7 +82,7 @@ RSpec.describe Pangea::Resources::AWSKendraExperience do
       it 'includes configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kendra_experience('opt', required_attrs.merge(configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kendra_experience('opt', required_attrs.merge(configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kendra_experience', 'opt')
         expect(config).to have_key('configuration')
@@ -109,6 +112,23 @@ RSpec.describe Pangea::Resources::AWSKendraExperience do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kendra_experience', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kendra_experience('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kendra_experience', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kendra_experience('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kendra_experience', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -156,7 +176,7 @@ RSpec.describe Pangea::Resources::AWSKendraExperience do
     resource_type: :aws_kendra_experience,
     method: :aws_kendra_experience,
     required_attrs: { index_id: 'test-value', name: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :endpoints, :experience_id, :status],
+    expected_outputs: [:id, :arn, :endpoints, :experience_id, :region, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSDatasyncLocationS3 do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { s3_bucket_arn: 'test-value', s3_config: [{ 'key1' => 'val1' }], subdirectory: 'test-value' } }
+  let(:required_attrs) { { s3_bucket_arn: 'test-value', s3_config: { 'key1' => 'val1' }, subdirectory: 'test-value' } }
 
   describe ':aws_datasync_location_s3' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationS3 do
 
         expect(ref.id).to eq("${aws_datasync_location_s3.test.id}")
         expect(ref.arn).to eq("${aws_datasync_location_s3.test.arn}")
+        expect(ref.region).to eq("${aws_datasync_location_s3.test.region}")
         expect(ref.s3_storage_class).to eq("${aws_datasync_location_s3.test.s3_storage_class}")
         expect(ref.tags_all).to eq("${aws_datasync_location_s3.test.tags_all}")
         expect(ref.uri).to eq("${aws_datasync_location_s3.test.uri}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationS3 do
 
         config = validate_resource_structure(result, 'aws_datasync_location_s3', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('s3_storage_class')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('uri')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationS3 do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ agent_arns: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ agent_arns: ['test-value'], region: 'test-value', s3_storage_class: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,7 +73,10 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationS3 do
 
         config = validate_resource_structure(result, 'aws_datasync_location_s3', 'full')
         expect(config).to have_key('agent_arns')
+        expect(config).to have_key('region')
+        expect(config).to have_key('s3_storage_class')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -93,6 +98,40 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationS3 do
         config = validate_resource_structure(result, 'aws_datasync_location_s3', 'minimal')
         expect(config).not_to have_key('agent_arns')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_s3('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_s3', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_s3('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_s3', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes s3_storage_class when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_s3('opt', required_attrs.merge(s3_storage_class: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_s3', 'opt')
+        expect(config).to have_key('s3_storage_class')
+      end
+
+      it 'omits s3_storage_class when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_s3('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_s3', 'minimal')
+        expect(config).not_to have_key('s3_storage_class')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -110,6 +149,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationS3 do
         config = validate_resource_structure(result, 'aws_datasync_location_s3', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_s3('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_s3', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_s3('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_s3', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -121,7 +177,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationS3 do
 
         config = validate_resource_structure(result, 'aws_datasync_location_s3', 'typed')
         expect(config['s3_bucket_arn']).to be_a(String)
-        expect(config['s3_config']).to be_a(Array)
+        expect(config['s3_config']).to be_a(Hash)
         expect(config['subdirectory']).to be_a(String)
       end
     end
@@ -155,8 +211,8 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationS3 do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_datasync_location_s3,
     method: :aws_datasync_location_s3,
-    required_attrs: { s3_bucket_arn: 'test-value', s3_config: [{ 'key1' => 'val1' }], subdirectory: 'test-value' },
-    expected_outputs: [:id, :arn, :s3_storage_class, :tags_all, :uri],
+    required_attrs: { s3_bucket_arn: 'test-value', s3_config: { 'key1' => 'val1' }, subdirectory: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :s3_storage_class, :tags_all, :uri],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

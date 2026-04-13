@@ -13,7 +13,9 @@ module Pangea::Resources
     define_resource :aws_cloudwatch_log_metric_filter,
       attributes_class: AWS::Types::CloudwatchLogMetricFilterAttributes,
       outputs: { id: :id },
-      map: [:log_group_name, :metric_transformation, :name, :pattern]
+      map: [:log_group_name, :metric_transformation, :name, :pattern],
+      map_present: [:region],
+      map_bool: [:apply_on_transformed_logs]
   end
   module AWS
     include AWSCloudwatchLogMetricFilter

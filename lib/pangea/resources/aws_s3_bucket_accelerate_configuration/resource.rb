@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketAccelerateConfigurationAttributes,
       outputs: { id: :id },
       map: [:bucket, :status],
-      map_present: [:expected_bucket_owner]
+      map_present: [:expected_bucket_owner, :region]
   end
   module AWS
     include AWSS3BucketAccelerateConfiguration

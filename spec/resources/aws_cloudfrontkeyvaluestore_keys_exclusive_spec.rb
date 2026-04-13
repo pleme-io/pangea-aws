@@ -57,7 +57,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontkeyvaluestoreKeysExclusive do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ resource_key_value_pair: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ max_batch_size: 3.14, resource_key_value_pair: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,11 +66,29 @@ RSpec.describe Pangea::Resources::AWSCloudfrontkeyvaluestoreKeysExclusive do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudfrontkeyvaluestore_keys_exclusive', 'full')
+        expect(config).to have_key('max_batch_size')
         expect(config).to have_key('resource_key_value_pair')
       end
     end
 
     context 'optional attributes' do
+      it 'includes max_batch_size when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfrontkeyvaluestore_keys_exclusive('opt', required_attrs.merge(max_batch_size: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfrontkeyvaluestore_keys_exclusive', 'opt')
+        expect(config).to have_key('max_batch_size')
+      end
+
+      it 'omits max_batch_size when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudfrontkeyvaluestore_keys_exclusive('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudfrontkeyvaluestore_keys_exclusive', 'minimal')
+        expect(config).not_to have_key('max_batch_size')
+      end
       it 'includes resource_key_value_pair when provided' do
         synth = create_synthesizer
         synth.extend(described_class)

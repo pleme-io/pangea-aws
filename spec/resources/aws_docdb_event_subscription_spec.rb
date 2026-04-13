@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSDocdbEventSubscription do
         expect(ref.customer_aws_id).to eq("${aws_docdb_event_subscription.test.customer_aws_id}")
         expect(ref.name).to eq("${aws_docdb_event_subscription.test.name}")
         expect(ref.name_prefix).to eq("${aws_docdb_event_subscription.test.name_prefix}")
+        expect(ref.region).to eq("${aws_docdb_event_subscription.test.region}")
         expect(ref.tags_all).to eq("${aws_docdb_event_subscription.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSDocdbEventSubscription do
         expect(config).not_to have_key('customer_aws_id')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enabled: true, event_categories: ['test-value'], source_ids: ['test-value'], source_type: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ enabled: true, event_categories: ['test-value'], name: 'test-value', name_prefix: 'test-value', region: 'test-value', source_ids: ['test-value'], source_type: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,9 +76,13 @@ RSpec.describe Pangea::Resources::AWSDocdbEventSubscription do
         config = validate_resource_structure(result, 'aws_docdb_event_subscription', 'full')
         expect(config).to have_key('enabled')
         expect(config).to have_key('event_categories')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
         expect(config).to have_key('source_ids')
         expect(config).to have_key('source_type')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -114,6 +120,57 @@ RSpec.describe Pangea::Resources::AWSDocdbEventSubscription do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_docdb_event_subscription', 'minimal')
         expect(config).not_to have_key('event_categories')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_event_subscription('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_event_subscription', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_event_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_event_subscription', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_event_subscription('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_event_subscription', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_event_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_event_subscription', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_event_subscription('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_event_subscription', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_event_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_event_subscription', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes source_ids when provided' do
         synth = create_synthesizer
@@ -165,6 +222,23 @@ RSpec.describe Pangea::Resources::AWSDocdbEventSubscription do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_docdb_event_subscription', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_event_subscription('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_event_subscription', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_event_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_event_subscription', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -224,7 +298,7 @@ RSpec.describe Pangea::Resources::AWSDocdbEventSubscription do
     resource_type: :aws_docdb_event_subscription,
     method: :aws_docdb_event_subscription,
     required_attrs: { sns_topic_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :customer_aws_id, :name, :name_prefix, :tags_all],
+    expected_outputs: [:id, :arn, :customer_aws_id, :name, :name_prefix, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled]

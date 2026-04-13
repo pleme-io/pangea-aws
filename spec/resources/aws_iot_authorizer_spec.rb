@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSIotAuthorizer do
 
         expect(ref.id).to eq("${aws_iot_authorizer.test.id}")
         expect(ref.arn).to eq("${aws_iot_authorizer.test.arn}")
+        expect(ref.region).to eq("${aws_iot_authorizer.test.region}")
         expect(ref.tags_all).to eq("${aws_iot_authorizer.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSIotAuthorizer do
 
         config = validate_resource_structure(result, 'aws_iot_authorizer', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enable_caching_for_http: true, signing_disabled: true, status: 'test-value', tags: { 'key1' => 'val1' }, token_key_name: 'test-value', token_signing_public_keys: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ enable_caching_for_http: true, region: 'test-value', signing_disabled: true, status: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, token_key_name: 'test-value', token_signing_public_keys: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,9 +69,11 @@ RSpec.describe Pangea::Resources::AWSIotAuthorizer do
 
         config = validate_resource_structure(result, 'aws_iot_authorizer', 'full')
         expect(config).to have_key('enable_caching_for_http')
+        expect(config).to have_key('region')
         expect(config).to have_key('signing_disabled')
         expect(config).to have_key('status')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('token_key_name')
         expect(config).to have_key('token_signing_public_keys')
       end
@@ -92,6 +96,23 @@ RSpec.describe Pangea::Resources::AWSIotAuthorizer do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_authorizer', 'minimal')
         expect(config).not_to have_key('enable_caching_for_http')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_authorizer('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_authorizer', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_authorizer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_authorizer', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes signing_disabled when provided' do
         synth = create_synthesizer
@@ -143,6 +164,23 @@ RSpec.describe Pangea::Resources::AWSIotAuthorizer do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_authorizer', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_authorizer('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_authorizer', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_authorizer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_authorizer', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes token_key_name when provided' do
         synth = create_synthesizer
@@ -255,7 +293,7 @@ RSpec.describe Pangea::Resources::AWSIotAuthorizer do
     resource_type: :aws_iot_authorizer,
     method: :aws_iot_authorizer,
     required_attrs: { authorizer_function_arn: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [:token_signing_public_keys],
     immutable_fields: [],
     boolean_fields: [:enable_caching_for_http, :signing_disabled]

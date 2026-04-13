@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSGameliftGameSessionQueue do
 
         expect(ref.id).to eq("${aws_gamelift_game_session_queue.test.id}")
         expect(ref.arn).to eq("${aws_gamelift_game_session_queue.test.arn}")
+        expect(ref.region).to eq("${aws_gamelift_game_session_queue.test.region}")
         expect(ref.tags_all).to eq("${aws_gamelift_game_session_queue.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSGameliftGameSessionQueue do
 
         config = validate_resource_structure(result, 'aws_gamelift_game_session_queue', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ custom_event_data: 'test-value', destinations: ['test-value'], notification_target: 'test-value', player_latency_policy: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, timeout_in_seconds: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ custom_event_data: 'test-value', destinations: ['test-value'], notification_target: 'test-value', player_latency_policy: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, timeout_in_seconds: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,7 +72,9 @@ RSpec.describe Pangea::Resources::AWSGameliftGameSessionQueue do
         expect(config).to have_key('destinations')
         expect(config).to have_key('notification_target')
         expect(config).to have_key('player_latency_policy')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('timeout_in_seconds')
       end
     end
@@ -144,6 +148,23 @@ RSpec.describe Pangea::Resources::AWSGameliftGameSessionQueue do
         config = validate_resource_structure(result, 'aws_gamelift_game_session_queue', 'minimal')
         expect(config).not_to have_key('player_latency_policy')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_game_session_queue('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_game_session_queue', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_game_session_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_game_session_queue', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -160,6 +181,23 @@ RSpec.describe Pangea::Resources::AWSGameliftGameSessionQueue do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_gamelift_game_session_queue', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_game_session_queue('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_game_session_queue', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_game_session_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_game_session_queue', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes timeout_in_seconds when provided' do
         synth = create_synthesizer
@@ -222,7 +260,7 @@ RSpec.describe Pangea::Resources::AWSGameliftGameSessionQueue do
     resource_type: :aws_gamelift_game_session_queue,
     method: :aws_gamelift_game_session_queue,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSEcsCapacityProvider do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { auto_scaling_group_provider: [{ 'key1' => 'val1' }], name: 'test-value' } }
+  let(:required_attrs) { { name: 'test-value' } }
 
   describe ':aws_ecs_capacity_provider' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSEcsCapacityProvider do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'test')
-        validate_required_attributes(config, [:auto_scaling_group_provider, :name])
+        validate_required_attributes(config, [:name])
       end
 
       it 'returns a ResourceReference' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEcsCapacityProvider do
 
         expect(ref.id).to eq("${aws_ecs_capacity_provider.test.id}")
         expect(ref.arn).to eq("${aws_ecs_capacity_provider.test.arn}")
+        expect(ref.region).to eq("${aws_ecs_capacity_provider.test.region}")
         expect(ref.tags_all).to eq("${aws_ecs_capacity_provider.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSEcsCapacityProvider do
 
         config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ auto_scaling_group_provider: { 'key1' => 'val1' }, cluster: 'test-value', managed_instances_provider: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,11 +68,84 @@ RSpec.describe Pangea::Resources::AWSEcsCapacityProvider do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'full')
+        expect(config).to have_key('auto_scaling_group_provider')
+        expect(config).to have_key('cluster')
+        expect(config).to have_key('managed_instances_provider')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes auto_scaling_group_provider when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_capacity_provider('opt', required_attrs.merge(auto_scaling_group_provider: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'opt')
+        expect(config).to have_key('auto_scaling_group_provider')
+      end
+
+      it 'omits auto_scaling_group_provider when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_capacity_provider('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'minimal')
+        expect(config).not_to have_key('auto_scaling_group_provider')
+      end
+      it 'includes cluster when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_capacity_provider('opt', required_attrs.merge(cluster: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'opt')
+        expect(config).to have_key('cluster')
+      end
+
+      it 'omits cluster when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_capacity_provider('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'minimal')
+        expect(config).not_to have_key('cluster')
+      end
+      it 'includes managed_instances_provider when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_capacity_provider('opt', required_attrs.merge(managed_instances_provider: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'opt')
+        expect(config).to have_key('managed_instances_provider')
+      end
+
+      it 'omits managed_instances_provider when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_capacity_provider('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'minimal')
+        expect(config).not_to have_key('managed_instances_provider')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_capacity_provider('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_capacity_provider('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -88,6 +163,23 @@ RSpec.describe Pangea::Resources::AWSEcsCapacityProvider do
         config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_capacity_provider('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_capacity_provider('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -98,7 +190,6 @@ RSpec.describe Pangea::Resources::AWSEcsCapacityProvider do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ecs_capacity_provider', 'typed')
-        expect(config['auto_scaling_group_provider']).to be_a(Array)
         expect(config['name']).to be_a(String)
       end
     end
@@ -132,8 +223,8 @@ RSpec.describe Pangea::Resources::AWSEcsCapacityProvider do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_ecs_capacity_provider,
     method: :aws_ecs_capacity_provider,
-    required_attrs: { auto_scaling_group_provider: [{ 'key1' => 'val1' }], name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    required_attrs: { name: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

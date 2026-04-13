@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Sesv2AccountVdmAttributesAttributes,
       outputs: { id: :id },
       map: [:vdm_enabled],
-      map_present: [:dashboard_attributes, :guardian_attributes]
+      map_present: [:dashboard_attributes, :guardian_attributes, :region]
   end
   module AWS
     include AWSSesv2AccountVdmAttributes

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_auditmanager_organization_admin_account_registration,
       attributes_class: AWS::Types::AuditmanagerOrganizationAdminAccountRegistrationAttributes,
       outputs: { id: :id },
-      map: [:admin_account_id]
+      map: [:admin_account_id],
+      map_present: [:region]
   end
   module AWS
     include AWSAuditmanagerOrganizationAdminAccountRegistration

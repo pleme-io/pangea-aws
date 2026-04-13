@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSBudgetsBudgetAction do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { action_threshold: [{ 'key1' => 'val1' }], action_type: 'test-value', approval_model: 'test-value', budget_name: 'test-value', definition: [{ 'key1' => 'val1' }], execution_role_arn: 'test-value', notification_type: 'test-value', subscriber: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { action_threshold: { 'key1' => 'val1' }, action_type: 'test-value', approval_model: 'test-value', budget_name: 'test-value', definition: { 'key1' => 'val1' }, execution_role_arn: 'test-value', notification_type: 'test-value', subscriber: [{ 'key1' => 'val1' }] } }
 
   describe ':aws_budgets_budget_action' do
     context 'with required attributes only' do
@@ -63,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSBudgetsBudgetAction do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ account_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,11 +72,30 @@ RSpec.describe Pangea::Resources::AWSBudgetsBudgetAction do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_budgets_budget_action', 'full')
+        expect(config).to have_key('account_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget_action('opt', required_attrs.merge(account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget_action', 'opt')
+        expect(config).to have_key('account_id')
+      end
+
+      it 'omits account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget_action('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget_action', 'minimal')
+        expect(config).not_to have_key('account_id')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -94,6 +113,23 @@ RSpec.describe Pangea::Resources::AWSBudgetsBudgetAction do
         config = validate_resource_structure(result, 'aws_budgets_budget_action', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget_action('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget_action', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget_action('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget_action', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -104,11 +140,11 @@ RSpec.describe Pangea::Resources::AWSBudgetsBudgetAction do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_budgets_budget_action', 'typed')
-        expect(config['action_threshold']).to be_a(Array)
+        expect(config['action_threshold']).to be_a(Hash)
         expect(config['action_type']).to be_a(String)
         expect(config['approval_model']).to be_a(String)
         expect(config['budget_name']).to be_a(String)
-        expect(config['definition']).to be_a(Array)
+        expect(config['definition']).to be_a(Hash)
         expect(config['execution_role_arn']).to be_a(String)
         expect(config['notification_type']).to be_a(String)
         expect(config['subscriber']).to be_a(Array)
@@ -144,7 +180,7 @@ RSpec.describe Pangea::Resources::AWSBudgetsBudgetAction do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_budgets_budget_action,
     method: :aws_budgets_budget_action,
-    required_attrs: { action_threshold: [{ 'key1' => 'val1' }], action_type: 'test-value', approval_model: 'test-value', budget_name: 'test-value', definition: [{ 'key1' => 'val1' }], execution_role_arn: 'test-value', notification_type: 'test-value', subscriber: [{ 'key1' => 'val1' }] },
+    required_attrs: { action_threshold: { 'key1' => 'val1' }, action_type: 'test-value', approval_model: 'test-value', budget_name: 'test-value', definition: { 'key1' => 'val1' }, execution_role_arn: 'test-value', notification_type: 'test-value', subscriber: [{ 'key1' => 'val1' }] },
     expected_outputs: [:id, :account_id, :action_id, :arn, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],

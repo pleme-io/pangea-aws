@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSDocdbClusterSnapshot do
         expect(ref.engine_version).to eq("${aws_docdb_cluster_snapshot.test.engine_version}")
         expect(ref.kms_key_id).to eq("${aws_docdb_cluster_snapshot.test.kms_key_id}")
         expect(ref.port).to eq("${aws_docdb_cluster_snapshot.test.port}")
+        expect(ref.region).to eq("${aws_docdb_cluster_snapshot.test.region}")
         expect(ref.snapshot_type).to eq("${aws_docdb_cluster_snapshot.test.snapshot_type}")
         expect(ref.source_db_cluster_snapshot_arn).to eq("${aws_docdb_cluster_snapshot.test.source_db_cluster_snapshot_arn}")
         expect(ref.status).to eq("${aws_docdb_cluster_snapshot.test.status}")
@@ -66,11 +67,46 @@ RSpec.describe Pangea::Resources::AWSDocdbClusterSnapshot do
         expect(config).not_to have_key('engine_version')
         expect(config).not_to have_key('kms_key_id')
         expect(config).not_to have_key('port')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('snapshot_type')
         expect(config).not_to have_key('source_db_cluster_snapshot_arn')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('storage_encrypted')
         expect(config).not_to have_key('vpc_id')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_snapshot('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_docdb_cluster_snapshot', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_snapshot('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_snapshot', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_snapshot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_snapshot', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -117,7 +153,7 @@ RSpec.describe Pangea::Resources::AWSDocdbClusterSnapshot do
     resource_type: :aws_docdb_cluster_snapshot,
     method: :aws_docdb_cluster_snapshot,
     required_attrs: { db_cluster_identifier: 'test-value', db_cluster_snapshot_identifier: 'test-value' },
-    expected_outputs: [:id, :availability_zones, :db_cluster_snapshot_arn, :engine, :engine_version, :kms_key_id, :port, :snapshot_type, :source_db_cluster_snapshot_arn, :status, :storage_encrypted, :vpc_id],
+    expected_outputs: [:id, :availability_zones, :db_cluster_snapshot_arn, :engine, :engine_version, :kms_key_id, :port, :region, :snapshot_type, :source_db_cluster_snapshot_arn, :status, :storage_encrypted, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

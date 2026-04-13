@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_apprunner_deployment,
       attributes_class: AWS::Types::ApprunnerDeploymentAttributes,
       outputs: { id: :id },
-      map: [:service_arn]
+      map: [:service_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSApprunnerDeployment

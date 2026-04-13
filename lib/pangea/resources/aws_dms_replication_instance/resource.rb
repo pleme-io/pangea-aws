@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DmsReplicationInstanceAttributes,
       outputs: { id: :id },
       map: [:replication_instance_class, :replication_instance_id],
-      map_present: [:allocated_storage, :availability_zone, :engine_version, :kms_key_arn, :network_type, :preferred_maintenance_window, :replication_subnet_group_id, :tags, :tags_all, :vpc_security_group_ids],
+      map_present: [:allocated_storage, :availability_zone, :dns_name_servers, :engine_version, :kerberos_authentication_settings, :kms_key_arn, :network_type, :preferred_maintenance_window, :region, :replication_subnet_group_id, :tags, :tags_all, :vpc_security_group_ids],
       map_bool: [:allow_major_version_upgrade, :apply_immediately, :auto_minor_version_upgrade, :multi_az, :publicly_accessible]
   end
   module AWS

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketLifecycleConfiguration do
 
         expect(ref.id).to eq("${aws_s3_bucket_lifecycle_configuration.test.id}")
         expect(ref.expected_bucket_owner).to eq("${aws_s3_bucket_lifecycle_configuration.test.expected_bucket_owner}")
+        expect(ref.region).to eq("${aws_s3_bucket_lifecycle_configuration.test.region}")
         expect(ref.transition_default_minimum_object_size).to eq("${aws_s3_bucket_lifecycle_configuration.test.transition_default_minimum_object_size}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSS3BucketLifecycleConfiguration do
 
         config = validate_resource_structure(result, 'aws_s3_bucket_lifecycle_configuration', 'test')
         expect(config).not_to have_key('expected_bucket_owner')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('transition_default_minimum_object_size')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ rule: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ expected_bucket_owner: 'test-value', region: 'test-value', rule: [{ 'key1' => 'val1' }], transition_default_minimum_object_size: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,11 +68,48 @@ RSpec.describe Pangea::Resources::AWSS3BucketLifecycleConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_s3_bucket_lifecycle_configuration', 'full')
+        expect(config).to have_key('expected_bucket_owner')
+        expect(config).to have_key('region')
         expect(config).to have_key('rule')
+        expect(config).to have_key('transition_default_minimum_object_size')
       end
     end
 
     context 'optional attributes' do
+      it 'includes expected_bucket_owner when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_lifecycle_configuration('opt', required_attrs.merge(expected_bucket_owner: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_lifecycle_configuration', 'opt')
+        expect(config).to have_key('expected_bucket_owner')
+      end
+
+      it 'omits expected_bucket_owner when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_lifecycle_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_lifecycle_configuration', 'minimal')
+        expect(config).not_to have_key('expected_bucket_owner')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_lifecycle_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_lifecycle_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_lifecycle_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_lifecycle_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes rule when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -87,6 +126,23 @@ RSpec.describe Pangea::Resources::AWSS3BucketLifecycleConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_lifecycle_configuration', 'minimal')
         expect(config).not_to have_key('rule')
+      end
+      it 'includes transition_default_minimum_object_size when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_lifecycle_configuration('opt', required_attrs.merge(transition_default_minimum_object_size: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_lifecycle_configuration', 'opt')
+        expect(config).to have_key('transition_default_minimum_object_size')
+      end
+
+      it 'omits transition_default_minimum_object_size when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_lifecycle_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_lifecycle_configuration', 'minimal')
+        expect(config).not_to have_key('transition_default_minimum_object_size')
       end
     end
 
@@ -132,7 +188,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketLifecycleConfiguration do
     resource_type: :aws_s3_bucket_lifecycle_configuration,
     method: :aws_s3_bucket_lifecycle_configuration,
     required_attrs: { bucket: 'test-value' },
-    expected_outputs: [:id, :expected_bucket_owner, :transition_default_minimum_object_size],
+    expected_outputs: [:id, :expected_bucket_owner, :region, :transition_default_minimum_object_size],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

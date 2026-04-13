@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSCloudtrail do
         expect(ref.id).to eq("${aws_cloudtrail.test.id}")
         expect(ref.arn).to eq("${aws_cloudtrail.test.arn}")
         expect(ref.home_region).to eq("${aws_cloudtrail.test.home_region}")
+        expect(ref.region).to eq("${aws_cloudtrail.test.region}")
         expect(ref.sns_topic_arn).to eq("${aws_cloudtrail.test.sns_topic_arn}")
         expect(ref.tags_all).to eq("${aws_cloudtrail.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSCloudtrail do
         config = validate_resource_structure(result, 'aws_cloudtrail', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('home_region')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('sns_topic_arn')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ advanced_event_selector: [{ 'key1' => 'val1' }], cloud_watch_logs_group_arn: 'test-value', cloud_watch_logs_role_arn: 'test-value', enable_log_file_validation: true, enable_logging: true, event_selector: [{ 'key1' => 'val1' }], include_global_service_events: true, insight_selector: [{ 'key1' => 'val1' }], is_multi_region_trail: true, is_organization_trail: true, kms_key_id: 'test-value', s3_key_prefix: 'test-value', sns_topic_name: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ advanced_event_selector: [{ 'key1' => 'val1' }], cloud_watch_logs_group_arn: 'test-value', cloud_watch_logs_role_arn: 'test-value', enable_log_file_validation: true, enable_logging: true, event_selector: [{ 'key1' => 'val1' }], include_global_service_events: true, insight_selector: [{ 'key1' => 'val1' }], is_multi_region_trail: true, is_organization_trail: true, kms_key_id: 'test-value', region: 'test-value', s3_key_prefix: 'test-value', sns_topic_name: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -81,9 +83,11 @@ RSpec.describe Pangea::Resources::AWSCloudtrail do
         expect(config).to have_key('is_multi_region_trail')
         expect(config).to have_key('is_organization_trail')
         expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('s3_key_prefix')
         expect(config).to have_key('sns_topic_name')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -275,6 +279,23 @@ RSpec.describe Pangea::Resources::AWSCloudtrail do
         config = validate_resource_structure(result, 'aws_cloudtrail', 'minimal')
         expect(config).not_to have_key('kms_key_id')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudtrail('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudtrail', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudtrail('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudtrail', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes s3_key_prefix when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -325,6 +346,23 @@ RSpec.describe Pangea::Resources::AWSCloudtrail do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudtrail', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudtrail('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudtrail', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudtrail('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudtrail', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -429,7 +467,7 @@ RSpec.describe Pangea::Resources::AWSCloudtrail do
     resource_type: :aws_cloudtrail,
     method: :aws_cloudtrail,
     required_attrs: { name: 'test-value', s3_bucket_name: 'test-value' },
-    expected_outputs: [:id, :arn, :home_region, :sns_topic_arn, :tags_all],
+    expected_outputs: [:id, :arn, :home_region, :region, :sns_topic_arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enable_log_file_validation, :enable_logging, :include_global_service_events, :is_multi_region_trail, :is_organization_trail]

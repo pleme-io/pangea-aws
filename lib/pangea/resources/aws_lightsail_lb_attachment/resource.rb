@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_lightsail_lb_attachment,
       attributes_class: AWS::Types::LightsailLbAttachmentAttributes,
       outputs: { id: :id },
-      map: [:instance_name, :lb_name]
+      map: [:instance_name, :lb_name],
+      map_present: [:region]
   end
   module AWS
     include AWSLightsailLbAttachment

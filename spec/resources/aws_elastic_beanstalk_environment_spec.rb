@@ -49,6 +49,7 @@ RSpec.describe Pangea::Resources::AWSElasticBeanstalkEnvironment do
         expect(ref.load_balancers).to eq("${aws_elastic_beanstalk_environment.test.load_balancers}")
         expect(ref.platform_arn).to eq("${aws_elastic_beanstalk_environment.test.platform_arn}")
         expect(ref.queues).to eq("${aws_elastic_beanstalk_environment.test.queues}")
+        expect(ref.region).to eq("${aws_elastic_beanstalk_environment.test.region}")
         expect(ref.solution_stack_name).to eq("${aws_elastic_beanstalk_environment.test.solution_stack_name}")
         expect(ref.tags_all).to eq("${aws_elastic_beanstalk_environment.test.tags_all}")
         expect(ref.triggers).to eq("${aws_elastic_beanstalk_environment.test.triggers}")
@@ -75,6 +76,7 @@ RSpec.describe Pangea::Resources::AWSElasticBeanstalkEnvironment do
         expect(config).not_to have_key('load_balancers')
         expect(config).not_to have_key('platform_arn')
         expect(config).not_to have_key('queues')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('solution_stack_name')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('triggers')
@@ -83,7 +85,7 @@ RSpec.describe Pangea::Resources::AWSElasticBeanstalkEnvironment do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', poll_interval: 'test-value', setting: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, template_name: 'test-value', tier: 'test-value', wait_for_ready_timeout: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ cname_prefix: 'test-value', description: 'test-value', platform_arn: 'test-value', poll_interval: 'test-value', region: 'test-value', setting: [{ 'key1' => 'val1' }], solution_stack_name: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, template_name: 'test-value', tier: 'test-value', version_label: 'test-value', wait_for_ready_timeout: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -92,17 +94,40 @@ RSpec.describe Pangea::Resources::AWSElasticBeanstalkEnvironment do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'full')
+        expect(config).to have_key('cname_prefix')
         expect(config).to have_key('description')
+        expect(config).to have_key('platform_arn')
         expect(config).to have_key('poll_interval')
+        expect(config).to have_key('region')
         expect(config).to have_key('setting')
+        expect(config).to have_key('solution_stack_name')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('template_name')
         expect(config).to have_key('tier')
+        expect(config).to have_key('version_label')
         expect(config).to have_key('wait_for_ready_timeout')
       end
     end
 
     context 'optional attributes' do
+      it 'includes cname_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastic_beanstalk_environment('opt', required_attrs.merge(cname_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'opt')
+        expect(config).to have_key('cname_prefix')
+      end
+
+      it 'omits cname_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastic_beanstalk_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'minimal')
+        expect(config).not_to have_key('cname_prefix')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -119,6 +144,23 @@ RSpec.describe Pangea::Resources::AWSElasticBeanstalkEnvironment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes platform_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastic_beanstalk_environment('opt', required_attrs.merge(platform_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'opt')
+        expect(config).to have_key('platform_arn')
+      end
+
+      it 'omits platform_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastic_beanstalk_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'minimal')
+        expect(config).not_to have_key('platform_arn')
       end
       it 'includes poll_interval when provided' do
         synth = create_synthesizer
@@ -137,6 +179,23 @@ RSpec.describe Pangea::Resources::AWSElasticBeanstalkEnvironment do
         config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'minimal')
         expect(config).not_to have_key('poll_interval')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastic_beanstalk_environment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastic_beanstalk_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes setting when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -154,6 +213,23 @@ RSpec.describe Pangea::Resources::AWSElasticBeanstalkEnvironment do
         config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'minimal')
         expect(config).not_to have_key('setting')
       end
+      it 'includes solution_stack_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastic_beanstalk_environment('opt', required_attrs.merge(solution_stack_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'opt')
+        expect(config).to have_key('solution_stack_name')
+      end
+
+      it 'omits solution_stack_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastic_beanstalk_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'minimal')
+        expect(config).not_to have_key('solution_stack_name')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -170,6 +246,23 @@ RSpec.describe Pangea::Resources::AWSElasticBeanstalkEnvironment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastic_beanstalk_environment('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastic_beanstalk_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes template_name when provided' do
         synth = create_synthesizer
@@ -204,6 +297,23 @@ RSpec.describe Pangea::Resources::AWSElasticBeanstalkEnvironment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'minimal')
         expect(config).not_to have_key('tier')
+      end
+      it 'includes version_label when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastic_beanstalk_environment('opt', required_attrs.merge(version_label: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'opt')
+        expect(config).to have_key('version_label')
+      end
+
+      it 'omits version_label when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elastic_beanstalk_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elastic_beanstalk_environment', 'minimal')
+        expect(config).not_to have_key('version_label')
       end
       it 'includes wait_for_ready_timeout when provided' do
         synth = create_synthesizer
@@ -267,7 +377,7 @@ RSpec.describe Pangea::Resources::AWSElasticBeanstalkEnvironment do
     resource_type: :aws_elastic_beanstalk_environment,
     method: :aws_elastic_beanstalk_environment,
     required_attrs: { application: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :all_settings, :arn, :autoscaling_groups, :cname, :cname_prefix, :endpoint_url, :instances, :launch_configurations, :load_balancers, :platform_arn, :queues, :solution_stack_name, :tags_all, :triggers, :version_label],
+    expected_outputs: [:id, :all_settings, :arn, :autoscaling_groups, :cname, :cname_prefix, :endpoint_url, :instances, :launch_configurations, :load_balancers, :platform_arn, :queues, :region, :solution_stack_name, :tags_all, :triggers, :version_label],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

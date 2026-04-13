@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUser do
         expect(ref.last_modified_date).to eq("${aws_cognito_user.test.last_modified_date}")
         expect(ref.mfa_setting_list).to eq("${aws_cognito_user.test.mfa_setting_list}")
         expect(ref.preferred_mfa_setting).to eq("${aws_cognito_user.test.preferred_mfa_setting}")
+        expect(ref.region).to eq("${aws_cognito_user.test.region}")
         expect(ref.status).to eq("${aws_cognito_user.test.status}")
         expect(ref.sub).to eq("${aws_cognito_user.test.sub}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSCognitoUser do
         expect(config).not_to have_key('last_modified_date')
         expect(config).not_to have_key('mfa_setting_list')
         expect(config).not_to have_key('preferred_mfa_setting')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('sub')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ attributes: { 'key1' => 'val1' }, client_metadata: { 'key1' => 'val1' }, desired_delivery_mediums: ['test-value'], enabled: true, force_alias_creation: true, message_action: 'test-value', password: 'test-value', temporary_password: 'test-value', validation_data: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ attributes: { 'key1' => 'val1' }, client_metadata: { 'key1' => 'val1' }, desired_delivery_mediums: ['test-value'], enabled: true, force_alias_creation: true, message_action: 'test-value', password: 'test-value', region: 'test-value', temporary_password: 'test-value', validation_data: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -81,6 +83,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUser do
         expect(config).to have_key('force_alias_creation')
         expect(config).to have_key('message_action')
         expect(config).to have_key('password')
+        expect(config).to have_key('region')
         expect(config).to have_key('temporary_password')
         expect(config).to have_key('validation_data')
       end
@@ -206,6 +209,23 @@ RSpec.describe Pangea::Resources::AWSCognitoUser do
         config = validate_resource_structure(result, 'aws_cognito_user', 'minimal')
         expect(config).not_to have_key('password')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes temporary_password when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -318,7 +338,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUser do
     resource_type: :aws_cognito_user,
     method: :aws_cognito_user,
     required_attrs: { user_pool_id: 'test-value', username: 'test-value' },
-    expected_outputs: [:id, :creation_date, :last_modified_date, :mfa_setting_list, :preferred_mfa_setting, :status, :sub],
+    expected_outputs: [:id, :creation_date, :last_modified_date, :mfa_setting_list, :preferred_mfa_setting, :region, :status, :sub],
     sensitive_fields: [:password, :temporary_password],
     immutable_fields: [],
     boolean_fields: [:enabled, :force_alias_creation]

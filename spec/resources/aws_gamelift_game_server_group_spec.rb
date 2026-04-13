@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSGameliftGameServerGroup do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { game_server_group_name: 'test-value', instance_definition: [{ 'key1' => 'val1' }], launch_template: [{ 'key1' => 'val1' }], max_size: 3.14, min_size: 3.14, role_arn: 'test-value' } }
+  let(:required_attrs) { { game_server_group_name: 'test-value', instance_definition: [{ 'key1' => 'val1' }], launch_template: { 'key1' => 'val1' }, max_size: 3.14, min_size: 3.14, role_arn: 'test-value' } }
 
   describe ':aws_gamelift_game_server_group' do
     context 'with required attributes only' do
@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSGameliftGameServerGroup do
         expect(ref.auto_scaling_group_arn).to eq("${aws_gamelift_game_server_group.test.auto_scaling_group_arn}")
         expect(ref.balancing_strategy).to eq("${aws_gamelift_game_server_group.test.balancing_strategy}")
         expect(ref.game_server_protection_policy).to eq("${aws_gamelift_game_server_group.test.game_server_protection_policy}")
+        expect(ref.region).to eq("${aws_gamelift_game_server_group.test.region}")
         expect(ref.tags_all).to eq("${aws_gamelift_game_server_group.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSGameliftGameServerGroup do
         expect(config).not_to have_key('auto_scaling_group_arn')
         expect(config).not_to have_key('balancing_strategy')
         expect(config).not_to have_key('game_server_protection_policy')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ auto_scaling_policy: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, vpc_subnets: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ auto_scaling_policy: { 'key1' => 'val1' }, balancing_strategy: 'test-value', game_server_protection_policy: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_subnets: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,11 @@ RSpec.describe Pangea::Resources::AWSGameliftGameServerGroup do
 
         config = validate_resource_structure(result, 'aws_gamelift_game_server_group', 'full')
         expect(config).to have_key('auto_scaling_policy')
+        expect(config).to have_key('balancing_strategy')
+        expect(config).to have_key('game_server_protection_policy')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc_subnets')
       end
     end
@@ -82,7 +88,7 @@ RSpec.describe Pangea::Resources::AWSGameliftGameServerGroup do
       it 'includes auto_scaling_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_gamelift_game_server_group('opt', required_attrs.merge(auto_scaling_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_gamelift_game_server_group('opt', required_attrs.merge(auto_scaling_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_gamelift_game_server_group', 'opt')
         expect(config).to have_key('auto_scaling_policy')
@@ -95,6 +101,57 @@ RSpec.describe Pangea::Resources::AWSGameliftGameServerGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_gamelift_game_server_group', 'minimal')
         expect(config).not_to have_key('auto_scaling_policy')
+      end
+      it 'includes balancing_strategy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_game_server_group('opt', required_attrs.merge(balancing_strategy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_game_server_group', 'opt')
+        expect(config).to have_key('balancing_strategy')
+      end
+
+      it 'omits balancing_strategy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_game_server_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_game_server_group', 'minimal')
+        expect(config).not_to have_key('balancing_strategy')
+      end
+      it 'includes game_server_protection_policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_game_server_group('opt', required_attrs.merge(game_server_protection_policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_game_server_group', 'opt')
+        expect(config).to have_key('game_server_protection_policy')
+      end
+
+      it 'omits game_server_protection_policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_game_server_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_game_server_group', 'minimal')
+        expect(config).not_to have_key('game_server_protection_policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_game_server_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_game_server_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_game_server_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_game_server_group', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -112,6 +169,23 @@ RSpec.describe Pangea::Resources::AWSGameliftGameServerGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_gamelift_game_server_group', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_game_server_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_game_server_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_gamelift_game_server_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_gamelift_game_server_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes vpc_subnets when provided' do
         synth = create_synthesizer
@@ -142,7 +216,7 @@ RSpec.describe Pangea::Resources::AWSGameliftGameServerGroup do
         config = validate_resource_structure(result, 'aws_gamelift_game_server_group', 'typed')
         expect(config['game_server_group_name']).to be_a(String)
         expect(config['instance_definition']).to be_a(Array)
-        expect(config['launch_template']).to be_a(Array)
+        expect(config['launch_template']).to be_a(Hash)
         expect(config['max_size']).to be_a(Float)
         expect(config['min_size']).to be_a(Float)
         expect(config['role_arn']).to be_a(String)
@@ -178,8 +252,8 @@ RSpec.describe Pangea::Resources::AWSGameliftGameServerGroup do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_gamelift_game_server_group,
     method: :aws_gamelift_game_server_group,
-    required_attrs: { game_server_group_name: 'test-value', instance_definition: [{ 'key1' => 'val1' }], launch_template: [{ 'key1' => 'val1' }], max_size: 3.14, min_size: 3.14, role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :auto_scaling_group_arn, :balancing_strategy, :game_server_protection_policy, :tags_all],
+    required_attrs: { game_server_group_name: 'test-value', instance_definition: [{ 'key1' => 'val1' }], launch_template: { 'key1' => 'val1' }, max_size: 3.14, min_size: 3.14, role_arn: 'test-value' },
+    expected_outputs: [:id, :arn, :auto_scaling_group_arn, :balancing_strategy, :game_server_protection_policy, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

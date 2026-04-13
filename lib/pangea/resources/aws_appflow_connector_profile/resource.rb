@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppflowConnectorProfileAttributes,
       outputs: { id: :id },
       map: [:connection_mode, :connector_profile_config, :connector_type, :name],
-      map_present: [:connector_label, :kms_arn]
+      map_present: [:connector_label, :kms_arn, :region]
   end
   module AWS
     include AWSAppflowConnectorProfile

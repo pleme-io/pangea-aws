@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CognitoIdentityPoolProviderPrincipalTagAttributes,
       outputs: { id: :id },
       map: [:identity_pool_id, :identity_provider_name],
-      map_present: [:principal_tags],
+      map_present: [:principal_tags, :region],
       map_bool: [:use_defaults]
   end
   module AWS

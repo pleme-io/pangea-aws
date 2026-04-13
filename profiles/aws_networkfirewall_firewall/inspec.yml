@@ -1,0 +1,8 @@
+name: aws_networkfirewall_firewall
+title: Manages a aws_networkfirewall_firewall resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

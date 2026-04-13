@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCodebuildReportGroup do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { export_config: [{ 'key1' => 'val1' }], name: 'test-value', type: 'test-value' } }
+  let(:required_attrs) { { export_config: { 'key1' => 'val1' }, name: 'test-value', type: 'test-value' } }
 
   describe ':aws_codebuild_report_group' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSCodebuildReportGroup do
         expect(ref.id).to eq("${aws_codebuild_report_group.test.id}")
         expect(ref.arn).to eq("${aws_codebuild_report_group.test.arn}")
         expect(ref.created).to eq("${aws_codebuild_report_group.test.created}")
+        expect(ref.region).to eq("${aws_codebuild_report_group.test.region}")
         expect(ref.tags_all).to eq("${aws_codebuild_report_group.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSCodebuildReportGroup do
         config = validate_resource_structure(result, 'aws_codebuild_report_group', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ delete_reports: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ delete_reports: true, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +71,9 @@ RSpec.describe Pangea::Resources::AWSCodebuildReportGroup do
 
         config = validate_resource_structure(result, 'aws_codebuild_report_group', 'full')
         expect(config).to have_key('delete_reports')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -91,6 +95,23 @@ RSpec.describe Pangea::Resources::AWSCodebuildReportGroup do
         config = validate_resource_structure(result, 'aws_codebuild_report_group', 'minimal')
         expect(config).not_to have_key('delete_reports')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_report_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_report_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_report_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_report_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -107,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSCodebuildReportGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codebuild_report_group', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_report_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_report_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_report_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_report_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -132,7 +170,7 @@ RSpec.describe Pangea::Resources::AWSCodebuildReportGroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_codebuild_report_group', 'typed')
-        expect(config['export_config']).to be_a(Array)
+        expect(config['export_config']).to be_a(Hash)
         expect(config['name']).to be_a(String)
         expect(config['type']).to be_a(String)
       end
@@ -167,8 +205,8 @@ RSpec.describe Pangea::Resources::AWSCodebuildReportGroup do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_codebuild_report_group,
     method: :aws_codebuild_report_group,
-    required_attrs: { export_config: [{ 'key1' => 'val1' }], name: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :arn, :created, :tags_all],
+    required_attrs: { export_config: { 'key1' => 'val1' }, name: 'test-value', type: 'test-value' },
+    expected_outputs: [:id, :arn, :created, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:delete_reports]

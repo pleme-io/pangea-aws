@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSDmsReplicationConfig do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { compute_config: [{ 'key1' => 'val1' }], replication_config_identifier: 'test-value', replication_type: 'test-value', source_endpoint_arn: 'test-value', table_mappings: 'test-value', target_endpoint_arn: 'test-value' } }
+  let(:required_attrs) { { compute_config: { 'key1' => 'val1' }, replication_config_identifier: 'test-value', replication_type: 'test-value', source_endpoint_arn: 'test-value', table_mappings: 'test-value', target_endpoint_arn: 'test-value' } }
 
   describe ':aws_dms_replication_config' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationConfig do
 
         expect(ref.id).to eq("${aws_dms_replication_config.test.id}")
         expect(ref.arn).to eq("${aws_dms_replication_config.test.arn}")
+        expect(ref.region).to eq("${aws_dms_replication_config.test.region}")
         expect(ref.replication_settings).to eq("${aws_dms_replication_config.test.replication_settings}")
         expect(ref.resource_identifier).to eq("${aws_dms_replication_config.test.resource_identifier}")
         expect(ref.tags_all).to eq("${aws_dms_replication_config.test.tags_all}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationConfig do
 
         config = validate_resource_structure(result, 'aws_dms_replication_config', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('replication_settings')
         expect(config).not_to have_key('resource_identifier')
         expect(config).not_to have_key('tags_all')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationConfig do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ start_replication: true, supplemental_settings: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', replication_settings: 'test-value', resource_identifier: 'test-value', start_replication: true, supplemental_settings: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,13 +72,68 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationConfig do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_dms_replication_config', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('replication_settings')
+        expect(config).to have_key('resource_identifier')
         expect(config).to have_key('start_replication')
         expect(config).to have_key('supplemental_settings')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_config('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_config', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_config', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes replication_settings when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_config('opt', required_attrs.merge(replication_settings: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_config', 'opt')
+        expect(config).to have_key('replication_settings')
+      end
+
+      it 'omits replication_settings when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_config', 'minimal')
+        expect(config).not_to have_key('replication_settings')
+      end
+      it 'includes resource_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_config('opt', required_attrs.merge(resource_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_config', 'opt')
+        expect(config).to have_key('resource_identifier')
+      end
+
+      it 'omits resource_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_config', 'minimal')
+        expect(config).not_to have_key('resource_identifier')
+      end
       it 'includes start_replication when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -128,6 +185,23 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationConfig do
         config = validate_resource_structure(result, 'aws_dms_replication_config', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_config('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_config', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_config', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'boolean fields' do
@@ -152,7 +226,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationConfig do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_dms_replication_config', 'typed')
-        expect(config['compute_config']).to be_a(Array)
+        expect(config['compute_config']).to be_a(Hash)
         expect(config['replication_config_identifier']).to be_a(String)
         expect(config['replication_type']).to be_a(String)
         expect(config['source_endpoint_arn']).to be_a(String)
@@ -190,8 +264,8 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationConfig do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_dms_replication_config,
     method: :aws_dms_replication_config,
-    required_attrs: { compute_config: [{ 'key1' => 'val1' }], replication_config_identifier: 'test-value', replication_type: 'test-value', source_endpoint_arn: 'test-value', table_mappings: 'test-value', target_endpoint_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :replication_settings, :resource_identifier, :tags_all],
+    required_attrs: { compute_config: { 'key1' => 'val1' }, replication_config_identifier: 'test-value', replication_type: 'test-value', source_endpoint_arn: 'test-value', table_mappings: 'test-value', target_endpoint_arn: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :replication_settings, :resource_identifier, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:start_replication]

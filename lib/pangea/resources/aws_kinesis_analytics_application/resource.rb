@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KinesisAnalyticsApplicationAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:cloudwatch_logging_options, :code, :description, :inputs, :outputs, :reference_data_sources, :tags, :tags_all],
+      map_present: [:cloudwatch_logging_options, :code, :description, :inputs, :outputs, :reference_data_sources, :region, :tags, :tags_all],
       map_bool: [:start_application]
   end
   module AWS

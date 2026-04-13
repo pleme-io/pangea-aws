@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SecuritylakeSubscriberNotificationAttributes,
       outputs: { id: :id },
       map: [:subscriber_id],
-      map_present: [:configuration]
+      map_present: [:configuration, :region]
   end
   module AWS
     include AWSSecuritylakeSubscriberNotification

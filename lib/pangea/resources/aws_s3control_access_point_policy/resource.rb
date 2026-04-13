@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_s3control_access_point_policy,
       attributes_class: AWS::Types::S3controlAccessPointPolicyAttributes,
       outputs: { id: :id },
-      map: [:access_point_arn, :policy]
+      map: [:access_point_arn, :policy],
+      map_present: [:region]
   end
   module AWS
     include AWSS3controlAccessPointPolicy

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DevopsguruResourceCollectionAttributes,
       outputs: { id: :id },
       map: [:type],
-      map_present: [:cloudformation, :tags]
+      map_present: [:cloudformation, :region, :tags]
   end
   module AWS
     include AWSDevopsguruResourceCollection

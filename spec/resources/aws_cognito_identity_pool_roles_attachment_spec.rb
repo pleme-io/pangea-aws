@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSCognitoIdentityPoolRolesAttachment do
         ref = synth.aws_cognito_identity_pool_roles_attachment('test', required_attrs)
 
         expect(ref.id).to eq("${aws_cognito_identity_pool_roles_attachment.test.id}")
+        expect(ref.region).to eq("${aws_cognito_identity_pool_roles_attachment.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_identity_pool_roles_attachment('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_cognito_identity_pool_roles_attachment', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ role_mapping: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', role_mapping: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -51,11 +64,29 @@ RSpec.describe Pangea::Resources::AWSCognitoIdentityPoolRolesAttachment do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cognito_identity_pool_roles_attachment', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('role_mapping')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_identity_pool_roles_attachment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_identity_pool_roles_attachment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_identity_pool_roles_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_identity_pool_roles_attachment', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes role_mapping when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -118,7 +149,7 @@ RSpec.describe Pangea::Resources::AWSCognitoIdentityPoolRolesAttachment do
     resource_type: :aws_cognito_identity_pool_roles_attachment,
     method: :aws_cognito_identity_pool_roles_attachment,
     required_attrs: { identity_pool_id: 'test-value', roles: { 'key1' => 'val1' } },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

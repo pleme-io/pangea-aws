@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSLexSlotType do
         expect(ref.checksum).to eq("${aws_lex_slot_type.test.checksum}")
         expect(ref.created_date).to eq("${aws_lex_slot_type.test.created_date}")
         expect(ref.last_updated_date).to eq("${aws_lex_slot_type.test.last_updated_date}")
+        expect(ref.region).to eq("${aws_lex_slot_type.test.region}")
         expect(ref.version).to eq("${aws_lex_slot_type.test.version}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSLexSlotType do
         expect(config).not_to have_key('checksum')
         expect(config).not_to have_key('created_date')
         expect(config).not_to have_key('last_updated_date')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('version')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ create_version: true, description: 'test-value', value_selection_strategy: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ create_version: true, description: 'test-value', region: 'test-value', value_selection_strategy: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,6 +74,7 @@ RSpec.describe Pangea::Resources::AWSLexSlotType do
         config = validate_resource_structure(result, 'aws_lex_slot_type', 'full')
         expect(config).to have_key('create_version')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('value_selection_strategy')
       end
     end
@@ -110,6 +113,23 @@ RSpec.describe Pangea::Resources::AWSLexSlotType do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lex_slot_type', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lex_slot_type('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lex_slot_type', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lex_slot_type('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lex_slot_type', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes value_selection_strategy when provided' do
         synth = create_synthesizer
@@ -187,7 +207,7 @@ RSpec.describe Pangea::Resources::AWSLexSlotType do
     resource_type: :aws_lex_slot_type,
     method: :aws_lex_slot_type,
     required_attrs: { enumeration_value: [{ 'key1' => 'val1' }], name: 'test-value' },
-    expected_outputs: [:id, :checksum, :created_date, :last_updated_date, :version],
+    expected_outputs: [:id, :checksum, :created_date, :last_updated_date, :region, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:create_version]

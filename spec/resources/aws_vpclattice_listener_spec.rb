@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSVpclatticeListener do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { default_action: [{ 'key1' => 'val1' }], name: 'test-value', protocol: 'test-value' } }
+  let(:required_attrs) { { default_action: { 'key1' => 'val1' }, name: 'test-value', protocol: 'test-value' } }
 
   describe ':aws_vpclattice_listener' do
     context 'with required attributes only' do
@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeListener do
         expect(ref.last_updated_at).to eq("${aws_vpclattice_listener.test.last_updated_at}")
         expect(ref.listener_id).to eq("${aws_vpclattice_listener.test.listener_id}")
         expect(ref.port).to eq("${aws_vpclattice_listener.test.port}")
+        expect(ref.region).to eq("${aws_vpclattice_listener.test.region}")
         expect(ref.service_arn).to eq("${aws_vpclattice_listener.test.service_arn}")
         expect(ref.service_identifier).to eq("${aws_vpclattice_listener.test.service_identifier}")
         expect(ref.tags_all).to eq("${aws_vpclattice_listener.test.tags_all}")
@@ -62,6 +63,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeListener do
         expect(config).not_to have_key('last_updated_at')
         expect(config).not_to have_key('listener_id')
         expect(config).not_to have_key('port')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('service_arn')
         expect(config).not_to have_key('service_identifier')
         expect(config).not_to have_key('tags_all')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeListener do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ port: 3.14, region: 'test-value', service_arn: 'test-value', service_identifier: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,11 +80,84 @@ RSpec.describe Pangea::Resources::AWSVpclatticeListener do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpclattice_listener', 'full')
+        expect(config).to have_key('port')
+        expect(config).to have_key('region')
+        expect(config).to have_key('service_arn')
+        expect(config).to have_key('service_identifier')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes port when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener('opt', required_attrs.merge(port: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener', 'opt')
+        expect(config).to have_key('port')
+      end
+
+      it 'omits port when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener', 'minimal')
+        expect(config).not_to have_key('port')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes service_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener('opt', required_attrs.merge(service_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener', 'opt')
+        expect(config).to have_key('service_arn')
+      end
+
+      it 'omits service_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener', 'minimal')
+        expect(config).not_to have_key('service_arn')
+      end
+      it 'includes service_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener('opt', required_attrs.merge(service_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener', 'opt')
+        expect(config).to have_key('service_identifier')
+      end
+
+      it 'omits service_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener', 'minimal')
+        expect(config).not_to have_key('service_identifier')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -100,6 +175,23 @@ RSpec.describe Pangea::Resources::AWSVpclatticeListener do
         config = validate_resource_structure(result, 'aws_vpclattice_listener', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -110,7 +202,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeListener do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpclattice_listener', 'typed')
-        expect(config['default_action']).to be_a(Array)
+        expect(config['default_action']).to be_a(Hash)
         expect(config['name']).to be_a(String)
         expect(config['protocol']).to be_a(String)
       end
@@ -145,8 +237,8 @@ RSpec.describe Pangea::Resources::AWSVpclatticeListener do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_vpclattice_listener,
     method: :aws_vpclattice_listener,
-    required_attrs: { default_action: [{ 'key1' => 'val1' }], name: 'test-value', protocol: 'test-value' },
-    expected_outputs: [:id, :arn, :created_at, :last_updated_at, :listener_id, :port, :service_arn, :service_identifier, :tags_all],
+    required_attrs: { default_action: { 'key1' => 'val1' }, name: 'test-value', protocol: 'test-value' },
+    expected_outputs: [:id, :arn, :created_at, :last_updated_at, :listener_id, :port, :region, :service_arn, :service_identifier, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

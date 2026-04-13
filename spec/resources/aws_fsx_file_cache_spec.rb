@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSFsxFileCache do
         expect(ref.kms_key_id).to eq("${aws_fsx_file_cache.test.kms_key_id}")
         expect(ref.network_interface_ids).to eq("${aws_fsx_file_cache.test.network_interface_ids}")
         expect(ref.owner_id).to eq("${aws_fsx_file_cache.test.owner_id}")
+        expect(ref.region).to eq("${aws_fsx_file_cache.test.region}")
         expect(ref.tags_all).to eq("${aws_fsx_file_cache.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_fsx_file_cache.test.vpc_id}")
       end
@@ -65,13 +66,14 @@ RSpec.describe Pangea::Resources::AWSFsxFileCache do
         expect(config).not_to have_key('kms_key_id')
         expect(config).not_to have_key('network_interface_ids')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ copy_tags_to_data_repository_associations: true, data_repository_association: [{ 'key1' => 'val1' }], lustre_configuration: [{ 'key1' => 'val1' }], security_group_ids: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ copy_tags_to_data_repository_associations: true, data_repository_association: [{ 'key1' => 'val1' }], kms_key_id: 'test-value', lustre_configuration: [{ 'key1' => 'val1' }], region: 'test-value', security_group_ids: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -82,9 +84,12 @@ RSpec.describe Pangea::Resources::AWSFsxFileCache do
         config = validate_resource_structure(result, 'aws_fsx_file_cache', 'full')
         expect(config).to have_key('copy_tags_to_data_repository_associations')
         expect(config).to have_key('data_repository_association')
+        expect(config).to have_key('kms_key_id')
         expect(config).to have_key('lustre_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('security_group_ids')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -123,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSFsxFileCache do
         config = validate_resource_structure(result, 'aws_fsx_file_cache', 'minimal')
         expect(config).not_to have_key('data_repository_association')
       end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_file_cache('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_file_cache', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_file_cache('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_file_cache', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
       it 'includes lustre_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -139,6 +161,23 @@ RSpec.describe Pangea::Resources::AWSFsxFileCache do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_file_cache', 'minimal')
         expect(config).not_to have_key('lustre_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_file_cache('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_file_cache', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_file_cache('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_file_cache', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes security_group_ids when provided' do
         synth = create_synthesizer
@@ -173,6 +212,23 @@ RSpec.describe Pangea::Resources::AWSFsxFileCache do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_file_cache', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_file_cache('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_file_cache', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_file_cache('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_file_cache', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -235,7 +291,7 @@ RSpec.describe Pangea::Resources::AWSFsxFileCache do
     resource_type: :aws_fsx_file_cache,
     method: :aws_fsx_file_cache,
     required_attrs: { file_cache_type: 'test-value', file_cache_type_version: 'test-value', storage_capacity: 3.14, subnet_ids: ['test-value'] },
-    expected_outputs: [:id, :arn, :data_repository_association_ids, :dns_name, :file_cache_id, :kms_key_id, :network_interface_ids, :owner_id, :tags_all, :vpc_id],
+    expected_outputs: [:id, :arn, :data_repository_association_ids, :dns_name, :file_cache_id, :kms_key_id, :network_interface_ids, :owner_id, :region, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:copy_tags_to_data_repository_associations]

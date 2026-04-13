@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BedrockGuardrailVersionAttributes,
       outputs: { id: :id },
       map: [:guardrail_arn],
-      map_present: [:description],
+      map_present: [:description, :region],
       map_bool: [:skip_destroy]
   end
   module AWS

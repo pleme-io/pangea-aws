@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_quicksight_account_settings,
       attributes_class: AWS::Types::QuicksightAccountSettingsAttributes,
       outputs: { id: :id },
-      map_present: [:aws_account_id, :default_namespace],
+      map_present: [:aws_account_id, :default_namespace, :region],
       map_bool: [:termination_protection_enabled]
   end
   module AWS

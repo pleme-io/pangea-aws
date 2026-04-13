@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
         expect(ref.cluster_state).to eq("${aws_emr_cluster.test.cluster_state}")
         expect(ref.keep_job_flow_alive_when_no_steps).to eq("${aws_emr_cluster.test.keep_job_flow_alive_when_no_steps}")
         expect(ref.master_public_dns).to eq("${aws_emr_cluster.test.master_public_dns}")
+        expect(ref.region).to eq("${aws_emr_cluster.test.region}")
         expect(ref.scale_down_behavior).to eq("${aws_emr_cluster.test.scale_down_behavior}")
         expect(ref.step).to eq("${aws_emr_cluster.test.step}")
         expect(ref.tags_all).to eq("${aws_emr_cluster.test.tags_all}")
@@ -61,6 +62,7 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
         expect(config).not_to have_key('cluster_state')
         expect(config).not_to have_key('keep_job_flow_alive_when_no_steps')
         expect(config).not_to have_key('master_public_dns')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('scale_down_behavior')
         expect(config).not_to have_key('step')
         expect(config).not_to have_key('tags_all')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ additional_info: 'test-value', applications: ['test-value'], auto_termination_policy: [{ 'key1' => 'val1' }], autoscaling_role: 'test-value', bootstrap_action: [{ 'key1' => 'val1' }], configurations: 'test-value', configurations_json: 'test-value', core_instance_fleet: [{ 'key1' => 'val1' }], core_instance_group: [{ 'key1' => 'val1' }], custom_ami_id: 'test-value', ebs_root_volume_size: 3.14, ec2_attributes: [{ 'key1' => 'val1' }], kerberos_attributes: [{ 'key1' => 'val1' }], list_steps_states: ['test-value'], log_encryption_kms_key_id: 'test-value', log_uri: 'test-value', master_instance_fleet: [{ 'key1' => 'val1' }], master_instance_group: [{ 'key1' => 'val1' }], placement_group_config: [{ 'key1' => 'val1' }], security_configuration: 'test-value', step_concurrency_level: 3.14, tags: { 'key1' => 'val1' }, unhealthy_node_replacement: true, visible_to_all_users: true }) }
+      let(:all_attrs) { required_attrs.merge({ additional_info: 'test-value', applications: ['test-value'], auto_termination_policy: { 'key1' => 'val1' }, autoscaling_role: 'test-value', bootstrap_action: [{ 'key1' => 'val1' }], configurations: 'test-value', configurations_json: 'test-value', core_instance_fleet: { 'key1' => 'val1' }, core_instance_group: { 'key1' => 'val1' }, custom_ami_id: 'test-value', ebs_root_volume_size: 3.14, ec2_attributes: { 'key1' => 'val1' }, keep_job_flow_alive_when_no_steps: true, kerberos_attributes: { 'key1' => 'val1' }, list_steps_states: ['test-value'], log_encryption_kms_key_id: 'test-value', log_uri: 'test-value', master_instance_fleet: { 'key1' => 'val1' }, master_instance_group: { 'key1' => 'val1' }, os_release_label: 'test-value', placement_group_config: [{ 'key1' => 'val1' }], region: 'test-value', scale_down_behavior: 'test-value', security_configuration: 'test-value', step: [{ 'key1' => 'val1' }], step_concurrency_level: 3.14, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, termination_protection: true, unhealthy_node_replacement: true, visible_to_all_users: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -90,16 +92,23 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
         expect(config).to have_key('custom_ami_id')
         expect(config).to have_key('ebs_root_volume_size')
         expect(config).to have_key('ec2_attributes')
+        expect(config).to have_key('keep_job_flow_alive_when_no_steps')
         expect(config).to have_key('kerberos_attributes')
         expect(config).to have_key('list_steps_states')
         expect(config).to have_key('log_encryption_kms_key_id')
         expect(config).to have_key('log_uri')
         expect(config).to have_key('master_instance_fleet')
         expect(config).to have_key('master_instance_group')
+        expect(config).to have_key('os_release_label')
         expect(config).to have_key('placement_group_config')
+        expect(config).to have_key('region')
+        expect(config).to have_key('scale_down_behavior')
         expect(config).to have_key('security_configuration')
+        expect(config).to have_key('step')
         expect(config).to have_key('step_concurrency_level')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('termination_protection')
         expect(config).to have_key('unhealthy_node_replacement')
         expect(config).to have_key('visible_to_all_users')
       end
@@ -143,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
       it 'includes auto_termination_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emr_cluster('opt', required_attrs.merge(auto_termination_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_emr_cluster('opt', required_attrs.merge(auto_termination_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
         expect(config).to have_key('auto_termination_policy')
@@ -228,7 +237,7 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
       it 'includes core_instance_fleet when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emr_cluster('opt', required_attrs.merge(core_instance_fleet: [{ 'key1' => 'val1' }]))
+        synth.aws_emr_cluster('opt', required_attrs.merge(core_instance_fleet: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
         expect(config).to have_key('core_instance_fleet')
@@ -245,7 +254,7 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
       it 'includes core_instance_group when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emr_cluster('opt', required_attrs.merge(core_instance_group: [{ 'key1' => 'val1' }]))
+        synth.aws_emr_cluster('opt', required_attrs.merge(core_instance_group: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
         expect(config).to have_key('core_instance_group')
@@ -296,7 +305,7 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
       it 'includes ec2_attributes when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emr_cluster('opt', required_attrs.merge(ec2_attributes: [{ 'key1' => 'val1' }]))
+        synth.aws_emr_cluster('opt', required_attrs.merge(ec2_attributes: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
         expect(config).to have_key('ec2_attributes')
@@ -310,10 +319,27 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
         config = validate_resource_structure(result, 'aws_emr_cluster', 'minimal')
         expect(config).not_to have_key('ec2_attributes')
       end
+      it 'includes keep_job_flow_alive_when_no_steps when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('opt', required_attrs.merge(keep_job_flow_alive_when_no_steps: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
+        expect(config).to have_key('keep_job_flow_alive_when_no_steps')
+      end
+
+      it 'omits keep_job_flow_alive_when_no_steps when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'minimal')
+        expect(config).not_to have_key('keep_job_flow_alive_when_no_steps')
+      end
       it 'includes kerberos_attributes when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emr_cluster('opt', required_attrs.merge(kerberos_attributes: [{ 'key1' => 'val1' }]))
+        synth.aws_emr_cluster('opt', required_attrs.merge(kerberos_attributes: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
         expect(config).to have_key('kerberos_attributes')
@@ -381,7 +407,7 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
       it 'includes master_instance_fleet when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emr_cluster('opt', required_attrs.merge(master_instance_fleet: [{ 'key1' => 'val1' }]))
+        synth.aws_emr_cluster('opt', required_attrs.merge(master_instance_fleet: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
         expect(config).to have_key('master_instance_fleet')
@@ -398,7 +424,7 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
       it 'includes master_instance_group when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emr_cluster('opt', required_attrs.merge(master_instance_group: [{ 'key1' => 'val1' }]))
+        synth.aws_emr_cluster('opt', required_attrs.merge(master_instance_group: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
         expect(config).to have_key('master_instance_group')
@@ -411,6 +437,23 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_cluster', 'minimal')
         expect(config).not_to have_key('master_instance_group')
+      end
+      it 'includes os_release_label when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('opt', required_attrs.merge(os_release_label: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
+        expect(config).to have_key('os_release_label')
+      end
+
+      it 'omits os_release_label when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'minimal')
+        expect(config).not_to have_key('os_release_label')
       end
       it 'includes placement_group_config when provided' do
         synth = create_synthesizer
@@ -429,6 +472,40 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
         config = validate_resource_structure(result, 'aws_emr_cluster', 'minimal')
         expect(config).not_to have_key('placement_group_config')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes scale_down_behavior when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('opt', required_attrs.merge(scale_down_behavior: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
+        expect(config).to have_key('scale_down_behavior')
+      end
+
+      it 'omits scale_down_behavior when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'minimal')
+        expect(config).not_to have_key('scale_down_behavior')
+      end
       it 'includes security_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -445,6 +522,23 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_cluster', 'minimal')
         expect(config).not_to have_key('security_configuration')
+      end
+      it 'includes step when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('opt', required_attrs.merge(step: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
+        expect(config).to have_key('step')
+      end
+
+      it 'omits step when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'minimal')
+        expect(config).not_to have_key('step')
       end
       it 'includes step_concurrency_level when provided' do
         synth = create_synthesizer
@@ -479,6 +573,40 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_cluster', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes termination_protection when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('opt', required_attrs.merge(termination_protection: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'opt')
+        expect(config).to have_key('termination_protection')
+      end
+
+      it 'omits termination_protection when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_cluster', 'minimal')
+        expect(config).not_to have_key('termination_protection')
       end
       it 'includes unhealthy_node_replacement when provided' do
         synth = create_synthesizer
@@ -517,6 +645,28 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts keep_job_flow_alive_when_no_steps=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(keep_job_flow_alive_when_no_steps: val)
+          synth.aws_emr_cluster("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_emr_cluster', "bool_#{val}")
+          expect(config['keep_job_flow_alive_when_no_steps']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts termination_protection=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(termination_protection: val)
+          synth.aws_emr_cluster("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_emr_cluster', "bool_#{val}")
+          expect(config['termination_protection']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts unhealthy_node_replacement=#{val}" do
           synth = create_synthesizer
@@ -585,8 +735,8 @@ RSpec.describe Pangea::Resources::AWSEmrCluster do
     resource_type: :aws_emr_cluster,
     method: :aws_emr_cluster,
     required_attrs: { name: 'test-value', release_label: 'test-value', service_role: 'test-value' },
-    expected_outputs: [:id, :arn, :cluster_state, :keep_job_flow_alive_when_no_steps, :master_public_dns, :scale_down_behavior, :step, :tags_all, :termination_protection],
+    expected_outputs: [:id, :arn, :cluster_state, :keep_job_flow_alive_when_no_steps, :master_public_dns, :region, :scale_down_behavior, :step, :tags_all, :termination_protection],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:unhealthy_node_replacement, :visible_to_all_users]
+    boolean_fields: [:keep_job_flow_alive_when_no_steps, :termination_protection, :unhealthy_node_replacement, :visible_to_all_users]
 end

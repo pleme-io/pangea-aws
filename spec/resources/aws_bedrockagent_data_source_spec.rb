@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentDataSource do
         expect(ref.id).to eq("${aws_bedrockagent_data_source.test.id}")
         expect(ref.data_deletion_policy).to eq("${aws_bedrockagent_data_source.test.data_deletion_policy}")
         expect(ref.data_source_id).to eq("${aws_bedrockagent_data_source.test.data_source_id}")
+        expect(ref.region).to eq("${aws_bedrockagent_data_source.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSBedrockagentDataSource do
         config = validate_resource_structure(result, 'aws_bedrockagent_data_source', 'test')
         expect(config).not_to have_key('data_deletion_policy')
         expect(config).not_to have_key('data_source_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ data_source_configuration: [{ 'key1' => 'val1' }], description: 'test-value', server_side_encryption_configuration: [{ 'key1' => 'val1' }], vector_ingestion_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ data_deletion_policy: 'test-value', data_source_configuration: [{ 'key1' => 'val1' }], description: 'test-value', region: 'test-value', server_side_encryption_configuration: [{ 'key1' => 'val1' }], vector_ingestion_configuration: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,14 +68,33 @@ RSpec.describe Pangea::Resources::AWSBedrockagentDataSource do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_bedrockagent_data_source', 'full')
+        expect(config).to have_key('data_deletion_policy')
         expect(config).to have_key('data_source_configuration')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('server_side_encryption_configuration')
         expect(config).to have_key('vector_ingestion_configuration')
       end
     end
 
     context 'optional attributes' do
+      it 'includes data_deletion_policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_data_source('opt', required_attrs.merge(data_deletion_policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_data_source', 'opt')
+        expect(config).to have_key('data_deletion_policy')
+      end
+
+      it 'omits data_deletion_policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_data_source('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_data_source', 'minimal')
+        expect(config).not_to have_key('data_deletion_policy')
+      end
       it 'includes data_source_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -107,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSBedrockagentDataSource do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_bedrockagent_data_source', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_data_source('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_data_source', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_data_source('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_data_source', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes server_side_encryption_configuration when provided' do
         synth = create_synthesizer
@@ -187,7 +225,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentDataSource do
     resource_type: :aws_bedrockagent_data_source,
     method: :aws_bedrockagent_data_source,
     required_attrs: { knowledge_base_id: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :data_deletion_policy, :data_source_id],
+    expected_outputs: [:id, :data_deletion_policy, :data_source_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSRdsClusterActivityStream do
 
         expect(ref.id).to eq("${aws_rds_cluster_activity_stream.test.id}")
         expect(ref.kinesis_stream_name).to eq("${aws_rds_cluster_activity_stream.test.kinesis_stream_name}")
+        expect(ref.region).to eq("${aws_rds_cluster_activity_stream.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSRdsClusterActivityStream do
 
         config = validate_resource_structure(result, 'aws_rds_cluster_activity_stream', 'test')
         expect(config).not_to have_key('kinesis_stream_name')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ engine_native_audit_fields_included: true }) }
+      let(:all_attrs) { required_attrs.merge({ engine_native_audit_fields_included: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSRdsClusterActivityStream do
 
         config = validate_resource_structure(result, 'aws_rds_cluster_activity_stream', 'full')
         expect(config).to have_key('engine_native_audit_fields_included')
+        expect(config).to have_key('region')
       end
     end
 
@@ -85,6 +88,23 @@ RSpec.describe Pangea::Resources::AWSRdsClusterActivityStream do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_cluster_activity_stream', 'minimal')
         expect(config).not_to have_key('engine_native_audit_fields_included')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster_activity_stream('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster_activity_stream', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster_activity_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster_activity_stream', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -146,7 +166,7 @@ RSpec.describe Pangea::Resources::AWSRdsClusterActivityStream do
     resource_type: :aws_rds_cluster_activity_stream,
     method: :aws_rds_cluster_activity_stream,
     required_attrs: { kms_key_id: 'test-value', mode: 'test-value', resource_arn: 'test-value' },
-    expected_outputs: [:id, :kinesis_stream_name],
+    expected_outputs: [:id, :kinesis_stream_name, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:engine_native_audit_fields_included]

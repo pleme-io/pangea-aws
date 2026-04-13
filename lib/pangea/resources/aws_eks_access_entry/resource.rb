@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EksAccessEntryAttributes,
       outputs: { id: :id },
       map: [:cluster_name, :principal_arn],
-      map_present: [:kubernetes_groups, :tags, :tags_all, :type, :user_name]
+      map_present: [:kubernetes_groups, :region, :tags, :tags_all, :type, :user_name]
   end
   module AWS
     include AWSEksAccessEntry

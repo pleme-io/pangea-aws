@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
         expect(ref.id).to eq("${aws_kinesis_firehose_delivery_stream.test.id}")
         expect(ref.arn).to eq("${aws_kinesis_firehose_delivery_stream.test.arn}")
         expect(ref.destination_id).to eq("${aws_kinesis_firehose_delivery_stream.test.destination_id}")
+        expect(ref.region).to eq("${aws_kinesis_firehose_delivery_stream.test.region}")
         expect(ref.tags_all).to eq("${aws_kinesis_firehose_delivery_stream.test.tags_all}")
         expect(ref.version_id).to eq("${aws_kinesis_firehose_delivery_stream.test.version_id}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('destination_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('version_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ elasticsearch_configuration: [{ 'key1' => 'val1' }], extended_s3_configuration: [{ 'key1' => 'val1' }], http_endpoint_configuration: [{ 'key1' => 'val1' }], iceberg_configuration: [{ 'key1' => 'val1' }], kinesis_source_configuration: [{ 'key1' => 'val1' }], msk_source_configuration: [{ 'key1' => 'val1' }], opensearch_configuration: [{ 'key1' => 'val1' }], opensearchserverless_configuration: [{ 'key1' => 'val1' }], redshift_configuration: [{ 'key1' => 'val1' }], server_side_encryption: [{ 'key1' => 'val1' }], snowflake_configuration: [{ 'key1' => 'val1' }], splunk_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ arn: 'test-value', destination_id: 'test-value', elasticsearch_configuration: { 'key1' => 'val1' }, extended_s3_configuration: { 'key1' => 'val1' }, http_endpoint_configuration: { 'key1' => 'val1' }, iceberg_configuration: { 'key1' => 'val1' }, kinesis_source_configuration: { 'key1' => 'val1' }, msk_source_configuration: { 'key1' => 'val1' }, opensearch_configuration: { 'key1' => 'val1' }, opensearchserverless_configuration: { 'key1' => 'val1' }, redshift_configuration: { 'key1' => 'val1' }, region: 'test-value', server_side_encryption: { 'key1' => 'val1' }, snowflake_configuration: { 'key1' => 'val1' }, splunk_configuration: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, version_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,6 +72,8 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'full')
+        expect(config).to have_key('arn')
+        expect(config).to have_key('destination_id')
         expect(config).to have_key('elasticsearch_configuration')
         expect(config).to have_key('extended_s3_configuration')
         expect(config).to have_key('http_endpoint_configuration')
@@ -79,18 +83,55 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
         expect(config).to have_key('opensearch_configuration')
         expect(config).to have_key('opensearchserverless_configuration')
         expect(config).to have_key('redshift_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('server_side_encryption')
         expect(config).to have_key('snowflake_configuration')
         expect(config).to have_key('splunk_configuration')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('version_id')
       end
     end
 
     context 'optional attributes' do
+      it 'includes arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
+        expect(config).to have_key('arn')
+      end
+
+      it 'omits arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_firehose_delivery_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'minimal')
+        expect(config).not_to have_key('arn')
+      end
+      it 'includes destination_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(destination_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
+        expect(config).to have_key('destination_id')
+      end
+
+      it 'omits destination_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_firehose_delivery_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'minimal')
+        expect(config).not_to have_key('destination_id')
+      end
       it 'includes elasticsearch_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(elasticsearch_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(elasticsearch_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
         expect(config).to have_key('elasticsearch_configuration')
@@ -107,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
       it 'includes extended_s3_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(extended_s3_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(extended_s3_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
         expect(config).to have_key('extended_s3_configuration')
@@ -124,7 +165,7 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
       it 'includes http_endpoint_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(http_endpoint_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(http_endpoint_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
         expect(config).to have_key('http_endpoint_configuration')
@@ -141,7 +182,7 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
       it 'includes iceberg_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(iceberg_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(iceberg_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
         expect(config).to have_key('iceberg_configuration')
@@ -158,7 +199,7 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
       it 'includes kinesis_source_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(kinesis_source_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(kinesis_source_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
         expect(config).to have_key('kinesis_source_configuration')
@@ -175,7 +216,7 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
       it 'includes msk_source_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(msk_source_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(msk_source_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
         expect(config).to have_key('msk_source_configuration')
@@ -192,7 +233,7 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
       it 'includes opensearch_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(opensearch_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(opensearch_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
         expect(config).to have_key('opensearch_configuration')
@@ -209,7 +250,7 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
       it 'includes opensearchserverless_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(opensearchserverless_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(opensearchserverless_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
         expect(config).to have_key('opensearchserverless_configuration')
@@ -226,7 +267,7 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
       it 'includes redshift_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(redshift_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(redshift_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
         expect(config).to have_key('redshift_configuration')
@@ -240,10 +281,27 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'minimal')
         expect(config).not_to have_key('redshift_configuration')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_firehose_delivery_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes server_side_encryption when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(server_side_encryption: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(server_side_encryption: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
         expect(config).to have_key('server_side_encryption')
@@ -260,7 +318,7 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
       it 'includes snowflake_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(snowflake_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(snowflake_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
         expect(config).to have_key('snowflake_configuration')
@@ -277,7 +335,7 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
       it 'includes splunk_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(splunk_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(splunk_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
         expect(config).to have_key('splunk_configuration')
@@ -307,6 +365,40 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_firehose_delivery_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes version_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_firehose_delivery_stream('opt', required_attrs.merge(version_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'opt')
+        expect(config).to have_key('version_id')
+      end
+
+      it 'omits version_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_firehose_delivery_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_firehose_delivery_stream', 'minimal')
+        expect(config).not_to have_key('version_id')
       end
     end
 
@@ -353,7 +445,7 @@ RSpec.describe Pangea::Resources::AWSKinesisFirehoseDeliveryStream do
     resource_type: :aws_kinesis_firehose_delivery_stream,
     method: :aws_kinesis_firehose_delivery_stream,
     required_attrs: { destination: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :destination_id, :tags_all, :version_id],
+    expected_outputs: [:id, :arn, :destination_id, :region, :tags_all, :version_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

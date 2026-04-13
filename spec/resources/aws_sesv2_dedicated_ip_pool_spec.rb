@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSesv2DedicatedIpPool do
 
         expect(ref.id).to eq("${aws_sesv2_dedicated_ip_pool.test.id}")
         expect(ref.arn).to eq("${aws_sesv2_dedicated_ip_pool.test.arn}")
+        expect(ref.region).to eq("${aws_sesv2_dedicated_ip_pool.test.region}")
         expect(ref.scaling_mode).to eq("${aws_sesv2_dedicated_ip_pool.test.scaling_mode}")
         expect(ref.tags_all).to eq("${aws_sesv2_dedicated_ip_pool.test.tags_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSSesv2DedicatedIpPool do
 
         config = validate_resource_structure(result, 'aws_sesv2_dedicated_ip_pool', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('scaling_mode')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', scaling_mode: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,11 +70,48 @@ RSpec.describe Pangea::Resources::AWSSesv2DedicatedIpPool do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_sesv2_dedicated_ip_pool', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('scaling_mode')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_dedicated_ip_pool('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_dedicated_ip_pool', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_dedicated_ip_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_dedicated_ip_pool', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes scaling_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_dedicated_ip_pool('opt', required_attrs.merge(scaling_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_dedicated_ip_pool', 'opt')
+        expect(config).to have_key('scaling_mode')
+      end
+
+      it 'omits scaling_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_dedicated_ip_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_dedicated_ip_pool', 'minimal')
+        expect(config).not_to have_key('scaling_mode')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -89,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSSesv2DedicatedIpPool do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_dedicated_ip_pool', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_dedicated_ip_pool('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_dedicated_ip_pool', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_dedicated_ip_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_dedicated_ip_pool', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -134,7 +190,7 @@ RSpec.describe Pangea::Resources::AWSSesv2DedicatedIpPool do
     resource_type: :aws_sesv2_dedicated_ip_pool,
     method: :aws_sesv2_dedicated_ip_pool,
     required_attrs: { pool_name: 'test-value' },
-    expected_outputs: [:id, :arn, :scaling_mode, :tags_all],
+    expected_outputs: [:id, :arn, :region, :scaling_mode, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

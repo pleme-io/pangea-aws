@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftdataStatementAttributes,
       outputs: { id: :id },
       map: [:database, :sql],
-      map_present: [:cluster_identifier, :db_user, :parameters, :secret_arn, :statement_name, :workgroup_name],
+      map_present: [:cluster_identifier, :db_user, :parameters, :region, :secret_arn, :statement_name, :workgroup_name],
       map_bool: [:with_event]
   end
   module AWS

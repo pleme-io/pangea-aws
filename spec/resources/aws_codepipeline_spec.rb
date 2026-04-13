@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCodepipeline do
 
         expect(ref.id).to eq("${aws_codepipeline.test.id}")
         expect(ref.arn).to eq("${aws_codepipeline.test.arn}")
+        expect(ref.region).to eq("${aws_codepipeline.test.region}")
         expect(ref.tags_all).to eq("${aws_codepipeline.test.tags_all}")
         expect(ref.trigger_all).to eq("${aws_codepipeline.test.trigger_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSCodepipeline do
 
         config = validate_resource_structure(result, 'aws_codepipeline', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('trigger_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ execution_mode: 'test-value', pipeline_type: 'test-value', tags: { 'key1' => 'val1' }, trigger: [{ 'key1' => 'val1' }], variable: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ execution_mode: 'test-value', pipeline_type: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, trigger: [{ 'key1' => 'val1' }], variable: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,7 +72,9 @@ RSpec.describe Pangea::Resources::AWSCodepipeline do
         config = validate_resource_structure(result, 'aws_codepipeline', 'full')
         expect(config).to have_key('execution_mode')
         expect(config).to have_key('pipeline_type')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('trigger')
         expect(config).to have_key('variable')
       end
@@ -111,6 +115,23 @@ RSpec.describe Pangea::Resources::AWSCodepipeline do
         config = validate_resource_structure(result, 'aws_codepipeline', 'minimal')
         expect(config).not_to have_key('pipeline_type')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codepipeline('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codepipeline', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codepipeline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codepipeline', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -127,6 +148,23 @@ RSpec.describe Pangea::Resources::AWSCodepipeline do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codepipeline', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codepipeline('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codepipeline', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codepipeline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codepipeline', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes trigger when provided' do
         synth = create_synthesizer
@@ -209,7 +247,7 @@ RSpec.describe Pangea::Resources::AWSCodepipeline do
     resource_type: :aws_codepipeline,
     method: :aws_codepipeline,
     required_attrs: { artifact_store: [{ 'key1' => 'val1' }], name: 'test-value', role_arn: 'test-value', stage: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :tags_all, :trigger_all],
+    expected_outputs: [:id, :arn, :region, :tags_all, :trigger_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

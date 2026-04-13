@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEksFargateProfile do
 
         expect(ref.id).to eq("${aws_eks_fargate_profile.test.id}")
         expect(ref.arn).to eq("${aws_eks_fargate_profile.test.arn}")
+        expect(ref.region).to eq("${aws_eks_fargate_profile.test.region}")
         expect(ref.status).to eq("${aws_eks_fargate_profile.test.status}")
         expect(ref.tags_all).to eq("${aws_eks_fargate_profile.test.tags_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSEksFargateProfile do
 
         config = validate_resource_structure(result, 'aws_eks_fargate_profile', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ subnet_ids: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', subnet_ids: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,12 +70,31 @@ RSpec.describe Pangea::Resources::AWSEksFargateProfile do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_eks_fargate_profile', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('subnet_ids')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_fargate_profile('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_fargate_profile', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_fargate_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_fargate_profile', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes subnet_ids when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -107,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSEksFargateProfile do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_fargate_profile', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_fargate_profile('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_fargate_profile', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_fargate_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_fargate_profile', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -155,7 +193,7 @@ RSpec.describe Pangea::Resources::AWSEksFargateProfile do
     resource_type: :aws_eks_fargate_profile,
     method: :aws_eks_fargate_profile,
     required_attrs: { cluster_name: 'test-value', fargate_profile_name: 'test-value', pod_execution_role_arn: 'test-value', selector: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :status, :tags_all],
+    expected_outputs: [:id, :arn, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

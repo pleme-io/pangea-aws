@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSFisExperimentTemplate do
         ref = synth.aws_fis_experiment_template('test', required_attrs)
 
         expect(ref.id).to eq("${aws_fis_experiment_template.test.id}")
+        expect(ref.region).to eq("${aws_fis_experiment_template.test.region}")
         expect(ref.tags_all).to eq("${aws_fis_experiment_template.test.tags_all}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSFisExperimentTemplate do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_fis_experiment_template', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ experiment_options: [{ 'key1' => 'val1' }], experiment_report_configuration: [{ 'key1' => 'val1' }], log_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, target: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ experiment_options: { 'key1' => 'val1' }, experiment_report_configuration: { 'key1' => 'val1' }, log_configuration: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,7 +69,9 @@ RSpec.describe Pangea::Resources::AWSFisExperimentTemplate do
         expect(config).to have_key('experiment_options')
         expect(config).to have_key('experiment_report_configuration')
         expect(config).to have_key('log_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('target')
       end
     end
@@ -76,7 +80,7 @@ RSpec.describe Pangea::Resources::AWSFisExperimentTemplate do
       it 'includes experiment_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fis_experiment_template('opt', required_attrs.merge(experiment_options: [{ 'key1' => 'val1' }]))
+        synth.aws_fis_experiment_template('opt', required_attrs.merge(experiment_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fis_experiment_template', 'opt')
         expect(config).to have_key('experiment_options')
@@ -93,7 +97,7 @@ RSpec.describe Pangea::Resources::AWSFisExperimentTemplate do
       it 'includes experiment_report_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fis_experiment_template('opt', required_attrs.merge(experiment_report_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_fis_experiment_template('opt', required_attrs.merge(experiment_report_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fis_experiment_template', 'opt')
         expect(config).to have_key('experiment_report_configuration')
@@ -110,7 +114,7 @@ RSpec.describe Pangea::Resources::AWSFisExperimentTemplate do
       it 'includes log_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fis_experiment_template('opt', required_attrs.merge(log_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_fis_experiment_template('opt', required_attrs.merge(log_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fis_experiment_template', 'opt')
         expect(config).to have_key('log_configuration')
@@ -123,6 +127,23 @@ RSpec.describe Pangea::Resources::AWSFisExperimentTemplate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fis_experiment_template', 'minimal')
         expect(config).not_to have_key('log_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fis_experiment_template('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fis_experiment_template', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fis_experiment_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fis_experiment_template', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -140,6 +161,23 @@ RSpec.describe Pangea::Resources::AWSFisExperimentTemplate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fis_experiment_template', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fis_experiment_template('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fis_experiment_template', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fis_experiment_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fis_experiment_template', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes target when provided' do
         synth = create_synthesizer
@@ -205,7 +243,7 @@ RSpec.describe Pangea::Resources::AWSFisExperimentTemplate do
     resource_type: :aws_fis_experiment_template,
     method: :aws_fis_experiment_template,
     required_attrs: { action: [{ 'key1' => 'val1' }], description: 'test-value', role_arn: 'test-value', stop_condition: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :tags_all],
+    expected_outputs: [:id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudfrontResponseHeadersPolicyAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:comment, :cors_config, :custom_headers_config, :etag, :remove_headers_config, :security_headers_config, :server_timing_headers_config]
+      map_present: [:comment, :cors_config, :custom_headers_config, :remove_headers_config, :security_headers_config, :server_timing_headers_config]
   end
   module AWS
     include AWSCloudfrontResponseHeadersPolicy

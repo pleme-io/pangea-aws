@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindowTarget do
         ref = synth.aws_ssm_maintenance_window_target('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ssm_maintenance_window_target.test.id}")
+        expect(ref.region).to eq("${aws_ssm_maintenance_window_target.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window_target('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window_target', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', name: 'test-value', owner_information: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', name: 'test-value', owner_information: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -54,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindowTarget do
         expect(config).to have_key('description')
         expect(config).to have_key('name')
         expect(config).to have_key('owner_information')
+        expect(config).to have_key('region')
       end
     end
 
@@ -109,6 +123,23 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindowTarget do
         config = validate_resource_structure(result, 'aws_ssm_maintenance_window_target', 'minimal')
         expect(config).not_to have_key('owner_information')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window_target('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window_target', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window_target('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window_target', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'attribute types' do
@@ -155,7 +186,7 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindowTarget do
     resource_type: :aws_ssm_maintenance_window_target,
     method: :aws_ssm_maintenance_window_target,
     required_attrs: { resource_type: 'test-value', targets: [{ 'key1' => 'val1' }], window_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

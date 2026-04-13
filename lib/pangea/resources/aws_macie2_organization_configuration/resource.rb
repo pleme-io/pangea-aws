@@ -13,6 +13,7 @@ module Pangea::Resources
     define_resource :aws_macie2_organization_configuration,
       attributes_class: AWS::Types::Macie2OrganizationConfigurationAttributes,
       outputs: { id: :id },
+      map_present: [:region],
       map_bool: [:auto_enable]
   end
   module AWS

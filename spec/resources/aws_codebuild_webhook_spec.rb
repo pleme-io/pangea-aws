@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCodebuildWebhook do
 
         expect(ref.id).to eq("${aws_codebuild_webhook.test.id}")
         expect(ref.payload_url).to eq("${aws_codebuild_webhook.test.payload_url}")
+        expect(ref.region).to eq("${aws_codebuild_webhook.test.region}")
         expect(ref.secret).to eq("${aws_codebuild_webhook.test.secret}")
         expect(ref.url).to eq("${aws_codebuild_webhook.test.url}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSCodebuildWebhook do
 
         config = validate_resource_structure(result, 'aws_codebuild_webhook', 'test')
         expect(config).not_to have_key('payload_url')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('secret')
         expect(config).not_to have_key('url')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ branch_filter: 'test-value', build_type: 'test-value', filter_group: [{ 'key1' => 'val1' }], manual_creation: true, scope_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ branch_filter: 'test-value', build_type: 'test-value', filter_group: [{ 'key1' => 'val1' }], manual_creation: true, pull_request_build_policy: { 'key1' => 'val1' }, region: 'test-value', scope_configuration: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,6 +74,8 @@ RSpec.describe Pangea::Resources::AWSCodebuildWebhook do
         expect(config).to have_key('build_type')
         expect(config).to have_key('filter_group')
         expect(config).to have_key('manual_creation')
+        expect(config).to have_key('pull_request_build_policy')
+        expect(config).to have_key('region')
         expect(config).to have_key('scope_configuration')
       end
     end
@@ -145,10 +149,44 @@ RSpec.describe Pangea::Resources::AWSCodebuildWebhook do
         config = validate_resource_structure(result, 'aws_codebuild_webhook', 'minimal')
         expect(config).not_to have_key('manual_creation')
       end
+      it 'includes pull_request_build_policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_webhook('opt', required_attrs.merge(pull_request_build_policy: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_webhook', 'opt')
+        expect(config).to have_key('pull_request_build_policy')
+      end
+
+      it 'omits pull_request_build_policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_webhook('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_webhook', 'minimal')
+        expect(config).not_to have_key('pull_request_build_policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_webhook('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_webhook', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_webhook('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_webhook', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes scope_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codebuild_webhook('opt', required_attrs.merge(scope_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_codebuild_webhook('opt', required_attrs.merge(scope_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codebuild_webhook', 'opt')
         expect(config).to have_key('scope_configuration')
@@ -227,7 +265,7 @@ RSpec.describe Pangea::Resources::AWSCodebuildWebhook do
     resource_type: :aws_codebuild_webhook,
     method: :aws_codebuild_webhook,
     required_attrs: { project_name: 'test-value' },
-    expected_outputs: [:id, :payload_url, :secret, :url],
+    expected_outputs: [:id, :payload_url, :region, :secret, :url],
     sensitive_fields: [:secret],
     immutable_fields: [],
     boolean_fields: [:manual_creation]

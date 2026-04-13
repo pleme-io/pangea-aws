@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_media_store_container_policy,
       attributes_class: AWS::Types::MediaStoreContainerPolicyAttributes,
       outputs: { id: :id },
-      map: [:container_name, :policy]
+      map: [:container_name, :policy],
+      map_present: [:region]
   end
   module AWS
     include AWSMediaStoreContainerPolicy

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSAthenaCapacityReservation do
         expect(ref.id).to eq("${aws_athena_capacity_reservation.test.id}")
         expect(ref.allocated_dpus).to eq("${aws_athena_capacity_reservation.test.allocated_dpus}")
         expect(ref.arn).to eq("${aws_athena_capacity_reservation.test.arn}")
+        expect(ref.region).to eq("${aws_athena_capacity_reservation.test.region}")
         expect(ref.status).to eq("${aws_athena_capacity_reservation.test.status}")
         expect(ref.tags_all).to eq("${aws_athena_capacity_reservation.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSAthenaCapacityReservation do
         config = validate_resource_structure(result, 'aws_athena_capacity_reservation', 'test')
         expect(config).not_to have_key('allocated_dpus')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,11 +72,29 @@ RSpec.describe Pangea::Resources::AWSAthenaCapacityReservation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_athena_capacity_reservation', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_athena_capacity_reservation('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_athena_capacity_reservation', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_athena_capacity_reservation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_athena_capacity_reservation', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -137,7 +157,7 @@ RSpec.describe Pangea::Resources::AWSAthenaCapacityReservation do
     resource_type: :aws_athena_capacity_reservation,
     method: :aws_athena_capacity_reservation,
     required_attrs: { name: 'test-value', target_dpus: 3.14 },
-    expected_outputs: [:id, :allocated_dpus, :arn, :status, :tags_all],
+    expected_outputs: [:id, :allocated_dpus, :arn, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

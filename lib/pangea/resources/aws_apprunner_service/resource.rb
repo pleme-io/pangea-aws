@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApprunnerServiceAttributes,
       outputs: { id: :id },
       map: [:service_name, :source_configuration],
-      map_present: [:auto_scaling_configuration_arn, :encryption_configuration, :health_check_configuration, :instance_configuration, :network_configuration, :observability_configuration, :tags, :tags_all]
+      map_present: [:auto_scaling_configuration_arn, :encryption_configuration, :health_check_configuration, :instance_configuration, :network_configuration, :observability_configuration, :region, :tags, :tags_all]
   end
   module AWS
     include AWSApprunnerService

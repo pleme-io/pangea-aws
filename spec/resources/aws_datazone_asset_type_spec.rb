@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneAssetType do
         expect(ref.id).to eq("${aws_datazone_asset_type.test.id}")
         expect(ref.created_at).to eq("${aws_datazone_asset_type.test.created_at}")
         expect(ref.created_by).to eq("${aws_datazone_asset_type.test.created_by}")
+        expect(ref.region).to eq("${aws_datazone_asset_type.test.region}")
         expect(ref.revision).to eq("${aws_datazone_asset_type.test.revision}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSDatazoneAssetType do
         config = validate_resource_structure(result, 'aws_datazone_asset_type', 'test')
         expect(config).not_to have_key('created_at')
         expect(config).not_to have_key('created_by')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('revision')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', forms_input: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', forms_input: [{ 'key1' => 'val1' }], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,6 +72,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneAssetType do
         config = validate_resource_structure(result, 'aws_datazone_asset_type', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('forms_input')
+        expect(config).to have_key('region')
       end
     end
 
@@ -107,6 +110,23 @@ RSpec.describe Pangea::Resources::AWSDatazoneAssetType do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datazone_asset_type', 'minimal')
         expect(config).not_to have_key('forms_input')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_asset_type('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_asset_type', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_asset_type('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_asset_type', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -154,7 +174,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneAssetType do
     resource_type: :aws_datazone_asset_type,
     method: :aws_datazone_asset_type,
     required_attrs: { domain_identifier: 'test-value', name: 'test-value', owning_project_identifier: 'test-value' },
-    expected_outputs: [:id, :created_at, :created_by, :revision],
+    expected_outputs: [:id, :created_at, :created_by, :region, :revision],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

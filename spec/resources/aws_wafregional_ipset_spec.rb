@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSWafregionalIpset do
 
         expect(ref.id).to eq("${aws_wafregional_ipset.test.id}")
         expect(ref.arn).to eq("${aws_wafregional_ipset.test.arn}")
+        expect(ref.region).to eq("${aws_wafregional_ipset.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSWafregionalIpset do
 
         config = validate_resource_structure(result, 'aws_wafregional_ipset', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ ip_set_descriptor: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ ip_set_descriptor: [{ 'key1' => 'val1' }], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSWafregionalIpset do
 
         config = validate_resource_structure(result, 'aws_wafregional_ipset', 'full')
         expect(config).to have_key('ip_set_descriptor')
+        expect(config).to have_key('region')
       end
     end
 
@@ -85,6 +88,23 @@ RSpec.describe Pangea::Resources::AWSWafregionalIpset do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_wafregional_ipset', 'minimal')
         expect(config).not_to have_key('ip_set_descriptor')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafregional_ipset('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafregional_ipset', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafregional_ipset('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafregional_ipset', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -130,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSWafregionalIpset do
     resource_type: :aws_wafregional_ipset,
     method: :aws_wafregional_ipset,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

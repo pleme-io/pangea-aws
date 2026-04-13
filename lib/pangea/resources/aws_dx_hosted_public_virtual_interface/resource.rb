@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DxHostedPublicVirtualInterfaceAttributes,
       outputs: { id: :id },
       map: [:address_family, :bgp_asn, :connection_id, :name, :owner_account_id, :route_filter_prefixes, :vlan],
-      map_present: [:amazon_address, :bgp_auth_key, :customer_address]
+      map_present: [:amazon_address, :bgp_auth_key, :customer_address, :region]
   end
   module AWS
     include AWSDxHostedPublicVirtualInterface

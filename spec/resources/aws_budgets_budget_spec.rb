@@ -69,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSBudgetsBudget do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ auto_adjust_data: [{ 'key1' => 'val1' }], cost_filter: [{ 'key1' => 'val1' }], cost_types: [{ 'key1' => 'val1' }], notification: [{ 'key1' => 'val1' }], planned_limit: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, time_period_end: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ account_id: 'test-value', auto_adjust_data: { 'key1' => 'val1' }, billing_view_arn: 'test-value', cost_filter: [{ 'key1' => 'val1' }], cost_types: { 'key1' => 'val1' }, filter_expression: { 'key1' => 'val1' }, limit_amount: 'test-value', limit_unit: 'test-value', name: 'test-value', name_prefix: 'test-value', notification: [{ 'key1' => 'val1' }], planned_limit: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, time_period_end: 'test-value', time_period_start: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,21 +78,47 @@ RSpec.describe Pangea::Resources::AWSBudgetsBudget do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_budgets_budget', 'full')
+        expect(config).to have_key('account_id')
         expect(config).to have_key('auto_adjust_data')
+        expect(config).to have_key('billing_view_arn')
         expect(config).to have_key('cost_filter')
         expect(config).to have_key('cost_types')
+        expect(config).to have_key('filter_expression')
+        expect(config).to have_key('limit_amount')
+        expect(config).to have_key('limit_unit')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
         expect(config).to have_key('notification')
         expect(config).to have_key('planned_limit')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('time_period_end')
+        expect(config).to have_key('time_period_start')
       end
     end
 
     context 'optional attributes' do
+      it 'includes account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('opt', required_attrs.merge(account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'opt')
+        expect(config).to have_key('account_id')
+      end
+
+      it 'omits account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'minimal')
+        expect(config).not_to have_key('account_id')
+      end
       it 'includes auto_adjust_data when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_budgets_budget('opt', required_attrs.merge(auto_adjust_data: [{ 'key1' => 'val1' }]))
+        synth.aws_budgets_budget('opt', required_attrs.merge(auto_adjust_data: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_budgets_budget', 'opt')
         expect(config).to have_key('auto_adjust_data')
@@ -105,6 +131,23 @@ RSpec.describe Pangea::Resources::AWSBudgetsBudget do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_budgets_budget', 'minimal')
         expect(config).not_to have_key('auto_adjust_data')
+      end
+      it 'includes billing_view_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('opt', required_attrs.merge(billing_view_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'opt')
+        expect(config).to have_key('billing_view_arn')
+      end
+
+      it 'omits billing_view_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'minimal')
+        expect(config).not_to have_key('billing_view_arn')
       end
       it 'includes cost_filter when provided' do
         synth = create_synthesizer
@@ -126,7 +169,7 @@ RSpec.describe Pangea::Resources::AWSBudgetsBudget do
       it 'includes cost_types when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_budgets_budget('opt', required_attrs.merge(cost_types: [{ 'key1' => 'val1' }]))
+        synth.aws_budgets_budget('opt', required_attrs.merge(cost_types: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_budgets_budget', 'opt')
         expect(config).to have_key('cost_types')
@@ -139,6 +182,91 @@ RSpec.describe Pangea::Resources::AWSBudgetsBudget do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_budgets_budget', 'minimal')
         expect(config).not_to have_key('cost_types')
+      end
+      it 'includes filter_expression when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('opt', required_attrs.merge(filter_expression: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'opt')
+        expect(config).to have_key('filter_expression')
+      end
+
+      it 'omits filter_expression when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'minimal')
+        expect(config).not_to have_key('filter_expression')
+      end
+      it 'includes limit_amount when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('opt', required_attrs.merge(limit_amount: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'opt')
+        expect(config).to have_key('limit_amount')
+      end
+
+      it 'omits limit_amount when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'minimal')
+        expect(config).not_to have_key('limit_amount')
+      end
+      it 'includes limit_unit when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('opt', required_attrs.merge(limit_unit: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'opt')
+        expect(config).to have_key('limit_unit')
+      end
+
+      it 'omits limit_unit when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'minimal')
+        expect(config).not_to have_key('limit_unit')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'minimal')
+        expect(config).not_to have_key('name_prefix')
       end
       it 'includes notification when provided' do
         synth = create_synthesizer
@@ -191,6 +319,23 @@ RSpec.describe Pangea::Resources::AWSBudgetsBudget do
         config = validate_resource_structure(result, 'aws_budgets_budget', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes time_period_end when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -207,6 +352,23 @@ RSpec.describe Pangea::Resources::AWSBudgetsBudget do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_budgets_budget', 'minimal')
         expect(config).not_to have_key('time_period_end')
+      end
+      it 'includes time_period_start when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('opt', required_attrs.merge(time_period_start: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'opt')
+        expect(config).to have_key('time_period_start')
+      end
+
+      it 'omits time_period_start when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_budgets_budget('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_budgets_budget', 'minimal')
+        expect(config).not_to have_key('time_period_start')
       end
     end
 

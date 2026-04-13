@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSS3BucketPublicAccessBlock do
         ref = synth.aws_s3_bucket_public_access_block('test', required_attrs)
 
         expect(ref.id).to eq("${aws_s3_bucket_public_access_block.test.id}")
+        expect(ref.region).to eq("${aws_s3_bucket_public_access_block.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_public_access_block('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_s3_bucket_public_access_block', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ block_public_acls: true, block_public_policy: true, ignore_public_acls: true, restrict_public_buckets: true }) }
+      let(:all_attrs) { required_attrs.merge({ block_public_acls: true, block_public_policy: true, ignore_public_acls: true, region: 'test-value', restrict_public_buckets: true, skip_destroy: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -54,7 +67,9 @@ RSpec.describe Pangea::Resources::AWSS3BucketPublicAccessBlock do
         expect(config).to have_key('block_public_acls')
         expect(config).to have_key('block_public_policy')
         expect(config).to have_key('ignore_public_acls')
+        expect(config).to have_key('region')
         expect(config).to have_key('restrict_public_buckets')
+        expect(config).to have_key('skip_destroy')
       end
     end
 
@@ -110,6 +125,23 @@ RSpec.describe Pangea::Resources::AWSS3BucketPublicAccessBlock do
         config = validate_resource_structure(result, 'aws_s3_bucket_public_access_block', 'minimal')
         expect(config).not_to have_key('ignore_public_acls')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_public_access_block('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_public_access_block', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_public_access_block('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_public_access_block', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes restrict_public_buckets when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -126,6 +158,23 @@ RSpec.describe Pangea::Resources::AWSS3BucketPublicAccessBlock do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_public_access_block', 'minimal')
         expect(config).not_to have_key('restrict_public_buckets')
+      end
+      it 'includes skip_destroy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_public_access_block('opt', required_attrs.merge(skip_destroy: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_public_access_block', 'opt')
+        expect(config).to have_key('skip_destroy')
+      end
+
+      it 'omits skip_destroy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_public_access_block('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_public_access_block', 'minimal')
+        expect(config).not_to have_key('skip_destroy')
       end
     end
 
@@ -174,6 +223,17 @@ RSpec.describe Pangea::Resources::AWSS3BucketPublicAccessBlock do
           expect(config['restrict_public_buckets']).to eq(val)
         end
       end
+      [true, false].each do |val|
+        it "accepts skip_destroy=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(skip_destroy: val)
+          synth.aws_s3_bucket_public_access_block("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_s3_bucket_public_access_block', "bool_#{val}")
+          expect(config['skip_destroy']).to eq(val)
+        end
+      end
     end
 
     context 'attribute types' do
@@ -218,8 +278,8 @@ RSpec.describe Pangea::Resources::AWSS3BucketPublicAccessBlock do
     resource_type: :aws_s3_bucket_public_access_block,
     method: :aws_s3_bucket_public_access_block,
     required_attrs: { bucket: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:block_public_acls, :block_public_policy, :ignore_public_acls, :restrict_public_buckets]
+    boolean_fields: [:block_public_acls, :block_public_policy, :ignore_public_acls, :restrict_public_buckets, :skip_destroy]
 end

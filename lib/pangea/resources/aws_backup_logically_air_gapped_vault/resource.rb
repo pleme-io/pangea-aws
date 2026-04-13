@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BackupLogicallyAirGappedVaultAttributes,
       outputs: { id: :id },
       map: [:max_retention_days, :min_retention_days, :name],
-      map_present: [:tags]
+      map_present: [:encryption_key_arn, :region, :tags]
   end
   module AWS
     include AWSBackupLogicallyAirGappedVault

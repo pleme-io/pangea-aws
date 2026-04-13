@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSAmplifyBranch do
         expect(ref.custom_domains).to eq("${aws_amplify_branch.test.custom_domains}")
         expect(ref.destination_branch).to eq("${aws_amplify_branch.test.destination_branch}")
         expect(ref.display_name).to eq("${aws_amplify_branch.test.display_name}")
+        expect(ref.region).to eq("${aws_amplify_branch.test.region}")
         expect(ref.source_branch).to eq("${aws_amplify_branch.test.source_branch}")
         expect(ref.tags_all).to eq("${aws_amplify_branch.test.tags_all}")
       end
@@ -61,13 +62,14 @@ RSpec.describe Pangea::Resources::AWSAmplifyBranch do
         expect(config).not_to have_key('custom_domains')
         expect(config).not_to have_key('destination_branch')
         expect(config).not_to have_key('display_name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('source_branch')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ backend_environment_arn: 'test-value', basic_auth_credentials: 'test-value', description: 'test-value', enable_auto_build: true, enable_basic_auth: true, enable_notification: true, enable_performance_mode: true, enable_pull_request_preview: true, environment_variables: { 'key1' => 'val1' }, framework: 'test-value', pull_request_environment_name: 'test-value', stage: 'test-value', tags: { 'key1' => 'val1' }, ttl: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ backend_environment_arn: 'test-value', basic_auth_credentials: 'test-value', description: 'test-value', display_name: 'test-value', enable_auto_build: true, enable_basic_auth: true, enable_notification: true, enable_performance_mode: true, enable_pull_request_preview: true, enable_skew_protection: true, environment_variables: { 'key1' => 'val1' }, framework: 'test-value', pull_request_environment_name: 'test-value', region: 'test-value', stage: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, ttl: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,16 +81,20 @@ RSpec.describe Pangea::Resources::AWSAmplifyBranch do
         expect(config).to have_key('backend_environment_arn')
         expect(config).to have_key('basic_auth_credentials')
         expect(config).to have_key('description')
+        expect(config).to have_key('display_name')
         expect(config).to have_key('enable_auto_build')
         expect(config).to have_key('enable_basic_auth')
         expect(config).to have_key('enable_notification')
         expect(config).to have_key('enable_performance_mode')
         expect(config).to have_key('enable_pull_request_preview')
+        expect(config).to have_key('enable_skew_protection')
         expect(config).to have_key('environment_variables')
         expect(config).to have_key('framework')
         expect(config).to have_key('pull_request_environment_name')
+        expect(config).to have_key('region')
         expect(config).to have_key('stage')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('ttl')
       end
     end
@@ -144,6 +150,23 @@ RSpec.describe Pangea::Resources::AWSAmplifyBranch do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_amplify_branch', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes display_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_branch('opt', required_attrs.merge(display_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_branch', 'opt')
+        expect(config).to have_key('display_name')
+      end
+
+      it 'omits display_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_branch('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_branch', 'minimal')
+        expect(config).not_to have_key('display_name')
       end
       it 'includes enable_auto_build when provided' do
         synth = create_synthesizer
@@ -230,6 +253,23 @@ RSpec.describe Pangea::Resources::AWSAmplifyBranch do
         config = validate_resource_structure(result, 'aws_amplify_branch', 'minimal')
         expect(config).not_to have_key('enable_pull_request_preview')
       end
+      it 'includes enable_skew_protection when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_branch('opt', required_attrs.merge(enable_skew_protection: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_branch', 'opt')
+        expect(config).to have_key('enable_skew_protection')
+      end
+
+      it 'omits enable_skew_protection when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_branch('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_branch', 'minimal')
+        expect(config).not_to have_key('enable_skew_protection')
+      end
       it 'includes environment_variables when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -281,6 +321,23 @@ RSpec.describe Pangea::Resources::AWSAmplifyBranch do
         config = validate_resource_structure(result, 'aws_amplify_branch', 'minimal')
         expect(config).not_to have_key('pull_request_environment_name')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_branch('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_branch', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_branch('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_branch', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes stage when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -314,6 +371,23 @@ RSpec.describe Pangea::Resources::AWSAmplifyBranch do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_amplify_branch', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_branch('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_branch', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_branch('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_branch', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes ttl when provided' do
         synth = create_synthesizer
@@ -397,6 +471,17 @@ RSpec.describe Pangea::Resources::AWSAmplifyBranch do
           expect(config['enable_pull_request_preview']).to eq(val)
         end
       end
+      [true, false].each do |val|
+        it "accepts enable_skew_protection=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enable_skew_protection: val)
+          synth.aws_amplify_branch("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_amplify_branch', "bool_#{val}")
+          expect(config['enable_skew_protection']).to eq(val)
+        end
+      end
     end
 
     context 'attribute types' do
@@ -442,8 +527,8 @@ RSpec.describe Pangea::Resources::AWSAmplifyBranch do
     resource_type: :aws_amplify_branch,
     method: :aws_amplify_branch,
     required_attrs: { app_id: 'test-value', branch_name: 'test-value' },
-    expected_outputs: [:id, :arn, :associated_resources, :custom_domains, :destination_branch, :display_name, :source_branch, :tags_all],
+    expected_outputs: [:id, :arn, :associated_resources, :custom_domains, :destination_branch, :display_name, :region, :source_branch, :tags_all],
     sensitive_fields: [:basic_auth_credentials],
     immutable_fields: [],
-    boolean_fields: [:enable_auto_build, :enable_basic_auth, :enable_notification, :enable_performance_mode, :enable_pull_request_preview]
+    boolean_fields: [:enable_auto_build, :enable_basic_auth, :enable_notification, :enable_performance_mode, :enable_pull_request_preview, :enable_skew_protection]
 end

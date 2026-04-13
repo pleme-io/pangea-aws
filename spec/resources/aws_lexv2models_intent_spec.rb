@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsIntent do
         expect(ref.creation_date_time).to eq("${aws_lexv2models_intent.test.creation_date_time}")
         expect(ref.intent_id).to eq("${aws_lexv2models_intent.test.intent_id}")
         expect(ref.last_updated_date_time).to eq("${aws_lexv2models_intent.test.last_updated_date_time}")
+        expect(ref.region).to eq("${aws_lexv2models_intent.test.region}")
       end
     end
 
@@ -55,11 +56,12 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsIntent do
         expect(config).not_to have_key('creation_date_time')
         expect(config).not_to have_key('intent_id')
         expect(config).not_to have_key('last_updated_date_time')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ closing_setting: [{ 'key1' => 'val1' }], confirmation_setting: [{ 'key1' => 'val1' }], description: 'test-value', dialog_code_hook: [{ 'key1' => 'val1' }], fulfillment_code_hook: [{ 'key1' => 'val1' }], initial_response_setting: [{ 'key1' => 'val1' }], input_context: [{ 'key1' => 'val1' }], kendra_configuration: [{ 'key1' => 'val1' }], output_context: [{ 'key1' => 'val1' }], parent_intent_signature: 'test-value', sample_utterance: [{ 'key1' => 'val1' }], slot_priority: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ closing_setting: [{ 'key1' => 'val1' }], confirmation_setting: [{ 'key1' => 'val1' }], description: 'test-value', dialog_code_hook: [{ 'key1' => 'val1' }], fulfillment_code_hook: [{ 'key1' => 'val1' }], initial_response_setting: [{ 'key1' => 'val1' }], input_context: [{ 'key1' => 'val1' }], kendra_configuration: [{ 'key1' => 'val1' }], output_context: [{ 'key1' => 'val1' }], parent_intent_signature: 'test-value', qna_intent_configuration: [{ 'key1' => 'val1' }], region: 'test-value', sample_utterance: [{ 'key1' => 'val1' }], slot_priority: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,6 +80,8 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsIntent do
         expect(config).to have_key('kendra_configuration')
         expect(config).to have_key('output_context')
         expect(config).to have_key('parent_intent_signature')
+        expect(config).to have_key('qna_intent_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('sample_utterance')
         expect(config).to have_key('slot_priority')
       end
@@ -254,6 +258,40 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsIntent do
         config = validate_resource_structure(result, 'aws_lexv2models_intent', 'minimal')
         expect(config).not_to have_key('parent_intent_signature')
       end
+      it 'includes qna_intent_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_intent('opt', required_attrs.merge(qna_intent_configuration: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_intent', 'opt')
+        expect(config).to have_key('qna_intent_configuration')
+      end
+
+      it 'omits qna_intent_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_intent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_intent', 'minimal')
+        expect(config).not_to have_key('qna_intent_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_intent('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_intent', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_intent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_intent', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes sample_utterance when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -335,7 +373,7 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsIntent do
     resource_type: :aws_lexv2models_intent,
     method: :aws_lexv2models_intent,
     required_attrs: { bot_id: 'test-value', bot_version: 'test-value', locale_id: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :creation_date_time, :intent_id, :last_updated_date_time],
+    expected_outputs: [:id, :creation_date_time, :intent_id, :last_updated_date_time, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

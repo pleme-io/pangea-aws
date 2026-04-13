@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSRoute do
         expect(ref.instance_owner_id).to eq("${aws_route.test.instance_owner_id}")
         expect(ref.network_interface_id).to eq("${aws_route.test.network_interface_id}")
         expect(ref.origin).to eq("${aws_route.test.origin}")
+        expect(ref.region).to eq("${aws_route.test.region}")
         expect(ref.state).to eq("${aws_route.test.state}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSRoute do
         expect(config).not_to have_key('instance_owner_id')
         expect(config).not_to have_key('network_interface_id')
         expect(config).not_to have_key('origin')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ carrier_gateway_id: 'test-value', core_network_arn: 'test-value', destination_cidr_block: 'test-value', destination_ipv6_cidr_block: 'test-value', destination_prefix_list_id: 'test-value', egress_only_gateway_id: 'test-value', gateway_id: 'test-value', local_gateway_id: 'test-value', nat_gateway_id: 'test-value', transit_gateway_id: 'test-value', vpc_endpoint_id: 'test-value', vpc_peering_connection_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ carrier_gateway_id: 'test-value', core_network_arn: 'test-value', destination_cidr_block: 'test-value', destination_ipv6_cidr_block: 'test-value', destination_prefix_list_id: 'test-value', egress_only_gateway_id: 'test-value', gateway_id: 'test-value', local_gateway_id: 'test-value', nat_gateway_id: 'test-value', network_interface_id: 'test-value', region: 'test-value', transit_gateway_id: 'test-value', vpc_endpoint_id: 'test-value', vpc_peering_connection_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -81,6 +83,8 @@ RSpec.describe Pangea::Resources::AWSRoute do
         expect(config).to have_key('gateway_id')
         expect(config).to have_key('local_gateway_id')
         expect(config).to have_key('nat_gateway_id')
+        expect(config).to have_key('network_interface_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('transit_gateway_id')
         expect(config).to have_key('vpc_endpoint_id')
         expect(config).to have_key('vpc_peering_connection_id')
@@ -241,6 +245,40 @@ RSpec.describe Pangea::Resources::AWSRoute do
         config = validate_resource_structure(result, 'aws_route', 'minimal')
         expect(config).not_to have_key('nat_gateway_id')
       end
+      it 'includes network_interface_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route('opt', required_attrs.merge(network_interface_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route', 'opt')
+        expect(config).to have_key('network_interface_id')
+      end
+
+      it 'omits network_interface_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route', 'minimal')
+        expect(config).not_to have_key('network_interface_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes transit_gateway_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -336,7 +374,7 @@ RSpec.describe Pangea::Resources::AWSRoute do
     resource_type: :aws_route,
     method: :aws_route,
     required_attrs: { route_table_id: 'test-value' },
-    expected_outputs: [:id, :instance_id, :instance_owner_id, :network_interface_id, :origin, :state],
+    expected_outputs: [:id, :instance_id, :instance_owner_id, :network_interface_id, :origin, :region, :state],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

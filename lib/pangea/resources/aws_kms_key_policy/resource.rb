@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KmsKeyPolicyAttributes,
       outputs: { id: :id },
       map: [:key_id, :policy],
+      map_present: [:region],
       map_bool: [:bypass_policy_lockout_safety_check]
   end
   module AWS

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EmrserverlessApplicationAttributes,
       outputs: { id: :id },
       map: [:name, :release_label, :type],
-      map_present: [:architecture, :auto_start_configuration, :auto_stop_configuration, :image_configuration, :initial_capacity, :interactive_configuration, :maximum_capacity, :network_configuration, :tags, :tags_all]
+      map_present: [:architecture, :auto_start_configuration, :auto_stop_configuration, :image_configuration, :initial_capacity, :interactive_configuration, :job_level_cost_allocation_configuration, :maximum_capacity, :monitoring_configuration, :network_configuration, :region, :runtime_configuration, :scheduler_configuration, :tags, :tags_all]
   end
   module AWS
     include AWSEmrserverlessApplication

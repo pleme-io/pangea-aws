@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayAuthorizerAttributes,
       outputs: { id: :id },
       map: [:name, :rest_api_id],
-      map_present: [:authorizer_credentials, :authorizer_result_ttl_in_seconds, :authorizer_uri, :identity_source, :identity_validation_expression, :provider_arns, :type]
+      map_present: [:authorizer_credentials, :authorizer_result_ttl_in_seconds, :authorizer_uri, :identity_source, :identity_validation_expression, :provider_arns, :region, :type]
   end
   module AWS
     include AWSApiGatewayAuthorizer

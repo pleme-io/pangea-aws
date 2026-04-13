@@ -1,0 +1,8 @@
+name: aws_ec2_instance_connect_endpoint
+title: Manages a aws_ec2_instance_connect_endpoint resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

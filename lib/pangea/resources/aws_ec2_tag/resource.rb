@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ec2_tag,
       attributes_class: AWS::Types::Ec2TagAttributes,
       outputs: { id: :id },
-      map: [:key, :resource_id, :value]
+      map: [:key, :resource_id, :value],
+      map_present: [:region]
   end
   module AWS
     include AWSEc2Tag

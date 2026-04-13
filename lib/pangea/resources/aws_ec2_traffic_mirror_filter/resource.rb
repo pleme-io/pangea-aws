@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_ec2_traffic_mirror_filter,
       attributes_class: AWS::Types::Ec2TrafficMirrorFilterAttributes,
       outputs: { id: :id },
-      map_present: [:description, :network_services, :tags, :tags_all]
+      map_present: [:description, :network_services, :region, :tags, :tags_all]
   end
   module AWS
     include AWSEc2TrafficMirrorFilter

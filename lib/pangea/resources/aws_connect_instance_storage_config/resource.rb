@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_connect_instance_storage_config,
       attributes_class: AWS::Types::ConnectInstanceStorageConfigAttributes,
       outputs: { id: :id },
-      map: [:instance_id, :resource_type, :storage_config]
+      map: [:instance_id, :resource_type, :storage_config],
+      map_present: [:region]
   end
   module AWS
     include AWSConnectInstanceStorageConfig

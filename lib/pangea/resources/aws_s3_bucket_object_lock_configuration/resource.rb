@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketObjectLockConfigurationAttributes,
       outputs: { id: :id },
       map: [:bucket],
-      map_present: [:expected_bucket_owner, :object_lock_enabled, :rule, :token]
+      map_present: [:expected_bucket_owner, :object_lock_enabled, :region, :rule, :token]
   end
   module AWS
     include AWSS3BucketObjectLockConfiguration

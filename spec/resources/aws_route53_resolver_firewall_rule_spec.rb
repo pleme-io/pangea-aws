@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSRoute53ResolverFirewallRule do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { action: 'test-value', firewall_domain_list_id: 'test-value', firewall_rule_group_id: 'test-value', name: 'test-value', priority: 3.14 } }
+  let(:required_attrs) { { action: 'test-value', firewall_rule_group_id: 'test-value', name: 'test-value', priority: 3.14 } }
 
   describe ':aws_route53_resolver_firewall_rule' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverFirewallRule do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_route53_resolver_firewall_rule', 'test')
-        validate_required_attributes(config, [:action, :firewall_domain_list_id, :firewall_rule_group_id, :name, :priority])
+        validate_required_attributes(config, [:action, :firewall_rule_group_id, :name, :priority])
       end
 
       it 'returns a ResourceReference' do
@@ -38,11 +38,26 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverFirewallRule do
         ref = synth.aws_route53_resolver_firewall_rule('test', required_attrs)
 
         expect(ref.id).to eq("${aws_route53_resolver_firewall_rule.test.id}")
+        expect(ref.firewall_threat_protection_id).to eq("${aws_route53_resolver_firewall_rule.test.firewall_threat_protection_id}")
+        expect(ref.region).to eq("${aws_route53_resolver_firewall_rule.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_rule('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_rule', 'test')
+        expect(config).not_to have_key('firewall_threat_protection_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ block_override_dns_type: 'test-value', block_override_domain: 'test-value', block_override_ttl: 3.14, block_response: 'test-value', firewall_domain_redirection_action: 'test-value', q_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ block_override_dns_type: 'test-value', block_override_domain: 'test-value', block_override_ttl: 3.14, block_response: 'test-value', confidence_threshold: 'test-value', dns_threat_protection: 'test-value', firewall_domain_list_id: 'test-value', firewall_domain_redirection_action: 'test-value', q_type: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -55,8 +70,12 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverFirewallRule do
         expect(config).to have_key('block_override_domain')
         expect(config).to have_key('block_override_ttl')
         expect(config).to have_key('block_response')
+        expect(config).to have_key('confidence_threshold')
+        expect(config).to have_key('dns_threat_protection')
+        expect(config).to have_key('firewall_domain_list_id')
         expect(config).to have_key('firewall_domain_redirection_action')
         expect(config).to have_key('q_type')
+        expect(config).to have_key('region')
       end
     end
 
@@ -129,6 +148,57 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverFirewallRule do
         config = validate_resource_structure(result, 'aws_route53_resolver_firewall_rule', 'minimal')
         expect(config).not_to have_key('block_response')
       end
+      it 'includes confidence_threshold when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_rule('opt', required_attrs.merge(confidence_threshold: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_rule', 'opt')
+        expect(config).to have_key('confidence_threshold')
+      end
+
+      it 'omits confidence_threshold when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_rule', 'minimal')
+        expect(config).not_to have_key('confidence_threshold')
+      end
+      it 'includes dns_threat_protection when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_rule('opt', required_attrs.merge(dns_threat_protection: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_rule', 'opt')
+        expect(config).to have_key('dns_threat_protection')
+      end
+
+      it 'omits dns_threat_protection when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_rule', 'minimal')
+        expect(config).not_to have_key('dns_threat_protection')
+      end
+      it 'includes firewall_domain_list_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_rule('opt', required_attrs.merge(firewall_domain_list_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_rule', 'opt')
+        expect(config).to have_key('firewall_domain_list_id')
+      end
+
+      it 'omits firewall_domain_list_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_rule', 'minimal')
+        expect(config).not_to have_key('firewall_domain_list_id')
+      end
       it 'includes firewall_domain_redirection_action when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -163,6 +233,23 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverFirewallRule do
         config = validate_resource_structure(result, 'aws_route53_resolver_firewall_rule', 'minimal')
         expect(config).not_to have_key('q_type')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_rule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'attribute types' do
@@ -174,7 +261,6 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverFirewallRule do
 
         config = validate_resource_structure(result, 'aws_route53_resolver_firewall_rule', 'typed')
         expect(config['action']).to be_a(String)
-        expect(config['firewall_domain_list_id']).to be_a(String)
         expect(config['firewall_rule_group_id']).to be_a(String)
         expect(config['name']).to be_a(String)
         expect(config['priority']).to be_a(Float)
@@ -210,8 +296,8 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverFirewallRule do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_route53_resolver_firewall_rule,
     method: :aws_route53_resolver_firewall_rule,
-    required_attrs: { action: 'test-value', firewall_domain_list_id: 'test-value', firewall_rule_group_id: 'test-value', name: 'test-value', priority: 3.14 },
-    expected_outputs: [:id],
+    required_attrs: { action: 'test-value', firewall_rule_group_id: 'test-value', name: 'test-value', priority: 3.14 },
+    expected_outputs: [:id, :firewall_threat_protection_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

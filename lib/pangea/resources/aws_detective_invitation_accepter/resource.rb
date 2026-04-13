@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_detective_invitation_accepter,
       attributes_class: AWS::Types::DetectiveInvitationAccepterAttributes,
       outputs: { id: :id },
-      map: [:graph_arn]
+      map: [:graph_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSDetectiveInvitationAccepter

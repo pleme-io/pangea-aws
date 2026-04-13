@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConfigOrganizationCustomPolicyRuleAttributes,
       outputs: { id: :id },
       map: [:name, :policy_runtime, :policy_text, :trigger_types],
-      map_present: [:debug_log_delivery_accounts, :description, :excluded_accounts, :input_parameters, :maximum_execution_frequency, :resource_id_scope, :resource_types_scope, :tag_key_scope, :tag_value_scope]
+      map_present: [:debug_log_delivery_accounts, :description, :excluded_accounts, :input_parameters, :maximum_execution_frequency, :region, :resource_id_scope, :resource_types_scope, :tag_key_scope, :tag_value_scope]
   end
   module AWS
     include AWSConfigOrganizationCustomPolicyRule

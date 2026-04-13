@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_dx_gateway,
       attributes_class: AWS::Types::DxGatewayAttributes,
       outputs: { id: :id },
-      map: [:amazon_side_asn, :name]
+      map: [:amazon_side_asn, :name],
+      map_present: [:tags, :tags_all]
   end
   module AWS
     include AWSDxGateway

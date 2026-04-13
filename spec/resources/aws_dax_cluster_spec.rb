@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSDaxCluster do
         expect(ref.nodes).to eq("${aws_dax_cluster.test.nodes}")
         expect(ref.parameter_group_name).to eq("${aws_dax_cluster.test.parameter_group_name}")
         expect(ref.port).to eq("${aws_dax_cluster.test.port}")
+        expect(ref.region).to eq("${aws_dax_cluster.test.region}")
         expect(ref.security_group_ids).to eq("${aws_dax_cluster.test.security_group_ids}")
         expect(ref.subnet_group_name).to eq("${aws_dax_cluster.test.subnet_group_name}")
         expect(ref.tags_all).to eq("${aws_dax_cluster.test.tags_all}")
@@ -66,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSDaxCluster do
         expect(config).not_to have_key('nodes')
         expect(config).not_to have_key('parameter_group_name')
         expect(config).not_to have_key('port')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_group_ids')
         expect(config).not_to have_key('subnet_group_name')
         expect(config).not_to have_key('tags_all')
@@ -73,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSDaxCluster do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ availability_zones: ['test-value'], cluster_endpoint_encryption_type: 'test-value', description: 'test-value', notification_topic_arn: 'test-value', server_side_encryption: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ availability_zones: ['test-value'], cluster_endpoint_encryption_type: 'test-value', description: 'test-value', maintenance_window: 'test-value', notification_topic_arn: 'test-value', parameter_group_name: 'test-value', region: 'test-value', security_group_ids: ['test-value'], server_side_encryption: { 'key1' => 'val1' }, subnet_group_name: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -85,9 +87,15 @@ RSpec.describe Pangea::Resources::AWSDaxCluster do
         expect(config).to have_key('availability_zones')
         expect(config).to have_key('cluster_endpoint_encryption_type')
         expect(config).to have_key('description')
+        expect(config).to have_key('maintenance_window')
         expect(config).to have_key('notification_topic_arn')
+        expect(config).to have_key('parameter_group_name')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_group_ids')
         expect(config).to have_key('server_side_encryption')
+        expect(config).to have_key('subnet_group_name')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -143,6 +151,23 @@ RSpec.describe Pangea::Resources::AWSDaxCluster do
         config = validate_resource_structure(result, 'aws_dax_cluster', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes maintenance_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_cluster('opt', required_attrs.merge(maintenance_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_cluster', 'opt')
+        expect(config).to have_key('maintenance_window')
+      end
+
+      it 'omits maintenance_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_cluster', 'minimal')
+        expect(config).not_to have_key('maintenance_window')
+      end
       it 'includes notification_topic_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -160,10 +185,61 @@ RSpec.describe Pangea::Resources::AWSDaxCluster do
         config = validate_resource_structure(result, 'aws_dax_cluster', 'minimal')
         expect(config).not_to have_key('notification_topic_arn')
       end
+      it 'includes parameter_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_cluster('opt', required_attrs.merge(parameter_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_cluster', 'opt')
+        expect(config).to have_key('parameter_group_name')
+      end
+
+      it 'omits parameter_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_cluster', 'minimal')
+        expect(config).not_to have_key('parameter_group_name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_cluster', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_cluster('opt', required_attrs.merge(security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_cluster', 'opt')
+        expect(config).to have_key('security_group_ids')
+      end
+
+      it 'omits security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_cluster', 'minimal')
+        expect(config).not_to have_key('security_group_ids')
+      end
       it 'includes server_side_encryption when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_dax_cluster('opt', required_attrs.merge(server_side_encryption: [{ 'key1' => 'val1' }]))
+        synth.aws_dax_cluster('opt', required_attrs.merge(server_side_encryption: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dax_cluster', 'opt')
         expect(config).to have_key('server_side_encryption')
@@ -176,6 +252,23 @@ RSpec.describe Pangea::Resources::AWSDaxCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dax_cluster', 'minimal')
         expect(config).not_to have_key('server_side_encryption')
+      end
+      it 'includes subnet_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_cluster('opt', required_attrs.merge(subnet_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_cluster', 'opt')
+        expect(config).to have_key('subnet_group_name')
+      end
+
+      it 'omits subnet_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_cluster', 'minimal')
+        expect(config).not_to have_key('subnet_group_name')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -193,6 +286,23 @@ RSpec.describe Pangea::Resources::AWSDaxCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dax_cluster', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dax_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dax_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -241,7 +351,7 @@ RSpec.describe Pangea::Resources::AWSDaxCluster do
     resource_type: :aws_dax_cluster,
     method: :aws_dax_cluster,
     required_attrs: { cluster_name: 'test-value', iam_role_arn: 'test-value', node_type: 'test-value', replication_factor: 3.14 },
-    expected_outputs: [:id, :arn, :cluster_address, :configuration_endpoint, :maintenance_window, :nodes, :parameter_group_name, :port, :security_group_ids, :subnet_group_name, :tags_all],
+    expected_outputs: [:id, :arn, :cluster_address, :configuration_endpoint, :maintenance_window, :nodes, :parameter_group_name, :port, :region, :security_group_ids, :subnet_group_name, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

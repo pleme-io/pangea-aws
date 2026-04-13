@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSignerSigningJob do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { destination: [{ 'key1' => 'val1' }], profile_name: 'test-value', source: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { destination: { 'key1' => 'val1' }, profile_name: 'test-value', source: { 'key1' => 'val1' } } }
 
   describe ':aws_signer_signing_job' do
     context 'with required attributes only' do
@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSSignerSigningJob do
         expect(ref.platform_display_name).to eq("${aws_signer_signing_job.test.platform_display_name}")
         expect(ref.platform_id).to eq("${aws_signer_signing_job.test.platform_id}")
         expect(ref.profile_version).to eq("${aws_signer_signing_job.test.profile_version}")
+        expect(ref.region).to eq("${aws_signer_signing_job.test.region}")
         expect(ref.requested_by).to eq("${aws_signer_signing_job.test.requested_by}")
         expect(ref.revocation_record).to eq("${aws_signer_signing_job.test.revocation_record}")
         expect(ref.signature_expires_at).to eq("${aws_signer_signing_job.test.signature_expires_at}")
@@ -71,6 +72,7 @@ RSpec.describe Pangea::Resources::AWSSignerSigningJob do
         expect(config).not_to have_key('platform_display_name')
         expect(config).not_to have_key('platform_id')
         expect(config).not_to have_key('profile_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('requested_by')
         expect(config).not_to have_key('revocation_record')
         expect(config).not_to have_key('signature_expires_at')
@@ -81,7 +83,7 @@ RSpec.describe Pangea::Resources::AWSSignerSigningJob do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ ignore_signing_job_failure: true }) }
+      let(:all_attrs) { required_attrs.merge({ ignore_signing_job_failure: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -91,6 +93,7 @@ RSpec.describe Pangea::Resources::AWSSignerSigningJob do
 
         config = validate_resource_structure(result, 'aws_signer_signing_job', 'full')
         expect(config).to have_key('ignore_signing_job_failure')
+        expect(config).to have_key('region')
       end
     end
 
@@ -111,6 +114,23 @@ RSpec.describe Pangea::Resources::AWSSignerSigningJob do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_signer_signing_job', 'minimal')
         expect(config).not_to have_key('ignore_signing_job_failure')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_job('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_job', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_signer_signing_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_signer_signing_job', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -136,9 +156,9 @@ RSpec.describe Pangea::Resources::AWSSignerSigningJob do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_signer_signing_job', 'typed')
-        expect(config['destination']).to be_a(Array)
+        expect(config['destination']).to be_a(Hash)
         expect(config['profile_name']).to be_a(String)
-        expect(config['source']).to be_a(Array)
+        expect(config['source']).to be_a(Hash)
       end
     end
 
@@ -171,8 +191,8 @@ RSpec.describe Pangea::Resources::AWSSignerSigningJob do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_signer_signing_job,
     method: :aws_signer_signing_job,
-    required_attrs: { destination: [{ 'key1' => 'val1' }], profile_name: 'test-value', source: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :completed_at, :created_at, :job_id, :job_invoker, :job_owner, :platform_display_name, :platform_id, :profile_version, :requested_by, :revocation_record, :signature_expires_at, :signed_object, :status, :status_reason],
+    required_attrs: { destination: { 'key1' => 'val1' }, profile_name: 'test-value', source: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :completed_at, :created_at, :job_id, :job_invoker, :job_owner, :platform_display_name, :platform_id, :profile_version, :region, :requested_by, :revocation_record, :signature_expires_at, :signed_object, :status, :status_reason],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:ignore_signing_job_failure]

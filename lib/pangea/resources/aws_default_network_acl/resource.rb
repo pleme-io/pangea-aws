@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DefaultNetworkAclAttributes,
       outputs: { id: :id },
       map: [:default_network_acl_id],
-      map_present: [:egress, :ingress, :subnet_ids, :tags, :tags_all]
+      map_present: [:egress, :ingress, :region, :subnet_ids, :tags, :tags_all]
   end
   module AWS
     include AWSDefaultNetworkAcl

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSInternetmonitorMonitor do
 
         expect(ref.id).to eq("${aws_internetmonitor_monitor.test.id}")
         expect(ref.arn).to eq("${aws_internetmonitor_monitor.test.arn}")
+        expect(ref.region).to eq("${aws_internetmonitor_monitor.test.region}")
         expect(ref.tags_all).to eq("${aws_internetmonitor_monitor.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSInternetmonitorMonitor do
 
         config = validate_resource_structure(result, 'aws_internetmonitor_monitor', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ health_events_config: [{ 'key1' => 'val1' }], internet_measurements_log_delivery: [{ 'key1' => 'val1' }], max_city_networks_to_monitor: 3.14, resources: ['test-value'], status: 'test-value', tags: { 'key1' => 'val1' }, traffic_percentage_to_monitor: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ health_events_config: { 'key1' => 'val1' }, internet_measurements_log_delivery: { 'key1' => 'val1' }, max_city_networks_to_monitor: 3.14, region: 'test-value', resources: ['test-value'], status: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, traffic_percentage_to_monitor: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,9 +71,11 @@ RSpec.describe Pangea::Resources::AWSInternetmonitorMonitor do
         expect(config).to have_key('health_events_config')
         expect(config).to have_key('internet_measurements_log_delivery')
         expect(config).to have_key('max_city_networks_to_monitor')
+        expect(config).to have_key('region')
         expect(config).to have_key('resources')
         expect(config).to have_key('status')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('traffic_percentage_to_monitor')
       end
     end
@@ -80,7 +84,7 @@ RSpec.describe Pangea::Resources::AWSInternetmonitorMonitor do
       it 'includes health_events_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_internetmonitor_monitor('opt', required_attrs.merge(health_events_config: [{ 'key1' => 'val1' }]))
+        synth.aws_internetmonitor_monitor('opt', required_attrs.merge(health_events_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_internetmonitor_monitor', 'opt')
         expect(config).to have_key('health_events_config')
@@ -97,7 +101,7 @@ RSpec.describe Pangea::Resources::AWSInternetmonitorMonitor do
       it 'includes internet_measurements_log_delivery when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_internetmonitor_monitor('opt', required_attrs.merge(internet_measurements_log_delivery: [{ 'key1' => 'val1' }]))
+        synth.aws_internetmonitor_monitor('opt', required_attrs.merge(internet_measurements_log_delivery: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_internetmonitor_monitor', 'opt')
         expect(config).to have_key('internet_measurements_log_delivery')
@@ -127,6 +131,23 @@ RSpec.describe Pangea::Resources::AWSInternetmonitorMonitor do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_internetmonitor_monitor', 'minimal')
         expect(config).not_to have_key('max_city_networks_to_monitor')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_internetmonitor_monitor('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_internetmonitor_monitor', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_internetmonitor_monitor('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_internetmonitor_monitor', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes resources when provided' do
         synth = create_synthesizer
@@ -178,6 +199,23 @@ RSpec.describe Pangea::Resources::AWSInternetmonitorMonitor do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_internetmonitor_monitor', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_internetmonitor_monitor('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_internetmonitor_monitor', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_internetmonitor_monitor('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_internetmonitor_monitor', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes traffic_percentage_to_monitor when provided' do
         synth = create_synthesizer
@@ -240,7 +278,7 @@ RSpec.describe Pangea::Resources::AWSInternetmonitorMonitor do
     resource_type: :aws_internetmonitor_monitor,
     method: :aws_internetmonitor_monitor,
     required_attrs: { monitor_name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_securityhub_organization_configuration,
       attributes_class: AWS::Types::SecurityhubOrganizationConfigurationAttributes,
       outputs: { id: :id },
-      map_present: [:auto_enable_standards, :organization_configuration],
+      map_present: [:auto_enable_standards, :organization_configuration, :region],
       map_bool: [:auto_enable]
   end
   module AWS

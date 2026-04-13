@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcIpamPoolAttributes,
       outputs: { id: :id },
       map: [:address_family, :ipam_scope_id],
-      map_present: [:allocation_default_netmask_length, :allocation_max_netmask_length, :allocation_min_netmask_length, :allocation_resource_tags, :aws_service, :description, :locale, :public_ip_source, :source_ipam_pool_id, :tags, :tags_all],
+      map_present: [:allocation_default_netmask_length, :allocation_max_netmask_length, :allocation_min_netmask_length, :allocation_resource_tags, :aws_service, :description, :locale, :public_ip_source, :region, :source_ipam_pool_id, :source_resource, :tags, :tags_all],
       map_bool: [:auto_import, :cascade, :publicly_advertisable]
   end
   module AWS

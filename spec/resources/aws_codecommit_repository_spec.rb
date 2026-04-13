@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSCodecommitRepository do
         expect(ref.clone_url_http).to eq("${aws_codecommit_repository.test.clone_url_http}")
         expect(ref.clone_url_ssh).to eq("${aws_codecommit_repository.test.clone_url_ssh}")
         expect(ref.kms_key_id).to eq("${aws_codecommit_repository.test.kms_key_id}")
+        expect(ref.region).to eq("${aws_codecommit_repository.test.region}")
         expect(ref.repository_id).to eq("${aws_codecommit_repository.test.repository_id}")
         expect(ref.tags_all).to eq("${aws_codecommit_repository.test.tags_all}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSCodecommitRepository do
         expect(config).not_to have_key('clone_url_http')
         expect(config).not_to have_key('clone_url_ssh')
         expect(config).not_to have_key('kms_key_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('repository_id')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ default_branch: 'test-value', description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ default_branch: 'test-value', description: 'test-value', kms_key_id: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,7 +78,10 @@ RSpec.describe Pangea::Resources::AWSCodecommitRepository do
         config = validate_resource_structure(result, 'aws_codecommit_repository', 'full')
         expect(config).to have_key('default_branch')
         expect(config).to have_key('description')
+        expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -115,6 +120,40 @@ RSpec.describe Pangea::Resources::AWSCodecommitRepository do
         config = validate_resource_structure(result, 'aws_codecommit_repository', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecommit_repository('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecommit_repository', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecommit_repository('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecommit_repository', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecommit_repository('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecommit_repository', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecommit_repository('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecommit_repository', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -131,6 +170,23 @@ RSpec.describe Pangea::Resources::AWSCodecommitRepository do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codecommit_repository', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecommit_repository('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecommit_repository', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecommit_repository('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecommit_repository', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -176,7 +232,7 @@ RSpec.describe Pangea::Resources::AWSCodecommitRepository do
     resource_type: :aws_codecommit_repository,
     method: :aws_codecommit_repository,
     required_attrs: { repository_name: 'test-value' },
-    expected_outputs: [:id, :arn, :clone_url_http, :clone_url_ssh, :kms_key_id, :repository_id, :tags_all],
+    expected_outputs: [:id, :arn, :clone_url_http, :clone_url_ssh, :kms_key_id, :region, :repository_id, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

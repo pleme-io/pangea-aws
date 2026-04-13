@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MskConfigurationAttributes,
       outputs: { id: :id },
       map: [:name, :server_properties],
-      map_present: [:description, :kafka_versions]
+      map_present: [:description, :kafka_versions, :region]
   end
   module AWS
     include AWSMskConfiguration

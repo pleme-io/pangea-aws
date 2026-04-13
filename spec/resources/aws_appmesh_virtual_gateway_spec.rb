@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSAppmeshVirtualGateway do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { mesh_name: 'test-value', name: 'test-value', spec: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { mesh_name: 'test-value', name: 'test-value', spec: { 'key1' => 'val1' } } }
 
   describe ':aws_appmesh_virtual_gateway' do
     context 'with required attributes only' do
@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSAppmeshVirtualGateway do
         expect(ref.created_date).to eq("${aws_appmesh_virtual_gateway.test.created_date}")
         expect(ref.last_updated_date).to eq("${aws_appmesh_virtual_gateway.test.last_updated_date}")
         expect(ref.mesh_owner).to eq("${aws_appmesh_virtual_gateway.test.mesh_owner}")
+        expect(ref.region).to eq("${aws_appmesh_virtual_gateway.test.region}")
         expect(ref.resource_owner).to eq("${aws_appmesh_virtual_gateway.test.resource_owner}")
         expect(ref.tags_all).to eq("${aws_appmesh_virtual_gateway.test.tags_all}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSAppmeshVirtualGateway do
         expect(config).not_to have_key('created_date')
         expect(config).not_to have_key('last_updated_date')
         expect(config).not_to have_key('mesh_owner')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_owner')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ mesh_owner: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,11 +76,48 @@ RSpec.describe Pangea::Resources::AWSAppmeshVirtualGateway do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_appmesh_virtual_gateway', 'full')
+        expect(config).to have_key('mesh_owner')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes mesh_owner when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appmesh_virtual_gateway('opt', required_attrs.merge(mesh_owner: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appmesh_virtual_gateway', 'opt')
+        expect(config).to have_key('mesh_owner')
+      end
+
+      it 'omits mesh_owner when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appmesh_virtual_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appmesh_virtual_gateway', 'minimal')
+        expect(config).not_to have_key('mesh_owner')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appmesh_virtual_gateway('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appmesh_virtual_gateway', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appmesh_virtual_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appmesh_virtual_gateway', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -96,6 +135,23 @@ RSpec.describe Pangea::Resources::AWSAppmeshVirtualGateway do
         config = validate_resource_structure(result, 'aws_appmesh_virtual_gateway', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appmesh_virtual_gateway('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appmesh_virtual_gateway', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appmesh_virtual_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appmesh_virtual_gateway', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -108,7 +164,7 @@ RSpec.describe Pangea::Resources::AWSAppmeshVirtualGateway do
         config = validate_resource_structure(result, 'aws_appmesh_virtual_gateway', 'typed')
         expect(config['mesh_name']).to be_a(String)
         expect(config['name']).to be_a(String)
-        expect(config['spec']).to be_a(Array)
+        expect(config['spec']).to be_a(Hash)
       end
     end
 
@@ -141,8 +197,8 @@ RSpec.describe Pangea::Resources::AWSAppmeshVirtualGateway do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_appmesh_virtual_gateway,
     method: :aws_appmesh_virtual_gateway,
-    required_attrs: { mesh_name: 'test-value', name: 'test-value', spec: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :created_date, :last_updated_date, :mesh_owner, :resource_owner, :tags_all],
+    required_attrs: { mesh_name: 'test-value', name: 'test-value', spec: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :created_date, :last_updated_date, :mesh_owner, :region, :resource_owner, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

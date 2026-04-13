@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightDataSourceAttributes,
       outputs: { id: :id },
       map: [:data_source_id, :name, :parameters, :type],
-      map_present: [:aws_account_id, :credentials, :permission, :ssl_properties, :tags, :tags_all, :vpc_connection_properties]
+      map_present: [:aws_account_id, :credentials, :permission, :region, :ssl_properties, :tags, :tags_all, :vpc_connection_properties]
   end
   module AWS
     include AWSQuicksightDataSource

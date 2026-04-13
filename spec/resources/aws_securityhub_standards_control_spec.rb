@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubStandardsControl do
         expect(ref.control_status_updated_at).to eq("${aws_securityhub_standards_control.test.control_status_updated_at}")
         expect(ref.description).to eq("${aws_securityhub_standards_control.test.description}")
         expect(ref.disabled_reason).to eq("${aws_securityhub_standards_control.test.disabled_reason}")
+        expect(ref.region).to eq("${aws_securityhub_standards_control.test.region}")
         expect(ref.related_requirements).to eq("${aws_securityhub_standards_control.test.related_requirements}")
         expect(ref.remediation_url).to eq("${aws_securityhub_standards_control.test.remediation_url}")
         expect(ref.severity_rating).to eq("${aws_securityhub_standards_control.test.severity_rating}")
@@ -61,10 +62,63 @@ RSpec.describe Pangea::Resources::AWSSecurityhubStandardsControl do
         expect(config).not_to have_key('control_status_updated_at')
         expect(config).not_to have_key('description')
         expect(config).not_to have_key('disabled_reason')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('related_requirements')
         expect(config).not_to have_key('remediation_url')
         expect(config).not_to have_key('severity_rating')
         expect(config).not_to have_key('title')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ disabled_reason: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_standards_control('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_securityhub_standards_control', 'full')
+        expect(config).to have_key('disabled_reason')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes disabled_reason when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_standards_control('opt', required_attrs.merge(disabled_reason: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_standards_control', 'opt')
+        expect(config).to have_key('disabled_reason')
+      end
+
+      it 'omits disabled_reason when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_standards_control('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_standards_control', 'minimal')
+        expect(config).not_to have_key('disabled_reason')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_standards_control('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_standards_control', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_standards_control('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_standards_control', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -111,7 +165,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubStandardsControl do
     resource_type: :aws_securityhub_standards_control,
     method: :aws_securityhub_standards_control,
     required_attrs: { control_status: 'test-value', standards_control_arn: 'test-value' },
-    expected_outputs: [:id, :control_id, :control_status_updated_at, :description, :disabled_reason, :related_requirements, :remediation_url, :severity_rating, :title],
+    expected_outputs: [:id, :control_id, :control_status_updated_at, :description, :disabled_reason, :region, :related_requirements, :remediation_url, :severity_rating, :title],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_cognito_user_in_group,
       attributes_class: AWS::Types::CognitoUserInGroupAttributes,
       outputs: { id: :id },
-      map: [:group_name, :user_pool_id, :username]
+      map: [:group_name, :user_pool_id, :username],
+      map_present: [:region]
   end
   module AWS
     include AWSCognitoUserInGroup

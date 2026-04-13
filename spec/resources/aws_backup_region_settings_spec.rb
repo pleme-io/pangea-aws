@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSBackupRegionSettings do
         ref = synth.aws_backup_region_settings('test', required_attrs)
 
         expect(ref.id).to eq("${aws_backup_region_settings.test.id}")
+        expect(ref.region).to eq("${aws_backup_region_settings.test.region}")
         expect(ref.resource_type_management_preference).to eq("${aws_backup_region_settings.test.resource_type_management_preference}")
       end
     end
@@ -50,6 +51,59 @@ RSpec.describe Pangea::Resources::AWSBackupRegionSettings do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_backup_region_settings', 'test')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('resource_type_management_preference')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', resource_type_management_preference: { 'key1' => 'val1' } }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_region_settings('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_backup_region_settings', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('resource_type_management_preference')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_region_settings('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_region_settings', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_region_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_region_settings', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes resource_type_management_preference when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_region_settings('opt', required_attrs.merge(resource_type_management_preference: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_region_settings', 'opt')
+        expect(config).to have_key('resource_type_management_preference')
+      end
+
+      it 'omits resource_type_management_preference when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_region_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_region_settings', 'minimal')
         expect(config).not_to have_key('resource_type_management_preference')
       end
     end
@@ -96,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSBackupRegionSettings do
     resource_type: :aws_backup_region_settings,
     method: :aws_backup_region_settings,
     required_attrs: { resource_type_opt_in_preference: { 'key1' => 'val1' } },
-    expected_outputs: [:id, :resource_type_management_preference],
+    expected_outputs: [:id, :region, :resource_type_management_preference],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

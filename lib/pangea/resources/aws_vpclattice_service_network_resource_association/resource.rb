@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpclatticeServiceNetworkResourceAssociationAttributes,
       outputs: { id: :id },
       map: [:resource_configuration_identifier, :service_network_identifier],
-      map_present: [:tags]
+      map_present: [:region, :tags],
+      map_bool: [:private_dns_enabled]
   end
   module AWS
     include AWSVpclatticeServiceNetworkResourceAssociation

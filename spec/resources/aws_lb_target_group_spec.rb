@@ -50,6 +50,7 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
         expect(ref.name_prefix).to eq("${aws_lb_target_group.test.name_prefix}")
         expect(ref.preserve_client_ip).to eq("${aws_lb_target_group.test.preserve_client_ip}")
         expect(ref.protocol_version).to eq("${aws_lb_target_group.test.protocol_version}")
+        expect(ref.region).to eq("${aws_lb_target_group.test.region}")
         expect(ref.tags_all).to eq("${aws_lb_target_group.test.tags_all}")
       end
     end
@@ -74,12 +75,13 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
         expect(config).not_to have_key('name_prefix')
         expect(config).not_to have_key('preserve_client_ip')
         expect(config).not_to have_key('protocol_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ deregistration_delay: 'test-value', health_check: [{ 'key1' => 'val1' }], lambda_multi_value_headers_enabled: true, port: 3.14, protocol: 'test-value', proxy_protocol_v2: true, slow_start: 3.14, stickiness: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, target_failover: [{ 'key1' => 'val1' }], target_group_health: [{ 'key1' => 'val1' }], target_health_state: [{ 'key1' => 'val1' }], target_type: 'test-value', vpc_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ connection_termination: true, deregistration_delay: 'test-value', health_check: { 'key1' => 'val1' }, ip_address_type: 'test-value', lambda_multi_value_headers_enabled: true, load_balancing_algorithm_type: 'test-value', load_balancing_anomaly_mitigation: 'test-value', load_balancing_cross_zone_enabled: 'test-value', name: 'test-value', name_prefix: 'test-value', port: 3.14, preserve_client_ip: 'test-value', protocol: 'test-value', protocol_version: 'test-value', proxy_protocol_v2: true, region: 'test-value', slow_start: 3.14, stickiness: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target_control_port: 3.14, target_failover: [{ 'key1' => 'val1' }], target_group_health: { 'key1' => 'val1' }, target_health_state: [{ 'key1' => 'val1' }], target_type: 'test-value', vpc_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -88,15 +90,27 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lb_target_group', 'full')
+        expect(config).to have_key('connection_termination')
         expect(config).to have_key('deregistration_delay')
         expect(config).to have_key('health_check')
+        expect(config).to have_key('ip_address_type')
         expect(config).to have_key('lambda_multi_value_headers_enabled')
+        expect(config).to have_key('load_balancing_algorithm_type')
+        expect(config).to have_key('load_balancing_anomaly_mitigation')
+        expect(config).to have_key('load_balancing_cross_zone_enabled')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
         expect(config).to have_key('port')
+        expect(config).to have_key('preserve_client_ip')
         expect(config).to have_key('protocol')
+        expect(config).to have_key('protocol_version')
         expect(config).to have_key('proxy_protocol_v2')
+        expect(config).to have_key('region')
         expect(config).to have_key('slow_start')
         expect(config).to have_key('stickiness')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('target_control_port')
         expect(config).to have_key('target_failover')
         expect(config).to have_key('target_group_health')
         expect(config).to have_key('target_health_state')
@@ -106,6 +120,23 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
     end
 
     context 'optional attributes' do
+      it 'includes connection_termination when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('opt', required_attrs.merge(connection_termination: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
+        expect(config).to have_key('connection_termination')
+      end
+
+      it 'omits connection_termination when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
+        expect(config).not_to have_key('connection_termination')
+      end
       it 'includes deregistration_delay when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -126,7 +157,7 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
       it 'includes health_check when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lb_target_group('opt', required_attrs.merge(health_check: [{ 'key1' => 'val1' }]))
+        synth.aws_lb_target_group('opt', required_attrs.merge(health_check: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
         expect(config).to have_key('health_check')
@@ -139,6 +170,23 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
         expect(config).not_to have_key('health_check')
+      end
+      it 'includes ip_address_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('opt', required_attrs.merge(ip_address_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
+        expect(config).to have_key('ip_address_type')
+      end
+
+      it 'omits ip_address_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
+        expect(config).not_to have_key('ip_address_type')
       end
       it 'includes lambda_multi_value_headers_enabled when provided' do
         synth = create_synthesizer
@@ -157,6 +205,91 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
         config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
         expect(config).not_to have_key('lambda_multi_value_headers_enabled')
       end
+      it 'includes load_balancing_algorithm_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('opt', required_attrs.merge(load_balancing_algorithm_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
+        expect(config).to have_key('load_balancing_algorithm_type')
+      end
+
+      it 'omits load_balancing_algorithm_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
+        expect(config).not_to have_key('load_balancing_algorithm_type')
+      end
+      it 'includes load_balancing_anomaly_mitigation when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('opt', required_attrs.merge(load_balancing_anomaly_mitigation: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
+        expect(config).to have_key('load_balancing_anomaly_mitigation')
+      end
+
+      it 'omits load_balancing_anomaly_mitigation when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
+        expect(config).not_to have_key('load_balancing_anomaly_mitigation')
+      end
+      it 'includes load_balancing_cross_zone_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('opt', required_attrs.merge(load_balancing_cross_zone_enabled: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
+        expect(config).to have_key('load_balancing_cross_zone_enabled')
+      end
+
+      it 'omits load_balancing_cross_zone_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
+        expect(config).not_to have_key('load_balancing_cross_zone_enabled')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
       it 'includes port when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -173,6 +306,23 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
         expect(config).not_to have_key('port')
+      end
+      it 'includes preserve_client_ip when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('opt', required_attrs.merge(preserve_client_ip: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
+        expect(config).to have_key('preserve_client_ip')
+      end
+
+      it 'omits preserve_client_ip when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
+        expect(config).not_to have_key('preserve_client_ip')
       end
       it 'includes protocol when provided' do
         synth = create_synthesizer
@@ -191,6 +341,23 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
         config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
         expect(config).not_to have_key('protocol')
       end
+      it 'includes protocol_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('opt', required_attrs.merge(protocol_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
+        expect(config).to have_key('protocol_version')
+      end
+
+      it 'omits protocol_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
+        expect(config).not_to have_key('protocol_version')
+      end
       it 'includes proxy_protocol_v2 when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -207,6 +374,23 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
         expect(config).not_to have_key('proxy_protocol_v2')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes slow_start when provided' do
         synth = create_synthesizer
@@ -228,7 +412,7 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
       it 'includes stickiness when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lb_target_group('opt', required_attrs.merge(stickiness: [{ 'key1' => 'val1' }]))
+        synth.aws_lb_target_group('opt', required_attrs.merge(stickiness: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
         expect(config).to have_key('stickiness')
@@ -259,6 +443,40 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
         config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes target_control_port when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('opt', required_attrs.merge(target_control_port: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
+        expect(config).to have_key('target_control_port')
+      end
+
+      it 'omits target_control_port when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_target_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_target_group', 'minimal')
+        expect(config).not_to have_key('target_control_port')
+      end
       it 'includes target_failover when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -279,7 +497,7 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
       it 'includes target_group_health when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lb_target_group('opt', required_attrs.merge(target_group_health: [{ 'key1' => 'val1' }]))
+        synth.aws_lb_target_group('opt', required_attrs.merge(target_group_health: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lb_target_group', 'opt')
         expect(config).to have_key('target_group_health')
@@ -348,6 +566,17 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
 
     context 'boolean fields' do
       [true, false].each do |val|
+        it "accepts connection_termination=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(connection_termination: val)
+          synth.aws_lb_target_group("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_lb_target_group', "bool_#{val}")
+          expect(config['connection_termination']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
         it "accepts lambda_multi_value_headers_enabled=#{val}" do
           synth = create_synthesizer
           synth.extend(described_class)
@@ -412,8 +641,8 @@ RSpec.describe Pangea::Resources::AWSLbTargetGroup do
     resource_type: :aws_lb_target_group,
     method: :aws_lb_target_group,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :arn_suffix, :connection_termination, :ip_address_type, :load_balancer_arns, :load_balancing_algorithm_type, :load_balancing_anomaly_mitigation, :load_balancing_cross_zone_enabled, :name, :name_prefix, :preserve_client_ip, :protocol_version, :tags_all],
+    expected_outputs: [:id, :arn, :arn_suffix, :connection_termination, :ip_address_type, :load_balancer_arns, :load_balancing_algorithm_type, :load_balancing_anomaly_mitigation, :load_balancing_cross_zone_enabled, :name, :name_prefix, :preserve_client_ip, :protocol_version, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:lambda_multi_value_headers_enabled, :proxy_protocol_v2]
+    boolean_fields: [:connection_termination, :lambda_multi_value_headers_enabled, :proxy_protocol_v2]
 end

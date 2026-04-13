@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSEmrStudioSessionMapping do
         expect(ref.id).to eq("${aws_emr_studio_session_mapping.test.id}")
         expect(ref.identity_id).to eq("${aws_emr_studio_session_mapping.test.identity_id}")
         expect(ref.identity_name).to eq("${aws_emr_studio_session_mapping.test.identity_name}")
+        expect(ref.region).to eq("${aws_emr_studio_session_mapping.test.region}")
       end
     end
 
@@ -53,6 +54,77 @@ RSpec.describe Pangea::Resources::AWSEmrStudioSessionMapping do
         config = validate_resource_structure(result, 'aws_emr_studio_session_mapping', 'test')
         expect(config).not_to have_key('identity_id')
         expect(config).not_to have_key('identity_name')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ identity_id: 'test-value', identity_name: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_studio_session_mapping('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_emr_studio_session_mapping', 'full')
+        expect(config).to have_key('identity_id')
+        expect(config).to have_key('identity_name')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes identity_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_studio_session_mapping('opt', required_attrs.merge(identity_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_studio_session_mapping', 'opt')
+        expect(config).to have_key('identity_id')
+      end
+
+      it 'omits identity_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_studio_session_mapping('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_studio_session_mapping', 'minimal')
+        expect(config).not_to have_key('identity_id')
+      end
+      it 'includes identity_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_studio_session_mapping('opt', required_attrs.merge(identity_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_studio_session_mapping', 'opt')
+        expect(config).to have_key('identity_name')
+      end
+
+      it 'omits identity_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_studio_session_mapping('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_studio_session_mapping', 'minimal')
+        expect(config).not_to have_key('identity_name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_studio_session_mapping('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_studio_session_mapping', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_studio_session_mapping('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_studio_session_mapping', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -100,7 +172,7 @@ RSpec.describe Pangea::Resources::AWSEmrStudioSessionMapping do
     resource_type: :aws_emr_studio_session_mapping,
     method: :aws_emr_studio_session_mapping,
     required_attrs: { identity_type: 'test-value', session_policy_arn: 'test-value', studio_id: 'test-value' },
-    expected_outputs: [:id, :identity_id, :identity_name],
+    expected_outputs: [:id, :identity_id, :identity_name, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

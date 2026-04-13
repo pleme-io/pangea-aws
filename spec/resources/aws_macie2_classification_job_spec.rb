@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSMacie2ClassificationJob do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { job_type: 'test-value', s3_job_definition: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { job_type: 'test-value', s3_job_definition: { 'key1' => 'val1' } } }
 
   describe ':aws_macie2_classification_job' do
     context 'with required attributes only' do
@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSMacie2ClassificationJob do
         expect(ref.job_status).to eq("${aws_macie2_classification_job.test.job_status}")
         expect(ref.name).to eq("${aws_macie2_classification_job.test.name}")
         expect(ref.name_prefix).to eq("${aws_macie2_classification_job.test.name_prefix}")
+        expect(ref.region).to eq("${aws_macie2_classification_job.test.region}")
         expect(ref.sampling_percentage).to eq("${aws_macie2_classification_job.test.sampling_percentage}")
         expect(ref.tags_all).to eq("${aws_macie2_classification_job.test.tags_all}")
         expect(ref.user_paused_details).to eq("${aws_macie2_classification_job.test.user_paused_details}")
@@ -68,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSMacie2ClassificationJob do
         expect(config).not_to have_key('job_status')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('sampling_percentage')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('user_paused_details')
@@ -75,7 +77,7 @@ RSpec.describe Pangea::Resources::AWSMacie2ClassificationJob do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ initial_run: true, schedule_frequency: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ custom_data_identifier_ids: ['test-value'], description: 'test-value', initial_run: true, job_status: 'test-value', name: 'test-value', name_prefix: 'test-value', region: 'test-value', sampling_percentage: 3.14, schedule_frequency: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -84,13 +86,55 @@ RSpec.describe Pangea::Resources::AWSMacie2ClassificationJob do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_macie2_classification_job', 'full')
+        expect(config).to have_key('custom_data_identifier_ids')
+        expect(config).to have_key('description')
         expect(config).to have_key('initial_run')
+        expect(config).to have_key('job_status')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
+        expect(config).to have_key('sampling_percentage')
         expect(config).to have_key('schedule_frequency')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes custom_data_identifier_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('opt', required_attrs.merge(custom_data_identifier_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'opt')
+        expect(config).to have_key('custom_data_identifier_ids')
+      end
+
+      it 'omits custom_data_identifier_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'minimal')
+        expect(config).not_to have_key('custom_data_identifier_ids')
+      end
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'minimal')
+        expect(config).not_to have_key('description')
+      end
       it 'includes initial_run when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -108,10 +152,95 @@ RSpec.describe Pangea::Resources::AWSMacie2ClassificationJob do
         config = validate_resource_structure(result, 'aws_macie2_classification_job', 'minimal')
         expect(config).not_to have_key('initial_run')
       end
+      it 'includes job_status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('opt', required_attrs.merge(job_status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'opt')
+        expect(config).to have_key('job_status')
+      end
+
+      it 'omits job_status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'minimal')
+        expect(config).not_to have_key('job_status')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes sampling_percentage when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('opt', required_attrs.merge(sampling_percentage: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'opt')
+        expect(config).to have_key('sampling_percentage')
+      end
+
+      it 'omits sampling_percentage when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'minimal')
+        expect(config).not_to have_key('sampling_percentage')
+      end
       it 'includes schedule_frequency when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_macie2_classification_job('opt', required_attrs.merge(schedule_frequency: [{ 'key1' => 'val1' }]))
+        synth.aws_macie2_classification_job('opt', required_attrs.merge(schedule_frequency: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_macie2_classification_job', 'opt')
         expect(config).to have_key('schedule_frequency')
@@ -142,6 +271,23 @@ RSpec.describe Pangea::Resources::AWSMacie2ClassificationJob do
         config = validate_resource_structure(result, 'aws_macie2_classification_job', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_classification_job('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_classification_job', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'boolean fields' do
@@ -167,7 +313,7 @@ RSpec.describe Pangea::Resources::AWSMacie2ClassificationJob do
 
         config = validate_resource_structure(result, 'aws_macie2_classification_job', 'typed')
         expect(config['job_type']).to be_a(String)
-        expect(config['s3_job_definition']).to be_a(Array)
+        expect(config['s3_job_definition']).to be_a(Hash)
       end
     end
 
@@ -200,8 +346,8 @@ RSpec.describe Pangea::Resources::AWSMacie2ClassificationJob do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_macie2_classification_job,
     method: :aws_macie2_classification_job,
-    required_attrs: { job_type: 'test-value', s3_job_definition: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :created_at, :custom_data_identifier_ids, :description, :job_arn, :job_id, :job_status, :name, :name_prefix, :sampling_percentage, :tags_all, :user_paused_details],
+    required_attrs: { job_type: 'test-value', s3_job_definition: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :created_at, :custom_data_identifier_ids, :description, :job_arn, :job_id, :job_status, :name, :name_prefix, :region, :sampling_percentage, :tags_all, :user_paused_details],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:initial_run]

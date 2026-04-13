@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpc_route_server_propagation,
       attributes_class: AWS::Types::VpcRouteServerPropagationAttributes,
       outputs: { id: :id },
-      map: [:route_server_id, :route_table_id]
+      map: [:route_server_id, :route_table_id],
+      map_present: [:region]
   end
   module AWS
     include AWSVpcRouteServerPropagation

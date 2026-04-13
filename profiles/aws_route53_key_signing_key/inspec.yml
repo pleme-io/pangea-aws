@@ -1,0 +1,8 @@
+name: aws_route53_key_signing_key
+title: Manages a aws_route53_key_signing_key resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

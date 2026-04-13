@@ -1,0 +1,8 @@
+name: aws_securitylake_aws_log_source
+title: Manages a aws_securitylake_aws_log_source resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

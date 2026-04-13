@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSDetectiveMember do
         expect(ref.administrator_id).to eq("${aws_detective_member.test.administrator_id}")
         expect(ref.disabled_reason).to eq("${aws_detective_member.test.disabled_reason}")
         expect(ref.invited_time).to eq("${aws_detective_member.test.invited_time}")
+        expect(ref.region).to eq("${aws_detective_member.test.region}")
         expect(ref.status).to eq("${aws_detective_member.test.status}")
         expect(ref.updated_time).to eq("${aws_detective_member.test.updated_time}")
         expect(ref.volume_usage_in_bytes).to eq("${aws_detective_member.test.volume_usage_in_bytes}")
@@ -58,6 +59,7 @@ RSpec.describe Pangea::Resources::AWSDetectiveMember do
         expect(config).not_to have_key('administrator_id')
         expect(config).not_to have_key('disabled_reason')
         expect(config).not_to have_key('invited_time')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('updated_time')
         expect(config).not_to have_key('volume_usage_in_bytes')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSDetectiveMember do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ disable_email_notification: true, message: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ disable_email_notification: true, message: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,6 +78,7 @@ RSpec.describe Pangea::Resources::AWSDetectiveMember do
         config = validate_resource_structure(result, 'aws_detective_member', 'full')
         expect(config).to have_key('disable_email_notification')
         expect(config).to have_key('message')
+        expect(config).to have_key('region')
       end
     end
 
@@ -113,6 +116,23 @@ RSpec.describe Pangea::Resources::AWSDetectiveMember do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_detective_member', 'minimal')
         expect(config).not_to have_key('message')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_detective_member('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_detective_member', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_detective_member('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_detective_member', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -174,7 +194,7 @@ RSpec.describe Pangea::Resources::AWSDetectiveMember do
     resource_type: :aws_detective_member,
     method: :aws_detective_member,
     required_attrs: { account_id: 'test-value', email_address: 'test-value', graph_arn: 'test-value' },
-    expected_outputs: [:id, :administrator_id, :disabled_reason, :invited_time, :status, :updated_time, :volume_usage_in_bytes],
+    expected_outputs: [:id, :administrator_id, :disabled_reason, :invited_time, :region, :status, :updated_time, :volume_usage_in_bytes],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:disable_email_notification]

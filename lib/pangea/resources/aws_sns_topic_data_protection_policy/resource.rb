@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_sns_topic_data_protection_policy,
       attributes_class: AWS::Types::SnsTopicDataProtectionPolicyAttributes,
       outputs: { id: :id },
-      map: [:arn, :policy]
+      map: [:arn, :policy],
+      map_present: [:region]
   end
   module AWS
     include AWSSnsTopicDataProtectionPolicy

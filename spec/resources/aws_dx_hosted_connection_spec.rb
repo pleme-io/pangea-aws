@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDxHostedConnection do
 
         expect(ref.id).to eq("${aws_dx_hosted_connection.test.id}")
         expect(ref.aws_device).to eq("${aws_dx_hosted_connection.test.aws_device}")
+        expect(ref.connection_region).to eq("${aws_dx_hosted_connection.test.connection_region}")
         expect(ref.has_logical_redundancy).to eq("${aws_dx_hosted_connection.test.has_logical_redundancy}")
         expect(ref.jumbo_frame_capable).to eq("${aws_dx_hosted_connection.test.jumbo_frame_capable}")
         expect(ref.lag_id).to eq("${aws_dx_hosted_connection.test.lag_id}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSDxHostedConnection do
 
         config = validate_resource_structure(result, 'aws_dx_hosted_connection', 'test')
         expect(config).not_to have_key('aws_device')
+        expect(config).not_to have_key('connection_region')
         expect(config).not_to have_key('has_logical_redundancy')
         expect(config).not_to have_key('jumbo_frame_capable')
         expect(config).not_to have_key('lag_id')
@@ -118,7 +120,7 @@ RSpec.describe Pangea::Resources::AWSDxHostedConnection do
     resource_type: :aws_dx_hosted_connection,
     method: :aws_dx_hosted_connection,
     required_attrs: { bandwidth: 'test-value', connection_id: 'test-value', name: 'test-value', owner_account_id: 'test-value', vlan: 3.14 },
-    expected_outputs: [:id, :aws_device, :has_logical_redundancy, :jumbo_frame_capable, :lag_id, :loa_issue_time, :location, :partner_name, :provider_name, :region, :state],
+    expected_outputs: [:id, :aws_device, :connection_region, :has_logical_redundancy, :jumbo_frame_capable, :lag_id, :loa_issue_time, :location, :partner_name, :provider_name, :region, :state],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

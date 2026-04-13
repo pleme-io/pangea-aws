@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_macie2_invitation_accepter,
       attributes_class: AWS::Types::Macie2InvitationAccepterAttributes,
       outputs: { id: :id },
-      map: [:administrator_account_id]
+      map: [:administrator_account_id],
+      map_present: [:region]
   end
   module AWS
     include AWSMacie2InvitationAccepter

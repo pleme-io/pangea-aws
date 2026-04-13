@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSResourceexplorer2View do
         expect(ref.id).to eq("${aws_resourceexplorer2_view.test.id}")
         expect(ref.arn).to eq("${aws_resourceexplorer2_view.test.arn}")
         expect(ref.default_view).to eq("${aws_resourceexplorer2_view.test.default_view}")
+        expect(ref.region).to eq("${aws_resourceexplorer2_view.test.region}")
         expect(ref.scope).to eq("${aws_resourceexplorer2_view.test.scope}")
         expect(ref.tags_all).to eq("${aws_resourceexplorer2_view.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSResourceexplorer2View do
         config = validate_resource_structure(result, 'aws_resourceexplorer2_view', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('default_view')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('scope')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ filters: [{ 'key1' => 'val1' }], included_property: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ default_view: true, filters: [{ 'key1' => 'val1' }], included_property: [{ 'key1' => 'val1' }], region: 'test-value', scope: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,13 +72,33 @@ RSpec.describe Pangea::Resources::AWSResourceexplorer2View do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_resourceexplorer2_view', 'full')
+        expect(config).to have_key('default_view')
         expect(config).to have_key('filters')
         expect(config).to have_key('included_property')
+        expect(config).to have_key('region')
+        expect(config).to have_key('scope')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes default_view when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_resourceexplorer2_view('opt', required_attrs.merge(default_view: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_resourceexplorer2_view', 'opt')
+        expect(config).to have_key('default_view')
+      end
+
+      it 'omits default_view when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_resourceexplorer2_view('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_resourceexplorer2_view', 'minimal')
+        expect(config).not_to have_key('default_view')
+      end
       it 'includes filters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -111,6 +133,40 @@ RSpec.describe Pangea::Resources::AWSResourceexplorer2View do
         config = validate_resource_structure(result, 'aws_resourceexplorer2_view', 'minimal')
         expect(config).not_to have_key('included_property')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_resourceexplorer2_view('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_resourceexplorer2_view', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_resourceexplorer2_view('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_resourceexplorer2_view', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes scope when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_resourceexplorer2_view('opt', required_attrs.merge(scope: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_resourceexplorer2_view', 'opt')
+        expect(config).to have_key('scope')
+      end
+
+      it 'omits scope when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_resourceexplorer2_view('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_resourceexplorer2_view', 'minimal')
+        expect(config).not_to have_key('scope')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -127,6 +183,20 @@ RSpec.describe Pangea::Resources::AWSResourceexplorer2View do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_resourceexplorer2_view', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts default_view=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(default_view: val)
+          synth.aws_resourceexplorer2_view("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_resourceexplorer2_view', "bool_#{val}")
+          expect(config['default_view']).to eq(val)
+        end
       end
     end
 
@@ -172,8 +242,8 @@ RSpec.describe Pangea::Resources::AWSResourceexplorer2View do
     resource_type: :aws_resourceexplorer2_view,
     method: :aws_resourceexplorer2_view,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :default_view, :scope, :tags_all],
+    expected_outputs: [:id, :arn, :default_view, :region, :scope, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:default_view]
 end

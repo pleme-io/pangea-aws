@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSAuditmanagerAssessment do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { framework_id: 'test-value', name: 'test-value', roles: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { framework_id: 'test-value', name: 'test-value' } }
 
   describe ':aws_auditmanager_assessment' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessment do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_auditmanager_assessment', 'test')
-        validate_required_attributes(config, [:framework_id, :name, :roles])
+        validate_required_attributes(config, [:framework_id, :name])
       end
 
       it 'returns a ResourceReference' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessment do
 
         expect(ref.id).to eq("${aws_auditmanager_assessment.test.id}")
         expect(ref.arn).to eq("${aws_auditmanager_assessment.test.arn}")
+        expect(ref.region).to eq("${aws_auditmanager_assessment.test.region}")
         expect(ref.roles_all).to eq("${aws_auditmanager_assessment.test.roles_all}")
         expect(ref.status).to eq("${aws_auditmanager_assessment.test.status}")
         expect(ref.tags_all).to eq("${aws_auditmanager_assessment.test.tags_all}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessment do
 
         config = validate_resource_structure(result, 'aws_auditmanager_assessment', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('roles_all')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessment do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ assessment_reports_destination: [{ 'key1' => 'val1' }], description: 'test-value', scope: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ assessment_reports_destination: [{ 'key1' => 'val1' }], description: 'test-value', region: 'test-value', roles: [{ 'key1' => 'val1' }], scope: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,6 +74,8 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessment do
         config = validate_resource_structure(result, 'aws_auditmanager_assessment', 'full')
         expect(config).to have_key('assessment_reports_destination')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
+        expect(config).to have_key('roles')
         expect(config).to have_key('scope')
         expect(config).to have_key('tags')
       end
@@ -111,6 +115,40 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_auditmanager_assessment', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_assessment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_assessment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_assessment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_assessment', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes roles when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_assessment('opt', required_attrs.merge(roles: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_assessment', 'opt')
+        expect(config).to have_key('roles')
+      end
+
+      it 'omits roles when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_assessment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_assessment', 'minimal')
+        expect(config).not_to have_key('roles')
       end
       it 'includes scope when provided' do
         synth = create_synthesizer
@@ -158,7 +196,6 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessment do
         config = validate_resource_structure(result, 'aws_auditmanager_assessment', 'typed')
         expect(config['framework_id']).to be_a(String)
         expect(config['name']).to be_a(String)
-        expect(config['roles']).to be_a(Array)
       end
     end
 
@@ -191,8 +228,8 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessment do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_auditmanager_assessment,
     method: :aws_auditmanager_assessment,
-    required_attrs: { framework_id: 'test-value', name: 'test-value', roles: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :roles_all, :status, :tags_all],
+    required_attrs: { framework_id: 'test-value', name: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :roles_all, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

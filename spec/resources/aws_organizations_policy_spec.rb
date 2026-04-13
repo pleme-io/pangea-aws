@@ -57,7 +57,7 @@ RSpec.describe Pangea::Resources::AWSOrganizationsPolicy do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', skip_destroy: true, tags: { 'key1' => 'val1' }, type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', skip_destroy: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSOrganizationsPolicy do
         expect(config).to have_key('description')
         expect(config).to have_key('skip_destroy')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('type')
       end
     end
@@ -124,6 +125,23 @@ RSpec.describe Pangea::Resources::AWSOrganizationsPolicy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_organizations_policy', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_organizations_policy('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_organizations_policy', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_organizations_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_organizations_policy', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes type when provided' do
         synth = create_synthesizer

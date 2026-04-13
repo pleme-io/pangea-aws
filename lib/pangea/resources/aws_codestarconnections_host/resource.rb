@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodestarconnectionsHostAttributes,
       outputs: { id: :id },
       map: [:name, :provider_endpoint, :provider_type],
-      map_present: [:vpc_configuration]
+      map_present: [:region, :vpc_configuration]
   end
   module AWS
     include AWSCodestarconnectionsHost

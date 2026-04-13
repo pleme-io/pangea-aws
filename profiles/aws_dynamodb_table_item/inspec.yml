@@ -1,0 +1,8 @@
+name: aws_dynamodb_table_item
+title: Manages a aws_dynamodb_table_item resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

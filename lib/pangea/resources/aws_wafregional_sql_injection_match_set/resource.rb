@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WafregionalSqlInjectionMatchSetAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:sql_injection_match_tuple]
+      map_present: [:region, :sql_injection_match_tuple]
   end
   module AWS
     include AWSWafregionalSqlInjectionMatchSet

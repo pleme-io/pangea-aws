@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpc_endpoint_route_table_association,
       attributes_class: AWS::Types::VpcEndpointRouteTableAssociationAttributes,
       outputs: { id: :id },
-      map: [:route_table_id, :vpc_endpoint_id]
+      map: [:route_table_id, :vpc_endpoint_id],
+      map_present: [:region]
   end
   module AWS
     include AWSVpcEndpointRouteTableAssociation

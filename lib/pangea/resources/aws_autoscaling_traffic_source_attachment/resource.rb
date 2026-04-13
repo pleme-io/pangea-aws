@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AutoscalingTrafficSourceAttachmentAttributes,
       outputs: { id: :id },
       map: [:autoscaling_group_name],
-      map_present: [:traffic_source]
+      map_present: [:region, :traffic_source]
   end
   module AWS
     include AWSAutoscalingTrafficSourceAttachment

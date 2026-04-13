@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_rds_certificate,
       attributes_class: AWS::Types::RdsCertificateAttributes,
       outputs: { id: :id },
-      map: [:certificate_identifier]
+      map: [:certificate_identifier],
+      map_present: [:region]
   end
   module AWS
     include AWSRdsCertificate

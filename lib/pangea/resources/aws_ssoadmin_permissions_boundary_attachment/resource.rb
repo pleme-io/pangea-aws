@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ssoadmin_permissions_boundary_attachment,
       attributes_class: AWS::Types::SsoadminPermissionsBoundaryAttachmentAttributes,
       outputs: { id: :id },
-      map: [:instance_arn, :permission_set_arn, :permissions_boundary]
+      map: [:instance_arn, :permission_set_arn, :permissions_boundary],
+      map_present: [:region]
   end
   module AWS
     include AWSSsoadminPermissionsBoundaryAttachment

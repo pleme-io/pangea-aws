@@ -1,0 +1,8 @@
+name: aws_vpc_endpoint_private_dns
+title: Manages a aws_vpc_endpoint_private_dns resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

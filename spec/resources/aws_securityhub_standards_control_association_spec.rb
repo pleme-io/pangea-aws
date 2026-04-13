@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSSecurityhubStandardsControlAssociation do
         ref = synth.aws_securityhub_standards_control_association('test', required_attrs)
 
         expect(ref.id).to eq("${aws_securityhub_standards_control_association.test.id}")
+        expect(ref.region).to eq("${aws_securityhub_standards_control_association.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_standards_control_association('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_securityhub_standards_control_association', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ updated_reason: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', updated_reason: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -51,11 +64,29 @@ RSpec.describe Pangea::Resources::AWSSecurityhubStandardsControlAssociation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_securityhub_standards_control_association', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('updated_reason')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_standards_control_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_standards_control_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_standards_control_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_standards_control_association', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes updated_reason when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -119,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubStandardsControlAssociation do
     resource_type: :aws_securityhub_standards_control_association,
     method: :aws_securityhub_standards_control_association,
     required_attrs: { association_status: 'test-value', security_control_id: 'test-value', standards_arn: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

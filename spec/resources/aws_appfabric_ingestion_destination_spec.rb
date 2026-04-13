@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAppfabricIngestionDestination do
 
         expect(ref.id).to eq("${aws_appfabric_ingestion_destination.test.id}")
         expect(ref.arn).to eq("${aws_appfabric_ingestion_destination.test.arn}")
+        expect(ref.region).to eq("${aws_appfabric_ingestion_destination.test.region}")
         expect(ref.tags_all).to eq("${aws_appfabric_ingestion_destination.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSAppfabricIngestionDestination do
 
         config = validate_resource_structure(result, 'aws_appfabric_ingestion_destination', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ destination_configuration: [{ 'key1' => 'val1' }], processing_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ destination_configuration: [{ 'key1' => 'val1' }], processing_configuration: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSAppfabricIngestionDestination do
         config = validate_resource_structure(result, 'aws_appfabric_ingestion_destination', 'full')
         expect(config).to have_key('destination_configuration')
         expect(config).to have_key('processing_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -106,6 +109,23 @@ RSpec.describe Pangea::Resources::AWSAppfabricIngestionDestination do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appfabric_ingestion_destination', 'minimal')
         expect(config).not_to have_key('processing_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appfabric_ingestion_destination('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appfabric_ingestion_destination', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appfabric_ingestion_destination('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appfabric_ingestion_destination', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -169,7 +189,7 @@ RSpec.describe Pangea::Resources::AWSAppfabricIngestionDestination do
     resource_type: :aws_appfabric_ingestion_destination,
     method: :aws_appfabric_ingestion_destination,
     required_attrs: { app_bundle_arn: 'test-value', ingestion_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

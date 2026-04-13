@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSLightsailDomainEntry do
         ref = synth.aws_lightsail_domain_entry('test', required_attrs)
 
         expect(ref.id).to eq("${aws_lightsail_domain_entry.test.id}")
+        expect(ref.region).to eq("${aws_lightsail_domain_entry.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_domain_entry('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_lightsail_domain_entry', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ is_alias: true }) }
+      let(:all_attrs) { required_attrs.merge({ is_alias: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSLightsailDomainEntry do
 
         config = validate_resource_structure(result, 'aws_lightsail_domain_entry', 'full')
         expect(config).to have_key('is_alias')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSLightsailDomainEntry do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_domain_entry', 'minimal')
         expect(config).not_to have_key('is_alias')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_domain_entry('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_domain_entry', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_domain_entry('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_domain_entry', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -134,7 +165,7 @@ RSpec.describe Pangea::Resources::AWSLightsailDomainEntry do
     resource_type: :aws_lightsail_domain_entry,
     method: :aws_lightsail_domain_entry,
     required_attrs: { domain_name: 'test-value', name: 'test-value', target: 'test-value', type: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:is_alias]

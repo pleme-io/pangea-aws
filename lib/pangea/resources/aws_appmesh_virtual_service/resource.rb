@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppmeshVirtualServiceAttributes,
       outputs: { id: :id },
       map: [:mesh_name, :name, :spec],
-      map_present: [:mesh_owner, :tags, :tags_all]
+      map_present: [:mesh_owner, :region, :tags, :tags_all]
   end
   module AWS
     include AWSAppmeshVirtualService

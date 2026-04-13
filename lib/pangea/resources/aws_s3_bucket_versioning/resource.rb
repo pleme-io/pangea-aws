@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketVersioningAttributes,
       outputs: { id: :id },
       map: [:bucket, :versioning_configuration],
-      map_present: [:expected_bucket_owner, :mfa]
+      map_present: [:expected_bucket_owner, :mfa, :region]
   end
   module AWS
     include AWSS3BucketVersioning

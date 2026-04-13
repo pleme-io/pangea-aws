@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayRequestValidatorAttributes,
       outputs: { id: :id },
       map: [:name, :rest_api_id],
+      map_present: [:region],
       map_bool: [:validate_request_body, :validate_request_parameters]
   end
   module AWS

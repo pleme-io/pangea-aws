@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_dx_connection_association,
       attributes_class: AWS::Types::DxConnectionAssociationAttributes,
       outputs: { id: :id },
-      map: [:connection_id, :lag_id]
+      map: [:connection_id, :lag_id],
+      map_present: [:region]
   end
   module AWS
     include AWSDxConnectionAssociation

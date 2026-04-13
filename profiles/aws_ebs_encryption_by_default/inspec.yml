@@ -1,0 +1,8 @@
+name: aws_ebs_encryption_by_default
+title: Manages a aws_ebs_encryption_by_default resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

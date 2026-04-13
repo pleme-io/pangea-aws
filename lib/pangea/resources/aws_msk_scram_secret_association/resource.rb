@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_msk_scram_secret_association,
       attributes_class: AWS::Types::MskScramSecretAssociationAttributes,
       outputs: { id: :id },
-      map: [:cluster_arn, :secret_arn_list]
+      map: [:cluster_arn, :secret_arn_list],
+      map_present: [:region]
   end
   module AWS
     include AWSMskScramSecretAssociation

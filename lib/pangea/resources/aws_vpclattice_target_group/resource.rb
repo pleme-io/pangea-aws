@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpclatticeTargetGroupAttributes,
       outputs: { id: :id },
       map: [:name, :type],
-      map_present: [:config, :tags, :tags_all]
+      map_present: [:config, :region, :tags, :tags_all]
   end
   module AWS
     include AWSVpclatticeTargetGroup

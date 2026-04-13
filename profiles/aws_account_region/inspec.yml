@@ -1,0 +1,8 @@
+name: aws_account_region
+title: Manages a aws_account_region resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

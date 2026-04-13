@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingLifecycleHook do
 
         expect(ref.id).to eq("${aws_autoscaling_lifecycle_hook.test.id}")
         expect(ref.default_result).to eq("${aws_autoscaling_lifecycle_hook.test.default_result}")
+        expect(ref.region).to eq("${aws_autoscaling_lifecycle_hook.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSAutoscalingLifecycleHook do
 
         config = validate_resource_structure(result, 'aws_autoscaling_lifecycle_hook', 'test')
         expect(config).not_to have_key('default_result')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ heartbeat_timeout: 3.14, notification_metadata: 'test-value', notification_target_arn: 'test-value', role_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ default_result: 'test-value', heartbeat_timeout: 3.14, notification_metadata: 'test-value', notification_target_arn: 'test-value', region: 'test-value', role_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,14 +66,33 @@ RSpec.describe Pangea::Resources::AWSAutoscalingLifecycleHook do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_autoscaling_lifecycle_hook', 'full')
+        expect(config).to have_key('default_result')
         expect(config).to have_key('heartbeat_timeout')
         expect(config).to have_key('notification_metadata')
         expect(config).to have_key('notification_target_arn')
+        expect(config).to have_key('region')
         expect(config).to have_key('role_arn')
       end
     end
 
     context 'optional attributes' do
+      it 'includes default_result when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_lifecycle_hook('opt', required_attrs.merge(default_result: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_lifecycle_hook', 'opt')
+        expect(config).to have_key('default_result')
+      end
+
+      it 'omits default_result when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_lifecycle_hook('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_lifecycle_hook', 'minimal')
+        expect(config).not_to have_key('default_result')
+      end
       it 'includes heartbeat_timeout when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -122,6 +143,23 @@ RSpec.describe Pangea::Resources::AWSAutoscalingLifecycleHook do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_lifecycle_hook', 'minimal')
         expect(config).not_to have_key('notification_target_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_lifecycle_hook('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_lifecycle_hook', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_lifecycle_hook('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_lifecycle_hook', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes role_arn when provided' do
         synth = create_synthesizer
@@ -186,7 +224,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingLifecycleHook do
     resource_type: :aws_autoscaling_lifecycle_hook,
     method: :aws_autoscaling_lifecycle_hook,
     required_attrs: { autoscaling_group_name: 'test-value', lifecycle_transition: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :default_result],
+    expected_outputs: [:id, :default_result, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

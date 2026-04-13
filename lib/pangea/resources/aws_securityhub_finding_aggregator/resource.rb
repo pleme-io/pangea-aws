@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SecurityhubFindingAggregatorAttributes,
       outputs: { id: :id },
       map: [:linking_mode],
-      map_present: [:specified_regions]
+      map_present: [:region, :specified_regions]
   end
   module AWS
     include AWSSecurityhubFindingAggregator

@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSServicecatalogPrincipalPortfolioAssociation
         ref = synth.aws_servicecatalog_principal_portfolio_association('test', required_attrs)
 
         expect(ref.id).to eq("${aws_servicecatalog_principal_portfolio_association.test.id}")
+        expect(ref.region).to eq("${aws_servicecatalog_principal_portfolio_association.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_principal_portfolio_association('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_servicecatalog_principal_portfolio_association', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ accept_language: 'test-value', principal_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ accept_language: 'test-value', principal_type: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -53,6 +66,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogPrincipalPortfolioAssociation
         config = validate_resource_structure(result, 'aws_servicecatalog_principal_portfolio_association', 'full')
         expect(config).to have_key('accept_language')
         expect(config).to have_key('principal_type')
+        expect(config).to have_key('region')
       end
     end
 
@@ -90,6 +104,23 @@ RSpec.describe Pangea::Resources::AWSServicecatalogPrincipalPortfolioAssociation
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_servicecatalog_principal_portfolio_association', 'minimal')
         expect(config).not_to have_key('principal_type')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_principal_portfolio_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_principal_portfolio_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_principal_portfolio_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_principal_portfolio_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -136,7 +167,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogPrincipalPortfolioAssociation
     resource_type: :aws_servicecatalog_principal_portfolio_association,
     method: :aws_servicecatalog_principal_portfolio_association,
     required_attrs: { portfolio_id: 'test-value', principal_arn: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

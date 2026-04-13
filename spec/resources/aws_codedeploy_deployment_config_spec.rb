@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentConfig do
         expect(ref.id).to eq("${aws_codedeploy_deployment_config.test.id}")
         expect(ref.arn).to eq("${aws_codedeploy_deployment_config.test.arn}")
         expect(ref.deployment_config_id).to eq("${aws_codedeploy_deployment_config.test.deployment_config_id}")
+        expect(ref.region).to eq("${aws_codedeploy_deployment_config.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentConfig do
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_config', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('deployment_config_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ compute_platform: 'test-value', minimum_healthy_hosts: [{ 'key1' => 'val1' }], traffic_routing_config: [{ 'key1' => 'val1' }], zonal_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ compute_platform: 'test-value', minimum_healthy_hosts: { 'key1' => 'val1' }, region: 'test-value', traffic_routing_config: { 'key1' => 'val1' }, zonal_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentConfig do
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_config', 'full')
         expect(config).to have_key('compute_platform')
         expect(config).to have_key('minimum_healthy_hosts')
+        expect(config).to have_key('region')
         expect(config).to have_key('traffic_routing_config')
         expect(config).to have_key('zonal_config')
       end
@@ -94,7 +97,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentConfig do
       it 'includes minimum_healthy_hosts when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codedeploy_deployment_config('opt', required_attrs.merge(minimum_healthy_hosts: [{ 'key1' => 'val1' }]))
+        synth.aws_codedeploy_deployment_config('opt', required_attrs.merge(minimum_healthy_hosts: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_config', 'opt')
         expect(config).to have_key('minimum_healthy_hosts')
@@ -108,10 +111,27 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentConfig do
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_config', 'minimal')
         expect(config).not_to have_key('minimum_healthy_hosts')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codedeploy_deployment_config('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codedeploy_deployment_config', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codedeploy_deployment_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codedeploy_deployment_config', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes traffic_routing_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codedeploy_deployment_config('opt', required_attrs.merge(traffic_routing_config: [{ 'key1' => 'val1' }]))
+        synth.aws_codedeploy_deployment_config('opt', required_attrs.merge(traffic_routing_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_config', 'opt')
         expect(config).to have_key('traffic_routing_config')
@@ -128,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentConfig do
       it 'includes zonal_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codedeploy_deployment_config('opt', required_attrs.merge(zonal_config: [{ 'key1' => 'val1' }]))
+        synth.aws_codedeploy_deployment_config('opt', required_attrs.merge(zonal_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codedeploy_deployment_config', 'opt')
         expect(config).to have_key('zonal_config')
@@ -186,7 +206,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployDeploymentConfig do
     resource_type: :aws_codedeploy_deployment_config,
     method: :aws_codedeploy_deployment_config,
     required_attrs: { deployment_config_name: 'test-value' },
-    expected_outputs: [:id, :arn, :deployment_config_id],
+    expected_outputs: [:id, :arn, :deployment_config_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

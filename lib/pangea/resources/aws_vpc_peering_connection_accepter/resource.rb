@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcPeeringConnectionAccepterAttributes,
       outputs: { id: :id },
       map: [:vpc_peering_connection_id],
-      map_present: [:accepter, :requester, :tags, :tags_all],
+      map_present: [:accepter, :region, :requester, :tags, :tags_all],
       map_bool: [:auto_accept]
   end
   module AWS

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretRotation do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { rotation_rules: [{ 'key1' => 'val1' }], secret_id: 'test-value' } }
+  let(:required_attrs) { { rotation_rules: { 'key1' => 'val1' }, secret_id: 'test-value' } }
 
   describe ':aws_secretsmanager_secret_rotation' do
     context 'with required attributes only' do
@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretRotation do
         ref = synth.aws_secretsmanager_secret_rotation('test', required_attrs)
 
         expect(ref.id).to eq("${aws_secretsmanager_secret_rotation.test.id}")
+        expect(ref.region).to eq("${aws_secretsmanager_secret_rotation.test.region}")
         expect(ref.rotation_enabled).to eq("${aws_secretsmanager_secret_rotation.test.rotation_enabled}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretRotation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_secretsmanager_secret_rotation', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('rotation_enabled')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ rotate_immediately: true, rotation_lambda_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', rotate_immediately: true, rotation_lambda_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,12 +66,30 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretRotation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_secretsmanager_secret_rotation', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('rotate_immediately')
         expect(config).to have_key('rotation_lambda_arn')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_secretsmanager_secret_rotation('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_secretsmanager_secret_rotation', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_secretsmanager_secret_rotation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_secretsmanager_secret_rotation', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes rotate_immediately when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -128,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretRotation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_secretsmanager_secret_rotation', 'typed')
-        expect(config['rotation_rules']).to be_a(Array)
+        expect(config['rotation_rules']).to be_a(Hash)
         expect(config['secret_id']).to be_a(String)
       end
     end
@@ -162,8 +182,8 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretRotation do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_secretsmanager_secret_rotation,
     method: :aws_secretsmanager_secret_rotation,
-    required_attrs: { rotation_rules: [{ 'key1' => 'val1' }], secret_id: 'test-value' },
-    expected_outputs: [:id, :rotation_enabled],
+    required_attrs: { rotation_rules: { 'key1' => 'val1' }, secret_id: 'test-value' },
+    expected_outputs: [:id, :region, :rotation_enabled],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:rotate_immediately]

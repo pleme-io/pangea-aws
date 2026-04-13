@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_lightsail_static_ip,
       attributes_class: AWS::Types::LightsailStaticIpAttributes,
       outputs: { id: :id },
-      map: [:name]
+      map: [:name],
+      map_present: [:region]
   end
   module AWS
     include AWSLightsailStaticIp

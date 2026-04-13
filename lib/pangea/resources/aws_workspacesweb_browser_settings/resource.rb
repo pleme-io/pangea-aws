@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WorkspaceswebBrowserSettingsAttributes,
       outputs: { id: :id },
       map: [:browser_policy],
-      map_present: [:additional_encryption_context, :customer_managed_key, :tags]
+      map_present: [:additional_encryption_context, :customer_managed_key, :region, :tags]
   end
   module AWS
     include AWSWorkspaceswebBrowserSettings

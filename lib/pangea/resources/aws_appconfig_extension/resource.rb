@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppconfigExtensionAttributes,
       outputs: { id: :id },
       map: [:action_point, :name],
-      map_present: [:description, :parameter, :tags, :tags_all]
+      map_present: [:description, :parameter, :region, :tags, :tags_all]
   end
   module AWS
     include AWSAppconfigExtension

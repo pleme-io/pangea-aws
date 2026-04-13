@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConfigConfigurationRecorderAttributes,
       outputs: { id: :id },
       map: [:role_arn],
-      map_present: [:name, :recording_group, :recording_mode]
+      map_present: [:name, :recording_group, :recording_mode, :region]
   end
   module AWS
     include AWSConfigConfigurationRecorder

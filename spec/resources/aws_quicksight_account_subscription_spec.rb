@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightAccountSubscription do
         expect(ref.id).to eq("${aws_quicksight_account_subscription.test.id}")
         expect(ref.account_subscription_status).to eq("${aws_quicksight_account_subscription.test.account_subscription_status}")
         expect(ref.aws_account_id).to eq("${aws_quicksight_account_subscription.test.aws_account_id}")
+        expect(ref.region).to eq("${aws_quicksight_account_subscription.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSQuicksightAccountSubscription do
         config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'test')
         expect(config).not_to have_key('account_subscription_status')
         expect(config).not_to have_key('aws_account_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ active_directory_name: 'test-value', admin_group: ['test-value'], author_group: ['test-value'], contact_number: 'test-value', directory_id: 'test-value', email_address: 'test-value', first_name: 'test-value', iam_identity_center_instance_arn: 'test-value', last_name: 'test-value', reader_group: ['test-value'], realm: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ active_directory_name: 'test-value', admin_group: ['test-value'], admin_pro_group: ['test-value'], author_group: ['test-value'], author_pro_group: ['test-value'], aws_account_id: 'test-value', contact_number: 'test-value', directory_id: 'test-value', email_address: 'test-value', first_name: 'test-value', iam_identity_center_instance_arn: 'test-value', last_name: 'test-value', reader_group: ['test-value'], reader_pro_group: ['test-value'], realm: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,7 +70,10 @@ RSpec.describe Pangea::Resources::AWSQuicksightAccountSubscription do
         config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'full')
         expect(config).to have_key('active_directory_name')
         expect(config).to have_key('admin_group')
+        expect(config).to have_key('admin_pro_group')
         expect(config).to have_key('author_group')
+        expect(config).to have_key('author_pro_group')
+        expect(config).to have_key('aws_account_id')
         expect(config).to have_key('contact_number')
         expect(config).to have_key('directory_id')
         expect(config).to have_key('email_address')
@@ -76,7 +81,9 @@ RSpec.describe Pangea::Resources::AWSQuicksightAccountSubscription do
         expect(config).to have_key('iam_identity_center_instance_arn')
         expect(config).to have_key('last_name')
         expect(config).to have_key('reader_group')
+        expect(config).to have_key('reader_pro_group')
         expect(config).to have_key('realm')
+        expect(config).to have_key('region')
       end
     end
 
@@ -115,6 +122,23 @@ RSpec.describe Pangea::Resources::AWSQuicksightAccountSubscription do
         config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'minimal')
         expect(config).not_to have_key('admin_group')
       end
+      it 'includes admin_pro_group when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_subscription('opt', required_attrs.merge(admin_pro_group: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'opt')
+        expect(config).to have_key('admin_pro_group')
+      end
+
+      it 'omits admin_pro_group when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'minimal')
+        expect(config).not_to have_key('admin_pro_group')
+      end
       it 'includes author_group when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -131,6 +155,40 @@ RSpec.describe Pangea::Resources::AWSQuicksightAccountSubscription do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'minimal')
         expect(config).not_to have_key('author_group')
+      end
+      it 'includes author_pro_group when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_subscription('opt', required_attrs.merge(author_pro_group: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'opt')
+        expect(config).to have_key('author_pro_group')
+      end
+
+      it 'omits author_pro_group when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'minimal')
+        expect(config).not_to have_key('author_pro_group')
+      end
+      it 'includes aws_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_subscription('opt', required_attrs.merge(aws_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'opt')
+        expect(config).to have_key('aws_account_id')
+      end
+
+      it 'omits aws_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'minimal')
+        expect(config).not_to have_key('aws_account_id')
       end
       it 'includes contact_number when provided' do
         synth = create_synthesizer
@@ -251,6 +309,23 @@ RSpec.describe Pangea::Resources::AWSQuicksightAccountSubscription do
         config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'minimal')
         expect(config).not_to have_key('reader_group')
       end
+      it 'includes reader_pro_group when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_subscription('opt', required_attrs.merge(reader_pro_group: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'opt')
+        expect(config).to have_key('reader_pro_group')
+      end
+
+      it 'omits reader_pro_group when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'minimal')
+        expect(config).not_to have_key('reader_pro_group')
+      end
       it 'includes realm when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -267,6 +342,23 @@ RSpec.describe Pangea::Resources::AWSQuicksightAccountSubscription do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'minimal')
         expect(config).not_to have_key('realm')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_subscription('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_account_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_account_subscription', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -315,7 +407,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightAccountSubscription do
     resource_type: :aws_quicksight_account_subscription,
     method: :aws_quicksight_account_subscription,
     required_attrs: { account_name: 'test-value', authentication_method: 'test-value', edition: 'test-value', notification_email: 'test-value' },
-    expected_outputs: [:id, :account_subscription_status, :aws_account_id],
+    expected_outputs: [:id, :account_subscription_status, :aws_account_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

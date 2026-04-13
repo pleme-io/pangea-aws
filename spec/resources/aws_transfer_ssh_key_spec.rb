@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSTransferSshKey do
         ref = synth.aws_transfer_ssh_key('test', required_attrs)
 
         expect(ref.id).to eq("${aws_transfer_ssh_key.test.id}")
+        expect(ref.region).to eq("${aws_transfer_ssh_key.test.region}")
         expect(ref.ssh_key_id).to eq("${aws_transfer_ssh_key.test.ssh_key_id}")
       end
     end
@@ -50,7 +51,42 @@ RSpec.describe Pangea::Resources::AWSTransferSshKey do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_transfer_ssh_key', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('ssh_key_id')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_ssh_key('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_transfer_ssh_key', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_ssh_key('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_ssh_key', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_ssh_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_ssh_key', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -98,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSTransferSshKey do
     resource_type: :aws_transfer_ssh_key,
     method: :aws_transfer_ssh_key,
     required_attrs: { body: 'test-value', server_id: 'test-value', user_name: 'test-value' },
-    expected_outputs: [:id, :ssh_key_id],
+    expected_outputs: [:id, :region, :ssh_key_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

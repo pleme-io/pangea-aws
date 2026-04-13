@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueUserDefinedFunctionAttributes,
       outputs: { id: :id },
       map: [:class_name, :database_name, :name, :owner_name, :owner_type],
-      map_present: [:catalog_id, :resource_uris]
+      map_present: [:catalog_id, :region, :resource_uris]
   end
   module AWS
     include AWSGlueUserDefinedFunction

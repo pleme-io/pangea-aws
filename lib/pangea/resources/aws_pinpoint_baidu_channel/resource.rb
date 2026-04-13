@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::PinpointBaiduChannelAttributes,
       outputs: { id: :id },
       map: [:api_key, :application_id, :secret_key],
+      map_present: [:region],
       map_bool: [:enabled]
   end
   module AWS

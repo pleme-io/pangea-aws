@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpc_security_group_vpc_association,
       attributes_class: AWS::Types::VpcSecurityGroupVpcAssociationAttributes,
       outputs: { id: :id },
-      map: [:security_group_id, :vpc_id]
+      map: [:security_group_id, :vpc_id],
+      map_present: [:region]
   end
   module AWS
     include AWSVpcSecurityGroupVpcAssociation

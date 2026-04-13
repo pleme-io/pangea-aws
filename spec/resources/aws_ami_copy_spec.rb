@@ -56,6 +56,7 @@ RSpec.describe Pangea::Resources::AWSAmiCopy do
         expect(ref.platform_details).to eq("${aws_ami_copy.test.platform_details}")
         expect(ref.public).to eq("${aws_ami_copy.test.public}")
         expect(ref.ramdisk_id).to eq("${aws_ami_copy.test.ramdisk_id}")
+        expect(ref.region).to eq("${aws_ami_copy.test.region}")
         expect(ref.root_device_name).to eq("${aws_ami_copy.test.root_device_name}")
         expect(ref.root_snapshot_id).to eq("${aws_ami_copy.test.root_snapshot_id}")
         expect(ref.sriov_net_support).to eq("${aws_ami_copy.test.sriov_net_support}")
@@ -93,6 +94,7 @@ RSpec.describe Pangea::Resources::AWSAmiCopy do
         expect(config).not_to have_key('platform_details')
         expect(config).not_to have_key('public')
         expect(config).not_to have_key('ramdisk_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('root_device_name')
         expect(config).not_to have_key('root_snapshot_id')
         expect(config).not_to have_key('sriov_net_support')
@@ -105,7 +107,7 @@ RSpec.describe Pangea::Resources::AWSAmiCopy do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ deprecation_time: 'test-value', description: 'test-value', destination_outpost_arn: 'test-value', ebs_block_device: [{ 'key1' => 'val1' }], encrypted: true, ephemeral_block_device: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ deprecation_time: 'test-value', description: 'test-value', destination_outpost_arn: 'test-value', ebs_block_device: [{ 'key1' => 'val1' }], encrypted: true, ephemeral_block_device: [{ 'key1' => 'val1' }], kms_key_id: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -120,7 +122,10 @@ RSpec.describe Pangea::Resources::AWSAmiCopy do
         expect(config).to have_key('ebs_block_device')
         expect(config).to have_key('encrypted')
         expect(config).to have_key('ephemeral_block_device')
+        expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -227,6 +232,40 @@ RSpec.describe Pangea::Resources::AWSAmiCopy do
         config = validate_resource_structure(result, 'aws_ami_copy', 'minimal')
         expect(config).not_to have_key('ephemeral_block_device')
       end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami_copy('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami_copy', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami_copy', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami_copy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami_copy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami_copy', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -243,6 +282,23 @@ RSpec.describe Pangea::Resources::AWSAmiCopy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ami_copy', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami_copy('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami_copy', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami_copy', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -304,7 +360,7 @@ RSpec.describe Pangea::Resources::AWSAmiCopy do
     resource_type: :aws_ami_copy,
     method: :aws_ami_copy,
     required_attrs: { name: 'test-value', source_ami_id: 'test-value', source_ami_region: 'test-value' },
-    expected_outputs: [:id, :architecture, :arn, :boot_mode, :ena_support, :hypervisor, :image_location, :image_owner_alias, :image_type, :imds_support, :kernel_id, :kms_key_id, :last_launched_time, :manage_ebs_snapshots, :owner_id, :platform, :platform_details, :public, :ramdisk_id, :root_device_name, :root_snapshot_id, :sriov_net_support, :tags_all, :tpm_support, :uefi_data, :usage_operation, :virtualization_type],
+    expected_outputs: [:id, :architecture, :arn, :boot_mode, :ena_support, :hypervisor, :image_location, :image_owner_alias, :image_type, :imds_support, :kernel_id, :kms_key_id, :last_launched_time, :manage_ebs_snapshots, :owner_id, :platform, :platform_details, :public, :ramdisk_id, :region, :root_device_name, :root_snapshot_id, :sriov_net_support, :tags_all, :tpm_support, :uefi_data, :usage_operation, :virtualization_type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:encrypted]

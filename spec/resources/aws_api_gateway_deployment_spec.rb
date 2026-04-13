@@ -39,8 +39,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDeployment do
 
         expect(ref.id).to eq("${aws_api_gateway_deployment.test.id}")
         expect(ref.created_date).to eq("${aws_api_gateway_deployment.test.created_date}")
-        expect(ref.execution_arn).to eq("${aws_api_gateway_deployment.test.execution_arn}")
-        expect(ref.invoke_url).to eq("${aws_api_gateway_deployment.test.invoke_url}")
+        expect(ref.region).to eq("${aws_api_gateway_deployment.test.region}")
       end
     end
 
@@ -53,13 +52,12 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDeployment do
 
         config = validate_resource_structure(result, 'aws_api_gateway_deployment', 'test')
         expect(config).not_to have_key('created_date')
-        expect(config).not_to have_key('execution_arn')
-        expect(config).not_to have_key('invoke_url')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ canary_settings: [{ 'key1' => 'val1' }], description: 'test-value', stage_description: 'test-value', stage_name: 'test-value', triggers: { 'key1' => 'val1' }, variables: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', triggers: { 'key1' => 'val1' }, variables: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,33 +66,14 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDeployment do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_api_gateway_deployment', 'full')
-        expect(config).to have_key('canary_settings')
         expect(config).to have_key('description')
-        expect(config).to have_key('stage_description')
-        expect(config).to have_key('stage_name')
+        expect(config).to have_key('region')
         expect(config).to have_key('triggers')
         expect(config).to have_key('variables')
       end
     end
 
     context 'optional attributes' do
-      it 'includes canary_settings when provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_api_gateway_deployment('opt', required_attrs.merge(canary_settings: [{ 'key1' => 'val1' }]))
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_api_gateway_deployment', 'opt')
-        expect(config).to have_key('canary_settings')
-      end
-
-      it 'omits canary_settings when not provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_api_gateway_deployment('minimal', required_attrs)
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_api_gateway_deployment', 'minimal')
-        expect(config).not_to have_key('canary_settings')
-      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -112,39 +91,22 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDeployment do
         config = validate_resource_structure(result, 'aws_api_gateway_deployment', 'minimal')
         expect(config).not_to have_key('description')
       end
-      it 'includes stage_description when provided' do
+      it 'includes region when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_api_gateway_deployment('opt', required_attrs.merge(stage_description: 'test-value'))
+        synth.aws_api_gateway_deployment('opt', required_attrs.merge(region: 'test-value'))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_deployment', 'opt')
-        expect(config).to have_key('stage_description')
+        expect(config).to have_key('region')
       end
 
-      it 'omits stage_description when not provided' do
+      it 'omits region when not provided' do
         synth = create_synthesizer
         synth.extend(described_class)
         synth.aws_api_gateway_deployment('minimal', required_attrs)
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_deployment', 'minimal')
-        expect(config).not_to have_key('stage_description')
-      end
-      it 'includes stage_name when provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_api_gateway_deployment('opt', required_attrs.merge(stage_name: 'test-value'))
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_api_gateway_deployment', 'opt')
-        expect(config).to have_key('stage_name')
-      end
-
-      it 'omits stage_name when not provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_api_gateway_deployment('minimal', required_attrs)
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_api_gateway_deployment', 'minimal')
-        expect(config).not_to have_key('stage_name')
+        expect(config).not_to have_key('region')
       end
       it 'includes triggers when provided' do
         synth = create_synthesizer
@@ -224,7 +186,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDeployment do
     resource_type: :aws_api_gateway_deployment,
     method: :aws_api_gateway_deployment,
     required_attrs: { rest_api_id: 'test-value' },
-    expected_outputs: [:id, :created_date, :execution_arn, :invoke_url],
+    expected_outputs: [:id, :created_date, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

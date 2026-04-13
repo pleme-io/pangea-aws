@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_lakeformation_data_cells_filter,
       attributes_class: AWS::Types::LakeformationDataCellsFilterAttributes,
       outputs: { id: :id },
-      map_present: [:table_data]
+      map_present: [:region, :table_data]
   end
   module AWS
     include AWSLakeformationDataCellsFilter

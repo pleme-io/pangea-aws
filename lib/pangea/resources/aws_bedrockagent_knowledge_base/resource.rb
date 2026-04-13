@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BedrockagentKnowledgeBaseAttributes,
       outputs: { id: :id },
       map: [:name, :role_arn],
-      map_present: [:description, :knowledge_base_configuration, :storage_configuration, :tags]
+      map_present: [:description, :knowledge_base_configuration, :region, :storage_configuration, :tags]
   end
   module AWS
     include AWSBedrockagentKnowledgeBase

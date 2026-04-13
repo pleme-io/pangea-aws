@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ses_email_identity,
       attributes_class: AWS::Types::SesEmailIdentityAttributes,
       outputs: { id: :id },
-      map: [:email]
+      map: [:email],
+      map_present: [:region]
   end
   module AWS
     include AWSSesEmailIdentity

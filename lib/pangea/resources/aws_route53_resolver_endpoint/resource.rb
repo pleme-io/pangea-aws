@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::Route53ResolverEndpointAttributes,
       outputs: { id: :id },
       map: [:direction, :ip_address, :security_group_ids],
-      map_present: [:name, :protocols, :resolver_endpoint_type, :tags, :tags_all]
+      map_present: [:name, :protocols, :region, :resolver_endpoint_type, :tags, :tags_all],
+      map_bool: [:rni_enhanced_metrics_enabled, :target_name_server_metrics_enabled]
   end
   module AWS
     include AWSRoute53ResolverEndpoint

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSAmplifyBackendEnvironment do
         expect(ref.id).to eq("${aws_amplify_backend_environment.test.id}")
         expect(ref.arn).to eq("${aws_amplify_backend_environment.test.arn}")
         expect(ref.deployment_artifacts).to eq("${aws_amplify_backend_environment.test.deployment_artifacts}")
+        expect(ref.region).to eq("${aws_amplify_backend_environment.test.region}")
         expect(ref.stack_name).to eq("${aws_amplify_backend_environment.test.stack_name}")
       end
     end
@@ -54,6 +55,77 @@ RSpec.describe Pangea::Resources::AWSAmplifyBackendEnvironment do
         config = validate_resource_structure(result, 'aws_amplify_backend_environment', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('deployment_artifacts')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('stack_name')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ deployment_artifacts: 'test-value', region: 'test-value', stack_name: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_backend_environment('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_amplify_backend_environment', 'full')
+        expect(config).to have_key('deployment_artifacts')
+        expect(config).to have_key('region')
+        expect(config).to have_key('stack_name')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes deployment_artifacts when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_backend_environment('opt', required_attrs.merge(deployment_artifacts: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_backend_environment', 'opt')
+        expect(config).to have_key('deployment_artifacts')
+      end
+
+      it 'omits deployment_artifacts when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_backend_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_backend_environment', 'minimal')
+        expect(config).not_to have_key('deployment_artifacts')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_backend_environment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_backend_environment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_backend_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_backend_environment', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes stack_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_backend_environment('opt', required_attrs.merge(stack_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_backend_environment', 'opt')
+        expect(config).to have_key('stack_name')
+      end
+
+      it 'omits stack_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_amplify_backend_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_amplify_backend_environment', 'minimal')
         expect(config).not_to have_key('stack_name')
       end
     end
@@ -101,7 +173,7 @@ RSpec.describe Pangea::Resources::AWSAmplifyBackendEnvironment do
     resource_type: :aws_amplify_backend_environment,
     method: :aws_amplify_backend_environment,
     required_attrs: { app_id: 'test-value', environment_name: 'test-value' },
-    expected_outputs: [:id, :arn, :deployment_artifacts, :stack_name],
+    expected_outputs: [:id, :arn, :deployment_artifacts, :region, :stack_name],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WafregionalWebAclAttributes,
       outputs: { id: :id },
       map: [:default_action, :metric_name, :name],
-      map_present: [:logging_configuration, :rule, :tags, :tags_all]
+      map_present: [:logging_configuration, :region, :rule, :tags, :tags_all]
   end
   module AWS
     include AWSWafregionalWebAcl

@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSMqConfiguration do
         expect(ref.arn).to eq("${aws_mq_configuration.test.arn}")
         expect(ref.authentication_strategy).to eq("${aws_mq_configuration.test.authentication_strategy}")
         expect(ref.latest_revision).to eq("${aws_mq_configuration.test.latest_revision}")
+        expect(ref.region).to eq("${aws_mq_configuration.test.region}")
         expect(ref.tags_all).to eq("${aws_mq_configuration.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSMqConfiguration do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('authentication_strategy')
         expect(config).not_to have_key('latest_revision')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ authentication_strategy: 'test-value', description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,12 +72,32 @@ RSpec.describe Pangea::Resources::AWSMqConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_mq_configuration', 'full')
+        expect(config).to have_key('authentication_strategy')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes authentication_strategy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_configuration('opt', required_attrs.merge(authentication_strategy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_configuration', 'opt')
+        expect(config).to have_key('authentication_strategy')
+      end
+
+      it 'omits authentication_strategy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_configuration', 'minimal')
+        expect(config).not_to have_key('authentication_strategy')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -93,6 +115,23 @@ RSpec.describe Pangea::Resources::AWSMqConfiguration do
         config = validate_resource_structure(result, 'aws_mq_configuration', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -109,6 +148,23 @@ RSpec.describe Pangea::Resources::AWSMqConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_mq_configuration', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_configuration('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_configuration', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_mq_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_mq_configuration', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -157,7 +213,7 @@ RSpec.describe Pangea::Resources::AWSMqConfiguration do
     resource_type: :aws_mq_configuration,
     method: :aws_mq_configuration,
     required_attrs: { data: 'test-value', engine_type: 'test-value', engine_version: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :authentication_strategy, :latest_revision, :tags_all],
+    expected_outputs: [:id, :arn, :authentication_strategy, :latest_revision, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

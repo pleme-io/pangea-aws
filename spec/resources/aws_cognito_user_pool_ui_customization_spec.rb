@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPoolUiCustomization do
         expect(ref.css_version).to eq("${aws_cognito_user_pool_ui_customization.test.css_version}")
         expect(ref.image_url).to eq("${aws_cognito_user_pool_ui_customization.test.image_url}")
         expect(ref.last_modified_date).to eq("${aws_cognito_user_pool_ui_customization.test.last_modified_date}")
+        expect(ref.region).to eq("${aws_cognito_user_pool_ui_customization.test.region}")
       end
     end
 
@@ -57,11 +58,12 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPoolUiCustomization do
         expect(config).not_to have_key('css_version')
         expect(config).not_to have_key('image_url')
         expect(config).not_to have_key('last_modified_date')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ client_id: 'test-value', css: 'test-value', image_file: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ client_id: 'test-value', css: 'test-value', image_file: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,6 +75,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPoolUiCustomization do
         expect(config).to have_key('client_id')
         expect(config).to have_key('css')
         expect(config).to have_key('image_file')
+        expect(config).to have_key('region')
       end
     end
 
@@ -128,6 +131,23 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPoolUiCustomization do
         config = validate_resource_structure(result, 'aws_cognito_user_pool_ui_customization', 'minimal')
         expect(config).not_to have_key('image_file')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool_ui_customization('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool_ui_customization', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool_ui_customization('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool_ui_customization', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'attribute types' do
@@ -172,7 +192,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPoolUiCustomization do
     resource_type: :aws_cognito_user_pool_ui_customization,
     method: :aws_cognito_user_pool_ui_customization,
     required_attrs: { user_pool_id: 'test-value' },
-    expected_outputs: [:id, :creation_date, :css_version, :image_url, :last_modified_date],
+    expected_outputs: [:id, :creation_date, :css_version, :image_url, :last_modified_date, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

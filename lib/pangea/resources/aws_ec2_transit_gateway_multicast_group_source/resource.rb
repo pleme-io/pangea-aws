@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ec2_transit_gateway_multicast_group_source,
       attributes_class: AWS::Types::Ec2TransitGatewayMulticastGroupSourceAttributes,
       outputs: { id: :id },
-      map: [:group_ip_address, :network_interface_id, :transit_gateway_multicast_domain_id]
+      map: [:group_ip_address, :network_interface_id, :transit_gateway_multicast_domain_id],
+      map_present: [:region]
   end
   module AWS
     include AWSEc2TransitGatewayMulticastGroupSource

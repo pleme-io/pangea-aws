@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DxLagAttributes,
       outputs: { id: :id },
       map: [:connections_bandwidth, :location, :name],
-      map_present: [:connection_id, :provider_name, :tags, :tags_all],
+      map_present: [:connection_id, :provider_name, :region, :tags, :tags_all],
       map_bool: [:force_destroy]
   end
   module AWS

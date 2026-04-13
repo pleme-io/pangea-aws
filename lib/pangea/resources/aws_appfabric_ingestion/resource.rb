@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppfabricIngestionAttributes,
       outputs: { id: :id },
       map: [:app, :app_bundle_arn, :ingestion_type, :tenant_id],
-      map_present: [:tags]
+      map_present: [:region, :tags]
   end
   module AWS
     include AWSAppfabricIngestion

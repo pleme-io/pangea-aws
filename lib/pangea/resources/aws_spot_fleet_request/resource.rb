@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SpotFleetRequestAttributes,
       outputs: { id: :id },
       map: [:iam_fleet_role, :target_capacity],
-      map_present: [:allocation_strategy, :context, :excess_capacity_termination_policy, :fleet_type, :instance_interruption_behaviour, :instance_pools_to_use_count, :launch_specification, :launch_template_config, :load_balancers, :on_demand_allocation_strategy, :on_demand_max_total_price, :on_demand_target_capacity, :spot_maintenance_strategies, :spot_price, :tags, :tags_all, :target_capacity_unit_type, :target_group_arns, :terminate_instances_on_delete, :valid_from, :valid_until],
+      map_present: [:allocation_strategy, :context, :excess_capacity_termination_policy, :fleet_type, :instance_interruption_behaviour, :instance_pools_to_use_count, :launch_specification, :launch_template_config, :load_balancers, :on_demand_allocation_strategy, :on_demand_max_total_price, :on_demand_target_capacity, :region, :spot_maintenance_strategies, :spot_price, :tags, :tags_all, :target_capacity_unit_type, :target_group_arns, :terminate_instances_on_delete, :valid_from, :valid_until],
       map_bool: [:replace_unhealthy_instances, :terminate_instances_with_expiration, :wait_for_fulfillment]
   end
   module AWS

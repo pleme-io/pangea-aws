@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueClassifierAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:csv_classifier, :grok_classifier, :json_classifier, :xml_classifier]
+      map_present: [:csv_classifier, :grok_classifier, :json_classifier, :region, :xml_classifier]
   end
   module AWS
     include AWSGlueClassifier

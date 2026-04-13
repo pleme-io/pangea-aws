@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ChimeVoiceConnectorAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:aws_region, :tags, :tags_all],
+      map_present: [:aws_region, :region, :tags, :tags_all],
       map_bool: [:require_encryption]
   end
   module AWS

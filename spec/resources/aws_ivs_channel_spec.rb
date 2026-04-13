@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSIvsChannel do
         expect(ref.name).to eq("${aws_ivs_channel.test.name}")
         expect(ref.playback_url).to eq("${aws_ivs_channel.test.playback_url}")
         expect(ref.recording_configuration_arn).to eq("${aws_ivs_channel.test.recording_configuration_arn}")
+        expect(ref.region).to eq("${aws_ivs_channel.test.region}")
         expect(ref.tags_all).to eq("${aws_ivs_channel.test.tags_all}")
         expect(ref.type).to eq("${aws_ivs_channel.test.type}")
       end
@@ -65,13 +66,14 @@ RSpec.describe Pangea::Resources::AWSIvsChannel do
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('playback_url')
         expect(config).not_to have_key('recording_configuration_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('type')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ authorized: true, latency_mode: 'test-value', name: 'test-value', recording_configuration_arn: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,11 +82,103 @@ RSpec.describe Pangea::Resources::AWSIvsChannel do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ivs_channel', 'full')
+        expect(config).to have_key('authorized')
+        expect(config).to have_key('latency_mode')
+        expect(config).to have_key('name')
+        expect(config).to have_key('recording_configuration_arn')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('type')
       end
     end
 
     context 'optional attributes' do
+      it 'includes authorized when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('opt', required_attrs.merge(authorized: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'opt')
+        expect(config).to have_key('authorized')
+      end
+
+      it 'omits authorized when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'minimal')
+        expect(config).not_to have_key('authorized')
+      end
+      it 'includes latency_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('opt', required_attrs.merge(latency_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'opt')
+        expect(config).to have_key('latency_mode')
+      end
+
+      it 'omits latency_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'minimal')
+        expect(config).not_to have_key('latency_mode')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes recording_configuration_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('opt', required_attrs.merge(recording_configuration_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'opt')
+        expect(config).to have_key('recording_configuration_arn')
+      end
+
+      it 'omits recording_configuration_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'minimal')
+        expect(config).not_to have_key('recording_configuration_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -101,6 +195,54 @@ RSpec.describe Pangea::Resources::AWSIvsChannel do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ivs_channel', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('opt', required_attrs.merge(type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'opt')
+        expect(config).to have_key('type')
+      end
+
+      it 'omits type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_channel', 'minimal')
+        expect(config).not_to have_key('type')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts authorized=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(authorized: val)
+          synth.aws_ivs_channel("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_ivs_channel', "bool_#{val}")
+          expect(config['authorized']).to eq(val)
+        end
       end
     end
 
@@ -145,8 +287,8 @@ RSpec.describe Pangea::Resources::AWSIvsChannel do
     resource_type: :aws_ivs_channel,
     method: :aws_ivs_channel,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :authorized, :ingest_endpoint, :latency_mode, :name, :playback_url, :recording_configuration_arn, :tags_all, :type],
+    expected_outputs: [:id, :arn, :authorized, :ingest_endpoint, :latency_mode, :name, :playback_url, :recording_configuration_arn, :region, :tags_all, :type],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:authorized]
 end

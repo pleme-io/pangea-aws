@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSRedshiftLogging do
         ref = synth.aws_redshift_logging('test', required_attrs)
 
         expect(ref.id).to eq("${aws_redshift_logging.test.id}")
+        expect(ref.region).to eq("${aws_redshift_logging.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_logging('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_redshift_logging', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ bucket_name: 'test-value', log_destination_type: 'test-value', log_exports: ['test-value'], s3_key_prefix: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ bucket_name: 'test-value', log_destination_type: 'test-value', log_exports: ['test-value'], region: 'test-value', s3_key_prefix: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -54,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftLogging do
         expect(config).to have_key('bucket_name')
         expect(config).to have_key('log_destination_type')
         expect(config).to have_key('log_exports')
+        expect(config).to have_key('region')
         expect(config).to have_key('s3_key_prefix')
       end
     end
@@ -109,6 +123,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftLogging do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_logging', 'minimal')
         expect(config).not_to have_key('log_exports')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_logging('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_logging', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_logging('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_logging', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes s3_key_prefix when provided' do
         synth = create_synthesizer
@@ -171,7 +202,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftLogging do
     resource_type: :aws_redshift_logging,
     method: :aws_redshift_logging,
     required_attrs: { cluster_identifier: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

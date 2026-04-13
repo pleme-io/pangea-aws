@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CognitoUserPoolAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:account_recovery_setting, :admin_create_user_config, :alias_attributes, :auto_verified_attributes, :deletion_protection, :device_configuration, :email_configuration, :email_mfa_configuration, :email_verification_message, :email_verification_subject, :lambda_config, :mfa_configuration, :password_policy, :schema, :sign_in_policy, :sms_authentication_message, :sms_configuration, :sms_verification_message, :software_token_mfa_configuration, :tags, :tags_all, :user_attribute_update_settings, :user_pool_add_ons, :user_pool_tier, :username_attributes, :username_configuration, :verification_message_template, :web_authn_configuration]
+      map_present: [:account_recovery_setting, :admin_create_user_config, :alias_attributes, :auto_verified_attributes, :deletion_protection, :device_configuration, :email_configuration, :email_mfa_configuration, :email_verification_message, :email_verification_subject, :lambda_config, :mfa_configuration, :password_policy, :region, :schema, :sign_in_policy, :sms_authentication_message, :sms_configuration, :sms_verification_message, :software_token_mfa_configuration, :tags, :tags_all, :user_attribute_update_settings, :user_pool_add_ons, :user_pool_tier, :username_attributes, :username_configuration, :verification_message_template, :web_authn_configuration]
   end
   module AWS
     include AWSCognitoUserPool

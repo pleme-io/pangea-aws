@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEcrpublicRepository do
 
         expect(ref.id).to eq("${aws_ecrpublic_repository.test.id}")
         expect(ref.arn).to eq("${aws_ecrpublic_repository.test.arn}")
+        expect(ref.region).to eq("${aws_ecrpublic_repository.test.region}")
         expect(ref.registry_id).to eq("${aws_ecrpublic_repository.test.registry_id}")
         expect(ref.repository_uri).to eq("${aws_ecrpublic_repository.test.repository_uri}")
         expect(ref.tags_all).to eq("${aws_ecrpublic_repository.test.tags_all}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSEcrpublicRepository do
 
         config = validate_resource_structure(result, 'aws_ecrpublic_repository', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('registry_id')
         expect(config).not_to have_key('repository_uri')
         expect(config).not_to have_key('tags_all')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSEcrpublicRepository do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ catalog_data: [{ 'key1' => 'val1' }], force_destroy: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ catalog_data: { 'key1' => 'val1' }, force_destroy: true, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,7 +74,9 @@ RSpec.describe Pangea::Resources::AWSEcrpublicRepository do
         config = validate_resource_structure(result, 'aws_ecrpublic_repository', 'full')
         expect(config).to have_key('catalog_data')
         expect(config).to have_key('force_destroy')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -80,7 +84,7 @@ RSpec.describe Pangea::Resources::AWSEcrpublicRepository do
       it 'includes catalog_data when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecrpublic_repository('opt', required_attrs.merge(catalog_data: [{ 'key1' => 'val1' }]))
+        synth.aws_ecrpublic_repository('opt', required_attrs.merge(catalog_data: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecrpublic_repository', 'opt')
         expect(config).to have_key('catalog_data')
@@ -111,6 +115,23 @@ RSpec.describe Pangea::Resources::AWSEcrpublicRepository do
         config = validate_resource_structure(result, 'aws_ecrpublic_repository', 'minimal')
         expect(config).not_to have_key('force_destroy')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecrpublic_repository('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecrpublic_repository', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecrpublic_repository('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecrpublic_repository', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -127,6 +148,23 @@ RSpec.describe Pangea::Resources::AWSEcrpublicRepository do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecrpublic_repository', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecrpublic_repository('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecrpublic_repository', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecrpublic_repository('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecrpublic_repository', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -186,7 +224,7 @@ RSpec.describe Pangea::Resources::AWSEcrpublicRepository do
     resource_type: :aws_ecrpublic_repository,
     method: :aws_ecrpublic_repository,
     required_attrs: { repository_name: 'test-value' },
-    expected_outputs: [:id, :arn, :registry_id, :repository_uri, :tags_all],
+    expected_outputs: [:id, :arn, :region, :registry_id, :repository_uri, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:force_destroy]

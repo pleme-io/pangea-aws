@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerImageVersionAttributes,
       outputs: { id: :id },
       map: [:base_image, :image_name],
-      map_present: [:job_type, :ml_framework, :processor, :programming_lang, :release_notes, :vendor_guidance],
+      map_present: [:aliases, :job_type, :ml_framework, :processor, :programming_lang, :region, :release_notes, :vendor_guidance],
       map_bool: [:horovod]
   end
   module AWS

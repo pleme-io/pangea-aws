@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCleanroomsConfiguredTable do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { allowed_columns: ['test-value'], analysis_method: 'test-value', name: 'test-value', table_reference: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { allowed_columns: ['test-value'], analysis_method: 'test-value', name: 'test-value', table_reference: { 'key1' => 'val1' } } }
 
   describe ':aws_cleanrooms_configured_table' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSCleanroomsConfiguredTable do
         expect(ref.id).to eq("${aws_cleanrooms_configured_table.test.id}")
         expect(ref.arn).to eq("${aws_cleanrooms_configured_table.test.arn}")
         expect(ref.create_time).to eq("${aws_cleanrooms_configured_table.test.create_time}")
+        expect(ref.region).to eq("${aws_cleanrooms_configured_table.test.region}")
         expect(ref.tags_all).to eq("${aws_cleanrooms_configured_table.test.tags_all}")
         expect(ref.update_time).to eq("${aws_cleanrooms_configured_table.test.update_time}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSCleanroomsConfiguredTable do
         config = validate_resource_structure(result, 'aws_cleanrooms_configured_table', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('create_time')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('update_time')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,7 +73,9 @@ RSpec.describe Pangea::Resources::AWSCleanroomsConfiguredTable do
 
         config = validate_resource_structure(result, 'aws_cleanrooms_configured_table', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -93,6 +97,23 @@ RSpec.describe Pangea::Resources::AWSCleanroomsConfiguredTable do
         config = validate_resource_structure(result, 'aws_cleanrooms_configured_table', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cleanrooms_configured_table('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cleanrooms_configured_table', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cleanrooms_configured_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cleanrooms_configured_table', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -110,6 +131,23 @@ RSpec.describe Pangea::Resources::AWSCleanroomsConfiguredTable do
         config = validate_resource_structure(result, 'aws_cleanrooms_configured_table', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cleanrooms_configured_table('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cleanrooms_configured_table', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cleanrooms_configured_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cleanrooms_configured_table', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -123,7 +161,7 @@ RSpec.describe Pangea::Resources::AWSCleanroomsConfiguredTable do
         expect(config['allowed_columns']).to be_a(Array)
         expect(config['analysis_method']).to be_a(String)
         expect(config['name']).to be_a(String)
-        expect(config['table_reference']).to be_a(Array)
+        expect(config['table_reference']).to be_a(Hash)
       end
     end
 
@@ -156,8 +194,8 @@ RSpec.describe Pangea::Resources::AWSCleanroomsConfiguredTable do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_cleanrooms_configured_table,
     method: :aws_cleanrooms_configured_table,
-    required_attrs: { allowed_columns: ['test-value'], analysis_method: 'test-value', name: 'test-value', table_reference: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :create_time, :tags_all, :update_time],
+    required_attrs: { allowed_columns: ['test-value'], analysis_method: 'test-value', name: 'test-value', table_reference: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :create_time, :region, :tags_all, :update_time],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -93,7 +93,7 @@ RSpec.describe Pangea::Resources::AWSRoute53domainsDomain do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ admin_contact: [{ 'key1' => 'val1' }], registrant_contact: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tech_contact: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ admin_contact: [{ 'key1' => 'val1' }], admin_privacy: true, auto_renew: true, billing_contact: [{ 'key1' => 'val1' }], billing_privacy: true, duration_in_years: 3.14, name_server: [{ 'key1' => 'val1' }], registrant_contact: [{ 'key1' => 'val1' }], registrant_privacy: true, tags: { 'key1' => 'val1' }, tech_contact: [{ 'key1' => 'val1' }], tech_privacy: true, transfer_lock: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -103,9 +103,18 @@ RSpec.describe Pangea::Resources::AWSRoute53domainsDomain do
 
         config = validate_resource_structure(result, 'aws_route53domains_domain', 'full')
         expect(config).to have_key('admin_contact')
+        expect(config).to have_key('admin_privacy')
+        expect(config).to have_key('auto_renew')
+        expect(config).to have_key('billing_contact')
+        expect(config).to have_key('billing_privacy')
+        expect(config).to have_key('duration_in_years')
+        expect(config).to have_key('name_server')
         expect(config).to have_key('registrant_contact')
+        expect(config).to have_key('registrant_privacy')
         expect(config).to have_key('tags')
         expect(config).to have_key('tech_contact')
+        expect(config).to have_key('tech_privacy')
+        expect(config).to have_key('transfer_lock')
       end
     end
 
@@ -127,6 +136,108 @@ RSpec.describe Pangea::Resources::AWSRoute53domainsDomain do
         config = validate_resource_structure(result, 'aws_route53domains_domain', 'minimal')
         expect(config).not_to have_key('admin_contact')
       end
+      it 'includes admin_privacy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('opt', required_attrs.merge(admin_privacy: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'opt')
+        expect(config).to have_key('admin_privacy')
+      end
+
+      it 'omits admin_privacy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'minimal')
+        expect(config).not_to have_key('admin_privacy')
+      end
+      it 'includes auto_renew when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('opt', required_attrs.merge(auto_renew: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'opt')
+        expect(config).to have_key('auto_renew')
+      end
+
+      it 'omits auto_renew when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'minimal')
+        expect(config).not_to have_key('auto_renew')
+      end
+      it 'includes billing_contact when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('opt', required_attrs.merge(billing_contact: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'opt')
+        expect(config).to have_key('billing_contact')
+      end
+
+      it 'omits billing_contact when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'minimal')
+        expect(config).not_to have_key('billing_contact')
+      end
+      it 'includes billing_privacy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('opt', required_attrs.merge(billing_privacy: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'opt')
+        expect(config).to have_key('billing_privacy')
+      end
+
+      it 'omits billing_privacy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'minimal')
+        expect(config).not_to have_key('billing_privacy')
+      end
+      it 'includes duration_in_years when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('opt', required_attrs.merge(duration_in_years: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'opt')
+        expect(config).to have_key('duration_in_years')
+      end
+
+      it 'omits duration_in_years when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'minimal')
+        expect(config).not_to have_key('duration_in_years')
+      end
+      it 'includes name_server when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('opt', required_attrs.merge(name_server: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'opt')
+        expect(config).to have_key('name_server')
+      end
+
+      it 'omits name_server when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'minimal')
+        expect(config).not_to have_key('name_server')
+      end
       it 'includes registrant_contact when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -143,6 +254,23 @@ RSpec.describe Pangea::Resources::AWSRoute53domainsDomain do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53domains_domain', 'minimal')
         expect(config).not_to have_key('registrant_contact')
+      end
+      it 'includes registrant_privacy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('opt', required_attrs.merge(registrant_privacy: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'opt')
+        expect(config).to have_key('registrant_privacy')
+      end
+
+      it 'omits registrant_privacy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'minimal')
+        expect(config).not_to have_key('registrant_privacy')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -177,6 +305,109 @@ RSpec.describe Pangea::Resources::AWSRoute53domainsDomain do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53domains_domain', 'minimal')
         expect(config).not_to have_key('tech_contact')
+      end
+      it 'includes tech_privacy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('opt', required_attrs.merge(tech_privacy: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'opt')
+        expect(config).to have_key('tech_privacy')
+      end
+
+      it 'omits tech_privacy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'minimal')
+        expect(config).not_to have_key('tech_privacy')
+      end
+      it 'includes transfer_lock when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('opt', required_attrs.merge(transfer_lock: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'opt')
+        expect(config).to have_key('transfer_lock')
+      end
+
+      it 'omits transfer_lock when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_domain', 'minimal')
+        expect(config).not_to have_key('transfer_lock')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts admin_privacy=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(admin_privacy: val)
+          synth.aws_route53domains_domain("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_route53domains_domain', "bool_#{val}")
+          expect(config['admin_privacy']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts auto_renew=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(auto_renew: val)
+          synth.aws_route53domains_domain("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_route53domains_domain', "bool_#{val}")
+          expect(config['auto_renew']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts billing_privacy=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(billing_privacy: val)
+          synth.aws_route53domains_domain("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_route53domains_domain', "bool_#{val}")
+          expect(config['billing_privacy']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts registrant_privacy=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(registrant_privacy: val)
+          synth.aws_route53domains_domain("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_route53domains_domain', "bool_#{val}")
+          expect(config['registrant_privacy']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts tech_privacy=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(tech_privacy: val)
+          synth.aws_route53domains_domain("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_route53domains_domain', "bool_#{val}")
+          expect(config['tech_privacy']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts transfer_lock=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(transfer_lock: val)
+          synth.aws_route53domains_domain("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_route53domains_domain', "bool_#{val}")
+          expect(config['transfer_lock']).to eq(val)
+        end
       end
     end
 
@@ -225,5 +456,5 @@ RSpec.describe Pangea::Resources::AWSRoute53domainsDomain do
     expected_outputs: [:id, :abuse_contact_email, :abuse_contact_phone, :admin_privacy, :auto_renew, :billing_contact, :billing_privacy, :creation_date, :duration_in_years, :expiration_date, :hosted_zone_id, :name_server, :registrant_privacy, :registrar_name, :registrar_url, :status_list, :tags_all, :tech_privacy, :transfer_lock, :updated_date, :whois_server],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:admin_privacy, :auto_renew, :billing_privacy, :registrant_privacy, :tech_privacy, :transfer_lock]
 end

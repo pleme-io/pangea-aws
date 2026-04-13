@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSagemakerDomain do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { auth_mode: 'test-value', default_user_settings: [{ 'key1' => 'val1' }], domain_name: 'test-value', subnet_ids: ['test-value'], vpc_id: 'test-value' } }
+  let(:required_attrs) { { auth_mode: 'test-value', default_user_settings: { 'key1' => 'val1' }, domain_name: 'test-value', subnet_ids: ['test-value'], vpc_id: 'test-value' } }
 
   describe ':aws_sagemaker_domain' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerDomain do
         expect(ref.id).to eq("${aws_sagemaker_domain.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_domain.test.arn}")
         expect(ref.home_efs_file_system_id).to eq("${aws_sagemaker_domain.test.home_efs_file_system_id}")
+        expect(ref.region).to eq("${aws_sagemaker_domain.test.region}")
         expect(ref.security_group_id_for_domain_boundary).to eq("${aws_sagemaker_domain.test.security_group_id_for_domain_boundary}")
         expect(ref.single_sign_on_application_arn).to eq("${aws_sagemaker_domain.test.single_sign_on_application_arn}")
         expect(ref.single_sign_on_managed_application_instance_id).to eq("${aws_sagemaker_domain.test.single_sign_on_managed_application_instance_id}")
@@ -58,6 +59,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerDomain do
         config = validate_resource_structure(result, 'aws_sagemaker_domain', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('home_efs_file_system_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_group_id_for_domain_boundary')
         expect(config).not_to have_key('single_sign_on_application_arn')
         expect(config).not_to have_key('single_sign_on_managed_application_instance_id')
@@ -67,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerDomain do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ app_network_access_type: 'test-value', app_security_group_management: 'test-value', default_space_settings: [{ 'key1' => 'val1' }], domain_settings: [{ 'key1' => 'val1' }], kms_key_id: 'test-value', retention_policy: [{ 'key1' => 'val1' }], tag_propagation: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ app_network_access_type: 'test-value', app_security_group_management: 'test-value', default_space_settings: { 'key1' => 'val1' }, domain_settings: { 'key1' => 'val1' }, kms_key_id: 'test-value', region: 'test-value', retention_policy: { 'key1' => 'val1' }, tag_propagation: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -81,9 +83,11 @@ RSpec.describe Pangea::Resources::AWSSagemakerDomain do
         expect(config).to have_key('default_space_settings')
         expect(config).to have_key('domain_settings')
         expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('retention_policy')
         expect(config).to have_key('tag_propagation')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -125,7 +129,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerDomain do
       it 'includes default_space_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_domain('opt', required_attrs.merge(default_space_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_domain('opt', required_attrs.merge(default_space_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_domain', 'opt')
         expect(config).to have_key('default_space_settings')
@@ -142,7 +146,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerDomain do
       it 'includes domain_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_domain('opt', required_attrs.merge(domain_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_domain('opt', required_attrs.merge(domain_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_domain', 'opt')
         expect(config).to have_key('domain_settings')
@@ -173,10 +177,27 @@ RSpec.describe Pangea::Resources::AWSSagemakerDomain do
         config = validate_resource_structure(result, 'aws_sagemaker_domain', 'minimal')
         expect(config).not_to have_key('kms_key_id')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_domain('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_domain', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_domain', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes retention_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_domain('opt', required_attrs.merge(retention_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_domain('opt', required_attrs.merge(retention_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_domain', 'opt')
         expect(config).to have_key('retention_policy')
@@ -224,6 +245,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerDomain do
         config = validate_resource_structure(result, 'aws_sagemaker_domain', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_domain('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_domain', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_domain', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -235,7 +273,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerDomain do
 
         config = validate_resource_structure(result, 'aws_sagemaker_domain', 'typed')
         expect(config['auth_mode']).to be_a(String)
-        expect(config['default_user_settings']).to be_a(Array)
+        expect(config['default_user_settings']).to be_a(Hash)
         expect(config['domain_name']).to be_a(String)
         expect(config['subnet_ids']).to be_a(Array)
         expect(config['vpc_id']).to be_a(String)
@@ -271,8 +309,8 @@ RSpec.describe Pangea::Resources::AWSSagemakerDomain do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_sagemaker_domain,
     method: :aws_sagemaker_domain,
-    required_attrs: { auth_mode: 'test-value', default_user_settings: [{ 'key1' => 'val1' }], domain_name: 'test-value', subnet_ids: ['test-value'], vpc_id: 'test-value' },
-    expected_outputs: [:id, :arn, :home_efs_file_system_id, :security_group_id_for_domain_boundary, :single_sign_on_application_arn, :single_sign_on_managed_application_instance_id, :tags_all, :url],
+    required_attrs: { auth_mode: 'test-value', default_user_settings: { 'key1' => 'val1' }, domain_name: 'test-value', subnet_ids: ['test-value'], vpc_id: 'test-value' },
+    expected_outputs: [:id, :arn, :home_efs_file_system_id, :region, :security_group_id_for_domain_boundary, :single_sign_on_application_arn, :single_sign_on_managed_application_instance_id, :tags_all, :url],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

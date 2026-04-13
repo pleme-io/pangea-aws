@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSesEmailIdentity do
 
         expect(ref.id).to eq("${aws_ses_email_identity.test.id}")
         expect(ref.arn).to eq("${aws_ses_email_identity.test.arn}")
+        expect(ref.region).to eq("${aws_ses_email_identity.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSSesEmailIdentity do
 
         config = validate_resource_structure(result, 'aws_ses_email_identity', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_email_identity('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ses_email_identity', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_email_identity('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_email_identity', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_email_identity('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_email_identity', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -96,7 +132,7 @@ RSpec.describe Pangea::Resources::AWSSesEmailIdentity do
     resource_type: :aws_ses_email_identity,
     method: :aws_ses_email_identity,
     required_attrs: { email: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

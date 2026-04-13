@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LambdaLayerVersionPermissionAttributes,
       outputs: { id: :id },
       map: [:action, :layer_name, :principal, :statement_id, :version_number],
-      map_present: [:organization_id],
+      map_present: [:organization_id, :region],
       map_bool: [:skip_destroy]
   end
   module AWS

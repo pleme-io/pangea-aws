@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Sesv2ContactListAttributes,
       outputs: { id: :id },
       map: [:contact_list_name],
-      map_present: [:description, :tags, :tags_all, :topic]
+      map_present: [:description, :region, :tags, :tags_all, :topic]
   end
   module AWS
     include AWSSesv2ContactList

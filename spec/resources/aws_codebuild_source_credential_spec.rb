@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCodebuildSourceCredential do
 
         expect(ref.id).to eq("${aws_codebuild_source_credential.test.id}")
         expect(ref.arn).to eq("${aws_codebuild_source_credential.test.arn}")
+        expect(ref.region).to eq("${aws_codebuild_source_credential.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSCodebuildSourceCredential do
 
         config = validate_resource_structure(result, 'aws_codebuild_source_credential', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ user_name: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', user_name: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,11 +66,29 @@ RSpec.describe Pangea::Resources::AWSCodebuildSourceCredential do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_codebuild_source_credential', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('user_name')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_source_credential('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_source_credential', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_source_credential('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_source_credential', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes user_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -139,7 +159,7 @@ RSpec.describe Pangea::Resources::AWSCodebuildSourceCredential do
     resource_type: :aws_codebuild_source_credential,
     method: :aws_codebuild_source_credential,
     required_attrs: { auth_type: 'test-value', server_type: 'test-value', token: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [:token],
     immutable_fields: [],
     boolean_fields: []

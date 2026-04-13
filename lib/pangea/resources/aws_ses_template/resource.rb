@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SesTemplateAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:html, :subject, :text]
+      map_present: [:html, :region, :subject, :text]
   end
   module AWS
     include AWSSesTemplate

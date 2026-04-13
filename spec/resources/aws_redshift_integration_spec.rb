@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftIntegration do
         expect(ref.id).to eq("${aws_redshift_integration.test.id}")
         expect(ref.arn).to eq("${aws_redshift_integration.test.arn}")
         expect(ref.kms_key_id).to eq("${aws_redshift_integration.test.kms_key_id}")
+        expect(ref.region).to eq("${aws_redshift_integration.test.region}")
         expect(ref.tags_all).to eq("${aws_redshift_integration.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSRedshiftIntegration do
         config = validate_resource_structure(result, 'aws_redshift_integration', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('kms_key_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ additional_encryption_context: { 'key1' => 'val1' }, description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ additional_encryption_context: { 'key1' => 'val1' }, description: 'test-value', kms_key_id: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,6 +72,8 @@ RSpec.describe Pangea::Resources::AWSRedshiftIntegration do
         config = validate_resource_structure(result, 'aws_redshift_integration', 'full')
         expect(config).to have_key('additional_encryption_context')
         expect(config).to have_key('description')
+        expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -108,6 +112,40 @@ RSpec.describe Pangea::Resources::AWSRedshiftIntegration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_integration', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_integration('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_integration', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_integration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_integration', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_integration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_integration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_integration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_integration', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -172,7 +210,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftIntegration do
     resource_type: :aws_redshift_integration,
     method: :aws_redshift_integration,
     required_attrs: { integration_name: 'test-value', source_arn: 'test-value', target_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :kms_key_id, :tags_all],
+    expected_outputs: [:id, :arn, :kms_key_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneProject do
         expect(ref.failure_reasons).to eq("${aws_datazone_project.test.failure_reasons}")
         expect(ref.last_updated_at).to eq("${aws_datazone_project.test.last_updated_at}")
         expect(ref.project_status).to eq("${aws_datazone_project.test.project_status}")
+        expect(ref.region).to eq("${aws_datazone_project.test.region}")
       end
     end
 
@@ -59,11 +60,12 @@ RSpec.describe Pangea::Resources::AWSDatazoneProject do
         expect(config).not_to have_key('failure_reasons')
         expect(config).not_to have_key('last_updated_at')
         expect(config).not_to have_key('project_status')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', glossary_terms: ['test-value'], skip_deletion_check: true }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', glossary_terms: ['test-value'], region: 'test-value', skip_deletion_check: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,6 +76,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneProject do
         config = validate_resource_structure(result, 'aws_datazone_project', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('glossary_terms')
+        expect(config).to have_key('region')
         expect(config).to have_key('skip_deletion_check')
       end
     end
@@ -112,6 +115,23 @@ RSpec.describe Pangea::Resources::AWSDatazoneProject do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datazone_project', 'minimal')
         expect(config).not_to have_key('glossary_terms')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_project('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_project', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_project('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_project', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes skip_deletion_check when provided' do
         synth = create_synthesizer
@@ -189,7 +209,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneProject do
     resource_type: :aws_datazone_project,
     method: :aws_datazone_project,
     required_attrs: { domain_identifier: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :created_at, :created_by, :failure_reasons, :last_updated_at, :project_status],
+    expected_outputs: [:id, :created_at, :created_by, :failure_reasons, :last_updated_at, :project_status, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:skip_deletion_check]

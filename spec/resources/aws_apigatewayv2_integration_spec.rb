@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Integration do
 
         expect(ref.id).to eq("${aws_apigatewayv2_integration.test.id}")
         expect(ref.integration_response_selection_expression).to eq("${aws_apigatewayv2_integration.test.integration_response_selection_expression}")
+        expect(ref.region).to eq("${aws_apigatewayv2_integration.test.region}")
         expect(ref.timeout_milliseconds).to eq("${aws_apigatewayv2_integration.test.timeout_milliseconds}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Integration do
 
         config = validate_resource_structure(result, 'aws_apigatewayv2_integration', 'test')
         expect(config).not_to have_key('integration_response_selection_expression')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('timeout_milliseconds')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ connection_id: 'test-value', connection_type: 'test-value', content_handling_strategy: 'test-value', credentials_arn: 'test-value', description: 'test-value', integration_method: 'test-value', integration_subtype: 'test-value', integration_uri: 'test-value', passthrough_behavior: 'test-value', payload_format_version: 'test-value', request_parameters: { 'key1' => 'val1' }, request_templates: { 'key1' => 'val1' }, response_parameters: [{ 'key1' => 'val1' }], template_selection_expression: 'test-value', tls_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ connection_id: 'test-value', connection_type: 'test-value', content_handling_strategy: 'test-value', credentials_arn: 'test-value', description: 'test-value', integration_method: 'test-value', integration_subtype: 'test-value', integration_uri: 'test-value', passthrough_behavior: 'test-value', payload_format_version: 'test-value', region: 'test-value', request_parameters: { 'key1' => 'val1' }, request_templates: { 'key1' => 'val1' }, response_parameters: [{ 'key1' => 'val1' }], template_selection_expression: 'test-value', timeout_milliseconds: 3.14, tls_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,10 +78,12 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Integration do
         expect(config).to have_key('integration_uri')
         expect(config).to have_key('passthrough_behavior')
         expect(config).to have_key('payload_format_version')
+        expect(config).to have_key('region')
         expect(config).to have_key('request_parameters')
         expect(config).to have_key('request_templates')
         expect(config).to have_key('response_parameters')
         expect(config).to have_key('template_selection_expression')
+        expect(config).to have_key('timeout_milliseconds')
         expect(config).to have_key('tls_config')
       end
     end
@@ -255,6 +259,23 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Integration do
         config = validate_resource_structure(result, 'aws_apigatewayv2_integration', 'minimal')
         expect(config).not_to have_key('payload_format_version')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_integration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_integration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_integration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_integration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes request_parameters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -323,10 +344,27 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Integration do
         config = validate_resource_structure(result, 'aws_apigatewayv2_integration', 'minimal')
         expect(config).not_to have_key('template_selection_expression')
       end
+      it 'includes timeout_milliseconds when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_integration('opt', required_attrs.merge(timeout_milliseconds: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_integration', 'opt')
+        expect(config).to have_key('timeout_milliseconds')
+      end
+
+      it 'omits timeout_milliseconds when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_integration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_integration', 'minimal')
+        expect(config).not_to have_key('timeout_milliseconds')
+      end
       it 'includes tls_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_apigatewayv2_integration('opt', required_attrs.merge(tls_config: [{ 'key1' => 'val1' }]))
+        synth.aws_apigatewayv2_integration('opt', required_attrs.merge(tls_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apigatewayv2_integration', 'opt')
         expect(config).to have_key('tls_config')
@@ -385,7 +423,7 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Integration do
     resource_type: :aws_apigatewayv2_integration,
     method: :aws_apigatewayv2_integration,
     required_attrs: { api_id: 'test-value', integration_type: 'test-value' },
-    expected_outputs: [:id, :integration_response_selection_expression, :timeout_milliseconds],
+    expected_outputs: [:id, :integration_response_selection_expression, :region, :timeout_milliseconds],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

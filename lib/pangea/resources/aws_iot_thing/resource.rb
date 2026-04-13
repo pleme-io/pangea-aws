@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IotThingAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:attributes, :thing_type_name]
+      map_present: [:attributes, :region, :thing_type_name]
   end
   module AWS
     include AWSIotThing

@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayPeeringAttachmentAccepter 
         expect(ref.peer_account_id).to eq("${aws_ec2_transit_gateway_peering_attachment_accepter.test.peer_account_id}")
         expect(ref.peer_region).to eq("${aws_ec2_transit_gateway_peering_attachment_accepter.test.peer_region}")
         expect(ref.peer_transit_gateway_id).to eq("${aws_ec2_transit_gateway_peering_attachment_accepter.test.peer_transit_gateway_id}")
+        expect(ref.region).to eq("${aws_ec2_transit_gateway_peering_attachment_accepter.test.region}")
         expect(ref.tags_all).to eq("${aws_ec2_transit_gateway_peering_attachment_accepter.test.tags_all}")
         expect(ref.transit_gateway_id).to eq("${aws_ec2_transit_gateway_peering_attachment_accepter.test.transit_gateway_id}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayPeeringAttachmentAccepter 
         expect(config).not_to have_key('peer_account_id')
         expect(config).not_to have_key('peer_region')
         expect(config).not_to have_key('peer_transit_gateway_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('transit_gateway_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,11 +74,30 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayPeeringAttachmentAccepter 
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_peering_attachment_accepter', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_peering_attachment_accepter('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_peering_attachment_accepter', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_peering_attachment_accepter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_peering_attachment_accepter', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -93,6 +114,23 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayPeeringAttachmentAccepter 
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_transit_gateway_peering_attachment_accepter', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_peering_attachment_accepter('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_peering_attachment_accepter', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_transit_gateway_peering_attachment_accepter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_transit_gateway_peering_attachment_accepter', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -138,7 +176,7 @@ RSpec.describe Pangea::Resources::AWSEc2TransitGatewayPeeringAttachmentAccepter 
     resource_type: :aws_ec2_transit_gateway_peering_attachment_accepter,
     method: :aws_ec2_transit_gateway_peering_attachment_accepter,
     required_attrs: { transit_gateway_attachment_id: 'test-value' },
-    expected_outputs: [:id, :peer_account_id, :peer_region, :peer_transit_gateway_id, :tags_all, :transit_gateway_id],
+    expected_outputs: [:id, :peer_account_id, :peer_region, :peer_transit_gateway_id, :region, :tags_all, :transit_gateway_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

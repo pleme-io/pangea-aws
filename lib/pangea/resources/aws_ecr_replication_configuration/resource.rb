@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_ecr_replication_configuration,
       attributes_class: AWS::Types::EcrReplicationConfigurationAttributes,
       outputs: { id: :id },
-      map_present: [:replication_configuration]
+      map_present: [:region, :replication_configuration]
   end
   module AWS
     include AWSEcrReplicationConfiguration

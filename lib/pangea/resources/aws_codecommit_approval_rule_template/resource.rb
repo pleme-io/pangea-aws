@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodecommitApprovalRuleTemplateAttributes,
       outputs: { id: :id },
       map: [:content, :name],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSCodecommitApprovalRuleTemplate

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KendraDataSourceAttributes,
       outputs: { id: :id },
       map: [:index_id, :name, :type],
-      map_present: [:configuration, :custom_document_enrichment_configuration, :description, :language_code, :role_arn, :schedule, :tags, :tags_all]
+      map_present: [:configuration, :custom_document_enrichment_configuration, :description, :language_code, :region, :role_arn, :schedule, :tags, :tags_all]
   end
   module AWS
     include AWSKendraDataSource

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IotThingGroupAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:parent_group_name, :properties, :tags, :tags_all]
+      map_present: [:parent_group_name, :properties, :region, :tags, :tags_all]
   end
   module AWS
     include AWSIotThingGroup

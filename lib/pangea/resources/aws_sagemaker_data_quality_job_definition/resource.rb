@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerDataQualityJobDefinitionAttributes,
       outputs: { id: :id },
       map: [:data_quality_app_specification, :data_quality_job_input, :data_quality_job_output_config, :job_resources, :role_arn],
-      map_present: [:data_quality_baseline_config, :name, :network_config, :stopping_condition, :tags, :tags_all]
+      map_present: [:data_quality_baseline_config, :name, :network_config, :region, :stopping_condition, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerDataQualityJobDefinition

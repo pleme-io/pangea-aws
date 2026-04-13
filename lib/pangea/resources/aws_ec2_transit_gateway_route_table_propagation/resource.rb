@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ec2_transit_gateway_route_table_propagation,
       attributes_class: AWS::Types::Ec2TransitGatewayRouteTablePropagationAttributes,
       outputs: { id: :id },
-      map: [:transit_gateway_attachment_id, :transit_gateway_route_table_id]
+      map: [:transit_gateway_attachment_id, :transit_gateway_route_table_id],
+      map_present: [:region]
   end
   module AWS
     include AWSEc2TransitGatewayRouteTablePropagation

@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSSesv2EmailIdentityFeedbackAttributes do
         ref = synth.aws_sesv2_email_identity_feedback_attributes('test', required_attrs)
 
         expect(ref.id).to eq("${aws_sesv2_email_identity_feedback_attributes.test.id}")
+        expect(ref.region).to eq("${aws_sesv2_email_identity_feedback_attributes.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_email_identity_feedback_attributes('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_sesv2_email_identity_feedback_attributes', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ email_forwarding_enabled: true }) }
+      let(:all_attrs) { required_attrs.merge({ email_forwarding_enabled: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSSesv2EmailIdentityFeedbackAttributes do
 
         config = validate_resource_structure(result, 'aws_sesv2_email_identity_feedback_attributes', 'full')
         expect(config).to have_key('email_forwarding_enabled')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSSesv2EmailIdentityFeedbackAttributes do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_email_identity_feedback_attributes', 'minimal')
         expect(config).not_to have_key('email_forwarding_enabled')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_email_identity_feedback_attributes('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_email_identity_feedback_attributes', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_email_identity_feedback_attributes('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_email_identity_feedback_attributes', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -131,7 +162,7 @@ RSpec.describe Pangea::Resources::AWSSesv2EmailIdentityFeedbackAttributes do
     resource_type: :aws_sesv2_email_identity_feedback_attributes,
     method: :aws_sesv2_email_identity_feedback_attributes,
     required_attrs: { email_identity: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:email_forwarding_enabled]

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSEmrInstanceFleet do
         expect(ref.id).to eq("${aws_emr_instance_fleet.test.id}")
         expect(ref.provisioned_on_demand_capacity).to eq("${aws_emr_instance_fleet.test.provisioned_on_demand_capacity}")
         expect(ref.provisioned_spot_capacity).to eq("${aws_emr_instance_fleet.test.provisioned_spot_capacity}")
+        expect(ref.region).to eq("${aws_emr_instance_fleet.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSEmrInstanceFleet do
         config = validate_resource_structure(result, 'aws_emr_instance_fleet', 'test')
         expect(config).not_to have_key('provisioned_on_demand_capacity')
         expect(config).not_to have_key('provisioned_spot_capacity')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ instance_type_configs: [{ 'key1' => 'val1' }], launch_specifications: [{ 'key1' => 'val1' }], name: 'test-value', target_on_demand_capacity: 3.14, target_spot_capacity: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ instance_type_configs: [{ 'key1' => 'val1' }], launch_specifications: { 'key1' => 'val1' }, name: 'test-value', region: 'test-value', target_on_demand_capacity: 3.14, target_spot_capacity: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSEmrInstanceFleet do
         expect(config).to have_key('instance_type_configs')
         expect(config).to have_key('launch_specifications')
         expect(config).to have_key('name')
+        expect(config).to have_key('region')
         expect(config).to have_key('target_on_demand_capacity')
         expect(config).to have_key('target_spot_capacity')
       end
@@ -95,7 +98,7 @@ RSpec.describe Pangea::Resources::AWSEmrInstanceFleet do
       it 'includes launch_specifications when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_emr_instance_fleet('opt', required_attrs.merge(launch_specifications: [{ 'key1' => 'val1' }]))
+        synth.aws_emr_instance_fleet('opt', required_attrs.merge(launch_specifications: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_instance_fleet', 'opt')
         expect(config).to have_key('launch_specifications')
@@ -125,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSEmrInstanceFleet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_instance_fleet', 'minimal')
         expect(config).not_to have_key('name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_instance_fleet('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_instance_fleet', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_instance_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_instance_fleet', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes target_on_demand_capacity when provided' do
         synth = create_synthesizer
@@ -204,7 +224,7 @@ RSpec.describe Pangea::Resources::AWSEmrInstanceFleet do
     resource_type: :aws_emr_instance_fleet,
     method: :aws_emr_instance_fleet,
     required_attrs: { cluster_id: 'test-value' },
-    expected_outputs: [:id, :provisioned_on_demand_capacity, :provisioned_spot_capacity],
+    expected_outputs: [:id, :provisioned_on_demand_capacity, :provisioned_spot_capacity, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

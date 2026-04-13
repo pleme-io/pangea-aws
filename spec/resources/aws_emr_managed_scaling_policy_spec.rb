@@ -38,6 +38,89 @@ RSpec.describe Pangea::Resources::AWSEmrManagedScalingPolicy do
         ref = synth.aws_emr_managed_scaling_policy('test', required_attrs)
 
         expect(ref.id).to eq("${aws_emr_managed_scaling_policy.test.id}")
+        expect(ref.region).to eq("${aws_emr_managed_scaling_policy.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_managed_scaling_policy('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_emr_managed_scaling_policy', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', scaling_strategy: 'test-value', utilization_performance_index: 3.14 }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_managed_scaling_policy('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_emr_managed_scaling_policy', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('scaling_strategy')
+        expect(config).to have_key('utilization_performance_index')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_managed_scaling_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_managed_scaling_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_managed_scaling_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_managed_scaling_policy', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes scaling_strategy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_managed_scaling_policy('opt', required_attrs.merge(scaling_strategy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_managed_scaling_policy', 'opt')
+        expect(config).to have_key('scaling_strategy')
+      end
+
+      it 'omits scaling_strategy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_managed_scaling_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_managed_scaling_policy', 'minimal')
+        expect(config).not_to have_key('scaling_strategy')
+      end
+      it 'includes utilization_performance_index when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_managed_scaling_policy('opt', required_attrs.merge(utilization_performance_index: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_managed_scaling_policy', 'opt')
+        expect(config).to have_key('utilization_performance_index')
+      end
+
+      it 'omits utilization_performance_index when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_managed_scaling_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_managed_scaling_policy', 'minimal')
+        expect(config).not_to have_key('utilization_performance_index')
       end
     end
 
@@ -84,7 +167,7 @@ RSpec.describe Pangea::Resources::AWSEmrManagedScalingPolicy do
     resource_type: :aws_emr_managed_scaling_policy,
     method: :aws_emr_managed_scaling_policy,
     required_attrs: { cluster_id: 'test-value', compute_limits: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

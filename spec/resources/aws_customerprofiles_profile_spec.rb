@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSCustomerprofilesProfile do
         ref = synth.aws_customerprofiles_profile('test', required_attrs)
 
         expect(ref.id).to eq("${aws_customerprofiles_profile.test.id}")
+        expect(ref.region).to eq("${aws_customerprofiles_profile.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_customerprofiles_profile('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_customerprofiles_profile', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ account_number: 'test-value', additional_information: 'test-value', address: [{ 'key1' => 'val1' }], attributes: { 'key1' => 'val1' }, billing_address: [{ 'key1' => 'val1' }], birth_date: 'test-value', business_email_address: 'test-value', business_name: 'test-value', business_phone_number: 'test-value', email_address: 'test-value', first_name: 'test-value', gender_string: 'test-value', home_phone_number: 'test-value', last_name: 'test-value', mailing_address: [{ 'key1' => 'val1' }], middle_name: 'test-value', mobile_phone_number: 'test-value', party_type_string: 'test-value', personal_email_address: 'test-value', phone_number: 'test-value', shipping_address: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ account_number: 'test-value', additional_information: 'test-value', address: { 'key1' => 'val1' }, attributes: { 'key1' => 'val1' }, billing_address: { 'key1' => 'val1' }, birth_date: 'test-value', business_email_address: 'test-value', business_name: 'test-value', business_phone_number: 'test-value', email_address: 'test-value', first_name: 'test-value', gender_string: 'test-value', home_phone_number: 'test-value', last_name: 'test-value', mailing_address: { 'key1' => 'val1' }, middle_name: 'test-value', mobile_phone_number: 'test-value', party_type_string: 'test-value', personal_email_address: 'test-value', phone_number: 'test-value', region: 'test-value', shipping_address: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +84,7 @@ RSpec.describe Pangea::Resources::AWSCustomerprofilesProfile do
         expect(config).to have_key('party_type_string')
         expect(config).to have_key('personal_email_address')
         expect(config).to have_key('phone_number')
+        expect(config).to have_key('region')
         expect(config).to have_key('shipping_address')
       end
     end
@@ -113,7 +127,7 @@ RSpec.describe Pangea::Resources::AWSCustomerprofilesProfile do
       it 'includes address when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_customerprofiles_profile('opt', required_attrs.merge(address: [{ 'key1' => 'val1' }]))
+        synth.aws_customerprofiles_profile('opt', required_attrs.merge(address: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_customerprofiles_profile', 'opt')
         expect(config).to have_key('address')
@@ -147,7 +161,7 @@ RSpec.describe Pangea::Resources::AWSCustomerprofilesProfile do
       it 'includes billing_address when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_customerprofiles_profile('opt', required_attrs.merge(billing_address: [{ 'key1' => 'val1' }]))
+        synth.aws_customerprofiles_profile('opt', required_attrs.merge(billing_address: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_customerprofiles_profile', 'opt')
         expect(config).to have_key('billing_address')
@@ -317,7 +331,7 @@ RSpec.describe Pangea::Resources::AWSCustomerprofilesProfile do
       it 'includes mailing_address when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_customerprofiles_profile('opt', required_attrs.merge(mailing_address: [{ 'key1' => 'val1' }]))
+        synth.aws_customerprofiles_profile('opt', required_attrs.merge(mailing_address: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_customerprofiles_profile', 'opt')
         expect(config).to have_key('mailing_address')
@@ -416,10 +430,27 @@ RSpec.describe Pangea::Resources::AWSCustomerprofilesProfile do
         config = validate_resource_structure(result, 'aws_customerprofiles_profile', 'minimal')
         expect(config).not_to have_key('phone_number')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_customerprofiles_profile('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_customerprofiles_profile', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_customerprofiles_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_customerprofiles_profile', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes shipping_address when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_customerprofiles_profile('opt', required_attrs.merge(shipping_address: [{ 'key1' => 'val1' }]))
+        synth.aws_customerprofiles_profile('opt', required_attrs.merge(shipping_address: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_customerprofiles_profile', 'opt')
         expect(config).to have_key('shipping_address')
@@ -477,7 +508,7 @@ RSpec.describe Pangea::Resources::AWSCustomerprofilesProfile do
     resource_type: :aws_customerprofiles_profile,
     method: :aws_customerprofiles_profile,
     required_attrs: { domain_name: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

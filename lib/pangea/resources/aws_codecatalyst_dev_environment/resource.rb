@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodecatalystDevEnvironmentAttributes,
       outputs: { id: :id },
       map: [:ides, :instance_type, :persistent_storage, :project_name, :space_name],
-      map_present: [:alias, :inactivity_timeout_minutes, :repositories]
+      map_present: [:alias, :inactivity_timeout_minutes, :region, :repositories]
   end
   module AWS
     include AWSCodecatalystDevEnvironment

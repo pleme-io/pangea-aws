@@ -1,0 +1,8 @@
+name: aws_apprunner_vpc_connector
+title: Manages a aws_apprunner_vpc_connector resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

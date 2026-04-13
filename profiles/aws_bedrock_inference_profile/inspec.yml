@@ -1,0 +1,8 @@
+name: aws_bedrock_inference_profile
+title: Manages a aws_bedrock_inference_profile resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

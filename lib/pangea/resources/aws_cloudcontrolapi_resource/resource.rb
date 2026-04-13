@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudcontrolapiResourceAttributes,
       outputs: { id: :id },
       map: [:desired_state, :type_name],
-      map_present: [:role_arn, :schema, :type_version_id]
+      map_present: [:region, :role_arn, :schema, :type_version_id]
   end
   module AWS
     include AWSCloudcontrolapiResource

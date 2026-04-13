@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessSecurityConfig do
 
         expect(ref.id).to eq("${aws_opensearchserverless_security_config.test.id}")
         expect(ref.config_version).to eq("${aws_opensearchserverless_security_config.test.config_version}")
+        expect(ref.region).to eq("${aws_opensearchserverless_security_config.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessSecurityConfig do
 
         config = validate_resource_structure(result, 'aws_opensearchserverless_security_config', 'test')
         expect(config).not_to have_key('config_version')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', saml_options: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', saml_options: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessSecurityConfig do
 
         config = validate_resource_structure(result, 'aws_opensearchserverless_security_config', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('saml_options')
       end
     end
@@ -87,10 +90,27 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessSecurityConfig do
         config = validate_resource_structure(result, 'aws_opensearchserverless_security_config', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_security_config('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_security_config', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_security_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_security_config', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes saml_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearchserverless_security_config('opt', required_attrs.merge(saml_options: { 'key1' => 'val1' }))
+        synth.aws_opensearchserverless_security_config('opt', required_attrs.merge(saml_options: [{ 'key1' => 'val1' }]))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearchserverless_security_config', 'opt')
         expect(config).to have_key('saml_options')
@@ -149,7 +169,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessSecurityConfig do
     resource_type: :aws_opensearchserverless_security_config,
     method: :aws_opensearchserverless_security_config,
     required_attrs: { name: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :config_version],
+    expected_outputs: [:id, :config_version, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

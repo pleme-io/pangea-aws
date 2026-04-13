@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2TransitGatewayConnectPeerAttributes,
       outputs: { id: :id },
       map: [:inside_cidr_blocks, :peer_address, :transit_gateway_attachment_id],
-      map_present: [:bgp_asn, :tags, :tags_all, :transit_gateway_address]
+      map_present: [:bgp_asn, :region, :tags, :tags_all, :transit_gateway_address]
   end
   module AWS
     include AWSEc2TransitGatewayConnectPeer

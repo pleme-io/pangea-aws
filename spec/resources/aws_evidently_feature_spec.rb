@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSEvidentlyFeature do
         expect(ref.evaluation_rules).to eq("${aws_evidently_feature.test.evaluation_rules}")
         expect(ref.evaluation_strategy).to eq("${aws_evidently_feature.test.evaluation_strategy}")
         expect(ref.last_updated_time).to eq("${aws_evidently_feature.test.last_updated_time}")
+        expect(ref.region).to eq("${aws_evidently_feature.test.region}")
         expect(ref.status).to eq("${aws_evidently_feature.test.status}")
         expect(ref.tags_all).to eq("${aws_evidently_feature.test.tags_all}")
         expect(ref.value_type).to eq("${aws_evidently_feature.test.value_type}")
@@ -64,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSEvidentlyFeature do
         expect(config).not_to have_key('evaluation_rules')
         expect(config).not_to have_key('evaluation_strategy')
         expect(config).not_to have_key('last_updated_time')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('value_type')
@@ -71,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSEvidentlyFeature do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', entity_overrides: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ default_variation: 'test-value', description: 'test-value', entity_overrides: { 'key1' => 'val1' }, evaluation_strategy: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,13 +82,34 @@ RSpec.describe Pangea::Resources::AWSEvidentlyFeature do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_evidently_feature', 'full')
+        expect(config).to have_key('default_variation')
         expect(config).to have_key('description')
         expect(config).to have_key('entity_overrides')
+        expect(config).to have_key('evaluation_strategy')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes default_variation when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_evidently_feature('opt', required_attrs.merge(default_variation: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_evidently_feature', 'opt')
+        expect(config).to have_key('default_variation')
+      end
+
+      it 'omits default_variation when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_evidently_feature('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_evidently_feature', 'minimal')
+        expect(config).not_to have_key('default_variation')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -121,6 +144,40 @@ RSpec.describe Pangea::Resources::AWSEvidentlyFeature do
         config = validate_resource_structure(result, 'aws_evidently_feature', 'minimal')
         expect(config).not_to have_key('entity_overrides')
       end
+      it 'includes evaluation_strategy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_evidently_feature('opt', required_attrs.merge(evaluation_strategy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_evidently_feature', 'opt')
+        expect(config).to have_key('evaluation_strategy')
+      end
+
+      it 'omits evaluation_strategy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_evidently_feature('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_evidently_feature', 'minimal')
+        expect(config).not_to have_key('evaluation_strategy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_evidently_feature('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_evidently_feature', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_evidently_feature('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_evidently_feature', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -137,6 +194,23 @@ RSpec.describe Pangea::Resources::AWSEvidentlyFeature do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_evidently_feature', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_evidently_feature('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_evidently_feature', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_evidently_feature('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_evidently_feature', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -184,7 +258,7 @@ RSpec.describe Pangea::Resources::AWSEvidentlyFeature do
     resource_type: :aws_evidently_feature,
     method: :aws_evidently_feature,
     required_attrs: { name: 'test-value', project: 'test-value', variations: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :created_time, :default_variation, :evaluation_rules, :evaluation_strategy, :last_updated_time, :status, :tags_all, :value_type],
+    expected_outputs: [:id, :arn, :created_time, :default_variation, :evaluation_rules, :evaluation_strategy, :last_updated_time, :region, :status, :tags_all, :value_type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

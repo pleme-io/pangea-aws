@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodeartifactRepositoryPermissionsPolicyAttributes,
       outputs: { id: :id },
       map: [:domain, :policy_document, :repository],
-      map_present: [:domain_owner, :policy_revision]
+      map_present: [:domain_owner, :policy_revision, :region]
   end
   module AWS
     include AWSCodeartifactRepositoryPermissionsPolicy

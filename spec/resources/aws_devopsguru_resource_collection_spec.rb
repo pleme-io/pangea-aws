@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSDevopsguruResourceCollection do
         ref = synth.aws_devopsguru_resource_collection('test', required_attrs)
 
         expect(ref.id).to eq("${aws_devopsguru_resource_collection.test.id}")
+        expect(ref.region).to eq("${aws_devopsguru_resource_collection.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devopsguru_resource_collection('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_devopsguru_resource_collection', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cloudformation: [{ 'key1' => 'val1' }], tags: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ cloudformation: [{ 'key1' => 'val1' }], region: 'test-value', tags: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSDevopsguruResourceCollection do
 
         config = validate_resource_structure(result, 'aws_devopsguru_resource_collection', 'full')
         expect(config).to have_key('cloudformation')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -73,6 +87,23 @@ RSpec.describe Pangea::Resources::AWSDevopsguruResourceCollection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_devopsguru_resource_collection', 'minimal')
         expect(config).not_to have_key('cloudformation')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devopsguru_resource_collection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_devopsguru_resource_collection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devopsguru_resource_collection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_devopsguru_resource_collection', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -135,7 +166,7 @@ RSpec.describe Pangea::Resources::AWSDevopsguruResourceCollection do
     resource_type: :aws_devopsguru_resource_collection,
     method: :aws_devopsguru_resource_collection,
     required_attrs: { type: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

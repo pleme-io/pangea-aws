@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationAggregator do
 
         expect(ref.id).to eq("${aws_config_configuration_aggregator.test.id}")
         expect(ref.arn).to eq("${aws_config_configuration_aggregator.test.arn}")
+        expect(ref.region).to eq("${aws_config_configuration_aggregator.test.region}")
         expect(ref.tags_all).to eq("${aws_config_configuration_aggregator.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationAggregator do
 
         config = validate_resource_structure(result, 'aws_config_configuration_aggregator', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ account_aggregation_source: [{ 'key1' => 'val1' }], organization_aggregation_source: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ account_aggregation_source: { 'key1' => 'val1' }, organization_aggregation_source: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,7 +70,9 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationAggregator do
         config = validate_resource_structure(result, 'aws_config_configuration_aggregator', 'full')
         expect(config).to have_key('account_aggregation_source')
         expect(config).to have_key('organization_aggregation_source')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -76,7 +80,7 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationAggregator do
       it 'includes account_aggregation_source when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_config_configuration_aggregator('opt', required_attrs.merge(account_aggregation_source: [{ 'key1' => 'val1' }]))
+        synth.aws_config_configuration_aggregator('opt', required_attrs.merge(account_aggregation_source: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_configuration_aggregator', 'opt')
         expect(config).to have_key('account_aggregation_source')
@@ -93,7 +97,7 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationAggregator do
       it 'includes organization_aggregation_source when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_config_configuration_aggregator('opt', required_attrs.merge(organization_aggregation_source: [{ 'key1' => 'val1' }]))
+        synth.aws_config_configuration_aggregator('opt', required_attrs.merge(organization_aggregation_source: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_configuration_aggregator', 'opt')
         expect(config).to have_key('organization_aggregation_source')
@@ -106,6 +110,23 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationAggregator do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_configuration_aggregator', 'minimal')
         expect(config).not_to have_key('organization_aggregation_source')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_configuration_aggregator('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_configuration_aggregator', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_configuration_aggregator('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_configuration_aggregator', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -123,6 +144,23 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationAggregator do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_configuration_aggregator', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_configuration_aggregator('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_configuration_aggregator', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_configuration_aggregator('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_configuration_aggregator', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -168,7 +206,7 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationAggregator do
     resource_type: :aws_config_configuration_aggregator,
     method: :aws_config_configuration_aggregator,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

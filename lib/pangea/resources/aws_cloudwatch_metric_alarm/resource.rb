@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchMetricAlarmAttributes,
       outputs: { id: :id },
       map: [:alarm_name, :comparison_operator, :evaluation_periods],
-      map_present: [:alarm_actions, :alarm_description, :datapoints_to_alarm, :dimensions, :evaluate_low_sample_count_percentiles, :extended_statistic, :insufficient_data_actions, :metric_name, :metric_query, :namespace, :ok_actions, :period, :statistic, :tags, :tags_all, :threshold, :threshold_metric_id, :treat_missing_data, :unit],
+      map_present: [:alarm_actions, :alarm_description, :datapoints_to_alarm, :dimensions, :evaluate_low_sample_count_percentiles, :extended_statistic, :insufficient_data_actions, :metric_name, :metric_query, :namespace, :ok_actions, :period, :region, :statistic, :tags, :tags_all, :threshold, :threshold_metric_id, :treat_missing_data, :unit],
       map_bool: [:actions_enabled]
   end
   module AWS

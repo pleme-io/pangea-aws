@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2HostAttributes,
       outputs: { id: :id },
       map: [:availability_zone],
-      map_present: [:asset_id, :auto_placement, :host_recovery, :instance_family, :instance_type, :outpost_arn, :tags, :tags_all]
+      map_present: [:asset_id, :auto_placement, :host_recovery, :instance_family, :instance_type, :outpost_arn, :region, :tags, :tags_all]
   end
   module AWS
     include AWSEc2Host

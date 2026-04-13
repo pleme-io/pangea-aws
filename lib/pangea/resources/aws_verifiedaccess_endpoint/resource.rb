@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VerifiedaccessEndpointAttributes,
       outputs: { id: :id },
       map: [:attachment_type, :endpoint_type, :verified_access_group_id],
-      map_present: [:application_domain, :cidr_options, :description, :domain_certificate_arn, :endpoint_domain_prefix, :load_balancer_options, :network_interface_options, :policy_document, :rds_options, :security_group_ids, :sse_specification, :tags, :tags_all]
+      map_present: [:application_domain, :cidr_options, :description, :domain_certificate_arn, :endpoint_domain_prefix, :load_balancer_options, :network_interface_options, :policy_document, :rds_options, :region, :security_group_ids, :sse_specification, :tags, :tags_all]
   end
   module AWS
     include AWSVerifiedaccessEndpoint

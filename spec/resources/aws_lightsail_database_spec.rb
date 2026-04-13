@@ -52,6 +52,7 @@ RSpec.describe Pangea::Resources::AWSLightsailDatabase do
         expect(ref.preferred_backup_window).to eq("${aws_lightsail_database.test.preferred_backup_window}")
         expect(ref.preferred_maintenance_window).to eq("${aws_lightsail_database.test.preferred_maintenance_window}")
         expect(ref.ram_size).to eq("${aws_lightsail_database.test.ram_size}")
+        expect(ref.region).to eq("${aws_lightsail_database.test.region}")
         expect(ref.secondary_availability_zone).to eq("${aws_lightsail_database.test.secondary_availability_zone}")
         expect(ref.support_code).to eq("${aws_lightsail_database.test.support_code}")
         expect(ref.tags_all).to eq("${aws_lightsail_database.test.tags_all}")
@@ -80,6 +81,7 @@ RSpec.describe Pangea::Resources::AWSLightsailDatabase do
         expect(config).not_to have_key('preferred_backup_window')
         expect(config).not_to have_key('preferred_maintenance_window')
         expect(config).not_to have_key('ram_size')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('secondary_availability_zone')
         expect(config).not_to have_key('support_code')
         expect(config).not_to have_key('tags_all')
@@ -87,7 +89,7 @@ RSpec.describe Pangea::Resources::AWSLightsailDatabase do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ backup_retention_enabled: true, final_snapshot_name: 'test-value', publicly_accessible: true, skip_final_snapshot: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ apply_immediately: true, availability_zone: 'test-value', backup_retention_enabled: true, final_snapshot_name: 'test-value', preferred_backup_window: 'test-value', preferred_maintenance_window: 'test-value', publicly_accessible: true, region: 'test-value', skip_final_snapshot: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -96,15 +98,55 @@ RSpec.describe Pangea::Resources::AWSLightsailDatabase do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lightsail_database', 'full')
+        expect(config).to have_key('apply_immediately')
+        expect(config).to have_key('availability_zone')
         expect(config).to have_key('backup_retention_enabled')
         expect(config).to have_key('final_snapshot_name')
+        expect(config).to have_key('preferred_backup_window')
+        expect(config).to have_key('preferred_maintenance_window')
         expect(config).to have_key('publicly_accessible')
+        expect(config).to have_key('region')
         expect(config).to have_key('skip_final_snapshot')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes apply_immediately when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_database('opt', required_attrs.merge(apply_immediately: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_database', 'opt')
+        expect(config).to have_key('apply_immediately')
+      end
+
+      it 'omits apply_immediately when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_database('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_database', 'minimal')
+        expect(config).not_to have_key('apply_immediately')
+      end
+      it 'includes availability_zone when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_database('opt', required_attrs.merge(availability_zone: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_database', 'opt')
+        expect(config).to have_key('availability_zone')
+      end
+
+      it 'omits availability_zone when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_database('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_database', 'minimal')
+        expect(config).not_to have_key('availability_zone')
+      end
       it 'includes backup_retention_enabled when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -139,6 +181,40 @@ RSpec.describe Pangea::Resources::AWSLightsailDatabase do
         config = validate_resource_structure(result, 'aws_lightsail_database', 'minimal')
         expect(config).not_to have_key('final_snapshot_name')
       end
+      it 'includes preferred_backup_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_database('opt', required_attrs.merge(preferred_backup_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_database', 'opt')
+        expect(config).to have_key('preferred_backup_window')
+      end
+
+      it 'omits preferred_backup_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_database('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_database', 'minimal')
+        expect(config).not_to have_key('preferred_backup_window')
+      end
+      it 'includes preferred_maintenance_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_database('opt', required_attrs.merge(preferred_maintenance_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_database', 'opt')
+        expect(config).to have_key('preferred_maintenance_window')
+      end
+
+      it 'omits preferred_maintenance_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_database('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_database', 'minimal')
+        expect(config).not_to have_key('preferred_maintenance_window')
+      end
       it 'includes publicly_accessible when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -155,6 +231,23 @@ RSpec.describe Pangea::Resources::AWSLightsailDatabase do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_database', 'minimal')
         expect(config).not_to have_key('publicly_accessible')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_database('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_database', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_database('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_database', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes skip_final_snapshot when provided' do
         synth = create_synthesizer
@@ -190,6 +283,23 @@ RSpec.describe Pangea::Resources::AWSLightsailDatabase do
         config = validate_resource_structure(result, 'aws_lightsail_database', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_database('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_database', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_database('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_database', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'sensitive fields' do
@@ -200,6 +310,17 @@ RSpec.describe Pangea::Resources::AWSLightsailDatabase do
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts apply_immediately=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(apply_immediately: val)
+          synth.aws_lightsail_database("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_lightsail_database', "bool_#{val}")
+          expect(config['apply_immediately']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts backup_retention_enabled=#{val}" do
           synth = create_synthesizer
@@ -282,8 +403,8 @@ RSpec.describe Pangea::Resources::AWSLightsailDatabase do
     resource_type: :aws_lightsail_database,
     method: :aws_lightsail_database,
     required_attrs: { blueprint_id: 'test-value', bundle_id: 'test-value', master_database_name: 'test-value', master_password: 'test-value', master_username: 'test-value', relational_database_name: 'test-value' },
-    expected_outputs: [:id, :apply_immediately, :arn, :availability_zone, :ca_certificate_identifier, :cpu_count, :created_at, :disk_size, :engine, :engine_version, :master_endpoint_address, :master_endpoint_port, :preferred_backup_window, :preferred_maintenance_window, :ram_size, :secondary_availability_zone, :support_code, :tags_all],
+    expected_outputs: [:id, :apply_immediately, :arn, :availability_zone, :ca_certificate_identifier, :cpu_count, :created_at, :disk_size, :engine, :engine_version, :master_endpoint_address, :master_endpoint_port, :preferred_backup_window, :preferred_maintenance_window, :ram_size, :region, :secondary_availability_zone, :support_code, :tags_all],
     sensitive_fields: [:master_password],
     immutable_fields: [],
-    boolean_fields: [:backup_retention_enabled, :publicly_accessible, :skip_final_snapshot]
+    boolean_fields: [:apply_immediately, :backup_retention_enabled, :publicly_accessible, :skip_final_snapshot]
 end

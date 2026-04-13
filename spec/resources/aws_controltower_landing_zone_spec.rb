@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSControltowerLandingZone do
         expect(ref.arn).to eq("${aws_controltower_landing_zone.test.arn}")
         expect(ref.drift_status).to eq("${aws_controltower_landing_zone.test.drift_status}")
         expect(ref.latest_available_version).to eq("${aws_controltower_landing_zone.test.latest_available_version}")
+        expect(ref.region).to eq("${aws_controltower_landing_zone.test.region}")
         expect(ref.tags_all).to eq("${aws_controltower_landing_zone.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSControltowerLandingZone do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('drift_status')
         expect(config).not_to have_key('latest_available_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', remediation_types: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,11 +72,48 @@ RSpec.describe Pangea::Resources::AWSControltowerLandingZone do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_controltower_landing_zone', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('remediation_types')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_controltower_landing_zone('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_controltower_landing_zone', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_controltower_landing_zone('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_controltower_landing_zone', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes remediation_types when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_controltower_landing_zone('opt', required_attrs.merge(remediation_types: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_controltower_landing_zone', 'opt')
+        expect(config).to have_key('remediation_types')
+      end
+
+      it 'omits remediation_types when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_controltower_landing_zone('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_controltower_landing_zone', 'minimal')
+        expect(config).not_to have_key('remediation_types')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -91,6 +130,23 @@ RSpec.describe Pangea::Resources::AWSControltowerLandingZone do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_controltower_landing_zone', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_controltower_landing_zone('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_controltower_landing_zone', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_controltower_landing_zone('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_controltower_landing_zone', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -137,7 +193,7 @@ RSpec.describe Pangea::Resources::AWSControltowerLandingZone do
     resource_type: :aws_controltower_landing_zone,
     method: :aws_controltower_landing_zone,
     required_attrs: { manifest_json: 'test-value', version: 'test-value' },
-    expected_outputs: [:id, :arn, :drift_status, :latest_available_version, :tags_all],
+    expected_outputs: [:id, :arn, :drift_status, :latest_available_version, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

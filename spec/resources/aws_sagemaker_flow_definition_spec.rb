@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSagemakerFlowDefinition do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { flow_definition_name: 'test-value', human_loop_config: [{ 'key1' => 'val1' }], output_config: [{ 'key1' => 'val1' }], role_arn: 'test-value' } }
+  let(:required_attrs) { { flow_definition_name: 'test-value', human_loop_config: { 'key1' => 'val1' }, output_config: { 'key1' => 'val1' }, role_arn: 'test-value' } }
 
   describe ':aws_sagemaker_flow_definition' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerFlowDefinition do
 
         expect(ref.id).to eq("${aws_sagemaker_flow_definition.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_flow_definition.test.arn}")
+        expect(ref.region).to eq("${aws_sagemaker_flow_definition.test.region}")
         expect(ref.tags_all).to eq("${aws_sagemaker_flow_definition.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSSagemakerFlowDefinition do
 
         config = validate_resource_structure(result, 'aws_sagemaker_flow_definition', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ human_loop_activation_config: [{ 'key1' => 'val1' }], human_loop_request_source: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ human_loop_activation_config: { 'key1' => 'val1' }, human_loop_request_source: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,7 +70,9 @@ RSpec.describe Pangea::Resources::AWSSagemakerFlowDefinition do
         config = validate_resource_structure(result, 'aws_sagemaker_flow_definition', 'full')
         expect(config).to have_key('human_loop_activation_config')
         expect(config).to have_key('human_loop_request_source')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -76,7 +80,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerFlowDefinition do
       it 'includes human_loop_activation_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_flow_definition('opt', required_attrs.merge(human_loop_activation_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_flow_definition('opt', required_attrs.merge(human_loop_activation_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_flow_definition', 'opt')
         expect(config).to have_key('human_loop_activation_config')
@@ -93,7 +97,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerFlowDefinition do
       it 'includes human_loop_request_source when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_flow_definition('opt', required_attrs.merge(human_loop_request_source: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_flow_definition('opt', required_attrs.merge(human_loop_request_source: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_flow_definition', 'opt')
         expect(config).to have_key('human_loop_request_source')
@@ -106,6 +110,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerFlowDefinition do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_flow_definition', 'minimal')
         expect(config).not_to have_key('human_loop_request_source')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_flow_definition('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_flow_definition', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_flow_definition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_flow_definition', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -124,6 +145,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerFlowDefinition do
         config = validate_resource_structure(result, 'aws_sagemaker_flow_definition', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_flow_definition('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_flow_definition', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_flow_definition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_flow_definition', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -135,8 +173,8 @@ RSpec.describe Pangea::Resources::AWSSagemakerFlowDefinition do
 
         config = validate_resource_structure(result, 'aws_sagemaker_flow_definition', 'typed')
         expect(config['flow_definition_name']).to be_a(String)
-        expect(config['human_loop_config']).to be_a(Array)
-        expect(config['output_config']).to be_a(Array)
+        expect(config['human_loop_config']).to be_a(Hash)
+        expect(config['output_config']).to be_a(Hash)
         expect(config['role_arn']).to be_a(String)
       end
     end
@@ -170,8 +208,8 @@ RSpec.describe Pangea::Resources::AWSSagemakerFlowDefinition do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_sagemaker_flow_definition,
     method: :aws_sagemaker_flow_definition,
-    required_attrs: { flow_definition_name: 'test-value', human_loop_config: [{ 'key1' => 'val1' }], output_config: [{ 'key1' => 'val1' }], role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    required_attrs: { flow_definition_name: 'test-value', human_loop_config: { 'key1' => 'val1' }, output_config: { 'key1' => 'val1' }, role_arn: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_devopsguru_event_sources_config,
       attributes_class: AWS::Types::DevopsguruEventSourcesConfigAttributes,
       outputs: { id: :id },
-      map_present: [:event_sources]
+      map_present: [:event_sources, :region]
   end
   module AWS
     include AWSDevopsguruEventSourcesConfig

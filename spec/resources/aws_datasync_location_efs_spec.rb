@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSDatasyncLocationEfs do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { ec2_config: [{ 'key1' => 'val1' }], efs_file_system_arn: 'test-value' } }
+  let(:required_attrs) { { ec2_config: { 'key1' => 'val1' }, efs_file_system_arn: 'test-value' } }
 
   describe ':aws_datasync_location_efs' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationEfs do
 
         expect(ref.id).to eq("${aws_datasync_location_efs.test.id}")
         expect(ref.arn).to eq("${aws_datasync_location_efs.test.arn}")
+        expect(ref.region).to eq("${aws_datasync_location_efs.test.region}")
         expect(ref.tags_all).to eq("${aws_datasync_location_efs.test.tags_all}")
         expect(ref.uri).to eq("${aws_datasync_location_efs.test.uri}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationEfs do
 
         config = validate_resource_structure(result, 'aws_datasync_location_efs', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('uri')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_point_arn: 'test-value', file_system_access_role_arn: 'test-value', in_transit_encryption: 'test-value', subdirectory: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ access_point_arn: 'test-value', file_system_access_role_arn: 'test-value', in_transit_encryption: 'test-value', region: 'test-value', subdirectory: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,8 +73,10 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationEfs do
         expect(config).to have_key('access_point_arn')
         expect(config).to have_key('file_system_access_role_arn')
         expect(config).to have_key('in_transit_encryption')
+        expect(config).to have_key('region')
         expect(config).to have_key('subdirectory')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -128,6 +132,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationEfs do
         config = validate_resource_structure(result, 'aws_datasync_location_efs', 'minimal')
         expect(config).not_to have_key('in_transit_encryption')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_efs('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_efs', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_efs('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_efs', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes subdirectory when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -162,6 +183,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationEfs do
         config = validate_resource_structure(result, 'aws_datasync_location_efs', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_efs('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_efs', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_efs('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_efs', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -172,7 +210,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationEfs do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_datasync_location_efs', 'typed')
-        expect(config['ec2_config']).to be_a(Array)
+        expect(config['ec2_config']).to be_a(Hash)
         expect(config['efs_file_system_arn']).to be_a(String)
       end
     end
@@ -206,8 +244,8 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationEfs do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_datasync_location_efs,
     method: :aws_datasync_location_efs,
-    required_attrs: { ec2_config: [{ 'key1' => 'val1' }], efs_file_system_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all, :uri],
+    required_attrs: { ec2_config: { 'key1' => 'val1' }, efs_file_system_arn: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :tags_all, :uri],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

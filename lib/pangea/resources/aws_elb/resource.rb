@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElbAttributes,
       outputs: { id: :id },
       map: [:listener],
-      map_present: [:access_logs, :availability_zones, :connection_draining_timeout, :desync_mitigation_mode, :health_check, :idle_timeout, :instances, :name, :name_prefix, :security_groups, :source_security_group, :subnets, :tags, :tags_all],
+      map_present: [:access_logs, :availability_zones, :connection_draining_timeout, :desync_mitigation_mode, :health_check, :idle_timeout, :instances, :name, :name_prefix, :region, :security_groups, :source_security_group, :subnets, :tags, :tags_all],
       map_bool: [:connection_draining, :cross_zone_load_balancing, :internal]
   end
   module AWS

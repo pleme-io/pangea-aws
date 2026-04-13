@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayStage do
         expect(ref.arn).to eq("${aws_api_gateway_stage.test.arn}")
         expect(ref.execution_arn).to eq("${aws_api_gateway_stage.test.execution_arn}")
         expect(ref.invoke_url).to eq("${aws_api_gateway_stage.test.invoke_url}")
+        expect(ref.region).to eq("${aws_api_gateway_stage.test.region}")
         expect(ref.tags_all).to eq("${aws_api_gateway_stage.test.tags_all}")
         expect(ref.web_acl_arn).to eq("${aws_api_gateway_stage.test.web_acl_arn}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSApiGatewayStage do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('execution_arn')
         expect(config).not_to have_key('invoke_url')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('web_acl_arn')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_log_settings: [{ 'key1' => 'val1' }], cache_cluster_enabled: true, cache_cluster_size: 'test-value', canary_settings: [{ 'key1' => 'val1' }], client_certificate_id: 'test-value', description: 'test-value', documentation_version: 'test-value', tags: { 'key1' => 'val1' }, variables: { 'key1' => 'val1' }, xray_tracing_enabled: true }) }
+      let(:all_attrs) { required_attrs.merge({ access_log_settings: { 'key1' => 'val1' }, cache_cluster_enabled: true, cache_cluster_size: 'test-value', canary_settings: { 'key1' => 'val1' }, client_certificate_id: 'test-value', description: 'test-value', documentation_version: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, variables: { 'key1' => 'val1' }, xray_tracing_enabled: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,7 +81,9 @@ RSpec.describe Pangea::Resources::AWSApiGatewayStage do
         expect(config).to have_key('client_certificate_id')
         expect(config).to have_key('description')
         expect(config).to have_key('documentation_version')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('variables')
         expect(config).to have_key('xray_tracing_enabled')
       end
@@ -89,7 +93,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayStage do
       it 'includes access_log_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_api_gateway_stage('opt', required_attrs.merge(access_log_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_api_gateway_stage('opt', required_attrs.merge(access_log_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_stage', 'opt')
         expect(config).to have_key('access_log_settings')
@@ -140,7 +144,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayStage do
       it 'includes canary_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_api_gateway_stage('opt', required_attrs.merge(canary_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_api_gateway_stage('opt', required_attrs.merge(canary_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_stage', 'opt')
         expect(config).to have_key('canary_settings')
@@ -205,6 +209,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayStage do
         config = validate_resource_structure(result, 'aws_api_gateway_stage', 'minimal')
         expect(config).not_to have_key('documentation_version')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_stage('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_stage', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_stage('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_stage', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -221,6 +242,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayStage do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_stage', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_stage('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_stage', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_stage('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_stage', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes variables when provided' do
         synth = create_synthesizer
@@ -327,7 +365,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayStage do
     resource_type: :aws_api_gateway_stage,
     method: :aws_api_gateway_stage,
     required_attrs: { deployment_id: 'test-value', rest_api_id: 'test-value', stage_name: 'test-value' },
-    expected_outputs: [:id, :arn, :execution_arn, :invoke_url, :tags_all, :web_acl_arn],
+    expected_outputs: [:id, :arn, :execution_arn, :invoke_url, :region, :tags_all, :web_acl_arn],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:cache_cluster_enabled, :xray_tracing_enabled]

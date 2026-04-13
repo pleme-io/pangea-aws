@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSPaymentcryptographyKeyAlias do
         ref = synth.aws_paymentcryptography_key_alias('test', required_attrs)
 
         expect(ref.id).to eq("${aws_paymentcryptography_key_alias.test.id}")
+        expect(ref.region).to eq("${aws_paymentcryptography_key_alias.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_paymentcryptography_key_alias('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_paymentcryptography_key_alias', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ key_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ key_arn: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSPaymentcryptographyKeyAlias do
 
         config = validate_resource_structure(result, 'aws_paymentcryptography_key_alias', 'full')
         expect(config).to have_key('key_arn')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSPaymentcryptographyKeyAlias do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_paymentcryptography_key_alias', 'minimal')
         expect(config).not_to have_key('key_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_paymentcryptography_key_alias('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_paymentcryptography_key_alias', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_paymentcryptography_key_alias('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_paymentcryptography_key_alias', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -117,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSPaymentcryptographyKeyAlias do
     resource_type: :aws_paymentcryptography_key_alias,
     method: :aws_paymentcryptography_key_alias,
     required_attrs: { alias_name: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

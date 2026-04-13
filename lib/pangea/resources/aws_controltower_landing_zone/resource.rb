@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ControltowerLandingZoneAttributes,
       outputs: { id: :id },
       map: [:manifest_json, :version],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :remediation_types, :tags, :tags_all]
   end
   module AWS
     include AWSControltowerLandingZone

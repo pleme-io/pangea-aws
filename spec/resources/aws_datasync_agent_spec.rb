@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncAgent do
         expect(ref.arn).to eq("${aws_datasync_agent.test.arn}")
         expect(ref.ip_address).to eq("${aws_datasync_agent.test.ip_address}")
         expect(ref.private_link_endpoint).to eq("${aws_datasync_agent.test.private_link_endpoint}")
+        expect(ref.region).to eq("${aws_datasync_agent.test.region}")
         expect(ref.tags_all).to eq("${aws_datasync_agent.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSDatasyncAgent do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('ip_address')
         expect(config).not_to have_key('private_link_endpoint')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ name: 'test-value', security_group_arns: ['test-value'], subnet_arns: ['test-value'], tags: { 'key1' => 'val1' }, vpc_endpoint_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ activation_key: 'test-value', ip_address: 'test-value', name: 'test-value', private_link_endpoint: 'test-value', region: 'test-value', security_group_arns: ['test-value'], subnet_arns: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_endpoint_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,15 +74,54 @@ RSpec.describe Pangea::Resources::AWSDatasyncAgent do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_datasync_agent', 'full')
+        expect(config).to have_key('activation_key')
+        expect(config).to have_key('ip_address')
         expect(config).to have_key('name')
+        expect(config).to have_key('private_link_endpoint')
+        expect(config).to have_key('region')
         expect(config).to have_key('security_group_arns')
         expect(config).to have_key('subnet_arns')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc_endpoint_id')
       end
     end
 
     context 'optional attributes' do
+      it 'includes activation_key when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_agent('opt', required_attrs.merge(activation_key: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_agent', 'opt')
+        expect(config).to have_key('activation_key')
+      end
+
+      it 'omits activation_key when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_agent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_agent', 'minimal')
+        expect(config).not_to have_key('activation_key')
+      end
+      it 'includes ip_address when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_agent('opt', required_attrs.merge(ip_address: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_agent', 'opt')
+        expect(config).to have_key('ip_address')
+      end
+
+      it 'omits ip_address when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_agent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_agent', 'minimal')
+        expect(config).not_to have_key('ip_address')
+      end
       it 'includes name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -97,6 +138,40 @@ RSpec.describe Pangea::Resources::AWSDatasyncAgent do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_agent', 'minimal')
         expect(config).not_to have_key('name')
+      end
+      it 'includes private_link_endpoint when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_agent('opt', required_attrs.merge(private_link_endpoint: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_agent', 'opt')
+        expect(config).to have_key('private_link_endpoint')
+      end
+
+      it 'omits private_link_endpoint when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_agent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_agent', 'minimal')
+        expect(config).not_to have_key('private_link_endpoint')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_agent('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_agent', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_agent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_agent', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes security_group_arns when provided' do
         synth = create_synthesizer
@@ -148,6 +223,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncAgent do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_agent', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_agent('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_agent', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_agent('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_agent', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes vpc_endpoint_id when provided' do
         synth = create_synthesizer
@@ -209,7 +301,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncAgent do
     resource_type: :aws_datasync_agent,
     method: :aws_datasync_agent,
     required_attrs: {},
-    expected_outputs: [:id, :activation_key, :arn, :ip_address, :private_link_endpoint, :tags_all],
+    expected_outputs: [:id, :activation_key, :arn, :ip_address, :private_link_endpoint, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

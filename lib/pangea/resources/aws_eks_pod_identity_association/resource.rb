@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::EksPodIdentityAssociationAttributes,
       outputs: { id: :id },
       map: [:cluster_name, :namespace, :role_arn, :service_account],
-      map_present: [:tags]
+      map_present: [:region, :tags, :target_role_arn],
+      map_bool: [:disable_session_tags]
   end
   module AWS
     include AWSEksPodIdentityAssociation

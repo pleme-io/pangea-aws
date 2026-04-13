@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EcrPullThroughCacheRuleAttributes,
       outputs: { id: :id },
       map: [:ecr_repository_prefix, :upstream_registry_url],
-      map_present: [:credential_arn, :custom_role_arn, :upstream_repository_prefix]
+      map_present: [:credential_arn, :custom_role_arn, :region, :upstream_repository_prefix]
   end
   module AWS
     include AWSEcrPullThroughCacheRule

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_licensemanager_association,
       attributes_class: AWS::Types::LicensemanagerAssociationAttributes,
       outputs: { id: :id },
-      map: [:license_configuration_arn, :resource_arn]
+      map: [:license_configuration_arn, :resource_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSLicensemanagerAssociation

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::PinpointSmsChannelAttributes,
       outputs: { id: :id },
       map: [:application_id],
-      map_present: [:sender_id, :short_code],
+      map_present: [:region, :sender_id, :short_code],
       map_bool: [:enabled]
   end
   module AWS

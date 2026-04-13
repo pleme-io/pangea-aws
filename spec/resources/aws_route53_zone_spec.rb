@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSRoute53Zone do
 
         expect(ref.id).to eq("${aws_route53_zone.test.id}")
         expect(ref.arn).to eq("${aws_route53_zone.test.arn}")
+        expect(ref.enable_accelerated_recovery).to eq("${aws_route53_zone.test.enable_accelerated_recovery}")
         expect(ref.name_servers).to eq("${aws_route53_zone.test.name_servers}")
         expect(ref.primary_name_server).to eq("${aws_route53_zone.test.primary_name_server}")
         expect(ref.tags_all).to eq("${aws_route53_zone.test.tags_all}")
@@ -55,6 +56,7 @@ RSpec.describe Pangea::Resources::AWSRoute53Zone do
 
         config = validate_resource_structure(result, 'aws_route53_zone', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('enable_accelerated_recovery')
         expect(config).not_to have_key('name_servers')
         expect(config).not_to have_key('primary_name_server')
         expect(config).not_to have_key('tags_all')
@@ -63,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSRoute53Zone do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ comment: 'test-value', delegation_set_id: 'test-value', force_destroy: true, tags: { 'key1' => 'val1' }, vpc: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ comment: 'test-value', delegation_set_id: 'test-value', enable_accelerated_recovery: true, force_destroy: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,8 +76,10 @@ RSpec.describe Pangea::Resources::AWSRoute53Zone do
         config = validate_resource_structure(result, 'aws_route53_zone', 'full')
         expect(config).to have_key('comment')
         expect(config).to have_key('delegation_set_id')
+        expect(config).to have_key('enable_accelerated_recovery')
         expect(config).to have_key('force_destroy')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc')
       end
     end
@@ -115,6 +119,23 @@ RSpec.describe Pangea::Resources::AWSRoute53Zone do
         config = validate_resource_structure(result, 'aws_route53_zone', 'minimal')
         expect(config).not_to have_key('delegation_set_id')
       end
+      it 'includes enable_accelerated_recovery when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_zone('opt', required_attrs.merge(enable_accelerated_recovery: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_zone', 'opt')
+        expect(config).to have_key('enable_accelerated_recovery')
+      end
+
+      it 'omits enable_accelerated_recovery when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_zone('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_zone', 'minimal')
+        expect(config).not_to have_key('enable_accelerated_recovery')
+      end
       it 'includes force_destroy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -149,6 +170,23 @@ RSpec.describe Pangea::Resources::AWSRoute53Zone do
         config = validate_resource_structure(result, 'aws_route53_zone', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_zone('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_zone', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_zone('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_zone', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes vpc when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -169,6 +207,17 @@ RSpec.describe Pangea::Resources::AWSRoute53Zone do
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts enable_accelerated_recovery=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enable_accelerated_recovery: val)
+          synth.aws_route53_zone("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_route53_zone', "bool_#{val}")
+          expect(config['enable_accelerated_recovery']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts force_destroy=#{val}" do
           synth = create_synthesizer
@@ -224,8 +273,8 @@ RSpec.describe Pangea::Resources::AWSRoute53Zone do
     resource_type: :aws_route53_zone,
     method: :aws_route53_zone,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :name_servers, :primary_name_server, :tags_all, :zone_id],
+    expected_outputs: [:id, :arn, :enable_accelerated_recovery, :name_servers, :primary_name_server, :tags_all, :zone_id],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:force_destroy]
+    boolean_fields: [:enable_accelerated_recovery, :force_destroy]
 end

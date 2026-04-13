@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSQuicksightDataSource do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { data_source_id: 'test-value', name: 'test-value', parameters: [{ 'key1' => 'val1' }], type: 'test-value' } }
+  let(:required_attrs) { { data_source_id: 'test-value', name: 'test-value', parameters: { 'key1' => 'val1' }, type: 'test-value' } }
 
   describe ':aws_quicksight_data_source' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightDataSource do
         expect(ref.id).to eq("${aws_quicksight_data_source.test.id}")
         expect(ref.arn).to eq("${aws_quicksight_data_source.test.arn}")
         expect(ref.aws_account_id).to eq("${aws_quicksight_data_source.test.aws_account_id}")
+        expect(ref.region).to eq("${aws_quicksight_data_source.test.region}")
         expect(ref.tags_all).to eq("${aws_quicksight_data_source.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSQuicksightDataSource do
         config = validate_resource_structure(result, 'aws_quicksight_data_source', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('aws_account_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ credentials: [{ 'key1' => 'val1' }], permission: [{ 'key1' => 'val1' }], ssl_properties: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, vpc_connection_properties: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ aws_account_id: 'test-value', credentials: { 'key1' => 'val1' }, permission: [{ 'key1' => 'val1' }], region: 'test-value', ssl_properties: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_connection_properties: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,19 +70,39 @@ RSpec.describe Pangea::Resources::AWSQuicksightDataSource do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_quicksight_data_source', 'full')
+        expect(config).to have_key('aws_account_id')
         expect(config).to have_key('credentials')
         expect(config).to have_key('permission')
+        expect(config).to have_key('region')
         expect(config).to have_key('ssl_properties')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc_connection_properties')
       end
     end
 
     context 'optional attributes' do
+      it 'includes aws_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_data_source('opt', required_attrs.merge(aws_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_data_source', 'opt')
+        expect(config).to have_key('aws_account_id')
+      end
+
+      it 'omits aws_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_data_source('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_data_source', 'minimal')
+        expect(config).not_to have_key('aws_account_id')
+      end
       it 'includes credentials when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_quicksight_data_source('opt', required_attrs.merge(credentials: [{ 'key1' => 'val1' }]))
+        synth.aws_quicksight_data_source('opt', required_attrs.merge(credentials: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_data_source', 'opt')
         expect(config).to have_key('credentials')
@@ -111,10 +133,27 @@ RSpec.describe Pangea::Resources::AWSQuicksightDataSource do
         config = validate_resource_structure(result, 'aws_quicksight_data_source', 'minimal')
         expect(config).not_to have_key('permission')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_data_source('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_data_source', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_data_source('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_data_source', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes ssl_properties when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_quicksight_data_source('opt', required_attrs.merge(ssl_properties: [{ 'key1' => 'val1' }]))
+        synth.aws_quicksight_data_source('opt', required_attrs.merge(ssl_properties: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_data_source', 'opt')
         expect(config).to have_key('ssl_properties')
@@ -145,10 +184,27 @@ RSpec.describe Pangea::Resources::AWSQuicksightDataSource do
         config = validate_resource_structure(result, 'aws_quicksight_data_source', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_data_source('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_data_source', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_data_source('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_data_source', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes vpc_connection_properties when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_quicksight_data_source('opt', required_attrs.merge(vpc_connection_properties: [{ 'key1' => 'val1' }]))
+        synth.aws_quicksight_data_source('opt', required_attrs.merge(vpc_connection_properties: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_data_source', 'opt')
         expect(config).to have_key('vpc_connection_properties')
@@ -174,7 +230,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightDataSource do
         config = validate_resource_structure(result, 'aws_quicksight_data_source', 'typed')
         expect(config['data_source_id']).to be_a(String)
         expect(config['name']).to be_a(String)
-        expect(config['parameters']).to be_a(Array)
+        expect(config['parameters']).to be_a(Hash)
         expect(config['type']).to be_a(String)
       end
     end
@@ -208,8 +264,8 @@ RSpec.describe Pangea::Resources::AWSQuicksightDataSource do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_quicksight_data_source,
     method: :aws_quicksight_data_source,
-    required_attrs: { data_source_id: 'test-value', name: 'test-value', parameters: [{ 'key1' => 'val1' }], type: 'test-value' },
-    expected_outputs: [:id, :arn, :aws_account_id, :tags_all],
+    required_attrs: { data_source_id: 'test-value', name: 'test-value', parameters: { 'key1' => 'val1' }, type: 'test-value' },
+    expected_outputs: [:id, :arn, :aws_account_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

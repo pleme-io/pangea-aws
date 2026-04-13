@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSnsPlatformApplication do
 
         expect(ref.id).to eq("${aws_sns_platform_application.test.id}")
         expect(ref.arn).to eq("${aws_sns_platform_application.test.arn}")
+        expect(ref.region).to eq("${aws_sns_platform_application.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSSnsPlatformApplication do
 
         config = validate_resource_structure(result, 'aws_sns_platform_application', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ apple_platform_bundle_id: 'test-value', apple_platform_team_id: 'test-value', event_delivery_failure_topic_arn: 'test-value', event_endpoint_created_topic_arn: 'test-value', event_endpoint_deleted_topic_arn: 'test-value', event_endpoint_updated_topic_arn: 'test-value', failure_feedback_role_arn: 'test-value', platform_principal: 'test-value', success_feedback_role_arn: 'test-value', success_feedback_sample_rate: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ apple_platform_bundle_id: 'test-value', apple_platform_team_id: 'test-value', event_delivery_failure_topic_arn: 'test-value', event_endpoint_created_topic_arn: 'test-value', event_endpoint_deleted_topic_arn: 'test-value', event_endpoint_updated_topic_arn: 'test-value', failure_feedback_role_arn: 'test-value', platform_principal: 'test-value', region: 'test-value', success_feedback_role_arn: 'test-value', success_feedback_sample_rate: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,6 +74,7 @@ RSpec.describe Pangea::Resources::AWSSnsPlatformApplication do
         expect(config).to have_key('event_endpoint_updated_topic_arn')
         expect(config).to have_key('failure_feedback_role_arn')
         expect(config).to have_key('platform_principal')
+        expect(config).to have_key('region')
         expect(config).to have_key('success_feedback_role_arn')
         expect(config).to have_key('success_feedback_sample_rate')
       end
@@ -214,6 +217,23 @@ RSpec.describe Pangea::Resources::AWSSnsPlatformApplication do
         config = validate_resource_structure(result, 'aws_sns_platform_application', 'minimal')
         expect(config).not_to have_key('platform_principal')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_platform_application('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_platform_application', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_platform_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_platform_application', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes success_feedback_role_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -302,7 +322,7 @@ RSpec.describe Pangea::Resources::AWSSnsPlatformApplication do
     resource_type: :aws_sns_platform_application,
     method: :aws_sns_platform_application,
     required_attrs: { name: 'test-value', platform: 'test-value', platform_credential: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [:platform_credential, :platform_principal],
     immutable_fields: [],
     boolean_fields: []

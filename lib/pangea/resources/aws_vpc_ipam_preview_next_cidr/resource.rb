@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcIpamPreviewNextCidrAttributes,
       outputs: { id: :id },
       map: [:ipam_pool_id],
-      map_present: [:disallowed_cidrs, :netmask_length]
+      map_present: [:disallowed_cidrs, :netmask_length, :region]
   end
   module AWS
     include AWSVpcIpamPreviewNextCidr

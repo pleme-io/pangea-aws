@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_route53_resolver_dnssec_config,
       attributes_class: AWS::Types::Route53ResolverDnssecConfigAttributes,
       outputs: { id: :id },
-      map: [:resource_id]
+      map: [:resource_id],
+      map_present: [:region]
   end
   module AWS
     include AWSRoute53ResolverDnssecConfig

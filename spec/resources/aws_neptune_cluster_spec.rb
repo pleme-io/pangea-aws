@@ -55,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSNeptuneCluster do
         expect(ref.preferred_backup_window).to eq("${aws_neptune_cluster.test.preferred_backup_window}")
         expect(ref.preferred_maintenance_window).to eq("${aws_neptune_cluster.test.preferred_maintenance_window}")
         expect(ref.reader_endpoint).to eq("${aws_neptune_cluster.test.reader_endpoint}")
+        expect(ref.region).to eq("${aws_neptune_cluster.test.region}")
         expect(ref.storage_type).to eq("${aws_neptune_cluster.test.storage_type}")
         expect(ref.tags_all).to eq("${aws_neptune_cluster.test.tags_all}")
         expect(ref.vpc_security_group_ids).to eq("${aws_neptune_cluster.test.vpc_security_group_ids}")
@@ -86,6 +87,7 @@ RSpec.describe Pangea::Resources::AWSNeptuneCluster do
         expect(config).not_to have_key('preferred_backup_window')
         expect(config).not_to have_key('preferred_maintenance_window')
         expect(config).not_to have_key('reader_endpoint')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('storage_type')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_security_group_ids')
@@ -93,7 +95,7 @@ RSpec.describe Pangea::Resources::AWSNeptuneCluster do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ backup_retention_period: 3.14, copy_tags_to_snapshot: true, deletion_protection: true, enable_cloudwatch_logs_exports: ['test-value'], engine: 'test-value', final_snapshot_identifier: 'test-value', global_cluster_identifier: 'test-value', iam_database_authentication_enabled: true, iam_roles: ['test-value'], neptune_instance_parameter_group_name: 'test-value', port: 3.14, replication_source_identifier: 'test-value', serverless_v2_scaling_configuration: [{ 'key1' => 'val1' }], skip_final_snapshot: true, snapshot_identifier: 'test-value', storage_encrypted: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ allow_major_version_upgrade: true, apply_immediately: true, availability_zones: ['test-value'], backup_retention_period: 3.14, cluster_identifier: 'test-value', cluster_identifier_prefix: 'test-value', copy_tags_to_snapshot: true, deletion_protection: true, enable_cloudwatch_logs_exports: ['test-value'], engine: 'test-value', engine_version: 'test-value', final_snapshot_identifier: 'test-value', global_cluster_identifier: 'test-value', iam_database_authentication_enabled: true, iam_roles: ['test-value'], kms_key_arn: 'test-value', neptune_cluster_parameter_group_name: 'test-value', neptune_instance_parameter_group_name: 'test-value', neptune_subnet_group_name: 'test-value', port: 3.14, preferred_backup_window: 'test-value', preferred_maintenance_window: 'test-value', region: 'test-value', replication_source_identifier: 'test-value', serverless_v2_scaling_configuration: { 'key1' => 'val1' }, skip_final_snapshot: true, snapshot_identifier: 'test-value', storage_encrypted: true, storage_type: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_security_group_ids: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -102,27 +104,93 @@ RSpec.describe Pangea::Resources::AWSNeptuneCluster do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_neptune_cluster', 'full')
+        expect(config).to have_key('allow_major_version_upgrade')
+        expect(config).to have_key('apply_immediately')
+        expect(config).to have_key('availability_zones')
         expect(config).to have_key('backup_retention_period')
+        expect(config).to have_key('cluster_identifier')
+        expect(config).to have_key('cluster_identifier_prefix')
         expect(config).to have_key('copy_tags_to_snapshot')
         expect(config).to have_key('deletion_protection')
         expect(config).to have_key('enable_cloudwatch_logs_exports')
         expect(config).to have_key('engine')
+        expect(config).to have_key('engine_version')
         expect(config).to have_key('final_snapshot_identifier')
         expect(config).to have_key('global_cluster_identifier')
         expect(config).to have_key('iam_database_authentication_enabled')
         expect(config).to have_key('iam_roles')
+        expect(config).to have_key('kms_key_arn')
+        expect(config).to have_key('neptune_cluster_parameter_group_name')
         expect(config).to have_key('neptune_instance_parameter_group_name')
+        expect(config).to have_key('neptune_subnet_group_name')
         expect(config).to have_key('port')
+        expect(config).to have_key('preferred_backup_window')
+        expect(config).to have_key('preferred_maintenance_window')
+        expect(config).to have_key('region')
         expect(config).to have_key('replication_source_identifier')
         expect(config).to have_key('serverless_v2_scaling_configuration')
         expect(config).to have_key('skip_final_snapshot')
         expect(config).to have_key('snapshot_identifier')
         expect(config).to have_key('storage_encrypted')
+        expect(config).to have_key('storage_type')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('vpc_security_group_ids')
       end
     end
 
     context 'optional attributes' do
+      it 'includes allow_major_version_upgrade when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(allow_major_version_upgrade: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('allow_major_version_upgrade')
+      end
+
+      it 'omits allow_major_version_upgrade when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('allow_major_version_upgrade')
+      end
+      it 'includes apply_immediately when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(apply_immediately: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('apply_immediately')
+      end
+
+      it 'omits apply_immediately when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('apply_immediately')
+      end
+      it 'includes availability_zones when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(availability_zones: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('availability_zones')
+      end
+
+      it 'omits availability_zones when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('availability_zones')
+      end
       it 'includes backup_retention_period when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -139,6 +207,40 @@ RSpec.describe Pangea::Resources::AWSNeptuneCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
         expect(config).not_to have_key('backup_retention_period')
+      end
+      it 'includes cluster_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(cluster_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('cluster_identifier')
+      end
+
+      it 'omits cluster_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('cluster_identifier')
+      end
+      it 'includes cluster_identifier_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(cluster_identifier_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('cluster_identifier_prefix')
+      end
+
+      it 'omits cluster_identifier_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('cluster_identifier_prefix')
       end
       it 'includes copy_tags_to_snapshot when provided' do
         synth = create_synthesizer
@@ -208,6 +310,23 @@ RSpec.describe Pangea::Resources::AWSNeptuneCluster do
         config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
         expect(config).not_to have_key('engine')
       end
+      it 'includes engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('engine_version')
+      end
+
+      it 'omits engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('engine_version')
+      end
       it 'includes final_snapshot_identifier when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -276,6 +395,40 @@ RSpec.describe Pangea::Resources::AWSNeptuneCluster do
         config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
         expect(config).not_to have_key('iam_roles')
       end
+      it 'includes kms_key_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(kms_key_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('kms_key_arn')
+      end
+
+      it 'omits kms_key_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('kms_key_arn')
+      end
+      it 'includes neptune_cluster_parameter_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(neptune_cluster_parameter_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('neptune_cluster_parameter_group_name')
+      end
+
+      it 'omits neptune_cluster_parameter_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('neptune_cluster_parameter_group_name')
+      end
       it 'includes neptune_instance_parameter_group_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -293,6 +446,23 @@ RSpec.describe Pangea::Resources::AWSNeptuneCluster do
         config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
         expect(config).not_to have_key('neptune_instance_parameter_group_name')
       end
+      it 'includes neptune_subnet_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(neptune_subnet_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('neptune_subnet_group_name')
+      end
+
+      it 'omits neptune_subnet_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('neptune_subnet_group_name')
+      end
       it 'includes port when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -309,6 +479,57 @@ RSpec.describe Pangea::Resources::AWSNeptuneCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
         expect(config).not_to have_key('port')
+      end
+      it 'includes preferred_backup_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(preferred_backup_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('preferred_backup_window')
+      end
+
+      it 'omits preferred_backup_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('preferred_backup_window')
+      end
+      it 'includes preferred_maintenance_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(preferred_maintenance_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('preferred_maintenance_window')
+      end
+
+      it 'omits preferred_maintenance_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('preferred_maintenance_window')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes replication_source_identifier when provided' do
         synth = create_synthesizer
@@ -330,7 +551,7 @@ RSpec.describe Pangea::Resources::AWSNeptuneCluster do
       it 'includes serverless_v2_scaling_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_neptune_cluster('opt', required_attrs.merge(serverless_v2_scaling_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_neptune_cluster('opt', required_attrs.merge(serverless_v2_scaling_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
         expect(config).to have_key('serverless_v2_scaling_configuration')
@@ -395,6 +616,23 @@ RSpec.describe Pangea::Resources::AWSNeptuneCluster do
         config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
         expect(config).not_to have_key('storage_encrypted')
       end
+      it 'includes storage_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(storage_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('storage_type')
+      end
+
+      it 'omits storage_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('storage_type')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -412,9 +650,65 @@ RSpec.describe Pangea::Resources::AWSNeptuneCluster do
         config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes vpc_security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('opt', required_attrs.merge(vpc_security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'opt')
+        expect(config).to have_key('vpc_security_group_ids')
+      end
+
+      it 'omits vpc_security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster', 'minimal')
+        expect(config).not_to have_key('vpc_security_group_ids')
+      end
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts allow_major_version_upgrade=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(allow_major_version_upgrade: val)
+          synth.aws_neptune_cluster("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_neptune_cluster', "bool_#{val}")
+          expect(config['allow_major_version_upgrade']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts apply_immediately=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(apply_immediately: val)
+          synth.aws_neptune_cluster("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_neptune_cluster', "bool_#{val}")
+          expect(config['apply_immediately']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts copy_tags_to_snapshot=#{val}" do
           synth = create_synthesizer
@@ -513,8 +807,8 @@ RSpec.describe Pangea::Resources::AWSNeptuneCluster do
     resource_type: :aws_neptune_cluster,
     method: :aws_neptune_cluster,
     required_attrs: {},
-    expected_outputs: [:id, :allow_major_version_upgrade, :apply_immediately, :arn, :availability_zones, :cluster_identifier, :cluster_identifier_prefix, :cluster_members, :cluster_resource_id, :endpoint, :engine_version, :hosted_zone_id, :kms_key_arn, :neptune_cluster_parameter_group_name, :neptune_subnet_group_name, :preferred_backup_window, :preferred_maintenance_window, :reader_endpoint, :storage_type, :tags_all, :vpc_security_group_ids],
+    expected_outputs: [:id, :allow_major_version_upgrade, :apply_immediately, :arn, :availability_zones, :cluster_identifier, :cluster_identifier_prefix, :cluster_members, :cluster_resource_id, :endpoint, :engine_version, :hosted_zone_id, :kms_key_arn, :neptune_cluster_parameter_group_name, :neptune_subnet_group_name, :preferred_backup_window, :preferred_maintenance_window, :reader_endpoint, :region, :storage_type, :tags_all, :vpc_security_group_ids],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:copy_tags_to_snapshot, :deletion_protection, :iam_database_authentication_enabled, :skip_final_snapshot, :storage_encrypted]
+    boolean_fields: [:allow_major_version_upgrade, :apply_immediately, :copy_tags_to_snapshot, :deletion_protection, :iam_database_authentication_enabled, :skip_final_snapshot, :storage_encrypted]
 end

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_grafana_workspace_service_account_token,
       attributes_class: AWS::Types::GrafanaWorkspaceServiceAccountTokenAttributes,
       outputs: { id: :id },
-      map: [:name, :seconds_to_live, :service_account_id, :workspace_id]
+      map: [:name, :seconds_to_live, :service_account_id, :workspace_id],
+      map_present: [:region]
   end
   module AWS
     include AWSGrafanaWorkspaceServiceAccountToken

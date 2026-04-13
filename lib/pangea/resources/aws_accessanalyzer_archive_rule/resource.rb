@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_accessanalyzer_archive_rule,
       attributes_class: AWS::Types::AccessanalyzerArchiveRuleAttributes,
       outputs: { id: :id },
-      map: [:analyzer_name, :filter, :rule_name]
+      map: [:analyzer_name, :filter, :rule_name],
+      map_present: [:region]
   end
   module AWS
     include AWSAccessanalyzerArchiveRule

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_cloudwatch_dashboard,
       attributes_class: AWS::Types::CloudwatchDashboardAttributes,
       outputs: { id: :id },
-      map: [:dashboard_body, :dashboard_name]
+      map: [:dashboard_body, :dashboard_name],
+      map_present: [:region]
   end
   module AWS
     include AWSCloudwatchDashboard

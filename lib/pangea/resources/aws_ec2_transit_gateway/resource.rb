@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_ec2_transit_gateway,
       attributes_class: AWS::Types::Ec2TransitGatewayAttributes,
       outputs: { id: :id },
-      map_present: [:amazon_side_asn, :auto_accept_shared_attachments, :default_route_table_association, :default_route_table_propagation, :description, :dns_support, :multicast_support, :security_group_referencing_support, :tags, :tags_all, :transit_gateway_cidr_blocks, :vpn_ecmp_support]
+      map_present: [:amazon_side_asn, :auto_accept_shared_attachments, :default_route_table_association, :default_route_table_propagation, :description, :dns_support, :encryption_support, :multicast_support, :region, :security_group_referencing_support, :tags, :tags_all, :transit_gateway_cidr_blocks, :vpn_ecmp_support]
   end
   module AWS
     include AWSEc2TransitGateway

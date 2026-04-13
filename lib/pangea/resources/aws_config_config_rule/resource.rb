@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConfigConfigRuleAttributes,
       outputs: { id: :id },
       map: [:name, :source],
-      map_present: [:description, :evaluation_mode, :input_parameters, :maximum_execution_frequency, :scope, :tags, :tags_all]
+      map_present: [:description, :evaluation_mode, :input_parameters, :maximum_execution_frequency, :region, :scope, :tags, :tags_all]
   end
   module AWS
     include AWSConfigConfigRule

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_detective_organization_admin_account,
       attributes_class: AWS::Types::DetectiveOrganizationAdminAccountAttributes,
       outputs: { id: :id },
-      map: [:account_id]
+      map: [:account_id],
+      map_present: [:region]
   end
   module AWS
     include AWSDetectiveOrganizationAdminAccount

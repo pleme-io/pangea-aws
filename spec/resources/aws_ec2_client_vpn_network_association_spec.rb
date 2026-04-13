@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnNetworkAssociation do
 
         expect(ref.id).to eq("${aws_ec2_client_vpn_network_association.test.id}")
         expect(ref.association_id).to eq("${aws_ec2_client_vpn_network_association.test.association_id}")
+        expect(ref.region).to eq("${aws_ec2_client_vpn_network_association.test.region}")
         expect(ref.vpc_id).to eq("${aws_ec2_client_vpn_network_association.test.vpc_id}")
       end
     end
@@ -52,7 +53,42 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnNetworkAssociation do
 
         config = validate_resource_structure(result, 'aws_ec2_client_vpn_network_association', 'test')
         expect(config).not_to have_key('association_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('vpc_id')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_network_association('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_network_association', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_network_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_network_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_client_vpn_network_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_client_vpn_network_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -99,7 +135,7 @@ RSpec.describe Pangea::Resources::AWSEc2ClientVpnNetworkAssociation do
     resource_type: :aws_ec2_client_vpn_network_association,
     method: :aws_ec2_client_vpn_network_association,
     required_attrs: { client_vpn_endpoint_id: 'test-value', subnet_id: 'test-value' },
-    expected_outputs: [:id, :association_id, :vpc_id],
+    expected_outputs: [:id, :association_id, :region, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

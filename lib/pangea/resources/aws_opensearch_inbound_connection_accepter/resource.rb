@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_opensearch_inbound_connection_accepter,
       attributes_class: AWS::Types::OpensearchInboundConnectionAccepterAttributes,
       outputs: { id: :id },
-      map: [:connection_id]
+      map: [:connection_id],
+      map_present: [:region]
   end
   module AWS
     include AWSOpensearchInboundConnectionAccepter

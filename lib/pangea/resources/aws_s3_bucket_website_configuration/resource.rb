@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketWebsiteConfigurationAttributes,
       outputs: { id: :id },
       map: [:bucket],
-      map_present: [:error_document, :expected_bucket_owner, :index_document, :redirect_all_requests_to, :routing_rule, :routing_rules]
+      map_present: [:error_document, :expected_bucket_owner, :index_document, :redirect_all_requests_to, :region, :routing_rule, :routing_rules]
   end
   module AWS
     include AWSS3BucketWebsiteConfiguration

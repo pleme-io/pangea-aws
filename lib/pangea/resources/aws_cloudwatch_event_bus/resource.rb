@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchEventBusAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:dead_letter_config, :description, :event_source_name, :kms_key_identifier, :tags, :tags_all]
+      map_present: [:dead_letter_config, :description, :event_source_name, :kms_key_identifier, :log_config, :region, :tags, :tags_all]
   end
   module AWS
     include AWSCloudwatchEventBus

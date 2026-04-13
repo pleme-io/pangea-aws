@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSEfsReplicationConfiguration do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { destination: [{ 'key1' => 'val1' }], source_file_system_id: 'test-value' } }
+  let(:required_attrs) { { destination: { 'key1' => 'val1' }, source_file_system_id: 'test-value' } }
 
   describe ':aws_efs_replication_configuration' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSEfsReplicationConfiguration do
         expect(ref.id).to eq("${aws_efs_replication_configuration.test.id}")
         expect(ref.creation_time).to eq("${aws_efs_replication_configuration.test.creation_time}")
         expect(ref.original_source_file_system_arn).to eq("${aws_efs_replication_configuration.test.original_source_file_system_arn}")
+        expect(ref.region).to eq("${aws_efs_replication_configuration.test.region}")
         expect(ref.source_file_system_arn).to eq("${aws_efs_replication_configuration.test.source_file_system_arn}")
         expect(ref.source_file_system_region).to eq("${aws_efs_replication_configuration.test.source_file_system_region}")
       end
@@ -55,8 +56,43 @@ RSpec.describe Pangea::Resources::AWSEfsReplicationConfiguration do
         config = validate_resource_structure(result, 'aws_efs_replication_configuration', 'test')
         expect(config).not_to have_key('creation_time')
         expect(config).not_to have_key('original_source_file_system_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('source_file_system_arn')
         expect(config).not_to have_key('source_file_system_region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_replication_configuration('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_efs_replication_configuration', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_replication_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_replication_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_efs_replication_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_efs_replication_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -68,7 +104,7 @@ RSpec.describe Pangea::Resources::AWSEfsReplicationConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_efs_replication_configuration', 'typed')
-        expect(config['destination']).to be_a(Array)
+        expect(config['destination']).to be_a(Hash)
         expect(config['source_file_system_id']).to be_a(String)
       end
     end
@@ -102,8 +138,8 @@ RSpec.describe Pangea::Resources::AWSEfsReplicationConfiguration do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_efs_replication_configuration,
     method: :aws_efs_replication_configuration,
-    required_attrs: { destination: [{ 'key1' => 'val1' }], source_file_system_id: 'test-value' },
-    expected_outputs: [:id, :creation_time, :original_source_file_system_arn, :source_file_system_arn, :source_file_system_region],
+    required_attrs: { destination: { 'key1' => 'val1' }, source_file_system_id: 'test-value' },
+    expected_outputs: [:id, :creation_time, :original_source_file_system_arn, :region, :source_file_system_arn, :source_file_system_region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

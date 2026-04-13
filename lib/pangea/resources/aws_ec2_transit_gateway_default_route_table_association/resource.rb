@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ec2_transit_gateway_default_route_table_association,
       attributes_class: AWS::Types::Ec2TransitGatewayDefaultRouteTableAssociationAttributes,
       outputs: { id: :id },
-      map: [:transit_gateway_id, :transit_gateway_route_table_id]
+      map: [:transit_gateway_id, :transit_gateway_route_table_id],
+      map_present: [:region]
   end
   module AWS
     include AWSEc2TransitGatewayDefaultRouteTableAssociation

@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSElb do
         expect(ref.internal).to eq("${aws_elb.test.internal}")
         expect(ref.name).to eq("${aws_elb.test.name}")
         expect(ref.name_prefix).to eq("${aws_elb.test.name_prefix}")
+        expect(ref.region).to eq("${aws_elb.test.region}")
         expect(ref.security_groups).to eq("${aws_elb.test.security_groups}")
         expect(ref.source_security_group).to eq("${aws_elb.test.source_security_group}")
         expect(ref.source_security_group_id).to eq("${aws_elb.test.source_security_group_id}")
@@ -69,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSElb do
         expect(config).not_to have_key('internal')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_groups')
         expect(config).not_to have_key('source_security_group')
         expect(config).not_to have_key('source_security_group_id')
@@ -79,7 +81,7 @@ RSpec.describe Pangea::Resources::AWSElb do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_logs: [{ 'key1' => 'val1' }], connection_draining: true, connection_draining_timeout: 3.14, cross_zone_load_balancing: true, desync_mitigation_mode: 'test-value', health_check: [{ 'key1' => 'val1' }], idle_timeout: 3.14, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ access_logs: { 'key1' => 'val1' }, availability_zones: ['test-value'], connection_draining: true, connection_draining_timeout: 3.14, cross_zone_load_balancing: true, desync_mitigation_mode: 'test-value', health_check: { 'key1' => 'val1' }, idle_timeout: 3.14, instances: ['test-value'], internal: true, name: 'test-value', name_prefix: 'test-value', region: 'test-value', security_groups: ['test-value'], source_security_group: 'test-value', subnets: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -89,13 +91,23 @@ RSpec.describe Pangea::Resources::AWSElb do
 
         config = validate_resource_structure(result, 'aws_elb', 'full')
         expect(config).to have_key('access_logs')
+        expect(config).to have_key('availability_zones')
         expect(config).to have_key('connection_draining')
         expect(config).to have_key('connection_draining_timeout')
         expect(config).to have_key('cross_zone_load_balancing')
         expect(config).to have_key('desync_mitigation_mode')
         expect(config).to have_key('health_check')
         expect(config).to have_key('idle_timeout')
+        expect(config).to have_key('instances')
+        expect(config).to have_key('internal')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_groups')
+        expect(config).to have_key('source_security_group')
+        expect(config).to have_key('subnets')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -103,7 +115,7 @@ RSpec.describe Pangea::Resources::AWSElb do
       it 'includes access_logs when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elb('opt', required_attrs.merge(access_logs: [{ 'key1' => 'val1' }]))
+        synth.aws_elb('opt', required_attrs.merge(access_logs: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elb', 'opt')
         expect(config).to have_key('access_logs')
@@ -116,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSElb do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elb', 'minimal')
         expect(config).not_to have_key('access_logs')
+      end
+      it 'includes availability_zones when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('opt', required_attrs.merge(availability_zones: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'opt')
+        expect(config).to have_key('availability_zones')
+      end
+
+      it 'omits availability_zones when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'minimal')
+        expect(config).not_to have_key('availability_zones')
       end
       it 'includes connection_draining when provided' do
         synth = create_synthesizer
@@ -188,7 +217,7 @@ RSpec.describe Pangea::Resources::AWSElb do
       it 'includes health_check when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elb('opt', required_attrs.merge(health_check: [{ 'key1' => 'val1' }]))
+        synth.aws_elb('opt', required_attrs.merge(health_check: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elb', 'opt')
         expect(config).to have_key('health_check')
@@ -219,6 +248,142 @@ RSpec.describe Pangea::Resources::AWSElb do
         config = validate_resource_structure(result, 'aws_elb', 'minimal')
         expect(config).not_to have_key('idle_timeout')
       end
+      it 'includes instances when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('opt', required_attrs.merge(instances: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'opt')
+        expect(config).to have_key('instances')
+      end
+
+      it 'omits instances when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'minimal')
+        expect(config).not_to have_key('instances')
+      end
+      it 'includes internal when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('opt', required_attrs.merge(internal: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'opt')
+        expect(config).to have_key('internal')
+      end
+
+      it 'omits internal when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'minimal')
+        expect(config).not_to have_key('internal')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_groups when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('opt', required_attrs.merge(security_groups: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'opt')
+        expect(config).to have_key('security_groups')
+      end
+
+      it 'omits security_groups when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'minimal')
+        expect(config).not_to have_key('security_groups')
+      end
+      it 'includes source_security_group when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('opt', required_attrs.merge(source_security_group: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'opt')
+        expect(config).to have_key('source_security_group')
+      end
+
+      it 'omits source_security_group when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'minimal')
+        expect(config).not_to have_key('source_security_group')
+      end
+      it 'includes subnets when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('opt', required_attrs.merge(subnets: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'opt')
+        expect(config).to have_key('subnets')
+      end
+
+      it 'omits subnets when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'minimal')
+        expect(config).not_to have_key('subnets')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -235,6 +400,23 @@ RSpec.describe Pangea::Resources::AWSElb do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elb', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elb', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -259,6 +441,17 @@ RSpec.describe Pangea::Resources::AWSElb do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_elb', "bool_#{val}")
           expect(config['cross_zone_load_balancing']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts internal=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(internal: val)
+          synth.aws_elb("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_elb', "bool_#{val}")
+          expect(config['internal']).to eq(val)
         end
       end
     end
@@ -305,8 +498,8 @@ RSpec.describe Pangea::Resources::AWSElb do
     resource_type: :aws_elb,
     method: :aws_elb,
     required_attrs: { listener: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :availability_zones, :dns_name, :instances, :internal, :name, :name_prefix, :security_groups, :source_security_group, :source_security_group_id, :subnets, :tags_all, :zone_id],
+    expected_outputs: [:id, :arn, :availability_zones, :dns_name, :instances, :internal, :name, :name_prefix, :region, :security_groups, :source_security_group, :source_security_group_id, :subnets, :tags_all, :zone_id],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:connection_draining, :cross_zone_load_balancing]
+    boolean_fields: [:connection_draining, :cross_zone_load_balancing, :internal]
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FsxFileCacheAttributes,
       outputs: { id: :id },
       map: [:file_cache_type, :file_cache_type_version, :storage_capacity, :subnet_ids],
-      map_present: [:data_repository_association, :kms_key_id, :lustre_configuration, :security_group_ids, :tags, :tags_all],
+      map_present: [:data_repository_association, :kms_key_id, :lustre_configuration, :region, :security_group_ids, :tags, :tags_all],
       map_bool: [:copy_tags_to_data_repository_associations]
   end
   module AWS

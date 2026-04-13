@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EmrSecurityConfigurationAttributes,
       outputs: { id: :id },
       map: [:configuration],
-      map_present: [:name, :name_prefix]
+      map_present: [:name, :name_prefix, :region]
   end
   module AWS
     include AWSEmrSecurityConfiguration

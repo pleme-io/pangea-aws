@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayUsagePlan do
 
         expect(ref.id).to eq("${aws_api_gateway_usage_plan.test.id}")
         expect(ref.arn).to eq("${aws_api_gateway_usage_plan.test.arn}")
+        expect(ref.region).to eq("${aws_api_gateway_usage_plan.test.region}")
         expect(ref.tags_all).to eq("${aws_api_gateway_usage_plan.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSApiGatewayUsagePlan do
 
         config = validate_resource_structure(result, 'aws_api_gateway_usage_plan', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ api_stages: [{ 'key1' => 'val1' }], description: 'test-value', product_code: 'test-value', quota_settings: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, throttle_settings: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ api_stages: [{ 'key1' => 'val1' }], description: 'test-value', product_code: 'test-value', quota_settings: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, throttle_settings: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,7 +72,9 @@ RSpec.describe Pangea::Resources::AWSApiGatewayUsagePlan do
         expect(config).to have_key('description')
         expect(config).to have_key('product_code')
         expect(config).to have_key('quota_settings')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('throttle_settings')
       end
     end
@@ -130,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayUsagePlan do
       it 'includes quota_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_api_gateway_usage_plan('opt', required_attrs.merge(quota_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_api_gateway_usage_plan('opt', required_attrs.merge(quota_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_usage_plan', 'opt')
         expect(config).to have_key('quota_settings')
@@ -143,6 +147,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayUsagePlan do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_usage_plan', 'minimal')
         expect(config).not_to have_key('quota_settings')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_usage_plan('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_usage_plan', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_usage_plan('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_usage_plan', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -161,10 +182,27 @@ RSpec.describe Pangea::Resources::AWSApiGatewayUsagePlan do
         config = validate_resource_structure(result, 'aws_api_gateway_usage_plan', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_usage_plan('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_usage_plan', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_usage_plan('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_usage_plan', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes throttle_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_api_gateway_usage_plan('opt', required_attrs.merge(throttle_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_api_gateway_usage_plan('opt', required_attrs.merge(throttle_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_usage_plan', 'opt')
         expect(config).to have_key('throttle_settings')
@@ -222,7 +260,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayUsagePlan do
     resource_type: :aws_api_gateway_usage_plan,
     method: :aws_api_gateway_usage_plan,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_main_route_table_association,
       attributes_class: AWS::Types::MainRouteTableAssociationAttributes,
       outputs: { id: :id },
-      map: [:route_table_id, :vpc_id]
+      map: [:route_table_id, :vpc_id],
+      map_present: [:region]
   end
   module AWS
     include AWSMainRouteTableAssociation

@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSCloudsearchDomain do
         expect(ref.document_service_endpoint).to eq("${aws_cloudsearch_domain.test.document_service_endpoint}")
         expect(ref.domain_id).to eq("${aws_cloudsearch_domain.test.domain_id}")
         expect(ref.multi_az).to eq("${aws_cloudsearch_domain.test.multi_az}")
+        expect(ref.region).to eq("${aws_cloudsearch_domain.test.region}")
         expect(ref.search_service_endpoint).to eq("${aws_cloudsearch_domain.test.search_service_endpoint}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSCloudsearchDomain do
         expect(config).not_to have_key('document_service_endpoint')
         expect(config).not_to have_key('domain_id')
         expect(config).not_to have_key('multi_az')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('search_service_endpoint')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ endpoint_options: [{ 'key1' => 'val1' }], index_field: [{ 'key1' => 'val1' }], scaling_parameters: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ endpoint_options: { 'key1' => 'val1' }, index_field: [{ 'key1' => 'val1' }], multi_az: true, region: 'test-value', scaling_parameters: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,6 +76,8 @@ RSpec.describe Pangea::Resources::AWSCloudsearchDomain do
         config = validate_resource_structure(result, 'aws_cloudsearch_domain', 'full')
         expect(config).to have_key('endpoint_options')
         expect(config).to have_key('index_field')
+        expect(config).to have_key('multi_az')
+        expect(config).to have_key('region')
         expect(config).to have_key('scaling_parameters')
       end
     end
@@ -82,7 +86,7 @@ RSpec.describe Pangea::Resources::AWSCloudsearchDomain do
       it 'includes endpoint_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudsearch_domain('opt', required_attrs.merge(endpoint_options: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudsearch_domain('opt', required_attrs.merge(endpoint_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudsearch_domain', 'opt')
         expect(config).to have_key('endpoint_options')
@@ -113,10 +117,44 @@ RSpec.describe Pangea::Resources::AWSCloudsearchDomain do
         config = validate_resource_structure(result, 'aws_cloudsearch_domain', 'minimal')
         expect(config).not_to have_key('index_field')
       end
+      it 'includes multi_az when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudsearch_domain('opt', required_attrs.merge(multi_az: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudsearch_domain', 'opt')
+        expect(config).to have_key('multi_az')
+      end
+
+      it 'omits multi_az when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudsearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudsearch_domain', 'minimal')
+        expect(config).not_to have_key('multi_az')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudsearch_domain('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudsearch_domain', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudsearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudsearch_domain', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes scaling_parameters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudsearch_domain('opt', required_attrs.merge(scaling_parameters: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudsearch_domain('opt', required_attrs.merge(scaling_parameters: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudsearch_domain', 'opt')
         expect(config).to have_key('scaling_parameters')
@@ -129,6 +167,20 @@ RSpec.describe Pangea::Resources::AWSCloudsearchDomain do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudsearch_domain', 'minimal')
         expect(config).not_to have_key('scaling_parameters')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts multi_az=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(multi_az: val)
+          synth.aws_cloudsearch_domain("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_cloudsearch_domain', "bool_#{val}")
+          expect(config['multi_az']).to eq(val)
+        end
       end
     end
 
@@ -174,8 +226,8 @@ RSpec.describe Pangea::Resources::AWSCloudsearchDomain do
     resource_type: :aws_cloudsearch_domain,
     method: :aws_cloudsearch_domain,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :document_service_endpoint, :domain_id, :multi_az, :search_service_endpoint],
+    expected_outputs: [:id, :arn, :document_service_endpoint, :domain_id, :multi_az, :region, :search_service_endpoint],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:multi_az]
 end

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSOpensearchPackage do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { package_name: 'test-value', package_source: [{ 'key1' => 'val1' }], package_type: 'test-value' } }
+  let(:required_attrs) { { package_name: 'test-value', package_source: { 'key1' => 'val1' }, package_type: 'test-value' } }
 
   describe ':aws_opensearch_package' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchPackage do
         expect(ref.id).to eq("${aws_opensearch_package.test.id}")
         expect(ref.available_package_version).to eq("${aws_opensearch_package.test.available_package_version}")
         expect(ref.package_id).to eq("${aws_opensearch_package.test.package_id}")
+        expect(ref.region).to eq("${aws_opensearch_package.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSOpensearchPackage do
         config = validate_resource_structure(result, 'aws_opensearch_package', 'test')
         expect(config).not_to have_key('available_package_version')
         expect(config).not_to have_key('package_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ package_description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ engine_version: 'test-value', package_description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,11 +68,30 @@ RSpec.describe Pangea::Resources::AWSOpensearchPackage do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_opensearch_package', 'full')
+        expect(config).to have_key('engine_version')
         expect(config).to have_key('package_description')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_package('opt', required_attrs.merge(engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_package', 'opt')
+        expect(config).to have_key('engine_version')
+      end
+
+      it 'omits engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_package('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_package', 'minimal')
+        expect(config).not_to have_key('engine_version')
+      end
       it 'includes package_description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -88,6 +109,23 @@ RSpec.describe Pangea::Resources::AWSOpensearchPackage do
         config = validate_resource_structure(result, 'aws_opensearch_package', 'minimal')
         expect(config).not_to have_key('package_description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_package('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_package', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_package('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_package', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'attribute types' do
@@ -99,7 +137,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchPackage do
 
         config = validate_resource_structure(result, 'aws_opensearch_package', 'typed')
         expect(config['package_name']).to be_a(String)
-        expect(config['package_source']).to be_a(Array)
+        expect(config['package_source']).to be_a(Hash)
         expect(config['package_type']).to be_a(String)
       end
     end
@@ -133,8 +171,8 @@ RSpec.describe Pangea::Resources::AWSOpensearchPackage do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_opensearch_package,
     method: :aws_opensearch_package,
-    required_attrs: { package_name: 'test-value', package_source: [{ 'key1' => 'val1' }], package_type: 'test-value' },
-    expected_outputs: [:id, :available_package_version, :package_id],
+    required_attrs: { package_name: 'test-value', package_source: { 'key1' => 'val1' }, package_type: 'test-value' },
+    expected_outputs: [:id, :available_package_version, :package_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

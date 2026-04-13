@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSConfigOrganizationConformancePack do
 
         expect(ref.id).to eq("${aws_config_organization_conformance_pack.test.id}")
         expect(ref.arn).to eq("${aws_config_organization_conformance_pack.test.arn}")
+        expect(ref.region).to eq("${aws_config_organization_conformance_pack.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSConfigOrganizationConformancePack do
 
         config = validate_resource_structure(result, 'aws_config_organization_conformance_pack', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ delivery_s3_bucket: 'test-value', delivery_s3_key_prefix: 'test-value', excluded_accounts: ['test-value'], input_parameter: [{ 'key1' => 'val1' }], template_body: 'test-value', template_s3_uri: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ delivery_s3_bucket: 'test-value', delivery_s3_key_prefix: 'test-value', excluded_accounts: ['test-value'], input_parameter: [{ 'key1' => 'val1' }], region: 'test-value', template_body: 'test-value', template_s3_uri: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSConfigOrganizationConformancePack do
         expect(config).to have_key('delivery_s3_key_prefix')
         expect(config).to have_key('excluded_accounts')
         expect(config).to have_key('input_parameter')
+        expect(config).to have_key('region')
         expect(config).to have_key('template_body')
         expect(config).to have_key('template_s3_uri')
       end
@@ -141,6 +144,23 @@ RSpec.describe Pangea::Resources::AWSConfigOrganizationConformancePack do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_organization_conformance_pack', 'minimal')
         expect(config).not_to have_key('input_parameter')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_organization_conformance_pack('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_organization_conformance_pack', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_organization_conformance_pack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_organization_conformance_pack', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes template_body when provided' do
         synth = create_synthesizer
@@ -220,7 +240,7 @@ RSpec.describe Pangea::Resources::AWSConfigOrganizationConformancePack do
     resource_type: :aws_config_organization_conformance_pack,
     method: :aws_config_organization_conformance_pack,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

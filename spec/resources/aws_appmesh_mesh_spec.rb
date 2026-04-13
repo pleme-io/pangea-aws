@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSAppmeshMesh do
         expect(ref.created_date).to eq("${aws_appmesh_mesh.test.created_date}")
         expect(ref.last_updated_date).to eq("${aws_appmesh_mesh.test.last_updated_date}")
         expect(ref.mesh_owner).to eq("${aws_appmesh_mesh.test.mesh_owner}")
+        expect(ref.region).to eq("${aws_appmesh_mesh.test.region}")
         expect(ref.resource_owner).to eq("${aws_appmesh_mesh.test.resource_owner}")
         expect(ref.tags_all).to eq("${aws_appmesh_mesh.test.tags_all}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSAppmeshMesh do
         expect(config).not_to have_key('created_date')
         expect(config).not_to have_key('last_updated_date')
         expect(config).not_to have_key('mesh_owner')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_owner')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ spec: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', spec: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,16 +76,35 @@ RSpec.describe Pangea::Resources::AWSAppmeshMesh do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_appmesh_mesh', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('spec')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appmesh_mesh('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appmesh_mesh', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appmesh_mesh('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appmesh_mesh', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes spec when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appmesh_mesh('opt', required_attrs.merge(spec: [{ 'key1' => 'val1' }]))
+        synth.aws_appmesh_mesh('opt', required_attrs.merge(spec: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appmesh_mesh', 'opt')
         expect(config).to have_key('spec')
@@ -113,6 +134,23 @@ RSpec.describe Pangea::Resources::AWSAppmeshMesh do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appmesh_mesh', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appmesh_mesh('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appmesh_mesh', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appmesh_mesh('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appmesh_mesh', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -158,7 +196,7 @@ RSpec.describe Pangea::Resources::AWSAppmeshMesh do
     resource_type: :aws_appmesh_mesh,
     method: :aws_appmesh_mesh,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :created_date, :last_updated_date, :mesh_owner, :resource_owner, :tags_all],
+    expected_outputs: [:id, :arn, :created_date, :last_updated_date, :mesh_owner, :region, :resource_owner, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

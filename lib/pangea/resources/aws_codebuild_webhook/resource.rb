@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodebuildWebhookAttributes,
       outputs: { id: :id },
       map: [:project_name],
-      map_present: [:branch_filter, :build_type, :filter_group, :scope_configuration],
+      map_present: [:branch_filter, :build_type, :filter_group, :pull_request_build_policy, :region, :scope_configuration],
       map_bool: [:manual_creation]
   end
   module AWS

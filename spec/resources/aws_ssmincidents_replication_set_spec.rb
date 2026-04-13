@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSsmincidentsReplicationSet do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { region: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { {} }
 
   describe ':aws_ssmincidents_replication_set' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSSsmincidentsReplicationSet do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_ssmincidents_replication_set', 'test')
-        validate_required_attributes(config, [:region])
+        validate_required_attributes(config, [])
       end
 
       it 'returns a ResourceReference' do
@@ -65,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSSsmincidentsReplicationSet do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: [{ 'key1' => 'val1' }], regions: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,11 +74,48 @@ RSpec.describe Pangea::Resources::AWSSsmincidentsReplicationSet do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ssmincidents_replication_set', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('regions')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmincidents_replication_set('opt', required_attrs.merge(region: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmincidents_replication_set', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmincidents_replication_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmincidents_replication_set', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes regions when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmincidents_replication_set('opt', required_attrs.merge(regions: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmincidents_replication_set', 'opt')
+        expect(config).to have_key('regions')
+      end
+
+      it 'omits regions when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmincidents_replication_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmincidents_replication_set', 'minimal')
+        expect(config).not_to have_key('regions')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -96,6 +133,23 @@ RSpec.describe Pangea::Resources::AWSSsmincidentsReplicationSet do
         config = validate_resource_structure(result, 'aws_ssmincidents_replication_set', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmincidents_replication_set('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmincidents_replication_set', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmincidents_replication_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmincidents_replication_set', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -106,7 +160,6 @@ RSpec.describe Pangea::Resources::AWSSsmincidentsReplicationSet do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ssmincidents_replication_set', 'typed')
-        expect(config['region']).to be_a(Array)
       end
     end
 
@@ -139,7 +192,7 @@ RSpec.describe Pangea::Resources::AWSSsmincidentsReplicationSet do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_ssmincidents_replication_set,
     method: :aws_ssmincidents_replication_set,
-    required_attrs: { region: [{ 'key1' => 'val1' }] },
+    required_attrs: {},
     expected_outputs: [:id, :arn, :created_by, :deletion_protected, :last_modified_by, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],

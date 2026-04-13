@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_sagemaker_model_package_group_policy,
       attributes_class: AWS::Types::SagemakerModelPackageGroupPolicyAttributes,
       outputs: { id: :id },
-      map: [:model_package_group_name, :resource_policy]
+      map: [:model_package_group_name, :resource_policy],
+      map_present: [:region]
   end
   module AWS
     include AWSSagemakerModelPackageGroupPolicy

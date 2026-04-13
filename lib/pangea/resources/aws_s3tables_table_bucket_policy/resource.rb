@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_s3tables_table_bucket_policy,
       attributes_class: AWS::Types::S3tablesTableBucketPolicyAttributes,
       outputs: { id: :id },
-      map: [:resource_policy, :table_bucket_arn]
+      map: [:resource_policy, :table_bucket_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSS3tablesTableBucketPolicy

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AmplifyWebhookAttributes,
       outputs: { id: :id },
       map: [:app_id, :branch_name],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSAmplifyWebhook

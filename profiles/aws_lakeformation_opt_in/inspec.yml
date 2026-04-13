@@ -1,0 +1,8 @@
+name: aws_lakeformation_opt_in
+title: Manages a aws_lakeformation_opt_in resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSSsmParameter do
         expect(ref.has_value_wo).to eq("${aws_ssm_parameter.test.has_value_wo}")
         expect(ref.insecure_value).to eq("${aws_ssm_parameter.test.insecure_value}")
         expect(ref.key_id).to eq("${aws_ssm_parameter.test.key_id}")
+        expect(ref.region).to eq("${aws_ssm_parameter.test.region}")
         expect(ref.tags_all).to eq("${aws_ssm_parameter.test.tags_all}")
         expect(ref.tier).to eq("${aws_ssm_parameter.test.tier}")
         expect(ref.value).to eq("${aws_ssm_parameter.test.value}")
@@ -63,6 +64,7 @@ RSpec.describe Pangea::Resources::AWSSsmParameter do
         expect(config).not_to have_key('has_value_wo')
         expect(config).not_to have_key('insecure_value')
         expect(config).not_to have_key('key_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('tier')
         expect(config).not_to have_key('value')
@@ -71,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSSsmParameter do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allowed_pattern: 'test-value', description: 'test-value', overwrite: true, tags: { 'key1' => 'val1' }, value_wo: 'test-value', value_wo_version: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ allowed_pattern: 'test-value', arn: 'test-value', data_type: 'test-value', description: 'test-value', insecure_value: 'test-value', key_id: 'test-value', overwrite: true, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tier: 'test-value', value: 'test-value', value_wo: 'test-value', value_wo_version: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -81,9 +83,17 @@ RSpec.describe Pangea::Resources::AWSSsmParameter do
 
         config = validate_resource_structure(result, 'aws_ssm_parameter', 'full')
         expect(config).to have_key('allowed_pattern')
+        expect(config).to have_key('arn')
+        expect(config).to have_key('data_type')
         expect(config).to have_key('description')
+        expect(config).to have_key('insecure_value')
+        expect(config).to have_key('key_id')
         expect(config).to have_key('overwrite')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('tier')
+        expect(config).to have_key('value')
         expect(config).to have_key('value_wo')
         expect(config).to have_key('value_wo_version')
       end
@@ -107,6 +117,40 @@ RSpec.describe Pangea::Resources::AWSSsmParameter do
         config = validate_resource_structure(result, 'aws_ssm_parameter', 'minimal')
         expect(config).not_to have_key('allowed_pattern')
       end
+      it 'includes arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('opt', required_attrs.merge(arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'opt')
+        expect(config).to have_key('arn')
+      end
+
+      it 'omits arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'minimal')
+        expect(config).not_to have_key('arn')
+      end
+      it 'includes data_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('opt', required_attrs.merge(data_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'opt')
+        expect(config).to have_key('data_type')
+      end
+
+      it 'omits data_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'minimal')
+        expect(config).not_to have_key('data_type')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -123,6 +167,40 @@ RSpec.describe Pangea::Resources::AWSSsmParameter do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_parameter', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes insecure_value when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('opt', required_attrs.merge(insecure_value: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'opt')
+        expect(config).to have_key('insecure_value')
+      end
+
+      it 'omits insecure_value when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'minimal')
+        expect(config).not_to have_key('insecure_value')
+      end
+      it 'includes key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('opt', required_attrs.merge(key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'opt')
+        expect(config).to have_key('key_id')
+      end
+
+      it 'omits key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'minimal')
+        expect(config).not_to have_key('key_id')
       end
       it 'includes overwrite when provided' do
         synth = create_synthesizer
@@ -141,6 +219,23 @@ RSpec.describe Pangea::Resources::AWSSsmParameter do
         config = validate_resource_structure(result, 'aws_ssm_parameter', 'minimal')
         expect(config).not_to have_key('overwrite')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -157,6 +252,57 @@ RSpec.describe Pangea::Resources::AWSSsmParameter do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_parameter', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes tier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('opt', required_attrs.merge(tier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'opt')
+        expect(config).to have_key('tier')
+      end
+
+      it 'omits tier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'minimal')
+        expect(config).not_to have_key('tier')
+      end
+      it 'includes value when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('opt', required_attrs.merge(value: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'opt')
+        expect(config).to have_key('value')
+      end
+
+      it 'omits value when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_parameter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_parameter', 'minimal')
+        expect(config).not_to have_key('value')
       end
       it 'includes value_wo when provided' do
         synth = create_synthesizer
@@ -259,7 +405,7 @@ RSpec.describe Pangea::Resources::AWSSsmParameter do
     resource_type: :aws_ssm_parameter,
     method: :aws_ssm_parameter,
     required_attrs: { name: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :arn, :data_type, :has_value_wo, :insecure_value, :key_id, :tags_all, :tier, :value, :version],
+    expected_outputs: [:id, :arn, :data_type, :has_value_wo, :insecure_value, :key_id, :region, :tags_all, :tier, :value, :version],
     sensitive_fields: [:value, :value_wo],
     immutable_fields: [],
     boolean_fields: [:overwrite]

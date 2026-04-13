@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ecr_registry_policy,
       attributes_class: AWS::Types::EcrRegistryPolicyAttributes,
       outputs: { id: :id },
-      map: [:policy]
+      map: [:policy],
+      map_present: [:region]
   end
   module AWS
     include AWSEcrRegistryPolicy

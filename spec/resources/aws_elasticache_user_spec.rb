@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheUser do
 
         expect(ref.id).to eq("${aws_elasticache_user.test.id}")
         expect(ref.arn).to eq("${aws_elasticache_user.test.arn}")
+        expect(ref.region).to eq("${aws_elasticache_user.test.region}")
         expect(ref.tags_all).to eq("${aws_elasticache_user.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSElasticacheUser do
 
         config = validate_resource_structure(result, 'aws_elasticache_user', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ authentication_mode: [{ 'key1' => 'val1' }], no_password_required: true, passwords: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ authentication_mode: { 'key1' => 'val1' }, no_password_required: true, passwords: ['test-value'], region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +71,9 @@ RSpec.describe Pangea::Resources::AWSElasticacheUser do
         expect(config).to have_key('authentication_mode')
         expect(config).to have_key('no_password_required')
         expect(config).to have_key('passwords')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -77,7 +81,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheUser do
       it 'includes authentication_mode when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_elasticache_user('opt', required_attrs.merge(authentication_mode: [{ 'key1' => 'val1' }]))
+        synth.aws_elasticache_user('opt', required_attrs.merge(authentication_mode: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticache_user', 'opt')
         expect(config).to have_key('authentication_mode')
@@ -125,6 +129,23 @@ RSpec.describe Pangea::Resources::AWSElasticacheUser do
         config = validate_resource_structure(result, 'aws_elasticache_user', 'minimal')
         expect(config).not_to have_key('passwords')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_user('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_user', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_user('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_user', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -141,6 +162,23 @@ RSpec.describe Pangea::Resources::AWSElasticacheUser do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticache_user', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_user('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_user', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_user('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_user', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -210,7 +248,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheUser do
     resource_type: :aws_elasticache_user,
     method: :aws_elasticache_user,
     required_attrs: { access_string: 'test-value', engine: 'test-value', user_id: 'test-value', user_name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [:passwords],
     immutable_fields: [],
     boolean_fields: [:no_password_required]

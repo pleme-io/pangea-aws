@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_sesv2_dedicated_ip_assignment,
       attributes_class: AWS::Types::Sesv2DedicatedIpAssignmentAttributes,
       outputs: { id: :id },
-      map: [:destination_pool_name, :ip]
+      map: [:destination_pool_name, :ip],
+      map_present: [:region]
   end
   module AWS
     include AWSSesv2DedicatedIpAssignment

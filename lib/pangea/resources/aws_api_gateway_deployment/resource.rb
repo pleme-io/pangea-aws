@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayDeploymentAttributes,
       outputs: { id: :id },
       map: [:rest_api_id],
-      map_present: [:canary_settings, :description, :stage_description, :stage_name, :triggers, :variables]
+      map_present: [:description, :region, :triggers, :variables]
   end
   module AWS
     include AWSApiGatewayDeployment

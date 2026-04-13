@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogDelivery do
         expect(ref.arn).to eq("${aws_cloudwatch_log_delivery.test.arn}")
         expect(ref.field_delimiter).to eq("${aws_cloudwatch_log_delivery.test.field_delimiter}")
         expect(ref.record_fields).to eq("${aws_cloudwatch_log_delivery.test.record_fields}")
+        expect(ref.region).to eq("${aws_cloudwatch_log_delivery.test.region}")
         expect(ref.s3_delivery_configuration).to eq("${aws_cloudwatch_log_delivery.test.s3_delivery_configuration}")
         expect(ref.tags_all).to eq("${aws_cloudwatch_log_delivery.test.tags_all}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogDelivery do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('field_delimiter')
         expect(config).not_to have_key('record_fields')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('s3_delivery_configuration')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ field_delimiter: 'test-value', record_fields: ['test-value'], region: 'test-value', s3_delivery_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,11 +74,83 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogDelivery do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery', 'full')
+        expect(config).to have_key('field_delimiter')
+        expect(config).to have_key('record_fields')
+        expect(config).to have_key('region')
+        expect(config).to have_key('s3_delivery_configuration')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes field_delimiter when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_delivery('opt', required_attrs.merge(field_delimiter: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery', 'opt')
+        expect(config).to have_key('field_delimiter')
+      end
+
+      it 'omits field_delimiter when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_delivery('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery', 'minimal')
+        expect(config).not_to have_key('field_delimiter')
+      end
+      it 'includes record_fields when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_delivery('opt', required_attrs.merge(record_fields: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery', 'opt')
+        expect(config).to have_key('record_fields')
+      end
+
+      it 'omits record_fields when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_delivery('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery', 'minimal')
+        expect(config).not_to have_key('record_fields')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_delivery('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_delivery('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes s3_delivery_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_delivery('opt', required_attrs.merge(s3_delivery_configuration: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery', 'opt')
+        expect(config).to have_key('s3_delivery_configuration')
+      end
+
+      it 'omits s3_delivery_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_delivery('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery', 'minimal')
+        expect(config).not_to have_key('s3_delivery_configuration')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -139,7 +213,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogDelivery do
     resource_type: :aws_cloudwatch_log_delivery,
     method: :aws_cloudwatch_log_delivery,
     required_attrs: { delivery_destination_arn: 'test-value', delivery_source_name: 'test-value' },
-    expected_outputs: [:id, :arn, :field_delimiter, :record_fields, :s3_delivery_configuration, :tags_all],
+    expected_outputs: [:id, :arn, :field_delimiter, :record_fields, :region, :s3_delivery_configuration, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

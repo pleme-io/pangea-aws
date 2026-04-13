@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayResource do
 
         expect(ref.id).to eq("${aws_api_gateway_resource.test.id}")
         expect(ref.path).to eq("${aws_api_gateway_resource.test.path}")
+        expect(ref.region).to eq("${aws_api_gateway_resource.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSApiGatewayResource do
 
         config = validate_resource_structure(result, 'aws_api_gateway_resource', 'test')
         expect(config).not_to have_key('path')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_resource('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_api_gateway_resource', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_resource('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_resource', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_resource('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_resource', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -98,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayResource do
     resource_type: :aws_api_gateway_resource,
     method: :aws_api_gateway_resource,
     required_attrs: { parent_id: 'test-value', path_part: 'test-value', rest_api_id: 'test-value' },
-    expected_outputs: [:id, :path],
+    expected_outputs: [:id, :path, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSIvschatLoggingConfiguration do
 
         expect(ref.id).to eq("${aws_ivschat_logging_configuration.test.id}")
         expect(ref.arn).to eq("${aws_ivschat_logging_configuration.test.arn}")
+        expect(ref.region).to eq("${aws_ivschat_logging_configuration.test.region}")
         expect(ref.state).to eq("${aws_ivschat_logging_configuration.test.state}")
         expect(ref.tags_all).to eq("${aws_ivschat_logging_configuration.test.tags_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSIvschatLoggingConfiguration do
 
         config = validate_resource_structure(result, 'aws_ivschat_logging_configuration', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ destination_configuration: [{ 'key1' => 'val1' }], name: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ destination_configuration: { 'key1' => 'val1' }, name: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,7 +72,9 @@ RSpec.describe Pangea::Resources::AWSIvschatLoggingConfiguration do
         config = validate_resource_structure(result, 'aws_ivschat_logging_configuration', 'full')
         expect(config).to have_key('destination_configuration')
         expect(config).to have_key('name')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -78,7 +82,7 @@ RSpec.describe Pangea::Resources::AWSIvschatLoggingConfiguration do
       it 'includes destination_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ivschat_logging_configuration('opt', required_attrs.merge(destination_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_ivschat_logging_configuration('opt', required_attrs.merge(destination_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ivschat_logging_configuration', 'opt')
         expect(config).to have_key('destination_configuration')
@@ -109,6 +113,23 @@ RSpec.describe Pangea::Resources::AWSIvschatLoggingConfiguration do
         config = validate_resource_structure(result, 'aws_ivschat_logging_configuration', 'minimal')
         expect(config).not_to have_key('name')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivschat_logging_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivschat_logging_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivschat_logging_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivschat_logging_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -125,6 +146,23 @@ RSpec.describe Pangea::Resources::AWSIvschatLoggingConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ivschat_logging_configuration', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivschat_logging_configuration('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivschat_logging_configuration', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivschat_logging_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivschat_logging_configuration', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -169,7 +207,7 @@ RSpec.describe Pangea::Resources::AWSIvschatLoggingConfiguration do
     resource_type: :aws_ivschat_logging_configuration,
     method: :aws_ivschat_logging_configuration,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :state, :tags_all],
+    expected_outputs: [:id, :arn, :region, :state, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

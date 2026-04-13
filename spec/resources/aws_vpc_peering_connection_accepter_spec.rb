@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnectionAccepter do
         expect(ref.peer_owner_id).to eq("${aws_vpc_peering_connection_accepter.test.peer_owner_id}")
         expect(ref.peer_region).to eq("${aws_vpc_peering_connection_accepter.test.peer_region}")
         expect(ref.peer_vpc_id).to eq("${aws_vpc_peering_connection_accepter.test.peer_vpc_id}")
+        expect(ref.region).to eq("${aws_vpc_peering_connection_accepter.test.region}")
         expect(ref.tags_all).to eq("${aws_vpc_peering_connection_accepter.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_vpc_peering_connection_accepter.test.vpc_id}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnectionAccepter do
         expect(config).not_to have_key('peer_owner_id')
         expect(config).not_to have_key('peer_region')
         expect(config).not_to have_key('peer_vpc_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ accepter: [{ 'key1' => 'val1' }], auto_accept: true, requester: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ accepter: { 'key1' => 'val1' }, auto_accept: true, region: 'test-value', requester: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,8 +78,10 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnectionAccepter do
         config = validate_resource_structure(result, 'aws_vpc_peering_connection_accepter', 'full')
         expect(config).to have_key('accepter')
         expect(config).to have_key('auto_accept')
+        expect(config).to have_key('region')
         expect(config).to have_key('requester')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -85,7 +89,7 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnectionAccepter do
       it 'includes accepter when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_vpc_peering_connection_accepter('opt', required_attrs.merge(accepter: [{ 'key1' => 'val1' }]))
+        synth.aws_vpc_peering_connection_accepter('opt', required_attrs.merge(accepter: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_peering_connection_accepter', 'opt')
         expect(config).to have_key('accepter')
@@ -116,10 +120,27 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnectionAccepter do
         config = validate_resource_structure(result, 'aws_vpc_peering_connection_accepter', 'minimal')
         expect(config).not_to have_key('auto_accept')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection_accepter('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection_accepter', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection_accepter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection_accepter', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes requester when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_vpc_peering_connection_accepter('opt', required_attrs.merge(requester: [{ 'key1' => 'val1' }]))
+        synth.aws_vpc_peering_connection_accepter('opt', required_attrs.merge(requester: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_peering_connection_accepter', 'opt')
         expect(config).to have_key('requester')
@@ -149,6 +170,23 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnectionAccepter do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_peering_connection_accepter', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection_accepter('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection_accepter', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection_accepter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection_accepter', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -208,7 +246,7 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnectionAccepter do
     resource_type: :aws_vpc_peering_connection_accepter,
     method: :aws_vpc_peering_connection_accepter,
     required_attrs: { vpc_peering_connection_id: 'test-value' },
-    expected_outputs: [:id, :accept_status, :peer_owner_id, :peer_region, :peer_vpc_id, :tags_all, :vpc_id],
+    expected_outputs: [:id, :accept_status, :peer_owner_id, :peer_region, :peer_vpc_id, :region, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:auto_accept]

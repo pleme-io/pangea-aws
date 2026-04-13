@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSGlueConnection do
         expect(ref.id).to eq("${aws_glue_connection.test.id}")
         expect(ref.arn).to eq("${aws_glue_connection.test.arn}")
         expect(ref.catalog_id).to eq("${aws_glue_connection.test.catalog_id}")
+        expect(ref.region).to eq("${aws_glue_connection.test.region}")
         expect(ref.tags_all).to eq("${aws_glue_connection.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSGlueConnection do
         config = validate_resource_structure(result, 'aws_glue_connection', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('catalog_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ athena_properties: { 'key1' => 'val1' }, connection_properties: { 'key1' => 'val1' }, connection_type: 'test-value', description: 'test-value', match_criteria: ['test-value'], physical_connection_requirements: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ athena_properties: { 'key1' => 'val1' }, catalog_id: 'test-value', connection_properties: { 'key1' => 'val1' }, connection_type: 'test-value', description: 'test-value', match_criteria: ['test-value'], physical_connection_requirements: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,12 +71,15 @@ RSpec.describe Pangea::Resources::AWSGlueConnection do
 
         config = validate_resource_structure(result, 'aws_glue_connection', 'full')
         expect(config).to have_key('athena_properties')
+        expect(config).to have_key('catalog_id')
         expect(config).to have_key('connection_properties')
         expect(config).to have_key('connection_type')
         expect(config).to have_key('description')
         expect(config).to have_key('match_criteria')
         expect(config).to have_key('physical_connection_requirements')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -95,6 +100,23 @@ RSpec.describe Pangea::Resources::AWSGlueConnection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_connection', 'minimal')
         expect(config).not_to have_key('athena_properties')
+      end
+      it 'includes catalog_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_connection('opt', required_attrs.merge(catalog_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_connection', 'opt')
+        expect(config).to have_key('catalog_id')
+      end
+
+      it 'omits catalog_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_connection', 'minimal')
+        expect(config).not_to have_key('catalog_id')
       end
       it 'includes connection_properties when provided' do
         synth = create_synthesizer
@@ -167,7 +189,7 @@ RSpec.describe Pangea::Resources::AWSGlueConnection do
       it 'includes physical_connection_requirements when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_connection('opt', required_attrs.merge(physical_connection_requirements: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_connection('opt', required_attrs.merge(physical_connection_requirements: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_connection', 'opt')
         expect(config).to have_key('physical_connection_requirements')
@@ -180,6 +202,23 @@ RSpec.describe Pangea::Resources::AWSGlueConnection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_connection', 'minimal')
         expect(config).not_to have_key('physical_connection_requirements')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_connection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_connection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_connection', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -197,6 +236,23 @@ RSpec.describe Pangea::Resources::AWSGlueConnection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_connection', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_connection('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_connection', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_connection', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -250,7 +306,7 @@ RSpec.describe Pangea::Resources::AWSGlueConnection do
     resource_type: :aws_glue_connection,
     method: :aws_glue_connection,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :catalog_id, :tags_all],
+    expected_outputs: [:id, :arn, :catalog_id, :region, :tags_all],
     sensitive_fields: [:athena_properties, :connection_properties],
     immutable_fields: [],
     boolean_fields: []

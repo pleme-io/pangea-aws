@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverFirewallConfig do
         expect(ref.id).to eq("${aws_route53_resolver_firewall_config.test.id}")
         expect(ref.firewall_fail_open).to eq("${aws_route53_resolver_firewall_config.test.firewall_fail_open}")
         expect(ref.owner_id).to eq("${aws_route53_resolver_firewall_config.test.owner_id}")
+        expect(ref.region).to eq("${aws_route53_resolver_firewall_config.test.region}")
       end
     end
 
@@ -53,6 +54,59 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverFirewallConfig do
         config = validate_resource_structure(result, 'aws_route53_resolver_firewall_config', 'test')
         expect(config).not_to have_key('firewall_fail_open')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ firewall_fail_open: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_config('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_config', 'full')
+        expect(config).to have_key('firewall_fail_open')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes firewall_fail_open when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_config('opt', required_attrs.merge(firewall_fail_open: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_config', 'opt')
+        expect(config).to have_key('firewall_fail_open')
+      end
+
+      it 'omits firewall_fail_open when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_config', 'minimal')
+        expect(config).not_to have_key('firewall_fail_open')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_config('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_config', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_firewall_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_firewall_config', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -98,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverFirewallConfig do
     resource_type: :aws_route53_resolver_firewall_config,
     method: :aws_route53_resolver_firewall_config,
     required_attrs: { resource_id: 'test-value' },
-    expected_outputs: [:id, :firewall_fail_open, :owner_id],
+    expected_outputs: [:id, :firewall_fail_open, :owner_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

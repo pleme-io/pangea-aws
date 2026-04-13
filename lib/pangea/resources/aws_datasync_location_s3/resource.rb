@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatasyncLocationS3Attributes,
       outputs: { id: :id },
       map: [:s3_bucket_arn, :s3_config, :subdirectory],
-      map_present: [:agent_arns, :s3_storage_class, :tags, :tags_all]
+      map_present: [:agent_arns, :region, :s3_storage_class, :tags, :tags_all]
   end
   module AWS
     include AWSDatasyncLocationS3

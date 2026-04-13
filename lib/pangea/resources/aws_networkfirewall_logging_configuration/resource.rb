@@ -13,7 +13,9 @@ module Pangea::Resources
     define_resource :aws_networkfirewall_logging_configuration,
       attributes_class: AWS::Types::NetworkfirewallLoggingConfigurationAttributes,
       outputs: { id: :id },
-      map: [:firewall_arn, :logging_configuration]
+      map: [:firewall_arn, :logging_configuration],
+      map_present: [:region],
+      map_bool: [:enable_monitoring_dashboard]
   end
   module AWS
     include AWSNetworkfirewallLoggingConfiguration

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatazoneDomainAttributes,
       outputs: { id: :id },
       map: [:domain_execution_role, :name],
-      map_present: [:description, :kms_key_identifier, :single_sign_on, :tags],
+      map_present: [:description, :domain_version, :kms_key_identifier, :region, :service_role, :single_sign_on, :tags],
       map_bool: [:skip_deletion_check]
   end
   module AWS

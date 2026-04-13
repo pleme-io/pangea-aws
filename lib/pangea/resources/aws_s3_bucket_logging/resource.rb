@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketLoggingAttributes,
       outputs: { id: :id },
       map: [:bucket, :target_bucket, :target_prefix],
-      map_present: [:expected_bucket_owner, :target_grant, :target_object_key_format]
+      map_present: [:expected_bucket_owner, :region, :target_grant, :target_object_key_format]
   end
   module AWS
     include AWSS3BucketLogging

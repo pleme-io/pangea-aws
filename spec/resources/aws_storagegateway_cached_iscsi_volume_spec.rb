@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayCachedIscsiVolume do
         expect(ref.chap_enabled).to eq("${aws_storagegateway_cached_iscsi_volume.test.chap_enabled}")
         expect(ref.lun_number).to eq("${aws_storagegateway_cached_iscsi_volume.test.lun_number}")
         expect(ref.network_interface_port).to eq("${aws_storagegateway_cached_iscsi_volume.test.network_interface_port}")
+        expect(ref.region).to eq("${aws_storagegateway_cached_iscsi_volume.test.region}")
         expect(ref.tags_all).to eq("${aws_storagegateway_cached_iscsi_volume.test.tags_all}")
         expect(ref.target_arn).to eq("${aws_storagegateway_cached_iscsi_volume.test.target_arn}")
         expect(ref.volume_arn).to eq("${aws_storagegateway_cached_iscsi_volume.test.volume_arn}")
@@ -61,6 +62,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayCachedIscsiVolume do
         expect(config).not_to have_key('chap_enabled')
         expect(config).not_to have_key('lun_number')
         expect(config).not_to have_key('network_interface_port')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('target_arn')
         expect(config).not_to have_key('volume_arn')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayCachedIscsiVolume do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ kms_encrypted: true, kms_key: 'test-value', snapshot_id: 'test-value', source_volume_arn: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ kms_encrypted: true, kms_key: 'test-value', region: 'test-value', snapshot_id: 'test-value', source_volume_arn: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,9 +82,11 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayCachedIscsiVolume do
         config = validate_resource_structure(result, 'aws_storagegateway_cached_iscsi_volume', 'full')
         expect(config).to have_key('kms_encrypted')
         expect(config).to have_key('kms_key')
+        expect(config).to have_key('region')
         expect(config).to have_key('snapshot_id')
         expect(config).to have_key('source_volume_arn')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -120,6 +124,23 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayCachedIscsiVolume do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_storagegateway_cached_iscsi_volume', 'minimal')
         expect(config).not_to have_key('kms_key')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_cached_iscsi_volume('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_cached_iscsi_volume', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_cached_iscsi_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_cached_iscsi_volume', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes snapshot_id when provided' do
         synth = create_synthesizer
@@ -171,6 +192,23 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayCachedIscsiVolume do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_storagegateway_cached_iscsi_volume', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_cached_iscsi_volume('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_cached_iscsi_volume', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_cached_iscsi_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_cached_iscsi_volume', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -233,7 +271,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayCachedIscsiVolume do
     resource_type: :aws_storagegateway_cached_iscsi_volume,
     method: :aws_storagegateway_cached_iscsi_volume,
     required_attrs: { gateway_arn: 'test-value', network_interface_id: 'test-value', target_name: 'test-value', volume_size_in_bytes: 3.14 },
-    expected_outputs: [:id, :arn, :chap_enabled, :lun_number, :network_interface_port, :tags_all, :target_arn, :volume_arn, :volume_id],
+    expected_outputs: [:id, :arn, :chap_enabled, :lun_number, :network_interface_port, :region, :tags_all, :target_arn, :volume_arn, :volume_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:kms_encrypted]

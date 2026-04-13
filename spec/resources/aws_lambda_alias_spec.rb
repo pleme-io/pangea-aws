@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSLambdaAlias do
         expect(ref.id).to eq("${aws_lambda_alias.test.id}")
         expect(ref.arn).to eq("${aws_lambda_alias.test.arn}")
         expect(ref.invoke_arn).to eq("${aws_lambda_alias.test.invoke_arn}")
+        expect(ref.region).to eq("${aws_lambda_alias.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSLambdaAlias do
         config = validate_resource_structure(result, 'aws_lambda_alias', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('invoke_arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', routing_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', routing_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSLambdaAlias do
 
         config = validate_resource_structure(result, 'aws_lambda_alias', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('routing_config')
       end
     end
@@ -89,10 +92,27 @@ RSpec.describe Pangea::Resources::AWSLambdaAlias do
         config = validate_resource_structure(result, 'aws_lambda_alias', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_alias('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_alias', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_alias('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_alias', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes routing_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_alias('opt', required_attrs.merge(routing_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_alias('opt', required_attrs.merge(routing_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_alias', 'opt')
         expect(config).to have_key('routing_config')
@@ -152,7 +172,7 @@ RSpec.describe Pangea::Resources::AWSLambdaAlias do
     resource_type: :aws_lambda_alias,
     method: :aws_lambda_alias,
     required_attrs: { function_name: 'test-value', function_version: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :invoke_arn],
+    expected_outputs: [:id, :arn, :invoke_arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

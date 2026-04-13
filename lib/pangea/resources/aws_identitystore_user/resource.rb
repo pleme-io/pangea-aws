@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IdentitystoreUserAttributes,
       outputs: { id: :id },
       map: [:display_name, :identity_store_id, :name, :user_name],
-      map_present: [:addresses, :emails, :locale, :nickname, :phone_numbers, :preferred_language, :profile_url, :timezone, :title, :user_type]
+      map_present: [:addresses, :emails, :locale, :nickname, :phone_numbers, :preferred_language, :profile_url, :region, :timezone, :title, :user_type]
   end
   module AWS
     include AWSIdentitystoreUser

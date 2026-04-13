@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBotVersion do
 
         expect(ref.id).to eq("${aws_lexv2models_bot_version.test.id}")
         expect(ref.bot_version).to eq("${aws_lexv2models_bot_version.test.bot_version}")
+        expect(ref.region).to eq("${aws_lexv2models_bot_version.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBotVersion do
 
         config = validate_resource_structure(result, 'aws_lexv2models_bot_version', 'test')
         expect(config).not_to have_key('bot_version')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ bot_version: 'test-value', description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,11 +66,30 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBotVersion do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lexv2models_bot_version', 'full')
+        expect(config).to have_key('bot_version')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes bot_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_bot_version('opt', required_attrs.merge(bot_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_bot_version', 'opt')
+        expect(config).to have_key('bot_version')
+      end
+
+      it 'omits bot_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_bot_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_bot_version', 'minimal')
+        expect(config).not_to have_key('bot_version')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -85,6 +106,23 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBotVersion do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lexv2models_bot_version', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_bot_version('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_bot_version', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_bot_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_bot_version', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -131,7 +169,7 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBotVersion do
     resource_type: :aws_lexv2models_bot_version,
     method: :aws_lexv2models_bot_version,
     required_attrs: { bot_id: 'test-value', locale_specification: { 'key1' => 'val1' } },
-    expected_outputs: [:id, :bot_version],
+    expected_outputs: [:id, :bot_version, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

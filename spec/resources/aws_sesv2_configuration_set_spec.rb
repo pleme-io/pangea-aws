@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSet do
 
         expect(ref.id).to eq("${aws_sesv2_configuration_set.test.id}")
         expect(ref.arn).to eq("${aws_sesv2_configuration_set.test.arn}")
+        expect(ref.region).to eq("${aws_sesv2_configuration_set.test.region}")
         expect(ref.tags_all).to eq("${aws_sesv2_configuration_set.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSet do
 
         config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ delivery_options: [{ 'key1' => 'val1' }], reputation_options: [{ 'key1' => 'val1' }], sending_options: [{ 'key1' => 'val1' }], suppression_options: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tracking_options: [{ 'key1' => 'val1' }], vdm_options: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ delivery_options: { 'key1' => 'val1' }, region: 'test-value', reputation_options: { 'key1' => 'val1' }, sending_options: { 'key1' => 'val1' }, suppression_options: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tracking_options: { 'key1' => 'val1' }, vdm_options: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,10 +69,12 @@ RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSet do
 
         config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'full')
         expect(config).to have_key('delivery_options')
+        expect(config).to have_key('region')
         expect(config).to have_key('reputation_options')
         expect(config).to have_key('sending_options')
         expect(config).to have_key('suppression_options')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('tracking_options')
         expect(config).to have_key('vdm_options')
       end
@@ -80,7 +84,7 @@ RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSet do
       it 'includes delivery_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(delivery_options: [{ 'key1' => 'val1' }]))
+        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(delivery_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'opt')
         expect(config).to have_key('delivery_options')
@@ -94,10 +98,27 @@ RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSet do
         config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'minimal')
         expect(config).not_to have_key('delivery_options')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_configuration_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes reputation_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(reputation_options: [{ 'key1' => 'val1' }]))
+        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(reputation_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'opt')
         expect(config).to have_key('reputation_options')
@@ -114,7 +135,7 @@ RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSet do
       it 'includes sending_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(sending_options: [{ 'key1' => 'val1' }]))
+        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(sending_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'opt')
         expect(config).to have_key('sending_options')
@@ -131,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSet do
       it 'includes suppression_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(suppression_options: [{ 'key1' => 'val1' }]))
+        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(suppression_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'opt')
         expect(config).to have_key('suppression_options')
@@ -162,10 +183,27 @@ RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSet do
         config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_configuration_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes tracking_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(tracking_options: [{ 'key1' => 'val1' }]))
+        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(tracking_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'opt')
         expect(config).to have_key('tracking_options')
@@ -182,7 +220,7 @@ RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSet do
       it 'includes vdm_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(vdm_options: [{ 'key1' => 'val1' }]))
+        synth.aws_sesv2_configuration_set('opt', required_attrs.merge(vdm_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_configuration_set', 'opt')
         expect(config).to have_key('vdm_options')
@@ -240,7 +278,7 @@ RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSet do
     resource_type: :aws_sesv2_configuration_set,
     method: :aws_sesv2_configuration_set,
     required_attrs: { configuration_set_name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

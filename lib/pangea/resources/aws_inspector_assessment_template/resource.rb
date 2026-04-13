@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::InspectorAssessmentTemplateAttributes,
       outputs: { id: :id },
       map: [:duration, :name, :rules_package_arns, :target_arn],
-      map_present: [:event_subscription, :tags, :tags_all]
+      map_present: [:event_subscription, :region, :tags, :tags_all]
   end
   module AWS
     include AWSInspectorAssessmentTemplate

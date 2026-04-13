@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_config_aggregate_authorization,
       attributes_class: AWS::Types::ConfigAggregateAuthorizationAttributes,
       outputs: { id: :id },
-      map: [:account_id, :region],
-      map_present: [:tags, :tags_all]
+      map: [:account_id],
+      map_present: [:authorized_aws_region, :region, :tags, :tags_all]
   end
   module AWS
     include AWSConfigAggregateAuthorization

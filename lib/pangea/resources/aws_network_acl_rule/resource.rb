@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkAclRuleAttributes,
       outputs: { id: :id },
       map: [:network_acl_id, :protocol, :rule_action, :rule_number],
-      map_present: [:cidr_block, :from_port, :icmp_code, :icmp_type, :ipv6_cidr_block, :to_port],
+      map_present: [:cidr_block, :from_port, :icmp_code, :icmp_type, :ipv6_cidr_block, :region, :to_port],
       map_bool: [:egress]
   end
   module AWS

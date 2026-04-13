@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SesDomainMailFromAttributes,
       outputs: { id: :id },
       map: [:domain, :mail_from_domain],
-      map_present: [:behavior_on_mx_failure]
+      map_present: [:behavior_on_mx_failure, :region]
   end
   module AWS
     include AWSSesDomainMailFrom

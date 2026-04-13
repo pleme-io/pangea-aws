@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSRdsCustomDbEngineVersion do
         expect(ref.kms_key_id).to eq("${aws_rds_custom_db_engine_version.test.kms_key_id}")
         expect(ref.major_engine_version).to eq("${aws_rds_custom_db_engine_version.test.major_engine_version}")
         expect(ref.manifest_computed).to eq("${aws_rds_custom_db_engine_version.test.manifest_computed}")
+        expect(ref.region).to eq("${aws_rds_custom_db_engine_version.test.region}")
         expect(ref.status).to eq("${aws_rds_custom_db_engine_version.test.status}")
         expect(ref.tags_all).to eq("${aws_rds_custom_db_engine_version.test.tags_all}")
       end
@@ -65,13 +66,14 @@ RSpec.describe Pangea::Resources::AWSRdsCustomDbEngineVersion do
         expect(config).not_to have_key('kms_key_id')
         expect(config).not_to have_key('major_engine_version')
         expect(config).not_to have_key('manifest_computed')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ database_installation_files_s3_bucket_name: 'test-value', database_installation_files_s3_prefix: 'test-value', description: 'test-value', filename: 'test-value', manifest: 'test-value', manifest_hash: 'test-value', source_image_id: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ database_installation_files_s3_bucket_name: 'test-value', database_installation_files_s3_prefix: 'test-value', description: 'test-value', filename: 'test-value', kms_key_id: 'test-value', manifest: 'test-value', manifest_hash: 'test-value', region: 'test-value', source_image_id: 'test-value', status: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -84,10 +86,14 @@ RSpec.describe Pangea::Resources::AWSRdsCustomDbEngineVersion do
         expect(config).to have_key('database_installation_files_s3_prefix')
         expect(config).to have_key('description')
         expect(config).to have_key('filename')
+        expect(config).to have_key('kms_key_id')
         expect(config).to have_key('manifest')
         expect(config).to have_key('manifest_hash')
+        expect(config).to have_key('region')
         expect(config).to have_key('source_image_id')
+        expect(config).to have_key('status')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -160,6 +166,23 @@ RSpec.describe Pangea::Resources::AWSRdsCustomDbEngineVersion do
         config = validate_resource_structure(result, 'aws_rds_custom_db_engine_version', 'minimal')
         expect(config).not_to have_key('filename')
       end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_custom_db_engine_version('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_custom_db_engine_version', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_custom_db_engine_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_custom_db_engine_version', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
       it 'includes manifest when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -194,6 +217,23 @@ RSpec.describe Pangea::Resources::AWSRdsCustomDbEngineVersion do
         config = validate_resource_structure(result, 'aws_rds_custom_db_engine_version', 'minimal')
         expect(config).not_to have_key('manifest_hash')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_custom_db_engine_version('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_custom_db_engine_version', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_custom_db_engine_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_custom_db_engine_version', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes source_image_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -211,6 +251,23 @@ RSpec.describe Pangea::Resources::AWSRdsCustomDbEngineVersion do
         config = validate_resource_structure(result, 'aws_rds_custom_db_engine_version', 'minimal')
         expect(config).not_to have_key('source_image_id')
       end
+      it 'includes status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_custom_db_engine_version('opt', required_attrs.merge(status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_custom_db_engine_version', 'opt')
+        expect(config).to have_key('status')
+      end
+
+      it 'omits status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_custom_db_engine_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_custom_db_engine_version', 'minimal')
+        expect(config).not_to have_key('status')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -227,6 +284,23 @@ RSpec.describe Pangea::Resources::AWSRdsCustomDbEngineVersion do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_custom_db_engine_version', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_custom_db_engine_version('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_custom_db_engine_version', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_custom_db_engine_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_custom_db_engine_version', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -273,7 +347,7 @@ RSpec.describe Pangea::Resources::AWSRdsCustomDbEngineVersion do
     resource_type: :aws_rds_custom_db_engine_version,
     method: :aws_rds_custom_db_engine_version,
     required_attrs: { engine: 'test-value', engine_version: 'test-value' },
-    expected_outputs: [:id, :arn, :create_time, :db_parameter_group_family, :image_id, :kms_key_id, :major_engine_version, :manifest_computed, :status, :tags_all],
+    expected_outputs: [:id, :arn, :create_time, :db_parameter_group_family, :image_id, :kms_key_id, :major_engine_version, :manifest_computed, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

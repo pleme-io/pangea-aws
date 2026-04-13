@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LbListenerRuleAttributes,
       outputs: { id: :id },
       map: [:action, :condition, :listener_arn],
-      map_present: [:priority, :tags, :tags_all]
+      map_present: [:priority, :region, :tags, :tags_all, :transform]
   end
   module AWS
     include AWSLbListenerRule

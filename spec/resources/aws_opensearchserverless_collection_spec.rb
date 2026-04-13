@@ -41,7 +41,9 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessCollection do
         expect(ref.arn).to eq("${aws_opensearchserverless_collection.test.arn}")
         expect(ref.collection_endpoint).to eq("${aws_opensearchserverless_collection.test.collection_endpoint}")
         expect(ref.dashboard_endpoint).to eq("${aws_opensearchserverless_collection.test.dashboard_endpoint}")
+        expect(ref.encryption_config).to eq("${aws_opensearchserverless_collection.test.encryption_config}")
         expect(ref.kms_key_arn).to eq("${aws_opensearchserverless_collection.test.kms_key_arn}")
+        expect(ref.region).to eq("${aws_opensearchserverless_collection.test.region}")
         expect(ref.standby_replicas).to eq("${aws_opensearchserverless_collection.test.standby_replicas}")
         expect(ref.tags_all).to eq("${aws_opensearchserverless_collection.test.tags_all}")
         expect(ref.type).to eq("${aws_opensearchserverless_collection.test.type}")
@@ -59,7 +61,9 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessCollection do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('collection_endpoint')
         expect(config).not_to have_key('dashboard_endpoint')
+        expect(config).not_to have_key('encryption_config')
         expect(config).not_to have_key('kms_key_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('standby_replicas')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('type')
@@ -67,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessCollection do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ collection_group_name: 'test-value', description: 'test-value', encryption_config: [{ 'key1' => 'val1' }], region: 'test-value', standby_replicas: 'test-value', tags: { 'key1' => 'val1' }, type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,12 +80,34 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessCollection do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_opensearchserverless_collection', 'full')
+        expect(config).to have_key('collection_group_name')
         expect(config).to have_key('description')
+        expect(config).to have_key('encryption_config')
+        expect(config).to have_key('region')
+        expect(config).to have_key('standby_replicas')
         expect(config).to have_key('tags')
+        expect(config).to have_key('type')
       end
     end
 
     context 'optional attributes' do
+      it 'includes collection_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_collection('opt', required_attrs.merge(collection_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_collection', 'opt')
+        expect(config).to have_key('collection_group_name')
+      end
+
+      it 'omits collection_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_collection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_collection', 'minimal')
+        expect(config).not_to have_key('collection_group_name')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -99,6 +125,57 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessCollection do
         config = validate_resource_structure(result, 'aws_opensearchserverless_collection', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes encryption_config when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_collection('opt', required_attrs.merge(encryption_config: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_collection', 'opt')
+        expect(config).to have_key('encryption_config')
+      end
+
+      it 'omits encryption_config when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_collection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_collection', 'minimal')
+        expect(config).not_to have_key('encryption_config')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_collection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_collection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_collection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_collection', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes standby_replicas when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_collection('opt', required_attrs.merge(standby_replicas: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_collection', 'opt')
+        expect(config).to have_key('standby_replicas')
+      end
+
+      it 'omits standby_replicas when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_collection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_collection', 'minimal')
+        expect(config).not_to have_key('standby_replicas')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -115,6 +192,23 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessCollection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearchserverless_collection', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_collection('opt', required_attrs.merge(type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_collection', 'opt')
+        expect(config).to have_key('type')
+      end
+
+      it 'omits type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_collection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_collection', 'minimal')
+        expect(config).not_to have_key('type')
       end
     end
 
@@ -160,7 +254,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessCollection do
     resource_type: :aws_opensearchserverless_collection,
     method: :aws_opensearchserverless_collection,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :collection_endpoint, :dashboard_endpoint, :kms_key_arn, :standby_replicas, :tags_all, :type],
+    expected_outputs: [:id, :arn, :collection_endpoint, :dashboard_endpoint, :encryption_config, :kms_key_arn, :region, :standby_replicas, :tags_all, :type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

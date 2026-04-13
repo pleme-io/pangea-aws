@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSSpotDatafeedSubscription do
         ref = synth.aws_spot_datafeed_subscription('test', required_attrs)
 
         expect(ref.id).to eq("${aws_spot_datafeed_subscription.test.id}")
+        expect(ref.region).to eq("${aws_spot_datafeed_subscription.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_spot_datafeed_subscription('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_spot_datafeed_subscription', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ prefix: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ prefix: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSSpotDatafeedSubscription do
 
         config = validate_resource_structure(result, 'aws_spot_datafeed_subscription', 'full')
         expect(config).to have_key('prefix')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSSpotDatafeedSubscription do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_spot_datafeed_subscription', 'minimal')
         expect(config).not_to have_key('prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_spot_datafeed_subscription('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_spot_datafeed_subscription', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_spot_datafeed_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_spot_datafeed_subscription', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -117,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSSpotDatafeedSubscription do
     resource_type: :aws_spot_datafeed_subscription,
     method: :aws_spot_datafeed_subscription,
     required_attrs: { bucket: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

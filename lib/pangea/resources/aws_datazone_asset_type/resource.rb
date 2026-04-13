@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatazoneAssetTypeAttributes,
       outputs: { id: :id },
       map: [:domain_identifier, :name, :owning_project_identifier],
-      map_present: [:description, :forms_input]
+      map_present: [:description, :forms_input, :region]
   end
   module AWS
     include AWSDatazoneAssetType

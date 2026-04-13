@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_transfer_ssh_key,
       attributes_class: AWS::Types::TransferSshKeyAttributes,
       outputs: { id: :id },
-      map: [:body, :server_id, :user_name]
+      map: [:body, :server_id, :user_name],
+      map_present: [:region]
   end
   module AWS
     include AWSTransferSshKey

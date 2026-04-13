@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerImageVersion do
         expect(ref.arn).to eq("${aws_sagemaker_image_version.test.arn}")
         expect(ref.container_image).to eq("${aws_sagemaker_image_version.test.container_image}")
         expect(ref.image_arn).to eq("${aws_sagemaker_image_version.test.image_arn}")
+        expect(ref.region).to eq("${aws_sagemaker_image_version.test.region}")
         expect(ref.version).to eq("${aws_sagemaker_image_version.test.version}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSSagemakerImageVersion do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('container_image')
         expect(config).not_to have_key('image_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('version')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ horovod: true, job_type: 'test-value', ml_framework: 'test-value', processor: 'test-value', programming_lang: 'test-value', release_notes: 'test-value', vendor_guidance: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ aliases: ['test-value'], horovod: true, job_type: 'test-value', ml_framework: 'test-value', processor: 'test-value', programming_lang: 'test-value', region: 'test-value', release_notes: 'test-value', vendor_guidance: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,17 +72,36 @@ RSpec.describe Pangea::Resources::AWSSagemakerImageVersion do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_sagemaker_image_version', 'full')
+        expect(config).to have_key('aliases')
         expect(config).to have_key('horovod')
         expect(config).to have_key('job_type')
         expect(config).to have_key('ml_framework')
         expect(config).to have_key('processor')
         expect(config).to have_key('programming_lang')
+        expect(config).to have_key('region')
         expect(config).to have_key('release_notes')
         expect(config).to have_key('vendor_guidance')
       end
     end
 
     context 'optional attributes' do
+      it 'includes aliases when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_image_version('opt', required_attrs.merge(aliases: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_image_version', 'opt')
+        expect(config).to have_key('aliases')
+      end
+
+      it 'omits aliases when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_image_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_image_version', 'minimal')
+        expect(config).not_to have_key('aliases')
+      end
       it 'includes horovod when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -165,6 +186,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerImageVersion do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_image_version', 'minimal')
         expect(config).not_to have_key('programming_lang')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_image_version('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_image_version', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_image_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_image_version', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes release_notes when provided' do
         synth = create_synthesizer
@@ -259,7 +297,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerImageVersion do
     resource_type: :aws_sagemaker_image_version,
     method: :aws_sagemaker_image_version,
     required_attrs: { base_image: 'test-value', image_name: 'test-value' },
-    expected_outputs: [:id, :arn, :container_image, :image_arn, :version],
+    expected_outputs: [:id, :arn, :container_image, :image_arn, :region, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:horovod]

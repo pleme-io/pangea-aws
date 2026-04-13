@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatazoneUserProfileAttributes,
       outputs: { id: :id },
       map: [:domain_identifier, :user_identifier],
-      map_present: [:status, :user_type]
+      map_present: [:region, :status, :user_type]
   end
   module AWS
     include AWSDatazoneUserProfile

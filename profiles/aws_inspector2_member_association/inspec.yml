@@ -1,0 +1,8 @@
+name: aws_inspector2_member_association
+title: Manages a aws_inspector2_member_association resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

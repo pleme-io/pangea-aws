@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketLifecycleConfigurationAttributes,
       outputs: { id: :id },
       map: [:bucket],
-      map_present: [:expected_bucket_owner, :rule, :transition_default_minimum_object_size]
+      map_present: [:expected_bucket_owner, :region, :rule, :transition_default_minimum_object_size]
   end
   module AWS
     include AWSS3BucketLifecycleConfiguration

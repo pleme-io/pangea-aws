@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EcsClusterAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:configuration, :service_connect_defaults, :setting, :tags, :tags_all]
+      map_present: [:configuration, :region, :service_connect_defaults, :setting, :tags, :tags_all]
   end
   module AWS
     include AWSEcsCluster

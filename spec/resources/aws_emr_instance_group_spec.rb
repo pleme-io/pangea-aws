@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEmrInstanceGroup do
 
         expect(ref.id).to eq("${aws_emr_instance_group.test.id}")
         expect(ref.instance_count).to eq("${aws_emr_instance_group.test.instance_count}")
+        expect(ref.region).to eq("${aws_emr_instance_group.test.region}")
         expect(ref.running_instance_count).to eq("${aws_emr_instance_group.test.running_instance_count}")
         expect(ref.status).to eq("${aws_emr_instance_group.test.status}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSEmrInstanceGroup do
 
         config = validate_resource_structure(result, 'aws_emr_instance_group', 'test')
         expect(config).not_to have_key('instance_count')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('running_instance_count')
         expect(config).not_to have_key('status')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ autoscaling_policy: 'test-value', bid_price: 'test-value', configurations_json: 'test-value', ebs_config: [{ 'key1' => 'val1' }], ebs_optimized: true, name: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ autoscaling_policy: 'test-value', bid_price: 'test-value', configurations_json: 'test-value', ebs_config: [{ 'key1' => 'val1' }], ebs_optimized: true, instance_count: 3.14, name: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,9 @@ RSpec.describe Pangea::Resources::AWSEmrInstanceGroup do
         expect(config).to have_key('configurations_json')
         expect(config).to have_key('ebs_config')
         expect(config).to have_key('ebs_optimized')
+        expect(config).to have_key('instance_count')
         expect(config).to have_key('name')
+        expect(config).to have_key('region')
       end
     end
 
@@ -163,6 +167,23 @@ RSpec.describe Pangea::Resources::AWSEmrInstanceGroup do
         config = validate_resource_structure(result, 'aws_emr_instance_group', 'minimal')
         expect(config).not_to have_key('ebs_optimized')
       end
+      it 'includes instance_count when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_instance_group('opt', required_attrs.merge(instance_count: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_instance_group', 'opt')
+        expect(config).to have_key('instance_count')
+      end
+
+      it 'omits instance_count when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_instance_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_instance_group', 'minimal')
+        expect(config).not_to have_key('instance_count')
+      end
       it 'includes name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -179,6 +200,23 @@ RSpec.describe Pangea::Resources::AWSEmrInstanceGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_instance_group', 'minimal')
         expect(config).not_to have_key('name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_instance_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_instance_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_instance_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_instance_group', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -239,7 +277,7 @@ RSpec.describe Pangea::Resources::AWSEmrInstanceGroup do
     resource_type: :aws_emr_instance_group,
     method: :aws_emr_instance_group,
     required_attrs: { cluster_id: 'test-value', instance_type: 'test-value' },
-    expected_outputs: [:id, :instance_count, :running_instance_count, :status],
+    expected_outputs: [:id, :instance_count, :region, :running_instance_count, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:ebs_optimized]

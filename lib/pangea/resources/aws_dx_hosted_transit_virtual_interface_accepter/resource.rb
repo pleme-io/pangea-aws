@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DxHostedTransitVirtualInterfaceAccepterAttributes,
       outputs: { id: :id },
       map: [:dx_gateway_id, :virtual_interface_id],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSDxHostedTransitVirtualInterfaceAccepter

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationPermissions do
 
         expect(ref.id).to eq("${aws_lakeformation_permissions.test.id}")
         expect(ref.permissions_with_grant_option).to eq("${aws_lakeformation_permissions.test.permissions_with_grant_option}")
+        expect(ref.region).to eq("${aws_lakeformation_permissions.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSLakeformationPermissions do
 
         config = validate_resource_structure(result, 'aws_lakeformation_permissions', 'test')
         expect(config).not_to have_key('permissions_with_grant_option')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ catalog_id: 'test-value', catalog_resource: true, data_cells_filter: [{ 'key1' => 'val1' }], data_location: [{ 'key1' => 'val1' }], database: [{ 'key1' => 'val1' }], lf_tag: [{ 'key1' => 'val1' }], lf_tag_policy: [{ 'key1' => 'val1' }], table: [{ 'key1' => 'val1' }], table_with_columns: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ catalog_id: 'test-value', catalog_resource: true, data_cells_filter: { 'key1' => 'val1' }, data_location: { 'key1' => 'val1' }, database: { 'key1' => 'val1' }, lf_tag: { 'key1' => 'val1' }, lf_tag_policy: { 'key1' => 'val1' }, permissions_with_grant_option: ['test-value'], region: 'test-value', table: { 'key1' => 'val1' }, table_with_columns: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +73,8 @@ RSpec.describe Pangea::Resources::AWSLakeformationPermissions do
         expect(config).to have_key('database')
         expect(config).to have_key('lf_tag')
         expect(config).to have_key('lf_tag_policy')
+        expect(config).to have_key('permissions_with_grant_option')
+        expect(config).to have_key('region')
         expect(config).to have_key('table')
         expect(config).to have_key('table_with_columns')
       end
@@ -114,7 +118,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationPermissions do
       it 'includes data_cells_filter when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lakeformation_permissions('opt', required_attrs.merge(data_cells_filter: [{ 'key1' => 'val1' }]))
+        synth.aws_lakeformation_permissions('opt', required_attrs.merge(data_cells_filter: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lakeformation_permissions', 'opt')
         expect(config).to have_key('data_cells_filter')
@@ -131,7 +135,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationPermissions do
       it 'includes data_location when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lakeformation_permissions('opt', required_attrs.merge(data_location: [{ 'key1' => 'val1' }]))
+        synth.aws_lakeformation_permissions('opt', required_attrs.merge(data_location: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lakeformation_permissions', 'opt')
         expect(config).to have_key('data_location')
@@ -148,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationPermissions do
       it 'includes database when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lakeformation_permissions('opt', required_attrs.merge(database: [{ 'key1' => 'val1' }]))
+        synth.aws_lakeformation_permissions('opt', required_attrs.merge(database: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lakeformation_permissions', 'opt')
         expect(config).to have_key('database')
@@ -165,7 +169,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationPermissions do
       it 'includes lf_tag when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lakeformation_permissions('opt', required_attrs.merge(lf_tag: [{ 'key1' => 'val1' }]))
+        synth.aws_lakeformation_permissions('opt', required_attrs.merge(lf_tag: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lakeformation_permissions', 'opt')
         expect(config).to have_key('lf_tag')
@@ -182,7 +186,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationPermissions do
       it 'includes lf_tag_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lakeformation_permissions('opt', required_attrs.merge(lf_tag_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_lakeformation_permissions('opt', required_attrs.merge(lf_tag_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lakeformation_permissions', 'opt')
         expect(config).to have_key('lf_tag_policy')
@@ -196,10 +200,44 @@ RSpec.describe Pangea::Resources::AWSLakeformationPermissions do
         config = validate_resource_structure(result, 'aws_lakeformation_permissions', 'minimal')
         expect(config).not_to have_key('lf_tag_policy')
       end
+      it 'includes permissions_with_grant_option when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_permissions('opt', required_attrs.merge(permissions_with_grant_option: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_permissions', 'opt')
+        expect(config).to have_key('permissions_with_grant_option')
+      end
+
+      it 'omits permissions_with_grant_option when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_permissions('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_permissions', 'minimal')
+        expect(config).not_to have_key('permissions_with_grant_option')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_permissions('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_permissions', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_permissions('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_permissions', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes table when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lakeformation_permissions('opt', required_attrs.merge(table: [{ 'key1' => 'val1' }]))
+        synth.aws_lakeformation_permissions('opt', required_attrs.merge(table: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lakeformation_permissions', 'opt')
         expect(config).to have_key('table')
@@ -216,7 +254,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationPermissions do
       it 'includes table_with_columns when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lakeformation_permissions('opt', required_attrs.merge(table_with_columns: [{ 'key1' => 'val1' }]))
+        synth.aws_lakeformation_permissions('opt', required_attrs.merge(table_with_columns: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lakeformation_permissions', 'opt')
         expect(config).to have_key('table_with_columns')
@@ -289,7 +327,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationPermissions do
     resource_type: :aws_lakeformation_permissions,
     method: :aws_lakeformation_permissions,
     required_attrs: { permissions: ['test-value'], principal: 'test-value' },
-    expected_outputs: [:id, :permissions_with_grant_option],
+    expected_outputs: [:id, :permissions_with_grant_option, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:catalog_resource]

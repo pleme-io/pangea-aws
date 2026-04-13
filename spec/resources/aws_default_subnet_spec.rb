@@ -48,6 +48,7 @@ RSpec.describe Pangea::Resources::AWSDefaultSubnet do
         expect(ref.outpost_arn).to eq("${aws_default_subnet.test.outpost_arn}")
         expect(ref.owner_id).to eq("${aws_default_subnet.test.owner_id}")
         expect(ref.private_dns_hostname_type_on_launch).to eq("${aws_default_subnet.test.private_dns_hostname_type_on_launch}")
+        expect(ref.region).to eq("${aws_default_subnet.test.region}")
         expect(ref.tags_all).to eq("${aws_default_subnet.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_default_subnet.test.vpc_id}")
       end
@@ -71,13 +72,14 @@ RSpec.describe Pangea::Resources::AWSDefaultSubnet do
         expect(config).not_to have_key('outpost_arn')
         expect(config).not_to have_key('owner_id')
         expect(config).not_to have_key('private_dns_hostname_type_on_launch')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ assign_ipv6_address_on_creation: true, customer_owned_ipv4_pool: 'test-value', enable_dns64: true, enable_resource_name_dns_a_record_on_launch: true, enable_resource_name_dns_aaaa_record_on_launch: true, force_destroy: true, ipv6_native: true, map_customer_owned_ip_on_launch: true, map_public_ip_on_launch: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ assign_ipv6_address_on_creation: true, customer_owned_ipv4_pool: 'test-value', enable_dns64: true, enable_resource_name_dns_a_record_on_launch: true, enable_resource_name_dns_aaaa_record_on_launch: true, force_destroy: true, ipv6_cidr_block: 'test-value', ipv6_native: true, map_customer_owned_ip_on_launch: true, map_public_ip_on_launch: true, private_dns_hostname_type_on_launch: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -92,10 +94,14 @@ RSpec.describe Pangea::Resources::AWSDefaultSubnet do
         expect(config).to have_key('enable_resource_name_dns_a_record_on_launch')
         expect(config).to have_key('enable_resource_name_dns_aaaa_record_on_launch')
         expect(config).to have_key('force_destroy')
+        expect(config).to have_key('ipv6_cidr_block')
         expect(config).to have_key('ipv6_native')
         expect(config).to have_key('map_customer_owned_ip_on_launch')
         expect(config).to have_key('map_public_ip_on_launch')
+        expect(config).to have_key('private_dns_hostname_type_on_launch')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -202,6 +208,23 @@ RSpec.describe Pangea::Resources::AWSDefaultSubnet do
         config = validate_resource_structure(result, 'aws_default_subnet', 'minimal')
         expect(config).not_to have_key('force_destroy')
       end
+      it 'includes ipv6_cidr_block when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_subnet('opt', required_attrs.merge(ipv6_cidr_block: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_subnet', 'opt')
+        expect(config).to have_key('ipv6_cidr_block')
+      end
+
+      it 'omits ipv6_cidr_block when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_subnet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_subnet', 'minimal')
+        expect(config).not_to have_key('ipv6_cidr_block')
+      end
       it 'includes ipv6_native when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -253,6 +276,40 @@ RSpec.describe Pangea::Resources::AWSDefaultSubnet do
         config = validate_resource_structure(result, 'aws_default_subnet', 'minimal')
         expect(config).not_to have_key('map_public_ip_on_launch')
       end
+      it 'includes private_dns_hostname_type_on_launch when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_subnet('opt', required_attrs.merge(private_dns_hostname_type_on_launch: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_subnet', 'opt')
+        expect(config).to have_key('private_dns_hostname_type_on_launch')
+      end
+
+      it 'omits private_dns_hostname_type_on_launch when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_subnet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_subnet', 'minimal')
+        expect(config).not_to have_key('private_dns_hostname_type_on_launch')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_subnet('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_subnet', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_subnet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_subnet', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -269,6 +326,23 @@ RSpec.describe Pangea::Resources::AWSDefaultSubnet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_default_subnet', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_subnet('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_subnet', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_subnet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_subnet', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -405,7 +479,7 @@ RSpec.describe Pangea::Resources::AWSDefaultSubnet do
     resource_type: :aws_default_subnet,
     method: :aws_default_subnet,
     required_attrs: { availability_zone: 'test-value' },
-    expected_outputs: [:id, :arn, :availability_zone_id, :cidr_block, :enable_lni_at_device_index, :existing_default_subnet, :ipv6_cidr_block, :ipv6_cidr_block_association_id, :outpost_arn, :owner_id, :private_dns_hostname_type_on_launch, :tags_all, :vpc_id],
+    expected_outputs: [:id, :arn, :availability_zone_id, :cidr_block, :enable_lni_at_device_index, :existing_default_subnet, :ipv6_cidr_block, :ipv6_cidr_block_association_id, :outpost_arn, :owner_id, :private_dns_hostname_type_on_launch, :region, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:assign_ipv6_address_on_creation, :enable_dns64, :enable_resource_name_dns_a_record_on_launch, :enable_resource_name_dns_aaaa_record_on_launch, :force_destroy, :ipv6_native, :map_customer_owned_ip_on_launch, :map_public_ip_on_launch]

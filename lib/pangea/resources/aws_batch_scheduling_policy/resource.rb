@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BatchSchedulingPolicyAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:fair_share_policy, :tags, :tags_all]
+      map_present: [:fair_share_policy, :region, :tags, :tags_all]
   end
   module AWS
     include AWSBatchSchedulingPolicy

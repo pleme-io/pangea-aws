@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSDmsS3Endpoint do
         expect(ref.engine_display_name).to eq("${aws_dms_s3_endpoint.test.engine_display_name}")
         expect(ref.external_id).to eq("${aws_dms_s3_endpoint.test.external_id}")
         expect(ref.kms_key_arn).to eq("${aws_dms_s3_endpoint.test.kms_key_arn}")
+        expect(ref.region).to eq("${aws_dms_s3_endpoint.test.region}")
         expect(ref.ssl_mode).to eq("${aws_dms_s3_endpoint.test.ssl_mode}")
         expect(ref.status).to eq("${aws_dms_s3_endpoint.test.status}")
         expect(ref.tags_all).to eq("${aws_dms_s3_endpoint.test.tags_all}")
@@ -62,6 +63,7 @@ RSpec.describe Pangea::Resources::AWSDmsS3Endpoint do
         expect(config).not_to have_key('engine_display_name')
         expect(config).not_to have_key('external_id')
         expect(config).not_to have_key('kms_key_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('ssl_mode')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSDmsS3Endpoint do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ add_column_name: true, add_trailing_padding_character: true, bucket_folder: 'test-value', canned_acl_for_objects: 'test-value', cdc_inserts_and_updates: true, cdc_inserts_only: true, cdc_max_batch_interval: 3.14, cdc_min_file_size: 3.14, cdc_path: 'test-value', compression_type: 'test-value', csv_delimiter: 'test-value', csv_no_sup_value: 'test-value', csv_null_value: 'test-value', csv_row_delimiter: 'test-value', data_format: 'test-value', data_page_size: 3.14, date_partition_delimiter: 'test-value', date_partition_enabled: true, date_partition_sequence: 'test-value', date_partition_timezone: 'test-value', detach_target_on_lob_lookup_failure_parquet: true, dict_page_size_limit: 3.14, enable_statistics: true, encoding_type: 'test-value', encryption_mode: 'test-value', expected_bucket_owner: 'test-value', external_table_definition: 'test-value', glue_catalog_generation: true, ignore_header_rows: 3.14, include_op_for_full_load: true, max_file_size: 3.14, parquet_timestamp_in_millisecond: true, parquet_version: 'test-value', preserve_transactions: true, rfc_4180: true, row_group_length: 3.14, server_side_encryption_kms_key_id: 'test-value', tags: { 'key1' => 'val1' }, timestamp_column_name: 'test-value', use_csv_no_sup_value: true, use_task_start_time_for_full_load_timestamp: true }) }
+      let(:all_attrs) { required_attrs.merge({ add_column_name: true, add_trailing_padding_character: true, bucket_folder: 'test-value', canned_acl_for_objects: 'test-value', cdc_inserts_and_updates: true, cdc_inserts_only: true, cdc_max_batch_interval: 3.14, cdc_min_file_size: 3.14, cdc_path: 'test-value', certificate_arn: 'test-value', compression_type: 'test-value', csv_delimiter: 'test-value', csv_no_sup_value: 'test-value', csv_null_value: 'test-value', csv_row_delimiter: 'test-value', data_format: 'test-value', data_page_size: 3.14, date_partition_delimiter: 'test-value', date_partition_enabled: true, date_partition_sequence: 'test-value', date_partition_timezone: 'test-value', detach_target_on_lob_lookup_failure_parquet: true, dict_page_size_limit: 3.14, enable_statistics: true, encoding_type: 'test-value', encryption_mode: 'test-value', expected_bucket_owner: 'test-value', external_table_definition: 'test-value', glue_catalog_generation: true, ignore_header_rows: 3.14, include_op_for_full_load: true, kms_key_arn: 'test-value', max_file_size: 3.14, parquet_timestamp_in_millisecond: true, parquet_version: 'test-value', preserve_transactions: true, region: 'test-value', rfc_4180: true, row_group_length: 3.14, server_side_encryption_kms_key_id: 'test-value', ssl_mode: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, timestamp_column_name: 'test-value', use_csv_no_sup_value: true, use_task_start_time_for_full_load_timestamp: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -87,6 +89,7 @@ RSpec.describe Pangea::Resources::AWSDmsS3Endpoint do
         expect(config).to have_key('cdc_max_batch_interval')
         expect(config).to have_key('cdc_min_file_size')
         expect(config).to have_key('cdc_path')
+        expect(config).to have_key('certificate_arn')
         expect(config).to have_key('compression_type')
         expect(config).to have_key('csv_delimiter')
         expect(config).to have_key('csv_no_sup_value')
@@ -108,14 +111,18 @@ RSpec.describe Pangea::Resources::AWSDmsS3Endpoint do
         expect(config).to have_key('glue_catalog_generation')
         expect(config).to have_key('ignore_header_rows')
         expect(config).to have_key('include_op_for_full_load')
+        expect(config).to have_key('kms_key_arn')
         expect(config).to have_key('max_file_size')
         expect(config).to have_key('parquet_timestamp_in_millisecond')
         expect(config).to have_key('parquet_version')
         expect(config).to have_key('preserve_transactions')
+        expect(config).to have_key('region')
         expect(config).to have_key('rfc_4180')
         expect(config).to have_key('row_group_length')
         expect(config).to have_key('server_side_encryption_kms_key_id')
+        expect(config).to have_key('ssl_mode')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('timestamp_column_name')
         expect(config).to have_key('use_csv_no_sup_value')
         expect(config).to have_key('use_task_start_time_for_full_load_timestamp')
@@ -275,6 +282,23 @@ RSpec.describe Pangea::Resources::AWSDmsS3Endpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'minimal')
         expect(config).not_to have_key('cdc_path')
+      end
+      it 'includes certificate_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_s3_endpoint('opt', required_attrs.merge(certificate_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'opt')
+        expect(config).to have_key('certificate_arn')
+      end
+
+      it 'omits certificate_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_s3_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'minimal')
+        expect(config).not_to have_key('certificate_arn')
       end
       it 'includes compression_type when provided' do
         synth = create_synthesizer
@@ -633,6 +657,23 @@ RSpec.describe Pangea::Resources::AWSDmsS3Endpoint do
         config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'minimal')
         expect(config).not_to have_key('include_op_for_full_load')
       end
+      it 'includes kms_key_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_s3_endpoint('opt', required_attrs.merge(kms_key_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'opt')
+        expect(config).to have_key('kms_key_arn')
+      end
+
+      it 'omits kms_key_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_s3_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'minimal')
+        expect(config).not_to have_key('kms_key_arn')
+      end
       it 'includes max_file_size when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -701,6 +742,23 @@ RSpec.describe Pangea::Resources::AWSDmsS3Endpoint do
         config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'minimal')
         expect(config).not_to have_key('preserve_transactions')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_s3_endpoint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_s3_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes rfc_4180 when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -752,6 +810,23 @@ RSpec.describe Pangea::Resources::AWSDmsS3Endpoint do
         config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'minimal')
         expect(config).not_to have_key('server_side_encryption_kms_key_id')
       end
+      it 'includes ssl_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_s3_endpoint('opt', required_attrs.merge(ssl_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'opt')
+        expect(config).to have_key('ssl_mode')
+      end
+
+      it 'omits ssl_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_s3_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'minimal')
+        expect(config).not_to have_key('ssl_mode')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -768,6 +843,23 @@ RSpec.describe Pangea::Resources::AWSDmsS3Endpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_s3_endpoint('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_s3_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_s3_endpoint', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes timestamp_column_name when provided' do
         synth = create_synthesizer
@@ -1024,7 +1116,7 @@ RSpec.describe Pangea::Resources::AWSDmsS3Endpoint do
     resource_type: :aws_dms_s3_endpoint,
     method: :aws_dms_s3_endpoint,
     required_attrs: { bucket_name: 'test-value', endpoint_id: 'test-value', endpoint_type: 'test-value', service_access_role_arn: 'test-value' },
-    expected_outputs: [:id, :certificate_arn, :endpoint_arn, :engine_display_name, :external_id, :kms_key_arn, :ssl_mode, :status, :tags_all],
+    expected_outputs: [:id, :certificate_arn, :endpoint_arn, :engine_display_name, :external_id, :kms_key_arn, :region, :ssl_mode, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:add_column_name, :add_trailing_padding_character, :cdc_inserts_and_updates, :cdc_inserts_only, :date_partition_enabled, :detach_target_on_lob_lookup_failure_parquet, :enable_statistics, :glue_catalog_generation, :include_op_for_full_load, :parquet_timestamp_in_millisecond, :preserve_transactions, :rfc_4180, :use_csv_no_sup_value, :use_task_start_time_for_full_load_timestamp]

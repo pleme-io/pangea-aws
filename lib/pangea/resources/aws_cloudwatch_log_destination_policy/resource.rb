@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchLogDestinationPolicyAttributes,
       outputs: { id: :id },
       map: [:access_policy, :destination_name],
+      map_present: [:region],
       map_bool: [:force_update]
   end
   module AWS

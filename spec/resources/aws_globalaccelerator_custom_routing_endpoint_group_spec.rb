@@ -57,7 +57,7 @@ RSpec.describe Pangea::Resources::AWSGlobalacceleratorCustomRoutingEndpointGroup
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ endpoint_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ endpoint_configuration: [{ 'key1' => 'val1' }], endpoint_group_region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSGlobalacceleratorCustomRoutingEndpointGroup
 
         config = validate_resource_structure(result, 'aws_globalaccelerator_custom_routing_endpoint_group', 'full')
         expect(config).to have_key('endpoint_configuration')
+        expect(config).to have_key('endpoint_group_region')
       end
     end
 
@@ -87,6 +88,23 @@ RSpec.describe Pangea::Resources::AWSGlobalacceleratorCustomRoutingEndpointGroup
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_globalaccelerator_custom_routing_endpoint_group', 'minimal')
         expect(config).not_to have_key('endpoint_configuration')
+      end
+      it 'includes endpoint_group_region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_globalaccelerator_custom_routing_endpoint_group('opt', required_attrs.merge(endpoint_group_region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_globalaccelerator_custom_routing_endpoint_group', 'opt')
+        expect(config).to have_key('endpoint_group_region')
+      end
+
+      it 'omits endpoint_group_region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_globalaccelerator_custom_routing_endpoint_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_globalaccelerator_custom_routing_endpoint_group', 'minimal')
+        expect(config).not_to have_key('endpoint_group_region')
       end
     end
 

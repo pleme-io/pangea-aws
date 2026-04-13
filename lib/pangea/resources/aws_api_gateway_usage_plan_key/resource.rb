@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_api_gateway_usage_plan_key,
       attributes_class: AWS::Types::ApiGatewayUsagePlanKeyAttributes,
       outputs: { id: :id },
-      map: [:key_id, :key_type, :usage_plan_id]
+      map: [:key_id, :key_type, :usage_plan_id],
+      map_present: [:region]
   end
   module AWS
     include AWSApiGatewayUsagePlanKey

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KmsCustomKeyStoreAttributes,
       outputs: { id: :id },
       map: [:custom_key_store_name],
-      map_present: [:cloud_hsm_cluster_id, :custom_key_store_type, :key_store_password, :trust_anchor_certificate, :xks_proxy_authentication_credential, :xks_proxy_connectivity, :xks_proxy_uri_endpoint, :xks_proxy_uri_path, :xks_proxy_vpc_endpoint_service_name]
+      map_present: [:cloud_hsm_cluster_id, :custom_key_store_type, :key_store_password, :region, :trust_anchor_certificate, :xks_proxy_authentication_credential, :xks_proxy_connectivity, :xks_proxy_uri_endpoint, :xks_proxy_uri_path, :xks_proxy_vpc_endpoint_service_name]
   end
   module AWS
     include AWSKmsCustomKeyStore

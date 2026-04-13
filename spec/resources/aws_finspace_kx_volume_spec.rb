@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxVolume do
         expect(ref.attached_clusters).to eq("${aws_finspace_kx_volume.test.attached_clusters}")
         expect(ref.created_timestamp).to eq("${aws_finspace_kx_volume.test.created_timestamp}")
         expect(ref.last_modified_timestamp).to eq("${aws_finspace_kx_volume.test.last_modified_timestamp}")
+        expect(ref.region).to eq("${aws_finspace_kx_volume.test.region}")
         expect(ref.status).to eq("${aws_finspace_kx_volume.test.status}")
         expect(ref.status_reason).to eq("${aws_finspace_kx_volume.test.status_reason}")
         expect(ref.tags_all).to eq("${aws_finspace_kx_volume.test.tags_all}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxVolume do
         expect(config).not_to have_key('attached_clusters')
         expect(config).not_to have_key('created_timestamp')
         expect(config).not_to have_key('last_modified_timestamp')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('status_reason')
         expect(config).not_to have_key('tags_all')
@@ -67,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxVolume do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', nas1_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', nas1_configuration: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,7 +80,9 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxVolume do
         config = validate_resource_structure(result, 'aws_finspace_kx_volume', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('nas1_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -117,6 +121,23 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxVolume do
         config = validate_resource_structure(result, 'aws_finspace_kx_volume', 'minimal')
         expect(config).not_to have_key('nas1_configuration')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_finspace_kx_volume('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_finspace_kx_volume', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_finspace_kx_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_finspace_kx_volume', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -133,6 +154,23 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxVolume do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_finspace_kx_volume', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_finspace_kx_volume('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_finspace_kx_volume', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_finspace_kx_volume('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_finspace_kx_volume', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -182,7 +220,7 @@ RSpec.describe Pangea::Resources::AWSFinspaceKxVolume do
     resource_type: :aws_finspace_kx_volume,
     method: :aws_finspace_kx_volume,
     required_attrs: { availability_zones: ['test-value'], az_mode: 'test-value', environment_id: 'test-value', name: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :arn, :attached_clusters, :created_timestamp, :last_modified_timestamp, :status, :status_reason, :tags_all],
+    expected_outputs: [:id, :arn, :attached_clusters, :created_timestamp, :last_modified_timestamp, :region, :status, :status_reason, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

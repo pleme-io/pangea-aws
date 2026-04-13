@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSMacie2FindingsFilter do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { action: 'test-value', finding_criteria: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { action: 'test-value', finding_criteria: { 'key1' => 'val1' } } }
 
   describe ':aws_macie2_findings_filter' do
     context 'with required attributes only' do
@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSMacie2FindingsFilter do
         expect(ref.name).to eq("${aws_macie2_findings_filter.test.name}")
         expect(ref.name_prefix).to eq("${aws_macie2_findings_filter.test.name_prefix}")
         expect(ref.position).to eq("${aws_macie2_findings_filter.test.position}")
+        expect(ref.region).to eq("${aws_macie2_findings_filter.test.region}")
         expect(ref.tags_all).to eq("${aws_macie2_findings_filter.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSMacie2FindingsFilter do
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
         expect(config).not_to have_key('position')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', name: 'test-value', name_prefix: 'test-value', position: 3.14, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,12 @@ RSpec.describe Pangea::Resources::AWSMacie2FindingsFilter do
 
         config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('position')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -95,6 +102,74 @@ RSpec.describe Pangea::Resources::AWSMacie2FindingsFilter do
         config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_findings_filter('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_findings_filter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_findings_filter('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_findings_filter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes position when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_findings_filter('opt', required_attrs.merge(position: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'opt')
+        expect(config).to have_key('position')
+      end
+
+      it 'omits position when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_findings_filter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'minimal')
+        expect(config).not_to have_key('position')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_findings_filter('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_findings_filter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -112,6 +187,23 @@ RSpec.describe Pangea::Resources::AWSMacie2FindingsFilter do
         config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_findings_filter('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_macie2_findings_filter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -123,7 +215,7 @@ RSpec.describe Pangea::Resources::AWSMacie2FindingsFilter do
 
         config = validate_resource_structure(result, 'aws_macie2_findings_filter', 'typed')
         expect(config['action']).to be_a(String)
-        expect(config['finding_criteria']).to be_a(Array)
+        expect(config['finding_criteria']).to be_a(Hash)
       end
     end
 
@@ -156,8 +248,8 @@ RSpec.describe Pangea::Resources::AWSMacie2FindingsFilter do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_macie2_findings_filter,
     method: :aws_macie2_findings_filter,
-    required_attrs: { action: 'test-value', finding_criteria: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :name, :name_prefix, :position, :tags_all],
+    required_attrs: { action: 'test-value', finding_criteria: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :name, :name_prefix, :position, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

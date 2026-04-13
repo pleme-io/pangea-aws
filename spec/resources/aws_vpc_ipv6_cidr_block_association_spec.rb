@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpv6CidrBlockAssociation do
         expect(ref.ipv6_address_attribute).to eq("${aws_vpc_ipv6_cidr_block_association.test.ipv6_address_attribute}")
         expect(ref.ipv6_cidr_block).to eq("${aws_vpc_ipv6_cidr_block_association.test.ipv6_cidr_block}")
         expect(ref.ipv6_pool).to eq("${aws_vpc_ipv6_cidr_block_association.test.ipv6_pool}")
+        expect(ref.region).to eq("${aws_vpc_ipv6_cidr_block_association.test.region}")
       end
     end
 
@@ -59,11 +60,12 @@ RSpec.describe Pangea::Resources::AWSVpcIpv6CidrBlockAssociation do
         expect(config).not_to have_key('ipv6_address_attribute')
         expect(config).not_to have_key('ipv6_cidr_block')
         expect(config).not_to have_key('ipv6_pool')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ ipv6_ipam_pool_id: 'test-value', ipv6_netmask_length: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ assign_generated_ipv6_cidr_block: true, ipv6_cidr_block: 'test-value', ipv6_ipam_pool_id: 'test-value', ipv6_netmask_length: 3.14, ipv6_pool: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,12 +74,50 @@ RSpec.describe Pangea::Resources::AWSVpcIpv6CidrBlockAssociation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpc_ipv6_cidr_block_association', 'full')
+        expect(config).to have_key('assign_generated_ipv6_cidr_block')
+        expect(config).to have_key('ipv6_cidr_block')
         expect(config).to have_key('ipv6_ipam_pool_id')
         expect(config).to have_key('ipv6_netmask_length')
+        expect(config).to have_key('ipv6_pool')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes assign_generated_ipv6_cidr_block when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipv6_cidr_block_association('opt', required_attrs.merge(assign_generated_ipv6_cidr_block: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipv6_cidr_block_association', 'opt')
+        expect(config).to have_key('assign_generated_ipv6_cidr_block')
+      end
+
+      it 'omits assign_generated_ipv6_cidr_block when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipv6_cidr_block_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipv6_cidr_block_association', 'minimal')
+        expect(config).not_to have_key('assign_generated_ipv6_cidr_block')
+      end
+      it 'includes ipv6_cidr_block when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipv6_cidr_block_association('opt', required_attrs.merge(ipv6_cidr_block: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipv6_cidr_block_association', 'opt')
+        expect(config).to have_key('ipv6_cidr_block')
+      end
+
+      it 'omits ipv6_cidr_block when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipv6_cidr_block_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipv6_cidr_block_association', 'minimal')
+        expect(config).not_to have_key('ipv6_cidr_block')
+      end
       it 'includes ipv6_ipam_pool_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -111,6 +151,54 @@ RSpec.describe Pangea::Resources::AWSVpcIpv6CidrBlockAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_ipv6_cidr_block_association', 'minimal')
         expect(config).not_to have_key('ipv6_netmask_length')
+      end
+      it 'includes ipv6_pool when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipv6_cidr_block_association('opt', required_attrs.merge(ipv6_pool: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipv6_cidr_block_association', 'opt')
+        expect(config).to have_key('ipv6_pool')
+      end
+
+      it 'omits ipv6_pool when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipv6_cidr_block_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipv6_cidr_block_association', 'minimal')
+        expect(config).not_to have_key('ipv6_pool')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipv6_cidr_block_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipv6_cidr_block_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipv6_cidr_block_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipv6_cidr_block_association', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts assign_generated_ipv6_cidr_block=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(assign_generated_ipv6_cidr_block: val)
+          synth.aws_vpc_ipv6_cidr_block_association("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_vpc_ipv6_cidr_block_association', "bool_#{val}")
+          expect(config['assign_generated_ipv6_cidr_block']).to eq(val)
+        end
       end
     end
 
@@ -156,8 +244,8 @@ RSpec.describe Pangea::Resources::AWSVpcIpv6CidrBlockAssociation do
     resource_type: :aws_vpc_ipv6_cidr_block_association,
     method: :aws_vpc_ipv6_cidr_block_association,
     required_attrs: { vpc_id: 'test-value' },
-    expected_outputs: [:id, :assign_generated_ipv6_cidr_block, :ip_source, :ipv6_address_attribute, :ipv6_cidr_block, :ipv6_pool],
+    expected_outputs: [:id, :assign_generated_ipv6_cidr_block, :ip_source, :ipv6_address_attribute, :ipv6_cidr_block, :ipv6_pool, :region],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:assign_generated_ipv6_cidr_block]
 end

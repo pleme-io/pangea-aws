@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppconfigDeploymentAttributes,
       outputs: { id: :id },
       map: [:application_id, :configuration_profile_id, :configuration_version, :deployment_strategy_id, :environment_id],
-      map_present: [:description, :kms_key_identifier, :tags, :tags_all]
+      map_present: [:description, :kms_key_identifier, :region, :tags, :tags_all]
   end
   module AWS
     include AWSAppconfigDeployment

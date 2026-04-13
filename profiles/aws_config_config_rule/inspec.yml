@@ -1,0 +1,8 @@
+name: aws_config_config_rule
+title: Manages a aws_config_config_rule resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

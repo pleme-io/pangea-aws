@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessInstance do
         expect(ref.creation_time).to eq("${aws_verifiedaccess_instance.test.creation_time}")
         expect(ref.last_updated_time).to eq("${aws_verifiedaccess_instance.test.last_updated_time}")
         expect(ref.name_servers).to eq("${aws_verifiedaccess_instance.test.name_servers}")
+        expect(ref.region).to eq("${aws_verifiedaccess_instance.test.region}")
         expect(ref.tags_all).to eq("${aws_verifiedaccess_instance.test.tags_all}")
         expect(ref.verified_access_trust_providers).to eq("${aws_verifiedaccess_instance.test.verified_access_trust_providers}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessInstance do
         expect(config).not_to have_key('creation_time')
         expect(config).not_to have_key('last_updated_time')
         expect(config).not_to have_key('name_servers')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('verified_access_trust_providers')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cidr_endpoints_custom_subdomain: 'test-value', description: 'test-value', fips_enabled: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ cidr_endpoints_custom_subdomain: 'test-value', description: 'test-value', fips_enabled: true, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,7 +77,9 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessInstance do
         expect(config).to have_key('cidr_endpoints_custom_subdomain')
         expect(config).to have_key('description')
         expect(config).to have_key('fips_enabled')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -131,6 +135,23 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessInstance do
         config = validate_resource_structure(result, 'aws_verifiedaccess_instance', 'minimal')
         expect(config).not_to have_key('fips_enabled')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_instance('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_instance', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_instance', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -147,6 +168,23 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_instance', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_instance('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_instance', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_instance', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -205,7 +243,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessInstance do
     resource_type: :aws_verifiedaccess_instance,
     method: :aws_verifiedaccess_instance,
     required_attrs: {},
-    expected_outputs: [:id, :creation_time, :last_updated_time, :name_servers, :tags_all, :verified_access_trust_providers],
+    expected_outputs: [:id, :creation_time, :last_updated_time, :name_servers, :region, :tags_all, :verified_access_trust_providers],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:fips_enabled]

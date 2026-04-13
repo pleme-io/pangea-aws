@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSLightsailBucketAccessKey do
         expect(ref.id).to eq("${aws_lightsail_bucket_access_key.test.id}")
         expect(ref.access_key_id).to eq("${aws_lightsail_bucket_access_key.test.access_key_id}")
         expect(ref.created_at).to eq("${aws_lightsail_bucket_access_key.test.created_at}")
+        expect(ref.region).to eq("${aws_lightsail_bucket_access_key.test.region}")
         expect(ref.secret_access_key).to eq("${aws_lightsail_bucket_access_key.test.secret_access_key}")
         expect(ref.status).to eq("${aws_lightsail_bucket_access_key.test.status}")
       end
@@ -55,8 +56,43 @@ RSpec.describe Pangea::Resources::AWSLightsailBucketAccessKey do
         config = validate_resource_structure(result, 'aws_lightsail_bucket_access_key', 'test')
         expect(config).not_to have_key('access_key_id')
         expect(config).not_to have_key('created_at')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('secret_access_key')
         expect(config).not_to have_key('status')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_bucket_access_key('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_lightsail_bucket_access_key', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_bucket_access_key('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_bucket_access_key', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_bucket_access_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_bucket_access_key', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -102,7 +138,7 @@ RSpec.describe Pangea::Resources::AWSLightsailBucketAccessKey do
     resource_type: :aws_lightsail_bucket_access_key,
     method: :aws_lightsail_bucket_access_key,
     required_attrs: { bucket_name: 'test-value' },
-    expected_outputs: [:id, :access_key_id, :created_at, :secret_access_key, :status],
+    expected_outputs: [:id, :access_key_id, :created_at, :region, :secret_access_key, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

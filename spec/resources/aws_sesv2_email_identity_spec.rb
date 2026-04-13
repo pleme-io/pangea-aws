@@ -40,7 +40,9 @@ RSpec.describe Pangea::Resources::AWSSesv2EmailIdentity do
         expect(ref.id).to eq("${aws_sesv2_email_identity.test.id}")
         expect(ref.arn).to eq("${aws_sesv2_email_identity.test.arn}")
         expect(ref.identity_type).to eq("${aws_sesv2_email_identity.test.identity_type}")
+        expect(ref.region).to eq("${aws_sesv2_email_identity.test.region}")
         expect(ref.tags_all).to eq("${aws_sesv2_email_identity.test.tags_all}")
+        expect(ref.verification_status).to eq("${aws_sesv2_email_identity.test.verification_status}")
         expect(ref.verified_for_sending_status).to eq("${aws_sesv2_email_identity.test.verified_for_sending_status}")
       end
     end
@@ -55,13 +57,15 @@ RSpec.describe Pangea::Resources::AWSSesv2EmailIdentity do
         config = validate_resource_structure(result, 'aws_sesv2_email_identity', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('identity_type')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
+        expect(config).not_to have_key('verification_status')
         expect(config).not_to have_key('verified_for_sending_status')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ configuration_set_name: 'test-value', dkim_signing_attributes: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ configuration_set_name: 'test-value', dkim_signing_attributes: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,7 +76,9 @@ RSpec.describe Pangea::Resources::AWSSesv2EmailIdentity do
         config = validate_resource_structure(result, 'aws_sesv2_email_identity', 'full')
         expect(config).to have_key('configuration_set_name')
         expect(config).to have_key('dkim_signing_attributes')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -97,7 +103,7 @@ RSpec.describe Pangea::Resources::AWSSesv2EmailIdentity do
       it 'includes dkim_signing_attributes when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sesv2_email_identity('opt', required_attrs.merge(dkim_signing_attributes: [{ 'key1' => 'val1' }]))
+        synth.aws_sesv2_email_identity('opt', required_attrs.merge(dkim_signing_attributes: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_email_identity', 'opt')
         expect(config).to have_key('dkim_signing_attributes')
@@ -110,6 +116,23 @@ RSpec.describe Pangea::Resources::AWSSesv2EmailIdentity do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_email_identity', 'minimal')
         expect(config).not_to have_key('dkim_signing_attributes')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_email_identity('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_email_identity', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_email_identity('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_email_identity', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -127,6 +150,23 @@ RSpec.describe Pangea::Resources::AWSSesv2EmailIdentity do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sesv2_email_identity', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_email_identity('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_email_identity', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_email_identity('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_email_identity', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -172,7 +212,7 @@ RSpec.describe Pangea::Resources::AWSSesv2EmailIdentity do
     resource_type: :aws_sesv2_email_identity,
     method: :aws_sesv2_email_identity,
     required_attrs: { email_identity: 'test-value' },
-    expected_outputs: [:id, :arn, :identity_type, :tags_all, :verified_for_sending_status],
+    expected_outputs: [:id, :arn, :identity_type, :region, :tags_all, :verification_status, :verified_for_sending_status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

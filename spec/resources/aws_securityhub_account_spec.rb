@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubAccount do
         expect(ref.id).to eq("${aws_securityhub_account.test.id}")
         expect(ref.arn).to eq("${aws_securityhub_account.test.arn}")
         expect(ref.control_finding_generator).to eq("${aws_securityhub_account.test.control_finding_generator}")
+        expect(ref.region).to eq("${aws_securityhub_account.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSSecurityhubAccount do
         config = validate_resource_structure(result, 'aws_securityhub_account', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('control_finding_generator')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ auto_enable_controls: true, enable_default_standards: true }) }
+      let(:all_attrs) { required_attrs.merge({ auto_enable_controls: true, control_finding_generator: 'test-value', enable_default_standards: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,7 +69,9 @@ RSpec.describe Pangea::Resources::AWSSecurityhubAccount do
 
         config = validate_resource_structure(result, 'aws_securityhub_account', 'full')
         expect(config).to have_key('auto_enable_controls')
+        expect(config).to have_key('control_finding_generator')
         expect(config).to have_key('enable_default_standards')
+        expect(config).to have_key('region')
       end
     end
 
@@ -89,6 +93,23 @@ RSpec.describe Pangea::Resources::AWSSecurityhubAccount do
         config = validate_resource_structure(result, 'aws_securityhub_account', 'minimal')
         expect(config).not_to have_key('auto_enable_controls')
       end
+      it 'includes control_finding_generator when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_account('opt', required_attrs.merge(control_finding_generator: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_account', 'opt')
+        expect(config).to have_key('control_finding_generator')
+      end
+
+      it 'omits control_finding_generator when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_account('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_account', 'minimal')
+        expect(config).not_to have_key('control_finding_generator')
+      end
       it 'includes enable_default_standards when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -105,6 +126,23 @@ RSpec.describe Pangea::Resources::AWSSecurityhubAccount do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_securityhub_account', 'minimal')
         expect(config).not_to have_key('enable_default_standards')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_account('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_account', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_account('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_account', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -174,7 +212,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubAccount do
     resource_type: :aws_securityhub_account,
     method: :aws_securityhub_account,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :control_finding_generator],
+    expected_outputs: [:id, :arn, :control_finding_generator, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:auto_enable_controls, :enable_default_standards]

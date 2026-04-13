@@ -49,6 +49,7 @@ RSpec.describe Pangea::Resources::AWSDbSnapshot do
         expect(ref.license_model).to eq("${aws_db_snapshot.test.license_model}")
         expect(ref.option_group_name).to eq("${aws_db_snapshot.test.option_group_name}")
         expect(ref.port).to eq("${aws_db_snapshot.test.port}")
+        expect(ref.region).to eq("${aws_db_snapshot.test.region}")
         expect(ref.snapshot_type).to eq("${aws_db_snapshot.test.snapshot_type}")
         expect(ref.source_db_snapshot_identifier).to eq("${aws_db_snapshot.test.source_db_snapshot_identifier}")
         expect(ref.source_region).to eq("${aws_db_snapshot.test.source_region}")
@@ -78,6 +79,7 @@ RSpec.describe Pangea::Resources::AWSDbSnapshot do
         expect(config).not_to have_key('license_model')
         expect(config).not_to have_key('option_group_name')
         expect(config).not_to have_key('port')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('snapshot_type')
         expect(config).not_to have_key('source_db_snapshot_identifier')
         expect(config).not_to have_key('source_region')
@@ -89,7 +91,7 @@ RSpec.describe Pangea::Resources::AWSDbSnapshot do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ shared_accounts: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', shared_accounts: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -98,12 +100,31 @@ RSpec.describe Pangea::Resources::AWSDbSnapshot do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_db_snapshot', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('shared_accounts')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_snapshot('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_snapshot', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_snapshot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_snapshot', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes shared_accounts when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -137,6 +158,23 @@ RSpec.describe Pangea::Resources::AWSDbSnapshot do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_snapshot', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_snapshot('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_snapshot', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_snapshot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_snapshot', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -183,7 +221,7 @@ RSpec.describe Pangea::Resources::AWSDbSnapshot do
     resource_type: :aws_db_snapshot,
     method: :aws_db_snapshot,
     required_attrs: { db_instance_identifier: 'test-value', db_snapshot_identifier: 'test-value' },
-    expected_outputs: [:id, :allocated_storage, :availability_zone, :db_snapshot_arn, :encrypted, :engine, :engine_version, :iops, :kms_key_id, :license_model, :option_group_name, :port, :snapshot_type, :source_db_snapshot_identifier, :source_region, :status, :storage_type, :tags_all, :vpc_id],
+    expected_outputs: [:id, :allocated_storage, :availability_zone, :db_snapshot_arn, :encrypted, :engine, :engine_version, :iops, :kms_key_id, :license_model, :option_group_name, :port, :region, :snapshot_type, :source_db_snapshot_identifier, :source_region, :status, :storage_type, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

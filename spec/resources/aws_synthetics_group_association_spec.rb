@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSyntheticsGroupAssociation do
         expect(ref.id).to eq("${aws_synthetics_group_association.test.id}")
         expect(ref.group_arn).to eq("${aws_synthetics_group_association.test.group_arn}")
         expect(ref.group_id).to eq("${aws_synthetics_group_association.test.group_id}")
+        expect(ref.region).to eq("${aws_synthetics_group_association.test.region}")
       end
     end
 
@@ -53,6 +54,41 @@ RSpec.describe Pangea::Resources::AWSSyntheticsGroupAssociation do
         config = validate_resource_structure(result, 'aws_synthetics_group_association', 'test')
         expect(config).not_to have_key('group_arn')
         expect(config).not_to have_key('group_id')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_synthetics_group_association('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_synthetics_group_association', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_synthetics_group_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_synthetics_group_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_synthetics_group_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_synthetics_group_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -99,7 +135,7 @@ RSpec.describe Pangea::Resources::AWSSyntheticsGroupAssociation do
     resource_type: :aws_synthetics_group_association,
     method: :aws_synthetics_group_association,
     required_attrs: { canary_arn: 'test-value', group_name: 'test-value' },
-    expected_outputs: [:id, :group_arn, :group_id],
+    expected_outputs: [:id, :group_arn, :group_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WafregionalRegexPatternSetAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:regex_pattern_strings]
+      map_present: [:regex_pattern_strings, :region]
   end
   module AWS
     include AWSWafregionalRegexPatternSet

@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneFormType do
         expect(ref.imports).to eq("${aws_datazone_form_type.test.imports}")
         expect(ref.origin_domain_id).to eq("${aws_datazone_form_type.test.origin_domain_id}")
         expect(ref.origin_project_id).to eq("${aws_datazone_form_type.test.origin_project_id}")
+        expect(ref.region).to eq("${aws_datazone_form_type.test.region}")
         expect(ref.revision).to eq("${aws_datazone_form_type.test.revision}")
         expect(ref.status).to eq("${aws_datazone_form_type.test.status}")
       end
@@ -61,13 +62,14 @@ RSpec.describe Pangea::Resources::AWSDatazoneFormType do
         expect(config).not_to have_key('imports')
         expect(config).not_to have_key('origin_domain_id')
         expect(config).not_to have_key('origin_project_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('revision')
         expect(config).not_to have_key('status')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', model: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', model: [{ 'key1' => 'val1' }], region: 'test-value', status: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,6 +80,8 @@ RSpec.describe Pangea::Resources::AWSDatazoneFormType do
         config = validate_resource_structure(result, 'aws_datazone_form_type', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('model')
+        expect(config).to have_key('region')
+        expect(config).to have_key('status')
       end
     end
 
@@ -115,6 +119,40 @@ RSpec.describe Pangea::Resources::AWSDatazoneFormType do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datazone_form_type', 'minimal')
         expect(config).not_to have_key('model')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_form_type('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_form_type', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_form_type('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_form_type', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_form_type('opt', required_attrs.merge(status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_form_type', 'opt')
+        expect(config).to have_key('status')
+      end
+
+      it 'omits status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_form_type('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_form_type', 'minimal')
+        expect(config).not_to have_key('status')
       end
     end
 
@@ -162,7 +200,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneFormType do
     resource_type: :aws_datazone_form_type,
     method: :aws_datazone_form_type,
     required_attrs: { domain_identifier: 'test-value', name: 'test-value', owning_project_identifier: 'test-value' },
-    expected_outputs: [:id, :created_at, :created_by, :imports, :origin_domain_id, :origin_project_id, :revision, :status],
+    expected_outputs: [:id, :created_at, :created_by, :imports, :origin_domain_id, :origin_project_id, :region, :revision, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

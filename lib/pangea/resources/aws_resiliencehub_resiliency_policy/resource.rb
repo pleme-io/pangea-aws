@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ResiliencehubResiliencyPolicyAttributes,
       outputs: { id: :id },
       map: [:name, :tier],
-      map_present: [:data_location_constraint, :description, :policy, :tags]
+      map_present: [:data_location_constraint, :description, :policy, :region, :tags]
   end
   module AWS
     include AWSResiliencehubResiliencyPolicy

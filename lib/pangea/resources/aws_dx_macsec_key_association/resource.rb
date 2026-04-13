@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DxMacsecKeyAssociationAttributes,
       outputs: { id: :id },
       map: [:connection_id],
-      map_present: [:cak, :ckn, :secret_arn]
+      map_present: [:cak, :ckn, :region, :secret_arn]
   end
   module AWS
     include AWSDxMacsecKeyAssociation

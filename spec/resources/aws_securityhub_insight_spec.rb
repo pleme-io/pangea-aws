@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSecurityhubInsight do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { filters: [{ 'key1' => 'val1' }], group_by_attribute: 'test-value', name: 'test-value' } }
+  let(:required_attrs) { { filters: { 'key1' => 'val1' }, group_by_attribute: 'test-value', name: 'test-value' } }
 
   describe ':aws_securityhub_insight' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubInsight do
 
         expect(ref.id).to eq("${aws_securityhub_insight.test.id}")
         expect(ref.arn).to eq("${aws_securityhub_insight.test.arn}")
+        expect(ref.region).to eq("${aws_securityhub_insight.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSSecurityhubInsight do
 
         config = validate_resource_structure(result, 'aws_securityhub_insight', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_insight('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_securityhub_insight', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_insight('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_insight', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_insight('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_insight', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -62,7 +98,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubInsight do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_securityhub_insight', 'typed')
-        expect(config['filters']).to be_a(Array)
+        expect(config['filters']).to be_a(Hash)
         expect(config['group_by_attribute']).to be_a(String)
         expect(config['name']).to be_a(String)
       end
@@ -97,8 +133,8 @@ RSpec.describe Pangea::Resources::AWSSecurityhubInsight do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_securityhub_insight,
     method: :aws_securityhub_insight,
-    required_attrs: { filters: [{ 'key1' => 'val1' }], group_by_attribute: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn],
+    required_attrs: { filters: { 'key1' => 'val1' }, group_by_attribute: 'test-value', name: 'test-value' },
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

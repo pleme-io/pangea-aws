@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSImagebuilderContainerRecipe do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { component: [{ 'key1' => 'val1' }], container_type: 'test-value', name: 'test-value', parent_image: 'test-value', target_repository: [{ 'key1' => 'val1' }], version: 'test-value' } }
+  let(:required_attrs) { { component: [{ 'key1' => 'val1' }], container_type: 'test-value', name: 'test-value', parent_image: 'test-value', target_repository: { 'key1' => 'val1' }, version: 'test-value' } }
 
   describe ':aws_imagebuilder_container_recipe' do
     context 'with required attributes only' do
@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderContainerRecipe do
         expect(ref.encrypted).to eq("${aws_imagebuilder_container_recipe.test.encrypted}")
         expect(ref.owner).to eq("${aws_imagebuilder_container_recipe.test.owner}")
         expect(ref.platform).to eq("${aws_imagebuilder_container_recipe.test.platform}")
+        expect(ref.region).to eq("${aws_imagebuilder_container_recipe.test.region}")
         expect(ref.tags_all).to eq("${aws_imagebuilder_container_recipe.test.tags_all}")
       end
     end
@@ -62,12 +63,13 @@ RSpec.describe Pangea::Resources::AWSImagebuilderContainerRecipe do
         expect(config).not_to have_key('encrypted')
         expect(config).not_to have_key('owner')
         expect(config).not_to have_key('platform')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', dockerfile_template_uri: 'test-value', instance_configuration: [{ 'key1' => 'val1' }], kms_key_id: 'test-value', platform_override: 'test-value', tags: { 'key1' => 'val1' }, working_directory: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', dockerfile_template_data: 'test-value', dockerfile_template_uri: 'test-value', instance_configuration: { 'key1' => 'val1' }, kms_key_id: 'test-value', platform_override: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, working_directory: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,11 +79,14 @@ RSpec.describe Pangea::Resources::AWSImagebuilderContainerRecipe do
 
         config = validate_resource_structure(result, 'aws_imagebuilder_container_recipe', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('dockerfile_template_data')
         expect(config).to have_key('dockerfile_template_uri')
         expect(config).to have_key('instance_configuration')
         expect(config).to have_key('kms_key_id')
         expect(config).to have_key('platform_override')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('working_directory')
       end
     end
@@ -104,6 +109,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderContainerRecipe do
         config = validate_resource_structure(result, 'aws_imagebuilder_container_recipe', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes dockerfile_template_data when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_container_recipe('opt', required_attrs.merge(dockerfile_template_data: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_container_recipe', 'opt')
+        expect(config).to have_key('dockerfile_template_data')
+      end
+
+      it 'omits dockerfile_template_data when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_container_recipe('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_container_recipe', 'minimal')
+        expect(config).not_to have_key('dockerfile_template_data')
+      end
       it 'includes dockerfile_template_uri when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -124,7 +146,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderContainerRecipe do
       it 'includes instance_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_imagebuilder_container_recipe('opt', required_attrs.merge(instance_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_imagebuilder_container_recipe('opt', required_attrs.merge(instance_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_container_recipe', 'opt')
         expect(config).to have_key('instance_configuration')
@@ -172,6 +194,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderContainerRecipe do
         config = validate_resource_structure(result, 'aws_imagebuilder_container_recipe', 'minimal')
         expect(config).not_to have_key('platform_override')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_container_recipe('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_container_recipe', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_container_recipe('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_container_recipe', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -188,6 +227,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderContainerRecipe do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_container_recipe', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_container_recipe('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_container_recipe', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_container_recipe('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_container_recipe', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes working_directory when provided' do
         synth = create_synthesizer
@@ -220,7 +276,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderContainerRecipe do
         expect(config['container_type']).to be_a(String)
         expect(config['name']).to be_a(String)
         expect(config['parent_image']).to be_a(String)
-        expect(config['target_repository']).to be_a(Array)
+        expect(config['target_repository']).to be_a(Hash)
         expect(config['version']).to be_a(String)
       end
     end
@@ -254,8 +310,8 @@ RSpec.describe Pangea::Resources::AWSImagebuilderContainerRecipe do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_imagebuilder_container_recipe,
     method: :aws_imagebuilder_container_recipe,
-    required_attrs: { component: [{ 'key1' => 'val1' }], container_type: 'test-value', name: 'test-value', parent_image: 'test-value', target_repository: [{ 'key1' => 'val1' }], version: 'test-value' },
-    expected_outputs: [:id, :arn, :date_created, :dockerfile_template_data, :encrypted, :owner, :platform, :tags_all],
+    required_attrs: { component: [{ 'key1' => 'val1' }], container_type: 'test-value', name: 'test-value', parent_image: 'test-value', target_repository: { 'key1' => 'val1' }, version: 'test-value' },
+    expected_outputs: [:id, :arn, :date_created, :dockerfile_template_data, :encrypted, :owner, :platform, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

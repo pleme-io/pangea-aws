@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSVpcSecurityGroupIngressRule do
 
         expect(ref.id).to eq("${aws_vpc_security_group_ingress_rule.test.id}")
         expect(ref.arn).to eq("${aws_vpc_security_group_ingress_rule.test.arn}")
+        expect(ref.region).to eq("${aws_vpc_security_group_ingress_rule.test.region}")
         expect(ref.security_group_rule_id).to eq("${aws_vpc_security_group_ingress_rule.test.security_group_rule_id}")
         expect(ref.tags_all).to eq("${aws_vpc_security_group_ingress_rule.test.tags_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSVpcSecurityGroupIngressRule do
 
         config = validate_resource_structure(result, 'aws_vpc_security_group_ingress_rule', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_group_rule_id')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cidr_ipv4: 'test-value', cidr_ipv6: 'test-value', description: 'test-value', from_port: 3.14, prefix_list_id: 'test-value', referenced_security_group_id: 'test-value', tags: { 'key1' => 'val1' }, to_port: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ cidr_ipv4: 'test-value', cidr_ipv6: 'test-value', description: 'test-value', from_port: 3.14, prefix_list_id: 'test-value', referenced_security_group_id: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, to_port: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,6 +76,7 @@ RSpec.describe Pangea::Resources::AWSVpcSecurityGroupIngressRule do
         expect(config).to have_key('from_port')
         expect(config).to have_key('prefix_list_id')
         expect(config).to have_key('referenced_security_group_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
         expect(config).to have_key('to_port')
       end
@@ -182,6 +185,23 @@ RSpec.describe Pangea::Resources::AWSVpcSecurityGroupIngressRule do
         config = validate_resource_structure(result, 'aws_vpc_security_group_ingress_rule', 'minimal')
         expect(config).not_to have_key('referenced_security_group_id')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_security_group_ingress_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_security_group_ingress_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_security_group_ingress_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_security_group_ingress_rule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -261,7 +281,7 @@ RSpec.describe Pangea::Resources::AWSVpcSecurityGroupIngressRule do
     resource_type: :aws_vpc_security_group_ingress_rule,
     method: :aws_vpc_security_group_ingress_rule,
     required_attrs: { ip_protocol: 'test-value', security_group_id: 'test-value' },
-    expected_outputs: [:id, :arn, :security_group_rule_id, :tags_all],
+    expected_outputs: [:id, :arn, :region, :security_group_rule_id, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

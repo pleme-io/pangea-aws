@@ -1,0 +1,8 @@
+name: aws_iam_outbound_web_identity_federation
+title: Manages a aws_iam_outbound_web_identity_federation resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

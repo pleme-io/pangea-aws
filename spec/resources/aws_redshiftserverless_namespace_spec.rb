@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessNamespace do
         expect(ref.iam_roles).to eq("${aws_redshiftserverless_namespace.test.iam_roles}")
         expect(ref.kms_key_id).to eq("${aws_redshiftserverless_namespace.test.kms_key_id}")
         expect(ref.namespace_id).to eq("${aws_redshiftserverless_namespace.test.namespace_id}")
+        expect(ref.region).to eq("${aws_redshiftserverless_namespace.test.region}")
         expect(ref.tags_all).to eq("${aws_redshiftserverless_namespace.test.tags_all}")
       end
     end
@@ -66,12 +67,13 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessNamespace do
         expect(config).not_to have_key('iam_roles')
         expect(config).not_to have_key('kms_key_id')
         expect(config).not_to have_key('namespace_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ admin_user_password: 'test-value', admin_user_password_wo: 'test-value', admin_user_password_wo_version: 3.14, default_iam_role_arn: 'test-value', log_exports: ['test-value'], manage_admin_password: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ admin_password_secret_kms_key_id: 'test-value', admin_user_password: 'test-value', admin_user_password_wo: 'test-value', admin_user_password_wo_version: 3.14, admin_username: 'test-value', db_name: 'test-value', default_iam_role_arn: 'test-value', iam_roles: ['test-value'], kms_key_id: 'test-value', log_exports: ['test-value'], manage_admin_password: true, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,17 +82,41 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessNamespace do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'full')
+        expect(config).to have_key('admin_password_secret_kms_key_id')
         expect(config).to have_key('admin_user_password')
         expect(config).to have_key('admin_user_password_wo')
         expect(config).to have_key('admin_user_password_wo_version')
+        expect(config).to have_key('admin_username')
+        expect(config).to have_key('db_name')
         expect(config).to have_key('default_iam_role_arn')
+        expect(config).to have_key('iam_roles')
+        expect(config).to have_key('kms_key_id')
         expect(config).to have_key('log_exports')
         expect(config).to have_key('manage_admin_password')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes admin_password_secret_kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('opt', required_attrs.merge(admin_password_secret_kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'opt')
+        expect(config).to have_key('admin_password_secret_kms_key_id')
+      end
+
+      it 'omits admin_password_secret_kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'minimal')
+        expect(config).not_to have_key('admin_password_secret_kms_key_id')
+      end
       it 'includes admin_user_password when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -142,6 +168,40 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessNamespace do
         config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'minimal')
         expect(config).not_to have_key('admin_user_password_wo_version')
       end
+      it 'includes admin_username when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('opt', required_attrs.merge(admin_username: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'opt')
+        expect(config).to have_key('admin_username')
+      end
+
+      it 'omits admin_username when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'minimal')
+        expect(config).not_to have_key('admin_username')
+      end
+      it 'includes db_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('opt', required_attrs.merge(db_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'opt')
+        expect(config).to have_key('db_name')
+      end
+
+      it 'omits db_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'minimal')
+        expect(config).not_to have_key('db_name')
+      end
       it 'includes default_iam_role_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -158,6 +218,40 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessNamespace do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'minimal')
         expect(config).not_to have_key('default_iam_role_arn')
+      end
+      it 'includes iam_roles when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('opt', required_attrs.merge(iam_roles: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'opt')
+        expect(config).to have_key('iam_roles')
+      end
+
+      it 'omits iam_roles when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'minimal')
+        expect(config).not_to have_key('iam_roles')
+      end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
       end
       it 'includes log_exports when provided' do
         synth = create_synthesizer
@@ -193,6 +287,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessNamespace do
         config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'minimal')
         expect(config).not_to have_key('manage_admin_password')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -209,6 +320,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessNamespace do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_namespace('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_namespace', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -276,7 +404,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessNamespace do
     resource_type: :aws_redshiftserverless_namespace,
     method: :aws_redshiftserverless_namespace,
     required_attrs: { namespace_name: 'test-value' },
-    expected_outputs: [:id, :admin_password_secret_arn, :admin_password_secret_kms_key_id, :admin_username, :arn, :db_name, :iam_roles, :kms_key_id, :namespace_id, :tags_all],
+    expected_outputs: [:id, :admin_password_secret_arn, :admin_password_secret_kms_key_id, :admin_username, :arn, :db_name, :iam_roles, :kms_key_id, :namespace_id, :region, :tags_all],
     sensitive_fields: [:admin_user_password, :admin_username],
     immutable_fields: [],
     boolean_fields: [:manage_admin_password]

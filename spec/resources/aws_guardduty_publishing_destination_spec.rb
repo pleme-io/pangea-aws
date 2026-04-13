@@ -38,11 +38,30 @@ RSpec.describe Pangea::Resources::AWSGuarddutyPublishingDestination do
         ref = synth.aws_guardduty_publishing_destination('test', required_attrs)
 
         expect(ref.id).to eq("${aws_guardduty_publishing_destination.test.id}")
+        expect(ref.arn).to eq("${aws_guardduty_publishing_destination.test.arn}")
+        expect(ref.destination_id).to eq("${aws_guardduty_publishing_destination.test.destination_id}")
+        expect(ref.region).to eq("${aws_guardduty_publishing_destination.test.region}")
+        expect(ref.tags_all).to eq("${aws_guardduty_publishing_destination.test.tags_all}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_guardduty_publishing_destination('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_guardduty_publishing_destination', 'test')
+        expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('destination_id')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ destination_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ destination_type: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +71,9 @@ RSpec.describe Pangea::Resources::AWSGuarddutyPublishingDestination do
 
         config = validate_resource_structure(result, 'aws_guardduty_publishing_destination', 'full')
         expect(config).to have_key('destination_type')
+        expect(config).to have_key('region')
+        expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -72,6 +94,57 @@ RSpec.describe Pangea::Resources::AWSGuarddutyPublishingDestination do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_guardduty_publishing_destination', 'minimal')
         expect(config).not_to have_key('destination_type')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_guardduty_publishing_destination('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_guardduty_publishing_destination', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_guardduty_publishing_destination('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_guardduty_publishing_destination', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes tags when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_guardduty_publishing_destination('opt', required_attrs.merge(tags: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_guardduty_publishing_destination', 'opt')
+        expect(config).to have_key('tags')
+      end
+
+      it 'omits tags when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_guardduty_publishing_destination('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_guardduty_publishing_destination', 'minimal')
+        expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_guardduty_publishing_destination('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_guardduty_publishing_destination', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_guardduty_publishing_destination('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_guardduty_publishing_destination', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -119,7 +192,7 @@ RSpec.describe Pangea::Resources::AWSGuarddutyPublishingDestination do
     resource_type: :aws_guardduty_publishing_destination,
     method: :aws_guardduty_publishing_destination,
     required_attrs: { destination_arn: 'test-value', detector_id: 'test-value', kms_key_arn: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :arn, :destination_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

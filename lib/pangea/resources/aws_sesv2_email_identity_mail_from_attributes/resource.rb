@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Sesv2EmailIdentityMailFromAttributesAttributes,
       outputs: { id: :id },
       map: [:email_identity],
-      map_present: [:behavior_on_mx_failure, :mail_from_domain]
+      map_present: [:behavior_on_mx_failure, :mail_from_domain, :region]
   end
   module AWS
     include AWSSesv2EmailIdentityMailFromAttributes

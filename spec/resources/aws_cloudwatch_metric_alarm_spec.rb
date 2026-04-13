@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricAlarm do
         expect(ref.id).to eq("${aws_cloudwatch_metric_alarm.test.id}")
         expect(ref.arn).to eq("${aws_cloudwatch_metric_alarm.test.arn}")
         expect(ref.evaluate_low_sample_count_percentiles).to eq("${aws_cloudwatch_metric_alarm.test.evaluate_low_sample_count_percentiles}")
+        expect(ref.region).to eq("${aws_cloudwatch_metric_alarm.test.region}")
         expect(ref.tags_all).to eq("${aws_cloudwatch_metric_alarm.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricAlarm do
         config = validate_resource_structure(result, 'aws_cloudwatch_metric_alarm', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('evaluate_low_sample_count_percentiles')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ actions_enabled: true, alarm_actions: ['test-value'], alarm_description: 'test-value', datapoints_to_alarm: 3.14, dimensions: { 'key1' => 'val1' }, extended_statistic: 'test-value', insufficient_data_actions: ['test-value'], metric_name: 'test-value', metric_query: [{ 'key1' => 'val1' }], namespace: 'test-value', ok_actions: ['test-value'], period: 3.14, statistic: 'test-value', tags: { 'key1' => 'val1' }, threshold: 3.14, threshold_metric_id: 'test-value', treat_missing_data: 'test-value', unit: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ actions_enabled: true, alarm_actions: ['test-value'], alarm_description: 'test-value', datapoints_to_alarm: 3.14, dimensions: { 'key1' => 'val1' }, evaluate_low_sample_count_percentiles: 'test-value', extended_statistic: 'test-value', insufficient_data_actions: ['test-value'], metric_name: 'test-value', metric_query: [{ 'key1' => 'val1' }], namespace: 'test-value', ok_actions: ['test-value'], period: 3.14, region: 'test-value', statistic: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, threshold: 3.14, threshold_metric_id: 'test-value', treat_missing_data: 'test-value', unit: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,6 +75,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricAlarm do
         expect(config).to have_key('alarm_description')
         expect(config).to have_key('datapoints_to_alarm')
         expect(config).to have_key('dimensions')
+        expect(config).to have_key('evaluate_low_sample_count_percentiles')
         expect(config).to have_key('extended_statistic')
         expect(config).to have_key('insufficient_data_actions')
         expect(config).to have_key('metric_name')
@@ -80,8 +83,10 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricAlarm do
         expect(config).to have_key('namespace')
         expect(config).to have_key('ok_actions')
         expect(config).to have_key('period')
+        expect(config).to have_key('region')
         expect(config).to have_key('statistic')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('threshold')
         expect(config).to have_key('threshold_metric_id')
         expect(config).to have_key('treat_missing_data')
@@ -174,6 +179,23 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricAlarm do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_metric_alarm', 'minimal')
         expect(config).not_to have_key('dimensions')
+      end
+      it 'includes evaluate_low_sample_count_percentiles when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_alarm('opt', required_attrs.merge(evaluate_low_sample_count_percentiles: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_alarm', 'opt')
+        expect(config).to have_key('evaluate_low_sample_count_percentiles')
+      end
+
+      it 'omits evaluate_low_sample_count_percentiles when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_alarm('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_alarm', 'minimal')
+        expect(config).not_to have_key('evaluate_low_sample_count_percentiles')
       end
       it 'includes extended_statistic when provided' do
         synth = create_synthesizer
@@ -294,6 +316,23 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricAlarm do
         config = validate_resource_structure(result, 'aws_cloudwatch_metric_alarm', 'minimal')
         expect(config).not_to have_key('period')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_alarm('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_alarm', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_alarm('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_alarm', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes statistic when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -327,6 +366,23 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricAlarm do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_metric_alarm', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_alarm('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_alarm', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_metric_alarm('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_metric_alarm', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes threshold when provided' do
         synth = create_synthesizer
@@ -456,7 +512,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchMetricAlarm do
     resource_type: :aws_cloudwatch_metric_alarm,
     method: :aws_cloudwatch_metric_alarm,
     required_attrs: { alarm_name: 'test-value', comparison_operator: 'test-value', evaluation_periods: 3.14 },
-    expected_outputs: [:id, :arn, :evaluate_low_sample_count_percentiles, :tags_all],
+    expected_outputs: [:id, :arn, :evaluate_low_sample_count_percentiles, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:actions_enabled]

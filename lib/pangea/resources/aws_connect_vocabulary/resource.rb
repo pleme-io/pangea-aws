@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConnectVocabularyAttributes,
       outputs: { id: :id },
       map: [:content, :instance_id, :language_code, :name],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSConnectVocabulary

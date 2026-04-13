@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ec2_local_gateway_route,
       attributes_class: AWS::Types::Ec2LocalGatewayRouteAttributes,
       outputs: { id: :id },
-      map: [:destination_cidr_block, :local_gateway_route_table_id, :local_gateway_virtual_interface_group_id]
+      map: [:destination_cidr_block, :local_gateway_route_table_id, :local_gateway_virtual_interface_group_id],
+      map_present: [:region]
   end
   module AWS
     include AWSEc2LocalGatewayRoute

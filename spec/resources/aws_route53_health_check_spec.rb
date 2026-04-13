@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSRoute53HealthCheck do
         expect(ref.arn).to eq("${aws_route53_health_check.test.arn}")
         expect(ref.enable_sni).to eq("${aws_route53_health_check.test.enable_sni}")
         expect(ref.failure_threshold).to eq("${aws_route53_health_check.test.failure_threshold}")
+        expect(ref.regions).to eq("${aws_route53_health_check.test.regions}")
         expect(ref.tags_all).to eq("${aws_route53_health_check.test.tags_all}")
         expect(ref.triggers).to eq("${aws_route53_health_check.test.triggers}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSRoute53HealthCheck do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('enable_sni')
         expect(config).not_to have_key('failure_threshold')
+        expect(config).not_to have_key('regions')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('triggers')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ child_health_threshold: 3.14, child_healthchecks: ['test-value'], cloudwatch_alarm_name: 'test-value', cloudwatch_alarm_region: 'test-value', disabled: true, fqdn: 'test-value', insufficient_data_health_status: 'test-value', invert_healthcheck: true, ip_address: 'test-value', measure_latency: true, port: 3.14, reference_name: 'test-value', regions: ['test-value'], request_interval: 3.14, resource_path: 'test-value', routing_control_arn: 'test-value', search_string: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ child_health_threshold: 3.14, child_healthchecks: ['test-value'], cloudwatch_alarm_name: 'test-value', cloudwatch_alarm_region: 'test-value', disabled: true, enable_sni: true, failure_threshold: 3.14, fqdn: 'test-value', insufficient_data_health_status: 'test-value', invert_healthcheck: true, ip_address: 'test-value', measure_latency: true, port: 3.14, reference_name: 'test-value', regions: ['test-value'], request_interval: 3.14, resource_path: 'test-value', routing_control_arn: 'test-value', search_string: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, triggers: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,6 +79,8 @@ RSpec.describe Pangea::Resources::AWSRoute53HealthCheck do
         expect(config).to have_key('cloudwatch_alarm_name')
         expect(config).to have_key('cloudwatch_alarm_region')
         expect(config).to have_key('disabled')
+        expect(config).to have_key('enable_sni')
+        expect(config).to have_key('failure_threshold')
         expect(config).to have_key('fqdn')
         expect(config).to have_key('insufficient_data_health_status')
         expect(config).to have_key('invert_healthcheck')
@@ -90,6 +94,8 @@ RSpec.describe Pangea::Resources::AWSRoute53HealthCheck do
         expect(config).to have_key('routing_control_arn')
         expect(config).to have_key('search_string')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('triggers')
       end
     end
 
@@ -178,6 +184,40 @@ RSpec.describe Pangea::Resources::AWSRoute53HealthCheck do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53_health_check', 'minimal')
         expect(config).not_to have_key('disabled')
+      end
+      it 'includes enable_sni when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_health_check('opt', required_attrs.merge(enable_sni: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_health_check', 'opt')
+        expect(config).to have_key('enable_sni')
+      end
+
+      it 'omits enable_sni when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_health_check('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_health_check', 'minimal')
+        expect(config).not_to have_key('enable_sni')
+      end
+      it 'includes failure_threshold when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_health_check('opt', required_attrs.merge(failure_threshold: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_health_check', 'opt')
+        expect(config).to have_key('failure_threshold')
+      end
+
+      it 'omits failure_threshold when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_health_check('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_health_check', 'minimal')
+        expect(config).not_to have_key('failure_threshold')
       end
       it 'includes fqdn when provided' do
         synth = create_synthesizer
@@ -400,6 +440,40 @@ RSpec.describe Pangea::Resources::AWSRoute53HealthCheck do
         config = validate_resource_structure(result, 'aws_route53_health_check', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_health_check('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_health_check', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_health_check('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_health_check', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes triggers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_health_check('opt', required_attrs.merge(triggers: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_health_check', 'opt')
+        expect(config).to have_key('triggers')
+      end
+
+      it 'omits triggers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_health_check('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_health_check', 'minimal')
+        expect(config).not_to have_key('triggers')
+      end
     end
 
     context 'boolean fields' do
@@ -412,6 +486,17 @@ RSpec.describe Pangea::Resources::AWSRoute53HealthCheck do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_route53_health_check', "bool_#{val}")
           expect(config['disabled']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts enable_sni=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enable_sni: val)
+          synth.aws_route53_health_check("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_route53_health_check', "bool_#{val}")
+          expect(config['enable_sni']).to eq(val)
         end
       end
       [true, false].each do |val|
@@ -480,8 +565,8 @@ RSpec.describe Pangea::Resources::AWSRoute53HealthCheck do
     resource_type: :aws_route53_health_check,
     method: :aws_route53_health_check,
     required_attrs: { type: 'test-value' },
-    expected_outputs: [:id, :arn, :enable_sni, :failure_threshold, :tags_all, :triggers],
+    expected_outputs: [:id, :arn, :enable_sni, :failure_threshold, :regions, :tags_all, :triggers],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:disabled, :invert_healthcheck, :measure_latency]
+    boolean_fields: [:disabled, :enable_sni, :invert_healthcheck, :measure_latency]
 end

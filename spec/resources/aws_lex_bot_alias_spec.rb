@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSLexBotAlias do
         expect(ref.checksum).to eq("${aws_lex_bot_alias.test.checksum}")
         expect(ref.created_date).to eq("${aws_lex_bot_alias.test.created_date}")
         expect(ref.last_updated_date).to eq("${aws_lex_bot_alias.test.last_updated_date}")
+        expect(ref.region).to eq("${aws_lex_bot_alias.test.region}")
       end
     end
 
@@ -57,11 +58,12 @@ RSpec.describe Pangea::Resources::AWSLexBotAlias do
         expect(config).not_to have_key('checksum')
         expect(config).not_to have_key('created_date')
         expect(config).not_to have_key('last_updated_date')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ conversation_logs: [{ 'key1' => 'val1' }], description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ conversation_logs: { 'key1' => 'val1' }, description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,6 +74,7 @@ RSpec.describe Pangea::Resources::AWSLexBotAlias do
         config = validate_resource_structure(result, 'aws_lex_bot_alias', 'full')
         expect(config).to have_key('conversation_logs')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -79,7 +82,7 @@ RSpec.describe Pangea::Resources::AWSLexBotAlias do
       it 'includes conversation_logs when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lex_bot_alias('opt', required_attrs.merge(conversation_logs: [{ 'key1' => 'val1' }]))
+        synth.aws_lex_bot_alias('opt', required_attrs.merge(conversation_logs: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lex_bot_alias', 'opt')
         expect(config).to have_key('conversation_logs')
@@ -109,6 +112,23 @@ RSpec.describe Pangea::Resources::AWSLexBotAlias do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lex_bot_alias', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lex_bot_alias('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lex_bot_alias', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lex_bot_alias('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lex_bot_alias', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -156,7 +176,7 @@ RSpec.describe Pangea::Resources::AWSLexBotAlias do
     resource_type: :aws_lex_bot_alias,
     method: :aws_lex_bot_alias,
     required_attrs: { bot_name: 'test-value', bot_version: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :checksum, :created_date, :last_updated_date],
+    expected_outputs: [:id, :arn, :checksum, :created_date, :last_updated_date, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

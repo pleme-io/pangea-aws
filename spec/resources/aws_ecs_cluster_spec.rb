@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEcsCluster do
 
         expect(ref.id).to eq("${aws_ecs_cluster.test.id}")
         expect(ref.arn).to eq("${aws_ecs_cluster.test.arn}")
+        expect(ref.region).to eq("${aws_ecs_cluster.test.region}")
         expect(ref.tags_all).to eq("${aws_ecs_cluster.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSEcsCluster do
 
         config = validate_resource_structure(result, 'aws_ecs_cluster', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ configuration: [{ 'key1' => 'val1' }], service_connect_defaults: [{ 'key1' => 'val1' }], setting: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ configuration: { 'key1' => 'val1' }, region: 'test-value', service_connect_defaults: { 'key1' => 'val1' }, setting: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,9 +69,11 @@ RSpec.describe Pangea::Resources::AWSEcsCluster do
 
         config = validate_resource_structure(result, 'aws_ecs_cluster', 'full')
         expect(config).to have_key('configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('service_connect_defaults')
         expect(config).to have_key('setting')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -77,7 +81,7 @@ RSpec.describe Pangea::Resources::AWSEcsCluster do
       it 'includes configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_cluster('opt', required_attrs.merge(configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_cluster('opt', required_attrs.merge(configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_cluster', 'opt')
         expect(config).to have_key('configuration')
@@ -91,10 +95,27 @@ RSpec.describe Pangea::Resources::AWSEcsCluster do
         config = validate_resource_structure(result, 'aws_ecs_cluster', 'minimal')
         expect(config).not_to have_key('configuration')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_cluster', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes service_connect_defaults when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_cluster('opt', required_attrs.merge(service_connect_defaults: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_cluster('opt', required_attrs.merge(service_connect_defaults: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_cluster', 'opt')
         expect(config).to have_key('service_connect_defaults')
@@ -142,6 +163,23 @@ RSpec.describe Pangea::Resources::AWSEcsCluster do
         config = validate_resource_structure(result, 'aws_ecs_cluster', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -186,7 +224,7 @@ RSpec.describe Pangea::Resources::AWSEcsCluster do
     resource_type: :aws_ecs_cluster,
     method: :aws_ecs_cluster,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

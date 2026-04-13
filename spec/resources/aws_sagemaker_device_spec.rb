@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSagemakerDevice do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { device: [{ 'key1' => 'val1' }], device_fleet_name: 'test-value' } }
+  let(:required_attrs) { { device: { 'key1' => 'val1' }, device_fleet_name: 'test-value' } }
 
   describe ':aws_sagemaker_device' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerDevice do
         expect(ref.id).to eq("${aws_sagemaker_device.test.id}")
         expect(ref.agent_version).to eq("${aws_sagemaker_device.test.agent_version}")
         expect(ref.arn).to eq("${aws_sagemaker_device.test.arn}")
+        expect(ref.region).to eq("${aws_sagemaker_device.test.region}")
       end
     end
 
@@ -53,6 +54,41 @@ RSpec.describe Pangea::Resources::AWSSagemakerDevice do
         config = validate_resource_structure(result, 'aws_sagemaker_device', 'test')
         expect(config).not_to have_key('agent_version')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_device('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_sagemaker_device', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_device('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_device', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_device('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_device', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -64,7 +100,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerDevice do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_sagemaker_device', 'typed')
-        expect(config['device']).to be_a(Array)
+        expect(config['device']).to be_a(Hash)
         expect(config['device_fleet_name']).to be_a(String)
       end
     end
@@ -98,8 +134,8 @@ RSpec.describe Pangea::Resources::AWSSagemakerDevice do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_sagemaker_device,
     method: :aws_sagemaker_device,
-    required_attrs: { device: [{ 'key1' => 'val1' }], device_fleet_name: 'test-value' },
-    expected_outputs: [:id, :agent_version, :arn],
+    required_attrs: { device: { 'key1' => 'val1' }, device_fleet_name: 'test-value' },
+    expected_outputs: [:id, :agent_version, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

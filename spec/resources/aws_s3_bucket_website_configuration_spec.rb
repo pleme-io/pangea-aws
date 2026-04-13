@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketWebsiteConfiguration do
         ref = synth.aws_s3_bucket_website_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_s3_bucket_website_configuration.test.id}")
+        expect(ref.region).to eq("${aws_s3_bucket_website_configuration.test.region}")
         expect(ref.routing_rules).to eq("${aws_s3_bucket_website_configuration.test.routing_rules}")
         expect(ref.website_domain).to eq("${aws_s3_bucket_website_configuration.test.website_domain}")
         expect(ref.website_endpoint).to eq("${aws_s3_bucket_website_configuration.test.website_endpoint}")
@@ -52,6 +53,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketWebsiteConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_s3_bucket_website_configuration', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('routing_rules')
         expect(config).not_to have_key('website_domain')
         expect(config).not_to have_key('website_endpoint')
@@ -59,7 +61,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketWebsiteConfiguration do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ error_document: [{ 'key1' => 'val1' }], expected_bucket_owner: 'test-value', index_document: [{ 'key1' => 'val1' }], redirect_all_requests_to: [{ 'key1' => 'val1' }], routing_rule: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ error_document: { 'key1' => 'val1' }, expected_bucket_owner: 'test-value', index_document: { 'key1' => 'val1' }, redirect_all_requests_to: { 'key1' => 'val1' }, region: 'test-value', routing_rule: [{ 'key1' => 'val1' }], routing_rules: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,7 +74,9 @@ RSpec.describe Pangea::Resources::AWSS3BucketWebsiteConfiguration do
         expect(config).to have_key('expected_bucket_owner')
         expect(config).to have_key('index_document')
         expect(config).to have_key('redirect_all_requests_to')
+        expect(config).to have_key('region')
         expect(config).to have_key('routing_rule')
+        expect(config).to have_key('routing_rules')
       end
     end
 
@@ -80,7 +84,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketWebsiteConfiguration do
       it 'includes error_document when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket_website_configuration('opt', required_attrs.merge(error_document: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket_website_configuration('opt', required_attrs.merge(error_document: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_website_configuration', 'opt')
         expect(config).to have_key('error_document')
@@ -114,7 +118,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketWebsiteConfiguration do
       it 'includes index_document when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket_website_configuration('opt', required_attrs.merge(index_document: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket_website_configuration('opt', required_attrs.merge(index_document: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_website_configuration', 'opt')
         expect(config).to have_key('index_document')
@@ -131,7 +135,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketWebsiteConfiguration do
       it 'includes redirect_all_requests_to when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket_website_configuration('opt', required_attrs.merge(redirect_all_requests_to: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket_website_configuration('opt', required_attrs.merge(redirect_all_requests_to: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_website_configuration', 'opt')
         expect(config).to have_key('redirect_all_requests_to')
@@ -144,6 +148,23 @@ RSpec.describe Pangea::Resources::AWSS3BucketWebsiteConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_website_configuration', 'minimal')
         expect(config).not_to have_key('redirect_all_requests_to')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_website_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_website_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_website_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_website_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes routing_rule when provided' do
         synth = create_synthesizer
@@ -161,6 +182,23 @@ RSpec.describe Pangea::Resources::AWSS3BucketWebsiteConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_website_configuration', 'minimal')
         expect(config).not_to have_key('routing_rule')
+      end
+      it 'includes routing_rules when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_website_configuration('opt', required_attrs.merge(routing_rules: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_website_configuration', 'opt')
+        expect(config).to have_key('routing_rules')
+      end
+
+      it 'omits routing_rules when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_website_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_website_configuration', 'minimal')
+        expect(config).not_to have_key('routing_rules')
       end
     end
 
@@ -206,7 +244,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketWebsiteConfiguration do
     resource_type: :aws_s3_bucket_website_configuration,
     method: :aws_s3_bucket_website_configuration,
     required_attrs: { bucket: 'test-value' },
-    expected_outputs: [:id, :routing_rules, :website_domain, :website_endpoint],
+    expected_outputs: [:id, :region, :routing_rules, :website_domain, :website_endpoint],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

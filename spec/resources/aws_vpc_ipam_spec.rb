@@ -41,8 +41,10 @@ RSpec.describe Pangea::Resources::AWSVpcIpam do
         expect(ref.arn).to eq("${aws_vpc_ipam.test.arn}")
         expect(ref.default_resource_discovery_association_id).to eq("${aws_vpc_ipam.test.default_resource_discovery_association_id}")
         expect(ref.default_resource_discovery_id).to eq("${aws_vpc_ipam.test.default_resource_discovery_id}")
+        expect(ref.metered_account).to eq("${aws_vpc_ipam.test.metered_account}")
         expect(ref.private_default_scope_id).to eq("${aws_vpc_ipam.test.private_default_scope_id}")
         expect(ref.public_default_scope_id).to eq("${aws_vpc_ipam.test.public_default_scope_id}")
+        expect(ref.region).to eq("${aws_vpc_ipam.test.region}")
         expect(ref.scope_count).to eq("${aws_vpc_ipam.test.scope_count}")
         expect(ref.tags_all).to eq("${aws_vpc_ipam.test.tags_all}")
       end
@@ -59,15 +61,17 @@ RSpec.describe Pangea::Resources::AWSVpcIpam do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('default_resource_discovery_association_id')
         expect(config).not_to have_key('default_resource_discovery_id')
+        expect(config).not_to have_key('metered_account')
         expect(config).not_to have_key('private_default_scope_id')
         expect(config).not_to have_key('public_default_scope_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('scope_count')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cascade: true, description: 'test-value', enable_private_gua: true, tags: { 'key1' => 'val1' }, tier: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ cascade: true, description: 'test-value', enable_private_gua: true, metered_account: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tier: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,7 +83,10 @@ RSpec.describe Pangea::Resources::AWSVpcIpam do
         expect(config).to have_key('cascade')
         expect(config).to have_key('description')
         expect(config).to have_key('enable_private_gua')
+        expect(config).to have_key('metered_account')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('tier')
       end
     end
@@ -136,6 +143,40 @@ RSpec.describe Pangea::Resources::AWSVpcIpam do
         config = validate_resource_structure(result, 'aws_vpc_ipam', 'minimal')
         expect(config).not_to have_key('enable_private_gua')
       end
+      it 'includes metered_account when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam('opt', required_attrs.merge(metered_account: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam', 'opt')
+        expect(config).to have_key('metered_account')
+      end
+
+      it 'omits metered_account when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam', 'minimal')
+        expect(config).not_to have_key('metered_account')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -152,6 +193,23 @@ RSpec.describe Pangea::Resources::AWSVpcIpam do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_ipam', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes tier when provided' do
         synth = create_synthesizer
@@ -239,7 +297,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpam do
     resource_type: :aws_vpc_ipam,
     method: :aws_vpc_ipam,
     required_attrs: { operating_regions: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :default_resource_discovery_association_id, :default_resource_discovery_id, :private_default_scope_id, :public_default_scope_id, :scope_count, :tags_all],
+    expected_outputs: [:id, :arn, :default_resource_discovery_association_id, :default_resource_discovery_id, :metered_account, :private_default_scope_id, :public_default_scope_id, :region, :scope_count, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:cascade, :enable_private_gua]

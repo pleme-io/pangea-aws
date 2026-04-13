@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Apigatewayv2DeploymentAttributes,
       outputs: { id: :id },
       map: [:api_id],
-      map_present: [:description, :triggers]
+      map_present: [:description, :region, :triggers]
   end
   module AWS
     include AWSApigatewayv2Deployment

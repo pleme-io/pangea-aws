@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindow do
         ref = synth.aws_ssm_maintenance_window('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ssm_maintenance_window.test.id}")
+        expect(ref.region).to eq("${aws_ssm_maintenance_window.test.region}")
         expect(ref.tags_all).to eq("${aws_ssm_maintenance_window.test.tags_all}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindow do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ssm_maintenance_window', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allow_unassociated_targets: true, description: 'test-value', enabled: true, end_date: 'test-value', schedule_offset: 3.14, schedule_timezone: 'test-value', start_date: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ allow_unassociated_targets: true, description: 'test-value', enabled: true, end_date: 'test-value', region: 'test-value', schedule_offset: 3.14, schedule_timezone: 'test-value', start_date: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,10 +70,12 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindow do
         expect(config).to have_key('description')
         expect(config).to have_key('enabled')
         expect(config).to have_key('end_date')
+        expect(config).to have_key('region')
         expect(config).to have_key('schedule_offset')
         expect(config).to have_key('schedule_timezone')
         expect(config).to have_key('start_date')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -144,6 +148,23 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindow do
         config = validate_resource_structure(result, 'aws_ssm_maintenance_window', 'minimal')
         expect(config).not_to have_key('end_date')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes schedule_offset when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -211,6 +232,23 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindow do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_maintenance_window', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -284,7 +322,7 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindow do
     resource_type: :aws_ssm_maintenance_window,
     method: :aws_ssm_maintenance_window,
     required_attrs: { cutoff: 3.14, duration: 3.14, name: 'test-value', schedule: 'test-value' },
-    expected_outputs: [:id, :tags_all],
+    expected_outputs: [:id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:allow_unassociated_targets, :enabled]

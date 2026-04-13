@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AthenaDatabaseAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:acl_configuration, :bucket, :comment, :encryption_configuration, :expected_bucket_owner, :properties],
+      map_present: [:acl_configuration, :bucket, :comment, :encryption_configuration, :expected_bucket_owner, :properties, :region, :workgroup],
       map_bool: [:force_destroy]
   end
   module AWS

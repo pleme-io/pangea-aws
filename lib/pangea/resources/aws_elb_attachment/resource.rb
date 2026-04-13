@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_elb_attachment,
       attributes_class: AWS::Types::ElbAttachmentAttributes,
       outputs: { id: :id },
-      map: [:elb, :instance]
+      map: [:elb, :instance],
+      map_present: [:region]
   end
   module AWS
     include AWSElbAttachment

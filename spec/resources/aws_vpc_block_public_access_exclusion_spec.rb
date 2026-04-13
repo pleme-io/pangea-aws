@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSVpcBlockPublicAccessExclusion do
         ref = synth.aws_vpc_block_public_access_exclusion('test', required_attrs)
 
         expect(ref.id).to eq("${aws_vpc_block_public_access_exclusion.test.id}")
+        expect(ref.region).to eq("${aws_vpc_block_public_access_exclusion.test.region}")
         expect(ref.resource_arn).to eq("${aws_vpc_block_public_access_exclusion.test.resource_arn}")
         expect(ref.tags_all).to eq("${aws_vpc_block_public_access_exclusion.test.tags_all}")
       end
@@ -51,13 +52,14 @@ RSpec.describe Pangea::Resources::AWSVpcBlockPublicAccessExclusion do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpc_block_public_access_exclusion', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_arn')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ subnet_id: 'test-value', tags: { 'key1' => 'val1' }, vpc_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', subnet_id: 'test-value', tags: { 'key1' => 'val1' }, vpc_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,6 +68,7 @@ RSpec.describe Pangea::Resources::AWSVpcBlockPublicAccessExclusion do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpc_block_public_access_exclusion', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('subnet_id')
         expect(config).to have_key('tags')
         expect(config).to have_key('vpc_id')
@@ -73,6 +76,23 @@ RSpec.describe Pangea::Resources::AWSVpcBlockPublicAccessExclusion do
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_block_public_access_exclusion('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_block_public_access_exclusion', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_block_public_access_exclusion('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_block_public_access_exclusion', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes subnet_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -168,7 +188,7 @@ RSpec.describe Pangea::Resources::AWSVpcBlockPublicAccessExclusion do
     resource_type: :aws_vpc_block_public_access_exclusion,
     method: :aws_vpc_block_public_access_exclusion,
     required_attrs: { internet_gateway_exclusion_mode: 'test-value' },
-    expected_outputs: [:id, :resource_arn, :tags_all],
+    expected_outputs: [:id, :region, :resource_arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

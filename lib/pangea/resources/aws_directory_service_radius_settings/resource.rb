@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DirectoryServiceRadiusSettingsAttributes,
       outputs: { id: :id },
       map: [:authentication_protocol, :directory_id, :display_label, :radius_port, :radius_retries, :radius_servers, :radius_timeout, :shared_secret],
+      map_present: [:region],
       map_bool: [:use_same_username]
   end
   module AWS

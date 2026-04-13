@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayAuthorizer do
 
         expect(ref.id).to eq("${aws_api_gateway_authorizer.test.id}")
         expect(ref.arn).to eq("${aws_api_gateway_authorizer.test.arn}")
+        expect(ref.region).to eq("${aws_api_gateway_authorizer.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSApiGatewayAuthorizer do
 
         config = validate_resource_structure(result, 'aws_api_gateway_authorizer', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ authorizer_credentials: 'test-value', authorizer_result_ttl_in_seconds: 3.14, authorizer_uri: 'test-value', identity_source: 'test-value', identity_validation_expression: 'test-value', provider_arns: ['test-value'], type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ authorizer_credentials: 'test-value', authorizer_result_ttl_in_seconds: 3.14, authorizer_uri: 'test-value', identity_source: 'test-value', identity_validation_expression: 'test-value', provider_arns: ['test-value'], region: 'test-value', type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,6 +72,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayAuthorizer do
         expect(config).to have_key('identity_source')
         expect(config).to have_key('identity_validation_expression')
         expect(config).to have_key('provider_arns')
+        expect(config).to have_key('region')
         expect(config).to have_key('type')
       end
     end
@@ -177,6 +180,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayAuthorizer do
         config = validate_resource_structure(result, 'aws_api_gateway_authorizer', 'minimal')
         expect(config).not_to have_key('provider_arns')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_authorizer('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_authorizer', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_authorizer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_authorizer', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes type when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -239,7 +259,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayAuthorizer do
     resource_type: :aws_api_gateway_authorizer,
     method: :aws_api_gateway_authorizer,
     required_attrs: { name: 'test-value', rest_api_id: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessSecurityPolicy do
 
         expect(ref.id).to eq("${aws_opensearchserverless_security_policy.test.id}")
         expect(ref.policy_version).to eq("${aws_opensearchserverless_security_policy.test.policy_version}")
+        expect(ref.region).to eq("${aws_opensearchserverless_security_policy.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessSecurityPolicy do
 
         config = validate_resource_structure(result, 'aws_opensearchserverless_security_policy', 'test')
         expect(config).not_to have_key('policy_version')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessSecurityPolicy do
 
         config = validate_resource_structure(result, 'aws_opensearchserverless_security_policy', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -85,6 +88,23 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessSecurityPolicy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearchserverless_security_policy', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_security_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_security_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearchserverless_security_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearchserverless_security_policy', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -132,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchserverlessSecurityPolicy do
     resource_type: :aws_opensearchserverless_security_policy,
     method: :aws_opensearchserverless_security_policy,
     required_attrs: { name: 'test-value', policy: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :policy_version],
+    expected_outputs: [:id, :policy_version, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_redshiftserverless_custom_domain_association,
       attributes_class: AWS::Types::RedshiftserverlessCustomDomainAssociationAttributes,
       outputs: { id: :id },
-      map: [:custom_domain_certificate_arn, :custom_domain_name, :workgroup_name]
+      map: [:custom_domain_certificate_arn, :custom_domain_name, :workgroup_name],
+      map_present: [:region]
   end
   module AWS
     include AWSRedshiftserverlessCustomDomainAssociation

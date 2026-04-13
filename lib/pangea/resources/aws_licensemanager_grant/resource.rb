@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_licensemanager_grant,
       attributes_class: AWS::Types::LicensemanagerGrantAttributes,
       outputs: { id: :id },
-      map: [:allowed_operations, :license_arn, :name, :principal]
+      map: [:allowed_operations, :license_arn, :name, :principal],
+      map_present: [:region]
   end
   module AWS
     include AWSLicensemanagerGrant

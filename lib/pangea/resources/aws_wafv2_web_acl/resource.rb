@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Wafv2WebAclAttributes,
       outputs: { id: :id },
       map: [:default_action, :scope, :visibility_config],
-      map_present: [:association_config, :captcha_config, :challenge_config, :custom_response_body, :data_protection_config, :description, :name, :name_prefix, :rule, :rule_json, :tags, :tags_all, :token_domains]
+      map_present: [:association_config, :captcha_config, :challenge_config, :custom_response_body, :data_protection_config, :description, :name, :name_prefix, :region, :rule, :rule_json, :tags, :tags_all, :token_domains]
   end
   module AWS
     include AWSWafv2WebAcl

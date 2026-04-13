@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneGlossaryTerm do
         expect(ref.id).to eq("${aws_datazone_glossary_term.test.id}")
         expect(ref.created_at).to eq("${aws_datazone_glossary_term.test.created_at}")
         expect(ref.created_by).to eq("${aws_datazone_glossary_term.test.created_by}")
+        expect(ref.region).to eq("${aws_datazone_glossary_term.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSDatazoneGlossaryTerm do
         config = validate_resource_structure(result, 'aws_datazone_glossary_term', 'test')
         expect(config).not_to have_key('created_at')
         expect(config).not_to have_key('created_by')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ domain_identifier: 'test-value', long_description: 'test-value', short_description: 'test-value', status: 'test-value', term_relations: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ domain_identifier: 'test-value', long_description: 'test-value', region: 'test-value', short_description: 'test-value', status: 'test-value', term_relations: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneGlossaryTerm do
         config = validate_resource_structure(result, 'aws_datazone_glossary_term', 'full')
         expect(config).to have_key('domain_identifier')
         expect(config).to have_key('long_description')
+        expect(config).to have_key('region')
         expect(config).to have_key('short_description')
         expect(config).to have_key('status')
         expect(config).to have_key('term_relations')
@@ -108,6 +111,23 @@ RSpec.describe Pangea::Resources::AWSDatazoneGlossaryTerm do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datazone_glossary_term', 'minimal')
         expect(config).not_to have_key('long_description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_glossary_term('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_glossary_term', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_glossary_term('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_glossary_term', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes short_description when provided' do
         synth = create_synthesizer
@@ -205,7 +225,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneGlossaryTerm do
     resource_type: :aws_datazone_glossary_term,
     method: :aws_datazone_glossary_term,
     required_attrs: { glossary_identifier: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :created_at, :created_by],
+    expected_outputs: [:id, :created_at, :created_by, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

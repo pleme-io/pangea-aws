@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ServicecatalogPortfolioShareAttributes,
       outputs: { id: :id },
       map: [:portfolio_id, :principal_id, :type],
-      map_present: [:accept_language],
+      map_present: [:accept_language, :region],
       map_bool: [:share_principals, :share_tag_options, :wait_for_acceptance]
   end
   module AWS

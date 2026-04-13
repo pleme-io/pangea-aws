@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSRouteTableAssociation do
         ref = synth.aws_route_table_association('test', required_attrs)
 
         expect(ref.id).to eq("${aws_route_table_association.test.id}")
+        expect(ref.region).to eq("${aws_route_table_association.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route_table_association('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_route_table_association', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ gateway_id: 'test-value', subnet_id: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ gateway_id: 'test-value', region: 'test-value', subnet_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSRouteTableAssociation do
 
         config = validate_resource_structure(result, 'aws_route_table_association', 'full')
         expect(config).to have_key('gateway_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('subnet_id')
       end
     end
@@ -73,6 +87,23 @@ RSpec.describe Pangea::Resources::AWSRouteTableAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route_table_association', 'minimal')
         expect(config).not_to have_key('gateway_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route_table_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route_table_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route_table_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route_table_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes subnet_id when provided' do
         synth = create_synthesizer
@@ -135,7 +166,7 @@ RSpec.describe Pangea::Resources::AWSRouteTableAssociation do
     resource_type: :aws_route_table_association,
     method: :aws_route_table_association,
     required_attrs: { route_table_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

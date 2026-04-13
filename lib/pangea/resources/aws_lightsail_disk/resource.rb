@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LightsailDiskAttributes,
       outputs: { id: :id },
       map: [:availability_zone, :name, :size_in_gb],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSLightsailDisk

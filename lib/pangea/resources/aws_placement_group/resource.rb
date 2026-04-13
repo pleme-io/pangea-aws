@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::PlacementGroupAttributes,
       outputs: { id: :id },
       map: [:name, :strategy],
-      map_present: [:partition_count, :spread_level, :tags, :tags_all]
+      map_present: [:partition_count, :region, :spread_level, :tags, :tags_all]
   end
   module AWS
     include AWSPlacementGroup

@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         expect(ref.cluster_mode).to eq("${aws_elasticache_replication_group.test.cluster_mode}")
         expect(ref.configuration_endpoint_address).to eq("${aws_elasticache_replication_group.test.configuration_endpoint_address}")
         expect(ref.data_tiering_enabled).to eq("${aws_elasticache_replication_group.test.data_tiering_enabled}")
+        expect(ref.engine).to eq("${aws_elasticache_replication_group.test.engine}")
         expect(ref.engine_version).to eq("${aws_elasticache_replication_group.test.engine_version}")
         expect(ref.engine_version_actual).to eq("${aws_elasticache_replication_group.test.engine_version_actual}")
         expect(ref.global_replication_group_id).to eq("${aws_elasticache_replication_group.test.global_replication_group_id}")
@@ -59,6 +60,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         expect(ref.parameter_group_name).to eq("${aws_elasticache_replication_group.test.parameter_group_name}")
         expect(ref.primary_endpoint_address).to eq("${aws_elasticache_replication_group.test.primary_endpoint_address}")
         expect(ref.reader_endpoint_address).to eq("${aws_elasticache_replication_group.test.reader_endpoint_address}")
+        expect(ref.region).to eq("${aws_elasticache_replication_group.test.region}")
         expect(ref.replicas_per_node_group).to eq("${aws_elasticache_replication_group.test.replicas_per_node_group}")
         expect(ref.security_group_ids).to eq("${aws_elasticache_replication_group.test.security_group_ids}")
         expect(ref.security_group_names).to eq("${aws_elasticache_replication_group.test.security_group_names}")
@@ -86,6 +88,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         expect(config).not_to have_key('cluster_mode')
         expect(config).not_to have_key('configuration_endpoint_address')
         expect(config).not_to have_key('data_tiering_enabled')
+        expect(config).not_to have_key('engine')
         expect(config).not_to have_key('engine_version')
         expect(config).not_to have_key('engine_version_actual')
         expect(config).not_to have_key('global_replication_group_id')
@@ -99,6 +102,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         expect(config).not_to have_key('parameter_group_name')
         expect(config).not_to have_key('primary_endpoint_address')
         expect(config).not_to have_key('reader_endpoint_address')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('replicas_per_node_group')
         expect(config).not_to have_key('security_group_ids')
         expect(config).not_to have_key('security_group_names')
@@ -111,7 +115,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ auth_token: 'test-value', auth_token_update_strategy: 'test-value', automatic_failover_enabled: true, engine: 'test-value', final_snapshot_identifier: 'test-value', kms_key_id: 'test-value', log_delivery_configuration: [{ 'key1' => 'val1' }], multi_az_enabled: true, notification_topic_arn: 'test-value', port: 3.14, preferred_cache_cluster_azs: ['test-value'], snapshot_arns: ['test-value'], snapshot_name: 'test-value', snapshot_retention_limit: 3.14, tags: { 'key1' => 'val1' }, user_group_ids: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ apply_immediately: true, at_rest_encryption_enabled: 'test-value', auth_token: 'test-value', auth_token_update_strategy: 'test-value', auto_minor_version_upgrade: 'test-value', automatic_failover_enabled: true, cluster_mode: 'test-value', data_tiering_enabled: true, engine: 'test-value', engine_version: 'test-value', final_snapshot_identifier: 'test-value', global_replication_group_id: 'test-value', ip_discovery: 'test-value', kms_key_id: 'test-value', log_delivery_configuration: [{ 'key1' => 'val1' }], maintenance_window: 'test-value', multi_az_enabled: true, network_type: 'test-value', node_group_configuration: [{ 'key1' => 'val1' }], node_type: 'test-value', notification_topic_arn: 'test-value', num_cache_clusters: 3.14, num_node_groups: 3.14, parameter_group_name: 'test-value', port: 3.14, preferred_cache_cluster_azs: ['test-value'], region: 'test-value', replicas_per_node_group: 3.14, security_group_ids: ['test-value'], security_group_names: ['test-value'], snapshot_arns: ['test-value'], snapshot_name: 'test-value', snapshot_retention_limit: 3.14, snapshot_window: 'test-value', subnet_group_name: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, transit_encryption_enabled: true, transit_encryption_mode: 'test-value', user_group_ids: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -120,26 +124,84 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'full')
+        expect(config).to have_key('apply_immediately')
+        expect(config).to have_key('at_rest_encryption_enabled')
         expect(config).to have_key('auth_token')
         expect(config).to have_key('auth_token_update_strategy')
+        expect(config).to have_key('auto_minor_version_upgrade')
         expect(config).to have_key('automatic_failover_enabled')
+        expect(config).to have_key('cluster_mode')
+        expect(config).to have_key('data_tiering_enabled')
         expect(config).to have_key('engine')
+        expect(config).to have_key('engine_version')
         expect(config).to have_key('final_snapshot_identifier')
+        expect(config).to have_key('global_replication_group_id')
+        expect(config).to have_key('ip_discovery')
         expect(config).to have_key('kms_key_id')
         expect(config).to have_key('log_delivery_configuration')
+        expect(config).to have_key('maintenance_window')
         expect(config).to have_key('multi_az_enabled')
+        expect(config).to have_key('network_type')
+        expect(config).to have_key('node_group_configuration')
+        expect(config).to have_key('node_type')
         expect(config).to have_key('notification_topic_arn')
+        expect(config).to have_key('num_cache_clusters')
+        expect(config).to have_key('num_node_groups')
+        expect(config).to have_key('parameter_group_name')
         expect(config).to have_key('port')
         expect(config).to have_key('preferred_cache_cluster_azs')
+        expect(config).to have_key('region')
+        expect(config).to have_key('replicas_per_node_group')
+        expect(config).to have_key('security_group_ids')
+        expect(config).to have_key('security_group_names')
         expect(config).to have_key('snapshot_arns')
         expect(config).to have_key('snapshot_name')
         expect(config).to have_key('snapshot_retention_limit')
+        expect(config).to have_key('snapshot_window')
+        expect(config).to have_key('subnet_group_name')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('transit_encryption_enabled')
+        expect(config).to have_key('transit_encryption_mode')
         expect(config).to have_key('user_group_ids')
       end
     end
 
     context 'optional attributes' do
+      it 'includes apply_immediately when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(apply_immediately: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('apply_immediately')
+      end
+
+      it 'omits apply_immediately when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('apply_immediately')
+      end
+      it 'includes at_rest_encryption_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(at_rest_encryption_enabled: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('at_rest_encryption_enabled')
+      end
+
+      it 'omits at_rest_encryption_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('at_rest_encryption_enabled')
+      end
       it 'includes auth_token when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -174,6 +236,23 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
         expect(config).not_to have_key('auth_token_update_strategy')
       end
+      it 'includes auto_minor_version_upgrade when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(auto_minor_version_upgrade: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('auto_minor_version_upgrade')
+      end
+
+      it 'omits auto_minor_version_upgrade when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('auto_minor_version_upgrade')
+      end
       it 'includes automatic_failover_enabled when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -190,6 +269,40 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
         expect(config).not_to have_key('automatic_failover_enabled')
+      end
+      it 'includes cluster_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(cluster_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('cluster_mode')
+      end
+
+      it 'omits cluster_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('cluster_mode')
+      end
+      it 'includes data_tiering_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(data_tiering_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('data_tiering_enabled')
+      end
+
+      it 'omits data_tiering_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('data_tiering_enabled')
       end
       it 'includes engine when provided' do
         synth = create_synthesizer
@@ -208,6 +321,23 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
         expect(config).not_to have_key('engine')
       end
+      it 'includes engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('engine_version')
+      end
+
+      it 'omits engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('engine_version')
+      end
       it 'includes final_snapshot_identifier when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -224,6 +354,40 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
         expect(config).not_to have_key('final_snapshot_identifier')
+      end
+      it 'includes global_replication_group_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(global_replication_group_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('global_replication_group_id')
+      end
+
+      it 'omits global_replication_group_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('global_replication_group_id')
+      end
+      it 'includes ip_discovery when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(ip_discovery: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('ip_discovery')
+      end
+
+      it 'omits ip_discovery when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('ip_discovery')
       end
       it 'includes kms_key_id when provided' do
         synth = create_synthesizer
@@ -259,6 +423,23 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
         expect(config).not_to have_key('log_delivery_configuration')
       end
+      it 'includes maintenance_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(maintenance_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('maintenance_window')
+      end
+
+      it 'omits maintenance_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('maintenance_window')
+      end
       it 'includes multi_az_enabled when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -276,6 +457,57 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
         expect(config).not_to have_key('multi_az_enabled')
       end
+      it 'includes network_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(network_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('network_type')
+      end
+
+      it 'omits network_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('network_type')
+      end
+      it 'includes node_group_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(node_group_configuration: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('node_group_configuration')
+      end
+
+      it 'omits node_group_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('node_group_configuration')
+      end
+      it 'includes node_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(node_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('node_type')
+      end
+
+      it 'omits node_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('node_type')
+      end
       it 'includes notification_topic_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -292,6 +524,57 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
         expect(config).not_to have_key('notification_topic_arn')
+      end
+      it 'includes num_cache_clusters when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(num_cache_clusters: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('num_cache_clusters')
+      end
+
+      it 'omits num_cache_clusters when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('num_cache_clusters')
+      end
+      it 'includes num_node_groups when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(num_node_groups: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('num_node_groups')
+      end
+
+      it 'omits num_node_groups when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('num_node_groups')
+      end
+      it 'includes parameter_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(parameter_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('parameter_group_name')
+      end
+
+      it 'omits parameter_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('parameter_group_name')
       end
       it 'includes port when provided' do
         synth = create_synthesizer
@@ -326,6 +609,74 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
         expect(config).not_to have_key('preferred_cache_cluster_azs')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes replicas_per_node_group when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(replicas_per_node_group: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('replicas_per_node_group')
+      end
+
+      it 'omits replicas_per_node_group when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('replicas_per_node_group')
+      end
+      it 'includes security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('security_group_ids')
+      end
+
+      it 'omits security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('security_group_ids')
+      end
+      it 'includes security_group_names when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(security_group_names: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('security_group_names')
+      end
+
+      it 'omits security_group_names when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('security_group_names')
       end
       it 'includes snapshot_arns when provided' do
         synth = create_synthesizer
@@ -378,6 +729,40 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
         expect(config).not_to have_key('snapshot_retention_limit')
       end
+      it 'includes snapshot_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(snapshot_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('snapshot_window')
+      end
+
+      it 'omits snapshot_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('snapshot_window')
+      end
+      it 'includes subnet_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(subnet_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('subnet_group_name')
+      end
+
+      it 'omits subnet_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('subnet_group_name')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -394,6 +779,57 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes transit_encryption_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(transit_encryption_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('transit_encryption_enabled')
+      end
+
+      it 'omits transit_encryption_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('transit_encryption_enabled')
+      end
+      it 'includes transit_encryption_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('opt', required_attrs.merge(transit_encryption_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'opt')
+        expect(config).to have_key('transit_encryption_mode')
+      end
+
+      it 'omits transit_encryption_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_replication_group', 'minimal')
+        expect(config).not_to have_key('transit_encryption_mode')
       end
       it 'includes user_group_ids when provided' do
         synth = create_synthesizer
@@ -423,6 +859,17 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
 
     context 'boolean fields' do
       [true, false].each do |val|
+        it "accepts apply_immediately=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(apply_immediately: val)
+          synth.aws_elasticache_replication_group("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_elasticache_replication_group', "bool_#{val}")
+          expect(config['apply_immediately']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
         it "accepts automatic_failover_enabled=#{val}" do
           synth = create_synthesizer
           synth.extend(described_class)
@@ -434,6 +881,17 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
         end
       end
       [true, false].each do |val|
+        it "accepts data_tiering_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(data_tiering_enabled: val)
+          synth.aws_elasticache_replication_group("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_elasticache_replication_group', "bool_#{val}")
+          expect(config['data_tiering_enabled']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
         it "accepts multi_az_enabled=#{val}" do
           synth = create_synthesizer
           synth.extend(described_class)
@@ -442,6 +900,17 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_elasticache_replication_group', "bool_#{val}")
           expect(config['multi_az_enabled']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts transit_encryption_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(transit_encryption_enabled: val)
+          synth.aws_elasticache_replication_group("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_elasticache_replication_group', "bool_#{val}")
+          expect(config['transit_encryption_enabled']).to eq(val)
         end
       end
     end
@@ -489,8 +958,8 @@ RSpec.describe Pangea::Resources::AWSElasticacheReplicationGroup do
     resource_type: :aws_elasticache_replication_group,
     method: :aws_elasticache_replication_group,
     required_attrs: { description: 'test-value', replication_group_id: 'test-value' },
-    expected_outputs: [:id, :apply_immediately, :arn, :at_rest_encryption_enabled, :auto_minor_version_upgrade, :cluster_enabled, :cluster_mode, :configuration_endpoint_address, :data_tiering_enabled, :engine_version, :engine_version_actual, :global_replication_group_id, :ip_discovery, :maintenance_window, :member_clusters, :network_type, :node_type, :num_cache_clusters, :num_node_groups, :parameter_group_name, :primary_endpoint_address, :reader_endpoint_address, :replicas_per_node_group, :security_group_ids, :security_group_names, :snapshot_window, :subnet_group_name, :tags_all, :transit_encryption_enabled, :transit_encryption_mode],
+    expected_outputs: [:id, :apply_immediately, :arn, :at_rest_encryption_enabled, :auto_minor_version_upgrade, :cluster_enabled, :cluster_mode, :configuration_endpoint_address, :data_tiering_enabled, :engine, :engine_version, :engine_version_actual, :global_replication_group_id, :ip_discovery, :maintenance_window, :member_clusters, :network_type, :node_type, :num_cache_clusters, :num_node_groups, :parameter_group_name, :primary_endpoint_address, :reader_endpoint_address, :region, :replicas_per_node_group, :security_group_ids, :security_group_names, :snapshot_window, :subnet_group_name, :tags_all, :transit_encryption_enabled, :transit_encryption_mode],
     sensitive_fields: [:auth_token],
     immutable_fields: [],
-    boolean_fields: [:automatic_failover_enabled, :multi_az_enabled]
+    boolean_fields: [:apply_immediately, :automatic_failover_enabled, :data_tiering_enabled, :multi_az_enabled, :transit_encryption_enabled]
 end

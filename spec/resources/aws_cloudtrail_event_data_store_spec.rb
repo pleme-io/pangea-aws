@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCloudtrailEventDataStore do
 
         expect(ref.id).to eq("${aws_cloudtrail_event_data_store.test.id}")
         expect(ref.arn).to eq("${aws_cloudtrail_event_data_store.test.arn}")
+        expect(ref.region).to eq("${aws_cloudtrail_event_data_store.test.region}")
         expect(ref.tags_all).to eq("${aws_cloudtrail_event_data_store.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSCloudtrailEventDataStore do
 
         config = validate_resource_structure(result, 'aws_cloudtrail_event_data_store', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ advanced_event_selector: [{ 'key1' => 'val1' }], billing_mode: 'test-value', kms_key_id: 'test-value', multi_region_enabled: true, organization_enabled: true, retention_period: 3.14, suspend: 'test-value', tags: { 'key1' => 'val1' }, termination_protection_enabled: true }) }
+      let(:all_attrs) { required_attrs.merge({ advanced_event_selector: [{ 'key1' => 'val1' }], billing_mode: 'test-value', kms_key_id: 'test-value', multi_region_enabled: true, organization_enabled: true, region: 'test-value', retention_period: 3.14, suspend: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, termination_protection_enabled: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,9 +73,11 @@ RSpec.describe Pangea::Resources::AWSCloudtrailEventDataStore do
         expect(config).to have_key('kms_key_id')
         expect(config).to have_key('multi_region_enabled')
         expect(config).to have_key('organization_enabled')
+        expect(config).to have_key('region')
         expect(config).to have_key('retention_period')
         expect(config).to have_key('suspend')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('termination_protection_enabled')
       end
     end
@@ -164,6 +168,23 @@ RSpec.describe Pangea::Resources::AWSCloudtrailEventDataStore do
         config = validate_resource_structure(result, 'aws_cloudtrail_event_data_store', 'minimal')
         expect(config).not_to have_key('organization_enabled')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudtrail_event_data_store('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudtrail_event_data_store', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudtrail_event_data_store('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudtrail_event_data_store', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes retention_period when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -214,6 +235,23 @@ RSpec.describe Pangea::Resources::AWSCloudtrailEventDataStore do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudtrail_event_data_store', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudtrail_event_data_store('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudtrail_event_data_store', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudtrail_event_data_store('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudtrail_event_data_store', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes termination_protection_enabled when provided' do
         synth = create_synthesizer
@@ -312,7 +350,7 @@ RSpec.describe Pangea::Resources::AWSCloudtrailEventDataStore do
     resource_type: :aws_cloudtrail_event_data_store,
     method: :aws_cloudtrail_event_data_store,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:multi_region_enabled, :organization_enabled, :termination_protection_enabled]

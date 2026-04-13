@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodebuildSourceCredentialAttributes,
       outputs: { id: :id },
       map: [:auth_type, :server_type, :token],
-      map_present: [:user_name]
+      map_present: [:region, :user_name]
   end
   module AWS
     include AWSCodebuildSourceCredential

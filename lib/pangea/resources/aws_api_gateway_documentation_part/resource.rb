@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_api_gateway_documentation_part,
       attributes_class: AWS::Types::ApiGatewayDocumentationPartAttributes,
       outputs: { id: :id },
-      map: [:location, :properties, :rest_api_id]
+      map: [:location, :properties, :rest_api_id],
+      map_present: [:region]
   end
   module AWS
     include AWSApiGatewayDocumentationPart

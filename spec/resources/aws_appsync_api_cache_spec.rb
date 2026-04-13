@@ -38,11 +38,28 @@ RSpec.describe Pangea::Resources::AWSAppsyncApiCache do
         ref = synth.aws_appsync_api_cache('test', required_attrs)
 
         expect(ref.id).to eq("${aws_appsync_api_cache.test.id}")
+        expect(ref.at_rest_encryption_enabled).to eq("${aws_appsync_api_cache.test.at_rest_encryption_enabled}")
+        expect(ref.region).to eq("${aws_appsync_api_cache.test.region}")
+        expect(ref.transit_encryption_enabled).to eq("${aws_appsync_api_cache.test.transit_encryption_enabled}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_api_cache('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_appsync_api_cache', 'test')
+        expect(config).not_to have_key('at_rest_encryption_enabled')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('transit_encryption_enabled')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ at_rest_encryption_enabled: true, transit_encryption_enabled: true }) }
+      let(:all_attrs) { required_attrs.merge({ at_rest_encryption_enabled: true, region: 'test-value', transit_encryption_enabled: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncApiCache do
 
         config = validate_resource_structure(result, 'aws_appsync_api_cache', 'full')
         expect(config).to have_key('at_rest_encryption_enabled')
+        expect(config).to have_key('region')
         expect(config).to have_key('transit_encryption_enabled')
       end
     end
@@ -73,6 +91,23 @@ RSpec.describe Pangea::Resources::AWSAppsyncApiCache do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_api_cache', 'minimal')
         expect(config).not_to have_key('at_rest_encryption_enabled')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_api_cache('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_api_cache', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_api_cache('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_api_cache', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes transit_encryption_enabled when provided' do
         synth = create_synthesizer
@@ -163,7 +198,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncApiCache do
     resource_type: :aws_appsync_api_cache,
     method: :aws_appsync_api_cache,
     required_attrs: { api_caching_behavior: 'test-value', api_id: 'test-value', ttl: 3.14, type: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :at_rest_encryption_enabled, :region, :transit_encryption_enabled],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:at_rest_encryption_enabled, :transit_encryption_enabled]

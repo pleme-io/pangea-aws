@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSNetworkInterfacePermission do
 
         expect(ref.id).to eq("${aws_network_interface_permission.test.id}")
         expect(ref.network_interface_permission_id).to eq("${aws_network_interface_permission.test.network_interface_permission_id}")
+        expect(ref.region).to eq("${aws_network_interface_permission.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSNetworkInterfacePermission do
 
         config = validate_resource_structure(result, 'aws_network_interface_permission', 'test')
         expect(config).not_to have_key('network_interface_permission_id')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface_permission('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_network_interface_permission', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface_permission('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface_permission', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface_permission('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface_permission', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -98,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSNetworkInterfacePermission do
     resource_type: :aws_network_interface_permission,
     method: :aws_network_interface_permission,
     required_attrs: { aws_account_id: 'test-value', network_interface_id: 'test-value', permission: 'test-value' },
-    expected_outputs: [:id, :network_interface_permission_id],
+    expected_outputs: [:id, :network_interface_permission_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

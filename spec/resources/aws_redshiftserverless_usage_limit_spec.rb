@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessUsageLimit do
 
         expect(ref.id).to eq("${aws_redshiftserverless_usage_limit.test.id}")
         expect(ref.arn).to eq("${aws_redshiftserverless_usage_limit.test.arn}")
+        expect(ref.region).to eq("${aws_redshiftserverless_usage_limit.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessUsageLimit do
 
         config = validate_resource_structure(result, 'aws_redshiftserverless_usage_limit', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ breach_action: 'test-value', period: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ breach_action: 'test-value', period: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,6 +68,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessUsageLimit do
         config = validate_resource_structure(result, 'aws_redshiftserverless_usage_limit', 'full')
         expect(config).to have_key('breach_action')
         expect(config).to have_key('period')
+        expect(config).to have_key('region')
       end
     end
 
@@ -103,6 +106,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessUsageLimit do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshiftserverless_usage_limit', 'minimal')
         expect(config).not_to have_key('period')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_usage_limit('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_usage_limit', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_usage_limit('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_usage_limit', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -150,7 +170,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessUsageLimit do
     resource_type: :aws_redshiftserverless_usage_limit,
     method: :aws_redshiftserverless_usage_limit,
     required_attrs: { amount: 3.14, resource_arn: 'test-value', usage_type: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

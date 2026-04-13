@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_api_gateway_client_certificate,
       attributes_class: AWS::Types::ApiGatewayClientCertificateAttributes,
       outputs: { id: :id },
-      map_present: [:description, :tags, :tags_all]
+      map_present: [:description, :region, :tags, :tags_all]
   end
   module AWS
     include AWSApiGatewayClientCertificate

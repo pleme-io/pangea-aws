@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_bedrock_model_invocation_logging_configuration,
       attributes_class: AWS::Types::BedrockModelInvocationLoggingConfigurationAttributes,
       outputs: { id: :id },
-      map_present: [:logging_config]
+      map_present: [:logging_config, :region]
   end
   module AWS
     include AWSBedrockModelInvocationLoggingConfiguration

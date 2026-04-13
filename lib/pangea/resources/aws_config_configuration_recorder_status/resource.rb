@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConfigConfigurationRecorderStatusAttributes,
       outputs: { id: :id },
       map: [:name],
+      map_present: [:region],
       map_bool: [:is_enabled]
   end
   module AWS

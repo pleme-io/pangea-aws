@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Stage do
         expect(ref.deployment_id).to eq("${aws_apigatewayv2_stage.test.deployment_id}")
         expect(ref.execution_arn).to eq("${aws_apigatewayv2_stage.test.execution_arn}")
         expect(ref.invoke_url).to eq("${aws_apigatewayv2_stage.test.invoke_url}")
+        expect(ref.region).to eq("${aws_apigatewayv2_stage.test.region}")
         expect(ref.tags_all).to eq("${aws_apigatewayv2_stage.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Stage do
         expect(config).not_to have_key('deployment_id')
         expect(config).not_to have_key('execution_arn')
         expect(config).not_to have_key('invoke_url')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_log_settings: [{ 'key1' => 'val1' }], auto_deploy: true, client_certificate_id: 'test-value', default_route_settings: [{ 'key1' => 'val1' }], description: 'test-value', route_settings: [{ 'key1' => 'val1' }], stage_variables: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ access_log_settings: { 'key1' => 'val1' }, auto_deploy: true, client_certificate_id: 'test-value', default_route_settings: { 'key1' => 'val1' }, deployment_id: 'test-value', description: 'test-value', region: 'test-value', route_settings: [{ 'key1' => 'val1' }], stage_variables: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,10 +78,13 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Stage do
         expect(config).to have_key('auto_deploy')
         expect(config).to have_key('client_certificate_id')
         expect(config).to have_key('default_route_settings')
+        expect(config).to have_key('deployment_id')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('route_settings')
         expect(config).to have_key('stage_variables')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -87,7 +92,7 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Stage do
       it 'includes access_log_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_apigatewayv2_stage('opt', required_attrs.merge(access_log_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_apigatewayv2_stage('opt', required_attrs.merge(access_log_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apigatewayv2_stage', 'opt')
         expect(config).to have_key('access_log_settings')
@@ -138,7 +143,7 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Stage do
       it 'includes default_route_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_apigatewayv2_stage('opt', required_attrs.merge(default_route_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_apigatewayv2_stage('opt', required_attrs.merge(default_route_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apigatewayv2_stage', 'opt')
         expect(config).to have_key('default_route_settings')
@@ -151,6 +156,23 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Stage do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apigatewayv2_stage', 'minimal')
         expect(config).not_to have_key('default_route_settings')
+      end
+      it 'includes deployment_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_stage('opt', required_attrs.merge(deployment_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_stage', 'opt')
+        expect(config).to have_key('deployment_id')
+      end
+
+      it 'omits deployment_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_stage('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_stage', 'minimal')
+        expect(config).not_to have_key('deployment_id')
       end
       it 'includes description when provided' do
         synth = create_synthesizer
@@ -168,6 +190,23 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Stage do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apigatewayv2_stage', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_stage('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_stage', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_stage('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_stage', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes route_settings when provided' do
         synth = create_synthesizer
@@ -219,6 +258,23 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Stage do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apigatewayv2_stage', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_stage('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_stage', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_stage('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_stage', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -279,7 +335,7 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Stage do
     resource_type: :aws_apigatewayv2_stage,
     method: :aws_apigatewayv2_stage,
     required_attrs: { api_id: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :deployment_id, :execution_arn, :invoke_url, :tags_all],
+    expected_outputs: [:id, :arn, :deployment_id, :execution_arn, :invoke_url, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:auto_deploy]

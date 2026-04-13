@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsmActivationAttributes,
       outputs: { id: :id },
       map: [:iam_role],
-      map_present: [:description, :expiration_date, :name, :registration_limit, :tags, :tags_all]
+      map_present: [:description, :expiration_date, :name, :region, :registration_limit, :tags, :tags_all]
   end
   module AWS
     include AWSSsmActivation

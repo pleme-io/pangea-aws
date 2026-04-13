@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpclatticeServiceAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:auth_type, :certificate_arn, :custom_domain_name, :tags, :tags_all]
+      map_present: [:auth_type, :certificate_arn, :custom_domain_name, :region, :tags, :tags_all]
   end
   module AWS
     include AWSVpclatticeService

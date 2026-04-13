@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSIotCaCertificate do
         expect(ref.arn).to eq("${aws_iot_ca_certificate.test.arn}")
         expect(ref.customer_version).to eq("${aws_iot_ca_certificate.test.customer_version}")
         expect(ref.generation_id).to eq("${aws_iot_ca_certificate.test.generation_id}")
+        expect(ref.region).to eq("${aws_iot_ca_certificate.test.region}")
         expect(ref.tags_all).to eq("${aws_iot_ca_certificate.test.tags_all}")
         expect(ref.validity).to eq("${aws_iot_ca_certificate.test.validity}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSIotCaCertificate do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('customer_version')
         expect(config).not_to have_key('generation_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('validity')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ certificate_mode: 'test-value', registration_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, verification_certificate_pem: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ certificate_mode: 'test-value', region: 'test-value', registration_config: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, verification_certificate_pem: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,8 +75,10 @@ RSpec.describe Pangea::Resources::AWSIotCaCertificate do
 
         config = validate_resource_structure(result, 'aws_iot_ca_certificate', 'full')
         expect(config).to have_key('certificate_mode')
+        expect(config).to have_key('region')
         expect(config).to have_key('registration_config')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('verification_certificate_pem')
       end
     end
@@ -97,10 +101,27 @@ RSpec.describe Pangea::Resources::AWSIotCaCertificate do
         config = validate_resource_structure(result, 'aws_iot_ca_certificate', 'minimal')
         expect(config).not_to have_key('certificate_mode')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_ca_certificate('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_ca_certificate', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_ca_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_ca_certificate', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes registration_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_iot_ca_certificate('opt', required_attrs.merge(registration_config: [{ 'key1' => 'val1' }]))
+        synth.aws_iot_ca_certificate('opt', required_attrs.merge(registration_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_ca_certificate', 'opt')
         expect(config).to have_key('registration_config')
@@ -130,6 +151,23 @@ RSpec.describe Pangea::Resources::AWSIotCaCertificate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_ca_certificate', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_ca_certificate('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_ca_certificate', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_ca_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_ca_certificate', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes verification_certificate_pem when provided' do
         synth = create_synthesizer
@@ -227,7 +265,7 @@ RSpec.describe Pangea::Resources::AWSIotCaCertificate do
     resource_type: :aws_iot_ca_certificate,
     method: :aws_iot_ca_certificate,
     required_attrs: { active: true, allow_auto_registration: true, ca_certificate_pem: 'test-value' },
-    expected_outputs: [:id, :arn, :customer_version, :generation_id, :tags_all, :validity],
+    expected_outputs: [:id, :arn, :customer_version, :generation_id, :region, :tags_all, :validity],
     sensitive_fields: [:ca_certificate_pem, :verification_certificate_pem],
     immutable_fields: [],
     boolean_fields: [:active, :allow_auto_registration]

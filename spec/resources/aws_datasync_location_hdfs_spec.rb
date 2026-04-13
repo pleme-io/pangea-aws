@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationHdfs do
 
         expect(ref.id).to eq("${aws_datasync_location_hdfs.test.id}")
         expect(ref.arn).to eq("${aws_datasync_location_hdfs.test.arn}")
+        expect(ref.region).to eq("${aws_datasync_location_hdfs.test.region}")
         expect(ref.tags_all).to eq("${aws_datasync_location_hdfs.test.tags_all}")
         expect(ref.uri).to eq("${aws_datasync_location_hdfs.test.uri}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationHdfs do
 
         config = validate_resource_structure(result, 'aws_datasync_location_hdfs', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('uri')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ authentication_type: 'test-value', block_size: 3.14, kerberos_keytab: 'test-value', kerberos_keytab_base64: 'test-value', kerberos_krb5_conf: 'test-value', kerberos_krb5_conf_base64: 'test-value', kerberos_principal: 'test-value', kms_key_provider_uri: 'test-value', qop_configuration: [{ 'key1' => 'val1' }], replication_factor: 3.14, simple_user: 'test-value', subdirectory: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ authentication_type: 'test-value', block_size: 3.14, kerberos_keytab: 'test-value', kerberos_keytab_base64: 'test-value', kerberos_krb5_conf: 'test-value', kerberos_krb5_conf_base64: 'test-value', kerberos_principal: 'test-value', kms_key_provider_uri: 'test-value', qop_configuration: { 'key1' => 'val1' }, region: 'test-value', replication_factor: 3.14, simple_user: 'test-value', subdirectory: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,10 +79,12 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationHdfs do
         expect(config).to have_key('kerberos_principal')
         expect(config).to have_key('kms_key_provider_uri')
         expect(config).to have_key('qop_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('replication_factor')
         expect(config).to have_key('simple_user')
         expect(config).to have_key('subdirectory')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -224,7 +228,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationHdfs do
       it 'includes qop_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_datasync_location_hdfs('opt', required_attrs.merge(qop_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_datasync_location_hdfs('opt', required_attrs.merge(qop_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_location_hdfs', 'opt')
         expect(config).to have_key('qop_configuration')
@@ -237,6 +241,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationHdfs do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_location_hdfs', 'minimal')
         expect(config).not_to have_key('qop_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_hdfs('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_hdfs', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_hdfs('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_hdfs', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes replication_factor when provided' do
         synth = create_synthesizer
@@ -306,6 +327,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationHdfs do
         config = validate_resource_structure(result, 'aws_datasync_location_hdfs', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_hdfs('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_hdfs', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_hdfs('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_hdfs', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -351,7 +389,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationHdfs do
     resource_type: :aws_datasync_location_hdfs,
     method: :aws_datasync_location_hdfs,
     required_attrs: { agent_arns: ['test-value'], name_node: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :tags_all, :uri],
+    expected_outputs: [:id, :arn, :region, :tags_all, :uri],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

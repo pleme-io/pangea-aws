@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_cloudwatch_log_stream,
       attributes_class: AWS::Types::CloudwatchLogStreamAttributes,
       outputs: { id: :id },
-      map: [:log_group_name, :name]
+      map: [:log_group_name, :name],
+      map_present: [:region]
   end
   module AWS
     include AWSCloudwatchLogStream

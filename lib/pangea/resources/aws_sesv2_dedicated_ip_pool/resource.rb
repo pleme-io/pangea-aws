@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Sesv2DedicatedIpPoolAttributes,
       outputs: { id: :id },
       map: [:pool_name],
-      map_present: [:scaling_mode, :tags, :tags_all]
+      map_present: [:region, :scaling_mode, :tags, :tags_all]
   end
   module AWS
     include AWSSesv2DedicatedIpPool

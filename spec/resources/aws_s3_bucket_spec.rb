@@ -43,7 +43,9 @@ RSpec.describe Pangea::Resources::AWSS3Bucket do
         expect(ref.arn).to eq("${aws_s3_bucket.test.arn}")
         expect(ref.bucket).to eq("${aws_s3_bucket.test.bucket}")
         expect(ref.bucket_domain_name).to eq("${aws_s3_bucket.test.bucket_domain_name}")
+        expect(ref.bucket_namespace).to eq("${aws_s3_bucket.test.bucket_namespace}")
         expect(ref.bucket_prefix).to eq("${aws_s3_bucket.test.bucket_prefix}")
+        expect(ref.bucket_region).to eq("${aws_s3_bucket.test.bucket_region}")
         expect(ref.bucket_regional_domain_name).to eq("${aws_s3_bucket.test.bucket_regional_domain_name}")
         expect(ref.hosted_zone_id).to eq("${aws_s3_bucket.test.hosted_zone_id}")
         expect(ref.object_lock_enabled).to eq("${aws_s3_bucket.test.object_lock_enabled}")
@@ -69,7 +71,9 @@ RSpec.describe Pangea::Resources::AWSS3Bucket do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('bucket')
         expect(config).not_to have_key('bucket_domain_name')
+        expect(config).not_to have_key('bucket_namespace')
         expect(config).not_to have_key('bucket_prefix')
+        expect(config).not_to have_key('bucket_region')
         expect(config).not_to have_key('bucket_regional_domain_name')
         expect(config).not_to have_key('hosted_zone_id')
         expect(config).not_to have_key('object_lock_enabled')
@@ -83,7 +87,7 @@ RSpec.describe Pangea::Resources::AWSS3Bucket do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cors_rule: [{ 'key1' => 'val1' }], force_destroy: true, grant: [{ 'key1' => 'val1' }], lifecycle_rule: [{ 'key1' => 'val1' }], logging: [{ 'key1' => 'val1' }], object_lock_configuration: [{ 'key1' => 'val1' }], replication_configuration: [{ 'key1' => 'val1' }], server_side_encryption_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, versioning: [{ 'key1' => 'val1' }], website: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ acceleration_status: 'test-value', acl: 'test-value', bucket: 'test-value', bucket_namespace: 'test-value', bucket_prefix: 'test-value', cors_rule: [{ 'key1' => 'val1' }], force_destroy: true, grant: [{ 'key1' => 'val1' }], lifecycle_rule: [{ 'key1' => 'val1' }], logging: { 'key1' => 'val1' }, object_lock_configuration: { 'key1' => 'val1' }, object_lock_enabled: true, policy: 'test-value', region: 'test-value', replication_configuration: { 'key1' => 'val1' }, request_payer: 'test-value', server_side_encryption_configuration: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, versioning: { 'key1' => 'val1' }, website: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -92,21 +96,116 @@ RSpec.describe Pangea::Resources::AWSS3Bucket do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_s3_bucket', 'full')
+        expect(config).to have_key('acceleration_status')
+        expect(config).to have_key('acl')
+        expect(config).to have_key('bucket')
+        expect(config).to have_key('bucket_namespace')
+        expect(config).to have_key('bucket_prefix')
         expect(config).to have_key('cors_rule')
         expect(config).to have_key('force_destroy')
         expect(config).to have_key('grant')
         expect(config).to have_key('lifecycle_rule')
         expect(config).to have_key('logging')
         expect(config).to have_key('object_lock_configuration')
+        expect(config).to have_key('object_lock_enabled')
+        expect(config).to have_key('policy')
+        expect(config).to have_key('region')
         expect(config).to have_key('replication_configuration')
+        expect(config).to have_key('request_payer')
         expect(config).to have_key('server_side_encryption_configuration')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('versioning')
         expect(config).to have_key('website')
       end
     end
 
     context 'optional attributes' do
+      it 'includes acceleration_status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('opt', required_attrs.merge(acceleration_status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
+        expect(config).to have_key('acceleration_status')
+      end
+
+      it 'omits acceleration_status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'minimal')
+        expect(config).not_to have_key('acceleration_status')
+      end
+      it 'includes acl when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('opt', required_attrs.merge(acl: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
+        expect(config).to have_key('acl')
+      end
+
+      it 'omits acl when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'minimal')
+        expect(config).not_to have_key('acl')
+      end
+      it 'includes bucket when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('opt', required_attrs.merge(bucket: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
+        expect(config).to have_key('bucket')
+      end
+
+      it 'omits bucket when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'minimal')
+        expect(config).not_to have_key('bucket')
+      end
+      it 'includes bucket_namespace when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('opt', required_attrs.merge(bucket_namespace: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
+        expect(config).to have_key('bucket_namespace')
+      end
+
+      it 'omits bucket_namespace when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'minimal')
+        expect(config).not_to have_key('bucket_namespace')
+      end
+      it 'includes bucket_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('opt', required_attrs.merge(bucket_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
+        expect(config).to have_key('bucket_prefix')
+      end
+
+      it 'omits bucket_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'minimal')
+        expect(config).not_to have_key('bucket_prefix')
+      end
       it 'includes cors_rule when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -178,7 +277,7 @@ RSpec.describe Pangea::Resources::AWSS3Bucket do
       it 'includes logging when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket('opt', required_attrs.merge(logging: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket('opt', required_attrs.merge(logging: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
         expect(config).to have_key('logging')
@@ -195,7 +294,7 @@ RSpec.describe Pangea::Resources::AWSS3Bucket do
       it 'includes object_lock_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket('opt', required_attrs.merge(object_lock_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket('opt', required_attrs.merge(object_lock_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
         expect(config).to have_key('object_lock_configuration')
@@ -209,10 +308,61 @@ RSpec.describe Pangea::Resources::AWSS3Bucket do
         config = validate_resource_structure(result, 'aws_s3_bucket', 'minimal')
         expect(config).not_to have_key('object_lock_configuration')
       end
+      it 'includes object_lock_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('opt', required_attrs.merge(object_lock_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
+        expect(config).to have_key('object_lock_enabled')
+      end
+
+      it 'omits object_lock_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'minimal')
+        expect(config).not_to have_key('object_lock_enabled')
+      end
+      it 'includes policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('opt', required_attrs.merge(policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
+        expect(config).to have_key('policy')
+      end
+
+      it 'omits policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'minimal')
+        expect(config).not_to have_key('policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes replication_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket('opt', required_attrs.merge(replication_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket('opt', required_attrs.merge(replication_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
         expect(config).to have_key('replication_configuration')
@@ -226,10 +376,27 @@ RSpec.describe Pangea::Resources::AWSS3Bucket do
         config = validate_resource_structure(result, 'aws_s3_bucket', 'minimal')
         expect(config).not_to have_key('replication_configuration')
       end
+      it 'includes request_payer when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('opt', required_attrs.merge(request_payer: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
+        expect(config).to have_key('request_payer')
+      end
+
+      it 'omits request_payer when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'minimal')
+        expect(config).not_to have_key('request_payer')
+      end
       it 'includes server_side_encryption_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket('opt', required_attrs.merge(server_side_encryption_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket('opt', required_attrs.merge(server_side_encryption_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
         expect(config).to have_key('server_side_encryption_configuration')
@@ -260,10 +427,27 @@ RSpec.describe Pangea::Resources::AWSS3Bucket do
         config = validate_resource_structure(result, 'aws_s3_bucket', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes versioning when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket('opt', required_attrs.merge(versioning: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket('opt', required_attrs.merge(versioning: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
         expect(config).to have_key('versioning')
@@ -280,7 +464,7 @@ RSpec.describe Pangea::Resources::AWSS3Bucket do
       it 'includes website when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket('opt', required_attrs.merge(website: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket('opt', required_attrs.merge(website: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket', 'opt')
         expect(config).to have_key('website')
@@ -306,6 +490,17 @@ RSpec.describe Pangea::Resources::AWSS3Bucket do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_s3_bucket', "bool_#{val}")
           expect(config['force_destroy']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts object_lock_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(object_lock_enabled: val)
+          synth.aws_s3_bucket("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_s3_bucket', "bool_#{val}")
+          expect(config['object_lock_enabled']).to eq(val)
         end
       end
     end
@@ -351,8 +546,8 @@ RSpec.describe Pangea::Resources::AWSS3Bucket do
     resource_type: :aws_s3_bucket,
     method: :aws_s3_bucket,
     required_attrs: {},
-    expected_outputs: [:id, :acceleration_status, :acl, :arn, :bucket, :bucket_domain_name, :bucket_prefix, :bucket_regional_domain_name, :hosted_zone_id, :object_lock_enabled, :policy, :region, :request_payer, :tags_all, :website_domain, :website_endpoint],
+    expected_outputs: [:id, :acceleration_status, :acl, :arn, :bucket, :bucket_domain_name, :bucket_namespace, :bucket_prefix, :bucket_region, :bucket_regional_domain_name, :hosted_zone_id, :object_lock_enabled, :policy, :region, :request_payer, :tags_all, :website_domain, :website_endpoint],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:force_destroy]
+    boolean_fields: [:force_destroy, :object_lock_enabled]
 end

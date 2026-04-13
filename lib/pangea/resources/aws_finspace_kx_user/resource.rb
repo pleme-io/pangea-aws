@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FinspaceKxUserAttributes,
       outputs: { id: :id },
       map: [:environment_id, :iam_role, :name],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSFinspaceKxUser

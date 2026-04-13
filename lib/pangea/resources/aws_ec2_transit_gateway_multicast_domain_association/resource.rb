@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ec2_transit_gateway_multicast_domain_association,
       attributes_class: AWS::Types::Ec2TransitGatewayMulticastDomainAssociationAttributes,
       outputs: { id: :id },
-      map: [:subnet_id, :transit_gateway_attachment_id, :transit_gateway_multicast_domain_id]
+      map: [:subnet_id, :transit_gateway_attachment_id, :transit_gateway_multicast_domain_id],
+      map_present: [:region]
   end
   module AWS
     include AWSEc2TransitGatewayMulticastDomainAssociation

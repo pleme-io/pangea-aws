@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2TransitGatewayRouteTableAssociationAttributes,
       outputs: { id: :id },
       map: [:transit_gateway_attachment_id, :transit_gateway_route_table_id],
+      map_present: [:region],
       map_bool: [:replace_existing_association]
   end
   module AWS

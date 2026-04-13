@@ -57,7 +57,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerDevice do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ aws_location: [{ 'key1' => 'val1' }], description: 'test-value', location: [{ 'key1' => 'val1' }], model: 'test-value', serial_number: 'test-value', site_id: 'test-value', tags: { 'key1' => 'val1' }, type: 'test-value', vendor: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ aws_location: { 'key1' => 'val1' }, description: 'test-value', location: { 'key1' => 'val1' }, model: 'test-value', serial_number: 'test-value', site_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, type: 'test-value', vendor: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,6 +73,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerDevice do
         expect(config).to have_key('serial_number')
         expect(config).to have_key('site_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('type')
         expect(config).to have_key('vendor')
       end
@@ -82,7 +83,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerDevice do
       it 'includes aws_location when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_networkmanager_device('opt', required_attrs.merge(aws_location: [{ 'key1' => 'val1' }]))
+        synth.aws_networkmanager_device('opt', required_attrs.merge(aws_location: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkmanager_device', 'opt')
         expect(config).to have_key('aws_location')
@@ -116,7 +117,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerDevice do
       it 'includes location when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_networkmanager_device('opt', required_attrs.merge(location: [{ 'key1' => 'val1' }]))
+        synth.aws_networkmanager_device('opt', required_attrs.merge(location: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkmanager_device', 'opt')
         expect(config).to have_key('location')
@@ -197,6 +198,23 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerDevice do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkmanager_device', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_device('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_device', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_device('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_device', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes type when provided' do
         synth = create_synthesizer

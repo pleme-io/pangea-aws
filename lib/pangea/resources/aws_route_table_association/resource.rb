@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RouteTableAssociationAttributes,
       outputs: { id: :id },
       map: [:route_table_id],
-      map_present: [:gateway_id, :subnet_id]
+      map_present: [:gateway_id, :region, :subnet_id]
   end
   module AWS
     include AWSRouteTableAssociation

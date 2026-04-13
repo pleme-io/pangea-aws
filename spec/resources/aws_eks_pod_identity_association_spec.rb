@@ -40,6 +40,9 @@ RSpec.describe Pangea::Resources::AWSEksPodIdentityAssociation do
         expect(ref.id).to eq("${aws_eks_pod_identity_association.test.id}")
         expect(ref.association_arn).to eq("${aws_eks_pod_identity_association.test.association_arn}")
         expect(ref.association_id).to eq("${aws_eks_pod_identity_association.test.association_id}")
+        expect(ref.disable_session_tags).to eq("${aws_eks_pod_identity_association.test.disable_session_tags}")
+        expect(ref.external_id).to eq("${aws_eks_pod_identity_association.test.external_id}")
+        expect(ref.region).to eq("${aws_eks_pod_identity_association.test.region}")
         expect(ref.tags_all).to eq("${aws_eks_pod_identity_association.test.tags_all}")
       end
     end
@@ -54,12 +57,15 @@ RSpec.describe Pangea::Resources::AWSEksPodIdentityAssociation do
         config = validate_resource_structure(result, 'aws_eks_pod_identity_association', 'test')
         expect(config).not_to have_key('association_arn')
         expect(config).not_to have_key('association_id')
+        expect(config).not_to have_key('disable_session_tags')
+        expect(config).not_to have_key('external_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ disable_session_tags: true, region: 'test-value', tags: { 'key1' => 'val1' }, target_role_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,11 +74,48 @@ RSpec.describe Pangea::Resources::AWSEksPodIdentityAssociation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_eks_pod_identity_association', 'full')
+        expect(config).to have_key('disable_session_tags')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('target_role_arn')
       end
     end
 
     context 'optional attributes' do
+      it 'includes disable_session_tags when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_pod_identity_association('opt', required_attrs.merge(disable_session_tags: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_pod_identity_association', 'opt')
+        expect(config).to have_key('disable_session_tags')
+      end
+
+      it 'omits disable_session_tags when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_pod_identity_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_pod_identity_association', 'minimal')
+        expect(config).not_to have_key('disable_session_tags')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_pod_identity_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_pod_identity_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_pod_identity_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_pod_identity_association', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -89,6 +132,37 @@ RSpec.describe Pangea::Resources::AWSEksPodIdentityAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_pod_identity_association', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes target_role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_pod_identity_association('opt', required_attrs.merge(target_role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_pod_identity_association', 'opt')
+        expect(config).to have_key('target_role_arn')
+      end
+
+      it 'omits target_role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_pod_identity_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_pod_identity_association', 'minimal')
+        expect(config).not_to have_key('target_role_arn')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts disable_session_tags=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(disable_session_tags: val)
+          synth.aws_eks_pod_identity_association("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_eks_pod_identity_association', "bool_#{val}")
+          expect(config['disable_session_tags']).to eq(val)
+        end
       end
     end
 
@@ -137,8 +211,8 @@ RSpec.describe Pangea::Resources::AWSEksPodIdentityAssociation do
     resource_type: :aws_eks_pod_identity_association,
     method: :aws_eks_pod_identity_association,
     required_attrs: { cluster_name: 'test-value', namespace: 'test-value', role_arn: 'test-value', service_account: 'test-value' },
-    expected_outputs: [:id, :association_arn, :association_id, :tags_all],
+    expected_outputs: [:id, :association_arn, :association_id, :disable_session_tags, :external_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:disable_session_tags]
 end

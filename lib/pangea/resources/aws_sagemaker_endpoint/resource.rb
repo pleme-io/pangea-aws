@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerEndpointAttributes,
       outputs: { id: :id },
       map: [:endpoint_config_name],
-      map_present: [:deployment_config, :name, :tags, :tags_all]
+      map_present: [:deployment_config, :name, :region, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerEndpoint

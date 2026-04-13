@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSEbsDefaultKmsKey do
         ref = synth.aws_ebs_default_kms_key('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ebs_default_kms_key.test.id}")
+        expect(ref.region).to eq("${aws_ebs_default_kms_key.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_default_kms_key('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ebs_default_kms_key', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_default_kms_key('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ebs_default_kms_key', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_default_kms_key('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_default_kms_key', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_default_kms_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_default_kms_key', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -83,7 +130,7 @@ RSpec.describe Pangea::Resources::AWSEbsDefaultKmsKey do
     resource_type: :aws_ebs_default_kms_key,
     method: :aws_ebs_default_kms_key,
     required_attrs: { key_arn: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

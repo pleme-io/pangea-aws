@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSLicensemanagerLicenseConfiguration do
         expect(ref.id).to eq("${aws_licensemanager_license_configuration.test.id}")
         expect(ref.arn).to eq("${aws_licensemanager_license_configuration.test.arn}")
         expect(ref.owner_account_id).to eq("${aws_licensemanager_license_configuration.test.owner_account_id}")
+        expect(ref.region).to eq("${aws_licensemanager_license_configuration.test.region}")
         expect(ref.tags_all).to eq("${aws_licensemanager_license_configuration.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSLicensemanagerLicenseConfiguration do
         config = validate_resource_structure(result, 'aws_licensemanager_license_configuration', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('owner_account_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', license_count: 3.14, license_count_hard_limit: true, license_rules: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', license_count: 3.14, license_count_hard_limit: true, license_rules: ['test-value'], region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,7 +74,9 @@ RSpec.describe Pangea::Resources::AWSLicensemanagerLicenseConfiguration do
         expect(config).to have_key('license_count')
         expect(config).to have_key('license_count_hard_limit')
         expect(config).to have_key('license_rules')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -145,6 +149,23 @@ RSpec.describe Pangea::Resources::AWSLicensemanagerLicenseConfiguration do
         config = validate_resource_structure(result, 'aws_licensemanager_license_configuration', 'minimal')
         expect(config).not_to have_key('license_rules')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_licensemanager_license_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_licensemanager_license_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_licensemanager_license_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_licensemanager_license_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -161,6 +182,23 @@ RSpec.describe Pangea::Resources::AWSLicensemanagerLicenseConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_licensemanager_license_configuration', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_licensemanager_license_configuration('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_licensemanager_license_configuration', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_licensemanager_license_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_licensemanager_license_configuration', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -221,7 +259,7 @@ RSpec.describe Pangea::Resources::AWSLicensemanagerLicenseConfiguration do
     resource_type: :aws_licensemanager_license_configuration,
     method: :aws_licensemanager_license_configuration,
     required_attrs: { license_counting_type: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :owner_account_id, :tags_all],
+    expected_outputs: [:id, :arn, :owner_account_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:license_count_hard_limit]

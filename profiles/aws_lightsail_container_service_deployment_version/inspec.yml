@@ -1,0 +1,8 @@
+name: aws_lightsail_container_service_deployment_version
+title: Manages a aws_lightsail_container_service_deployment_version resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

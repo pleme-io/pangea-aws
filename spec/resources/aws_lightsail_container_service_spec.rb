@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerService do
         expect(ref.power_id).to eq("${aws_lightsail_container_service.test.power_id}")
         expect(ref.principal_arn).to eq("${aws_lightsail_container_service.test.principal_arn}")
         expect(ref.private_domain_name).to eq("${aws_lightsail_container_service.test.private_domain_name}")
+        expect(ref.region).to eq("${aws_lightsail_container_service.test.region}")
         expect(ref.resource_type).to eq("${aws_lightsail_container_service.test.resource_type}")
         expect(ref.state).to eq("${aws_lightsail_container_service.test.state}")
         expect(ref.tags_all).to eq("${aws_lightsail_container_service.test.tags_all}")
@@ -65,6 +66,7 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerService do
         expect(config).not_to have_key('power_id')
         expect(config).not_to have_key('principal_arn')
         expect(config).not_to have_key('private_domain_name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_type')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
@@ -73,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerService do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ is_disabled: true, private_registry_access: [{ 'key1' => 'val1' }], public_domain_names: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ is_disabled: true, private_registry_access: { 'key1' => 'val1' }, public_domain_names: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -85,7 +87,9 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerService do
         expect(config).to have_key('is_disabled')
         expect(config).to have_key('private_registry_access')
         expect(config).to have_key('public_domain_names')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -110,7 +114,7 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerService do
       it 'includes private_registry_access when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lightsail_container_service('opt', required_attrs.merge(private_registry_access: [{ 'key1' => 'val1' }]))
+        synth.aws_lightsail_container_service('opt', required_attrs.merge(private_registry_access: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_container_service', 'opt')
         expect(config).to have_key('private_registry_access')
@@ -127,7 +131,7 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerService do
       it 'includes public_domain_names when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lightsail_container_service('opt', required_attrs.merge(public_domain_names: [{ 'key1' => 'val1' }]))
+        synth.aws_lightsail_container_service('opt', required_attrs.merge(public_domain_names: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_container_service', 'opt')
         expect(config).to have_key('public_domain_names')
@@ -140,6 +144,23 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerService do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_container_service', 'minimal')
         expect(config).not_to have_key('public_domain_names')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_container_service('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_container_service', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_container_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_container_service', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -157,6 +178,23 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerService do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_container_service', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_container_service('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_container_service', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_container_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_container_service', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -218,7 +256,7 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerService do
     resource_type: :aws_lightsail_container_service,
     method: :aws_lightsail_container_service,
     required_attrs: { name: 'test-value', power: 'test-value', scale: 3.14 },
-    expected_outputs: [:id, :arn, :availability_zone, :created_at, :power_id, :principal_arn, :private_domain_name, :resource_type, :state, :tags_all, :url],
+    expected_outputs: [:id, :arn, :availability_zone, :created_at, :power_id, :principal_arn, :private_domain_name, :region, :resource_type, :state, :tags_all, :url],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:is_disabled]

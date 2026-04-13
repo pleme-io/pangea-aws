@@ -39,9 +39,10 @@ RSpec.describe Pangea::Resources::AWSBatchComputeEnvironment do
 
         expect(ref.id).to eq("${aws_batch_compute_environment.test.id}")
         expect(ref.arn).to eq("${aws_batch_compute_environment.test.arn}")
-        expect(ref.compute_environment_name).to eq("${aws_batch_compute_environment.test.compute_environment_name}")
-        expect(ref.compute_environment_name_prefix).to eq("${aws_batch_compute_environment.test.compute_environment_name_prefix}")
         expect(ref.ecs_cluster_arn).to eq("${aws_batch_compute_environment.test.ecs_cluster_arn}")
+        expect(ref.name).to eq("${aws_batch_compute_environment.test.name}")
+        expect(ref.name_prefix).to eq("${aws_batch_compute_environment.test.name_prefix}")
+        expect(ref.region).to eq("${aws_batch_compute_environment.test.region}")
         expect(ref.service_role).to eq("${aws_batch_compute_environment.test.service_role}")
         expect(ref.status).to eq("${aws_batch_compute_environment.test.status}")
         expect(ref.status_reason).to eq("${aws_batch_compute_environment.test.status_reason}")
@@ -58,9 +59,10 @@ RSpec.describe Pangea::Resources::AWSBatchComputeEnvironment do
 
         config = validate_resource_structure(result, 'aws_batch_compute_environment', 'test')
         expect(config).not_to have_key('arn')
-        expect(config).not_to have_key('compute_environment_name')
-        expect(config).not_to have_key('compute_environment_name_prefix')
         expect(config).not_to have_key('ecs_cluster_arn')
+        expect(config).not_to have_key('name')
+        expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('service_role')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('status_reason')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSBatchComputeEnvironment do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ compute_resources: [{ 'key1' => 'val1' }], eks_configuration: [{ 'key1' => 'val1' }], state: 'test-value', tags: { 'key1' => 'val1' }, update_policy: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ compute_resources: { 'key1' => 'val1' }, eks_configuration: { 'key1' => 'val1' }, name: 'test-value', name_prefix: 'test-value', region: 'test-value', service_role: 'test-value', state: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, update_policy: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,8 +82,13 @@ RSpec.describe Pangea::Resources::AWSBatchComputeEnvironment do
         config = validate_resource_structure(result, 'aws_batch_compute_environment', 'full')
         expect(config).to have_key('compute_resources')
         expect(config).to have_key('eks_configuration')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
+        expect(config).to have_key('service_role')
         expect(config).to have_key('state')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('update_policy')
       end
     end
@@ -90,7 +97,7 @@ RSpec.describe Pangea::Resources::AWSBatchComputeEnvironment do
       it 'includes compute_resources when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_batch_compute_environment('opt', required_attrs.merge(compute_resources: [{ 'key1' => 'val1' }]))
+        synth.aws_batch_compute_environment('opt', required_attrs.merge(compute_resources: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_batch_compute_environment', 'opt')
         expect(config).to have_key('compute_resources')
@@ -107,7 +114,7 @@ RSpec.describe Pangea::Resources::AWSBatchComputeEnvironment do
       it 'includes eks_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_batch_compute_environment('opt', required_attrs.merge(eks_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_batch_compute_environment('opt', required_attrs.merge(eks_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_batch_compute_environment', 'opt')
         expect(config).to have_key('eks_configuration')
@@ -120,6 +127,74 @@ RSpec.describe Pangea::Resources::AWSBatchComputeEnvironment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_batch_compute_environment', 'minimal')
         expect(config).not_to have_key('eks_configuration')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_compute_environment('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_compute_environment', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_compute_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_compute_environment', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_compute_environment('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_compute_environment', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_compute_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_compute_environment', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_compute_environment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_compute_environment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_compute_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_compute_environment', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes service_role when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_compute_environment('opt', required_attrs.merge(service_role: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_compute_environment', 'opt')
+        expect(config).to have_key('service_role')
+      end
+
+      it 'omits service_role when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_compute_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_compute_environment', 'minimal')
+        expect(config).not_to have_key('service_role')
       end
       it 'includes state when provided' do
         synth = create_synthesizer
@@ -155,10 +230,27 @@ RSpec.describe Pangea::Resources::AWSBatchComputeEnvironment do
         config = validate_resource_structure(result, 'aws_batch_compute_environment', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_compute_environment('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_compute_environment', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_compute_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_compute_environment', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes update_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_batch_compute_environment('opt', required_attrs.merge(update_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_batch_compute_environment('opt', required_attrs.merge(update_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_batch_compute_environment', 'opt')
         expect(config).to have_key('update_policy')
@@ -216,7 +308,7 @@ RSpec.describe Pangea::Resources::AWSBatchComputeEnvironment do
     resource_type: :aws_batch_compute_environment,
     method: :aws_batch_compute_environment,
     required_attrs: { type: 'test-value' },
-    expected_outputs: [:id, :arn, :compute_environment_name, :compute_environment_name_prefix, :ecs_cluster_arn, :service_role, :status, :status_reason, :tags_all],
+    expected_outputs: [:id, :arn, :ecs_cluster_arn, :name, :name_prefix, :region, :service_role, :status, :status_reason, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

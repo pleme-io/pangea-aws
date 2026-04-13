@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GuarddutyPublishingDestinationAttributes,
       outputs: { id: :id },
       map: [:destination_arn, :detector_id, :kms_key_arn],
-      map_present: [:destination_type]
+      map_present: [:destination_type, :region, :tags, :tags_all]
   end
   module AWS
     include AWSGuarddutyPublishingDestination

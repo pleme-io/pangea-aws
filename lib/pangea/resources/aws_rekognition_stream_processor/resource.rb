@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RekognitionStreamProcessorAttributes,
       outputs: { id: :id },
       map: [:name, :role_arn],
-      map_present: [:data_sharing_preference, :input, :kms_key_id, :notification_channel, :output, :regions_of_interest, :settings, :tags]
+      map_present: [:data_sharing_preference, :input, :kms_key_id, :notification_channel, :output, :region, :regions_of_interest, :settings, :tags]
   end
   module AWS
     include AWSRekognitionStreamProcessor

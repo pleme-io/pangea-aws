@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LambdaProvisionedConcurrencyConfigAttributes,
       outputs: { id: :id },
       map: [:function_name, :provisioned_concurrent_executions, :qualifier],
+      map_present: [:region],
       map_bool: [:skip_destroy]
   end
   module AWS

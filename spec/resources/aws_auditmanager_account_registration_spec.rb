@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAccountRegistration do
         ref = synth.aws_auditmanager_account_registration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_auditmanager_account_registration.test.id}")
+        expect(ref.region).to eq("${aws_auditmanager_account_registration.test.region}")
         expect(ref.status).to eq("${aws_auditmanager_account_registration.test.status}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAccountRegistration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_auditmanager_account_registration', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ delegated_admin_account: 'test-value', deregister_on_destroy: true, kms_key: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ delegated_admin_account: 'test-value', deregister_on_destroy: true, kms_key: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAccountRegistration do
         expect(config).to have_key('delegated_admin_account')
         expect(config).to have_key('deregister_on_destroy')
         expect(config).to have_key('kms_key')
+        expect(config).to have_key('region')
       end
     end
 
@@ -121,6 +124,23 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAccountRegistration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_auditmanager_account_registration', 'minimal')
         expect(config).not_to have_key('kms_key')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_account_registration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_account_registration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_account_registration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_account_registration', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -179,7 +199,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAccountRegistration do
     resource_type: :aws_auditmanager_account_registration,
     method: :aws_auditmanager_account_registration,
     required_attrs: {},
-    expected_outputs: [:id, :status],
+    expected_outputs: [:id, :region, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:deregister_on_destroy]

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketMetricAttributes,
       outputs: { id: :id },
       map: [:bucket, :name],
-      map_present: [:filter]
+      map_present: [:filter, :region]
   end
   module AWS
     include AWSS3BucketMetric

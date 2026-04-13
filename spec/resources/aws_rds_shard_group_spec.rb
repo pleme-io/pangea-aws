@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSRdsShardGroup do
         expect(ref.endpoint).to eq("${aws_rds_shard_group.test.endpoint}")
         expect(ref.min_acu).to eq("${aws_rds_shard_group.test.min_acu}")
         expect(ref.publicly_accessible).to eq("${aws_rds_shard_group.test.publicly_accessible}")
+        expect(ref.region).to eq("${aws_rds_shard_group.test.region}")
         expect(ref.tags_all).to eq("${aws_rds_shard_group.test.tags_all}")
       end
     end
@@ -62,12 +63,13 @@ RSpec.describe Pangea::Resources::AWSRdsShardGroup do
         expect(config).not_to have_key('endpoint')
         expect(config).not_to have_key('min_acu')
         expect(config).not_to have_key('publicly_accessible')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ compute_redundancy: 3.14, min_acu: 3.14, publicly_accessible: true, region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,11 +78,83 @@ RSpec.describe Pangea::Resources::AWSRdsShardGroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_rds_shard_group', 'full')
+        expect(config).to have_key('compute_redundancy')
+        expect(config).to have_key('min_acu')
+        expect(config).to have_key('publicly_accessible')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes compute_redundancy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_shard_group('opt', required_attrs.merge(compute_redundancy: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_shard_group', 'opt')
+        expect(config).to have_key('compute_redundancy')
+      end
+
+      it 'omits compute_redundancy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_shard_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_shard_group', 'minimal')
+        expect(config).not_to have_key('compute_redundancy')
+      end
+      it 'includes min_acu when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_shard_group('opt', required_attrs.merge(min_acu: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_shard_group', 'opt')
+        expect(config).to have_key('min_acu')
+      end
+
+      it 'omits min_acu when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_shard_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_shard_group', 'minimal')
+        expect(config).not_to have_key('min_acu')
+      end
+      it 'includes publicly_accessible when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_shard_group('opt', required_attrs.merge(publicly_accessible: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_shard_group', 'opt')
+        expect(config).to have_key('publicly_accessible')
+      end
+
+      it 'omits publicly_accessible when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_shard_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_shard_group', 'minimal')
+        expect(config).not_to have_key('publicly_accessible')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_shard_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_shard_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_shard_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_shard_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -97,6 +171,20 @@ RSpec.describe Pangea::Resources::AWSRdsShardGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_shard_group', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts publicly_accessible=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(publicly_accessible: val)
+          synth.aws_rds_shard_group("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_rds_shard_group', "bool_#{val}")
+          expect(config['publicly_accessible']).to eq(val)
+        end
       end
     end
 
@@ -144,8 +232,8 @@ RSpec.describe Pangea::Resources::AWSRdsShardGroup do
     resource_type: :aws_rds_shard_group,
     method: :aws_rds_shard_group,
     required_attrs: { db_cluster_identifier: 'test-value', db_shard_group_identifier: 'test-value', max_acu: 3.14 },
-    expected_outputs: [:id, :arn, :compute_redundancy, :db_shard_group_resource_id, :endpoint, :min_acu, :publicly_accessible, :tags_all],
+    expected_outputs: [:id, :arn, :compute_redundancy, :db_shard_group_resource_id, :endpoint, :min_acu, :publicly_accessible, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:publicly_accessible]
 end

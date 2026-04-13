@@ -1,0 +1,8 @@
+name: aws_ssm_patch_baseline
+title: Manages a aws_ssm_patch_baseline resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

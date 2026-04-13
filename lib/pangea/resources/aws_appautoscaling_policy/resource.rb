@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppautoscalingPolicyAttributes,
       outputs: { id: :id },
       map: [:name, :resource_id, :scalable_dimension, :service_namespace],
-      map_present: [:policy_type, :step_scaling_policy_configuration, :target_tracking_scaling_policy_configuration]
+      map_present: [:policy_type, :predictive_scaling_policy_configuration, :region, :step_scaling_policy_configuration, :target_tracking_scaling_policy_configuration]
   end
   module AWS
     include AWSAppautoscalingPolicy

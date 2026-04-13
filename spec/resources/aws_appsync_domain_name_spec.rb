@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncDomainName do
         expect(ref.id).to eq("${aws_appsync_domain_name.test.id}")
         expect(ref.appsync_domain_name).to eq("${aws_appsync_domain_name.test.appsync_domain_name}")
         expect(ref.hosted_zone_id).to eq("${aws_appsync_domain_name.test.hosted_zone_id}")
+        expect(ref.region).to eq("${aws_appsync_domain_name.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSAppsyncDomainName do
         config = validate_resource_structure(result, 'aws_appsync_domain_name', 'test')
         expect(config).not_to have_key('appsync_domain_name')
         expect(config).not_to have_key('hosted_zone_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncDomainName do
 
         config = validate_resource_structure(result, 'aws_appsync_domain_name', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -87,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSAppsyncDomainName do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_domain_name', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_domain_name('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_domain_name', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_domain_name('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_domain_name', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -133,7 +153,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncDomainName do
     resource_type: :aws_appsync_domain_name,
     method: :aws_appsync_domain_name,
     required_attrs: { certificate_arn: 'test-value', domain_name: 'test-value' },
-    expected_outputs: [:id, :appsync_domain_name, :hosted_zone_id],
+    expected_outputs: [:id, :appsync_domain_name, :hosted_zone_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

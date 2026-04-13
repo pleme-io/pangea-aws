@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSSfnStateMachine do
         expect(ref.description).to eq("${aws_sfn_state_machine.test.description}")
         expect(ref.name).to eq("${aws_sfn_state_machine.test.name}")
         expect(ref.name_prefix).to eq("${aws_sfn_state_machine.test.name_prefix}")
+        expect(ref.region).to eq("${aws_sfn_state_machine.test.region}")
         expect(ref.revision_id).to eq("${aws_sfn_state_machine.test.revision_id}")
         expect(ref.state_machine_version_arn).to eq("${aws_sfn_state_machine.test.state_machine_version_arn}")
         expect(ref.status).to eq("${aws_sfn_state_machine.test.status}")
@@ -64,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSSfnStateMachine do
         expect(config).not_to have_key('description')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('revision_id')
         expect(config).not_to have_key('state_machine_version_arn')
         expect(config).not_to have_key('status')
@@ -73,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSSfnStateMachine do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ encryption_configuration: [{ 'key1' => 'val1' }], logging_configuration: [{ 'key1' => 'val1' }], publish: true, tags: { 'key1' => 'val1' }, tracing_configuration: [{ 'key1' => 'val1' }], type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ encryption_configuration: { 'key1' => 'val1' }, logging_configuration: { 'key1' => 'val1' }, name: 'test-value', name_prefix: 'test-value', publish: true, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tracing_configuration: { 'key1' => 'val1' }, type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -84,8 +86,12 @@ RSpec.describe Pangea::Resources::AWSSfnStateMachine do
         config = validate_resource_structure(result, 'aws_sfn_state_machine', 'full')
         expect(config).to have_key('encryption_configuration')
         expect(config).to have_key('logging_configuration')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
         expect(config).to have_key('publish')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('tracing_configuration')
         expect(config).to have_key('type')
       end
@@ -95,7 +101,7 @@ RSpec.describe Pangea::Resources::AWSSfnStateMachine do
       it 'includes encryption_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sfn_state_machine('opt', required_attrs.merge(encryption_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_sfn_state_machine('opt', required_attrs.merge(encryption_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sfn_state_machine', 'opt')
         expect(config).to have_key('encryption_configuration')
@@ -112,7 +118,7 @@ RSpec.describe Pangea::Resources::AWSSfnStateMachine do
       it 'includes logging_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sfn_state_machine('opt', required_attrs.merge(logging_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_sfn_state_machine('opt', required_attrs.merge(logging_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sfn_state_machine', 'opt')
         expect(config).to have_key('logging_configuration')
@@ -125,6 +131,40 @@ RSpec.describe Pangea::Resources::AWSSfnStateMachine do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sfn_state_machine', 'minimal')
         expect(config).not_to have_key('logging_configuration')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sfn_state_machine('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sfn_state_machine', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sfn_state_machine('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sfn_state_machine', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sfn_state_machine('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sfn_state_machine', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sfn_state_machine('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sfn_state_machine', 'minimal')
+        expect(config).not_to have_key('name_prefix')
       end
       it 'includes publish when provided' do
         synth = create_synthesizer
@@ -143,6 +183,23 @@ RSpec.describe Pangea::Resources::AWSSfnStateMachine do
         config = validate_resource_structure(result, 'aws_sfn_state_machine', 'minimal')
         expect(config).not_to have_key('publish')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sfn_state_machine('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sfn_state_machine', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sfn_state_machine('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sfn_state_machine', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -160,10 +217,27 @@ RSpec.describe Pangea::Resources::AWSSfnStateMachine do
         config = validate_resource_structure(result, 'aws_sfn_state_machine', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sfn_state_machine('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sfn_state_machine', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sfn_state_machine('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sfn_state_machine', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes tracing_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sfn_state_machine('opt', required_attrs.merge(tracing_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_sfn_state_machine('opt', required_attrs.merge(tracing_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sfn_state_machine', 'opt')
         expect(config).to have_key('tracing_configuration')
@@ -253,7 +327,7 @@ RSpec.describe Pangea::Resources::AWSSfnStateMachine do
     resource_type: :aws_sfn_state_machine,
     method: :aws_sfn_state_machine,
     required_attrs: { definition: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :creation_date, :description, :name, :name_prefix, :revision_id, :state_machine_version_arn, :status, :tags_all, :version_description],
+    expected_outputs: [:id, :arn, :creation_date, :description, :name, :name_prefix, :region, :revision_id, :state_machine_version_arn, :status, :tags_all, :version_description],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:publish]

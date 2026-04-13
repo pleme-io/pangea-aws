@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSS3controlAccessGrant do
         expect(ref.access_grant_id).to eq("${aws_s3control_access_grant.test.access_grant_id}")
         expect(ref.account_id).to eq("${aws_s3control_access_grant.test.account_id}")
         expect(ref.grant_scope).to eq("${aws_s3control_access_grant.test.grant_scope}")
+        expect(ref.region).to eq("${aws_s3control_access_grant.test.region}")
         expect(ref.tags_all).to eq("${aws_s3control_access_grant.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSS3controlAccessGrant do
         expect(config).not_to have_key('access_grant_id')
         expect(config).not_to have_key('account_id')
         expect(config).not_to have_key('grant_scope')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_grants_location_configuration: [{ 'key1' => 'val1' }], grantee: [{ 'key1' => 'val1' }], s3_prefix_type: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ access_grants_location_configuration: [{ 'key1' => 'val1' }], account_id: 'test-value', grantee: [{ 'key1' => 'val1' }], region: 'test-value', s3_prefix_type: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,9 @@ RSpec.describe Pangea::Resources::AWSS3controlAccessGrant do
 
         config = validate_resource_structure(result, 'aws_s3control_access_grant', 'full')
         expect(config).to have_key('access_grants_location_configuration')
+        expect(config).to have_key('account_id')
         expect(config).to have_key('grantee')
+        expect(config).to have_key('region')
         expect(config).to have_key('s3_prefix_type')
         expect(config).to have_key('tags')
       end
@@ -97,6 +101,23 @@ RSpec.describe Pangea::Resources::AWSS3controlAccessGrant do
         config = validate_resource_structure(result, 'aws_s3control_access_grant', 'minimal')
         expect(config).not_to have_key('access_grants_location_configuration')
       end
+      it 'includes account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_access_grant('opt', required_attrs.merge(account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_access_grant', 'opt')
+        expect(config).to have_key('account_id')
+      end
+
+      it 'omits account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_access_grant('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_access_grant', 'minimal')
+        expect(config).not_to have_key('account_id')
+      end
       it 'includes grantee when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -113,6 +134,23 @@ RSpec.describe Pangea::Resources::AWSS3controlAccessGrant do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3control_access_grant', 'minimal')
         expect(config).not_to have_key('grantee')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_access_grant('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_access_grant', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_access_grant('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_access_grant', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes s3_prefix_type when provided' do
         synth = create_synthesizer
@@ -193,7 +231,7 @@ RSpec.describe Pangea::Resources::AWSS3controlAccessGrant do
     resource_type: :aws_s3control_access_grant,
     method: :aws_s3control_access_grant,
     required_attrs: { access_grants_location_id: 'test-value', permission: 'test-value' },
-    expected_outputs: [:id, :access_grant_arn, :access_grant_id, :account_id, :grant_scope, :tags_all],
+    expected_outputs: [:id, :access_grant_arn, :access_grant_id, :account_id, :grant_scope, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

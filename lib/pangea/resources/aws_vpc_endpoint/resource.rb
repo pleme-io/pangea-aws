@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcEndpointAttributes,
       outputs: { id: :id },
       map: [:vpc_id],
-      map_present: [:dns_options, :ip_address_type, :policy, :resource_configuration_arn, :route_table_ids, :security_group_ids, :service_name, :service_network_arn, :service_region, :subnet_configuration, :subnet_ids, :tags, :tags_all, :vpc_endpoint_type],
+      map_present: [:dns_options, :ip_address_type, :policy, :region, :resource_configuration_arn, :route_table_ids, :security_group_ids, :service_name, :service_network_arn, :service_region, :subnet_configuration, :subnet_ids, :tags, :tags_all, :vpc_endpoint_type],
       map_bool: [:auto_accept, :private_dns_enabled]
   end
   module AWS

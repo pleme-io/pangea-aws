@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::LambdaPermissionAttributes,
       outputs: { id: :id },
       map: [:action, :function_name, :principal],
-      map_present: [:event_source_token, :function_url_auth_type, :principal_org_id, :qualifier, :source_account, :source_arn, :statement_id, :statement_id_prefix]
+      map_present: [:event_source_token, :function_url_auth_type, :principal_org_id, :qualifier, :region, :source_account, :source_arn, :statement_id, :statement_id_prefix],
+      map_bool: [:invoked_via_function_url]
   end
   module AWS
     include AWSLambdaPermission

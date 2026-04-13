@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCodecatalystProject do
 
         expect(ref.id).to eq("${aws_codecatalyst_project.test.id}")
         expect(ref.name).to eq("${aws_codecatalyst_project.test.name}")
+        expect(ref.region).to eq("${aws_codecatalyst_project.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSCodecatalystProject do
 
         config = validate_resource_structure(result, 'aws_codecatalyst_project', 'test')
         expect(config).not_to have_key('name')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSCodecatalystProject do
 
         config = validate_resource_structure(result, 'aws_codecatalyst_project', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -85,6 +88,23 @@ RSpec.describe Pangea::Resources::AWSCodecatalystProject do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codecatalyst_project', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecatalyst_project('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecatalyst_project', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecatalyst_project('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecatalyst_project', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -131,7 +151,7 @@ RSpec.describe Pangea::Resources::AWSCodecatalystProject do
     resource_type: :aws_codecatalyst_project,
     method: :aws_codecatalyst_project,
     required_attrs: { display_name: 'test-value', space_name: 'test-value' },
-    expected_outputs: [:id, :name],
+    expected_outputs: [:id, :name, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

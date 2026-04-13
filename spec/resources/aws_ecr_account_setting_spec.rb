@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSEcrAccountSetting do
         ref = synth.aws_ecr_account_setting('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ecr_account_setting.test.id}")
+        expect(ref.region).to eq("${aws_ecr_account_setting.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_account_setting('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ecr_account_setting', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_account_setting('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ecr_account_setting', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_account_setting('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_account_setting', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_account_setting('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_account_setting', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -84,7 +131,7 @@ RSpec.describe Pangea::Resources::AWSEcrAccountSetting do
     resource_type: :aws_ecr_account_setting,
     method: :aws_ecr_account_setting,
     required_attrs: { name: 'test-value', value: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

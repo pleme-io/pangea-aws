@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSpotFleetRequest do
         expect(ref.id).to eq("${aws_spot_fleet_request.test.id}")
         expect(ref.client_token).to eq("${aws_spot_fleet_request.test.client_token}")
         expect(ref.load_balancers).to eq("${aws_spot_fleet_request.test.load_balancers}")
+        expect(ref.region).to eq("${aws_spot_fleet_request.test.region}")
         expect(ref.spot_request_state).to eq("${aws_spot_fleet_request.test.spot_request_state}")
         expect(ref.tags_all).to eq("${aws_spot_fleet_request.test.tags_all}")
         expect(ref.target_group_arns).to eq("${aws_spot_fleet_request.test.target_group_arns}")
@@ -56,6 +57,7 @@ RSpec.describe Pangea::Resources::AWSSpotFleetRequest do
         config = validate_resource_structure(result, 'aws_spot_fleet_request', 'test')
         expect(config).not_to have_key('client_token')
         expect(config).not_to have_key('load_balancers')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('spot_request_state')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('target_group_arns')
@@ -63,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSSpotFleetRequest do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allocation_strategy: 'test-value', context: 'test-value', excess_capacity_termination_policy: 'test-value', fleet_type: 'test-value', instance_interruption_behaviour: 'test-value', instance_pools_to_use_count: 3.14, launch_specification: [{ 'key1' => 'val1' }], launch_template_config: [{ 'key1' => 'val1' }], on_demand_allocation_strategy: 'test-value', on_demand_max_total_price: 'test-value', on_demand_target_capacity: 3.14, replace_unhealthy_instances: true, spot_maintenance_strategies: [{ 'key1' => 'val1' }], spot_price: 'test-value', tags: { 'key1' => 'val1' }, target_capacity_unit_type: 'test-value', terminate_instances_on_delete: 'test-value', terminate_instances_with_expiration: true, valid_from: 'test-value', valid_until: 'test-value', wait_for_fulfillment: true }) }
+      let(:all_attrs) { required_attrs.merge({ allocation_strategy: 'test-value', context: 'test-value', excess_capacity_termination_policy: 'test-value', fleet_type: 'test-value', instance_interruption_behaviour: 'test-value', instance_pools_to_use_count: 3.14, launch_specification: [{ 'key1' => 'val1' }], launch_template_config: [{ 'key1' => 'val1' }], load_balancers: ['test-value'], on_demand_allocation_strategy: 'test-value', on_demand_max_total_price: 'test-value', on_demand_target_capacity: 3.14, region: 'test-value', replace_unhealthy_instances: true, spot_maintenance_strategies: { 'key1' => 'val1' }, spot_price: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target_capacity_unit_type: 'test-value', target_group_arns: ['test-value'], terminate_instances_on_delete: 'test-value', terminate_instances_with_expiration: true, valid_from: 'test-value', valid_until: 'test-value', wait_for_fulfillment: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,14 +82,18 @@ RSpec.describe Pangea::Resources::AWSSpotFleetRequest do
         expect(config).to have_key('instance_pools_to_use_count')
         expect(config).to have_key('launch_specification')
         expect(config).to have_key('launch_template_config')
+        expect(config).to have_key('load_balancers')
         expect(config).to have_key('on_demand_allocation_strategy')
         expect(config).to have_key('on_demand_max_total_price')
         expect(config).to have_key('on_demand_target_capacity')
+        expect(config).to have_key('region')
         expect(config).to have_key('replace_unhealthy_instances')
         expect(config).to have_key('spot_maintenance_strategies')
         expect(config).to have_key('spot_price')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('target_capacity_unit_type')
+        expect(config).to have_key('target_group_arns')
         expect(config).to have_key('terminate_instances_on_delete')
         expect(config).to have_key('terminate_instances_with_expiration')
         expect(config).to have_key('valid_from')
@@ -233,6 +239,23 @@ RSpec.describe Pangea::Resources::AWSSpotFleetRequest do
         config = validate_resource_structure(result, 'aws_spot_fleet_request', 'minimal')
         expect(config).not_to have_key('launch_template_config')
       end
+      it 'includes load_balancers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_spot_fleet_request('opt', required_attrs.merge(load_balancers: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_spot_fleet_request', 'opt')
+        expect(config).to have_key('load_balancers')
+      end
+
+      it 'omits load_balancers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_spot_fleet_request('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_spot_fleet_request', 'minimal')
+        expect(config).not_to have_key('load_balancers')
+      end
       it 'includes on_demand_allocation_strategy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -284,6 +307,23 @@ RSpec.describe Pangea::Resources::AWSSpotFleetRequest do
         config = validate_resource_structure(result, 'aws_spot_fleet_request', 'minimal')
         expect(config).not_to have_key('on_demand_target_capacity')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_spot_fleet_request('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_spot_fleet_request', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_spot_fleet_request('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_spot_fleet_request', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes replace_unhealthy_instances when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -304,7 +344,7 @@ RSpec.describe Pangea::Resources::AWSSpotFleetRequest do
       it 'includes spot_maintenance_strategies when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_spot_fleet_request('opt', required_attrs.merge(spot_maintenance_strategies: [{ 'key1' => 'val1' }]))
+        synth.aws_spot_fleet_request('opt', required_attrs.merge(spot_maintenance_strategies: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_spot_fleet_request', 'opt')
         expect(config).to have_key('spot_maintenance_strategies')
@@ -352,6 +392,23 @@ RSpec.describe Pangea::Resources::AWSSpotFleetRequest do
         config = validate_resource_structure(result, 'aws_spot_fleet_request', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_spot_fleet_request('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_spot_fleet_request', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_spot_fleet_request('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_spot_fleet_request', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes target_capacity_unit_type when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -368,6 +425,23 @@ RSpec.describe Pangea::Resources::AWSSpotFleetRequest do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_spot_fleet_request', 'minimal')
         expect(config).not_to have_key('target_capacity_unit_type')
+      end
+      it 'includes target_group_arns when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_spot_fleet_request('opt', required_attrs.merge(target_group_arns: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_spot_fleet_request', 'opt')
+        expect(config).to have_key('target_group_arns')
+      end
+
+      it 'omits target_group_arns when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_spot_fleet_request('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_spot_fleet_request', 'minimal')
+        expect(config).not_to have_key('target_group_arns')
       end
       it 'includes terminate_instances_on_delete when provided' do
         synth = create_synthesizer
@@ -535,7 +609,7 @@ RSpec.describe Pangea::Resources::AWSSpotFleetRequest do
     resource_type: :aws_spot_fleet_request,
     method: :aws_spot_fleet_request,
     required_attrs: { iam_fleet_role: 'test-value', target_capacity: 3.14 },
-    expected_outputs: [:id, :client_token, :load_balancers, :spot_request_state, :tags_all, :target_group_arns],
+    expected_outputs: [:id, :client_token, :load_balancers, :region, :spot_request_state, :tags_all, :target_group_arns],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:replace_unhealthy_instances, :terminate_instances_with_expiration, :wait_for_fulfillment]

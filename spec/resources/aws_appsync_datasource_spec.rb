@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncDatasource do
 
         expect(ref.id).to eq("${aws_appsync_datasource.test.id}")
         expect(ref.arn).to eq("${aws_appsync_datasource.test.arn}")
+        expect(ref.region).to eq("${aws_appsync_datasource.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSAppsyncDatasource do
 
         config = validate_resource_structure(result, 'aws_appsync_datasource', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', dynamodb_config: [{ 'key1' => 'val1' }], elasticsearch_config: [{ 'key1' => 'val1' }], event_bridge_config: [{ 'key1' => 'val1' }], http_config: [{ 'key1' => 'val1' }], lambda_config: [{ 'key1' => 'val1' }], opensearchservice_config: [{ 'key1' => 'val1' }], relational_database_config: [{ 'key1' => 'val1' }], service_role_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', dynamodb_config: { 'key1' => 'val1' }, elasticsearch_config: { 'key1' => 'val1' }, event_bridge_config: { 'key1' => 'val1' }, http_config: { 'key1' => 'val1' }, lambda_config: { 'key1' => 'val1' }, opensearchservice_config: { 'key1' => 'val1' }, region: 'test-value', relational_database_config: { 'key1' => 'val1' }, service_role_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +73,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncDatasource do
         expect(config).to have_key('http_config')
         expect(config).to have_key('lambda_config')
         expect(config).to have_key('opensearchservice_config')
+        expect(config).to have_key('region')
         expect(config).to have_key('relational_database_config')
         expect(config).to have_key('service_role_arn')
       end
@@ -97,7 +100,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncDatasource do
       it 'includes dynamodb_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_datasource('opt', required_attrs.merge(dynamodb_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_datasource('opt', required_attrs.merge(dynamodb_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_datasource', 'opt')
         expect(config).to have_key('dynamodb_config')
@@ -114,7 +117,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncDatasource do
       it 'includes elasticsearch_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_datasource('opt', required_attrs.merge(elasticsearch_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_datasource('opt', required_attrs.merge(elasticsearch_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_datasource', 'opt')
         expect(config).to have_key('elasticsearch_config')
@@ -131,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncDatasource do
       it 'includes event_bridge_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_datasource('opt', required_attrs.merge(event_bridge_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_datasource('opt', required_attrs.merge(event_bridge_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_datasource', 'opt')
         expect(config).to have_key('event_bridge_config')
@@ -148,7 +151,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncDatasource do
       it 'includes http_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_datasource('opt', required_attrs.merge(http_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_datasource('opt', required_attrs.merge(http_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_datasource', 'opt')
         expect(config).to have_key('http_config')
@@ -165,7 +168,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncDatasource do
       it 'includes lambda_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_datasource('opt', required_attrs.merge(lambda_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_datasource('opt', required_attrs.merge(lambda_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_datasource', 'opt')
         expect(config).to have_key('lambda_config')
@@ -182,7 +185,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncDatasource do
       it 'includes opensearchservice_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_datasource('opt', required_attrs.merge(opensearchservice_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_datasource('opt', required_attrs.merge(opensearchservice_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_datasource', 'opt')
         expect(config).to have_key('opensearchservice_config')
@@ -196,10 +199,27 @@ RSpec.describe Pangea::Resources::AWSAppsyncDatasource do
         config = validate_resource_structure(result, 'aws_appsync_datasource', 'minimal')
         expect(config).not_to have_key('opensearchservice_config')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_datasource('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_datasource', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_datasource('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_datasource', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes relational_database_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_datasource('opt', required_attrs.merge(relational_database_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_datasource('opt', required_attrs.merge(relational_database_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_datasource', 'opt')
         expect(config).to have_key('relational_database_config')
@@ -276,7 +296,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncDatasource do
     resource_type: :aws_appsync_datasource,
     method: :aws_appsync_datasource,
     required_attrs: { api_id: 'test-value', name: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

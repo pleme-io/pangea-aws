@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ControltowerControlAttributes,
       outputs: { id: :id },
       map: [:control_identifier, :target_identifier],
-      map_present: [:parameters]
+      map_present: [:parameters, :region]
   end
   module AWS
     include AWSControltowerControl

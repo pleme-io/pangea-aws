@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BackupRestoreTestingPlanAttributes,
       outputs: { id: :id },
       map: [:name, :schedule_expression],
-      map_present: [:recovery_point_selection, :schedule_expression_timezone, :start_window_hours, :tags]
+      map_present: [:recovery_point_selection, :region, :schedule_expression_timezone, :start_window_hours, :tags]
   end
   module AWS
     include AWSBackupRestoreTestingPlan

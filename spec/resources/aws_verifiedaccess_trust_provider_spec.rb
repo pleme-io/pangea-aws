@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessTrustProvider do
         ref = synth.aws_verifiedaccess_trust_provider('test', required_attrs)
 
         expect(ref.id).to eq("${aws_verifiedaccess_trust_provider.test.id}")
+        expect(ref.region).to eq("${aws_verifiedaccess_trust_provider.test.region}")
         expect(ref.tags_all).to eq("${aws_verifiedaccess_trust_provider.test.tags_all}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessTrustProvider do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_verifiedaccess_trust_provider', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', device_options: [{ 'key1' => 'val1' }], device_trust_provider_type: 'test-value', native_application_oidc_options: [{ 'key1' => 'val1' }], oidc_options: [{ 'key1' => 'val1' }], sse_specification: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, user_trust_provider_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', device_options: { 'key1' => 'val1' }, device_trust_provider_type: 'test-value', native_application_oidc_options: { 'key1' => 'val1' }, oidc_options: { 'key1' => 'val1' }, region: 'test-value', sse_specification: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, user_trust_provider_type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,8 +71,10 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessTrustProvider do
         expect(config).to have_key('device_trust_provider_type')
         expect(config).to have_key('native_application_oidc_options')
         expect(config).to have_key('oidc_options')
+        expect(config).to have_key('region')
         expect(config).to have_key('sse_specification')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('user_trust_provider_type')
       end
     end
@@ -96,7 +100,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessTrustProvider do
       it 'includes device_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_verifiedaccess_trust_provider('opt', required_attrs.merge(device_options: [{ 'key1' => 'val1' }]))
+        synth.aws_verifiedaccess_trust_provider('opt', required_attrs.merge(device_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_trust_provider', 'opt')
         expect(config).to have_key('device_options')
@@ -130,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessTrustProvider do
       it 'includes native_application_oidc_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_verifiedaccess_trust_provider('opt', required_attrs.merge(native_application_oidc_options: [{ 'key1' => 'val1' }]))
+        synth.aws_verifiedaccess_trust_provider('opt', required_attrs.merge(native_application_oidc_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_trust_provider', 'opt')
         expect(config).to have_key('native_application_oidc_options')
@@ -147,7 +151,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessTrustProvider do
       it 'includes oidc_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_verifiedaccess_trust_provider('opt', required_attrs.merge(oidc_options: [{ 'key1' => 'val1' }]))
+        synth.aws_verifiedaccess_trust_provider('opt', required_attrs.merge(oidc_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_trust_provider', 'opt')
         expect(config).to have_key('oidc_options')
@@ -161,10 +165,27 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessTrustProvider do
         config = validate_resource_structure(result, 'aws_verifiedaccess_trust_provider', 'minimal')
         expect(config).not_to have_key('oidc_options')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_trust_provider('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_trust_provider', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_trust_provider('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_trust_provider', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes sse_specification when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_verifiedaccess_trust_provider('opt', required_attrs.merge(sse_specification: [{ 'key1' => 'val1' }]))
+        synth.aws_verifiedaccess_trust_provider('opt', required_attrs.merge(sse_specification: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_trust_provider', 'opt')
         expect(config).to have_key('sse_specification')
@@ -194,6 +215,23 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessTrustProvider do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_trust_provider', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_trust_provider('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_trust_provider', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_trust_provider('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_trust_provider', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes user_trust_provider_type when provided' do
         synth = create_synthesizer
@@ -257,7 +295,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessTrustProvider do
     resource_type: :aws_verifiedaccess_trust_provider,
     method: :aws_verifiedaccess_trust_provider,
     required_attrs: { policy_reference_name: 'test-value', trust_provider_type: 'test-value' },
-    expected_outputs: [:id, :tags_all],
+    expected_outputs: [:id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

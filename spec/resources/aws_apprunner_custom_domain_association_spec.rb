@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerCustomDomainAssociation do
         expect(ref.id).to eq("${aws_apprunner_custom_domain_association.test.id}")
         expect(ref.certificate_validation_records).to eq("${aws_apprunner_custom_domain_association.test.certificate_validation_records}")
         expect(ref.dns_target).to eq("${aws_apprunner_custom_domain_association.test.dns_target}")
+        expect(ref.region).to eq("${aws_apprunner_custom_domain_association.test.region}")
         expect(ref.status).to eq("${aws_apprunner_custom_domain_association.test.status}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSApprunnerCustomDomainAssociation do
         config = validate_resource_structure(result, 'aws_apprunner_custom_domain_association', 'test')
         expect(config).not_to have_key('certificate_validation_records')
         expect(config).not_to have_key('dns_target')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enable_www_subdomain: true }) }
+      let(:all_attrs) { required_attrs.merge({ enable_www_subdomain: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerCustomDomainAssociation do
 
         config = validate_resource_structure(result, 'aws_apprunner_custom_domain_association', 'full')
         expect(config).to have_key('enable_www_subdomain')
+        expect(config).to have_key('region')
       end
     end
 
@@ -89,6 +92,23 @@ RSpec.describe Pangea::Resources::AWSApprunnerCustomDomainAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apprunner_custom_domain_association', 'minimal')
         expect(config).not_to have_key('enable_www_subdomain')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_custom_domain_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_custom_domain_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_custom_domain_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_custom_domain_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -149,7 +169,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerCustomDomainAssociation do
     resource_type: :aws_apprunner_custom_domain_association,
     method: :aws_apprunner_custom_domain_association,
     required_attrs: { domain_name: 'test-value', service_arn: 'test-value' },
-    expected_outputs: [:id, :certificate_validation_records, :dns_target, :status],
+    expected_outputs: [:id, :certificate_validation_records, :dns_target, :region, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enable_www_subdomain]

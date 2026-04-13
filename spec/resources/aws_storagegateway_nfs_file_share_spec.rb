@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayNfsFileShare do
         expect(ref.file_share_name).to eq("${aws_storagegateway_nfs_file_share.test.file_share_name}")
         expect(ref.fileshare_id).to eq("${aws_storagegateway_nfs_file_share.test.fileshare_id}")
         expect(ref.path).to eq("${aws_storagegateway_nfs_file_share.test.path}")
+        expect(ref.region).to eq("${aws_storagegateway_nfs_file_share.test.region}")
         expect(ref.tags_all).to eq("${aws_storagegateway_nfs_file_share.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayNfsFileShare do
         expect(config).not_to have_key('file_share_name')
         expect(config).not_to have_key('fileshare_id')
         expect(config).not_to have_key('path')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ audit_destination_arn: 'test-value', bucket_region: 'test-value', cache_attributes: [{ 'key1' => 'val1' }], default_storage_class: 'test-value', guess_mime_type_enabled: true, kms_encrypted: true, kms_key_arn: 'test-value', nfs_file_share_defaults: [{ 'key1' => 'val1' }], notification_policy: 'test-value', object_acl: 'test-value', read_only: true, requester_pays: true, squash: 'test-value', tags: { 'key1' => 'val1' }, vpc_endpoint_dns_name: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ audit_destination_arn: 'test-value', bucket_region: 'test-value', cache_attributes: { 'key1' => 'val1' }, default_storage_class: 'test-value', file_share_name: 'test-value', guess_mime_type_enabled: true, kms_encrypted: true, kms_key_arn: 'test-value', nfs_file_share_defaults: { 'key1' => 'val1' }, notification_policy: 'test-value', object_acl: 'test-value', read_only: true, region: 'test-value', requester_pays: true, squash: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_endpoint_dns_name: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,6 +78,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayNfsFileShare do
         expect(config).to have_key('bucket_region')
         expect(config).to have_key('cache_attributes')
         expect(config).to have_key('default_storage_class')
+        expect(config).to have_key('file_share_name')
         expect(config).to have_key('guess_mime_type_enabled')
         expect(config).to have_key('kms_encrypted')
         expect(config).to have_key('kms_key_arn')
@@ -83,9 +86,11 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayNfsFileShare do
         expect(config).to have_key('notification_policy')
         expect(config).to have_key('object_acl')
         expect(config).to have_key('read_only')
+        expect(config).to have_key('region')
         expect(config).to have_key('requester_pays')
         expect(config).to have_key('squash')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc_endpoint_dns_name')
       end
     end
@@ -128,7 +133,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayNfsFileShare do
       it 'includes cache_attributes when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_storagegateway_nfs_file_share('opt', required_attrs.merge(cache_attributes: [{ 'key1' => 'val1' }]))
+        synth.aws_storagegateway_nfs_file_share('opt', required_attrs.merge(cache_attributes: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_storagegateway_nfs_file_share', 'opt')
         expect(config).to have_key('cache_attributes')
@@ -158,6 +163,23 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayNfsFileShare do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_storagegateway_nfs_file_share', 'minimal')
         expect(config).not_to have_key('default_storage_class')
+      end
+      it 'includes file_share_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_nfs_file_share('opt', required_attrs.merge(file_share_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_nfs_file_share', 'opt')
+        expect(config).to have_key('file_share_name')
+      end
+
+      it 'omits file_share_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_nfs_file_share('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_nfs_file_share', 'minimal')
+        expect(config).not_to have_key('file_share_name')
       end
       it 'includes guess_mime_type_enabled when provided' do
         synth = create_synthesizer
@@ -213,7 +235,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayNfsFileShare do
       it 'includes nfs_file_share_defaults when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_storagegateway_nfs_file_share('opt', required_attrs.merge(nfs_file_share_defaults: [{ 'key1' => 'val1' }]))
+        synth.aws_storagegateway_nfs_file_share('opt', required_attrs.merge(nfs_file_share_defaults: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_storagegateway_nfs_file_share', 'opt')
         expect(config).to have_key('nfs_file_share_defaults')
@@ -278,6 +300,23 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayNfsFileShare do
         config = validate_resource_structure(result, 'aws_storagegateway_nfs_file_share', 'minimal')
         expect(config).not_to have_key('read_only')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_nfs_file_share('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_nfs_file_share', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_nfs_file_share('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_nfs_file_share', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes requester_pays when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -328,6 +367,23 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayNfsFileShare do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_storagegateway_nfs_file_share', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_nfs_file_share('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_nfs_file_share', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_nfs_file_share('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_nfs_file_share', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes vpc_endpoint_dns_name when provided' do
         synth = create_synthesizer
@@ -440,7 +496,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayNfsFileShare do
     resource_type: :aws_storagegateway_nfs_file_share,
     method: :aws_storagegateway_nfs_file_share,
     required_attrs: { client_list: ['test-value'], gateway_arn: 'test-value', location_arn: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :file_share_name, :fileshare_id, :path, :tags_all],
+    expected_outputs: [:id, :arn, :file_share_name, :fileshare_id, :path, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:guess_mime_type_enabled, :kms_encrypted, :read_only, :requester_pays]

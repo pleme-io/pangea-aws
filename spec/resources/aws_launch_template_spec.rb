@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
         expect(ref.latest_version).to eq("${aws_launch_template.test.latest_version}")
         expect(ref.name).to eq("${aws_launch_template.test.name}")
         expect(ref.name_prefix).to eq("${aws_launch_template.test.name_prefix}")
+        expect(ref.region).to eq("${aws_launch_template.test.region}")
         expect(ref.tags_all).to eq("${aws_launch_template.test.tags_all}")
       end
     end
@@ -60,12 +61,13 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
         expect(config).not_to have_key('latest_version')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ block_device_mappings: [{ 'key1' => 'val1' }], capacity_reservation_specification: [{ 'key1' => 'val1' }], cpu_options: [{ 'key1' => 'val1' }], credit_specification: [{ 'key1' => 'val1' }], description: 'test-value', disable_api_stop: true, disable_api_termination: true, ebs_optimized: 'test-value', elastic_gpu_specifications: [{ 'key1' => 'val1' }], elastic_inference_accelerator: [{ 'key1' => 'val1' }], enclave_options: [{ 'key1' => 'val1' }], hibernation_options: [{ 'key1' => 'val1' }], iam_instance_profile: [{ 'key1' => 'val1' }], image_id: 'test-value', instance_initiated_shutdown_behavior: 'test-value', instance_market_options: [{ 'key1' => 'val1' }], instance_requirements: [{ 'key1' => 'val1' }], instance_type: 'test-value', kernel_id: 'test-value', key_name: 'test-value', license_specification: [{ 'key1' => 'val1' }], maintenance_options: [{ 'key1' => 'val1' }], metadata_options: [{ 'key1' => 'val1' }], monitoring: [{ 'key1' => 'val1' }], network_interfaces: [{ 'key1' => 'val1' }], placement: [{ 'key1' => 'val1' }], private_dns_name_options: [{ 'key1' => 'val1' }], ram_disk_id: 'test-value', security_group_names: ['test-value'], tag_specifications: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, update_default_version: true, user_data: 'test-value', vpc_security_group_ids: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ block_device_mappings: [{ 'key1' => 'val1' }], capacity_reservation_specification: { 'key1' => 'val1' }, cpu_options: { 'key1' => 'val1' }, credit_specification: { 'key1' => 'val1' }, default_version: 3.14, description: 'test-value', disable_api_stop: true, disable_api_termination: true, ebs_optimized: 'test-value', enclave_options: { 'key1' => 'val1' }, hibernation_options: { 'key1' => 'val1' }, iam_instance_profile: { 'key1' => 'val1' }, image_id: 'test-value', instance_initiated_shutdown_behavior: 'test-value', instance_market_options: { 'key1' => 'val1' }, instance_requirements: { 'key1' => 'val1' }, instance_type: 'test-value', kernel_id: 'test-value', key_name: 'test-value', license_specification: [{ 'key1' => 'val1' }], maintenance_options: { 'key1' => 'val1' }, metadata_options: { 'key1' => 'val1' }, monitoring: { 'key1' => 'val1' }, name: 'test-value', name_prefix: 'test-value', network_interfaces: [{ 'key1' => 'val1' }], network_performance_options: { 'key1' => 'val1' }, placement: { 'key1' => 'val1' }, private_dns_name_options: { 'key1' => 'val1' }, ram_disk_id: 'test-value', region: 'test-value', secondary_interfaces: [{ 'key1' => 'val1' }], security_group_names: ['test-value'], tag_specifications: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, update_default_version: true, user_data: 'test-value', vpc_security_group_ids: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,12 +80,11 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
         expect(config).to have_key('capacity_reservation_specification')
         expect(config).to have_key('cpu_options')
         expect(config).to have_key('credit_specification')
+        expect(config).to have_key('default_version')
         expect(config).to have_key('description')
         expect(config).to have_key('disable_api_stop')
         expect(config).to have_key('disable_api_termination')
         expect(config).to have_key('ebs_optimized')
-        expect(config).to have_key('elastic_gpu_specifications')
-        expect(config).to have_key('elastic_inference_accelerator')
         expect(config).to have_key('enclave_options')
         expect(config).to have_key('hibernation_options')
         expect(config).to have_key('iam_instance_profile')
@@ -98,13 +99,19 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
         expect(config).to have_key('maintenance_options')
         expect(config).to have_key('metadata_options')
         expect(config).to have_key('monitoring')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
         expect(config).to have_key('network_interfaces')
+        expect(config).to have_key('network_performance_options')
         expect(config).to have_key('placement')
         expect(config).to have_key('private_dns_name_options')
         expect(config).to have_key('ram_disk_id')
+        expect(config).to have_key('region')
+        expect(config).to have_key('secondary_interfaces')
         expect(config).to have_key('security_group_names')
         expect(config).to have_key('tag_specifications')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('update_default_version')
         expect(config).to have_key('user_data')
         expect(config).to have_key('vpc_security_group_ids')
@@ -132,7 +139,7 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
       it 'includes capacity_reservation_specification when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(capacity_reservation_specification: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_template('opt', required_attrs.merge(capacity_reservation_specification: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'opt')
         expect(config).to have_key('capacity_reservation_specification')
@@ -149,7 +156,7 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
       it 'includes cpu_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(cpu_options: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_template('opt', required_attrs.merge(cpu_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'opt')
         expect(config).to have_key('cpu_options')
@@ -166,7 +173,7 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
       it 'includes credit_specification when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(credit_specification: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_template('opt', required_attrs.merge(credit_specification: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'opt')
         expect(config).to have_key('credit_specification')
@@ -179,6 +186,23 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
         expect(config).not_to have_key('credit_specification')
+      end
+      it 'includes default_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('opt', required_attrs.merge(default_version: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'opt')
+        expect(config).to have_key('default_version')
+      end
+
+      it 'omits default_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
+        expect(config).not_to have_key('default_version')
       end
       it 'includes description when provided' do
         synth = create_synthesizer
@@ -248,44 +272,10 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
         config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
         expect(config).not_to have_key('ebs_optimized')
       end
-      it 'includes elastic_gpu_specifications when provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(elastic_gpu_specifications: [{ 'key1' => 'val1' }]))
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_launch_template', 'opt')
-        expect(config).to have_key('elastic_gpu_specifications')
-      end
-
-      it 'omits elastic_gpu_specifications when not provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_launch_template('minimal', required_attrs)
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
-        expect(config).not_to have_key('elastic_gpu_specifications')
-      end
-      it 'includes elastic_inference_accelerator when provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(elastic_inference_accelerator: [{ 'key1' => 'val1' }]))
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_launch_template', 'opt')
-        expect(config).to have_key('elastic_inference_accelerator')
-      end
-
-      it 'omits elastic_inference_accelerator when not provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_launch_template('minimal', required_attrs)
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
-        expect(config).not_to have_key('elastic_inference_accelerator')
-      end
       it 'includes enclave_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(enclave_options: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_template('opt', required_attrs.merge(enclave_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'opt')
         expect(config).to have_key('enclave_options')
@@ -302,7 +292,7 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
       it 'includes hibernation_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(hibernation_options: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_template('opt', required_attrs.merge(hibernation_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'opt')
         expect(config).to have_key('hibernation_options')
@@ -319,7 +309,7 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
       it 'includes iam_instance_profile when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(iam_instance_profile: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_template('opt', required_attrs.merge(iam_instance_profile: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'opt')
         expect(config).to have_key('iam_instance_profile')
@@ -370,7 +360,7 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
       it 'includes instance_market_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(instance_market_options: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_template('opt', required_attrs.merge(instance_market_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'opt')
         expect(config).to have_key('instance_market_options')
@@ -387,7 +377,7 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
       it 'includes instance_requirements when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(instance_requirements: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_template('opt', required_attrs.merge(instance_requirements: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'opt')
         expect(config).to have_key('instance_requirements')
@@ -472,7 +462,7 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
       it 'includes maintenance_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(maintenance_options: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_template('opt', required_attrs.merge(maintenance_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'opt')
         expect(config).to have_key('maintenance_options')
@@ -489,7 +479,7 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
       it 'includes metadata_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(metadata_options: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_template('opt', required_attrs.merge(metadata_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'opt')
         expect(config).to have_key('metadata_options')
@@ -506,7 +496,7 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
       it 'includes monitoring when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(monitoring: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_template('opt', required_attrs.merge(monitoring: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'opt')
         expect(config).to have_key('monitoring')
@@ -519,6 +509,40 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
         expect(config).not_to have_key('monitoring')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
+        expect(config).not_to have_key('name_prefix')
       end
       it 'includes network_interfaces when provided' do
         synth = create_synthesizer
@@ -537,10 +561,27 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
         config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
         expect(config).not_to have_key('network_interfaces')
       end
+      it 'includes network_performance_options when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('opt', required_attrs.merge(network_performance_options: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'opt')
+        expect(config).to have_key('network_performance_options')
+      end
+
+      it 'omits network_performance_options when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
+        expect(config).not_to have_key('network_performance_options')
+      end
       it 'includes placement when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(placement: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_template('opt', required_attrs.merge(placement: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'opt')
         expect(config).to have_key('placement')
@@ -557,7 +598,7 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
       it 'includes private_dns_name_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_launch_template('opt', required_attrs.merge(private_dns_name_options: [{ 'key1' => 'val1' }]))
+        synth.aws_launch_template('opt', required_attrs.merge(private_dns_name_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'opt')
         expect(config).to have_key('private_dns_name_options')
@@ -587,6 +628,40 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
         expect(config).not_to have_key('ram_disk_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes secondary_interfaces when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('opt', required_attrs.merge(secondary_interfaces: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'opt')
+        expect(config).to have_key('secondary_interfaces')
+      end
+
+      it 'omits secondary_interfaces when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
+        expect(config).not_to have_key('secondary_interfaces')
       end
       it 'includes security_group_names when provided' do
         synth = create_synthesizer
@@ -638,6 +713,23 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_launch_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_launch_template', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes update_default_version when provided' do
         synth = create_synthesizer
@@ -769,7 +861,7 @@ RSpec.describe Pangea::Resources::AWSLaunchTemplate do
     resource_type: :aws_launch_template,
     method: :aws_launch_template,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :default_version, :latest_version, :name, :name_prefix, :tags_all],
+    expected_outputs: [:id, :arn, :default_version, :latest_version, :name, :name_prefix, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:disable_api_stop, :disable_api_termination, :update_default_version]

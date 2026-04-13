@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnectionOptions do
         ref = synth.aws_vpc_peering_connection_options('test', required_attrs)
 
         expect(ref.id).to eq("${aws_vpc_peering_connection_options.test.id}")
+        expect(ref.region).to eq("${aws_vpc_peering_connection_options.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection_options('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection_options', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ accepter: [{ 'key1' => 'val1' }], requester: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ accepter: { 'key1' => 'val1' }, region: 'test-value', requester: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnectionOptions do
 
         config = validate_resource_structure(result, 'aws_vpc_peering_connection_options', 'full')
         expect(config).to have_key('accepter')
+        expect(config).to have_key('region')
         expect(config).to have_key('requester')
       end
     end
@@ -60,7 +74,7 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnectionOptions do
       it 'includes accepter when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_vpc_peering_connection_options('opt', required_attrs.merge(accepter: [{ 'key1' => 'val1' }]))
+        synth.aws_vpc_peering_connection_options('opt', required_attrs.merge(accepter: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_peering_connection_options', 'opt')
         expect(config).to have_key('accepter')
@@ -74,10 +88,27 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnectionOptions do
         config = validate_resource_structure(result, 'aws_vpc_peering_connection_options', 'minimal')
         expect(config).not_to have_key('accepter')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection_options('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection_options', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection_options('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection_options', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes requester when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_vpc_peering_connection_options('opt', required_attrs.merge(requester: [{ 'key1' => 'val1' }]))
+        synth.aws_vpc_peering_connection_options('opt', required_attrs.merge(requester: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_peering_connection_options', 'opt')
         expect(config).to have_key('requester')
@@ -135,7 +166,7 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnectionOptions do
     resource_type: :aws_vpc_peering_connection_options,
     method: :aws_vpc_peering_connection_options,
     required_attrs: { vpc_peering_connection_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSNetworkAclRule do
         ref = synth.aws_network_acl_rule('test', required_attrs)
 
         expect(ref.id).to eq("${aws_network_acl_rule.test.id}")
+        expect(ref.region).to eq("${aws_network_acl_rule.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_acl_rule('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_network_acl_rule', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cidr_block: 'test-value', egress: true, from_port: 3.14, icmp_code: 3.14, icmp_type: 3.14, ipv6_cidr_block: 'test-value', to_port: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ cidr_block: 'test-value', egress: true, from_port: 3.14, icmp_code: 3.14, icmp_type: 3.14, ipv6_cidr_block: 'test-value', region: 'test-value', to_port: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -57,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSNetworkAclRule do
         expect(config).to have_key('icmp_code')
         expect(config).to have_key('icmp_type')
         expect(config).to have_key('ipv6_cidr_block')
+        expect(config).to have_key('region')
         expect(config).to have_key('to_port')
       end
     end
@@ -164,6 +178,23 @@ RSpec.describe Pangea::Resources::AWSNetworkAclRule do
         config = validate_resource_structure(result, 'aws_network_acl_rule', 'minimal')
         expect(config).not_to have_key('ipv6_cidr_block')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_acl_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_acl_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_acl_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_acl_rule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes to_port when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -242,7 +273,7 @@ RSpec.describe Pangea::Resources::AWSNetworkAclRule do
     resource_type: :aws_network_acl_rule,
     method: :aws_network_acl_rule,
     required_attrs: { network_acl_id: 'test-value', protocol: 'test-value', rule_action: 'test-value', rule_number: 3.14 },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:egress]

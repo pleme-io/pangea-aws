@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSChimesdkvoiceSipRule do
         ref = synth.aws_chimesdkvoice_sip_rule('test', required_attrs)
 
         expect(ref.id).to eq("${aws_chimesdkvoice_sip_rule.test.id}")
+        expect(ref.region).to eq("${aws_chimesdkvoice_sip_rule.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chimesdkvoice_sip_rule('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_chimesdkvoice_sip_rule', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ disabled: true }) }
+      let(:all_attrs) { required_attrs.merge({ disabled: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSChimesdkvoiceSipRule do
 
         config = validate_resource_structure(result, 'aws_chimesdkvoice_sip_rule', 'full')
         expect(config).to have_key('disabled')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSChimesdkvoiceSipRule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_chimesdkvoice_sip_rule', 'minimal')
         expect(config).not_to have_key('disabled')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chimesdkvoice_sip_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chimesdkvoice_sip_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chimesdkvoice_sip_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chimesdkvoice_sip_rule', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -134,7 +165,7 @@ RSpec.describe Pangea::Resources::AWSChimesdkvoiceSipRule do
     resource_type: :aws_chimesdkvoice_sip_rule,
     method: :aws_chimesdkvoice_sip_rule,
     required_attrs: { name: 'test-value', target_applications: [{ 'key1' => 'val1' }], trigger_type: 'test-value', trigger_value: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:disabled]

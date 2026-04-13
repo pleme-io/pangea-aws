@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MskReplicatorAttributes,
       outputs: { id: :id },
       map: [:kafka_cluster, :replication_info_list, :replicator_name, :service_execution_role_arn],
-      map_present: [:description, :tags, :tags_all]
+      map_present: [:description, :region, :tags, :tags_all]
   end
   module AWS
     include AWSMskReplicator

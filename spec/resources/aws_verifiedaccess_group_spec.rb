@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessGroup do
         expect(ref.description).to eq("${aws_verifiedaccess_group.test.description}")
         expect(ref.last_updated_time).to eq("${aws_verifiedaccess_group.test.last_updated_time}")
         expect(ref.owner).to eq("${aws_verifiedaccess_group.test.owner}")
+        expect(ref.region).to eq("${aws_verifiedaccess_group.test.region}")
         expect(ref.tags_all).to eq("${aws_verifiedaccess_group.test.tags_all}")
         expect(ref.verifiedaccess_group_arn).to eq("${aws_verifiedaccess_group.test.verifiedaccess_group_arn}")
         expect(ref.verifiedaccess_group_id).to eq("${aws_verifiedaccess_group.test.verifiedaccess_group_id}")
@@ -62,6 +63,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessGroup do
         expect(config).not_to have_key('description')
         expect(config).not_to have_key('last_updated_time')
         expect(config).not_to have_key('owner')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('verifiedaccess_group_arn')
         expect(config).not_to have_key('verifiedaccess_group_id')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessGroup do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ policy_document: 'test-value', sse_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', policy_document: 'test-value', region: 'test-value', sse_configuration: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,13 +80,33 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessGroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_verifiedaccess_group', 'full')
+        expect(config).to have_key('description')
         expect(config).to have_key('policy_document')
+        expect(config).to have_key('region')
         expect(config).to have_key('sse_configuration')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_group('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_group', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_group', 'minimal')
+        expect(config).not_to have_key('description')
+      end
       it 'includes policy_document when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -102,10 +124,27 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessGroup do
         config = validate_resource_structure(result, 'aws_verifiedaccess_group', 'minimal')
         expect(config).not_to have_key('policy_document')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes sse_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_verifiedaccess_group('opt', required_attrs.merge(sse_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_verifiedaccess_group('opt', required_attrs.merge(sse_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_group', 'opt')
         expect(config).to have_key('sse_configuration')
@@ -135,6 +174,23 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_group', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -180,7 +236,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessGroup do
     resource_type: :aws_verifiedaccess_group,
     method: :aws_verifiedaccess_group,
     required_attrs: { verifiedaccess_instance_id: 'test-value' },
-    expected_outputs: [:id, :creation_time, :deletion_time, :description, :last_updated_time, :owner, :tags_all, :verifiedaccess_group_arn, :verifiedaccess_group_id],
+    expected_outputs: [:id, :creation_time, :deletion_time, :description, :last_updated_time, :owner, :region, :tags_all, :verifiedaccess_group_arn, :verifiedaccess_group_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_redshiftserverless_resource_policy,
       attributes_class: AWS::Types::RedshiftserverlessResourcePolicyAttributes,
       outputs: { id: :id },
-      map: [:policy, :resource_arn]
+      map: [:policy, :resource_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSRedshiftserverlessResourcePolicy

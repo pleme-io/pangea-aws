@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSApiGatewayMethodResponse do
         ref = synth.aws_api_gateway_method_response('test', required_attrs)
 
         expect(ref.id).to eq("${aws_api_gateway_method_response.test.id}")
+        expect(ref.region).to eq("${aws_api_gateway_method_response.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_method_response('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_api_gateway_method_response', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ response_models: { 'key1' => 'val1' }, response_parameters: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', response_models: { 'key1' => 'val1' }, response_parameters: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -51,12 +64,30 @@ RSpec.describe Pangea::Resources::AWSApiGatewayMethodResponse do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_api_gateway_method_response', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('response_models')
         expect(config).to have_key('response_parameters')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_method_response('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_method_response', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_method_response('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_method_response', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes response_models when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -138,7 +169,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayMethodResponse do
     resource_type: :aws_api_gateway_method_response,
     method: :aws_api_gateway_method_response,
     required_attrs: { http_method: 'test-value', resource_id: 'test-value', rest_api_id: 'test-value', status_code: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -56,6 +56,65 @@ RSpec.describe Pangea::Resources::AWSCostoptimizationhubEnrollmentStatus do
       end
     end
 
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ include_member_accounts: true }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_costoptimizationhub_enrollment_status('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_costoptimizationhub_enrollment_status', 'full')
+        expect(config).to have_key('include_member_accounts')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes include_member_accounts when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_costoptimizationhub_enrollment_status('opt', required_attrs.merge(include_member_accounts: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_costoptimizationhub_enrollment_status', 'opt')
+        expect(config).to have_key('include_member_accounts')
+      end
+
+      it 'omits include_member_accounts when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_costoptimizationhub_enrollment_status('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_costoptimizationhub_enrollment_status', 'minimal')
+        expect(config).not_to have_key('include_member_accounts')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts include_member_accounts=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(include_member_accounts: val)
+          synth.aws_costoptimizationhub_enrollment_status("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_costoptimizationhub_enrollment_status', "bool_#{val}")
+          expect(config['include_member_accounts']).to eq(val)
+        end
+      end
+    end
+
+    context 'attribute types' do
+      it 'validates expected attribute types' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_costoptimizationhub_enrollment_status('typed', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_costoptimizationhub_enrollment_status', 'typed')
+      end
+    end
+
     context 'multiple instances' do
       it 'synthesizes multiple resources independently' do
         synth = create_synthesizer
@@ -89,5 +148,5 @@ RSpec.describe Pangea::Resources::AWSCostoptimizationhubEnrollmentStatus do
     expected_outputs: [:id, :include_member_accounts, :status],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:include_member_accounts]
 end

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ses_receipt_filter,
       attributes_class: AWS::Types::SesReceiptFilterAttributes,
       outputs: { id: :id },
-      map: [:cidr, :name, :policy]
+      map: [:cidr, :name, :policy],
+      map_present: [:region]
   end
   module AWS
     include AWSSesReceiptFilter

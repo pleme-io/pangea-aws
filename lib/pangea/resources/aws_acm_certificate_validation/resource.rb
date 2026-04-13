@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AcmCertificateValidationAttributes,
       outputs: { id: :id },
       map: [:certificate_arn],
-      map_present: [:validation_record_fqdns]
+      map_present: [:region, :validation_record_fqdns]
   end
   module AWS
     include AWSAcmCertificateValidation

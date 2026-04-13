@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ses_domain_identity,
       attributes_class: AWS::Types::SesDomainIdentityAttributes,
       outputs: { id: :id },
-      map: [:domain]
+      map: [:domain],
+      map_present: [:region]
   end
   module AWS
     include AWSSesDomainIdentity

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncApiKey do
         expect(ref.id).to eq("${aws_appsync_api_key.test.id}")
         expect(ref.api_key_id).to eq("${aws_appsync_api_key.test.api_key_id}")
         expect(ref.key).to eq("${aws_appsync_api_key.test.key}")
+        expect(ref.region).to eq("${aws_appsync_api_key.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSAppsyncApiKey do
         config = validate_resource_structure(result, 'aws_appsync_api_key', 'test')
         expect(config).not_to have_key('api_key_id')
         expect(config).not_to have_key('key')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', expires: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', expires: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncApiKey do
         config = validate_resource_structure(result, 'aws_appsync_api_key', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('expires')
+        expect(config).to have_key('region')
       end
     end
 
@@ -105,6 +108,23 @@ RSpec.describe Pangea::Resources::AWSAppsyncApiKey do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_api_key', 'minimal')
         expect(config).not_to have_key('expires')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_api_key('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_api_key', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_api_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_api_key', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -157,7 +177,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncApiKey do
     resource_type: :aws_appsync_api_key,
     method: :aws_appsync_api_key,
     required_attrs: { api_id: 'test-value' },
-    expected_outputs: [:id, :api_key_id, :key],
+    expected_outputs: [:id, :api_key_id, :key, :region],
     sensitive_fields: [:key],
     immutable_fields: [],
     boolean_fields: []

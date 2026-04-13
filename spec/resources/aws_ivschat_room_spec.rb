@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSIvschatRoom do
         expect(ref.arn).to eq("${aws_ivschat_room.test.arn}")
         expect(ref.maximum_message_length).to eq("${aws_ivschat_room.test.maximum_message_length}")
         expect(ref.maximum_message_rate_per_second).to eq("${aws_ivschat_room.test.maximum_message_rate_per_second}")
+        expect(ref.region).to eq("${aws_ivschat_room.test.region}")
         expect(ref.tags_all).to eq("${aws_ivschat_room.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSIvschatRoom do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('maximum_message_length')
         expect(config).not_to have_key('maximum_message_rate_per_second')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ logging_configuration_identifiers: ['test-value'], message_review_handler: [{ 'key1' => 'val1' }], name: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ logging_configuration_identifiers: ['test-value'], maximum_message_length: 3.14, maximum_message_rate_per_second: 3.14, message_review_handler: { 'key1' => 'val1' }, name: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,9 +73,13 @@ RSpec.describe Pangea::Resources::AWSIvschatRoom do
 
         config = validate_resource_structure(result, 'aws_ivschat_room', 'full')
         expect(config).to have_key('logging_configuration_identifiers')
+        expect(config).to have_key('maximum_message_length')
+        expect(config).to have_key('maximum_message_rate_per_second')
         expect(config).to have_key('message_review_handler')
         expect(config).to have_key('name')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -95,10 +101,44 @@ RSpec.describe Pangea::Resources::AWSIvschatRoom do
         config = validate_resource_structure(result, 'aws_ivschat_room', 'minimal')
         expect(config).not_to have_key('logging_configuration_identifiers')
       end
+      it 'includes maximum_message_length when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivschat_room('opt', required_attrs.merge(maximum_message_length: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivschat_room', 'opt')
+        expect(config).to have_key('maximum_message_length')
+      end
+
+      it 'omits maximum_message_length when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivschat_room('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivschat_room', 'minimal')
+        expect(config).not_to have_key('maximum_message_length')
+      end
+      it 'includes maximum_message_rate_per_second when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivschat_room('opt', required_attrs.merge(maximum_message_rate_per_second: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivschat_room', 'opt')
+        expect(config).to have_key('maximum_message_rate_per_second')
+      end
+
+      it 'omits maximum_message_rate_per_second when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivschat_room('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivschat_room', 'minimal')
+        expect(config).not_to have_key('maximum_message_rate_per_second')
+      end
       it 'includes message_review_handler when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ivschat_room('opt', required_attrs.merge(message_review_handler: [{ 'key1' => 'val1' }]))
+        synth.aws_ivschat_room('opt', required_attrs.merge(message_review_handler: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ivschat_room', 'opt')
         expect(config).to have_key('message_review_handler')
@@ -129,6 +169,23 @@ RSpec.describe Pangea::Resources::AWSIvschatRoom do
         config = validate_resource_structure(result, 'aws_ivschat_room', 'minimal')
         expect(config).not_to have_key('name')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivschat_room('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivschat_room', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivschat_room('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivschat_room', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -145,6 +202,23 @@ RSpec.describe Pangea::Resources::AWSIvschatRoom do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ivschat_room', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivschat_room('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivschat_room', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivschat_room('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivschat_room', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -189,7 +263,7 @@ RSpec.describe Pangea::Resources::AWSIvschatRoom do
     resource_type: :aws_ivschat_room,
     method: :aws_ivschat_room,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :maximum_message_length, :maximum_message_rate_per_second, :tags_all],
+    expected_outputs: [:id, :arn, :maximum_message_length, :maximum_message_rate_per_second, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

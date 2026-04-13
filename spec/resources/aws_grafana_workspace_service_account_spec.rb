@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspaceServiceAccount do
         ref = synth.aws_grafana_workspace_service_account('test', required_attrs)
 
         expect(ref.id).to eq("${aws_grafana_workspace_service_account.test.id}")
+        expect(ref.region).to eq("${aws_grafana_workspace_service_account.test.region}")
         expect(ref.service_account_id).to eq("${aws_grafana_workspace_service_account.test.service_account_id}")
       end
     end
@@ -50,7 +51,42 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspaceServiceAccount do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_grafana_workspace_service_account', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('service_account_id')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_service_account('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_grafana_workspace_service_account', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_service_account('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_service_account', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_service_account('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_service_account', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -98,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspaceServiceAccount do
     resource_type: :aws_grafana_workspace_service_account,
     method: :aws_grafana_workspace_service_account,
     required_attrs: { grafana_role: 'test-value', name: 'test-value', workspace_id: 'test-value' },
-    expected_outputs: [:id, :service_account_id],
+    expected_outputs: [:id, :region, :service_account_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

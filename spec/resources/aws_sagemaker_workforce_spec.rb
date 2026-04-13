@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkforce do
 
         expect(ref.id).to eq("${aws_sagemaker_workforce.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_workforce.test.arn}")
+        expect(ref.region).to eq("${aws_sagemaker_workforce.test.region}")
         expect(ref.subdomain).to eq("${aws_sagemaker_workforce.test.subdomain}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkforce do
 
         config = validate_resource_structure(result, 'aws_sagemaker_workforce', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('subdomain')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cognito_config: [{ 'key1' => 'val1' }], oidc_config: [{ 'key1' => 'val1' }], source_ip_config: [{ 'key1' => 'val1' }], workforce_vpc_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ cognito_config: { 'key1' => 'val1' }, oidc_config: { 'key1' => 'val1' }, region: 'test-value', source_ip_config: { 'key1' => 'val1' }, workforce_vpc_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkforce do
         config = validate_resource_structure(result, 'aws_sagemaker_workforce', 'full')
         expect(config).to have_key('cognito_config')
         expect(config).to have_key('oidc_config')
+        expect(config).to have_key('region')
         expect(config).to have_key('source_ip_config')
         expect(config).to have_key('workforce_vpc_config')
       end
@@ -77,7 +80,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkforce do
       it 'includes cognito_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_workforce('opt', required_attrs.merge(cognito_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_workforce('opt', required_attrs.merge(cognito_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_workforce', 'opt')
         expect(config).to have_key('cognito_config')
@@ -94,7 +97,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkforce do
       it 'includes oidc_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_workforce('opt', required_attrs.merge(oidc_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_workforce('opt', required_attrs.merge(oidc_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_workforce', 'opt')
         expect(config).to have_key('oidc_config')
@@ -108,10 +111,27 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkforce do
         config = validate_resource_structure(result, 'aws_sagemaker_workforce', 'minimal')
         expect(config).not_to have_key('oidc_config')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_workforce('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_workforce', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_workforce('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_workforce', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes source_ip_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_workforce('opt', required_attrs.merge(source_ip_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_workforce('opt', required_attrs.merge(source_ip_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_workforce', 'opt')
         expect(config).to have_key('source_ip_config')
@@ -128,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkforce do
       it 'includes workforce_vpc_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_workforce('opt', required_attrs.merge(workforce_vpc_config: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_workforce('opt', required_attrs.merge(workforce_vpc_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_workforce', 'opt')
         expect(config).to have_key('workforce_vpc_config')
@@ -186,7 +206,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkforce do
     resource_type: :aws_sagemaker_workforce,
     method: :aws_sagemaker_workforce,
     required_attrs: { workforce_name: 'test-value' },
-    expected_outputs: [:id, :arn, :subdomain],
+    expected_outputs: [:id, :arn, :region, :subdomain],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

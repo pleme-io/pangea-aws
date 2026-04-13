@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApprunnerConnectionAttributes,
       outputs: { id: :id },
       map: [:connection_name, :provider_type],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSApprunnerConnection

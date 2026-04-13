@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Sesv2EmailIdentityAttributes,
       outputs: { id: :id },
       map: [:email_identity],
-      map_present: [:configuration_set_name, :dkim_signing_attributes, :tags, :tags_all]
+      map_present: [:configuration_set_name, :dkim_signing_attributes, :region, :tags, :tags_all]
   end
   module AWS
     include AWSSesv2EmailIdentity

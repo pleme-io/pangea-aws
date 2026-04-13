@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QbusinessApplicationAttributes,
       outputs: { id: :id },
       map: [:display_name, :iam_service_role_arn, :identity_center_instance_arn],
-      map_present: [:attachments_configuration, :description, :encryption_configuration, :tags]
+      map_present: [:attachments_configuration, :description, :encryption_configuration, :region, :tags]
   end
   module AWS
     include AWSQbusinessApplication

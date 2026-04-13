@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEc2SubnetCidrReservation do
 
         expect(ref.id).to eq("${aws_ec2_subnet_cidr_reservation.test.id}")
         expect(ref.owner_id).to eq("${aws_ec2_subnet_cidr_reservation.test.owner_id}")
+        expect(ref.region).to eq("${aws_ec2_subnet_cidr_reservation.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSEc2SubnetCidrReservation do
 
         config = validate_resource_structure(result, 'aws_ec2_subnet_cidr_reservation', 'test')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSEc2SubnetCidrReservation do
 
         config = validate_resource_structure(result, 'aws_ec2_subnet_cidr_reservation', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -85,6 +88,23 @@ RSpec.describe Pangea::Resources::AWSEc2SubnetCidrReservation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_subnet_cidr_reservation', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_subnet_cidr_reservation('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_subnet_cidr_reservation', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_subnet_cidr_reservation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_subnet_cidr_reservation', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -132,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSEc2SubnetCidrReservation do
     resource_type: :aws_ec2_subnet_cidr_reservation,
     method: :aws_ec2_subnet_cidr_reservation,
     required_attrs: { cidr_block: 'test-value', reservation_type: 'test-value', subnet_id: 'test-value' },
-    expected_outputs: [:id, :owner_id],
+    expected_outputs: [:id, :owner_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

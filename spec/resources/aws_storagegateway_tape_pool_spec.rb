@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayTapePool do
 
         expect(ref.id).to eq("${aws_storagegateway_tape_pool.test.id}")
         expect(ref.arn).to eq("${aws_storagegateway_tape_pool.test.arn}")
+        expect(ref.region).to eq("${aws_storagegateway_tape_pool.test.region}")
         expect(ref.tags_all).to eq("${aws_storagegateway_tape_pool.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayTapePool do
 
         config = validate_resource_structure(result, 'aws_storagegateway_tape_pool', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ retention_lock_time_in_days: 3.14, retention_lock_type: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', retention_lock_time_in_days: 3.14, retention_lock_type: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,13 +68,32 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayTapePool do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_storagegateway_tape_pool', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('retention_lock_time_in_days')
         expect(config).to have_key('retention_lock_type')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_tape_pool('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_tape_pool', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_tape_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_tape_pool', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes retention_lock_time_in_days when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -124,6 +145,23 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayTapePool do
         config = validate_resource_structure(result, 'aws_storagegateway_tape_pool', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_tape_pool('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_tape_pool', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_storagegateway_tape_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_storagegateway_tape_pool', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -169,7 +207,7 @@ RSpec.describe Pangea::Resources::AWSStoragegatewayTapePool do
     resource_type: :aws_storagegateway_tape_pool,
     method: :aws_storagegateway_tape_pool,
     required_attrs: { pool_name: 'test-value', storage_class: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

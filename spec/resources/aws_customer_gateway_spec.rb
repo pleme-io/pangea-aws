@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCustomerGateway do
 
         expect(ref.id).to eq("${aws_customer_gateway.test.id}")
         expect(ref.arn).to eq("${aws_customer_gateway.test.arn}")
+        expect(ref.region).to eq("${aws_customer_gateway.test.region}")
         expect(ref.tags_all).to eq("${aws_customer_gateway.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSCustomerGateway do
 
         config = validate_resource_structure(result, 'aws_customer_gateway', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ bgp_asn: 'test-value', bgp_asn_extended: 'test-value', certificate_arn: 'test-value', device_name: 'test-value', ip_address: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ bgp_asn: 'test-value', bgp_asn_extended: 'test-value', certificate_arn: 'test-value', device_name: 'test-value', ip_address: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,7 +73,9 @@ RSpec.describe Pangea::Resources::AWSCustomerGateway do
         expect(config).to have_key('certificate_arn')
         expect(config).to have_key('device_name')
         expect(config).to have_key('ip_address')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -161,6 +165,23 @@ RSpec.describe Pangea::Resources::AWSCustomerGateway do
         config = validate_resource_structure(result, 'aws_customer_gateway', 'minimal')
         expect(config).not_to have_key('ip_address')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_customer_gateway('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_customer_gateway', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_customer_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_customer_gateway', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -177,6 +198,23 @@ RSpec.describe Pangea::Resources::AWSCustomerGateway do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_customer_gateway', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_customer_gateway('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_customer_gateway', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_customer_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_customer_gateway', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -222,7 +260,7 @@ RSpec.describe Pangea::Resources::AWSCustomerGateway do
     resource_type: :aws_customer_gateway,
     method: :aws_customer_gateway,
     required_attrs: { type: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

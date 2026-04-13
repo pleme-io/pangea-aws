@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IotAuthorizerAttributes,
       outputs: { id: :id },
       map: [:authorizer_function_arn, :name],
-      map_present: [:status, :tags, :tags_all, :token_key_name, :token_signing_public_keys],
+      map_present: [:region, :status, :tags, :tags_all, :token_key_name, :token_signing_public_keys],
       map_bool: [:enable_caching_for_http, :signing_disabled]
   end
   module AWS

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSComputeoptimizerRecommendationPreferences d
 
         expect(ref.id).to eq("${aws_computeoptimizer_recommendation_preferences.test.id}")
         expect(ref.look_back_period).to eq("${aws_computeoptimizer_recommendation_preferences.test.look_back_period}")
+        expect(ref.region).to eq("${aws_computeoptimizer_recommendation_preferences.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSComputeoptimizerRecommendationPreferences d
 
         config = validate_resource_structure(result, 'aws_computeoptimizer_recommendation_preferences', 'test')
         expect(config).not_to have_key('look_back_period')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enhanced_infrastructure_metrics: 'test-value', external_metrics_preference: [{ 'key1' => 'val1' }], inferred_workload_types: 'test-value', preferred_resource: [{ 'key1' => 'val1' }], savings_estimation_mode: 'test-value', scope: [{ 'key1' => 'val1' }], utilization_preference: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ enhanced_infrastructure_metrics: 'test-value', external_metrics_preference: [{ 'key1' => 'val1' }], inferred_workload_types: 'test-value', look_back_period: 'test-value', preferred_resource: [{ 'key1' => 'val1' }], region: 'test-value', savings_estimation_mode: 'test-value', scope: [{ 'key1' => 'val1' }], utilization_preference: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,7 +69,9 @@ RSpec.describe Pangea::Resources::AWSComputeoptimizerRecommendationPreferences d
         expect(config).to have_key('enhanced_infrastructure_metrics')
         expect(config).to have_key('external_metrics_preference')
         expect(config).to have_key('inferred_workload_types')
+        expect(config).to have_key('look_back_period')
         expect(config).to have_key('preferred_resource')
+        expect(config).to have_key('region')
         expect(config).to have_key('savings_estimation_mode')
         expect(config).to have_key('scope')
         expect(config).to have_key('utilization_preference')
@@ -126,6 +130,23 @@ RSpec.describe Pangea::Resources::AWSComputeoptimizerRecommendationPreferences d
         config = validate_resource_structure(result, 'aws_computeoptimizer_recommendation_preferences', 'minimal')
         expect(config).not_to have_key('inferred_workload_types')
       end
+      it 'includes look_back_period when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_computeoptimizer_recommendation_preferences('opt', required_attrs.merge(look_back_period: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_computeoptimizer_recommendation_preferences', 'opt')
+        expect(config).to have_key('look_back_period')
+      end
+
+      it 'omits look_back_period when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_computeoptimizer_recommendation_preferences('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_computeoptimizer_recommendation_preferences', 'minimal')
+        expect(config).not_to have_key('look_back_period')
+      end
       it 'includes preferred_resource when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -142,6 +163,23 @@ RSpec.describe Pangea::Resources::AWSComputeoptimizerRecommendationPreferences d
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_computeoptimizer_recommendation_preferences', 'minimal')
         expect(config).not_to have_key('preferred_resource')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_computeoptimizer_recommendation_preferences('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_computeoptimizer_recommendation_preferences', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_computeoptimizer_recommendation_preferences('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_computeoptimizer_recommendation_preferences', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes savings_estimation_mode when provided' do
         synth = create_synthesizer
@@ -238,7 +276,7 @@ RSpec.describe Pangea::Resources::AWSComputeoptimizerRecommendationPreferences d
     resource_type: :aws_computeoptimizer_recommendation_preferences,
     method: :aws_computeoptimizer_recommendation_preferences,
     required_attrs: { resource_type: 'test-value' },
-    expected_outputs: [:id, :look_back_period],
+    expected_outputs: [:id, :look_back_period, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

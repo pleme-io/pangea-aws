@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SfnAliasAttributes,
       outputs: { id: :id },
       map: [:name, :routing_configuration],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSSfnAlias

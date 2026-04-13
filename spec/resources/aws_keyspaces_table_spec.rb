@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSKeyspacesTable do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { keyspace_name: 'test-value', schema_definition: [{ 'key1' => 'val1' }], table_name: 'test-value' } }
+  let(:required_attrs) { { keyspace_name: 'test-value', schema_definition: { 'key1' => 'val1' }, table_name: 'test-value' } }
 
   describe ':aws_keyspaces_table' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSKeyspacesTable do
 
         expect(ref.id).to eq("${aws_keyspaces_table.test.id}")
         expect(ref.arn).to eq("${aws_keyspaces_table.test.arn}")
+        expect(ref.region).to eq("${aws_keyspaces_table.test.region}")
         expect(ref.tags_all).to eq("${aws_keyspaces_table.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSKeyspacesTable do
 
         config = validate_resource_structure(result, 'aws_keyspaces_table', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ capacity_specification: [{ 'key1' => 'val1' }], client_side_timestamps: [{ 'key1' => 'val1' }], comment: [{ 'key1' => 'val1' }], default_time_to_live: 3.14, encryption_specification: [{ 'key1' => 'val1' }], point_in_time_recovery: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, ttl: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ capacity_specification: { 'key1' => 'val1' }, client_side_timestamps: { 'key1' => 'val1' }, comment: { 'key1' => 'val1' }, default_time_to_live: 3.14, encryption_specification: { 'key1' => 'val1' }, point_in_time_recovery: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, ttl: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,7 +74,9 @@ RSpec.describe Pangea::Resources::AWSKeyspacesTable do
         expect(config).to have_key('default_time_to_live')
         expect(config).to have_key('encryption_specification')
         expect(config).to have_key('point_in_time_recovery')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('ttl')
       end
     end
@@ -81,7 +85,7 @@ RSpec.describe Pangea::Resources::AWSKeyspacesTable do
       it 'includes capacity_specification when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_keyspaces_table('opt', required_attrs.merge(capacity_specification: [{ 'key1' => 'val1' }]))
+        synth.aws_keyspaces_table('opt', required_attrs.merge(capacity_specification: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_keyspaces_table', 'opt')
         expect(config).to have_key('capacity_specification')
@@ -98,7 +102,7 @@ RSpec.describe Pangea::Resources::AWSKeyspacesTable do
       it 'includes client_side_timestamps when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_keyspaces_table('opt', required_attrs.merge(client_side_timestamps: [{ 'key1' => 'val1' }]))
+        synth.aws_keyspaces_table('opt', required_attrs.merge(client_side_timestamps: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_keyspaces_table', 'opt')
         expect(config).to have_key('client_side_timestamps')
@@ -115,7 +119,7 @@ RSpec.describe Pangea::Resources::AWSKeyspacesTable do
       it 'includes comment when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_keyspaces_table('opt', required_attrs.merge(comment: [{ 'key1' => 'val1' }]))
+        synth.aws_keyspaces_table('opt', required_attrs.merge(comment: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_keyspaces_table', 'opt')
         expect(config).to have_key('comment')
@@ -149,7 +153,7 @@ RSpec.describe Pangea::Resources::AWSKeyspacesTable do
       it 'includes encryption_specification when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_keyspaces_table('opt', required_attrs.merge(encryption_specification: [{ 'key1' => 'val1' }]))
+        synth.aws_keyspaces_table('opt', required_attrs.merge(encryption_specification: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_keyspaces_table', 'opt')
         expect(config).to have_key('encryption_specification')
@@ -166,7 +170,7 @@ RSpec.describe Pangea::Resources::AWSKeyspacesTable do
       it 'includes point_in_time_recovery when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_keyspaces_table('opt', required_attrs.merge(point_in_time_recovery: [{ 'key1' => 'val1' }]))
+        synth.aws_keyspaces_table('opt', required_attrs.merge(point_in_time_recovery: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_keyspaces_table', 'opt')
         expect(config).to have_key('point_in_time_recovery')
@@ -179,6 +183,23 @@ RSpec.describe Pangea::Resources::AWSKeyspacesTable do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_keyspaces_table', 'minimal')
         expect(config).not_to have_key('point_in_time_recovery')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_keyspaces_table('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_keyspaces_table', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_keyspaces_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_keyspaces_table', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -197,10 +218,27 @@ RSpec.describe Pangea::Resources::AWSKeyspacesTable do
         config = validate_resource_structure(result, 'aws_keyspaces_table', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_keyspaces_table('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_keyspaces_table', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_keyspaces_table('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_keyspaces_table', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes ttl when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_keyspaces_table('opt', required_attrs.merge(ttl: [{ 'key1' => 'val1' }]))
+        synth.aws_keyspaces_table('opt', required_attrs.merge(ttl: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_keyspaces_table', 'opt')
         expect(config).to have_key('ttl')
@@ -225,7 +263,7 @@ RSpec.describe Pangea::Resources::AWSKeyspacesTable do
 
         config = validate_resource_structure(result, 'aws_keyspaces_table', 'typed')
         expect(config['keyspace_name']).to be_a(String)
-        expect(config['schema_definition']).to be_a(Array)
+        expect(config['schema_definition']).to be_a(Hash)
         expect(config['table_name']).to be_a(String)
       end
     end
@@ -259,8 +297,8 @@ RSpec.describe Pangea::Resources::AWSKeyspacesTable do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_keyspaces_table,
     method: :aws_keyspaces_table,
-    required_attrs: { keyspace_name: 'test-value', schema_definition: [{ 'key1' => 'val1' }], table_name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    required_attrs: { keyspace_name: 'test-value', schema_definition: { 'key1' => 'val1' }, table_name: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSIotProvisioningTemplate do
         expect(ref.id).to eq("${aws_iot_provisioning_template.test.id}")
         expect(ref.arn).to eq("${aws_iot_provisioning_template.test.arn}")
         expect(ref.default_version_id).to eq("${aws_iot_provisioning_template.test.default_version_id}")
+        expect(ref.region).to eq("${aws_iot_provisioning_template.test.region}")
         expect(ref.tags_all).to eq("${aws_iot_provisioning_template.test.tags_all}")
         expect(ref.type).to eq("${aws_iot_provisioning_template.test.type}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSIotProvisioningTemplate do
         config = validate_resource_structure(result, 'aws_iot_provisioning_template', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('default_version_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('type')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', enabled: true, pre_provisioning_hook: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', enabled: true, pre_provisioning_hook: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,10 @@ RSpec.describe Pangea::Resources::AWSIotProvisioningTemplate do
         expect(config).to have_key('description')
         expect(config).to have_key('enabled')
         expect(config).to have_key('pre_provisioning_hook')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('type')
       end
     end
 
@@ -115,7 +120,7 @@ RSpec.describe Pangea::Resources::AWSIotProvisioningTemplate do
       it 'includes pre_provisioning_hook when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_iot_provisioning_template('opt', required_attrs.merge(pre_provisioning_hook: [{ 'key1' => 'val1' }]))
+        synth.aws_iot_provisioning_template('opt', required_attrs.merge(pre_provisioning_hook: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_provisioning_template', 'opt')
         expect(config).to have_key('pre_provisioning_hook')
@@ -128,6 +133,23 @@ RSpec.describe Pangea::Resources::AWSIotProvisioningTemplate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_provisioning_template', 'minimal')
         expect(config).not_to have_key('pre_provisioning_hook')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_provisioning_template('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_provisioning_template', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_provisioning_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_provisioning_template', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -145,6 +167,40 @@ RSpec.describe Pangea::Resources::AWSIotProvisioningTemplate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_provisioning_template', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_provisioning_template('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_provisioning_template', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_provisioning_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_provisioning_template', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_provisioning_template('opt', required_attrs.merge(type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_provisioning_template', 'opt')
+        expect(config).to have_key('type')
+      end
+
+      it 'omits type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_provisioning_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_provisioning_template', 'minimal')
+        expect(config).not_to have_key('type')
       end
     end
 
@@ -206,7 +262,7 @@ RSpec.describe Pangea::Resources::AWSIotProvisioningTemplate do
     resource_type: :aws_iot_provisioning_template,
     method: :aws_iot_provisioning_template,
     required_attrs: { name: 'test-value', provisioning_role_arn: 'test-value', template_body: 'test-value' },
-    expected_outputs: [:id, :arn, :default_version_id, :tags_all, :type],
+    expected_outputs: [:id, :arn, :default_version_id, :region, :tags_all, :type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled]

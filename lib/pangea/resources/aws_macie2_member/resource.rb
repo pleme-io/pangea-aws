@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Macie2MemberAttributes,
       outputs: { id: :id },
       map: [:account_id, :email],
-      map_present: [:invitation_message, :status, :tags, :tags_all],
+      map_present: [:invitation_message, :region, :status, :tags, :tags_all],
       map_bool: [:invitation_disable_email_notification, :invite]
   end
   module AWS

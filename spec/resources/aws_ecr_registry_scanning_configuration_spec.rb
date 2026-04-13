@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSEcrRegistryScanningConfiguration do
         ref = synth.aws_ecr_registry_scanning_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ecr_registry_scanning_configuration.test.id}")
+        expect(ref.region).to eq("${aws_ecr_registry_scanning_configuration.test.region}")
         expect(ref.registry_id).to eq("${aws_ecr_registry_scanning_configuration.test.registry_id}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSEcrRegistryScanningConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ecr_registry_scanning_configuration', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('registry_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ rule: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', rule: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,11 +66,29 @@ RSpec.describe Pangea::Resources::AWSEcrRegistryScanningConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ecr_registry_scanning_configuration', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('rule')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_registry_scanning_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_registry_scanning_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_registry_scanning_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_registry_scanning_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes rule when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -130,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSEcrRegistryScanningConfiguration do
     resource_type: :aws_ecr_registry_scanning_configuration,
     method: :aws_ecr_registry_scanning_configuration,
     required_attrs: { scan_type: 'test-value' },
-    expected_outputs: [:id, :registry_id],
+    expected_outputs: [:id, :region, :registry_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

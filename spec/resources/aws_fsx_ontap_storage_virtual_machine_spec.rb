@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapStorageVirtualMachine do
         expect(ref.id).to eq("${aws_fsx_ontap_storage_virtual_machine.test.id}")
         expect(ref.arn).to eq("${aws_fsx_ontap_storage_virtual_machine.test.arn}")
         expect(ref.endpoints).to eq("${aws_fsx_ontap_storage_virtual_machine.test.endpoints}")
+        expect(ref.region).to eq("${aws_fsx_ontap_storage_virtual_machine.test.region}")
         expect(ref.subtype).to eq("${aws_fsx_ontap_storage_virtual_machine.test.subtype}")
         expect(ref.tags_all).to eq("${aws_fsx_ontap_storage_virtual_machine.test.tags_all}")
         expect(ref.uuid).to eq("${aws_fsx_ontap_storage_virtual_machine.test.uuid}")
@@ -56,6 +57,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapStorageVirtualMachine do
         config = validate_resource_structure(result, 'aws_fsx_ontap_storage_virtual_machine', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('endpoints')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('subtype')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('uuid')
@@ -63,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapStorageVirtualMachine do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ active_directory_configuration: [{ 'key1' => 'val1' }], root_volume_security_style: 'test-value', svm_admin_password: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ active_directory_configuration: { 'key1' => 'val1' }, region: 'test-value', root_volume_security_style: 'test-value', svm_admin_password: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,9 +75,11 @@ RSpec.describe Pangea::Resources::AWSFsxOntapStorageVirtualMachine do
 
         config = validate_resource_structure(result, 'aws_fsx_ontap_storage_virtual_machine', 'full')
         expect(config).to have_key('active_directory_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('root_volume_security_style')
         expect(config).to have_key('svm_admin_password')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -83,7 +87,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapStorageVirtualMachine do
       it 'includes active_directory_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_ontap_storage_virtual_machine('opt', required_attrs.merge(active_directory_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_ontap_storage_virtual_machine('opt', required_attrs.merge(active_directory_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_ontap_storage_virtual_machine', 'opt')
         expect(config).to have_key('active_directory_configuration')
@@ -96,6 +100,23 @@ RSpec.describe Pangea::Resources::AWSFsxOntapStorageVirtualMachine do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_ontap_storage_virtual_machine', 'minimal')
         expect(config).not_to have_key('active_directory_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_storage_virtual_machine('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_storage_virtual_machine', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_storage_virtual_machine('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_storage_virtual_machine', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes root_volume_security_style when provided' do
         synth = create_synthesizer
@@ -147,6 +168,23 @@ RSpec.describe Pangea::Resources::AWSFsxOntapStorageVirtualMachine do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_ontap_storage_virtual_machine', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_storage_virtual_machine('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_storage_virtual_machine', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_storage_virtual_machine('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_storage_virtual_machine', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -200,7 +238,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapStorageVirtualMachine do
     resource_type: :aws_fsx_ontap_storage_virtual_machine,
     method: :aws_fsx_ontap_storage_virtual_machine,
     required_attrs: { file_system_id: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :endpoints, :subtype, :tags_all, :uuid],
+    expected_outputs: [:id, :arn, :endpoints, :region, :subtype, :tags_all, :uuid],
     sensitive_fields: [:svm_admin_password],
     immutable_fields: [],
     boolean_fields: []

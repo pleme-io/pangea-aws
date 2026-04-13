@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_rds_cluster_role_association,
       attributes_class: AWS::Types::RdsClusterRoleAssociationAttributes,
       outputs: { id: :id },
-      map: [:db_cluster_identifier, :feature_name, :role_arn]
+      map: [:db_cluster_identifier, :role_arn],
+      map_present: [:feature_name, :region]
   end
   module AWS
     include AWSRdsClusterRoleAssociation

@@ -53,6 +53,7 @@ RSpec.describe Pangea::Resources::AWSDocdbClusterInstance do
         expect(ref.preferred_backup_window).to eq("${aws_docdb_cluster_instance.test.preferred_backup_window}")
         expect(ref.preferred_maintenance_window).to eq("${aws_docdb_cluster_instance.test.preferred_maintenance_window}")
         expect(ref.publicly_accessible).to eq("${aws_docdb_cluster_instance.test.publicly_accessible}")
+        expect(ref.region).to eq("${aws_docdb_cluster_instance.test.region}")
         expect(ref.storage_encrypted).to eq("${aws_docdb_cluster_instance.test.storage_encrypted}")
         expect(ref.tags_all).to eq("${aws_docdb_cluster_instance.test.tags_all}")
         expect(ref.writer).to eq("${aws_docdb_cluster_instance.test.writer}")
@@ -82,6 +83,7 @@ RSpec.describe Pangea::Resources::AWSDocdbClusterInstance do
         expect(config).not_to have_key('preferred_backup_window')
         expect(config).not_to have_key('preferred_maintenance_window')
         expect(config).not_to have_key('publicly_accessible')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('storage_encrypted')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('writer')
@@ -89,7 +91,7 @@ RSpec.describe Pangea::Resources::AWSDocdbClusterInstance do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ apply_immediately: true, auto_minor_version_upgrade: true, copy_tags_to_snapshot: true, enable_performance_insights: true, engine: 'test-value', promotion_tier: 3.14, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ apply_immediately: true, auto_minor_version_upgrade: true, availability_zone: 'test-value', ca_cert_identifier: 'test-value', certificate_rotation_restart: 'test-value', copy_tags_to_snapshot: true, enable_performance_insights: true, engine: 'test-value', identifier: 'test-value', identifier_prefix: 'test-value', performance_insights_kms_key_id: 'test-value', preferred_maintenance_window: 'test-value', promotion_tier: 3.14, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -100,11 +102,20 @@ RSpec.describe Pangea::Resources::AWSDocdbClusterInstance do
         config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'full')
         expect(config).to have_key('apply_immediately')
         expect(config).to have_key('auto_minor_version_upgrade')
+        expect(config).to have_key('availability_zone')
+        expect(config).to have_key('ca_cert_identifier')
+        expect(config).to have_key('certificate_rotation_restart')
         expect(config).to have_key('copy_tags_to_snapshot')
         expect(config).to have_key('enable_performance_insights')
         expect(config).to have_key('engine')
+        expect(config).to have_key('identifier')
+        expect(config).to have_key('identifier_prefix')
+        expect(config).to have_key('performance_insights_kms_key_id')
+        expect(config).to have_key('preferred_maintenance_window')
         expect(config).to have_key('promotion_tier')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -142,6 +153,57 @@ RSpec.describe Pangea::Resources::AWSDocdbClusterInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'minimal')
         expect(config).not_to have_key('auto_minor_version_upgrade')
+      end
+      it 'includes availability_zone when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('opt', required_attrs.merge(availability_zone: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'opt')
+        expect(config).to have_key('availability_zone')
+      end
+
+      it 'omits availability_zone when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'minimal')
+        expect(config).not_to have_key('availability_zone')
+      end
+      it 'includes ca_cert_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('opt', required_attrs.merge(ca_cert_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'opt')
+        expect(config).to have_key('ca_cert_identifier')
+      end
+
+      it 'omits ca_cert_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'minimal')
+        expect(config).not_to have_key('ca_cert_identifier')
+      end
+      it 'includes certificate_rotation_restart when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('opt', required_attrs.merge(certificate_rotation_restart: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'opt')
+        expect(config).to have_key('certificate_rotation_restart')
+      end
+
+      it 'omits certificate_rotation_restart when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'minimal')
+        expect(config).not_to have_key('certificate_rotation_restart')
       end
       it 'includes copy_tags_to_snapshot when provided' do
         synth = create_synthesizer
@@ -194,6 +256,74 @@ RSpec.describe Pangea::Resources::AWSDocdbClusterInstance do
         config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'minimal')
         expect(config).not_to have_key('engine')
       end
+      it 'includes identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('opt', required_attrs.merge(identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'opt')
+        expect(config).to have_key('identifier')
+      end
+
+      it 'omits identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'minimal')
+        expect(config).not_to have_key('identifier')
+      end
+      it 'includes identifier_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('opt', required_attrs.merge(identifier_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'opt')
+        expect(config).to have_key('identifier_prefix')
+      end
+
+      it 'omits identifier_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'minimal')
+        expect(config).not_to have_key('identifier_prefix')
+      end
+      it 'includes performance_insights_kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('opt', required_attrs.merge(performance_insights_kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'opt')
+        expect(config).to have_key('performance_insights_kms_key_id')
+      end
+
+      it 'omits performance_insights_kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'minimal')
+        expect(config).not_to have_key('performance_insights_kms_key_id')
+      end
+      it 'includes preferred_maintenance_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('opt', required_attrs.merge(preferred_maintenance_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'opt')
+        expect(config).to have_key('preferred_maintenance_window')
+      end
+
+      it 'omits preferred_maintenance_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'minimal')
+        expect(config).not_to have_key('preferred_maintenance_window')
+      end
       it 'includes promotion_tier when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -211,6 +341,23 @@ RSpec.describe Pangea::Resources::AWSDocdbClusterInstance do
         config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'minimal')
         expect(config).not_to have_key('promotion_tier')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -227,6 +374,23 @@ RSpec.describe Pangea::Resources::AWSDocdbClusterInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_docdb_cluster_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_docdb_cluster_instance', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -320,7 +484,7 @@ RSpec.describe Pangea::Resources::AWSDocdbClusterInstance do
     resource_type: :aws_docdb_cluster_instance,
     method: :aws_docdb_cluster_instance,
     required_attrs: { cluster_identifier: 'test-value', instance_class: 'test-value' },
-    expected_outputs: [:id, :arn, :availability_zone, :ca_cert_identifier, :db_subnet_group_name, :dbi_resource_id, :endpoint, :engine_version, :identifier, :identifier_prefix, :kms_key_id, :performance_insights_kms_key_id, :port, :preferred_backup_window, :preferred_maintenance_window, :publicly_accessible, :storage_encrypted, :tags_all, :writer],
+    expected_outputs: [:id, :arn, :availability_zone, :ca_cert_identifier, :db_subnet_group_name, :dbi_resource_id, :endpoint, :engine_version, :identifier, :identifier_prefix, :kms_key_id, :performance_insights_kms_key_id, :port, :preferred_backup_window, :preferred_maintenance_window, :publicly_accessible, :region, :storage_encrypted, :tags_all, :writer],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:apply_immediately, :auto_minor_version_upgrade, :copy_tags_to_snapshot, :enable_performance_insights]

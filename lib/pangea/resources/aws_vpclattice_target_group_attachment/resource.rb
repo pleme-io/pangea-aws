@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpclattice_target_group_attachment,
       attributes_class: AWS::Types::VpclatticeTargetGroupAttachmentAttributes,
       outputs: { id: :id },
-      map: [:target, :target_group_identifier]
+      map: [:target, :target_group_identifier],
+      map_present: [:region]
   end
   module AWS
     include AWSVpclatticeTargetGroupAttachment

@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSTransferServer do
         expect(ref.endpoint).to eq("${aws_transfer_server.test.endpoint}")
         expect(ref.host_key_fingerprint).to eq("${aws_transfer_server.test.host_key_fingerprint}")
         expect(ref.protocols).to eq("${aws_transfer_server.test.protocols}")
+        expect(ref.region).to eq("${aws_transfer_server.test.region}")
         expect(ref.sftp_authentication_methods).to eq("${aws_transfer_server.test.sftp_authentication_methods}")
         expect(ref.tags_all).to eq("${aws_transfer_server.test.tags_all}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSTransferServer do
         expect(config).not_to have_key('endpoint')
         expect(config).not_to have_key('host_key_fingerprint')
         expect(config).not_to have_key('protocols')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('sftp_authentication_methods')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ certificate: 'test-value', directory_id: 'test-value', domain: 'test-value', endpoint_details: [{ 'key1' => 'val1' }], endpoint_type: 'test-value', force_destroy: true, function: 'test-value', host_key: 'test-value', identity_provider_type: 'test-value', invocation_role: 'test-value', logging_role: 'test-value', post_authentication_login_banner: 'test-value', pre_authentication_login_banner: 'test-value', protocol_details: [{ 'key1' => 'val1' }], s3_storage_options: [{ 'key1' => 'val1' }], security_policy_name: 'test-value', structured_log_destinations: ['test-value'], tags: { 'key1' => 'val1' }, url: 'test-value', workflow_details: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ certificate: 'test-value', directory_id: 'test-value', domain: 'test-value', endpoint_details: { 'key1' => 'val1' }, endpoint_type: 'test-value', force_destroy: true, function: 'test-value', host_key: 'test-value', identity_provider_type: 'test-value', invocation_role: 'test-value', logging_role: 'test-value', post_authentication_login_banner: 'test-value', pre_authentication_login_banner: 'test-value', protocol_details: { 'key1' => 'val1' }, protocols: ['test-value'], region: 'test-value', s3_storage_options: { 'key1' => 'val1' }, security_policy_name: 'test-value', sftp_authentication_methods: 'test-value', structured_log_destinations: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, url: 'test-value', workflow_details: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -88,10 +90,14 @@ RSpec.describe Pangea::Resources::AWSTransferServer do
         expect(config).to have_key('post_authentication_login_banner')
         expect(config).to have_key('pre_authentication_login_banner')
         expect(config).to have_key('protocol_details')
+        expect(config).to have_key('protocols')
+        expect(config).to have_key('region')
         expect(config).to have_key('s3_storage_options')
         expect(config).to have_key('security_policy_name')
+        expect(config).to have_key('sftp_authentication_methods')
         expect(config).to have_key('structured_log_destinations')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('url')
         expect(config).to have_key('workflow_details')
       end
@@ -152,7 +158,7 @@ RSpec.describe Pangea::Resources::AWSTransferServer do
       it 'includes endpoint_details when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_transfer_server('opt', required_attrs.merge(endpoint_details: [{ 'key1' => 'val1' }]))
+        synth.aws_transfer_server('opt', required_attrs.merge(endpoint_details: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_transfer_server', 'opt')
         expect(config).to have_key('endpoint_details')
@@ -322,7 +328,7 @@ RSpec.describe Pangea::Resources::AWSTransferServer do
       it 'includes protocol_details when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_transfer_server('opt', required_attrs.merge(protocol_details: [{ 'key1' => 'val1' }]))
+        synth.aws_transfer_server('opt', required_attrs.merge(protocol_details: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_transfer_server', 'opt')
         expect(config).to have_key('protocol_details')
@@ -336,10 +342,44 @@ RSpec.describe Pangea::Resources::AWSTransferServer do
         config = validate_resource_structure(result, 'aws_transfer_server', 'minimal')
         expect(config).not_to have_key('protocol_details')
       end
+      it 'includes protocols when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_server('opt', required_attrs.merge(protocols: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_server', 'opt')
+        expect(config).to have_key('protocols')
+      end
+
+      it 'omits protocols when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_server('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_server', 'minimal')
+        expect(config).not_to have_key('protocols')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_server('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_server', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_server('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_server', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes s3_storage_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_transfer_server('opt', required_attrs.merge(s3_storage_options: [{ 'key1' => 'val1' }]))
+        synth.aws_transfer_server('opt', required_attrs.merge(s3_storage_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_transfer_server', 'opt')
         expect(config).to have_key('s3_storage_options')
@@ -369,6 +409,23 @@ RSpec.describe Pangea::Resources::AWSTransferServer do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_transfer_server', 'minimal')
         expect(config).not_to have_key('security_policy_name')
+      end
+      it 'includes sftp_authentication_methods when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_server('opt', required_attrs.merge(sftp_authentication_methods: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_server', 'opt')
+        expect(config).to have_key('sftp_authentication_methods')
+      end
+
+      it 'omits sftp_authentication_methods when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_server('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_server', 'minimal')
+        expect(config).not_to have_key('sftp_authentication_methods')
       end
       it 'includes structured_log_destinations when provided' do
         synth = create_synthesizer
@@ -404,6 +461,23 @@ RSpec.describe Pangea::Resources::AWSTransferServer do
         config = validate_resource_structure(result, 'aws_transfer_server', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_server('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_server', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transfer_server('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transfer_server', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes url when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -424,7 +498,7 @@ RSpec.describe Pangea::Resources::AWSTransferServer do
       it 'includes workflow_details when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_transfer_server('opt', required_attrs.merge(workflow_details: [{ 'key1' => 'val1' }]))
+        synth.aws_transfer_server('opt', required_attrs.merge(workflow_details: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_transfer_server', 'opt')
         expect(config).to have_key('workflow_details')
@@ -504,7 +578,7 @@ RSpec.describe Pangea::Resources::AWSTransferServer do
     resource_type: :aws_transfer_server,
     method: :aws_transfer_server,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :endpoint, :host_key_fingerprint, :protocols, :sftp_authentication_methods, :tags_all],
+    expected_outputs: [:id, :arn, :endpoint, :host_key_fingerprint, :protocols, :region, :sftp_authentication_methods, :tags_all],
     sensitive_fields: [:host_key, :post_authentication_login_banner, :pre_authentication_login_banner],
     immutable_fields: [],
     boolean_fields: [:force_destroy]

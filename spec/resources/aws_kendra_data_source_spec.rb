@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSKendraDataSource do
         expect(ref.data_source_id).to eq("${aws_kendra_data_source.test.data_source_id}")
         expect(ref.error_message).to eq("${aws_kendra_data_source.test.error_message}")
         expect(ref.language_code).to eq("${aws_kendra_data_source.test.language_code}")
+        expect(ref.region).to eq("${aws_kendra_data_source.test.region}")
         expect(ref.status).to eq("${aws_kendra_data_source.test.status}")
         expect(ref.tags_all).to eq("${aws_kendra_data_source.test.tags_all}")
         expect(ref.updated_at).to eq("${aws_kendra_data_source.test.updated_at}")
@@ -62,6 +63,7 @@ RSpec.describe Pangea::Resources::AWSKendraDataSource do
         expect(config).not_to have_key('data_source_id')
         expect(config).not_to have_key('error_message')
         expect(config).not_to have_key('language_code')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('updated_at')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSKendraDataSource do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ configuration: [{ 'key1' => 'val1' }], custom_document_enrichment_configuration: [{ 'key1' => 'val1' }], description: 'test-value', role_arn: 'test-value', schedule: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ configuration: { 'key1' => 'val1' }, custom_document_enrichment_configuration: { 'key1' => 'val1' }, description: 'test-value', language_code: 'test-value', region: 'test-value', role_arn: 'test-value', schedule: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -81,9 +83,12 @@ RSpec.describe Pangea::Resources::AWSKendraDataSource do
         expect(config).to have_key('configuration')
         expect(config).to have_key('custom_document_enrichment_configuration')
         expect(config).to have_key('description')
+        expect(config).to have_key('language_code')
+        expect(config).to have_key('region')
         expect(config).to have_key('role_arn')
         expect(config).to have_key('schedule')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -91,7 +96,7 @@ RSpec.describe Pangea::Resources::AWSKendraDataSource do
       it 'includes configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kendra_data_source('opt', required_attrs.merge(configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kendra_data_source('opt', required_attrs.merge(configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kendra_data_source', 'opt')
         expect(config).to have_key('configuration')
@@ -108,7 +113,7 @@ RSpec.describe Pangea::Resources::AWSKendraDataSource do
       it 'includes custom_document_enrichment_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kendra_data_source('opt', required_attrs.merge(custom_document_enrichment_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_kendra_data_source('opt', required_attrs.merge(custom_document_enrichment_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kendra_data_source', 'opt')
         expect(config).to have_key('custom_document_enrichment_configuration')
@@ -138,6 +143,40 @@ RSpec.describe Pangea::Resources::AWSKendraDataSource do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kendra_data_source', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes language_code when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kendra_data_source('opt', required_attrs.merge(language_code: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kendra_data_source', 'opt')
+        expect(config).to have_key('language_code')
+      end
+
+      it 'omits language_code when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kendra_data_source('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kendra_data_source', 'minimal')
+        expect(config).not_to have_key('language_code')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kendra_data_source('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kendra_data_source', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kendra_data_source('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kendra_data_source', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes role_arn when provided' do
         synth = create_synthesizer
@@ -190,6 +229,23 @@ RSpec.describe Pangea::Resources::AWSKendraDataSource do
         config = validate_resource_structure(result, 'aws_kendra_data_source', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kendra_data_source('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kendra_data_source', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kendra_data_source('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kendra_data_source', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -236,7 +292,7 @@ RSpec.describe Pangea::Resources::AWSKendraDataSource do
     resource_type: :aws_kendra_data_source,
     method: :aws_kendra_data_source,
     required_attrs: { index_id: 'test-value', name: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :arn, :created_at, :data_source_id, :error_message, :language_code, :status, :tags_all, :updated_at],
+    expected_outputs: [:id, :arn, :created_at, :data_source_id, :error_message, :language_code, :region, :status, :tags_all, :updated_at],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

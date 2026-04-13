@@ -42,9 +42,11 @@ RSpec.describe Pangea::Resources::AWSEc2InstanceConnectEndpoint do
         expect(ref.availability_zone).to eq("${aws_ec2_instance_connect_endpoint.test.availability_zone}")
         expect(ref.dns_name).to eq("${aws_ec2_instance_connect_endpoint.test.dns_name}")
         expect(ref.fips_dns_name).to eq("${aws_ec2_instance_connect_endpoint.test.fips_dns_name}")
+        expect(ref.ip_address_type).to eq("${aws_ec2_instance_connect_endpoint.test.ip_address_type}")
         expect(ref.network_interface_ids).to eq("${aws_ec2_instance_connect_endpoint.test.network_interface_ids}")
         expect(ref.owner_id).to eq("${aws_ec2_instance_connect_endpoint.test.owner_id}")
         expect(ref.preserve_client_ip).to eq("${aws_ec2_instance_connect_endpoint.test.preserve_client_ip}")
+        expect(ref.region).to eq("${aws_ec2_instance_connect_endpoint.test.region}")
         expect(ref.security_group_ids).to eq("${aws_ec2_instance_connect_endpoint.test.security_group_ids}")
         expect(ref.tags_all).to eq("${aws_ec2_instance_connect_endpoint.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_ec2_instance_connect_endpoint.test.vpc_id}")
@@ -63,9 +65,11 @@ RSpec.describe Pangea::Resources::AWSEc2InstanceConnectEndpoint do
         expect(config).not_to have_key('availability_zone')
         expect(config).not_to have_key('dns_name')
         expect(config).not_to have_key('fips_dns_name')
+        expect(config).not_to have_key('ip_address_type')
         expect(config).not_to have_key('network_interface_ids')
         expect(config).not_to have_key('owner_id')
         expect(config).not_to have_key('preserve_client_ip')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_group_ids')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
@@ -73,7 +77,7 @@ RSpec.describe Pangea::Resources::AWSEc2InstanceConnectEndpoint do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ ip_address_type: 'test-value', preserve_client_ip: true, region: 'test-value', security_group_ids: ['test-value'], tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -82,11 +86,83 @@ RSpec.describe Pangea::Resources::AWSEc2InstanceConnectEndpoint do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ec2_instance_connect_endpoint', 'full')
+        expect(config).to have_key('ip_address_type')
+        expect(config).to have_key('preserve_client_ip')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_group_ids')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes ip_address_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_connect_endpoint('opt', required_attrs.merge(ip_address_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_connect_endpoint', 'opt')
+        expect(config).to have_key('ip_address_type')
+      end
+
+      it 'omits ip_address_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_connect_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_connect_endpoint', 'minimal')
+        expect(config).not_to have_key('ip_address_type')
+      end
+      it 'includes preserve_client_ip when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_connect_endpoint('opt', required_attrs.merge(preserve_client_ip: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_connect_endpoint', 'opt')
+        expect(config).to have_key('preserve_client_ip')
+      end
+
+      it 'omits preserve_client_ip when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_connect_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_connect_endpoint', 'minimal')
+        expect(config).not_to have_key('preserve_client_ip')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_connect_endpoint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_connect_endpoint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_connect_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_connect_endpoint', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_connect_endpoint('opt', required_attrs.merge(security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_connect_endpoint', 'opt')
+        expect(config).to have_key('security_group_ids')
+      end
+
+      it 'omits security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_connect_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_connect_endpoint', 'minimal')
+        expect(config).not_to have_key('security_group_ids')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -103,6 +179,20 @@ RSpec.describe Pangea::Resources::AWSEc2InstanceConnectEndpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_instance_connect_endpoint', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts preserve_client_ip=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(preserve_client_ip: val)
+          synth.aws_ec2_instance_connect_endpoint("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_ec2_instance_connect_endpoint', "bool_#{val}")
+          expect(config['preserve_client_ip']).to eq(val)
+        end
       end
     end
 
@@ -148,8 +238,8 @@ RSpec.describe Pangea::Resources::AWSEc2InstanceConnectEndpoint do
     resource_type: :aws_ec2_instance_connect_endpoint,
     method: :aws_ec2_instance_connect_endpoint,
     required_attrs: { subnet_id: 'test-value' },
-    expected_outputs: [:id, :arn, :availability_zone, :dns_name, :fips_dns_name, :network_interface_ids, :owner_id, :preserve_client_ip, :security_group_ids, :tags_all, :vpc_id],
+    expected_outputs: [:id, :arn, :availability_zone, :dns_name, :fips_dns_name, :ip_address_type, :network_interface_ids, :owner_id, :preserve_client_ip, :region, :security_group_ids, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:preserve_client_ip]
 end

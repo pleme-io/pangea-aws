@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ecs_account_setting_default,
       attributes_class: AWS::Types::EcsAccountSettingDefaultAttributes,
       outputs: { id: :id },
-      map: [:name, :value]
+      map: [:name, :value],
+      map_present: [:region]
   end
   module AWS
     include AWSEcsAccountSettingDefault

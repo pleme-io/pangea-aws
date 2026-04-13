@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppstreamUserAttributes,
       outputs: { id: :id },
       map: [:authentication_type, :user_name],
-      map_present: [:first_name, :last_name],
+      map_present: [:first_name, :last_name, :region],
       map_bool: [:enabled, :send_email_notification]
   end
   module AWS

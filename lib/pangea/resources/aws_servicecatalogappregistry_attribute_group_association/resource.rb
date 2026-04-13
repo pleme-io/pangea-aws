@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_servicecatalogappregistry_attribute_group_association,
       attributes_class: AWS::Types::ServicecatalogappregistryAttributeGroupAssociationAttributes,
       outputs: { id: :id },
-      map: [:application_id, :attribute_group_id]
+      map: [:application_id, :attribute_group_id],
+      map_present: [:region]
   end
   module AWS
     include AWSServicecatalogappregistryAttributeGroupAssociation

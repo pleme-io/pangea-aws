@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LightsailContainerServiceAttributes,
       outputs: { id: :id },
       map: [:name, :power, :scale],
-      map_present: [:private_registry_access, :public_domain_names, :tags, :tags_all],
+      map_present: [:private_registry_access, :public_domain_names, :region, :tags, :tags_all],
       map_bool: [:is_disabled]
   end
   module AWS

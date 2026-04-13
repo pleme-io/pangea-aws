@@ -69,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerConnectPeer do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ bgp_options: [{ 'key1' => 'val1' }], core_network_address: 'test-value', inside_cidr_blocks: ['test-value'], subnet_arn: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ bgp_options: { 'key1' => 'val1' }, core_network_address: 'test-value', inside_cidr_blocks: ['test-value'], subnet_arn: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -83,6 +83,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerConnectPeer do
         expect(config).to have_key('inside_cidr_blocks')
         expect(config).to have_key('subnet_arn')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -90,7 +91,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerConnectPeer do
       it 'includes bgp_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_networkmanager_connect_peer('opt', required_attrs.merge(bgp_options: [{ 'key1' => 'val1' }]))
+        synth.aws_networkmanager_connect_peer('opt', required_attrs.merge(bgp_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkmanager_connect_peer', 'opt')
         expect(config).to have_key('bgp_options')
@@ -171,6 +172,23 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerConnectPeer do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_networkmanager_connect_peer', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_connect_peer('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_connect_peer', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_connect_peer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_connect_peer', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 

@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSDbSubnetGroup do
         expect(ref.arn).to eq("${aws_db_subnet_group.test.arn}")
         expect(ref.name).to eq("${aws_db_subnet_group.test.name}")
         expect(ref.name_prefix).to eq("${aws_db_subnet_group.test.name_prefix}")
+        expect(ref.region).to eq("${aws_db_subnet_group.test.region}")
         expect(ref.supported_network_types).to eq("${aws_db_subnet_group.test.supported_network_types}")
         expect(ref.tags_all).to eq("${aws_db_subnet_group.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_db_subnet_group.test.vpc_id}")
@@ -58,6 +59,7 @@ RSpec.describe Pangea::Resources::AWSDbSubnetGroup do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('supported_network_types')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSDbSubnetGroup do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', name: 'test-value', name_prefix: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,7 +77,11 @@ RSpec.describe Pangea::Resources::AWSDbSubnetGroup do
 
         config = validate_resource_structure(result, 'aws_db_subnet_group', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -97,6 +103,57 @@ RSpec.describe Pangea::Resources::AWSDbSubnetGroup do
         config = validate_resource_structure(result, 'aws_db_subnet_group', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_subnet_group('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_subnet_group', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_subnet_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_subnet_group', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_subnet_group('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_subnet_group', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_subnet_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_subnet_group', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_subnet_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_subnet_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_subnet_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_subnet_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -113,6 +170,23 @@ RSpec.describe Pangea::Resources::AWSDbSubnetGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_subnet_group', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_subnet_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_subnet_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_subnet_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_subnet_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -158,7 +232,7 @@ RSpec.describe Pangea::Resources::AWSDbSubnetGroup do
     resource_type: :aws_db_subnet_group,
     method: :aws_db_subnet_group,
     required_attrs: { subnet_ids: ['test-value'] },
-    expected_outputs: [:id, :arn, :name, :name_prefix, :supported_network_types, :tags_all, :vpc_id],
+    expected_outputs: [:id, :arn, :name, :name_prefix, :region, :supported_network_types, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

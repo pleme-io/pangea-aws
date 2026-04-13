@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcRouteServerPeerAttributes,
       outputs: { id: :id },
       map: [:peer_address, :route_server_endpoint_id],
-      map_present: [:bgp_options, :tags]
+      map_present: [:bgp_options, :region, :tags]
   end
   module AWS
     include AWSVpcRouteServerPeer

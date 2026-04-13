@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EbsSnapshotCopyAttributes,
       outputs: { id: :id },
       map: [:source_region, :source_snapshot_id],
-      map_present: [:completion_duration_minutes, :description, :kms_key_id, :storage_tier, :tags, :tags_all, :temporary_restore_days],
+      map_present: [:completion_duration_minutes, :description, :kms_key_id, :region, :storage_tier, :tags, :tags_all, :temporary_restore_days],
       map_bool: [:encrypted, :permanent_restore]
   end
   module AWS

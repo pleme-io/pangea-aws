@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchLogDestinationAttributes,
       outputs: { id: :id },
       map: [:name, :role_arn, :target_arn],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSCloudwatchLogDestination

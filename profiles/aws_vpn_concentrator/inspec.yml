@@ -1,0 +1,8 @@
+name: aws_vpn_concentrator
+title: Manages a aws_vpn_concentrator resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

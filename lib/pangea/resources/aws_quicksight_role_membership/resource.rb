@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightRoleMembershipAttributes,
       outputs: { id: :id },
       map: [:member_name, :role],
-      map_present: [:aws_account_id, :namespace]
+      map_present: [:aws_account_id, :namespace, :region]
   end
   module AWS
     include AWSQuicksightRoleMembership

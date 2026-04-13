@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerFrameworkShare do
         ref = synth.aws_auditmanager_framework_share('test', required_attrs)
 
         expect(ref.id).to eq("${aws_auditmanager_framework_share.test.id}")
+        expect(ref.region).to eq("${aws_auditmanager_framework_share.test.region}")
         expect(ref.status).to eq("${aws_auditmanager_framework_share.test.status}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerFrameworkShare do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_auditmanager_framework_share', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ comment: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ comment: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerFrameworkShare do
 
         config = validate_resource_structure(result, 'aws_auditmanager_framework_share', 'full')
         expect(config).to have_key('comment')
+        expect(config).to have_key('region')
       end
     end
 
@@ -85,6 +88,23 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerFrameworkShare do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_auditmanager_framework_share', 'minimal')
         expect(config).not_to have_key('comment')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_framework_share('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_framework_share', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_framework_share('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_framework_share', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -132,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerFrameworkShare do
     resource_type: :aws_auditmanager_framework_share,
     method: :aws_auditmanager_framework_share,
     required_attrs: { destination_account: 'test-value', destination_region: 'test-value', framework_id: 'test-value' },
-    expected_outputs: [:id, :status],
+    expected_outputs: [:id, :region, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcSecurityGroupEgressRuleAttributes,
       outputs: { id: :id },
       map: [:ip_protocol, :security_group_id],
-      map_present: [:cidr_ipv4, :cidr_ipv6, :description, :from_port, :prefix_list_id, :referenced_security_group_id, :tags, :to_port]
+      map_present: [:cidr_ipv4, :cidr_ipv6, :description, :from_port, :prefix_list_id, :referenced_security_group_id, :region, :tags, :to_port]
   end
   module AWS
     include AWSVpcSecurityGroupEgressRule

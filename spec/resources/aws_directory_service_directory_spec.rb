@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceDirectory do
         expect(ref.desired_number_of_domain_controllers).to eq("${aws_directory_service_directory.test.desired_number_of_domain_controllers}")
         expect(ref.dns_ip_addresses).to eq("${aws_directory_service_directory.test.dns_ip_addresses}")
         expect(ref.edition).to eq("${aws_directory_service_directory.test.edition}")
+        expect(ref.region).to eq("${aws_directory_service_directory.test.region}")
         expect(ref.security_group_id).to eq("${aws_directory_service_directory.test.security_group_id}")
         expect(ref.short_name).to eq("${aws_directory_service_directory.test.short_name}")
         expect(ref.size).to eq("${aws_directory_service_directory.test.size}")
@@ -63,6 +64,7 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceDirectory do
         expect(config).not_to have_key('desired_number_of_domain_controllers')
         expect(config).not_to have_key('dns_ip_addresses')
         expect(config).not_to have_key('edition')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_group_id')
         expect(config).not_to have_key('short_name')
         expect(config).not_to have_key('size')
@@ -71,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceDirectory do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ connect_settings: [{ 'key1' => 'val1' }], description: 'test-value', enable_sso: true, tags: { 'key1' => 'val1' }, type: 'test-value', vpc_settings: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ alias: 'test-value', connect_settings: { 'key1' => 'val1' }, description: 'test-value', desired_number_of_domain_controllers: 3.14, edition: 'test-value', enable_sso: true, region: 'test-value', short_name: 'test-value', size: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, type: 'test-value', vpc_settings: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,20 +82,44 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceDirectory do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_directory_service_directory', 'full')
+        expect(config).to have_key('alias')
         expect(config).to have_key('connect_settings')
         expect(config).to have_key('description')
+        expect(config).to have_key('desired_number_of_domain_controllers')
+        expect(config).to have_key('edition')
         expect(config).to have_key('enable_sso')
+        expect(config).to have_key('region')
+        expect(config).to have_key('short_name')
+        expect(config).to have_key('size')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('type')
         expect(config).to have_key('vpc_settings')
       end
     end
 
     context 'optional attributes' do
+      it 'includes alias when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('opt', required_attrs.merge(alias: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'opt')
+        expect(config).to have_key('alias')
+      end
+
+      it 'omits alias when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'minimal')
+        expect(config).not_to have_key('alias')
+      end
       it 'includes connect_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_directory_service_directory('opt', required_attrs.merge(connect_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_directory_service_directory('opt', required_attrs.merge(connect_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_directory_service_directory', 'opt')
         expect(config).to have_key('connect_settings')
@@ -124,6 +150,40 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceDirectory do
         config = validate_resource_structure(result, 'aws_directory_service_directory', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes desired_number_of_domain_controllers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('opt', required_attrs.merge(desired_number_of_domain_controllers: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'opt')
+        expect(config).to have_key('desired_number_of_domain_controllers')
+      end
+
+      it 'omits desired_number_of_domain_controllers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'minimal')
+        expect(config).not_to have_key('desired_number_of_domain_controllers')
+      end
+      it 'includes edition when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('opt', required_attrs.merge(edition: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'opt')
+        expect(config).to have_key('edition')
+      end
+
+      it 'omits edition when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'minimal')
+        expect(config).not_to have_key('edition')
+      end
       it 'includes enable_sso when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -141,6 +201,57 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceDirectory do
         config = validate_resource_structure(result, 'aws_directory_service_directory', 'minimal')
         expect(config).not_to have_key('enable_sso')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes short_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('opt', required_attrs.merge(short_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'opt')
+        expect(config).to have_key('short_name')
+      end
+
+      it 'omits short_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'minimal')
+        expect(config).not_to have_key('short_name')
+      end
+      it 'includes size when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('opt', required_attrs.merge(size: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'opt')
+        expect(config).to have_key('size')
+      end
+
+      it 'omits size when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'minimal')
+        expect(config).not_to have_key('size')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -157,6 +268,23 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceDirectory do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_directory_service_directory', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_directory', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes type when provided' do
         synth = create_synthesizer
@@ -178,7 +306,7 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceDirectory do
       it 'includes vpc_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_directory_service_directory('opt', required_attrs.merge(vpc_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_directory_service_directory('opt', required_attrs.merge(vpc_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_directory_service_directory', 'opt')
         expect(config).to have_key('vpc_settings')
@@ -258,7 +386,7 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceDirectory do
     resource_type: :aws_directory_service_directory,
     method: :aws_directory_service_directory,
     required_attrs: { name: 'test-value', password: 'test-value' },
-    expected_outputs: [:id, :access_url, :alias, :desired_number_of_domain_controllers, :dns_ip_addresses, :edition, :security_group_id, :short_name, :size, :tags_all],
+    expected_outputs: [:id, :access_url, :alias, :desired_number_of_domain_controllers, :dns_ip_addresses, :edition, :region, :security_group_id, :short_name, :size, :tags_all],
     sensitive_fields: [:password],
     immutable_fields: [],
     boolean_fields: [:enable_sso]

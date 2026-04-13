@@ -1,0 +1,8 @@
+name: aws_networkfirewall_rule_group
+title: Manages a aws_networkfirewall_rule_group resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

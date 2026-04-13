@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCognitoIdentityProvider do
 
         expect(ref.id).to eq("${aws_cognito_identity_provider.test.id}")
         expect(ref.attribute_mapping).to eq("${aws_cognito_identity_provider.test.attribute_mapping}")
+        expect(ref.region).to eq("${aws_cognito_identity_provider.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSCognitoIdentityProvider do
 
         config = validate_resource_structure(result, 'aws_cognito_identity_provider', 'test')
         expect(config).not_to have_key('attribute_mapping')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ idp_identifiers: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ attribute_mapping: { 'key1' => 'val1' }, idp_identifiers: ['test-value'], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,11 +66,30 @@ RSpec.describe Pangea::Resources::AWSCognitoIdentityProvider do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cognito_identity_provider', 'full')
+        expect(config).to have_key('attribute_mapping')
         expect(config).to have_key('idp_identifiers')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes attribute_mapping when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_identity_provider('opt', required_attrs.merge(attribute_mapping: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_identity_provider', 'opt')
+        expect(config).to have_key('attribute_mapping')
+      end
+
+      it 'omits attribute_mapping when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_identity_provider('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_identity_provider', 'minimal')
+        expect(config).not_to have_key('attribute_mapping')
+      end
       it 'includes idp_identifiers when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -85,6 +106,23 @@ RSpec.describe Pangea::Resources::AWSCognitoIdentityProvider do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_identity_provider', 'minimal')
         expect(config).not_to have_key('idp_identifiers')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_identity_provider('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_identity_provider', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_identity_provider('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_identity_provider', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -133,7 +171,7 @@ RSpec.describe Pangea::Resources::AWSCognitoIdentityProvider do
     resource_type: :aws_cognito_identity_provider,
     method: :aws_cognito_identity_provider,
     required_attrs: { provider_details: { 'key1' => 'val1' }, provider_name: 'test-value', provider_type: 'test-value', user_pool_id: 'test-value' },
-    expected_outputs: [:id, :attribute_mapping],
+    expected_outputs: [:id, :attribute_mapping, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

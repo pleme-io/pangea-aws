@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_network_interface_sg_attachment,
       attributes_class: AWS::Types::NetworkInterfaceSgAttachmentAttributes,
       outputs: { id: :id },
-      map: [:network_interface_id, :security_group_id]
+      map: [:network_interface_id, :security_group_id],
+      map_present: [:region]
   end
   module AWS
     include AWSNetworkInterfaceSgAttachment

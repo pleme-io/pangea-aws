@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcEndpointPolicyAttributes,
       outputs: { id: :id },
       map: [:vpc_endpoint_id],
-      map_present: [:policy]
+      map_present: [:policy, :region]
   end
   module AWS
     include AWSVpcEndpointPolicy

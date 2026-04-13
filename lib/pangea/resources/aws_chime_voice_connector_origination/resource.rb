@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ChimeVoiceConnectorOriginationAttributes,
       outputs: { id: :id },
       map: [:route, :voice_connector_id],
+      map_present: [:region],
       map_bool: [:disabled]
   end
   module AWS

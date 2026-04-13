@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_appfabric_app_bundle,
       attributes_class: AWS::Types::AppfabricAppBundleAttributes,
       outputs: { id: :id },
-      map_present: [:customer_managed_key_arn, :tags]
+      map_present: [:customer_managed_key_arn, :region, :tags]
   end
   module AWS
     include AWSAppfabricAppBundle

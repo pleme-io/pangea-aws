@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_kms_ciphertext,
       attributes_class: AWS::Types::KmsCiphertextAttributes,
       outputs: { id: :id },
-      map: [:key_id, :plaintext],
-      map_present: [:context]
+      map: [:key_id],
+      map_present: [:context, :plaintext, :plaintext_wo, :plaintext_wo_version, :region]
   end
   module AWS
     include AWSKmsCiphertext

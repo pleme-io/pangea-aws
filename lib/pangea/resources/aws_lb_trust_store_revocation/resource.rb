@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LbTrustStoreRevocationAttributes,
       outputs: { id: :id },
       map: [:revocations_s3_bucket, :revocations_s3_key, :trust_store_arn],
-      map_present: [:revocations_s3_object_version]
+      map_present: [:region, :revocations_s3_object_version]
   end
   module AWS
     include AWSLbTrustStoreRevocation

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSDataexchangeEventAction do
         expect(ref.id).to eq("${aws_dataexchange_event_action.test.id}")
         expect(ref.arn).to eq("${aws_dataexchange_event_action.test.arn}")
         expect(ref.created_at).to eq("${aws_dataexchange_event_action.test.created_at}")
+        expect(ref.region).to eq("${aws_dataexchange_event_action.test.region}")
         expect(ref.updated_at).to eq("${aws_dataexchange_event_action.test.updated_at}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSDataexchangeEventAction do
         config = validate_resource_structure(result, 'aws_dataexchange_event_action', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created_at')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('updated_at')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ action: [{ 'key1' => 'val1' }], event: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ action: [{ 'key1' => 'val1' }], event: [{ 'key1' => 'val1' }], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,6 +72,7 @@ RSpec.describe Pangea::Resources::AWSDataexchangeEventAction do
         config = validate_resource_structure(result, 'aws_dataexchange_event_action', 'full')
         expect(config).to have_key('action')
         expect(config).to have_key('event')
+        expect(config).to have_key('region')
       end
     end
 
@@ -107,6 +110,23 @@ RSpec.describe Pangea::Resources::AWSDataexchangeEventAction do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dataexchange_event_action', 'minimal')
         expect(config).not_to have_key('event')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dataexchange_event_action('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dataexchange_event_action', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dataexchange_event_action('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dataexchange_event_action', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -151,7 +171,7 @@ RSpec.describe Pangea::Resources::AWSDataexchangeEventAction do
     resource_type: :aws_dataexchange_event_action,
     method: :aws_dataexchange_event_action,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :created_at, :updated_at],
+    expected_outputs: [:id, :arn, :created_at, :region, :updated_at],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

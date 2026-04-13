@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeServiceNetworkServiceAssociation 
         expect(ref.created_by).to eq("${aws_vpclattice_service_network_service_association.test.created_by}")
         expect(ref.custom_domain_name).to eq("${aws_vpclattice_service_network_service_association.test.custom_domain_name}")
         expect(ref.dns_entry).to eq("${aws_vpclattice_service_network_service_association.test.dns_entry}")
+        expect(ref.region).to eq("${aws_vpclattice_service_network_service_association.test.region}")
         expect(ref.status).to eq("${aws_vpclattice_service_network_service_association.test.status}")
         expect(ref.tags_all).to eq("${aws_vpclattice_service_network_service_association.test.tags_all}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSVpclatticeServiceNetworkServiceAssociation 
         expect(config).not_to have_key('created_by')
         expect(config).not_to have_key('custom_domain_name')
         expect(config).not_to have_key('dns_entry')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,11 +76,30 @@ RSpec.describe Pangea::Resources::AWSVpclatticeServiceNetworkServiceAssociation 
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpclattice_service_network_service_association', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service_network_service_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service_network_service_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service_network_service_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service_network_service_association', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -95,6 +116,23 @@ RSpec.describe Pangea::Resources::AWSVpclatticeServiceNetworkServiceAssociation 
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpclattice_service_network_service_association', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service_network_service_association('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service_network_service_association', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service_network_service_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service_network_service_association', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -141,7 +179,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeServiceNetworkServiceAssociation 
     resource_type: :aws_vpclattice_service_network_service_association,
     method: :aws_vpclattice_service_network_service_association,
     required_attrs: { service_identifier: 'test-value', service_network_identifier: 'test-value' },
-    expected_outputs: [:id, :arn, :created_by, :custom_domain_name, :dns_entry, :status, :tags_all],
+    expected_outputs: [:id, :arn, :created_by, :custom_domain_name, :dns_entry, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

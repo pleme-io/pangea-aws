@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MemorydbMultiRegionClusterAttributes,
       outputs: { id: :id },
       map: [:multi_region_cluster_name_suffix, :node_type],
-      map_present: [:description, :engine, :engine_version, :multi_region_parameter_group_name, :num_shards, :tags, :update_strategy],
+      map_present: [:description, :engine, :engine_version, :multi_region_parameter_group_name, :num_shards, :region, :tags, :update_strategy],
       map_bool: [:tls_enabled]
   end
   module AWS

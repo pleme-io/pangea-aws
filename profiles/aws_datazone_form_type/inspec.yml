@@ -1,0 +1,8 @@
+name: aws_datazone_form_type
+title: Manages a aws_datazone_form_type resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

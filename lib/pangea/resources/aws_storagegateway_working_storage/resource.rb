@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_storagegateway_working_storage,
       attributes_class: AWS::Types::StoragegatewayWorkingStorageAttributes,
       outputs: { id: :id },
-      map: [:disk_id, :gateway_arn]
+      map: [:disk_id, :gateway_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSStoragegatewayWorkingStorage

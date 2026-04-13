@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingTarget do
 
         expect(ref.id).to eq("${aws_appautoscaling_target.test.id}")
         expect(ref.arn).to eq("${aws_appautoscaling_target.test.arn}")
+        expect(ref.region).to eq("${aws_appautoscaling_target.test.region}")
         expect(ref.role_arn).to eq("${aws_appautoscaling_target.test.role_arn}")
         expect(ref.tags_all).to eq("${aws_appautoscaling_target.test.tags_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingTarget do
 
         config = validate_resource_structure(result, 'aws_appautoscaling_target', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('role_arn')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ suspended_state: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', role_arn: 'test-value', suspended_state: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,16 +70,53 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingTarget do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_appautoscaling_target', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('role_arn')
         expect(config).to have_key('suspended_state')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appautoscaling_target('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appautoscaling_target', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appautoscaling_target('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appautoscaling_target', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appautoscaling_target('opt', required_attrs.merge(role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appautoscaling_target', 'opt')
+        expect(config).to have_key('role_arn')
+      end
+
+      it 'omits role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appautoscaling_target('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appautoscaling_target', 'minimal')
+        expect(config).not_to have_key('role_arn')
+      end
       it 'includes suspended_state when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appautoscaling_target('opt', required_attrs.merge(suspended_state: [{ 'key1' => 'val1' }]))
+        synth.aws_appautoscaling_target('opt', required_attrs.merge(suspended_state: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appautoscaling_target', 'opt')
         expect(config).to have_key('suspended_state')
@@ -107,6 +146,23 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingTarget do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appautoscaling_target', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appautoscaling_target('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appautoscaling_target', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appautoscaling_target('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appautoscaling_target', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -156,7 +212,7 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingTarget do
     resource_type: :aws_appautoscaling_target,
     method: :aws_appautoscaling_target,
     required_attrs: { max_capacity: 3.14, min_capacity: 3.14, resource_id: 'test-value', scalable_dimension: 'test-value', service_namespace: 'test-value' },
-    expected_outputs: [:id, :arn, :role_arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :role_arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

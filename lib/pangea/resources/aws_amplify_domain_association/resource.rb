@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AmplifyDomainAssociationAttributes,
       outputs: { id: :id },
       map: [:app_id, :domain_name, :sub_domain],
-      map_present: [:certificate_settings],
+      map_present: [:certificate_settings, :region],
       map_bool: [:enable_auto_sub_domain, :wait_for_verification]
   end
   module AWS

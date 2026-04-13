@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSCodecatalystSourceRepository do
         ref = synth.aws_codecatalyst_source_repository('test', required_attrs)
 
         expect(ref.id).to eq("${aws_codecatalyst_source_repository.test.id}")
+        expect(ref.region).to eq("${aws_codecatalyst_source_repository.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecatalyst_source_repository('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_codecatalyst_source_repository', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSCodecatalystSourceRepository do
 
         config = validate_resource_structure(result, 'aws_codecatalyst_source_repository', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSCodecatalystSourceRepository do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codecatalyst_source_repository', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecatalyst_source_repository('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecatalyst_source_repository', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecatalyst_source_repository('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecatalyst_source_repository', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -119,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSCodecatalystSourceRepository do
     resource_type: :aws_codecatalyst_source_repository,
     method: :aws_codecatalyst_source_repository,
     required_attrs: { name: 'test-value', project_name: 'test-value', space_name: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

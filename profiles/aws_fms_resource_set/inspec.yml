@@ -1,0 +1,8 @@
+name: aws_fms_resource_set
+title: Manages a aws_fms_resource_set resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

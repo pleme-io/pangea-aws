@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlacierVaultLockAttributes,
       outputs: { id: :id },
       map: [:policy, :vault_name],
+      map_present: [:region],
       map_bool: [:complete_lock, :ignore_deletion_error]
   end
   module AWS

@@ -1,0 +1,8 @@
+name: aws_default_vpc_dhcp_options
+title: Manages a aws_default_vpc_dhcp_options resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

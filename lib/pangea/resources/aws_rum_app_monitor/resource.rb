@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RumAppMonitorAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:app_monitor_configuration, :custom_events, :domain, :domain_list, :tags, :tags_all],
+      map_present: [:app_monitor_configuration, :custom_events, :domain, :domain_list, :region, :tags, :tags_all],
       map_bool: [:cw_log_enabled]
   end
   module AWS

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AthenaPreparedStatementAttributes,
       outputs: { id: :id },
       map: [:name, :query_statement, :workgroup],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSAthenaPreparedStatement

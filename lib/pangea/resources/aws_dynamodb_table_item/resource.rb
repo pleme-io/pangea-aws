@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DynamodbTableItemAttributes,
       outputs: { id: :id },
       map: [:hash_key, :item, :table_name],
-      map_present: [:range_key]
+      map_present: [:range_key, :region]
   end
   module AWS
     include AWSDynamodbTableItem

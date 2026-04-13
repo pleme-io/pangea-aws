@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpc_endpoint_connection_accepter,
       attributes_class: AWS::Types::VpcEndpointConnectionAccepterAttributes,
       outputs: { id: :id },
-      map: [:vpc_endpoint_id, :vpc_endpoint_service_id]
+      map: [:vpc_endpoint_id, :vpc_endpoint_service_id],
+      map_present: [:region]
   end
   module AWS
     include AWSVpcEndpointConnectionAccepter

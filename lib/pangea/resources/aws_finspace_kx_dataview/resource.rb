@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FinspaceKxDataviewAttributes,
       outputs: { id: :id },
       map: [:az_mode, :database_name, :environment_id, :name],
-      map_present: [:availability_zone_id, :changeset_id, :description, :segment_configurations, :tags, :tags_all],
+      map_present: [:availability_zone_id, :changeset_id, :description, :region, :segment_configurations, :tags, :tags_all],
       map_bool: [:auto_update, :read_write]
   end
   module AWS

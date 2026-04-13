@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ebs_default_kms_key,
       attributes_class: AWS::Types::EbsDefaultKmsKeyAttributes,
       outputs: { id: :id },
-      map: [:key_arn]
+      map: [:key_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSEbsDefaultKmsKey

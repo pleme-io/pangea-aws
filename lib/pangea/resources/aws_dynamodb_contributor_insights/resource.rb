@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DynamodbContributorInsightsAttributes,
       outputs: { id: :id },
       map: [:table_name],
-      map_present: [:index_name]
+      map_present: [:index_name, :mode, :region]
   end
   module AWS
     include AWSDynamodbContributorInsights

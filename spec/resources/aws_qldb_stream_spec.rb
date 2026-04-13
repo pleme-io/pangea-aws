@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSQldbStream do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { inclusive_start_time: 'test-value', kinesis_configuration: [{ 'key1' => 'val1' }], ledger_name: 'test-value', role_arn: 'test-value', stream_name: 'test-value' } }
+  let(:required_attrs) { { inclusive_start_time: 'test-value', kinesis_configuration: { 'key1' => 'val1' }, ledger_name: 'test-value', role_arn: 'test-value', stream_name: 'test-value' } }
 
   describe ':aws_qldb_stream' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSQldbStream do
 
         expect(ref.id).to eq("${aws_qldb_stream.test.id}")
         expect(ref.arn).to eq("${aws_qldb_stream.test.arn}")
+        expect(ref.region).to eq("${aws_qldb_stream.test.region}")
         expect(ref.tags_all).to eq("${aws_qldb_stream.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSQldbStream do
 
         config = validate_resource_structure(result, 'aws_qldb_stream', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ exclusive_end_time: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ exclusive_end_time: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,7 +69,9 @@ RSpec.describe Pangea::Resources::AWSQldbStream do
 
         config = validate_resource_structure(result, 'aws_qldb_stream', 'full')
         expect(config).to have_key('exclusive_end_time')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -89,6 +93,23 @@ RSpec.describe Pangea::Resources::AWSQldbStream do
         config = validate_resource_structure(result, 'aws_qldb_stream', 'minimal')
         expect(config).not_to have_key('exclusive_end_time')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_qldb_stream('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_qldb_stream', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_qldb_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_qldb_stream', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -106,6 +127,23 @@ RSpec.describe Pangea::Resources::AWSQldbStream do
         config = validate_resource_structure(result, 'aws_qldb_stream', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_qldb_stream('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_qldb_stream', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_qldb_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_qldb_stream', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -117,7 +155,7 @@ RSpec.describe Pangea::Resources::AWSQldbStream do
 
         config = validate_resource_structure(result, 'aws_qldb_stream', 'typed')
         expect(config['inclusive_start_time']).to be_a(String)
-        expect(config['kinesis_configuration']).to be_a(Array)
+        expect(config['kinesis_configuration']).to be_a(Hash)
         expect(config['ledger_name']).to be_a(String)
         expect(config['role_arn']).to be_a(String)
         expect(config['stream_name']).to be_a(String)
@@ -153,8 +191,8 @@ RSpec.describe Pangea::Resources::AWSQldbStream do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_qldb_stream,
     method: :aws_qldb_stream,
-    required_attrs: { inclusive_start_time: 'test-value', kinesis_configuration: [{ 'key1' => 'val1' }], ledger_name: 'test-value', role_arn: 'test-value', stream_name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    required_attrs: { inclusive_start_time: 'test-value', kinesis_configuration: { 'key1' => 'val1' }, ledger_name: 'test-value', role_arn: 'test-value', stream_name: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

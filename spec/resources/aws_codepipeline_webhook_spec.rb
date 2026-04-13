@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCodepipelineWebhook do
 
         expect(ref.id).to eq("${aws_codepipeline_webhook.test.id}")
         expect(ref.arn).to eq("${aws_codepipeline_webhook.test.arn}")
+        expect(ref.region).to eq("${aws_codepipeline_webhook.test.region}")
         expect(ref.tags_all).to eq("${aws_codepipeline_webhook.test.tags_all}")
         expect(ref.url).to eq("${aws_codepipeline_webhook.test.url}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSCodepipelineWebhook do
 
         config = validate_resource_structure(result, 'aws_codepipeline_webhook', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('url')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ authentication_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ authentication_configuration: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +71,9 @@ RSpec.describe Pangea::Resources::AWSCodepipelineWebhook do
 
         config = validate_resource_structure(result, 'aws_codepipeline_webhook', 'full')
         expect(config).to have_key('authentication_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -77,7 +81,7 @@ RSpec.describe Pangea::Resources::AWSCodepipelineWebhook do
       it 'includes authentication_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codepipeline_webhook('opt', required_attrs.merge(authentication_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_codepipeline_webhook('opt', required_attrs.merge(authentication_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codepipeline_webhook', 'opt')
         expect(config).to have_key('authentication_configuration')
@@ -90,6 +94,23 @@ RSpec.describe Pangea::Resources::AWSCodepipelineWebhook do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codepipeline_webhook', 'minimal')
         expect(config).not_to have_key('authentication_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codepipeline_webhook('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codepipeline_webhook', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codepipeline_webhook('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codepipeline_webhook', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -107,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSCodepipelineWebhook do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codepipeline_webhook', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codepipeline_webhook('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codepipeline_webhook', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codepipeline_webhook('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codepipeline_webhook', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -156,7 +194,7 @@ RSpec.describe Pangea::Resources::AWSCodepipelineWebhook do
     resource_type: :aws_codepipeline_webhook,
     method: :aws_codepipeline_webhook,
     required_attrs: { authentication: 'test-value', filter: [{ 'key1' => 'val1' }], name: 'test-value', target_action: 'test-value', target_pipeline: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all, :url],
+    expected_outputs: [:id, :arn, :region, :tags_all, :url],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

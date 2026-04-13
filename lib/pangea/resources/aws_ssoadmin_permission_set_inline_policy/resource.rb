@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ssoadmin_permission_set_inline_policy,
       attributes_class: AWS::Types::SsoadminPermissionSetInlinePolicyAttributes,
       outputs: { id: :id },
-      map: [:inline_policy, :instance_arn, :permission_set_arn]
+      map: [:inline_policy, :instance_arn, :permission_set_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSSsoadminPermissionSetInlinePolicy

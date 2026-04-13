@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSKinesisAnalyticsApplication do
         expect(ref.arn).to eq("${aws_kinesis_analytics_application.test.arn}")
         expect(ref.create_timestamp).to eq("${aws_kinesis_analytics_application.test.create_timestamp}")
         expect(ref.last_update_timestamp).to eq("${aws_kinesis_analytics_application.test.last_update_timestamp}")
+        expect(ref.region).to eq("${aws_kinesis_analytics_application.test.region}")
         expect(ref.status).to eq("${aws_kinesis_analytics_application.test.status}")
         expect(ref.tags_all).to eq("${aws_kinesis_analytics_application.test.tags_all}")
         expect(ref.version).to eq("${aws_kinesis_analytics_application.test.version}")
@@ -58,6 +59,7 @@ RSpec.describe Pangea::Resources::AWSKinesisAnalyticsApplication do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('create_timestamp')
         expect(config).not_to have_key('last_update_timestamp')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('version')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSKinesisAnalyticsApplication do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cloudwatch_logging_options: [{ 'key1' => 'val1' }], code: 'test-value', description: 'test-value', inputs: [{ 'key1' => 'val1' }], outputs: [{ 'key1' => 'val1' }], reference_data_sources: [{ 'key1' => 'val1' }], start_application: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ cloudwatch_logging_options: { 'key1' => 'val1' }, code: 'test-value', description: 'test-value', inputs: { 'key1' => 'val1' }, outputs: [{ 'key1' => 'val1' }], reference_data_sources: { 'key1' => 'val1' }, region: 'test-value', start_application: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,8 +82,10 @@ RSpec.describe Pangea::Resources::AWSKinesisAnalyticsApplication do
         expect(config).to have_key('inputs')
         expect(config).to have_key('outputs')
         expect(config).to have_key('reference_data_sources')
+        expect(config).to have_key('region')
         expect(config).to have_key('start_application')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -89,7 +93,7 @@ RSpec.describe Pangea::Resources::AWSKinesisAnalyticsApplication do
       it 'includes cloudwatch_logging_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_analytics_application('opt', required_attrs.merge(cloudwatch_logging_options: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_analytics_application('opt', required_attrs.merge(cloudwatch_logging_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_analytics_application', 'opt')
         expect(config).to have_key('cloudwatch_logging_options')
@@ -140,7 +144,7 @@ RSpec.describe Pangea::Resources::AWSKinesisAnalyticsApplication do
       it 'includes inputs when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_analytics_application('opt', required_attrs.merge(inputs: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_analytics_application('opt', required_attrs.merge(inputs: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_analytics_application', 'opt')
         expect(config).to have_key('inputs')
@@ -174,7 +178,7 @@ RSpec.describe Pangea::Resources::AWSKinesisAnalyticsApplication do
       it 'includes reference_data_sources when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_kinesis_analytics_application('opt', required_attrs.merge(reference_data_sources: [{ 'key1' => 'val1' }]))
+        synth.aws_kinesis_analytics_application('opt', required_attrs.merge(reference_data_sources: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_analytics_application', 'opt')
         expect(config).to have_key('reference_data_sources')
@@ -187,6 +191,23 @@ RSpec.describe Pangea::Resources::AWSKinesisAnalyticsApplication do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_analytics_application', 'minimal')
         expect(config).not_to have_key('reference_data_sources')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_analytics_application('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_analytics_application', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_analytics_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_analytics_application', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes start_application when provided' do
         synth = create_synthesizer
@@ -221,6 +242,23 @@ RSpec.describe Pangea::Resources::AWSKinesisAnalyticsApplication do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_analytics_application', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_analytics_application('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_analytics_application', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_analytics_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_analytics_application', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -280,7 +318,7 @@ RSpec.describe Pangea::Resources::AWSKinesisAnalyticsApplication do
     resource_type: :aws_kinesis_analytics_application,
     method: :aws_kinesis_analytics_application,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :create_timestamp, :last_update_timestamp, :status, :tags_all, :version],
+    expected_outputs: [:id, :arn, :create_timestamp, :last_update_timestamp, :region, :status, :tags_all, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:start_application]

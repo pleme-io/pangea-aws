@@ -59,7 +59,7 @@ RSpec.describe Pangea::Resources::AWSIamUser do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ force_destroy: true, path: 'test-value', permissions_boundary: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ force_destroy: true, path: 'test-value', permissions_boundary: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,6 +72,7 @@ RSpec.describe Pangea::Resources::AWSIamUser do
         expect(config).to have_key('path')
         expect(config).to have_key('permissions_boundary')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -143,6 +144,23 @@ RSpec.describe Pangea::Resources::AWSIamUser do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iam_user', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_user('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_user', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_user('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_user', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 

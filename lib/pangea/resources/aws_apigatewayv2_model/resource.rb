@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Apigatewayv2ModelAttributes,
       outputs: { id: :id },
       map: [:api_id, :content_type, :name, :schema],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSApigatewayv2Model

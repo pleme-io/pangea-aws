@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EmrcontainersJobTemplateAttributes,
       outputs: { id: :id },
       map: [:job_template_data, :name],
-      map_present: [:kms_key_arn, :tags, :tags_all]
+      map_present: [:kms_key_arn, :region, :tags, :tags_all]
   end
   module AWS
     include AWSEmrcontainersJobTemplate

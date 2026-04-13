@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSfnAlias do
         expect(ref.id).to eq("${aws_sfn_alias.test.id}")
         expect(ref.arn).to eq("${aws_sfn_alias.test.arn}")
         expect(ref.creation_date).to eq("${aws_sfn_alias.test.creation_date}")
+        expect(ref.region).to eq("${aws_sfn_alias.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSSfnAlias do
         config = validate_resource_structure(result, 'aws_sfn_alias', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('creation_date')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSSfnAlias do
 
         config = validate_resource_structure(result, 'aws_sfn_alias', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -87,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSSfnAlias do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sfn_alias', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sfn_alias('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sfn_alias', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sfn_alias('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sfn_alias', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -133,7 +153,7 @@ RSpec.describe Pangea::Resources::AWSSfnAlias do
     resource_type: :aws_sfn_alias,
     method: :aws_sfn_alias,
     required_attrs: { name: 'test-value', routing_configuration: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :creation_date],
+    expected_outputs: [:id, :arn, :creation_date, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

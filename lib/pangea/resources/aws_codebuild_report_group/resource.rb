@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CodebuildReportGroupAttributes,
       outputs: { id: :id },
       map: [:export_config, :name, :type],
-      map_present: [:tags, :tags_all],
+      map_present: [:region, :tags, :tags_all],
       map_bool: [:delete_reports]
   end
   module AWS

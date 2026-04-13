@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretVersion do
         expect(ref.id).to eq("${aws_secretsmanager_secret_version.test.id}")
         expect(ref.arn).to eq("${aws_secretsmanager_secret_version.test.arn}")
         expect(ref.has_secret_string_wo).to eq("${aws_secretsmanager_secret_version.test.has_secret_string_wo}")
+        expect(ref.region).to eq("${aws_secretsmanager_secret_version.test.region}")
         expect(ref.version_id).to eq("${aws_secretsmanager_secret_version.test.version_id}")
         expect(ref.version_stages).to eq("${aws_secretsmanager_secret_version.test.version_stages}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretVersion do
         config = validate_resource_structure(result, 'aws_secretsmanager_secret_version', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('has_secret_string_wo')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('version_id')
         expect(config).not_to have_key('version_stages')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ secret_binary: 'test-value', secret_string: 'test-value', secret_string_wo: 'test-value', secret_string_wo_version: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', secret_binary: 'test-value', secret_string: 'test-value', secret_string_wo: 'test-value', secret_string_wo_version: 3.14, version_stages: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,14 +72,33 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretVersion do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_secretsmanager_secret_version', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('secret_binary')
         expect(config).to have_key('secret_string')
         expect(config).to have_key('secret_string_wo')
         expect(config).to have_key('secret_string_wo_version')
+        expect(config).to have_key('version_stages')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_secretsmanager_secret_version('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_secretsmanager_secret_version', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_secretsmanager_secret_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_secretsmanager_secret_version', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes secret_binary when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -146,6 +167,23 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretVersion do
         config = validate_resource_structure(result, 'aws_secretsmanager_secret_version', 'minimal')
         expect(config).not_to have_key('secret_string_wo_version')
       end
+      it 'includes version_stages when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_secretsmanager_secret_version('opt', required_attrs.merge(version_stages: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_secretsmanager_secret_version', 'opt')
+        expect(config).to have_key('version_stages')
+      end
+
+      it 'omits version_stages when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_secretsmanager_secret_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_secretsmanager_secret_version', 'minimal')
+        expect(config).not_to have_key('version_stages')
+      end
     end
 
     context 'sensitive fields' do
@@ -199,7 +237,7 @@ RSpec.describe Pangea::Resources::AWSSecretsmanagerSecretVersion do
     resource_type: :aws_secretsmanager_secret_version,
     method: :aws_secretsmanager_secret_version,
     required_attrs: { secret_id: 'test-value' },
-    expected_outputs: [:id, :arn, :has_secret_string_wo, :version_id, :version_stages],
+    expected_outputs: [:id, :arn, :has_secret_string_wo, :region, :version_id, :version_stages],
     sensitive_fields: [:secret_binary, :secret_string, :secret_string_wo],
     immutable_fields: [],
     boolean_fields: []

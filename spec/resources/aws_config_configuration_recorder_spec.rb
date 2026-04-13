@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationRecorder do
         ref = synth.aws_config_configuration_recorder('test', required_attrs)
 
         expect(ref.id).to eq("${aws_config_configuration_recorder.test.id}")
+        expect(ref.region).to eq("${aws_config_configuration_recorder.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_configuration_recorder('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_config_configuration_recorder', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ name: 'test-value', recording_group: [{ 'key1' => 'val1' }], recording_mode: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ name: 'test-value', recording_group: { 'key1' => 'val1' }, recording_mode: { 'key1' => 'val1' }, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -54,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationRecorder do
         expect(config).to have_key('name')
         expect(config).to have_key('recording_group')
         expect(config).to have_key('recording_mode')
+        expect(config).to have_key('region')
       end
     end
 
@@ -78,7 +92,7 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationRecorder do
       it 'includes recording_group when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_config_configuration_recorder('opt', required_attrs.merge(recording_group: [{ 'key1' => 'val1' }]))
+        synth.aws_config_configuration_recorder('opt', required_attrs.merge(recording_group: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_configuration_recorder', 'opt')
         expect(config).to have_key('recording_group')
@@ -95,7 +109,7 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationRecorder do
       it 'includes recording_mode when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_config_configuration_recorder('opt', required_attrs.merge(recording_mode: [{ 'key1' => 'val1' }]))
+        synth.aws_config_configuration_recorder('opt', required_attrs.merge(recording_mode: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_configuration_recorder', 'opt')
         expect(config).to have_key('recording_mode')
@@ -108,6 +122,23 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationRecorder do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_config_configuration_recorder', 'minimal')
         expect(config).not_to have_key('recording_mode')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_configuration_recorder('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_configuration_recorder', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_config_configuration_recorder('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_config_configuration_recorder', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -153,7 +184,7 @@ RSpec.describe Pangea::Resources::AWSConfigConfigurationRecorder do
     resource_type: :aws_config_configuration_recorder,
     method: :aws_config_configuration_recorder,
     required_attrs: { role_arn: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

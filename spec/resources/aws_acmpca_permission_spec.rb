@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAcmpcaPermission do
 
         expect(ref.id).to eq("${aws_acmpca_permission.test.id}")
         expect(ref.policy).to eq("${aws_acmpca_permission.test.policy}")
+        expect(ref.region).to eq("${aws_acmpca_permission.test.region}")
         expect(ref.source_account).to eq("${aws_acmpca_permission.test.source_account}")
       end
     end
@@ -52,6 +53,59 @@ RSpec.describe Pangea::Resources::AWSAcmpcaPermission do
 
         config = validate_resource_structure(result, 'aws_acmpca_permission', 'test')
         expect(config).not_to have_key('policy')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('source_account')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', source_account: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_permission('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_acmpca_permission', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('source_account')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_permission('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_permission', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_permission('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_permission', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes source_account when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_permission('opt', required_attrs.merge(source_account: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_permission', 'opt')
+        expect(config).to have_key('source_account')
+      end
+
+      it 'omits source_account when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_permission('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_permission', 'minimal')
         expect(config).not_to have_key('source_account')
       end
     end
@@ -100,7 +154,7 @@ RSpec.describe Pangea::Resources::AWSAcmpcaPermission do
     resource_type: :aws_acmpca_permission,
     method: :aws_acmpca_permission,
     required_attrs: { actions: ['test-value'], certificate_authority_arn: 'test-value', principal: 'test-value' },
-    expected_outputs: [:id, :policy, :source_account],
+    expected_outputs: [:id, :policy, :region, :source_account],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

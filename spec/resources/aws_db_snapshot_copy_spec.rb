@@ -48,6 +48,7 @@ RSpec.describe Pangea::Resources::AWSDbSnapshotCopy do
         expect(ref.license_model).to eq("${aws_db_snapshot_copy.test.license_model}")
         expect(ref.option_group_name).to eq("${aws_db_snapshot_copy.test.option_group_name}")
         expect(ref.port).to eq("${aws_db_snapshot_copy.test.port}")
+        expect(ref.region).to eq("${aws_db_snapshot_copy.test.region}")
         expect(ref.snapshot_type).to eq("${aws_db_snapshot_copy.test.snapshot_type}")
         expect(ref.source_region).to eq("${aws_db_snapshot_copy.test.source_region}")
         expect(ref.storage_type).to eq("${aws_db_snapshot_copy.test.storage_type}")
@@ -74,6 +75,7 @@ RSpec.describe Pangea::Resources::AWSDbSnapshotCopy do
         expect(config).not_to have_key('license_model')
         expect(config).not_to have_key('option_group_name')
         expect(config).not_to have_key('port')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('snapshot_type')
         expect(config).not_to have_key('source_region')
         expect(config).not_to have_key('storage_type')
@@ -83,7 +85,7 @@ RSpec.describe Pangea::Resources::AWSDbSnapshotCopy do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ copy_tags: true, destination_region: 'test-value', kms_key_id: 'test-value', presigned_url: 'test-value', shared_accounts: ['test-value'], tags: { 'key1' => 'val1' }, target_custom_availability_zone: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ copy_tags: true, destination_region: 'test-value', kms_key_id: 'test-value', option_group_name: 'test-value', presigned_url: 'test-value', region: 'test-value', shared_accounts: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target_custom_availability_zone: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -95,9 +97,12 @@ RSpec.describe Pangea::Resources::AWSDbSnapshotCopy do
         expect(config).to have_key('copy_tags')
         expect(config).to have_key('destination_region')
         expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('option_group_name')
         expect(config).to have_key('presigned_url')
+        expect(config).to have_key('region')
         expect(config).to have_key('shared_accounts')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('target_custom_availability_zone')
       end
     end
@@ -154,6 +159,23 @@ RSpec.describe Pangea::Resources::AWSDbSnapshotCopy do
         config = validate_resource_structure(result, 'aws_db_snapshot_copy', 'minimal')
         expect(config).not_to have_key('kms_key_id')
       end
+      it 'includes option_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_snapshot_copy('opt', required_attrs.merge(option_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_snapshot_copy', 'opt')
+        expect(config).to have_key('option_group_name')
+      end
+
+      it 'omits option_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_snapshot_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_snapshot_copy', 'minimal')
+        expect(config).not_to have_key('option_group_name')
+      end
       it 'includes presigned_url when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -170,6 +192,23 @@ RSpec.describe Pangea::Resources::AWSDbSnapshotCopy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_snapshot_copy', 'minimal')
         expect(config).not_to have_key('presigned_url')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_snapshot_copy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_snapshot_copy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_snapshot_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_snapshot_copy', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes shared_accounts when provided' do
         synth = create_synthesizer
@@ -204,6 +243,23 @@ RSpec.describe Pangea::Resources::AWSDbSnapshotCopy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_snapshot_copy', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_snapshot_copy('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_snapshot_copy', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_snapshot_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_snapshot_copy', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes target_custom_availability_zone when provided' do
         synth = create_synthesizer
@@ -281,7 +337,7 @@ RSpec.describe Pangea::Resources::AWSDbSnapshotCopy do
     resource_type: :aws_db_snapshot_copy,
     method: :aws_db_snapshot_copy,
     required_attrs: { source_db_snapshot_identifier: 'test-value', target_db_snapshot_identifier: 'test-value' },
-    expected_outputs: [:id, :allocated_storage, :availability_zone, :db_snapshot_arn, :encrypted, :engine, :engine_version, :iops, :license_model, :option_group_name, :port, :snapshot_type, :source_region, :storage_type, :tags_all, :vpc_id],
+    expected_outputs: [:id, :allocated_storage, :availability_zone, :db_snapshot_arn, :encrypted, :engine, :engine_version, :iops, :license_model, :option_group_name, :port, :region, :snapshot_type, :source_region, :storage_type, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:copy_tags]

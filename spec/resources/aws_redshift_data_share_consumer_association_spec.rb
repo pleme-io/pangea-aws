@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftDataShareConsumerAssociation do
         expect(ref.id).to eq("${aws_redshift_data_share_consumer_association.test.id}")
         expect(ref.managed_by).to eq("${aws_redshift_data_share_consumer_association.test.managed_by}")
         expect(ref.producer_arn).to eq("${aws_redshift_data_share_consumer_association.test.producer_arn}")
+        expect(ref.region).to eq("${aws_redshift_data_share_consumer_association.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSRedshiftDataShareConsumerAssociation do
         config = validate_resource_structure(result, 'aws_redshift_data_share_consumer_association', 'test')
         expect(config).not_to have_key('managed_by')
         expect(config).not_to have_key('producer_arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allow_writes: true, associate_entire_account: true, consumer_arn: 'test-value', consumer_region: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ allow_writes: true, associate_entire_account: true, consumer_arn: 'test-value', consumer_region: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,6 +72,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftDataShareConsumerAssociation do
         expect(config).to have_key('associate_entire_account')
         expect(config).to have_key('consumer_arn')
         expect(config).to have_key('consumer_region')
+        expect(config).to have_key('region')
       end
     end
 
@@ -142,6 +145,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftDataShareConsumerAssociation do
         config = validate_resource_structure(result, 'aws_redshift_data_share_consumer_association', 'minimal')
         expect(config).not_to have_key('consumer_region')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_data_share_consumer_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_data_share_consumer_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_data_share_consumer_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_data_share_consumer_association', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'boolean fields' do
@@ -211,7 +231,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftDataShareConsumerAssociation do
     resource_type: :aws_redshift_data_share_consumer_association,
     method: :aws_redshift_data_share_consumer_association,
     required_attrs: { data_share_arn: 'test-value' },
-    expected_outputs: [:id, :managed_by, :producer_arn],
+    expected_outputs: [:id, :managed_by, :producer_arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:allow_writes, :associate_entire_account]

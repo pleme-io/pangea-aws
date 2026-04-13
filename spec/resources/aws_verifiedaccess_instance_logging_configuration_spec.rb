@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSVerifiedaccessInstanceLoggingConfiguration do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { access_logs: [{ 'key1' => 'val1' }], verifiedaccess_instance_id: 'test-value' } }
+  let(:required_attrs) { { access_logs: { 'key1' => 'val1' }, verifiedaccess_instance_id: 'test-value' } }
 
   describe ':aws_verifiedaccess_instance_logging_configuration' do
     context 'with required attributes only' do
@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessInstanceLoggingConfiguration 
         ref = synth.aws_verifiedaccess_instance_logging_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_verifiedaccess_instance_logging_configuration.test.id}")
+        expect(ref.region).to eq("${aws_verifiedaccess_instance_logging_configuration.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_instance_logging_configuration('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_verifiedaccess_instance_logging_configuration', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_instance_logging_configuration('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_verifiedaccess_instance_logging_configuration', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_instance_logging_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_instance_logging_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_instance_logging_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_instance_logging_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -49,7 +96,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessInstanceLoggingConfiguration 
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_verifiedaccess_instance_logging_configuration', 'typed')
-        expect(config['access_logs']).to be_a(Array)
+        expect(config['access_logs']).to be_a(Hash)
         expect(config['verifiedaccess_instance_id']).to be_a(String)
       end
     end
@@ -83,8 +130,8 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessInstanceLoggingConfiguration 
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_verifiedaccess_instance_logging_configuration,
     method: :aws_verifiedaccess_instance_logging_configuration,
-    required_attrs: { access_logs: [{ 'key1' => 'val1' }], verifiedaccess_instance_id: 'test-value' },
-    expected_outputs: [:id],
+    required_attrs: { access_logs: { 'key1' => 'val1' }, verifiedaccess_instance_id: 'test-value' },
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneEnvironment do
         expect(ref.last_deployment).to eq("${aws_datazone_environment.test.last_deployment}")
         expect(ref.provider_environment).to eq("${aws_datazone_environment.test.provider_environment}")
         expect(ref.provisioned_resources).to eq("${aws_datazone_environment.test.provisioned_resources}")
+        expect(ref.region).to eq("${aws_datazone_environment.test.region}")
       end
     end
 
@@ -65,11 +66,12 @@ RSpec.describe Pangea::Resources::AWSDatazoneEnvironment do
         expect(config).not_to have_key('last_deployment')
         expect(config).not_to have_key('provider_environment')
         expect(config).not_to have_key('provisioned_resources')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', glossary_terms: ['test-value'], user_parameters: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ account_identifier: 'test-value', account_region: 'test-value', blueprint_identifier: 'test-value', description: 'test-value', glossary_terms: ['test-value'], region: 'test-value', user_parameters: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,13 +80,68 @@ RSpec.describe Pangea::Resources::AWSDatazoneEnvironment do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_datazone_environment', 'full')
+        expect(config).to have_key('account_identifier')
+        expect(config).to have_key('account_region')
+        expect(config).to have_key('blueprint_identifier')
         expect(config).to have_key('description')
         expect(config).to have_key('glossary_terms')
+        expect(config).to have_key('region')
         expect(config).to have_key('user_parameters')
       end
     end
 
     context 'optional attributes' do
+      it 'includes account_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment('opt', required_attrs.merge(account_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment', 'opt')
+        expect(config).to have_key('account_identifier')
+      end
+
+      it 'omits account_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment', 'minimal')
+        expect(config).not_to have_key('account_identifier')
+      end
+      it 'includes account_region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment('opt', required_attrs.merge(account_region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment', 'opt')
+        expect(config).to have_key('account_region')
+      end
+
+      it 'omits account_region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment', 'minimal')
+        expect(config).not_to have_key('account_region')
+      end
+      it 'includes blueprint_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment('opt', required_attrs.merge(blueprint_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment', 'opt')
+        expect(config).to have_key('blueprint_identifier')
+      end
+
+      it 'omits blueprint_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment', 'minimal')
+        expect(config).not_to have_key('blueprint_identifier')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -118,6 +175,23 @@ RSpec.describe Pangea::Resources::AWSDatazoneEnvironment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datazone_environment', 'minimal')
         expect(config).not_to have_key('glossary_terms')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes user_parameters when provided' do
         synth = create_synthesizer
@@ -183,7 +257,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneEnvironment do
     resource_type: :aws_datazone_environment,
     method: :aws_datazone_environment,
     required_attrs: { domain_identifier: 'test-value', name: 'test-value', profile_identifier: 'test-value', project_identifier: 'test-value' },
-    expected_outputs: [:id, :account_identifier, :account_region, :blueprint_identifier, :created_at, :created_by, :last_deployment, :provider_environment, :provisioned_resources],
+    expected_outputs: [:id, :account_identifier, :account_region, :blueprint_identifier, :created_at, :created_by, :last_deployment, :provider_environment, :provisioned_resources, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

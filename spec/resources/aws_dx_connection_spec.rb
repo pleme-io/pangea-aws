@@ -48,6 +48,7 @@ RSpec.describe Pangea::Resources::AWSDxConnection do
         expect(ref.partner_name).to eq("${aws_dx_connection.test.partner_name}")
         expect(ref.port_encryption_status).to eq("${aws_dx_connection.test.port_encryption_status}")
         expect(ref.provider_name).to eq("${aws_dx_connection.test.provider_name}")
+        expect(ref.region).to eq("${aws_dx_connection.test.region}")
         expect(ref.tags_all).to eq("${aws_dx_connection.test.tags_all}")
         expect(ref.vlan_id).to eq("${aws_dx_connection.test.vlan_id}")
       end
@@ -71,13 +72,14 @@ RSpec.describe Pangea::Resources::AWSDxConnection do
         expect(config).not_to have_key('partner_name')
         expect(config).not_to have_key('port_encryption_status')
         expect(config).not_to have_key('provider_name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vlan_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ request_macsec: true, skip_destroy: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ encryption_mode: 'test-value', provider_name: 'test-value', region: 'test-value', request_macsec: true, skip_destroy: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -86,13 +88,68 @@ RSpec.describe Pangea::Resources::AWSDxConnection do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_dx_connection', 'full')
+        expect(config).to have_key('encryption_mode')
+        expect(config).to have_key('provider_name')
+        expect(config).to have_key('region')
         expect(config).to have_key('request_macsec')
         expect(config).to have_key('skip_destroy')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes encryption_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_connection('opt', required_attrs.merge(encryption_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_connection', 'opt')
+        expect(config).to have_key('encryption_mode')
+      end
+
+      it 'omits encryption_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_connection', 'minimal')
+        expect(config).not_to have_key('encryption_mode')
+      end
+      it 'includes provider_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_connection('opt', required_attrs.merge(provider_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_connection', 'opt')
+        expect(config).to have_key('provider_name')
+      end
+
+      it 'omits provider_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_connection', 'minimal')
+        expect(config).not_to have_key('provider_name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_connection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_connection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_connection', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes request_macsec when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -143,6 +200,23 @@ RSpec.describe Pangea::Resources::AWSDxConnection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dx_connection', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_connection('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_connection', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_connection', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -215,7 +289,7 @@ RSpec.describe Pangea::Resources::AWSDxConnection do
     resource_type: :aws_dx_connection,
     method: :aws_dx_connection,
     required_attrs: { bandwidth: 'test-value', location: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :aws_device, :encryption_mode, :has_logical_redundancy, :jumbo_frame_capable, :macsec_capable, :owner_account_id, :partner_name, :port_encryption_status, :provider_name, :tags_all, :vlan_id],
+    expected_outputs: [:id, :arn, :aws_device, :encryption_mode, :has_logical_redundancy, :jumbo_frame_capable, :macsec_capable, :owner_account_id, :partner_name, :port_encryption_status, :provider_name, :region, :tags_all, :vlan_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:request_macsec, :skip_destroy]

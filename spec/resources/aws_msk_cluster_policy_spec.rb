@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSMskClusterPolicy do
 
         expect(ref.id).to eq("${aws_msk_cluster_policy.test.id}")
         expect(ref.current_version).to eq("${aws_msk_cluster_policy.test.current_version}")
+        expect(ref.region).to eq("${aws_msk_cluster_policy.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSMskClusterPolicy do
 
         config = validate_resource_structure(result, 'aws_msk_cluster_policy', 'test')
         expect(config).not_to have_key('current_version')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_cluster_policy('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_msk_cluster_policy', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_cluster_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_cluster_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_cluster_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_cluster_policy', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -97,7 +133,7 @@ RSpec.describe Pangea::Resources::AWSMskClusterPolicy do
     resource_type: :aws_msk_cluster_policy,
     method: :aws_msk_cluster_policy,
     required_attrs: { cluster_arn: 'test-value', policy: 'test-value' },
-    expected_outputs: [:id, :current_version],
+    expected_outputs: [:id, :current_version, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

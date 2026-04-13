@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ServicecatalogPrincipalPortfolioAssociationAttributes,
       outputs: { id: :id },
       map: [:portfolio_id, :principal_arn],
-      map_present: [:accept_language, :principal_type]
+      map_present: [:accept_language, :principal_type, :region]
   end
   module AWS
     include AWSServicecatalogPrincipalPortfolioAssociation

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCloudwatchEventConnection do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { auth_parameters: [{ 'key1' => 'val1' }], authorization_type: 'test-value', name: 'test-value' } }
+  let(:required_attrs) { { auth_parameters: { 'key1' => 'val1' }, authorization_type: 'test-value', name: 'test-value' } }
 
   describe ':aws_cloudwatch_event_connection' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventConnection do
 
         expect(ref.id).to eq("${aws_cloudwatch_event_connection.test.id}")
         expect(ref.arn).to eq("${aws_cloudwatch_event_connection.test.arn}")
+        expect(ref.region).to eq("${aws_cloudwatch_event_connection.test.region}")
         expect(ref.secret_arn).to eq("${aws_cloudwatch_event_connection.test.secret_arn}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventConnection do
 
         config = validate_resource_structure(result, 'aws_cloudwatch_event_connection', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('secret_arn')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', invocation_connectivity_parameters: [{ 'key1' => 'val1' }], kms_key_identifier: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', invocation_connectivity_parameters: { 'key1' => 'val1' }, kms_key_identifier: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventConnection do
         expect(config).to have_key('description')
         expect(config).to have_key('invocation_connectivity_parameters')
         expect(config).to have_key('kms_key_identifier')
+        expect(config).to have_key('region')
       end
     end
 
@@ -93,7 +96,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventConnection do
       it 'includes invocation_connectivity_parameters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudwatch_event_connection('opt', required_attrs.merge(invocation_connectivity_parameters: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudwatch_event_connection('opt', required_attrs.merge(invocation_connectivity_parameters: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_connection', 'opt')
         expect(config).to have_key('invocation_connectivity_parameters')
@@ -124,6 +127,23 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventConnection do
         config = validate_resource_structure(result, 'aws_cloudwatch_event_connection', 'minimal')
         expect(config).not_to have_key('kms_key_identifier')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_connection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_connection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_connection', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'attribute types' do
@@ -134,7 +154,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventConnection do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudwatch_event_connection', 'typed')
-        expect(config['auth_parameters']).to be_a(Array)
+        expect(config['auth_parameters']).to be_a(Hash)
         expect(config['authorization_type']).to be_a(String)
         expect(config['name']).to be_a(String)
       end
@@ -169,8 +189,8 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventConnection do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_cloudwatch_event_connection,
     method: :aws_cloudwatch_event_connection,
-    required_attrs: { auth_parameters: [{ 'key1' => 'val1' }], authorization_type: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :secret_arn],
+    required_attrs: { auth_parameters: { 'key1' => 'val1' }, authorization_type: 'test-value', name: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :secret_arn],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

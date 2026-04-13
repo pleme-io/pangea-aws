@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerProjectAttributes,
       outputs: { id: :id },
       map: [:project_name, :service_catalog_provisioning_details],
-      map_present: [:project_description, :tags, :tags_all]
+      map_present: [:project_description, :region, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerProject

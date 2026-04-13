@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSPaymentcryptographyKey do
         expect(ref.key_check_value_algorithm).to eq("${aws_paymentcryptography_key.test.key_check_value_algorithm}")
         expect(ref.key_origin).to eq("${aws_paymentcryptography_key.test.key_origin}")
         expect(ref.key_state).to eq("${aws_paymentcryptography_key.test.key_state}")
+        expect(ref.region).to eq("${aws_paymentcryptography_key.test.region}")
         expect(ref.tags_all).to eq("${aws_paymentcryptography_key.test.tags_all}")
       end
     end
@@ -64,12 +65,13 @@ RSpec.describe Pangea::Resources::AWSPaymentcryptographyKey do
         expect(config).not_to have_key('key_check_value_algorithm')
         expect(config).not_to have_key('key_origin')
         expect(config).not_to have_key('key_state')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ key_attributes: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ deletion_window_in_days: 3.14, enabled: true, key_attributes: [{ 'key1' => 'val1' }], key_check_value_algorithm: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,16 +80,54 @@ RSpec.describe Pangea::Resources::AWSPaymentcryptographyKey do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_paymentcryptography_key', 'full')
+        expect(config).to have_key('deletion_window_in_days')
+        expect(config).to have_key('enabled')
         expect(config).to have_key('key_attributes')
+        expect(config).to have_key('key_check_value_algorithm')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes deletion_window_in_days when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_paymentcryptography_key('opt', required_attrs.merge(deletion_window_in_days: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_paymentcryptography_key', 'opt')
+        expect(config).to have_key('deletion_window_in_days')
+      end
+
+      it 'omits deletion_window_in_days when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_paymentcryptography_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_paymentcryptography_key', 'minimal')
+        expect(config).not_to have_key('deletion_window_in_days')
+      end
+      it 'includes enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_paymentcryptography_key('opt', required_attrs.merge(enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_paymentcryptography_key', 'opt')
+        expect(config).to have_key('enabled')
+      end
+
+      it 'omits enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_paymentcryptography_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_paymentcryptography_key', 'minimal')
+        expect(config).not_to have_key('enabled')
+      end
       it 'includes key_attributes when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_paymentcryptography_key('opt', required_attrs.merge(key_attributes: { 'key1' => 'val1' }))
+        synth.aws_paymentcryptography_key('opt', required_attrs.merge(key_attributes: [{ 'key1' => 'val1' }]))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_paymentcryptography_key', 'opt')
         expect(config).to have_key('key_attributes')
@@ -100,6 +140,40 @@ RSpec.describe Pangea::Resources::AWSPaymentcryptographyKey do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_paymentcryptography_key', 'minimal')
         expect(config).not_to have_key('key_attributes')
+      end
+      it 'includes key_check_value_algorithm when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_paymentcryptography_key('opt', required_attrs.merge(key_check_value_algorithm: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_paymentcryptography_key', 'opt')
+        expect(config).to have_key('key_check_value_algorithm')
+      end
+
+      it 'omits key_check_value_algorithm when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_paymentcryptography_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_paymentcryptography_key', 'minimal')
+        expect(config).not_to have_key('key_check_value_algorithm')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_paymentcryptography_key('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_paymentcryptography_key', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_paymentcryptography_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_paymentcryptography_key', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -130,6 +204,17 @@ RSpec.describe Pangea::Resources::AWSPaymentcryptographyKey do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_paymentcryptography_key', "bool_#{val}")
           expect(config['exportable']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enabled: val)
+          synth.aws_paymentcryptography_key("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_paymentcryptography_key', "bool_#{val}")
+          expect(config['enabled']).to eq(val)
         end
       end
     end
@@ -176,8 +261,8 @@ RSpec.describe Pangea::Resources::AWSPaymentcryptographyKey do
     resource_type: :aws_paymentcryptography_key,
     method: :aws_paymentcryptography_key,
     required_attrs: { exportable: true },
-    expected_outputs: [:id, :arn, :deletion_window_in_days, :enabled, :key_check_value, :key_check_value_algorithm, :key_origin, :key_state, :tags_all],
+    expected_outputs: [:id, :arn, :deletion_window_in_days, :enabled, :key_check_value, :key_check_value_algorithm, :key_origin, :key_state, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:exportable]
+    boolean_fields: [:exportable, :enabled]
 end

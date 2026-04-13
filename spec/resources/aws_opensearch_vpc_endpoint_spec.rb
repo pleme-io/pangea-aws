@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSOpensearchVpcEndpoint do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { domain_arn: 'test-value', vpc_options: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { domain_arn: 'test-value', vpc_options: { 'key1' => 'val1' } } }
 
   describe ':aws_opensearch_vpc_endpoint' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchVpcEndpoint do
 
         expect(ref.id).to eq("${aws_opensearch_vpc_endpoint.test.id}")
         expect(ref.endpoint).to eq("${aws_opensearch_vpc_endpoint.test.endpoint}")
+        expect(ref.region).to eq("${aws_opensearch_vpc_endpoint.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSOpensearchVpcEndpoint do
 
         config = validate_resource_structure(result, 'aws_opensearch_vpc_endpoint', 'test')
         expect(config).not_to have_key('endpoint')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_vpc_endpoint('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_opensearch_vpc_endpoint', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_vpc_endpoint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_vpc_endpoint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_vpc_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_vpc_endpoint', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -63,7 +99,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchVpcEndpoint do
 
         config = validate_resource_structure(result, 'aws_opensearch_vpc_endpoint', 'typed')
         expect(config['domain_arn']).to be_a(String)
-        expect(config['vpc_options']).to be_a(Array)
+        expect(config['vpc_options']).to be_a(Hash)
       end
     end
 
@@ -96,8 +132,8 @@ RSpec.describe Pangea::Resources::AWSOpensearchVpcEndpoint do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_opensearch_vpc_endpoint,
     method: :aws_opensearch_vpc_endpoint,
-    required_attrs: { domain_arn: 'test-value', vpc_options: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :endpoint],
+    required_attrs: { domain_arn: 'test-value', vpc_options: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :endpoint, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

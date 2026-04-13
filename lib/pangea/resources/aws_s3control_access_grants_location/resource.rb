@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3controlAccessGrantsLocationAttributes,
       outputs: { id: :id },
       map: [:iam_role_arn, :location_scope],
-      map_present: [:account_id, :tags]
+      map_present: [:account_id, :region, :tags]
   end
   module AWS
     include AWSS3controlAccessGrantsLocation

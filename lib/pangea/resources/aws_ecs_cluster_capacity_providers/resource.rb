@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EcsClusterCapacityProvidersAttributes,
       outputs: { id: :id },
       map: [:cluster_name],
-      map_present: [:capacity_providers, :default_capacity_provider_strategy]
+      map_present: [:capacity_providers, :default_capacity_provider_strategy, :region]
   end
   module AWS
     include AWSEcsClusterCapacityProviders

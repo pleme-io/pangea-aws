@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueMlTransformAttributes,
       outputs: { id: :id },
       map: [:input_record_tables, :name, :parameters, :role_arn],
-      map_present: [:description, :glue_version, :max_capacity, :max_retries, :number_of_workers, :tags, :tags_all, :timeout, :worker_type]
+      map_present: [:description, :glue_version, :max_capacity, :max_retries, :number_of_workers, :region, :tags, :tags_all, :timeout, :worker_type]
   end
   module AWS
     include AWSGlueMlTransform

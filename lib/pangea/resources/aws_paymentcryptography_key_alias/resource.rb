@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::PaymentcryptographyKeyAliasAttributes,
       outputs: { id: :id },
       map: [:alias_name],
-      map_present: [:key_arn]
+      map_present: [:key_arn, :region]
   end
   module AWS
     include AWSPaymentcryptographyKeyAlias

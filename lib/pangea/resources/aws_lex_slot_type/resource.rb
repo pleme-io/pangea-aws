@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LexSlotTypeAttributes,
       outputs: { id: :id },
       map: [:enumeration_value, :name],
-      map_present: [:description, :value_selection_strategy],
+      map_present: [:description, :region, :value_selection_strategy],
       map_bool: [:create_version]
   end
   module AWS

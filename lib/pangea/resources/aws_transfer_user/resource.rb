@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::TransferUserAttributes,
       outputs: { id: :id },
       map: [:role, :server_id, :user_name],
-      map_present: [:home_directory, :home_directory_mappings, :home_directory_type, :policy, :posix_profile, :tags, :tags_all]
+      map_present: [:home_directory, :home_directory_mappings, :home_directory_type, :policy, :posix_profile, :region, :tags, :tags_all]
   end
   module AWS
     include AWSTransferUser

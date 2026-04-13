@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SignerSigningJobAttributes,
       outputs: { id: :id },
       map: [:destination, :profile_name, :source],
+      map_present: [:region],
       map_bool: [:ignore_signing_job_failure]
   end
   module AWS

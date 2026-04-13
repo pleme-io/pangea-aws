@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MediaConvertQueueAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:concurrent_jobs, :description, :pricing_plan, :reservation_plan_settings, :status, :tags, :tags_all]
+      map_present: [:concurrent_jobs, :description, :pricing_plan, :region, :reservation_plan_settings, :status, :tags, :tags_all]
   end
   module AWS
     include AWSMediaConvertQueue

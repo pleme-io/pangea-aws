@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2ClientVpnRouteAttributes,
       outputs: { id: :id },
       map: [:client_vpn_endpoint_id, :destination_cidr_block, :target_vpc_subnet_id],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSEc2ClientVpnRoute

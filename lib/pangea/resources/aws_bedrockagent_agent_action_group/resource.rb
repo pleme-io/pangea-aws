@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BedrockagentAgentActionGroupAttributes,
       outputs: { id: :id },
       map: [:action_group_name, :agent_id, :agent_version],
-      map_present: [:action_group_executor, :action_group_state, :api_schema, :description, :function_schema, :parent_action_group_signature],
+      map_present: [:action_group_executor, :action_group_state, :api_schema, :description, :function_schema, :parent_action_group_signature, :region],
       map_bool: [:prepare_agent, :skip_resource_in_use_check]
   end
   module AWS

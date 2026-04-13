@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeAwsLogSource do
         ref = synth.aws_securitylake_aws_log_source('test', required_attrs)
 
         expect(ref.id).to eq("${aws_securitylake_aws_log_source.test.id}")
+        expect(ref.region).to eq("${aws_securitylake_aws_log_source.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securitylake_aws_log_source('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_securitylake_aws_log_source', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ source: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', source: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -51,11 +64,29 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeAwsLogSource do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_securitylake_aws_log_source', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('source')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securitylake_aws_log_source('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securitylake_aws_log_source', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securitylake_aws_log_source('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securitylake_aws_log_source', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes source when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -116,7 +147,7 @@ RSpec.describe Pangea::Resources::AWSSecuritylakeAwsLogSource do
     resource_type: :aws_securitylake_aws_log_source,
     method: :aws_securitylake_aws_log_source,
     required_attrs: {},
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

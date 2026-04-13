@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftEndpointAuthorizationAttributes,
       outputs: { id: :id },
       map: [:account, :cluster_identifier],
-      map_present: [:vpc_ids],
+      map_present: [:region, :vpc_ids],
       map_bool: [:force_delete]
   end
   module AWS

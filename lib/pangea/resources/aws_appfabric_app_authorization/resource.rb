@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppfabricAppAuthorizationAttributes,
       outputs: { id: :id },
       map: [:app, :app_bundle_arn, :auth_type],
-      map_present: [:credential, :tags, :tenant]
+      map_present: [:credential, :region, :tags, :tenant]
   end
   module AWS
     include AWSAppfabricAppAuthorization

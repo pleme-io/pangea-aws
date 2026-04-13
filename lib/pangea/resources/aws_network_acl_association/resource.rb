@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_network_acl_association,
       attributes_class: AWS::Types::NetworkAclAssociationAttributes,
       outputs: { id: :id },
-      map: [:network_acl_id, :subnet_id]
+      map: [:network_acl_id, :subnet_id],
+      map_present: [:region]
   end
   module AWS
     include AWSNetworkAclAssociation

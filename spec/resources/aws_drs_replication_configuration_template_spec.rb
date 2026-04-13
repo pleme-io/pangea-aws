@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSDrsReplicationConfigurationTemplate do
         expect(ref.id).to eq("${aws_drs_replication_configuration_template.test.id}")
         expect(ref.arn).to eq("${aws_drs_replication_configuration_template.test.arn}")
         expect(ref.auto_replicate_new_disks).to eq("${aws_drs_replication_configuration_template.test.auto_replicate_new_disks}")
+        expect(ref.region).to eq("${aws_drs_replication_configuration_template.test.region}")
         expect(ref.tags_all).to eq("${aws_drs_replication_configuration_template.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSDrsReplicationConfigurationTemplate do
         config = validate_resource_structure(result, 'aws_drs_replication_configuration_template', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('auto_replicate_new_disks')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ ebs_encryption_key_arn: 'test-value', pit_policy: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ auto_replicate_new_disks: true, ebs_encryption_key_arn: 'test-value', pit_policy: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,13 +70,32 @@ RSpec.describe Pangea::Resources::AWSDrsReplicationConfigurationTemplate do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_drs_replication_configuration_template', 'full')
+        expect(config).to have_key('auto_replicate_new_disks')
         expect(config).to have_key('ebs_encryption_key_arn')
         expect(config).to have_key('pit_policy')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes auto_replicate_new_disks when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_drs_replication_configuration_template('opt', required_attrs.merge(auto_replicate_new_disks: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_drs_replication_configuration_template', 'opt')
+        expect(config).to have_key('auto_replicate_new_disks')
+      end
+
+      it 'omits auto_replicate_new_disks when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_drs_replication_configuration_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_drs_replication_configuration_template', 'minimal')
+        expect(config).not_to have_key('auto_replicate_new_disks')
+      end
       it 'includes ebs_encryption_key_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -108,6 +129,23 @@ RSpec.describe Pangea::Resources::AWSDrsReplicationConfigurationTemplate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_drs_replication_configuration_template', 'minimal')
         expect(config).not_to have_key('pit_policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_drs_replication_configuration_template('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_drs_replication_configuration_template', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_drs_replication_configuration_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_drs_replication_configuration_template', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -160,6 +198,17 @@ RSpec.describe Pangea::Resources::AWSDrsReplicationConfigurationTemplate do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_drs_replication_configuration_template', "bool_#{val}")
           expect(config['use_dedicated_replication_server']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts auto_replicate_new_disks=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(auto_replicate_new_disks: val)
+          synth.aws_drs_replication_configuration_template("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_drs_replication_configuration_template', "bool_#{val}")
+          expect(config['auto_replicate_new_disks']).to eq(val)
         end
       end
     end
@@ -216,8 +265,8 @@ RSpec.describe Pangea::Resources::AWSDrsReplicationConfigurationTemplate do
     resource_type: :aws_drs_replication_configuration_template,
     method: :aws_drs_replication_configuration_template,
     required_attrs: { associate_default_security_group: true, bandwidth_throttling: 3.14, create_public_ip: true, data_plane_routing: 'test-value', default_large_staging_disk_type: 'test-value', ebs_encryption: 'test-value', replication_server_instance_type: 'test-value', replication_servers_security_groups_ids: ['test-value'], staging_area_subnet_id: 'test-value', staging_area_tags: { 'key1' => 'val1' }, use_dedicated_replication_server: true },
-    expected_outputs: [:id, :arn, :auto_replicate_new_disks, :tags_all],
+    expected_outputs: [:id, :arn, :auto_replicate_new_disks, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:associate_default_security_group, :create_public_ip, :use_dedicated_replication_server]
+    boolean_fields: [:associate_default_security_group, :create_public_ip, :use_dedicated_replication_server, :auto_replicate_new_disks]
 end

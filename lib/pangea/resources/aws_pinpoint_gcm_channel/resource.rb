@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::PinpointGcmChannelAttributes,
       outputs: { id: :id },
       map: [:application_id],
-      map_present: [:api_key, :default_authentication_method, :service_json],
+      map_present: [:api_key, :default_authentication_method, :region, :service_json],
       map_bool: [:enabled]
   end
   module AWS

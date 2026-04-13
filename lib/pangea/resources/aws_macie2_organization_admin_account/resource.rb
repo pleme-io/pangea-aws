@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_macie2_organization_admin_account,
       attributes_class: AWS::Types::Macie2OrganizationAdminAccountAttributes,
       outputs: { id: :id },
-      map: [:admin_account_id]
+      map: [:admin_account_id],
+      map_present: [:region]
   end
   module AWS
     include AWSMacie2OrganizationAdminAccount

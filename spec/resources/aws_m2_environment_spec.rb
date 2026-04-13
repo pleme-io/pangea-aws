@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSM2Environment do
         expect(ref.load_balancer_arn).to eq("${aws_m2_environment.test.load_balancer_arn}")
         expect(ref.preferred_maintenance_window).to eq("${aws_m2_environment.test.preferred_maintenance_window}")
         expect(ref.publicly_accessible).to eq("${aws_m2_environment.test.publicly_accessible}")
+        expect(ref.region).to eq("${aws_m2_environment.test.region}")
         expect(ref.security_group_ids).to eq("${aws_m2_environment.test.security_group_ids}")
         expect(ref.subnet_ids).to eq("${aws_m2_environment.test.subnet_ids}")
         expect(ref.tags_all).to eq("${aws_m2_environment.test.tags_all}")
@@ -64,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSM2Environment do
         expect(config).not_to have_key('load_balancer_arn')
         expect(config).not_to have_key('preferred_maintenance_window')
         expect(config).not_to have_key('publicly_accessible')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_group_ids')
         expect(config).not_to have_key('subnet_ids')
         expect(config).not_to have_key('tags_all')
@@ -71,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSM2Environment do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ apply_changes_during_maintenance_window: true, description: 'test-value', force_update: true, high_availability_config: [{ 'key1' => 'val1' }], kms_key_id: 'test-value', storage_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ apply_changes_during_maintenance_window: true, description: 'test-value', engine_version: 'test-value', force_update: true, high_availability_config: [{ 'key1' => 'val1' }], kms_key_id: 'test-value', preferred_maintenance_window: 'test-value', publicly_accessible: true, region: 'test-value', security_group_ids: ['test-value'], storage_configuration: [{ 'key1' => 'val1' }], subnet_ids: ['test-value'], tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -82,10 +84,16 @@ RSpec.describe Pangea::Resources::AWSM2Environment do
         config = validate_resource_structure(result, 'aws_m2_environment', 'full')
         expect(config).to have_key('apply_changes_during_maintenance_window')
         expect(config).to have_key('description')
+        expect(config).to have_key('engine_version')
         expect(config).to have_key('force_update')
         expect(config).to have_key('high_availability_config')
         expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('preferred_maintenance_window')
+        expect(config).to have_key('publicly_accessible')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_group_ids')
         expect(config).to have_key('storage_configuration')
+        expect(config).to have_key('subnet_ids')
         expect(config).to have_key('tags')
       end
     end
@@ -124,6 +132,23 @@ RSpec.describe Pangea::Resources::AWSM2Environment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_m2_environment', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_environment('opt', required_attrs.merge(engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_environment', 'opt')
+        expect(config).to have_key('engine_version')
+      end
+
+      it 'omits engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_environment', 'minimal')
+        expect(config).not_to have_key('engine_version')
       end
       it 'includes force_update when provided' do
         synth = create_synthesizer
@@ -176,6 +201,74 @@ RSpec.describe Pangea::Resources::AWSM2Environment do
         config = validate_resource_structure(result, 'aws_m2_environment', 'minimal')
         expect(config).not_to have_key('kms_key_id')
       end
+      it 'includes preferred_maintenance_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_environment('opt', required_attrs.merge(preferred_maintenance_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_environment', 'opt')
+        expect(config).to have_key('preferred_maintenance_window')
+      end
+
+      it 'omits preferred_maintenance_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_environment', 'minimal')
+        expect(config).not_to have_key('preferred_maintenance_window')
+      end
+      it 'includes publicly_accessible when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_environment('opt', required_attrs.merge(publicly_accessible: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_environment', 'opt')
+        expect(config).to have_key('publicly_accessible')
+      end
+
+      it 'omits publicly_accessible when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_environment', 'minimal')
+        expect(config).not_to have_key('publicly_accessible')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_environment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_environment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_environment', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_environment('opt', required_attrs.merge(security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_environment', 'opt')
+        expect(config).to have_key('security_group_ids')
+      end
+
+      it 'omits security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_environment', 'minimal')
+        expect(config).not_to have_key('security_group_ids')
+      end
       it 'includes storage_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -192,6 +285,23 @@ RSpec.describe Pangea::Resources::AWSM2Environment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_m2_environment', 'minimal')
         expect(config).not_to have_key('storage_configuration')
+      end
+      it 'includes subnet_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_environment('opt', required_attrs.merge(subnet_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_environment', 'opt')
+        expect(config).to have_key('subnet_ids')
+      end
+
+      it 'omits subnet_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_environment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_environment', 'minimal')
+        expect(config).not_to have_key('subnet_ids')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -233,6 +343,17 @@ RSpec.describe Pangea::Resources::AWSM2Environment do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_m2_environment', "bool_#{val}")
           expect(config['force_update']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts publicly_accessible=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(publicly_accessible: val)
+          synth.aws_m2_environment("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_m2_environment', "bool_#{val}")
+          expect(config['publicly_accessible']).to eq(val)
         end
       end
     end
@@ -281,8 +402,8 @@ RSpec.describe Pangea::Resources::AWSM2Environment do
     resource_type: :aws_m2_environment,
     method: :aws_m2_environment,
     required_attrs: { engine_type: 'test-value', instance_type: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :engine_version, :environment_id, :load_balancer_arn, :preferred_maintenance_window, :publicly_accessible, :security_group_ids, :subnet_ids, :tags_all],
+    expected_outputs: [:id, :arn, :engine_version, :environment_id, :load_balancer_arn, :preferred_maintenance_window, :publicly_accessible, :region, :security_group_ids, :subnet_ids, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:apply_changes_during_maintenance_window, :force_update]
+    boolean_fields: [:apply_changes_during_maintenance_window, :force_update, :publicly_accessible]
 end

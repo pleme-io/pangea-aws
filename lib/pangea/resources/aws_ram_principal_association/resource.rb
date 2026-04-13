@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ram_principal_association,
       attributes_class: AWS::Types::RamPrincipalAssociationAttributes,
       outputs: { id: :id },
-      map: [:principal, :resource_share_arn]
+      map: [:principal, :resource_share_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSRamPrincipalAssociation

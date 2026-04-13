@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubAutomationRule do
         expect(ref.id).to eq("${aws_securityhub_automation_rule.test.id}")
         expect(ref.arn).to eq("${aws_securityhub_automation_rule.test.arn}")
         expect(ref.is_terminal).to eq("${aws_securityhub_automation_rule.test.is_terminal}")
+        expect(ref.region).to eq("${aws_securityhub_automation_rule.test.region}")
         expect(ref.rule_status).to eq("${aws_securityhub_automation_rule.test.rule_status}")
         expect(ref.tags_all).to eq("${aws_securityhub_automation_rule.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSSecurityhubAutomationRule do
         config = validate_resource_structure(result, 'aws_securityhub_automation_rule', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('is_terminal')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('rule_status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ actions: [{ 'key1' => 'val1' }], criteria: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ actions: [{ 'key1' => 'val1' }], criteria: [{ 'key1' => 'val1' }], is_terminal: true, region: 'test-value', rule_status: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,6 +74,9 @@ RSpec.describe Pangea::Resources::AWSSecurityhubAutomationRule do
         config = validate_resource_structure(result, 'aws_securityhub_automation_rule', 'full')
         expect(config).to have_key('actions')
         expect(config).to have_key('criteria')
+        expect(config).to have_key('is_terminal')
+        expect(config).to have_key('region')
+        expect(config).to have_key('rule_status')
         expect(config).to have_key('tags')
       end
     end
@@ -111,6 +116,57 @@ RSpec.describe Pangea::Resources::AWSSecurityhubAutomationRule do
         config = validate_resource_structure(result, 'aws_securityhub_automation_rule', 'minimal')
         expect(config).not_to have_key('criteria')
       end
+      it 'includes is_terminal when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_automation_rule('opt', required_attrs.merge(is_terminal: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_automation_rule', 'opt')
+        expect(config).to have_key('is_terminal')
+      end
+
+      it 'omits is_terminal when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_automation_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_automation_rule', 'minimal')
+        expect(config).not_to have_key('is_terminal')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_automation_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_automation_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_automation_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_automation_rule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes rule_status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_automation_rule('opt', required_attrs.merge(rule_status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_automation_rule', 'opt')
+        expect(config).to have_key('rule_status')
+      end
+
+      it 'omits rule_status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_automation_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_automation_rule', 'minimal')
+        expect(config).not_to have_key('rule_status')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -127,6 +183,20 @@ RSpec.describe Pangea::Resources::AWSSecurityhubAutomationRule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_securityhub_automation_rule', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts is_terminal=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(is_terminal: val)
+          synth.aws_securityhub_automation_rule("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_securityhub_automation_rule', "bool_#{val}")
+          expect(config['is_terminal']).to eq(val)
+        end
       end
     end
 
@@ -174,8 +244,8 @@ RSpec.describe Pangea::Resources::AWSSecurityhubAutomationRule do
     resource_type: :aws_securityhub_automation_rule,
     method: :aws_securityhub_automation_rule,
     required_attrs: { description: 'test-value', rule_name: 'test-value', rule_order: 3.14 },
-    expected_outputs: [:id, :arn, :is_terminal, :rule_status, :tags_all],
+    expected_outputs: [:id, :arn, :is_terminal, :region, :rule_status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:is_terminal]
 end

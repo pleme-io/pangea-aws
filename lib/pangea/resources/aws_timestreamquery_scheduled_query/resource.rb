@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::TimestreamqueryScheduledQueryAttributes,
       outputs: { id: :id },
       map: [:execution_role_arn, :name, :query_string],
-      map_present: [:error_report_configuration, :kms_key_id, :last_run_summary, :notification_configuration, :recently_failed_runs, :schedule_configuration, :tags, :target_configuration]
+      map_present: [:error_report_configuration, :kms_key_id, :last_run_summary, :notification_configuration, :recently_failed_runs, :region, :schedule_configuration, :tags, :target_configuration]
   end
   module AWS
     include AWSTimestreamqueryScheduledQuery

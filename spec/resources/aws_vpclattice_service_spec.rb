@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeService do
         expect(ref.arn).to eq("${aws_vpclattice_service.test.arn}")
         expect(ref.auth_type).to eq("${aws_vpclattice_service.test.auth_type}")
         expect(ref.dns_entry).to eq("${aws_vpclattice_service.test.dns_entry}")
+        expect(ref.region).to eq("${aws_vpclattice_service.test.region}")
         expect(ref.status).to eq("${aws_vpclattice_service.test.status}")
         expect(ref.tags_all).to eq("${aws_vpclattice_service.test.tags_all}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSVpclatticeService do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('auth_type')
         expect(config).not_to have_key('dns_entry')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ certificate_arn: 'test-value', custom_domain_name: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ auth_type: 'test-value', certificate_arn: 'test-value', custom_domain_name: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,13 +74,33 @@ RSpec.describe Pangea::Resources::AWSVpclatticeService do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpclattice_service', 'full')
+        expect(config).to have_key('auth_type')
         expect(config).to have_key('certificate_arn')
         expect(config).to have_key('custom_domain_name')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes auth_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service('opt', required_attrs.merge(auth_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service', 'opt')
+        expect(config).to have_key('auth_type')
+      end
+
+      it 'omits auth_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service', 'minimal')
+        expect(config).not_to have_key('auth_type')
+      end
       it 'includes certificate_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -113,6 +135,23 @@ RSpec.describe Pangea::Resources::AWSVpclatticeService do
         config = validate_resource_structure(result, 'aws_vpclattice_service', 'minimal')
         expect(config).not_to have_key('custom_domain_name')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -129,6 +168,23 @@ RSpec.describe Pangea::Resources::AWSVpclatticeService do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpclattice_service', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_service', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -174,7 +230,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeService do
     resource_type: :aws_vpclattice_service,
     method: :aws_vpclattice_service,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :auth_type, :dns_entry, :status, :tags_all],
+    expected_outputs: [:id, :arn, :auth_type, :dns_entry, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

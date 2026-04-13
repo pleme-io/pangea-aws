@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SecurityhubAutomationRuleAttributes,
       outputs: { id: :id },
       map: [:description, :rule_name, :rule_order],
-      map_present: [:actions, :criteria, :rule_status, :tags],
+      map_present: [:actions, :criteria, :region, :rule_status, :tags],
       map_bool: [:is_terminal]
   end
   module AWS

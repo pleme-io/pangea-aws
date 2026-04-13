@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSDirectoryServiceSharedDirectory do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { directory_id: 'test-value', target: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { directory_id: 'test-value', target: { 'key1' => 'val1' } } }
 
   describe ':aws_directory_service_shared_directory' do
     context 'with required attributes only' do
@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceSharedDirectory do
         ref = synth.aws_directory_service_shared_directory('test', required_attrs)
 
         expect(ref.id).to eq("${aws_directory_service_shared_directory.test.id}")
+        expect(ref.region).to eq("${aws_directory_service_shared_directory.test.region}")
         expect(ref.shared_directory_id).to eq("${aws_directory_service_shared_directory.test.shared_directory_id}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceSharedDirectory do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_directory_service_shared_directory', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('shared_directory_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ method: 'test-value', notes: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ method: 'test-value', notes: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,6 +68,7 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceSharedDirectory do
         config = validate_resource_structure(result, 'aws_directory_service_shared_directory', 'full')
         expect(config).to have_key('method')
         expect(config).to have_key('notes')
+        expect(config).to have_key('region')
       end
     end
 
@@ -104,6 +107,23 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceSharedDirectory do
         config = validate_resource_structure(result, 'aws_directory_service_shared_directory', 'minimal')
         expect(config).not_to have_key('notes')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_shared_directory('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_shared_directory', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_directory_service_shared_directory('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_directory_service_shared_directory', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'sensitive fields' do
@@ -122,7 +142,7 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceSharedDirectory do
 
         config = validate_resource_structure(result, 'aws_directory_service_shared_directory', 'typed')
         expect(config['directory_id']).to be_a(String)
-        expect(config['target']).to be_a(Array)
+        expect(config['target']).to be_a(Hash)
       end
     end
 
@@ -155,8 +175,8 @@ RSpec.describe Pangea::Resources::AWSDirectoryServiceSharedDirectory do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_directory_service_shared_directory,
     method: :aws_directory_service_shared_directory,
-    required_attrs: { directory_id: 'test-value', target: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :shared_directory_id],
+    required_attrs: { directory_id: 'test-value', target: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :region, :shared_directory_id],
     sensitive_fields: [:notes],
     immutable_fields: [],
     boolean_fields: []

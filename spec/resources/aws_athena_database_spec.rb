@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSAthenaDatabase do
         ref = synth.aws_athena_database('test', required_attrs)
 
         expect(ref.id).to eq("${aws_athena_database.test.id}")
+        expect(ref.region).to eq("${aws_athena_database.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_athena_database('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_athena_database', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ acl_configuration: [{ 'key1' => 'val1' }], bucket: 'test-value', comment: 'test-value', encryption_configuration: [{ 'key1' => 'val1' }], expected_bucket_owner: 'test-value', force_destroy: true, properties: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ acl_configuration: { 'key1' => 'val1' }, bucket: 'test-value', comment: 'test-value', encryption_configuration: { 'key1' => 'val1' }, expected_bucket_owner: 'test-value', force_destroy: true, properties: { 'key1' => 'val1' }, region: 'test-value', workgroup: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -58,6 +71,8 @@ RSpec.describe Pangea::Resources::AWSAthenaDatabase do
         expect(config).to have_key('expected_bucket_owner')
         expect(config).to have_key('force_destroy')
         expect(config).to have_key('properties')
+        expect(config).to have_key('region')
+        expect(config).to have_key('workgroup')
       end
     end
 
@@ -65,7 +80,7 @@ RSpec.describe Pangea::Resources::AWSAthenaDatabase do
       it 'includes acl_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_athena_database('opt', required_attrs.merge(acl_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_athena_database('opt', required_attrs.merge(acl_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_athena_database', 'opt')
         expect(config).to have_key('acl_configuration')
@@ -116,7 +131,7 @@ RSpec.describe Pangea::Resources::AWSAthenaDatabase do
       it 'includes encryption_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_athena_database('opt', required_attrs.merge(encryption_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_athena_database('opt', required_attrs.merge(encryption_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_athena_database', 'opt')
         expect(config).to have_key('encryption_configuration')
@@ -181,6 +196,40 @@ RSpec.describe Pangea::Resources::AWSAthenaDatabase do
         config = validate_resource_structure(result, 'aws_athena_database', 'minimal')
         expect(config).not_to have_key('properties')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_athena_database('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_athena_database', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_athena_database('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_athena_database', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes workgroup when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_athena_database('opt', required_attrs.merge(workgroup: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_athena_database', 'opt')
+        expect(config).to have_key('workgroup')
+      end
+
+      it 'omits workgroup when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_athena_database('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_athena_database', 'minimal')
+        expect(config).not_to have_key('workgroup')
+      end
     end
 
     context 'boolean fields' do
@@ -239,7 +288,7 @@ RSpec.describe Pangea::Resources::AWSAthenaDatabase do
     resource_type: :aws_athena_database,
     method: :aws_athena_database,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:force_destroy]

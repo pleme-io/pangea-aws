@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSAmiLaunchPermission do
         ref = synth.aws_ami_launch_permission('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ami_launch_permission.test.id}")
+        expect(ref.region).to eq("${aws_ami_launch_permission.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami_launch_permission('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ami_launch_permission', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ account_id: 'test-value', group: 'test-value', organization_arn: 'test-value', organizational_unit_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ account_id: 'test-value', group: 'test-value', organization_arn: 'test-value', organizational_unit_arn: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -55,6 +68,7 @@ RSpec.describe Pangea::Resources::AWSAmiLaunchPermission do
         expect(config).to have_key('group')
         expect(config).to have_key('organization_arn')
         expect(config).to have_key('organizational_unit_arn')
+        expect(config).to have_key('region')
       end
     end
 
@@ -127,6 +141,23 @@ RSpec.describe Pangea::Resources::AWSAmiLaunchPermission do
         config = validate_resource_structure(result, 'aws_ami_launch_permission', 'minimal')
         expect(config).not_to have_key('organizational_unit_arn')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami_launch_permission('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami_launch_permission', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ami_launch_permission('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ami_launch_permission', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'attribute types' do
@@ -171,7 +202,7 @@ RSpec.describe Pangea::Resources::AWSAmiLaunchPermission do
     resource_type: :aws_ami_launch_permission,
     method: :aws_ami_launch_permission,
     required_attrs: { image_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

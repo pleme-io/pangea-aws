@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_verifiedaccess_instance_logging_configuration,
       attributes_class: AWS::Types::VerifiedaccessInstanceLoggingConfigurationAttributes,
       outputs: { id: :id },
-      map: [:access_logs, :verifiedaccess_instance_id]
+      map: [:access_logs, :verifiedaccess_instance_id],
+      map_present: [:region]
   end
   module AWS
     include AWSVerifiedaccessInstanceLoggingConfiguration

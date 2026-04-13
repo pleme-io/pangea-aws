@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Sesv2EmailIdentityFeedbackAttributesAttributes,
       outputs: { id: :id },
       map: [:email_identity],
+      map_present: [:region],
       map_bool: [:email_forwarding_enabled]
   end
   module AWS

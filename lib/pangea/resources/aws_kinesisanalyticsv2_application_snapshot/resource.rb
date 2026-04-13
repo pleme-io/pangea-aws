@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_kinesisanalyticsv2_application_snapshot,
       attributes_class: AWS::Types::Kinesisanalyticsv2ApplicationSnapshotAttributes,
       outputs: { id: :id },
-      map: [:application_name, :snapshot_name]
+      map: [:application_name, :snapshot_name],
+      map_present: [:region]
   end
   module AWS
     include AWSKinesisanalyticsv2ApplicationSnapshot

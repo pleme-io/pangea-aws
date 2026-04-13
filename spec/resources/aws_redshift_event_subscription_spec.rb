@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftEventSubscription do
         expect(ref.id).to eq("${aws_redshift_event_subscription.test.id}")
         expect(ref.arn).to eq("${aws_redshift_event_subscription.test.arn}")
         expect(ref.customer_aws_id).to eq("${aws_redshift_event_subscription.test.customer_aws_id}")
+        expect(ref.region).to eq("${aws_redshift_event_subscription.test.region}")
         expect(ref.status).to eq("${aws_redshift_event_subscription.test.status}")
         expect(ref.tags_all).to eq("${aws_redshift_event_subscription.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSRedshiftEventSubscription do
         config = validate_resource_structure(result, 'aws_redshift_event_subscription', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('customer_aws_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enabled: true, event_categories: ['test-value'], severity: 'test-value', source_ids: ['test-value'], source_type: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ enabled: true, event_categories: ['test-value'], region: 'test-value', severity: 'test-value', source_ids: ['test-value'], source_type: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,10 +74,12 @@ RSpec.describe Pangea::Resources::AWSRedshiftEventSubscription do
         config = validate_resource_structure(result, 'aws_redshift_event_subscription', 'full')
         expect(config).to have_key('enabled')
         expect(config).to have_key('event_categories')
+        expect(config).to have_key('region')
         expect(config).to have_key('severity')
         expect(config).to have_key('source_ids')
         expect(config).to have_key('source_type')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -113,6 +117,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftEventSubscription do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_event_subscription', 'minimal')
         expect(config).not_to have_key('event_categories')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_event_subscription('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_event_subscription', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_event_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_event_subscription', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes severity when provided' do
         synth = create_synthesizer
@@ -182,6 +203,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftEventSubscription do
         config = validate_resource_structure(result, 'aws_redshift_event_subscription', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_event_subscription('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_event_subscription', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_event_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_event_subscription', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'boolean fields' do
@@ -241,7 +279,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftEventSubscription do
     resource_type: :aws_redshift_event_subscription,
     method: :aws_redshift_event_subscription,
     required_attrs: { name: 'test-value', sns_topic_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :customer_aws_id, :status, :tags_all],
+    expected_outputs: [:id, :arn, :customer_aws_id, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled]

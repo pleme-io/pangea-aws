@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogAnomalyDetector do
         expect(ref.id).to eq("${aws_cloudwatch_log_anomaly_detector.test.id}")
         expect(ref.anomaly_visibility_time).to eq("${aws_cloudwatch_log_anomaly_detector.test.anomaly_visibility_time}")
         expect(ref.arn).to eq("${aws_cloudwatch_log_anomaly_detector.test.arn}")
+        expect(ref.region).to eq("${aws_cloudwatch_log_anomaly_detector.test.region}")
         expect(ref.tags_all).to eq("${aws_cloudwatch_log_anomaly_detector.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogAnomalyDetector do
         config = validate_resource_structure(result, 'aws_cloudwatch_log_anomaly_detector', 'test')
         expect(config).not_to have_key('anomaly_visibility_time')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ detector_name: 'test-value', evaluation_frequency: 'test-value', filter_pattern: 'test-value', kms_key_id: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ anomaly_visibility_time: 3.14, detector_name: 'test-value', evaluation_frequency: 'test-value', filter_pattern: 'test-value', kms_key_id: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,15 +70,34 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogAnomalyDetector do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudwatch_log_anomaly_detector', 'full')
+        expect(config).to have_key('anomaly_visibility_time')
         expect(config).to have_key('detector_name')
         expect(config).to have_key('evaluation_frequency')
         expect(config).to have_key('filter_pattern')
         expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes anomaly_visibility_time when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_anomaly_detector('opt', required_attrs.merge(anomaly_visibility_time: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_anomaly_detector', 'opt')
+        expect(config).to have_key('anomaly_visibility_time')
+      end
+
+      it 'omits anomaly_visibility_time when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_anomaly_detector('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_anomaly_detector', 'minimal')
+        expect(config).not_to have_key('anomaly_visibility_time')
+      end
       it 'includes detector_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -144,6 +165,23 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogAnomalyDetector do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_log_anomaly_detector', 'minimal')
         expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_anomaly_detector('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_anomaly_detector', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_anomaly_detector('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_anomaly_detector', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -221,7 +259,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogAnomalyDetector do
     resource_type: :aws_cloudwatch_log_anomaly_detector,
     method: :aws_cloudwatch_log_anomaly_detector,
     required_attrs: { enabled: true, log_group_arn_list: ['test-value'] },
-    expected_outputs: [:id, :anomaly_visibility_time, :arn, :tags_all],
+    expected_outputs: [:id, :anomaly_visibility_time, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled]

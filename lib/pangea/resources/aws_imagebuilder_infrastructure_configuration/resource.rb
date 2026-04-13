@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ImagebuilderInfrastructureConfigurationAttributes,
       outputs: { id: :id },
       map: [:instance_profile_name, :name],
-      map_present: [:description, :instance_metadata_options, :instance_types, :key_pair, :logging, :placement, :resource_tags, :security_group_ids, :sns_topic_arn, :subnet_id, :tags, :tags_all],
+      map_present: [:description, :instance_metadata_options, :instance_types, :key_pair, :logging, :placement, :region, :resource_tags, :security_group_ids, :sns_topic_arn, :subnet_id, :tags, :tags_all],
       map_bool: [:terminate_instance_on_failure]
   end
   module AWS

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_sesv2_configuration_set_event_destination,
       attributes_class: AWS::Types::Sesv2ConfigurationSetEventDestinationAttributes,
       outputs: { id: :id },
-      map: [:configuration_set_name, :event_destination, :event_destination_name]
+      map: [:configuration_set_name, :event_destination, :event_destination_name],
+      map_present: [:region]
   end
   module AWS
     include AWSSesv2ConfigurationSetEventDestination

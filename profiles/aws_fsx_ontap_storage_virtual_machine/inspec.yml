@@ -1,0 +1,8 @@
+name: aws_fsx_ontap_storage_virtual_machine
+title: Manages a aws_fsx_ontap_storage_virtual_machine resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

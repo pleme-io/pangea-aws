@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DaxSubnetGroupAttributes,
       outputs: { id: :id },
       map: [:name, :subnet_ids],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSDaxSubnetGroup

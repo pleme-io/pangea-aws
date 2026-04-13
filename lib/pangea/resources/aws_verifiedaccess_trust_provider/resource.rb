@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VerifiedaccessTrustProviderAttributes,
       outputs: { id: :id },
       map: [:policy_reference_name, :trust_provider_type],
-      map_present: [:description, :device_options, :device_trust_provider_type, :native_application_oidc_options, :oidc_options, :sse_specification, :tags, :tags_all, :user_trust_provider_type]
+      map_present: [:description, :device_options, :device_trust_provider_type, :native_application_oidc_options, :oidc_options, :region, :sse_specification, :tags, :tags_all, :user_trust_provider_type]
   end
   module AWS
     include AWSVerifiedaccessTrustProvider

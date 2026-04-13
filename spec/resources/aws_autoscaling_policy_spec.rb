@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingPolicy do
         expect(ref.id).to eq("${aws_autoscaling_policy.test.id}")
         expect(ref.arn).to eq("${aws_autoscaling_policy.test.arn}")
         expect(ref.metric_aggregation_type).to eq("${aws_autoscaling_policy.test.metric_aggregation_type}")
+        expect(ref.region).to eq("${aws_autoscaling_policy.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSAutoscalingPolicy do
         config = validate_resource_structure(result, 'aws_autoscaling_policy', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('metric_aggregation_type')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ adjustment_type: 'test-value', cooldown: 3.14, enabled: true, estimated_instance_warmup: 3.14, min_adjustment_magnitude: 3.14, policy_type: 'test-value', predictive_scaling_configuration: [{ 'key1' => 'val1' }], scaling_adjustment: 3.14, step_adjustment: [{ 'key1' => 'val1' }], target_tracking_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ adjustment_type: 'test-value', cooldown: 3.14, enabled: true, estimated_instance_warmup: 3.14, metric_aggregation_type: 'test-value', min_adjustment_magnitude: 3.14, policy_type: 'test-value', predictive_scaling_configuration: { 'key1' => 'val1' }, region: 'test-value', scaling_adjustment: 3.14, step_adjustment: [{ 'key1' => 'val1' }], target_tracking_configuration: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,9 +72,11 @@ RSpec.describe Pangea::Resources::AWSAutoscalingPolicy do
         expect(config).to have_key('cooldown')
         expect(config).to have_key('enabled')
         expect(config).to have_key('estimated_instance_warmup')
+        expect(config).to have_key('metric_aggregation_type')
         expect(config).to have_key('min_adjustment_magnitude')
         expect(config).to have_key('policy_type')
         expect(config).to have_key('predictive_scaling_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('scaling_adjustment')
         expect(config).to have_key('step_adjustment')
         expect(config).to have_key('target_tracking_configuration')
@@ -148,6 +152,23 @@ RSpec.describe Pangea::Resources::AWSAutoscalingPolicy do
         config = validate_resource_structure(result, 'aws_autoscaling_policy', 'minimal')
         expect(config).not_to have_key('estimated_instance_warmup')
       end
+      it 'includes metric_aggregation_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_policy('opt', required_attrs.merge(metric_aggregation_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_policy', 'opt')
+        expect(config).to have_key('metric_aggregation_type')
+      end
+
+      it 'omits metric_aggregation_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_policy', 'minimal')
+        expect(config).not_to have_key('metric_aggregation_type')
+      end
       it 'includes min_adjustment_magnitude when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -185,7 +206,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingPolicy do
       it 'includes predictive_scaling_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_autoscaling_policy('opt', required_attrs.merge(predictive_scaling_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_autoscaling_policy('opt', required_attrs.merge(predictive_scaling_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_policy', 'opt')
         expect(config).to have_key('predictive_scaling_configuration')
@@ -198,6 +219,23 @@ RSpec.describe Pangea::Resources::AWSAutoscalingPolicy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_policy', 'minimal')
         expect(config).not_to have_key('predictive_scaling_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_policy', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes scaling_adjustment when provided' do
         synth = create_synthesizer
@@ -236,7 +274,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingPolicy do
       it 'includes target_tracking_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_autoscaling_policy('opt', required_attrs.merge(target_tracking_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_autoscaling_policy('opt', required_attrs.merge(target_tracking_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_autoscaling_policy', 'opt')
         expect(config).to have_key('target_tracking_configuration')
@@ -309,7 +347,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingPolicy do
     resource_type: :aws_autoscaling_policy,
     method: :aws_autoscaling_policy,
     required_attrs: { autoscaling_group_name: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :metric_aggregation_type],
+    expected_outputs: [:id, :arn, :metric_aggregation_type, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled]

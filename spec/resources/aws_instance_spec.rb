@@ -42,8 +42,6 @@ RSpec.describe Pangea::Resources::AWSInstance do
         expect(ref.arn).to eq("${aws_instance.test.arn}")
         expect(ref.associate_public_ip_address).to eq("${aws_instance.test.associate_public_ip_address}")
         expect(ref.availability_zone).to eq("${aws_instance.test.availability_zone}")
-        expect(ref.cpu_core_count).to eq("${aws_instance.test.cpu_core_count}")
-        expect(ref.cpu_threads_per_core).to eq("${aws_instance.test.cpu_threads_per_core}")
         expect(ref.disable_api_stop).to eq("${aws_instance.test.disable_api_stop}")
         expect(ref.disable_api_termination).to eq("${aws_instance.test.disable_api_termination}")
         expect(ref.ebs_optimized).to eq("${aws_instance.test.ebs_optimized}")
@@ -62,19 +60,20 @@ RSpec.describe Pangea::Resources::AWSInstance do
         expect(ref.outpost_arn).to eq("${aws_instance.test.outpost_arn}")
         expect(ref.password_data).to eq("${aws_instance.test.password_data}")
         expect(ref.placement_group).to eq("${aws_instance.test.placement_group}")
+        expect(ref.placement_group_id).to eq("${aws_instance.test.placement_group_id}")
         expect(ref.placement_partition_number).to eq("${aws_instance.test.placement_partition_number}")
         expect(ref.primary_network_interface_id).to eq("${aws_instance.test.primary_network_interface_id}")
         expect(ref.private_dns).to eq("${aws_instance.test.private_dns}")
         expect(ref.private_ip).to eq("${aws_instance.test.private_ip}")
         expect(ref.public_dns).to eq("${aws_instance.test.public_dns}")
         expect(ref.public_ip).to eq("${aws_instance.test.public_ip}")
+        expect(ref.region).to eq("${aws_instance.test.region}")
         expect(ref.secondary_private_ips).to eq("${aws_instance.test.secondary_private_ips}")
         expect(ref.security_groups).to eq("${aws_instance.test.security_groups}")
         expect(ref.spot_instance_request_id).to eq("${aws_instance.test.spot_instance_request_id}")
         expect(ref.subnet_id).to eq("${aws_instance.test.subnet_id}")
         expect(ref.tags_all).to eq("${aws_instance.test.tags_all}")
         expect(ref.tenancy).to eq("${aws_instance.test.tenancy}")
-        expect(ref.user_data).to eq("${aws_instance.test.user_data}")
         expect(ref.user_data_base64).to eq("${aws_instance.test.user_data_base64}")
         expect(ref.vpc_security_group_ids).to eq("${aws_instance.test.vpc_security_group_ids}")
       end
@@ -92,8 +91,6 @@ RSpec.describe Pangea::Resources::AWSInstance do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('associate_public_ip_address')
         expect(config).not_to have_key('availability_zone')
-        expect(config).not_to have_key('cpu_core_count')
-        expect(config).not_to have_key('cpu_threads_per_core')
         expect(config).not_to have_key('disable_api_stop')
         expect(config).not_to have_key('disable_api_termination')
         expect(config).not_to have_key('ebs_optimized')
@@ -112,26 +109,27 @@ RSpec.describe Pangea::Resources::AWSInstance do
         expect(config).not_to have_key('outpost_arn')
         expect(config).not_to have_key('password_data')
         expect(config).not_to have_key('placement_group')
+        expect(config).not_to have_key('placement_group_id')
         expect(config).not_to have_key('placement_partition_number')
         expect(config).not_to have_key('primary_network_interface_id')
         expect(config).not_to have_key('private_dns')
         expect(config).not_to have_key('private_ip')
         expect(config).not_to have_key('public_dns')
         expect(config).not_to have_key('public_ip')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('secondary_private_ips')
         expect(config).not_to have_key('security_groups')
         expect(config).not_to have_key('spot_instance_request_id')
         expect(config).not_to have_key('subnet_id')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('tenancy')
-        expect(config).not_to have_key('user_data')
         expect(config).not_to have_key('user_data_base64')
         expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ capacity_reservation_specification: [{ 'key1' => 'val1' }], cpu_options: [{ 'key1' => 'val1' }], credit_specification: [{ 'key1' => 'val1' }], ebs_block_device: [{ 'key1' => 'val1' }], enclave_options: [{ 'key1' => 'val1' }], ephemeral_block_device: [{ 'key1' => 'val1' }], get_password_data: true, hibernation: true, instance_market_options: [{ 'key1' => 'val1' }], launch_template: [{ 'key1' => 'val1' }], maintenance_options: [{ 'key1' => 'val1' }], metadata_options: [{ 'key1' => 'val1' }], network_interface: [{ 'key1' => 'val1' }], private_dns_name_options: [{ 'key1' => 'val1' }], root_block_device: [{ 'key1' => 'val1' }], source_dest_check: true, tags: { 'key1' => 'val1' }, user_data_replace_on_change: true, volume_tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ ami: 'test-value', associate_public_ip_address: true, availability_zone: 'test-value', capacity_reservation_specification: { 'key1' => 'val1' }, cpu_options: { 'key1' => 'val1' }, credit_specification: { 'key1' => 'val1' }, disable_api_stop: true, disable_api_termination: true, ebs_block_device: [{ 'key1' => 'val1' }], ebs_optimized: true, enable_primary_ipv6: true, enclave_options: { 'key1' => 'val1' }, ephemeral_block_device: [{ 'key1' => 'val1' }], force_destroy: true, get_password_data: true, hibernation: true, host_id: 'test-value', host_resource_group_arn: 'test-value', iam_instance_profile: 'test-value', instance_initiated_shutdown_behavior: 'test-value', instance_market_options: { 'key1' => 'val1' }, instance_type: 'test-value', ipv6_address_count: 3.14, ipv6_addresses: ['test-value'], key_name: 'test-value', launch_template: { 'key1' => 'val1' }, maintenance_options: { 'key1' => 'val1' }, metadata_options: { 'key1' => 'val1' }, monitoring: true, network_interface: [{ 'key1' => 'val1' }], placement_group: 'test-value', placement_group_id: 'test-value', placement_partition_number: 3.14, primary_network_interface: { 'key1' => 'val1' }, private_dns_name_options: { 'key1' => 'val1' }, private_ip: 'test-value', region: 'test-value', root_block_device: { 'key1' => 'val1' }, secondary_network_interface: [{ 'key1' => 'val1' }], secondary_private_ips: ['test-value'], security_groups: ['test-value'], source_dest_check: true, subnet_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tenancy: 'test-value', user_data: 'test-value', user_data_base64: 'test-value', user_data_replace_on_change: true, volume_tags: { 'key1' => 'val1' }, vpc_security_group_ids: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -140,33 +138,116 @@ RSpec.describe Pangea::Resources::AWSInstance do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_instance', 'full')
+        expect(config).to have_key('ami')
+        expect(config).to have_key('associate_public_ip_address')
+        expect(config).to have_key('availability_zone')
         expect(config).to have_key('capacity_reservation_specification')
         expect(config).to have_key('cpu_options')
         expect(config).to have_key('credit_specification')
+        expect(config).to have_key('disable_api_stop')
+        expect(config).to have_key('disable_api_termination')
         expect(config).to have_key('ebs_block_device')
+        expect(config).to have_key('ebs_optimized')
+        expect(config).to have_key('enable_primary_ipv6')
         expect(config).to have_key('enclave_options')
         expect(config).to have_key('ephemeral_block_device')
+        expect(config).to have_key('force_destroy')
         expect(config).to have_key('get_password_data')
         expect(config).to have_key('hibernation')
+        expect(config).to have_key('host_id')
+        expect(config).to have_key('host_resource_group_arn')
+        expect(config).to have_key('iam_instance_profile')
+        expect(config).to have_key('instance_initiated_shutdown_behavior')
         expect(config).to have_key('instance_market_options')
+        expect(config).to have_key('instance_type')
+        expect(config).to have_key('ipv6_address_count')
+        expect(config).to have_key('ipv6_addresses')
+        expect(config).to have_key('key_name')
         expect(config).to have_key('launch_template')
         expect(config).to have_key('maintenance_options')
         expect(config).to have_key('metadata_options')
+        expect(config).to have_key('monitoring')
         expect(config).to have_key('network_interface')
+        expect(config).to have_key('placement_group')
+        expect(config).to have_key('placement_group_id')
+        expect(config).to have_key('placement_partition_number')
+        expect(config).to have_key('primary_network_interface')
         expect(config).to have_key('private_dns_name_options')
+        expect(config).to have_key('private_ip')
+        expect(config).to have_key('region')
         expect(config).to have_key('root_block_device')
+        expect(config).to have_key('secondary_network_interface')
+        expect(config).to have_key('secondary_private_ips')
+        expect(config).to have_key('security_groups')
         expect(config).to have_key('source_dest_check')
+        expect(config).to have_key('subnet_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('tenancy')
+        expect(config).to have_key('user_data')
+        expect(config).to have_key('user_data_base64')
         expect(config).to have_key('user_data_replace_on_change')
         expect(config).to have_key('volume_tags')
+        expect(config).to have_key('vpc_security_group_ids')
       end
     end
 
     context 'optional attributes' do
+      it 'includes ami when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(ami: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('ami')
+      end
+
+      it 'omits ami when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('ami')
+      end
+      it 'includes associate_public_ip_address when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(associate_public_ip_address: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('associate_public_ip_address')
+      end
+
+      it 'omits associate_public_ip_address when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('associate_public_ip_address')
+      end
+      it 'includes availability_zone when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(availability_zone: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('availability_zone')
+      end
+
+      it 'omits availability_zone when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('availability_zone')
+      end
       it 'includes capacity_reservation_specification when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_instance('opt', required_attrs.merge(capacity_reservation_specification: [{ 'key1' => 'val1' }]))
+        synth.aws_instance('opt', required_attrs.merge(capacity_reservation_specification: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'opt')
         expect(config).to have_key('capacity_reservation_specification')
@@ -183,7 +264,7 @@ RSpec.describe Pangea::Resources::AWSInstance do
       it 'includes cpu_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_instance('opt', required_attrs.merge(cpu_options: [{ 'key1' => 'val1' }]))
+        synth.aws_instance('opt', required_attrs.merge(cpu_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'opt')
         expect(config).to have_key('cpu_options')
@@ -200,7 +281,7 @@ RSpec.describe Pangea::Resources::AWSInstance do
       it 'includes credit_specification when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_instance('opt', required_attrs.merge(credit_specification: [{ 'key1' => 'val1' }]))
+        synth.aws_instance('opt', required_attrs.merge(credit_specification: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'opt')
         expect(config).to have_key('credit_specification')
@@ -213,6 +294,40 @@ RSpec.describe Pangea::Resources::AWSInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'minimal')
         expect(config).not_to have_key('credit_specification')
+      end
+      it 'includes disable_api_stop when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(disable_api_stop: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('disable_api_stop')
+      end
+
+      it 'omits disable_api_stop when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('disable_api_stop')
+      end
+      it 'includes disable_api_termination when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(disable_api_termination: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('disable_api_termination')
+      end
+
+      it 'omits disable_api_termination when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('disable_api_termination')
       end
       it 'includes ebs_block_device when provided' do
         synth = create_synthesizer
@@ -231,10 +346,44 @@ RSpec.describe Pangea::Resources::AWSInstance do
         config = validate_resource_structure(result, 'aws_instance', 'minimal')
         expect(config).not_to have_key('ebs_block_device')
       end
+      it 'includes ebs_optimized when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(ebs_optimized: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('ebs_optimized')
+      end
+
+      it 'omits ebs_optimized when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('ebs_optimized')
+      end
+      it 'includes enable_primary_ipv6 when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(enable_primary_ipv6: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('enable_primary_ipv6')
+      end
+
+      it 'omits enable_primary_ipv6 when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('enable_primary_ipv6')
+      end
       it 'includes enclave_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_instance('opt', required_attrs.merge(enclave_options: [{ 'key1' => 'val1' }]))
+        synth.aws_instance('opt', required_attrs.merge(enclave_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'opt')
         expect(config).to have_key('enclave_options')
@@ -264,6 +413,23 @@ RSpec.describe Pangea::Resources::AWSInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'minimal')
         expect(config).not_to have_key('ephemeral_block_device')
+      end
+      it 'includes force_destroy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(force_destroy: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('force_destroy')
+      end
+
+      it 'omits force_destroy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('force_destroy')
       end
       it 'includes get_password_data when provided' do
         synth = create_synthesizer
@@ -299,10 +465,78 @@ RSpec.describe Pangea::Resources::AWSInstance do
         config = validate_resource_structure(result, 'aws_instance', 'minimal')
         expect(config).not_to have_key('hibernation')
       end
+      it 'includes host_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(host_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('host_id')
+      end
+
+      it 'omits host_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('host_id')
+      end
+      it 'includes host_resource_group_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(host_resource_group_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('host_resource_group_arn')
+      end
+
+      it 'omits host_resource_group_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('host_resource_group_arn')
+      end
+      it 'includes iam_instance_profile when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(iam_instance_profile: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('iam_instance_profile')
+      end
+
+      it 'omits iam_instance_profile when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('iam_instance_profile')
+      end
+      it 'includes instance_initiated_shutdown_behavior when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(instance_initiated_shutdown_behavior: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('instance_initiated_shutdown_behavior')
+      end
+
+      it 'omits instance_initiated_shutdown_behavior when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('instance_initiated_shutdown_behavior')
+      end
       it 'includes instance_market_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_instance('opt', required_attrs.merge(instance_market_options: [{ 'key1' => 'val1' }]))
+        synth.aws_instance('opt', required_attrs.merge(instance_market_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'opt')
         expect(config).to have_key('instance_market_options')
@@ -316,10 +550,78 @@ RSpec.describe Pangea::Resources::AWSInstance do
         config = validate_resource_structure(result, 'aws_instance', 'minimal')
         expect(config).not_to have_key('instance_market_options')
       end
+      it 'includes instance_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(instance_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('instance_type')
+      end
+
+      it 'omits instance_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('instance_type')
+      end
+      it 'includes ipv6_address_count when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(ipv6_address_count: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('ipv6_address_count')
+      end
+
+      it 'omits ipv6_address_count when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('ipv6_address_count')
+      end
+      it 'includes ipv6_addresses when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(ipv6_addresses: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('ipv6_addresses')
+      end
+
+      it 'omits ipv6_addresses when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('ipv6_addresses')
+      end
+      it 'includes key_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(key_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('key_name')
+      end
+
+      it 'omits key_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('key_name')
+      end
       it 'includes launch_template when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_instance('opt', required_attrs.merge(launch_template: [{ 'key1' => 'val1' }]))
+        synth.aws_instance('opt', required_attrs.merge(launch_template: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'opt')
         expect(config).to have_key('launch_template')
@@ -336,7 +638,7 @@ RSpec.describe Pangea::Resources::AWSInstance do
       it 'includes maintenance_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_instance('opt', required_attrs.merge(maintenance_options: [{ 'key1' => 'val1' }]))
+        synth.aws_instance('opt', required_attrs.merge(maintenance_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'opt')
         expect(config).to have_key('maintenance_options')
@@ -353,7 +655,7 @@ RSpec.describe Pangea::Resources::AWSInstance do
       it 'includes metadata_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_instance('opt', required_attrs.merge(metadata_options: [{ 'key1' => 'val1' }]))
+        synth.aws_instance('opt', required_attrs.merge(metadata_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'opt')
         expect(config).to have_key('metadata_options')
@@ -366,6 +668,23 @@ RSpec.describe Pangea::Resources::AWSInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'minimal')
         expect(config).not_to have_key('metadata_options')
+      end
+      it 'includes monitoring when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(monitoring: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('monitoring')
+      end
+
+      it 'omits monitoring when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('monitoring')
       end
       it 'includes network_interface when provided' do
         synth = create_synthesizer
@@ -384,10 +703,78 @@ RSpec.describe Pangea::Resources::AWSInstance do
         config = validate_resource_structure(result, 'aws_instance', 'minimal')
         expect(config).not_to have_key('network_interface')
       end
+      it 'includes placement_group when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(placement_group: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('placement_group')
+      end
+
+      it 'omits placement_group when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('placement_group')
+      end
+      it 'includes placement_group_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(placement_group_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('placement_group_id')
+      end
+
+      it 'omits placement_group_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('placement_group_id')
+      end
+      it 'includes placement_partition_number when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(placement_partition_number: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('placement_partition_number')
+      end
+
+      it 'omits placement_partition_number when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('placement_partition_number')
+      end
+      it 'includes primary_network_interface when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(primary_network_interface: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('primary_network_interface')
+      end
+
+      it 'omits primary_network_interface when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('primary_network_interface')
+      end
       it 'includes private_dns_name_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_instance('opt', required_attrs.merge(private_dns_name_options: [{ 'key1' => 'val1' }]))
+        synth.aws_instance('opt', required_attrs.merge(private_dns_name_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'opt')
         expect(config).to have_key('private_dns_name_options')
@@ -401,10 +788,44 @@ RSpec.describe Pangea::Resources::AWSInstance do
         config = validate_resource_structure(result, 'aws_instance', 'minimal')
         expect(config).not_to have_key('private_dns_name_options')
       end
+      it 'includes private_ip when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(private_ip: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('private_ip')
+      end
+
+      it 'omits private_ip when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('private_ip')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes root_block_device when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_instance('opt', required_attrs.merge(root_block_device: [{ 'key1' => 'val1' }]))
+        synth.aws_instance('opt', required_attrs.merge(root_block_device: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'opt')
         expect(config).to have_key('root_block_device')
@@ -417,6 +838,57 @@ RSpec.describe Pangea::Resources::AWSInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'minimal')
         expect(config).not_to have_key('root_block_device')
+      end
+      it 'includes secondary_network_interface when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(secondary_network_interface: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('secondary_network_interface')
+      end
+
+      it 'omits secondary_network_interface when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('secondary_network_interface')
+      end
+      it 'includes secondary_private_ips when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(secondary_private_ips: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('secondary_private_ips')
+      end
+
+      it 'omits secondary_private_ips when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('secondary_private_ips')
+      end
+      it 'includes security_groups when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(security_groups: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('security_groups')
+      end
+
+      it 'omits security_groups when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('security_groups')
       end
       it 'includes source_dest_check when provided' do
         synth = create_synthesizer
@@ -435,6 +907,23 @@ RSpec.describe Pangea::Resources::AWSInstance do
         config = validate_resource_structure(result, 'aws_instance', 'minimal')
         expect(config).not_to have_key('source_dest_check')
       end
+      it 'includes subnet_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(subnet_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('subnet_id')
+      end
+
+      it 'omits subnet_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('subnet_id')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -451,6 +940,74 @@ RSpec.describe Pangea::Resources::AWSInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_instance', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes tenancy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(tenancy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('tenancy')
+      end
+
+      it 'omits tenancy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('tenancy')
+      end
+      it 'includes user_data when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(user_data: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('user_data')
+      end
+
+      it 'omits user_data when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('user_data')
+      end
+      it 'includes user_data_base64 when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(user_data_base64: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('user_data_base64')
+      end
+
+      it 'omits user_data_base64 when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('user_data_base64')
       end
       it 'includes user_data_replace_on_change when provided' do
         synth = create_synthesizer
@@ -486,9 +1043,92 @@ RSpec.describe Pangea::Resources::AWSInstance do
         config = validate_resource_structure(result, 'aws_instance', 'minimal')
         expect(config).not_to have_key('volume_tags')
       end
+      it 'includes vpc_security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('opt', required_attrs.merge(vpc_security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'opt')
+        expect(config).to have_key('vpc_security_group_ids')
+      end
+
+      it 'omits vpc_security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_instance', 'minimal')
+        expect(config).not_to have_key('vpc_security_group_ids')
+      end
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts associate_public_ip_address=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(associate_public_ip_address: val)
+          synth.aws_instance("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_instance', "bool_#{val}")
+          expect(config['associate_public_ip_address']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts disable_api_stop=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(disable_api_stop: val)
+          synth.aws_instance("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_instance', "bool_#{val}")
+          expect(config['disable_api_stop']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts disable_api_termination=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(disable_api_termination: val)
+          synth.aws_instance("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_instance', "bool_#{val}")
+          expect(config['disable_api_termination']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts ebs_optimized=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(ebs_optimized: val)
+          synth.aws_instance("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_instance', "bool_#{val}")
+          expect(config['ebs_optimized']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts enable_primary_ipv6=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enable_primary_ipv6: val)
+          synth.aws_instance("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_instance', "bool_#{val}")
+          expect(config['enable_primary_ipv6']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts force_destroy=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(force_destroy: val)
+          synth.aws_instance("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_instance', "bool_#{val}")
+          expect(config['force_destroy']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts get_password_data=#{val}" do
           synth = create_synthesizer
@@ -509,6 +1149,17 @@ RSpec.describe Pangea::Resources::AWSInstance do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_instance', "bool_#{val}")
           expect(config['hibernation']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts monitoring=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(monitoring: val)
+          synth.aws_instance("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_instance', "bool_#{val}")
+          expect(config['monitoring']).to eq(val)
         end
       end
       [true, false].each do |val|
@@ -576,8 +1227,8 @@ RSpec.describe Pangea::Resources::AWSInstance do
     resource_type: :aws_instance,
     method: :aws_instance,
     required_attrs: {},
-    expected_outputs: [:id, :ami, :arn, :associate_public_ip_address, :availability_zone, :cpu_core_count, :cpu_threads_per_core, :disable_api_stop, :disable_api_termination, :ebs_optimized, :enable_primary_ipv6, :host_id, :host_resource_group_arn, :iam_instance_profile, :instance_initiated_shutdown_behavior, :instance_lifecycle, :instance_state, :instance_type, :ipv6_address_count, :ipv6_addresses, :key_name, :monitoring, :outpost_arn, :password_data, :placement_group, :placement_partition_number, :primary_network_interface_id, :private_dns, :private_ip, :public_dns, :public_ip, :secondary_private_ips, :security_groups, :spot_instance_request_id, :subnet_id, :tags_all, :tenancy, :user_data, :user_data_base64, :vpc_security_group_ids],
+    expected_outputs: [:id, :ami, :arn, :associate_public_ip_address, :availability_zone, :disable_api_stop, :disable_api_termination, :ebs_optimized, :enable_primary_ipv6, :host_id, :host_resource_group_arn, :iam_instance_profile, :instance_initiated_shutdown_behavior, :instance_lifecycle, :instance_state, :instance_type, :ipv6_address_count, :ipv6_addresses, :key_name, :monitoring, :outpost_arn, :password_data, :placement_group, :placement_group_id, :placement_partition_number, :primary_network_interface_id, :private_dns, :private_ip, :public_dns, :public_ip, :region, :secondary_private_ips, :security_groups, :spot_instance_request_id, :subnet_id, :tags_all, :tenancy, :user_data_base64, :vpc_security_group_ids],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:get_password_data, :hibernation, :source_dest_check, :user_data_replace_on_change]
+    boolean_fields: [:associate_public_ip_address, :disable_api_stop, :disable_api_termination, :ebs_optimized, :enable_primary_ipv6, :force_destroy, :get_password_data, :hibernation, :monitoring, :source_dest_check, :user_data_replace_on_change]
 end

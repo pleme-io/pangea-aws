@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3outpostsEndpointAttributes,
       outputs: { id: :id },
       map: [:outpost_id, :security_group_id, :subnet_id],
-      map_present: [:access_type, :customer_owned_ipv4_pool]
+      map_present: [:access_type, :customer_owned_ipv4_pool, :region]
   end
   module AWS
     include AWSS3outpostsEndpoint

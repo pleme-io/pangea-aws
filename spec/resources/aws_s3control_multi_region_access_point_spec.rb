@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSS3controlMultiRegionAccessPoint do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { details: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { details: { 'key1' => 'val1' } } }
 
   describe ':aws_s3control_multi_region_access_point' do
     context 'with required attributes only' do
@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSS3controlMultiRegionAccessPoint do
         expect(ref.alias).to eq("${aws_s3control_multi_region_access_point.test.alias}")
         expect(ref.arn).to eq("${aws_s3control_multi_region_access_point.test.arn}")
         expect(ref.domain_name).to eq("${aws_s3control_multi_region_access_point.test.domain_name}")
+        expect(ref.region).to eq("${aws_s3control_multi_region_access_point.test.region}")
         expect(ref.status).to eq("${aws_s3control_multi_region_access_point.test.status}")
       end
     end
@@ -58,7 +59,60 @@ RSpec.describe Pangea::Resources::AWSS3controlMultiRegionAccessPoint do
         expect(config).not_to have_key('alias')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('domain_name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ account_id: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_multi_region_access_point('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_s3control_multi_region_access_point', 'full')
+        expect(config).to have_key('account_id')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_multi_region_access_point('opt', required_attrs.merge(account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_multi_region_access_point', 'opt')
+        expect(config).to have_key('account_id')
+      end
+
+      it 'omits account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_multi_region_access_point('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_multi_region_access_point', 'minimal')
+        expect(config).not_to have_key('account_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_multi_region_access_point('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_multi_region_access_point', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_multi_region_access_point('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_multi_region_access_point', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -70,7 +124,7 @@ RSpec.describe Pangea::Resources::AWSS3controlMultiRegionAccessPoint do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_s3control_multi_region_access_point', 'typed')
-        expect(config['details']).to be_a(Array)
+        expect(config['details']).to be_a(Hash)
       end
     end
 
@@ -103,8 +157,8 @@ RSpec.describe Pangea::Resources::AWSS3controlMultiRegionAccessPoint do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_s3control_multi_region_access_point,
     method: :aws_s3control_multi_region_access_point,
-    required_attrs: { details: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :account_id, :alias, :arn, :domain_name, :status],
+    required_attrs: { details: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :account_id, :alias, :arn, :domain_name, :region, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

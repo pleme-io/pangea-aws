@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_db_instance_role_association,
       attributes_class: AWS::Types::DbInstanceRoleAssociationAttributes,
       outputs: { id: :id },
-      map: [:db_instance_identifier, :feature_name, :role_arn]
+      map: [:db_instance_identifier, :feature_name, :role_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSDbInstanceRoleAssociation

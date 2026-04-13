@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_eip_association,
       attributes_class: AWS::Types::EipAssociationAttributes,
       outputs: { id: :id },
-      map_present: [:allocation_id, :instance_id, :network_interface_id, :private_ip_address, :public_ip],
+      map_present: [:allocation_id, :instance_id, :network_interface_id, :private_ip_address, :public_ip, :region],
       map_bool: [:allow_reassociation]
   end
   module AWS

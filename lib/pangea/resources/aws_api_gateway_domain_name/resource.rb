@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayDomainNameAttributes,
       outputs: { id: :id },
       map: [:domain_name],
-      map_present: [:certificate_arn, :certificate_body, :certificate_chain, :certificate_name, :certificate_private_key, :endpoint_configuration, :mutual_tls_authentication, :ownership_verification_certificate_arn, :policy, :regional_certificate_arn, :regional_certificate_name, :security_policy, :tags, :tags_all]
+      map_present: [:certificate_arn, :certificate_body, :certificate_chain, :certificate_name, :certificate_private_key, :endpoint_access_mode, :endpoint_configuration, :mutual_tls_authentication, :ownership_verification_certificate_arn, :policy, :region, :regional_certificate_arn, :regional_certificate_name, :routing_mode, :security_policy, :tags, :tags_all]
   end
   module AWS
     include AWSApiGatewayDomainName

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GluePartitionAttributes,
       outputs: { id: :id },
       map: [:database_name, :partition_values, :table_name],
-      map_present: [:catalog_id, :parameters, :storage_descriptor]
+      map_present: [:catalog_id, :parameters, :region, :storage_descriptor]
   end
   module AWS
     include AWSGluePartition

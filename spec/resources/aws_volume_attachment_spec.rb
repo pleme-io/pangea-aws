@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSVolumeAttachment do
         ref = synth.aws_volume_attachment('test', required_attrs)
 
         expect(ref.id).to eq("${aws_volume_attachment.test.id}")
+        expect(ref.region).to eq("${aws_volume_attachment.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_volume_attachment('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_volume_attachment', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ force_detach: true, skip_destroy: true, stop_instance_before_detaching: true }) }
+      let(:all_attrs) { required_attrs.merge({ force_detach: true, region: 'test-value', skip_destroy: true, stop_instance_before_detaching: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSVolumeAttachment do
 
         config = validate_resource_structure(result, 'aws_volume_attachment', 'full')
         expect(config).to have_key('force_detach')
+        expect(config).to have_key('region')
         expect(config).to have_key('skip_destroy')
         expect(config).to have_key('stop_instance_before_detaching')
       end
@@ -74,6 +88,23 @@ RSpec.describe Pangea::Resources::AWSVolumeAttachment do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_volume_attachment', 'minimal')
         expect(config).not_to have_key('force_detach')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_volume_attachment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_volume_attachment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_volume_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_volume_attachment', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes skip_destroy when provided' do
         synth = create_synthesizer
@@ -191,7 +222,7 @@ RSpec.describe Pangea::Resources::AWSVolumeAttachment do
     resource_type: :aws_volume_attachment,
     method: :aws_volume_attachment,
     required_attrs: { device_name: 'test-value', instance_id: 'test-value', volume_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:force_detach, :skip_destroy, :stop_instance_before_detaching]

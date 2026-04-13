@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSGuarddutyOrganizationConfiguration do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { detector_id: 'test-value' } }
+  let(:required_attrs) { { auto_enable_organization_members: 'test-value', detector_id: 'test-value' } }
 
   describe ':aws_guardduty_organization_configuration' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSGuarddutyOrganizationConfiguration do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_guardduty_organization_configuration', 'test')
-        validate_required_attributes(config, [:detector_id])
+        validate_required_attributes(config, [:auto_enable_organization_members, :detector_id])
       end
 
       it 'returns a ResourceReference' do
@@ -38,8 +38,7 @@ RSpec.describe Pangea::Resources::AWSGuarddutyOrganizationConfiguration do
         ref = synth.aws_guardduty_organization_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_guardduty_organization_configuration.test.id}")
-        expect(ref.auto_enable).to eq("${aws_guardduty_organization_configuration.test.auto_enable}")
-        expect(ref.auto_enable_organization_members).to eq("${aws_guardduty_organization_configuration.test.auto_enable_organization_members}")
+        expect(ref.region).to eq("${aws_guardduty_organization_configuration.test.region}")
       end
     end
 
@@ -51,13 +50,12 @@ RSpec.describe Pangea::Resources::AWSGuarddutyOrganizationConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_guardduty_organization_configuration', 'test')
-        expect(config).not_to have_key('auto_enable')
-        expect(config).not_to have_key('auto_enable_organization_members')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ datasources: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ datasources: { 'key1' => 'val1' }, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSGuarddutyOrganizationConfiguration do
 
         config = validate_resource_structure(result, 'aws_guardduty_organization_configuration', 'full')
         expect(config).to have_key('datasources')
+        expect(config).to have_key('region')
       end
     end
 
@@ -74,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSGuarddutyOrganizationConfiguration do
       it 'includes datasources when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_guardduty_organization_configuration('opt', required_attrs.merge(datasources: [{ 'key1' => 'val1' }]))
+        synth.aws_guardduty_organization_configuration('opt', required_attrs.merge(datasources: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_guardduty_organization_configuration', 'opt')
         expect(config).to have_key('datasources')
@@ -88,6 +87,23 @@ RSpec.describe Pangea::Resources::AWSGuarddutyOrganizationConfiguration do
         config = validate_resource_structure(result, 'aws_guardduty_organization_configuration', 'minimal')
         expect(config).not_to have_key('datasources')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_guardduty_organization_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_guardduty_organization_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_guardduty_organization_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_guardduty_organization_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'attribute types' do
@@ -98,6 +114,7 @@ RSpec.describe Pangea::Resources::AWSGuarddutyOrganizationConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_guardduty_organization_configuration', 'typed')
+        expect(config['auto_enable_organization_members']).to be_a(String)
         expect(config['detector_id']).to be_a(String)
       end
     end
@@ -131,8 +148,8 @@ RSpec.describe Pangea::Resources::AWSGuarddutyOrganizationConfiguration do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_guardduty_organization_configuration,
     method: :aws_guardduty_organization_configuration,
-    required_attrs: { detector_id: 'test-value' },
-    expected_outputs: [:id, :auto_enable, :auto_enable_organization_members],
+    required_attrs: { auto_enable_organization_members: 'test-value', detector_id: 'test-value' },
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

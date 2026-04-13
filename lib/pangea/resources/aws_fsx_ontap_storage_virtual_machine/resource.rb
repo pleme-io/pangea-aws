@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FsxOntapStorageVirtualMachineAttributes,
       outputs: { id: :id },
       map: [:file_system_id, :name],
-      map_present: [:active_directory_configuration, :root_volume_security_style, :svm_admin_password, :tags, :tags_all]
+      map_present: [:active_directory_configuration, :region, :root_volume_security_style, :svm_admin_password, :tags, :tags_all]
   end
   module AWS
     include AWSFsxOntapStorageVirtualMachine

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Apigatewayv2IntegrationResponseAttributes,
       outputs: { id: :id },
       map: [:api_id, :integration_id, :integration_response_key],
-      map_present: [:content_handling_strategy, :response_templates, :template_selection_expression]
+      map_present: [:content_handling_strategy, :region, :response_templates, :template_selection_expression]
   end
   module AWS
     include AWSApigatewayv2IntegrationResponse

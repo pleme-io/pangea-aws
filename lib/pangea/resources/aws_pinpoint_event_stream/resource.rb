@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_pinpoint_event_stream,
       attributes_class: AWS::Types::PinpointEventStreamAttributes,
       outputs: { id: :id },
-      map: [:application_id, :destination_stream_arn, :role_arn]
+      map: [:application_id, :destination_stream_arn, :role_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSPinpointEventStream

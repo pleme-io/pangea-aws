@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BackupRestoreTestingSelectionAttributes,
       outputs: { id: :id },
       map: [:iam_role_arn, :name, :protected_resource_type, :restore_testing_plan_name],
-      map_present: [:protected_resource_arns, :protected_resource_conditions, :restore_metadata_overrides, :validation_window_hours]
+      map_present: [:protected_resource_arns, :protected_resource_conditions, :region, :restore_metadata_overrides, :validation_window_hours]
   end
   module AWS
     include AWSBackupRestoreTestingSelection

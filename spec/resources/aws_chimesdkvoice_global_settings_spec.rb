@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSChimesdkvoiceGlobalSettings do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { voice_connector: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { voice_connector: { 'key1' => 'val1' } } }
 
   describe ':aws_chimesdkvoice_global_settings' do
     context 'with required attributes only' do
@@ -49,7 +49,7 @@ RSpec.describe Pangea::Resources::AWSChimesdkvoiceGlobalSettings do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_chimesdkvoice_global_settings', 'typed')
-        expect(config['voice_connector']).to be_a(Array)
+        expect(config['voice_connector']).to be_a(Hash)
       end
     end
 
@@ -82,7 +82,7 @@ RSpec.describe Pangea::Resources::AWSChimesdkvoiceGlobalSettings do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_chimesdkvoice_global_settings,
     method: :aws_chimesdkvoice_global_settings,
-    required_attrs: { voice_connector: [{ 'key1' => 'val1' }] },
+    required_attrs: { voice_connector: { 'key1' => 'val1' } },
     expected_outputs: [:id],
     sensitive_fields: [],
     immutable_fields: [],

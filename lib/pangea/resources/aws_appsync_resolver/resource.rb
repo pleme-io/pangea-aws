@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppsyncResolverAttributes,
       outputs: { id: :id },
       map: [:api_id, :field, :type],
-      map_present: [:caching_config, :code, :data_source, :kind, :max_batch_size, :pipeline_config, :request_template, :response_template, :runtime, :sync_config]
+      map_present: [:caching_config, :code, :data_source, :kind, :max_batch_size, :pipeline_config, :region, :request_template, :response_template, :runtime, :sync_config]
   end
   module AWS
     include AWSAppsyncResolver

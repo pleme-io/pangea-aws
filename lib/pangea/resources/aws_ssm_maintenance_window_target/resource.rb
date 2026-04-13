@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsmMaintenanceWindowTargetAttributes,
       outputs: { id: :id },
       map: [:resource_type, :targets, :window_id],
-      map_present: [:description, :name, :owner_information]
+      map_present: [:description, :name, :owner_information, :region]
   end
   module AWS
     include AWSSsmMaintenanceWindowTarget

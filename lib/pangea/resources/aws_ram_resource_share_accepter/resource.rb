@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ram_resource_share_accepter,
       attributes_class: AWS::Types::RamResourceShareAccepterAttributes,
       outputs: { id: :id },
-      map: [:share_arn]
+      map: [:share_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSRamResourceShareAccepter

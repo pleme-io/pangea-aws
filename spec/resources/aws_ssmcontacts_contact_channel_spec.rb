@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSsmcontactsContactChannel do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { contact_id: 'test-value', delivery_address: [{ 'key1' => 'val1' }], name: 'test-value', type: 'test-value' } }
+  let(:required_attrs) { { contact_id: 'test-value', delivery_address: { 'key1' => 'val1' }, name: 'test-value', type: 'test-value' } }
 
   describe ':aws_ssmcontacts_contact_channel' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSsmcontactsContactChannel do
         expect(ref.id).to eq("${aws_ssmcontacts_contact_channel.test.id}")
         expect(ref.activation_status).to eq("${aws_ssmcontacts_contact_channel.test.activation_status}")
         expect(ref.arn).to eq("${aws_ssmcontacts_contact_channel.test.arn}")
+        expect(ref.region).to eq("${aws_ssmcontacts_contact_channel.test.region}")
       end
     end
 
@@ -53,6 +54,41 @@ RSpec.describe Pangea::Resources::AWSSsmcontactsContactChannel do
         config = validate_resource_structure(result, 'aws_ssmcontacts_contact_channel', 'test')
         expect(config).not_to have_key('activation_status')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmcontacts_contact_channel('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ssmcontacts_contact_channel', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmcontacts_contact_channel('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmcontacts_contact_channel', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmcontacts_contact_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmcontacts_contact_channel', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -65,7 +101,7 @@ RSpec.describe Pangea::Resources::AWSSsmcontactsContactChannel do
 
         config = validate_resource_structure(result, 'aws_ssmcontacts_contact_channel', 'typed')
         expect(config['contact_id']).to be_a(String)
-        expect(config['delivery_address']).to be_a(Array)
+        expect(config['delivery_address']).to be_a(Hash)
         expect(config['name']).to be_a(String)
         expect(config['type']).to be_a(String)
       end
@@ -100,8 +136,8 @@ RSpec.describe Pangea::Resources::AWSSsmcontactsContactChannel do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_ssmcontacts_contact_channel,
     method: :aws_ssmcontacts_contact_channel,
-    required_attrs: { contact_id: 'test-value', delivery_address: [{ 'key1' => 'val1' }], name: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :activation_status, :arn],
+    required_attrs: { contact_id: 'test-value', delivery_address: { 'key1' => 'val1' }, name: 'test-value', type: 'test-value' },
+    expected_outputs: [:id, :activation_status, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

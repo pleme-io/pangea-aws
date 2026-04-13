@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogDeliveryDestination do
         expect(ref.id).to eq("${aws_cloudwatch_log_delivery_destination.test.id}")
         expect(ref.arn).to eq("${aws_cloudwatch_log_delivery_destination.test.arn}")
         expect(ref.delivery_destination_type).to eq("${aws_cloudwatch_log_delivery_destination.test.delivery_destination_type}")
+        expect(ref.region).to eq("${aws_cloudwatch_log_delivery_destination.test.region}")
         expect(ref.tags_all).to eq("${aws_cloudwatch_log_delivery_destination.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogDeliveryDestination do
         config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery_destination', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('delivery_destination_type')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ delivery_destination_configuration: [{ 'key1' => 'val1' }], output_format: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ delivery_destination_configuration: [{ 'key1' => 'val1' }], delivery_destination_type: 'test-value', output_format: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +71,9 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogDeliveryDestination do
 
         config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery_destination', 'full')
         expect(config).to have_key('delivery_destination_configuration')
+        expect(config).to have_key('delivery_destination_type')
         expect(config).to have_key('output_format')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -92,6 +96,23 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogDeliveryDestination do
         config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery_destination', 'minimal')
         expect(config).not_to have_key('delivery_destination_configuration')
       end
+      it 'includes delivery_destination_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_delivery_destination('opt', required_attrs.merge(delivery_destination_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery_destination', 'opt')
+        expect(config).to have_key('delivery_destination_type')
+      end
+
+      it 'omits delivery_destination_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_delivery_destination('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery_destination', 'minimal')
+        expect(config).not_to have_key('delivery_destination_type')
+      end
       it 'includes output_format when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -108,6 +129,23 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogDeliveryDestination do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery_destination', 'minimal')
         expect(config).not_to have_key('output_format')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_delivery_destination('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery_destination', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_delivery_destination('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_delivery_destination', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -170,7 +208,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogDeliveryDestination do
     resource_type: :aws_cloudwatch_log_delivery_destination,
     method: :aws_cloudwatch_log_delivery_destination,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :delivery_destination_type, :tags_all],
+    expected_outputs: [:id, :arn, :delivery_destination_type, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

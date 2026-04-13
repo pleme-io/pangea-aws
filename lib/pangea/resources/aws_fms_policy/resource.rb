@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::FmsPolicyAttributes,
       outputs: { id: :id },
       map: [:name, :security_service_policy_data],
-      map_present: [:description, :exclude_map, :include_map, :resource_set_ids, :resource_tags, :resource_type, :resource_type_list, :tags, :tags_all],
+      map_present: [:description, :exclude_map, :include_map, :region, :resource_set_ids, :resource_tag_logical_operator, :resource_tags, :resource_type, :resource_type_list, :tags, :tags_all],
       map_bool: [:exclude_resource_tags, :delete_all_policy_resources, :delete_unused_fm_managed_resources, :remediation_enabled]
   end
   module AWS

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftserverlessNamespaceAttributes,
       outputs: { id: :id },
       map: [:namespace_name],
-      map_present: [:admin_password_secret_kms_key_id, :admin_user_password, :admin_user_password_wo, :admin_user_password_wo_version, :admin_username, :db_name, :default_iam_role_arn, :iam_roles, :kms_key_id, :log_exports, :tags, :tags_all],
+      map_present: [:admin_password_secret_kms_key_id, :admin_user_password, :admin_user_password_wo, :admin_user_password_wo_version, :admin_username, :db_name, :default_iam_role_arn, :iam_roles, :kms_key_id, :log_exports, :region, :tags, :tags_all],
       map_bool: [:manage_admin_password]
   end
   module AWS

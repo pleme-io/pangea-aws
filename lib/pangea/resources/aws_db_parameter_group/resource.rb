@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DbParameterGroupAttributes,
       outputs: { id: :id },
       map: [:family],
-      map_present: [:description, :name, :name_prefix, :parameter, :tags, :tags_all],
+      map_present: [:description, :name, :name_prefix, :parameter, :region, :tags, :tags_all],
       map_bool: [:skip_destroy]
   end
   module AWS

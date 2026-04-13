@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSMediaPackagev2ChannelGroup do
         expect(ref.id).to eq("${aws_media_packagev2_channel_group.test.id}")
         expect(ref.arn).to eq("${aws_media_packagev2_channel_group.test.arn}")
         expect(ref.egress_domain).to eq("${aws_media_packagev2_channel_group.test.egress_domain}")
+        expect(ref.region).to eq("${aws_media_packagev2_channel_group.test.region}")
         expect(ref.tags_all).to eq("${aws_media_packagev2_channel_group.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSMediaPackagev2ChannelGroup do
         config = validate_resource_structure(result, 'aws_media_packagev2_channel_group', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('egress_domain')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSMediaPackagev2ChannelGroup do
 
         config = validate_resource_structure(result, 'aws_media_packagev2_channel_group', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -90,6 +93,23 @@ RSpec.describe Pangea::Resources::AWSMediaPackagev2ChannelGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_media_packagev2_channel_group', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_media_packagev2_channel_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_media_packagev2_channel_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_media_packagev2_channel_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_media_packagev2_channel_group', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -152,7 +172,7 @@ RSpec.describe Pangea::Resources::AWSMediaPackagev2ChannelGroup do
     resource_type: :aws_media_packagev2_channel_group,
     method: :aws_media_packagev2_channel_group,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :egress_domain, :tags_all],
+    expected_outputs: [:id, :arn, :egress_domain, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

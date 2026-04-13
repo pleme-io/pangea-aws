@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BackupVaultLockConfigurationAttributes,
       outputs: { id: :id },
       map: [:backup_vault_name],
-      map_present: [:changeable_for_days, :max_retention_days, :min_retention_days]
+      map_present: [:changeable_for_days, :max_retention_days, :min_retention_days, :region]
   end
   module AWS
     include AWSBackupVaultLockConfiguration

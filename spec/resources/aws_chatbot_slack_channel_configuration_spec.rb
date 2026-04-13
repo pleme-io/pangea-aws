@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSChatbotSlackChannelConfiguration do
         expect(ref.chat_configuration_arn).to eq("${aws_chatbot_slack_channel_configuration.test.chat_configuration_arn}")
         expect(ref.guardrail_policy_arns).to eq("${aws_chatbot_slack_channel_configuration.test.guardrail_policy_arns}")
         expect(ref.logging_level).to eq("${aws_chatbot_slack_channel_configuration.test.logging_level}")
+        expect(ref.region).to eq("${aws_chatbot_slack_channel_configuration.test.region}")
         expect(ref.slack_channel_name).to eq("${aws_chatbot_slack_channel_configuration.test.slack_channel_name}")
         expect(ref.slack_team_name).to eq("${aws_chatbot_slack_channel_configuration.test.slack_team_name}")
         expect(ref.sns_topic_arns).to eq("${aws_chatbot_slack_channel_configuration.test.sns_topic_arns}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSChatbotSlackChannelConfiguration do
         expect(config).not_to have_key('chat_configuration_arn')
         expect(config).not_to have_key('guardrail_policy_arns')
         expect(config).not_to have_key('logging_level')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('slack_channel_name')
         expect(config).not_to have_key('slack_team_name')
         expect(config).not_to have_key('sns_topic_arns')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSChatbotSlackChannelConfiguration do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ guardrail_policy_arns: ['test-value'], logging_level: 'test-value', region: 'test-value', sns_topic_arns: ['test-value'], tags: { 'key1' => 'val1' }, user_authorization_required: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,11 +80,84 @@ RSpec.describe Pangea::Resources::AWSChatbotSlackChannelConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_chatbot_slack_channel_configuration', 'full')
+        expect(config).to have_key('guardrail_policy_arns')
+        expect(config).to have_key('logging_level')
+        expect(config).to have_key('region')
+        expect(config).to have_key('sns_topic_arns')
         expect(config).to have_key('tags')
+        expect(config).to have_key('user_authorization_required')
       end
     end
 
     context 'optional attributes' do
+      it 'includes guardrail_policy_arns when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chatbot_slack_channel_configuration('opt', required_attrs.merge(guardrail_policy_arns: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chatbot_slack_channel_configuration', 'opt')
+        expect(config).to have_key('guardrail_policy_arns')
+      end
+
+      it 'omits guardrail_policy_arns when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chatbot_slack_channel_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chatbot_slack_channel_configuration', 'minimal')
+        expect(config).not_to have_key('guardrail_policy_arns')
+      end
+      it 'includes logging_level when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chatbot_slack_channel_configuration('opt', required_attrs.merge(logging_level: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chatbot_slack_channel_configuration', 'opt')
+        expect(config).to have_key('logging_level')
+      end
+
+      it 'omits logging_level when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chatbot_slack_channel_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chatbot_slack_channel_configuration', 'minimal')
+        expect(config).not_to have_key('logging_level')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chatbot_slack_channel_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chatbot_slack_channel_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chatbot_slack_channel_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chatbot_slack_channel_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes sns_topic_arns when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chatbot_slack_channel_configuration('opt', required_attrs.merge(sns_topic_arns: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chatbot_slack_channel_configuration', 'opt')
+        expect(config).to have_key('sns_topic_arns')
+      end
+
+      it 'omits sns_topic_arns when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chatbot_slack_channel_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chatbot_slack_channel_configuration', 'minimal')
+        expect(config).not_to have_key('sns_topic_arns')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -99,6 +174,37 @@ RSpec.describe Pangea::Resources::AWSChatbotSlackChannelConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_chatbot_slack_channel_configuration', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes user_authorization_required when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chatbot_slack_channel_configuration('opt', required_attrs.merge(user_authorization_required: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chatbot_slack_channel_configuration', 'opt')
+        expect(config).to have_key('user_authorization_required')
+      end
+
+      it 'omits user_authorization_required when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chatbot_slack_channel_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chatbot_slack_channel_configuration', 'minimal')
+        expect(config).not_to have_key('user_authorization_required')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts user_authorization_required=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(user_authorization_required: val)
+          synth.aws_chatbot_slack_channel_configuration("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_chatbot_slack_channel_configuration', "bool_#{val}")
+          expect(config['user_authorization_required']).to eq(val)
+        end
       end
     end
 
@@ -147,8 +253,8 @@ RSpec.describe Pangea::Resources::AWSChatbotSlackChannelConfiguration do
     resource_type: :aws_chatbot_slack_channel_configuration,
     method: :aws_chatbot_slack_channel_configuration,
     required_attrs: { configuration_name: 'test-value', iam_role_arn: 'test-value', slack_channel_id: 'test-value', slack_team_id: 'test-value' },
-    expected_outputs: [:id, :chat_configuration_arn, :guardrail_policy_arns, :logging_level, :slack_channel_name, :slack_team_name, :sns_topic_arns, :tags_all, :user_authorization_required],
+    expected_outputs: [:id, :chat_configuration_arn, :guardrail_policy_arns, :logging_level, :region, :slack_channel_name, :slack_team_name, :sns_topic_arns, :tags_all, :user_authorization_required],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:user_authorization_required]
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KendraExperienceAttributes,
       outputs: { id: :id },
       map: [:index_id, :name, :role_arn],
-      map_present: [:configuration, :description]
+      map_present: [:configuration, :description, :region]
   end
   module AWS
     include AWSKendraExperience

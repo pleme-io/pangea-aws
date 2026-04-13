@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbKinesisStreamingDestination do
 
         expect(ref.id).to eq("${aws_dynamodb_kinesis_streaming_destination.test.id}")
         expect(ref.approximate_creation_date_time_precision).to eq("${aws_dynamodb_kinesis_streaming_destination.test.approximate_creation_date_time_precision}")
+        expect(ref.region).to eq("${aws_dynamodb_kinesis_streaming_destination.test.region}")
       end
     end
 
@@ -51,6 +52,59 @@ RSpec.describe Pangea::Resources::AWSDynamodbKinesisStreamingDestination do
 
         config = validate_resource_structure(result, 'aws_dynamodb_kinesis_streaming_destination', 'test')
         expect(config).not_to have_key('approximate_creation_date_time_precision')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ approximate_creation_date_time_precision: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_kinesis_streaming_destination('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_dynamodb_kinesis_streaming_destination', 'full')
+        expect(config).to have_key('approximate_creation_date_time_precision')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes approximate_creation_date_time_precision when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_kinesis_streaming_destination('opt', required_attrs.merge(approximate_creation_date_time_precision: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_kinesis_streaming_destination', 'opt')
+        expect(config).to have_key('approximate_creation_date_time_precision')
+      end
+
+      it 'omits approximate_creation_date_time_precision when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_kinesis_streaming_destination('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_kinesis_streaming_destination', 'minimal')
+        expect(config).not_to have_key('approximate_creation_date_time_precision')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_kinesis_streaming_destination('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_kinesis_streaming_destination', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_kinesis_streaming_destination('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_kinesis_streaming_destination', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -97,7 +151,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbKinesisStreamingDestination do
     resource_type: :aws_dynamodb_kinesis_streaming_destination,
     method: :aws_dynamodb_kinesis_streaming_destination,
     required_attrs: { stream_arn: 'test-value', table_name: 'test-value' },
-    expected_outputs: [:id, :approximate_creation_date_time_precision],
+    expected_outputs: [:id, :approximate_creation_date_time_precision, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

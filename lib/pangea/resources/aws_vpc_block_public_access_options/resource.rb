@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpc_block_public_access_options,
       attributes_class: AWS::Types::VpcBlockPublicAccessOptionsAttributes,
       outputs: { id: :id },
-      map: [:internet_gateway_block_mode]
+      map: [:internet_gateway_block_mode],
+      map_present: [:region]
   end
   module AWS
     include AWSVpcBlockPublicAccessOptions

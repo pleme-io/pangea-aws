@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsmMaintenanceWindowAttributes,
       outputs: { id: :id },
       map: [:cutoff, :duration, :name, :schedule],
-      map_present: [:description, :end_date, :schedule_offset, :schedule_timezone, :start_date, :tags, :tags_all],
+      map_present: [:description, :end_date, :region, :schedule_offset, :schedule_timezone, :start_date, :tags, :tags_all],
       map_bool: [:allow_unassociated_targets, :enabled]
   end
   module AWS

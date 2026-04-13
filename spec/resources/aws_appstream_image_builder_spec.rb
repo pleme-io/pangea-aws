@@ -47,6 +47,7 @@ RSpec.describe Pangea::Resources::AWSAppstreamImageBuilder do
         expect(ref.iam_role_arn).to eq("${aws_appstream_image_builder.test.iam_role_arn}")
         expect(ref.image_arn).to eq("${aws_appstream_image_builder.test.image_arn}")
         expect(ref.image_name).to eq("${aws_appstream_image_builder.test.image_name}")
+        expect(ref.region).to eq("${aws_appstream_image_builder.test.region}")
         expect(ref.state).to eq("${aws_appstream_image_builder.test.state}")
         expect(ref.tags_all).to eq("${aws_appstream_image_builder.test.tags_all}")
       end
@@ -69,13 +70,14 @@ RSpec.describe Pangea::Resources::AWSAppstreamImageBuilder do
         expect(config).not_to have_key('iam_role_arn')
         expect(config).not_to have_key('image_arn')
         expect(config).not_to have_key('image_name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_endpoint: [{ 'key1' => 'val1' }], domain_join_info: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, vpc_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ access_endpoint: [{ 'key1' => 'val1' }], appstream_agent_version: 'test-value', description: 'test-value', display_name: 'test-value', domain_join_info: { 'key1' => 'val1' }, enable_default_internet_access: true, iam_role_arn: 'test-value', image_arn: 'test-value', image_name: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -85,8 +87,17 @@ RSpec.describe Pangea::Resources::AWSAppstreamImageBuilder do
 
         config = validate_resource_structure(result, 'aws_appstream_image_builder', 'full')
         expect(config).to have_key('access_endpoint')
+        expect(config).to have_key('appstream_agent_version')
+        expect(config).to have_key('description')
+        expect(config).to have_key('display_name')
         expect(config).to have_key('domain_join_info')
+        expect(config).to have_key('enable_default_internet_access')
+        expect(config).to have_key('iam_role_arn')
+        expect(config).to have_key('image_arn')
+        expect(config).to have_key('image_name')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc_config')
       end
     end
@@ -109,10 +120,61 @@ RSpec.describe Pangea::Resources::AWSAppstreamImageBuilder do
         config = validate_resource_structure(result, 'aws_appstream_image_builder', 'minimal')
         expect(config).not_to have_key('access_endpoint')
       end
+      it 'includes appstream_agent_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('opt', required_attrs.merge(appstream_agent_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'opt')
+        expect(config).to have_key('appstream_agent_version')
+      end
+
+      it 'omits appstream_agent_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'minimal')
+        expect(config).not_to have_key('appstream_agent_version')
+      end
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'minimal')
+        expect(config).not_to have_key('description')
+      end
+      it 'includes display_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('opt', required_attrs.merge(display_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'opt')
+        expect(config).to have_key('display_name')
+      end
+
+      it 'omits display_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'minimal')
+        expect(config).not_to have_key('display_name')
+      end
       it 'includes domain_join_info when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appstream_image_builder('opt', required_attrs.merge(domain_join_info: [{ 'key1' => 'val1' }]))
+        synth.aws_appstream_image_builder('opt', required_attrs.merge(domain_join_info: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appstream_image_builder', 'opt')
         expect(config).to have_key('domain_join_info')
@@ -125,6 +187,91 @@ RSpec.describe Pangea::Resources::AWSAppstreamImageBuilder do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appstream_image_builder', 'minimal')
         expect(config).not_to have_key('domain_join_info')
+      end
+      it 'includes enable_default_internet_access when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('opt', required_attrs.merge(enable_default_internet_access: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'opt')
+        expect(config).to have_key('enable_default_internet_access')
+      end
+
+      it 'omits enable_default_internet_access when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'minimal')
+        expect(config).not_to have_key('enable_default_internet_access')
+      end
+      it 'includes iam_role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('opt', required_attrs.merge(iam_role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'opt')
+        expect(config).to have_key('iam_role_arn')
+      end
+
+      it 'omits iam_role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'minimal')
+        expect(config).not_to have_key('iam_role_arn')
+      end
+      it 'includes image_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('opt', required_attrs.merge(image_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'opt')
+        expect(config).to have_key('image_arn')
+      end
+
+      it 'omits image_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'minimal')
+        expect(config).not_to have_key('image_arn')
+      end
+      it 'includes image_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('opt', required_attrs.merge(image_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'opt')
+        expect(config).to have_key('image_name')
+      end
+
+      it 'omits image_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'minimal')
+        expect(config).not_to have_key('image_name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -143,10 +290,27 @@ RSpec.describe Pangea::Resources::AWSAppstreamImageBuilder do
         config = validate_resource_structure(result, 'aws_appstream_image_builder', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_image_builder('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_image_builder', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes vpc_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appstream_image_builder('opt', required_attrs.merge(vpc_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appstream_image_builder('opt', required_attrs.merge(vpc_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appstream_image_builder', 'opt')
         expect(config).to have_key('vpc_config')
@@ -159,6 +323,20 @@ RSpec.describe Pangea::Resources::AWSAppstreamImageBuilder do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appstream_image_builder', 'minimal')
         expect(config).not_to have_key('vpc_config')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts enable_default_internet_access=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enable_default_internet_access: val)
+          synth.aws_appstream_image_builder("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_appstream_image_builder', "bool_#{val}")
+          expect(config['enable_default_internet_access']).to eq(val)
+        end
       end
     end
 
@@ -205,8 +383,8 @@ RSpec.describe Pangea::Resources::AWSAppstreamImageBuilder do
     resource_type: :aws_appstream_image_builder,
     method: :aws_appstream_image_builder,
     required_attrs: { instance_type: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :appstream_agent_version, :arn, :created_time, :description, :display_name, :enable_default_internet_access, :iam_role_arn, :image_arn, :image_name, :state, :tags_all],
+    expected_outputs: [:id, :appstream_agent_version, :arn, :created_time, :description, :display_name, :enable_default_internet_access, :iam_role_arn, :image_arn, :image_name, :region, :state, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:enable_default_internet_access]
 end

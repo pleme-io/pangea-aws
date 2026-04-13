@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSIamVirtualMfaDevice do
         expect(ref.base_32_string_seed).to eq("${aws_iam_virtual_mfa_device.test.base_32_string_seed}")
         expect(ref.enable_date).to eq("${aws_iam_virtual_mfa_device.test.enable_date}")
         expect(ref.qr_code_png).to eq("${aws_iam_virtual_mfa_device.test.qr_code_png}")
+        expect(ref.serial_number).to eq("${aws_iam_virtual_mfa_device.test.serial_number}")
         expect(ref.tags_all).to eq("${aws_iam_virtual_mfa_device.test.tags_all}")
         expect(ref.user_name).to eq("${aws_iam_virtual_mfa_device.test.user_name}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSIamVirtualMfaDevice do
         expect(config).not_to have_key('base_32_string_seed')
         expect(config).not_to have_key('enable_date')
         expect(config).not_to have_key('qr_code_png')
+        expect(config).not_to have_key('serial_number')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('user_name')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ path: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ path: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,6 +78,7 @@ RSpec.describe Pangea::Resources::AWSIamVirtualMfaDevice do
         config = validate_resource_structure(result, 'aws_iam_virtual_mfa_device', 'full')
         expect(config).to have_key('path')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -113,6 +116,23 @@ RSpec.describe Pangea::Resources::AWSIamVirtualMfaDevice do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iam_virtual_mfa_device', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_virtual_mfa_device('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_virtual_mfa_device', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_virtual_mfa_device('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_virtual_mfa_device', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -158,7 +178,7 @@ RSpec.describe Pangea::Resources::AWSIamVirtualMfaDevice do
     resource_type: :aws_iam_virtual_mfa_device,
     method: :aws_iam_virtual_mfa_device,
     required_attrs: { virtual_mfa_device_name: 'test-value' },
-    expected_outputs: [:id, :arn, :base_32_string_seed, :enable_date, :qr_code_png, :tags_all, :user_name],
+    expected_outputs: [:id, :arn, :base_32_string_seed, :enable_date, :qr_code_png, :serial_number, :tags_all, :user_name],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

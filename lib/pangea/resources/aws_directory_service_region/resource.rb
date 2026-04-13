@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DirectoryServiceRegionAttributes,
       outputs: { id: :id },
       map: [:directory_id, :region_name, :vpc_settings],
-      map_present: [:desired_number_of_domain_controllers, :tags, :tags_all]
+      map_present: [:desired_number_of_domain_controllers, :region, :tags, :tags_all]
   end
   module AWS
     include AWSDirectoryServiceRegion

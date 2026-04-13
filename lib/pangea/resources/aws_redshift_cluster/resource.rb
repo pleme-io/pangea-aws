@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftClusterAttributes,
       outputs: { id: :id },
       map: [:cluster_identifier, :node_type],
-      map_present: [:aqua_configuration_status, :automated_snapshot_retention_period, :availability_zone, :cluster_parameter_group_name, :cluster_public_key, :cluster_revision_number, :cluster_subnet_group_name, :cluster_type, :cluster_version, :database_name, :default_iam_role_arn, :elastic_ip, :endpoint, :final_snapshot_identifier, :iam_roles, :kms_key_id, :logging, :maintenance_track_name, :manual_snapshot_retention_period, :master_password, :master_password_secret_kms_key_id, :master_password_wo, :master_password_wo_version, :master_username, :number_of_nodes, :owner_account, :port, :preferred_maintenance_window, :snapshot_arn, :snapshot_cluster_identifier, :snapshot_copy, :snapshot_identifier, :tags, :tags_all, :vpc_security_group_ids],
-      map_bool: [:allow_version_upgrade, :apply_immediately, :availability_zone_relocation_enabled, :encrypted, :enhanced_vpc_routing, :manage_master_password, :multi_az, :publicly_accessible, :skip_final_snapshot]
+      map_present: [:aqua_configuration_status, :automated_snapshot_retention_period, :availability_zone, :cluster_parameter_group_name, :cluster_subnet_group_name, :cluster_type, :cluster_version, :database_name, :default_iam_role_arn, :elastic_ip, :encrypted, :final_snapshot_identifier, :iam_roles, :kms_key_id, :maintenance_track_name, :manual_snapshot_retention_period, :master_password, :master_password_secret_kms_key_id, :master_password_wo, :master_password_wo_version, :master_username, :number_of_nodes, :owner_account, :port, :preferred_maintenance_window, :region, :snapshot_arn, :snapshot_cluster_identifier, :snapshot_identifier, :tags, :tags_all, :vpc_security_group_ids],
+      map_bool: [:allow_version_upgrade, :apply_immediately, :availability_zone_relocation_enabled, :enhanced_vpc_routing, :manage_master_password, :multi_az, :publicly_accessible, :skip_final_snapshot]
   end
   module AWS
     include AWSRedshiftCluster

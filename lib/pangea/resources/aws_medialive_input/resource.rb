@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MedialiveInputAttributes,
       outputs: { id: :id },
       map: [:name, :type],
-      map_present: [:destinations, :input_devices, :input_security_groups, :media_connect_flows, :role_arn, :sources, :tags, :tags_all, :vpc]
+      map_present: [:destinations, :input_devices, :input_security_groups, :media_connect_flows, :region, :role_arn, :sources, :tags, :tags_all, :vpc]
   end
   module AWS
     include AWSMedialiveInput

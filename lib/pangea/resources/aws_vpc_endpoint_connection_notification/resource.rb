@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcEndpointConnectionNotificationAttributes,
       outputs: { id: :id },
       map: [:connection_events, :connection_notification_arn],
-      map_present: [:vpc_endpoint_id, :vpc_endpoint_service_id]
+      map_present: [:region, :vpc_endpoint_id, :vpc_endpoint_service_id]
   end
   module AWS
     include AWSVpcEndpointConnectionNotification

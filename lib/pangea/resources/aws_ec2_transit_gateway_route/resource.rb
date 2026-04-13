@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2TransitGatewayRouteAttributes,
       outputs: { id: :id },
       map: [:destination_cidr_block, :transit_gateway_route_table_id],
-      map_present: [:transit_gateway_attachment_id],
+      map_present: [:region, :transit_gateway_attachment_id],
       map_bool: [:blackhole]
   end
   module AWS

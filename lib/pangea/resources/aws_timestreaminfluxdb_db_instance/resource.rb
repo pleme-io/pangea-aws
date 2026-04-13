@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::TimestreaminfluxdbDbInstanceAttributes,
       outputs: { id: :id },
       map: [:allocated_storage, :bucket, :db_instance_type, :name, :organization, :password, :username, :vpc_security_group_ids, :vpc_subnet_ids],
-      map_present: [:db_parameter_group_identifier, :db_storage_type, :deployment_type, :log_delivery_configuration, :network_type, :port, :tags],
+      map_present: [:db_parameter_group_identifier, :db_storage_type, :deployment_type, :log_delivery_configuration, :network_type, :port, :region, :tags],
       map_bool: [:publicly_accessible]
   end
   module AWS

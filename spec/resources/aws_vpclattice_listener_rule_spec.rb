@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSVpclatticeListenerRule do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { action: [{ 'key1' => 'val1' }], listener_identifier: 'test-value', match: [{ 'key1' => 'val1' }], name: 'test-value', priority: 3.14, service_identifier: 'test-value' } }
+  let(:required_attrs) { { action: { 'key1' => 'val1' }, listener_identifier: 'test-value', match: { 'key1' => 'val1' }, name: 'test-value', priority: 3.14, service_identifier: 'test-value' } }
 
   describe ':aws_vpclattice_listener_rule' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeListenerRule do
 
         expect(ref.id).to eq("${aws_vpclattice_listener_rule.test.id}")
         expect(ref.arn).to eq("${aws_vpclattice_listener_rule.test.arn}")
+        expect(ref.region).to eq("${aws_vpclattice_listener_rule.test.region}")
         expect(ref.rule_id).to eq("${aws_vpclattice_listener_rule.test.rule_id}")
         expect(ref.tags_all).to eq("${aws_vpclattice_listener_rule.test.tags_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSVpclatticeListenerRule do
 
         config = validate_resource_structure(result, 'aws_vpclattice_listener_rule', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('rule_id')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,11 +70,30 @@ RSpec.describe Pangea::Resources::AWSVpclatticeListenerRule do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpclattice_listener_rule', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener_rule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -90,6 +111,23 @@ RSpec.describe Pangea::Resources::AWSVpclatticeListenerRule do
         config = validate_resource_structure(result, 'aws_vpclattice_listener_rule', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener_rule('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener_rule', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_listener_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_listener_rule', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -100,9 +138,9 @@ RSpec.describe Pangea::Resources::AWSVpclatticeListenerRule do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpclattice_listener_rule', 'typed')
-        expect(config['action']).to be_a(Array)
+        expect(config['action']).to be_a(Hash)
         expect(config['listener_identifier']).to be_a(String)
-        expect(config['match']).to be_a(Array)
+        expect(config['match']).to be_a(Hash)
         expect(config['name']).to be_a(String)
         expect(config['priority']).to be_a(Float)
         expect(config['service_identifier']).to be_a(String)
@@ -138,8 +176,8 @@ RSpec.describe Pangea::Resources::AWSVpclatticeListenerRule do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_vpclattice_listener_rule,
     method: :aws_vpclattice_listener_rule,
-    required_attrs: { action: [{ 'key1' => 'val1' }], listener_identifier: 'test-value', match: [{ 'key1' => 'val1' }], name: 'test-value', priority: 3.14, service_identifier: 'test-value' },
-    expected_outputs: [:id, :arn, :rule_id, :tags_all],
+    required_attrs: { action: { 'key1' => 'val1' }, listener_identifier: 'test-value', match: { 'key1' => 'val1' }, name: 'test-value', priority: 3.14, service_identifier: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :rule_id, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSWafv2WebAcl do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { default_action: [{ 'key1' => 'val1' }], scope: 'test-value', visibility_config: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { default_action: { 'key1' => 'val1' }, scope: 'test-value', visibility_config: { 'key1' => 'val1' } } }
 
   describe ':aws_wafv2_web_acl' do
     context 'with required attributes only' do
@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAcl do
         expect(ref.lock_token).to eq("${aws_wafv2_web_acl.test.lock_token}")
         expect(ref.name).to eq("${aws_wafv2_web_acl.test.name}")
         expect(ref.name_prefix).to eq("${aws_wafv2_web_acl.test.name_prefix}")
+        expect(ref.region).to eq("${aws_wafv2_web_acl.test.region}")
         expect(ref.tags_all).to eq("${aws_wafv2_web_acl.test.tags_all}")
       end
     end
@@ -62,12 +63,13 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAcl do
         expect(config).not_to have_key('lock_token')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ association_config: [{ 'key1' => 'val1' }], captcha_config: [{ 'key1' => 'val1' }], challenge_config: [{ 'key1' => 'val1' }], custom_response_body: [{ 'key1' => 'val1' }], data_protection_config: [{ 'key1' => 'val1' }], description: 'test-value', rule: [{ 'key1' => 'val1' }], rule_json: 'test-value', tags: { 'key1' => 'val1' }, token_domains: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ association_config: { 'key1' => 'val1' }, captcha_config: { 'key1' => 'val1' }, challenge_config: { 'key1' => 'val1' }, custom_response_body: [{ 'key1' => 'val1' }], data_protection_config: { 'key1' => 'val1' }, description: 'test-value', name: 'test-value', name_prefix: 'test-value', region: 'test-value', rule: [{ 'key1' => 'val1' }], rule_json: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, token_domains: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -82,9 +84,13 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAcl do
         expect(config).to have_key('custom_response_body')
         expect(config).to have_key('data_protection_config')
         expect(config).to have_key('description')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
         expect(config).to have_key('rule')
         expect(config).to have_key('rule_json')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('token_domains')
       end
     end
@@ -93,7 +99,7 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAcl do
       it 'includes association_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_wafv2_web_acl('opt', required_attrs.merge(association_config: [{ 'key1' => 'val1' }]))
+        synth.aws_wafv2_web_acl('opt', required_attrs.merge(association_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'opt')
         expect(config).to have_key('association_config')
@@ -110,7 +116,7 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAcl do
       it 'includes captcha_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_wafv2_web_acl('opt', required_attrs.merge(captcha_config: [{ 'key1' => 'val1' }]))
+        synth.aws_wafv2_web_acl('opt', required_attrs.merge(captcha_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'opt')
         expect(config).to have_key('captcha_config')
@@ -127,7 +133,7 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAcl do
       it 'includes challenge_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_wafv2_web_acl('opt', required_attrs.merge(challenge_config: [{ 'key1' => 'val1' }]))
+        synth.aws_wafv2_web_acl('opt', required_attrs.merge(challenge_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'opt')
         expect(config).to have_key('challenge_config')
@@ -161,7 +167,7 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAcl do
       it 'includes data_protection_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_wafv2_web_acl('opt', required_attrs.merge(data_protection_config: [{ 'key1' => 'val1' }]))
+        synth.aws_wafv2_web_acl('opt', required_attrs.merge(data_protection_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'opt')
         expect(config).to have_key('data_protection_config')
@@ -191,6 +197,57 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAcl do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_web_acl('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_web_acl('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_web_acl('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_web_acl('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_web_acl('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_web_acl('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes rule when provided' do
         synth = create_synthesizer
@@ -243,6 +300,23 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAcl do
         config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_web_acl('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_web_acl('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes token_domains when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -270,9 +344,9 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAcl do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_wafv2_web_acl', 'typed')
-        expect(config['default_action']).to be_a(Array)
+        expect(config['default_action']).to be_a(Hash)
         expect(config['scope']).to be_a(String)
-        expect(config['visibility_config']).to be_a(Array)
+        expect(config['visibility_config']).to be_a(Hash)
       end
     end
 
@@ -305,8 +379,8 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAcl do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_wafv2_web_acl,
     method: :aws_wafv2_web_acl,
-    required_attrs: { default_action: [{ 'key1' => 'val1' }], scope: 'test-value', visibility_config: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :application_integration_url, :arn, :capacity, :lock_token, :name, :name_prefix, :tags_all],
+    required_attrs: { default_action: { 'key1' => 'val1' }, scope: 'test-value', visibility_config: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :application_integration_url, :arn, :capacity, :lock_token, :name, :name_prefix, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpc_route_server_vpc_association,
       attributes_class: AWS::Types::VpcRouteServerVpcAssociationAttributes,
       outputs: { id: :id },
-      map: [:route_server_id, :vpc_id]
+      map: [:route_server_id, :vpc_id],
+      map_present: [:region]
   end
   module AWS
     include AWSVpcRouteServerVpcAssociation

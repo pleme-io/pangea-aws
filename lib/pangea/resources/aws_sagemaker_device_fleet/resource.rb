@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerDeviceFleetAttributes,
       outputs: { id: :id },
       map: [:device_fleet_name, :output_config, :role_arn],
-      map_present: [:description, :tags, :tags_all],
+      map_present: [:description, :region, :tags, :tags_all],
       map_bool: [:enable_iot_role_alias]
   end
   module AWS

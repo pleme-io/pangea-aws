@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSet do
         expect(ref.id).to eq("${aws_cloudformation_stack_set.test.id}")
         expect(ref.arn).to eq("${aws_cloudformation_stack_set.test.arn}")
         expect(ref.execution_role_name).to eq("${aws_cloudformation_stack_set.test.execution_role_name}")
+        expect(ref.region).to eq("${aws_cloudformation_stack_set.test.region}")
         expect(ref.stack_set_id).to eq("${aws_cloudformation_stack_set.test.stack_set_id}")
         expect(ref.tags_all).to eq("${aws_cloudformation_stack_set.test.tags_all}")
         expect(ref.template_body).to eq("${aws_cloudformation_stack_set.test.template_body}")
@@ -56,6 +57,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSet do
         config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('execution_role_name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('stack_set_id')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('template_body')
@@ -63,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSet do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ administration_role_arn: 'test-value', auto_deployment: [{ 'key1' => 'val1' }], call_as: 'test-value', capabilities: ['test-value'], description: 'test-value', managed_execution: [{ 'key1' => 'val1' }], operation_preferences: [{ 'key1' => 'val1' }], parameters: { 'key1' => 'val1' }, permission_model: 'test-value', tags: { 'key1' => 'val1' }, template_url: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ administration_role_arn: 'test-value', auto_deployment: { 'key1' => 'val1' }, call_as: 'test-value', capabilities: ['test-value'], description: 'test-value', execution_role_name: 'test-value', managed_execution: { 'key1' => 'val1' }, operation_preferences: { 'key1' => 'val1' }, parameters: { 'key1' => 'val1' }, permission_model: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, template_body: 'test-value', template_url: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,11 +79,15 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSet do
         expect(config).to have_key('call_as')
         expect(config).to have_key('capabilities')
         expect(config).to have_key('description')
+        expect(config).to have_key('execution_role_name')
         expect(config).to have_key('managed_execution')
         expect(config).to have_key('operation_preferences')
         expect(config).to have_key('parameters')
         expect(config).to have_key('permission_model')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('template_body')
         expect(config).to have_key('template_url')
       end
     end
@@ -107,7 +113,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSet do
       it 'includes auto_deployment when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudformation_stack_set('opt', required_attrs.merge(auto_deployment: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudformation_stack_set('opt', required_attrs.merge(auto_deployment: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'opt')
         expect(config).to have_key('auto_deployment')
@@ -172,10 +178,27 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSet do
         config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes execution_role_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set('opt', required_attrs.merge(execution_role_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'opt')
+        expect(config).to have_key('execution_role_name')
+      end
+
+      it 'omits execution_role_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'minimal')
+        expect(config).not_to have_key('execution_role_name')
+      end
       it 'includes managed_execution when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudformation_stack_set('opt', required_attrs.merge(managed_execution: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudformation_stack_set('opt', required_attrs.merge(managed_execution: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'opt')
         expect(config).to have_key('managed_execution')
@@ -192,7 +215,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSet do
       it 'includes operation_preferences when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudformation_stack_set('opt', required_attrs.merge(operation_preferences: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudformation_stack_set('opt', required_attrs.merge(operation_preferences: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'opt')
         expect(config).to have_key('operation_preferences')
@@ -240,6 +263,23 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSet do
         config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'minimal')
         expect(config).not_to have_key('permission_model')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -256,6 +296,40 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes template_body when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set('opt', required_attrs.merge(template_body: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'opt')
+        expect(config).to have_key('template_body')
+      end
+
+      it 'omits template_body when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set', 'minimal')
+        expect(config).not_to have_key('template_body')
       end
       it 'includes template_url when provided' do
         synth = create_synthesizer
@@ -318,7 +392,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSet do
     resource_type: :aws_cloudformation_stack_set,
     method: :aws_cloudformation_stack_set,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :execution_role_name, :stack_set_id, :tags_all, :template_body],
+    expected_outputs: [:id, :arn, :execution_role_name, :region, :stack_set_id, :tags_all, :template_body],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

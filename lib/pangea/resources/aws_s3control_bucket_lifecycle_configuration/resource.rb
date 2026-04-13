@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_s3control_bucket_lifecycle_configuration,
       attributes_class: AWS::Types::S3controlBucketLifecycleConfigurationAttributes,
       outputs: { id: :id },
-      map: [:bucket, :rule]
+      map: [:bucket, :rule],
+      map_present: [:region]
   end
   module AWS
     include AWSS3controlBucketLifecycleConfiguration

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSsmquicksetupConfigurationManager do
         expect(ref.id).to eq("${aws_ssmquicksetup_configuration_manager.test.id}")
         expect(ref.description).to eq("${aws_ssmquicksetup_configuration_manager.test.description}")
         expect(ref.manager_arn).to eq("${aws_ssmquicksetup_configuration_manager.test.manager_arn}")
+        expect(ref.region).to eq("${aws_ssmquicksetup_configuration_manager.test.region}")
         expect(ref.status_summaries).to eq("${aws_ssmquicksetup_configuration_manager.test.status_summaries}")
         expect(ref.tags_all).to eq("${aws_ssmquicksetup_configuration_manager.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSSsmquicksetupConfigurationManager do
         config = validate_resource_structure(result, 'aws_ssmquicksetup_configuration_manager', 'test')
         expect(config).not_to have_key('description')
         expect(config).not_to have_key('manager_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status_summaries')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ configuration_definition: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ configuration_definition: [{ 'key1' => 'val1' }], description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +73,8 @@ RSpec.describe Pangea::Resources::AWSSsmquicksetupConfigurationManager do
 
         config = validate_resource_structure(result, 'aws_ssmquicksetup_configuration_manager', 'full')
         expect(config).to have_key('configuration_definition')
+        expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -92,6 +96,40 @@ RSpec.describe Pangea::Resources::AWSSsmquicksetupConfigurationManager do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssmquicksetup_configuration_manager', 'minimal')
         expect(config).not_to have_key('configuration_definition')
+      end
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmquicksetup_configuration_manager('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmquicksetup_configuration_manager', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmquicksetup_configuration_manager('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmquicksetup_configuration_manager', 'minimal')
+        expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmquicksetup_configuration_manager('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmquicksetup_configuration_manager', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssmquicksetup_configuration_manager('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssmquicksetup_configuration_manager', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -154,7 +192,7 @@ RSpec.describe Pangea::Resources::AWSSsmquicksetupConfigurationManager do
     resource_type: :aws_ssmquicksetup_configuration_manager,
     method: :aws_ssmquicksetup_configuration_manager,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :description, :manager_arn, :status_summaries, :tags_all],
+    expected_outputs: [:id, :description, :manager_arn, :region, :status_summaries, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

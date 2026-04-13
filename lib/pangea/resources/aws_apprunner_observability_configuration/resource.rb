@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApprunnerObservabilityConfigurationAttributes,
       outputs: { id: :id },
       map: [:observability_configuration_name],
-      map_present: [:tags, :tags_all, :trace_configuration]
+      map_present: [:region, :tags, :tags_all, :trace_configuration]
   end
   module AWS
     include AWSApprunnerObservabilityConfiguration

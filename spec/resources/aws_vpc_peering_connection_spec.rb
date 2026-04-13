@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnection do
         expect(ref.accept_status).to eq("${aws_vpc_peering_connection.test.accept_status}")
         expect(ref.peer_owner_id).to eq("${aws_vpc_peering_connection.test.peer_owner_id}")
         expect(ref.peer_region).to eq("${aws_vpc_peering_connection.test.peer_region}")
+        expect(ref.region).to eq("${aws_vpc_peering_connection.test.region}")
         expect(ref.tags_all).to eq("${aws_vpc_peering_connection.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnection do
         expect(config).not_to have_key('accept_status')
         expect(config).not_to have_key('peer_owner_id')
         expect(config).not_to have_key('peer_region')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ accepter: [{ 'key1' => 'val1' }], auto_accept: true, requester: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ accepter: { 'key1' => 'val1' }, auto_accept: true, peer_owner_id: 'test-value', peer_region: 'test-value', region: 'test-value', requester: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,8 +74,12 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnection do
         config = validate_resource_structure(result, 'aws_vpc_peering_connection', 'full')
         expect(config).to have_key('accepter')
         expect(config).to have_key('auto_accept')
+        expect(config).to have_key('peer_owner_id')
+        expect(config).to have_key('peer_region')
+        expect(config).to have_key('region')
         expect(config).to have_key('requester')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -81,7 +87,7 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnection do
       it 'includes accepter when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_vpc_peering_connection('opt', required_attrs.merge(accepter: [{ 'key1' => 'val1' }]))
+        synth.aws_vpc_peering_connection('opt', required_attrs.merge(accepter: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_peering_connection', 'opt')
         expect(config).to have_key('accepter')
@@ -112,10 +118,61 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnection do
         config = validate_resource_structure(result, 'aws_vpc_peering_connection', 'minimal')
         expect(config).not_to have_key('auto_accept')
       end
+      it 'includes peer_owner_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection('opt', required_attrs.merge(peer_owner_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection', 'opt')
+        expect(config).to have_key('peer_owner_id')
+      end
+
+      it 'omits peer_owner_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection', 'minimal')
+        expect(config).not_to have_key('peer_owner_id')
+      end
+      it 'includes peer_region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection('opt', required_attrs.merge(peer_region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection', 'opt')
+        expect(config).to have_key('peer_region')
+      end
+
+      it 'omits peer_region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection', 'minimal')
+        expect(config).not_to have_key('peer_region')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes requester when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_vpc_peering_connection('opt', required_attrs.merge(requester: [{ 'key1' => 'val1' }]))
+        synth.aws_vpc_peering_connection('opt', required_attrs.merge(requester: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_peering_connection', 'opt')
         expect(config).to have_key('requester')
@@ -145,6 +202,23 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_peering_connection', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_peering_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_peering_connection', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -205,7 +279,7 @@ RSpec.describe Pangea::Resources::AWSVpcPeeringConnection do
     resource_type: :aws_vpc_peering_connection,
     method: :aws_vpc_peering_connection,
     required_attrs: { peer_vpc_id: 'test-value', vpc_id: 'test-value' },
-    expected_outputs: [:id, :accept_status, :peer_owner_id, :peer_region, :tags_all],
+    expected_outputs: [:id, :accept_status, :peer_owner_id, :peer_region, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:auto_accept]

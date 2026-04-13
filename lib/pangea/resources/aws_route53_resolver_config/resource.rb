@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_route53_resolver_config,
       attributes_class: AWS::Types::Route53ResolverConfigAttributes,
       outputs: { id: :id },
-      map: [:autodefined_reverse_flag, :resource_id]
+      map: [:autodefined_reverse_flag, :resource_id],
+      map_present: [:region]
   end
   module AWS
     include AWSRoute53ResolverConfig

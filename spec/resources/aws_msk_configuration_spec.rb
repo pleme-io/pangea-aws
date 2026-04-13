@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSMskConfiguration do
         expect(ref.id).to eq("${aws_msk_configuration.test.id}")
         expect(ref.arn).to eq("${aws_msk_configuration.test.arn}")
         expect(ref.latest_revision).to eq("${aws_msk_configuration.test.latest_revision}")
+        expect(ref.region).to eq("${aws_msk_configuration.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSMskConfiguration do
         config = validate_resource_structure(result, 'aws_msk_configuration', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('latest_revision')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', kafka_versions: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', kafka_versions: ['test-value'], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSMskConfiguration do
         config = validate_resource_structure(result, 'aws_msk_configuration', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('kafka_versions')
+        expect(config).to have_key('region')
       end
     end
 
@@ -105,6 +108,23 @@ RSpec.describe Pangea::Resources::AWSMskConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_msk_configuration', 'minimal')
         expect(config).not_to have_key('kafka_versions')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_msk_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_msk_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -151,7 +171,7 @@ RSpec.describe Pangea::Resources::AWSMskConfiguration do
     resource_type: :aws_msk_configuration,
     method: :aws_msk_configuration,
     required_attrs: { name: 'test-value', server_properties: 'test-value' },
-    expected_outputs: [:id, :arn, :latest_revision],
+    expected_outputs: [:id, :arn, :latest_revision, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

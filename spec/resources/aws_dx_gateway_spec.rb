@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSDxGateway do
         expect(ref.id).to eq("${aws_dx_gateway.test.id}")
         expect(ref.arn).to eq("${aws_dx_gateway.test.arn}")
         expect(ref.owner_account_id).to eq("${aws_dx_gateway.test.owner_account_id}")
+        expect(ref.tags_all).to eq("${aws_dx_gateway.test.tags_all}")
       end
     end
 
@@ -53,6 +54,59 @@ RSpec.describe Pangea::Resources::AWSDxGateway do
         config = validate_resource_structure(result, 'aws_dx_gateway', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('owner_account_id')
+        expect(config).not_to have_key('tags_all')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_dx_gateway', 'full')
+        expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes tags when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway('opt', required_attrs.merge(tags: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway', 'opt')
+        expect(config).to have_key('tags')
+      end
+
+      it 'omits tags when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway', 'minimal')
+        expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dx_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dx_gateway', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -99,7 +153,7 @@ RSpec.describe Pangea::Resources::AWSDxGateway do
     resource_type: :aws_dx_gateway,
     method: :aws_dx_gateway,
     required_attrs: { amazon_side_asn: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :owner_account_id],
+    expected_outputs: [:id, :arn, :owner_account_id, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

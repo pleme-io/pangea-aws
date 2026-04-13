@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_ssoadmin_account_assignment,
       attributes_class: AWS::Types::SsoadminAccountAssignmentAttributes,
       outputs: { id: :id },
-      map: [:instance_arn, :permission_set_arn, :principal_id, :principal_type, :target_id],
-      map_present: [:target_type]
+      map: [:instance_arn, :permission_set_arn, :principal_id, :principal_type, :target_id, :target_type],
+      map_present: [:region]
   end
   module AWS
     include AWSSsoadminAccountAssignment

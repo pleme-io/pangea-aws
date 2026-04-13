@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_wafv2_api_key,
       attributes_class: AWS::Types::Wafv2ApiKeyAttributes,
       outputs: { id: :id },
-      map: [:scope, :token_domains]
+      map: [:scope, :token_domains],
+      map_present: [:region]
   end
   module AWS
     include AWSWafv2ApiKey

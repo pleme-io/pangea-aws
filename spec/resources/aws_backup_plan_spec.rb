@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSBackupPlan do
 
         expect(ref.id).to eq("${aws_backup_plan.test.id}")
         expect(ref.arn).to eq("${aws_backup_plan.test.arn}")
+        expect(ref.region).to eq("${aws_backup_plan.test.region}")
         expect(ref.tags_all).to eq("${aws_backup_plan.test.tags_all}")
         expect(ref.version).to eq("${aws_backup_plan.test.version}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSBackupPlan do
 
         config = validate_resource_structure(result, 'aws_backup_plan', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('version')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ advanced_backup_setting: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ advanced_backup_setting: [{ 'key1' => 'val1' }], region: 'test-value', scan_setting: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +71,10 @@ RSpec.describe Pangea::Resources::AWSBackupPlan do
 
         config = validate_resource_structure(result, 'aws_backup_plan', 'full')
         expect(config).to have_key('advanced_backup_setting')
+        expect(config).to have_key('region')
+        expect(config).to have_key('scan_setting')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -91,6 +96,40 @@ RSpec.describe Pangea::Resources::AWSBackupPlan do
         config = validate_resource_structure(result, 'aws_backup_plan', 'minimal')
         expect(config).not_to have_key('advanced_backup_setting')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_plan('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_plan', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_plan('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_plan', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes scan_setting when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_plan('opt', required_attrs.merge(scan_setting: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_plan', 'opt')
+        expect(config).to have_key('scan_setting')
+      end
+
+      it 'omits scan_setting when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_plan('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_plan', 'minimal')
+        expect(config).not_to have_key('scan_setting')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -107,6 +146,23 @@ RSpec.describe Pangea::Resources::AWSBackupPlan do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_backup_plan', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_plan('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_plan', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_backup_plan('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_backup_plan', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -153,7 +209,7 @@ RSpec.describe Pangea::Resources::AWSBackupPlan do
     resource_type: :aws_backup_plan,
     method: :aws_backup_plan,
     required_attrs: { name: 'test-value', rule: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :tags_all, :version],
+    expected_outputs: [:id, :arn, :region, :tags_all, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

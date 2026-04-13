@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessmentDelegation do
 
         expect(ref.id).to eq("${aws_auditmanager_assessment_delegation.test.id}")
         expect(ref.delegation_id).to eq("${aws_auditmanager_assessment_delegation.test.delegation_id}")
+        expect(ref.region).to eq("${aws_auditmanager_assessment_delegation.test.region}")
         expect(ref.status).to eq("${aws_auditmanager_assessment_delegation.test.status}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessmentDelegation do
 
         config = validate_resource_structure(result, 'aws_auditmanager_assessment_delegation', 'test')
         expect(config).not_to have_key('delegation_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ comment: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ comment: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessmentDelegation do
 
         config = validate_resource_structure(result, 'aws_auditmanager_assessment_delegation', 'full')
         expect(config).to have_key('comment')
+        expect(config).to have_key('region')
       end
     end
 
@@ -87,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessmentDelegation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_auditmanager_assessment_delegation', 'minimal')
         expect(config).not_to have_key('comment')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_assessment_delegation('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_assessment_delegation', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_assessment_delegation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_assessment_delegation', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -135,7 +155,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerAssessmentDelegation do
     resource_type: :aws_auditmanager_assessment_delegation,
     method: :aws_auditmanager_assessment_delegation,
     required_attrs: { assessment_id: 'test-value', control_set_id: 'test-value', role_arn: 'test-value', role_type: 'test-value' },
-    expected_outputs: [:id, :delegation_id, :status],
+    expected_outputs: [:id, :delegation_id, :region, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -1,0 +1,8 @@
+name: aws_backup_vault_lock_configuration
+title: Manages a aws_backup_vault_lock_configuration resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamScope do
         expect(ref.ipam_scope_type).to eq("${aws_vpc_ipam_scope.test.ipam_scope_type}")
         expect(ref.is_default).to eq("${aws_vpc_ipam_scope.test.is_default}")
         expect(ref.pool_count).to eq("${aws_vpc_ipam_scope.test.pool_count}")
+        expect(ref.region).to eq("${aws_vpc_ipam_scope.test.region}")
         expect(ref.tags_all).to eq("${aws_vpc_ipam_scope.test.tags_all}")
       end
     end
@@ -60,12 +61,13 @@ RSpec.describe Pangea::Resources::AWSVpcIpamScope do
         expect(config).not_to have_key('ipam_scope_type')
         expect(config).not_to have_key('is_default')
         expect(config).not_to have_key('pool_count')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,7 +77,9 @@ RSpec.describe Pangea::Resources::AWSVpcIpamScope do
 
         config = validate_resource_structure(result, 'aws_vpc_ipam_scope', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -97,6 +101,23 @@ RSpec.describe Pangea::Resources::AWSVpcIpamScope do
         config = validate_resource_structure(result, 'aws_vpc_ipam_scope', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_scope('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_scope', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_scope('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_scope', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -113,6 +134,23 @@ RSpec.describe Pangea::Resources::AWSVpcIpamScope do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_ipam_scope', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_scope('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_scope', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_scope('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_scope', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -158,7 +196,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamScope do
     resource_type: :aws_vpc_ipam_scope,
     method: :aws_vpc_ipam_scope,
     required_attrs: { ipam_id: 'test-value' },
-    expected_outputs: [:id, :arn, :ipam_arn, :ipam_scope_type, :is_default, :pool_count, :tags_all],
+    expected_outputs: [:id, :arn, :ipam_arn, :ipam_scope_type, :is_default, :pool_count, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

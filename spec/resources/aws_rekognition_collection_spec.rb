@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRekognitionCollection do
         expect(ref.id).to eq("${aws_rekognition_collection.test.id}")
         expect(ref.arn).to eq("${aws_rekognition_collection.test.arn}")
         expect(ref.face_model_version).to eq("${aws_rekognition_collection.test.face_model_version}")
+        expect(ref.region).to eq("${aws_rekognition_collection.test.region}")
         expect(ref.tags_all).to eq("${aws_rekognition_collection.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSRekognitionCollection do
         config = validate_resource_structure(result, 'aws_rekognition_collection', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('face_model_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,11 +70,29 @@ RSpec.describe Pangea::Resources::AWSRekognitionCollection do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_rekognition_collection', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rekognition_collection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rekognition_collection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rekognition_collection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rekognition_collection', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -134,7 +154,7 @@ RSpec.describe Pangea::Resources::AWSRekognitionCollection do
     resource_type: :aws_rekognition_collection,
     method: :aws_rekognition_collection,
     required_attrs: { collection_id: 'test-value' },
-    expected_outputs: [:id, :arn, :face_model_version, :tags_all],
+    expected_outputs: [:id, :arn, :face_model_version, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

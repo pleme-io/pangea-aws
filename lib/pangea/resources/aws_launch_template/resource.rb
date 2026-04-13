@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_launch_template,
       attributes_class: AWS::Types::LaunchTemplateAttributes,
       outputs: { id: :id },
-      map_present: [:block_device_mappings, :capacity_reservation_specification, :cpu_options, :credit_specification, :default_version, :description, :ebs_optimized, :elastic_gpu_specifications, :elastic_inference_accelerator, :enclave_options, :hibernation_options, :iam_instance_profile, :image_id, :instance_initiated_shutdown_behavior, :instance_market_options, :instance_requirements, :instance_type, :kernel_id, :key_name, :license_specification, :maintenance_options, :metadata_options, :monitoring, :name, :name_prefix, :network_interfaces, :placement, :private_dns_name_options, :ram_disk_id, :security_group_names, :tag_specifications, :tags, :tags_all, :user_data, :vpc_security_group_ids],
+      map_present: [:block_device_mappings, :capacity_reservation_specification, :cpu_options, :credit_specification, :default_version, :description, :ebs_optimized, :enclave_options, :hibernation_options, :iam_instance_profile, :image_id, :instance_initiated_shutdown_behavior, :instance_market_options, :instance_requirements, :instance_type, :kernel_id, :key_name, :license_specification, :maintenance_options, :metadata_options, :monitoring, :name, :name_prefix, :network_interfaces, :network_performance_options, :placement, :private_dns_name_options, :ram_disk_id, :region, :secondary_interfaces, :security_group_names, :tag_specifications, :tags, :tags_all, :user_data, :vpc_security_group_ids],
       map_bool: [:disable_api_stop, :disable_api_termination, :update_default_version]
   end
   module AWS

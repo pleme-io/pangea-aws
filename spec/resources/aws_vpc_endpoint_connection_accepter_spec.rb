@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointConnectionAccepter do
         ref = synth.aws_vpc_endpoint_connection_accepter('test', required_attrs)
 
         expect(ref.id).to eq("${aws_vpc_endpoint_connection_accepter.test.id}")
+        expect(ref.region).to eq("${aws_vpc_endpoint_connection_accepter.test.region}")
         expect(ref.vpc_endpoint_state).to eq("${aws_vpc_endpoint_connection_accepter.test.vpc_endpoint_state}")
       end
     end
@@ -50,7 +51,42 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointConnectionAccepter do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpc_endpoint_connection_accepter', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('vpc_endpoint_state')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_connection_accepter('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_connection_accepter', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_connection_accepter('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_connection_accepter', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_connection_accepter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_connection_accepter', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -97,7 +133,7 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointConnectionAccepter do
     resource_type: :aws_vpc_endpoint_connection_accepter,
     method: :aws_vpc_endpoint_connection_accepter,
     required_attrs: { vpc_endpoint_id: 'test-value', vpc_endpoint_service_id: 'test-value' },
-    expected_outputs: [:id, :vpc_endpoint_state],
+    expected_outputs: [:id, :region, :vpc_endpoint_state],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_route53_resolver_query_log_config_association,
       attributes_class: AWS::Types::Route53ResolverQueryLogConfigAssociationAttributes,
       outputs: { id: :id },
-      map: [:resolver_query_log_config_id, :resource_id]
+      map: [:resolver_query_log_config_id, :resource_id],
+      map_present: [:region]
   end
   module AWS
     include AWSRoute53ResolverQueryLogConfigAssociation

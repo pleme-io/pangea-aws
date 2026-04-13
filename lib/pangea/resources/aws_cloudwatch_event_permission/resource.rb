@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchEventPermissionAttributes,
       outputs: { id: :id },
       map: [:principal, :statement_id],
-      map_present: [:action, :condition, :event_bus_name]
+      map_present: [:action, :condition, :event_bus_name, :region]
   end
   module AWS
     include AWSCloudwatchEventPermission

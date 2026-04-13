@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSApiGatewayMethodSettings do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { method_path: 'test-value', rest_api_id: 'test-value', settings: [{ 'key1' => 'val1' }], stage_name: 'test-value' } }
+  let(:required_attrs) { { method_path: 'test-value', rest_api_id: 'test-value', settings: { 'key1' => 'val1' }, stage_name: 'test-value' } }
 
   describe ':aws_api_gateway_method_settings' do
     context 'with required attributes only' do
@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSApiGatewayMethodSettings do
         ref = synth.aws_api_gateway_method_settings('test', required_attrs)
 
         expect(ref.id).to eq("${aws_api_gateway_method_settings.test.id}")
+        expect(ref.region).to eq("${aws_api_gateway_method_settings.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_method_settings('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_api_gateway_method_settings', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_method_settings('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_api_gateway_method_settings', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_method_settings('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_method_settings', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_method_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_method_settings', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -51,7 +98,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayMethodSettings do
         config = validate_resource_structure(result, 'aws_api_gateway_method_settings', 'typed')
         expect(config['method_path']).to be_a(String)
         expect(config['rest_api_id']).to be_a(String)
-        expect(config['settings']).to be_a(Array)
+        expect(config['settings']).to be_a(Hash)
         expect(config['stage_name']).to be_a(String)
       end
     end
@@ -85,8 +132,8 @@ RSpec.describe Pangea::Resources::AWSApiGatewayMethodSettings do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_api_gateway_method_settings,
     method: :aws_api_gateway_method_settings,
-    required_attrs: { method_path: 'test-value', rest_api_id: 'test-value', settings: [{ 'key1' => 'val1' }], stage_name: 'test-value' },
-    expected_outputs: [:id],
+    required_attrs: { method_path: 'test-value', rest_api_id: 'test-value', settings: { 'key1' => 'val1' }, stage_name: 'test-value' },
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

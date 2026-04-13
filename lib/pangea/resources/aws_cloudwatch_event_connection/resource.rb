@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchEventConnectionAttributes,
       outputs: { id: :id },
       map: [:auth_parameters, :authorization_type, :name],
-      map_present: [:description, :invocation_connectivity_parameters, :kms_key_identifier]
+      map_present: [:description, :invocation_connectivity_parameters, :kms_key_identifier, :region]
   end
   module AWS
     include AWSCloudwatchEventConnection

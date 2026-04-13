@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::XrayEncryptionConfigAttributes,
       outputs: { id: :id },
       map: [:type],
-      map_present: [:key_id]
+      map_present: [:key_id, :region]
   end
   module AWS
     include AWSXrayEncryptionConfig

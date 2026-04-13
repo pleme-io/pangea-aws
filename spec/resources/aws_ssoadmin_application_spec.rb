@@ -40,6 +40,8 @@ RSpec.describe Pangea::Resources::AWSSsoadminApplication do
         expect(ref.id).to eq("${aws_ssoadmin_application.test.id}")
         expect(ref.application_account).to eq("${aws_ssoadmin_application.test.application_account}")
         expect(ref.application_arn).to eq("${aws_ssoadmin_application.test.application_arn}")
+        expect(ref.arn).to eq("${aws_ssoadmin_application.test.arn}")
+        expect(ref.region).to eq("${aws_ssoadmin_application.test.region}")
         expect(ref.status).to eq("${aws_ssoadmin_application.test.status}")
         expect(ref.tags_all).to eq("${aws_ssoadmin_application.test.tags_all}")
       end
@@ -55,13 +57,15 @@ RSpec.describe Pangea::Resources::AWSSsoadminApplication do
         config = validate_resource_structure(result, 'aws_ssoadmin_application', 'test')
         expect(config).not_to have_key('application_account')
         expect(config).not_to have_key('application_arn')
+        expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ client_token: 'test-value', description: 'test-value', portal_options: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ client_token: 'test-value', description: 'test-value', portal_options: [{ 'key1' => 'val1' }], region: 'test-value', status: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,6 +77,8 @@ RSpec.describe Pangea::Resources::AWSSsoadminApplication do
         expect(config).to have_key('client_token')
         expect(config).to have_key('description')
         expect(config).to have_key('portal_options')
+        expect(config).to have_key('region')
+        expect(config).to have_key('status')
         expect(config).to have_key('tags')
       end
     end
@@ -128,6 +134,40 @@ RSpec.describe Pangea::Resources::AWSSsoadminApplication do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssoadmin_application', 'minimal')
         expect(config).not_to have_key('portal_options')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_application('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_application', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_application', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_application('opt', required_attrs.merge(status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_application', 'opt')
+        expect(config).to have_key('status')
+      end
+
+      it 'omits status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_application', 'minimal')
+        expect(config).not_to have_key('status')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -192,7 +232,7 @@ RSpec.describe Pangea::Resources::AWSSsoadminApplication do
     resource_type: :aws_ssoadmin_application,
     method: :aws_ssoadmin_application,
     required_attrs: { application_provider_arn: 'test-value', instance_arn: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :application_account, :application_arn, :status, :tags_all],
+    expected_outputs: [:id, :application_account, :application_arn, :arn, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

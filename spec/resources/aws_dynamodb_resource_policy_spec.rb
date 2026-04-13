@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDynamodbResourcePolicy do
 
         expect(ref.id).to eq("${aws_dynamodb_resource_policy.test.id}")
         expect(ref.confirm_remove_self_resource_access).to eq("${aws_dynamodb_resource_policy.test.confirm_remove_self_resource_access}")
+        expect(ref.region).to eq("${aws_dynamodb_resource_policy.test.region}")
         expect(ref.revision_id).to eq("${aws_dynamodb_resource_policy.test.revision_id}")
       end
     end
@@ -52,7 +53,74 @@ RSpec.describe Pangea::Resources::AWSDynamodbResourcePolicy do
 
         config = validate_resource_structure(result, 'aws_dynamodb_resource_policy', 'test')
         expect(config).not_to have_key('confirm_remove_self_resource_access')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('revision_id')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ confirm_remove_self_resource_access: true, region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_resource_policy('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_dynamodb_resource_policy', 'full')
+        expect(config).to have_key('confirm_remove_self_resource_access')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes confirm_remove_self_resource_access when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_resource_policy('opt', required_attrs.merge(confirm_remove_self_resource_access: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_resource_policy', 'opt')
+        expect(config).to have_key('confirm_remove_self_resource_access')
+      end
+
+      it 'omits confirm_remove_self_resource_access when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_resource_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_resource_policy', 'minimal')
+        expect(config).not_to have_key('confirm_remove_self_resource_access')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_resource_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_resource_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dynamodb_resource_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dynamodb_resource_policy', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts confirm_remove_self_resource_access=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(confirm_remove_self_resource_access: val)
+          synth.aws_dynamodb_resource_policy("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_dynamodb_resource_policy', "bool_#{val}")
+          expect(config['confirm_remove_self_resource_access']).to eq(val)
+        end
       end
     end
 
@@ -99,8 +167,8 @@ RSpec.describe Pangea::Resources::AWSDynamodbResourcePolicy do
     resource_type: :aws_dynamodb_resource_policy,
     method: :aws_dynamodb_resource_policy,
     required_attrs: { policy: 'test-value', resource_arn: 'test-value' },
-    expected_outputs: [:id, :confirm_remove_self_resource_access, :revision_id],
+    expected_outputs: [:id, :confirm_remove_self_resource_access, :region, :revision_id],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:confirm_remove_self_resource_access]
 end

@@ -56,6 +56,69 @@ RSpec.describe Pangea::Resources::AWSCostoptimizationhubPreferences do
       end
     end
 
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ member_account_discount_visibility: 'test-value', savings_estimation_mode: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_costoptimizationhub_preferences('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_costoptimizationhub_preferences', 'full')
+        expect(config).to have_key('member_account_discount_visibility')
+        expect(config).to have_key('savings_estimation_mode')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes member_account_discount_visibility when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_costoptimizationhub_preferences('opt', required_attrs.merge(member_account_discount_visibility: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_costoptimizationhub_preferences', 'opt')
+        expect(config).to have_key('member_account_discount_visibility')
+      end
+
+      it 'omits member_account_discount_visibility when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_costoptimizationhub_preferences('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_costoptimizationhub_preferences', 'minimal')
+        expect(config).not_to have_key('member_account_discount_visibility')
+      end
+      it 'includes savings_estimation_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_costoptimizationhub_preferences('opt', required_attrs.merge(savings_estimation_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_costoptimizationhub_preferences', 'opt')
+        expect(config).to have_key('savings_estimation_mode')
+      end
+
+      it 'omits savings_estimation_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_costoptimizationhub_preferences('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_costoptimizationhub_preferences', 'minimal')
+        expect(config).not_to have_key('savings_estimation_mode')
+      end
+    end
+
+    context 'attribute types' do
+      it 'validates expected attribute types' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_costoptimizationhub_preferences('typed', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_costoptimizationhub_preferences', 'typed')
+      end
+    end
+
     context 'multiple instances' do
       it 'synthesizes multiple resources independently' do
         synth = create_synthesizer

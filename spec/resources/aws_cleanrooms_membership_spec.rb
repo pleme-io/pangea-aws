@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSCleanroomsMembership do
         expect(ref.collaboration_name).to eq("${aws_cleanrooms_membership.test.collaboration_name}")
         expect(ref.create_time).to eq("${aws_cleanrooms_membership.test.create_time}")
         expect(ref.member_abilities).to eq("${aws_cleanrooms_membership.test.member_abilities}")
+        expect(ref.region).to eq("${aws_cleanrooms_membership.test.region}")
         expect(ref.status).to eq("${aws_cleanrooms_membership.test.status}")
         expect(ref.tags_all).to eq("${aws_cleanrooms_membership.test.tags_all}")
         expect(ref.update_time).to eq("${aws_cleanrooms_membership.test.update_time}")
@@ -66,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSCleanroomsMembership do
         expect(config).not_to have_key('collaboration_name')
         expect(config).not_to have_key('create_time')
         expect(config).not_to have_key('member_abilities')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('update_time')
@@ -73,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSCleanroomsMembership do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ default_result_configuration: [{ 'key1' => 'val1' }], payment_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ default_result_configuration: [{ 'key1' => 'val1' }], payment_configuration: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -84,6 +86,7 @@ RSpec.describe Pangea::Resources::AWSCleanroomsMembership do
         config = validate_resource_structure(result, 'aws_cleanrooms_membership', 'full')
         expect(config).to have_key('default_result_configuration')
         expect(config).to have_key('payment_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
@@ -122,6 +125,23 @@ RSpec.describe Pangea::Resources::AWSCleanroomsMembership do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cleanrooms_membership', 'minimal')
         expect(config).not_to have_key('payment_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cleanrooms_membership('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cleanrooms_membership', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cleanrooms_membership('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cleanrooms_membership', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -185,7 +205,7 @@ RSpec.describe Pangea::Resources::AWSCleanroomsMembership do
     resource_type: :aws_cleanrooms_membership,
     method: :aws_cleanrooms_membership,
     required_attrs: { collaboration_id: 'test-value', query_log_status: 'test-value' },
-    expected_outputs: [:id, :arn, :collaboration_arn, :collaboration_creator_account_id, :collaboration_creator_display_name, :collaboration_name, :create_time, :member_abilities, :status, :tags_all, :update_time],
+    expected_outputs: [:id, :arn, :collaboration_arn, :collaboration_creator_account_id, :collaboration_creator_display_name, :collaboration_name, :create_time, :member_abilities, :region, :status, :tags_all, :update_time],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

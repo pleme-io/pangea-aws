@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcIpv4CidrBlockAssociationAttributes,
       outputs: { id: :id },
       map: [:vpc_id],
-      map_present: [:cidr_block, :ipv4_ipam_pool_id, :ipv4_netmask_length]
+      map_present: [:cidr_block, :ipv4_ipam_pool_id, :ipv4_netmask_length, :region]
   end
   module AWS
     include AWSVpcIpv4CidrBlockAssociation

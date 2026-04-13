@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KendraIndexAttributes,
       outputs: { id: :id },
       map: [:name, :role_arn],
-      map_present: [:capacity_units, :description, :document_metadata_configuration_updates, :edition, :server_side_encryption_configuration, :tags, :tags_all, :user_context_policy, :user_group_resolution_configuration, :user_token_configurations]
+      map_present: [:capacity_units, :description, :document_metadata_configuration_updates, :edition, :region, :server_side_encryption_configuration, :tags, :tags_all, :user_context_policy, :user_group_resolution_configuration, :user_token_configurations]
   end
   module AWS
     include AWSKendraIndex

@@ -1,0 +1,8 @@
+name: aws_notificationscontacts_email_contact
+title: Manages a aws_notificationscontacts_email_contact resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

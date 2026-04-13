@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppsyncGraphqlApiAttributes,
       outputs: { id: :id },
       map: [:authentication_type, :name],
-      map_present: [:additional_authentication_provider, :api_type, :enhanced_metrics_config, :introspection_config, :lambda_authorizer_config, :log_config, :merged_api_execution_role_arn, :openid_connect_config, :query_depth_limit, :resolver_count_limit, :schema, :tags, :tags_all, :user_pool_config, :visibility],
+      map_present: [:additional_authentication_provider, :api_type, :enhanced_metrics_config, :introspection_config, :lambda_authorizer_config, :log_config, :merged_api_execution_role_arn, :openid_connect_config, :query_depth_limit, :region, :resolver_count_limit, :schema, :tags, :tags_all, :user_pool_config, :visibility],
       map_bool: [:xray_enabled]
   end
   module AWS

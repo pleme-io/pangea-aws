@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRamResourceShare do
         expect(ref.id).to eq("${aws_ram_resource_share.test.id}")
         expect(ref.arn).to eq("${aws_ram_resource_share.test.arn}")
         expect(ref.permission_arns).to eq("${aws_ram_resource_share.test.permission_arns}")
+        expect(ref.region).to eq("${aws_ram_resource_share.test.region}")
         expect(ref.tags_all).to eq("${aws_ram_resource_share.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSRamResourceShare do
         config = validate_resource_structure(result, 'aws_ram_resource_share', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('permission_arns')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allow_external_principals: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ allow_external_principals: true, permission_arns: ['test-value'], region: 'test-value', resource_share_configuration: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +71,11 @@ RSpec.describe Pangea::Resources::AWSRamResourceShare do
 
         config = validate_resource_structure(result, 'aws_ram_resource_share', 'full')
         expect(config).to have_key('allow_external_principals')
+        expect(config).to have_key('permission_arns')
+        expect(config).to have_key('region')
+        expect(config).to have_key('resource_share_configuration')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -91,6 +97,57 @@ RSpec.describe Pangea::Resources::AWSRamResourceShare do
         config = validate_resource_structure(result, 'aws_ram_resource_share', 'minimal')
         expect(config).not_to have_key('allow_external_principals')
       end
+      it 'includes permission_arns when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ram_resource_share('opt', required_attrs.merge(permission_arns: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ram_resource_share', 'opt')
+        expect(config).to have_key('permission_arns')
+      end
+
+      it 'omits permission_arns when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ram_resource_share('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ram_resource_share', 'minimal')
+        expect(config).not_to have_key('permission_arns')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ram_resource_share('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ram_resource_share', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ram_resource_share('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ram_resource_share', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes resource_share_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ram_resource_share('opt', required_attrs.merge(resource_share_configuration: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ram_resource_share', 'opt')
+        expect(config).to have_key('resource_share_configuration')
+      end
+
+      it 'omits resource_share_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ram_resource_share('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ram_resource_share', 'minimal')
+        expect(config).not_to have_key('resource_share_configuration')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -107,6 +164,23 @@ RSpec.describe Pangea::Resources::AWSRamResourceShare do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ram_resource_share', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ram_resource_share('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ram_resource_share', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ram_resource_share('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ram_resource_share', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -166,7 +240,7 @@ RSpec.describe Pangea::Resources::AWSRamResourceShare do
     resource_type: :aws_ram_resource_share,
     method: :aws_ram_resource_share,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :permission_arns, :tags_all],
+    expected_outputs: [:id, :arn, :permission_arns, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:allow_external_principals]

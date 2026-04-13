@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KmsReplicaKeyAttributes,
       outputs: { id: :id },
       map: [:primary_key_arn],
-      map_present: [:deletion_window_in_days, :description, :policy, :tags, :tags_all],
+      map_present: [:deletion_window_in_days, :description, :policy, :region, :tags, :tags_all],
       map_bool: [:bypass_policy_lockout_safety_check, :enabled]
   end
   module AWS

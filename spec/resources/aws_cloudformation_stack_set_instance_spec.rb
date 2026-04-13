@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSetInstance do
         expect(ref.region).to eq("${aws_cloudformation_stack_set_instance.test.region}")
         expect(ref.stack_id).to eq("${aws_cloudformation_stack_set_instance.test.stack_id}")
         expect(ref.stack_instance_summaries).to eq("${aws_cloudformation_stack_set_instance.test.stack_instance_summaries}")
+        expect(ref.stack_set_instance_region).to eq("${aws_cloudformation_stack_set_instance.test.stack_set_instance_region}")
       end
     end
 
@@ -59,11 +60,12 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSetInstance do
         expect(config).not_to have_key('region')
         expect(config).not_to have_key('stack_id')
         expect(config).not_to have_key('stack_instance_summaries')
+        expect(config).not_to have_key('stack_set_instance_region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ call_as: 'test-value', deployment_targets: [{ 'key1' => 'val1' }], operation_preferences: [{ 'key1' => 'val1' }], parameter_overrides: { 'key1' => 'val1' }, retain_stack: true }) }
+      let(:all_attrs) { required_attrs.merge({ account_id: 'test-value', call_as: 'test-value', deployment_targets: { 'key1' => 'val1' }, operation_preferences: { 'key1' => 'val1' }, parameter_overrides: { 'key1' => 'val1' }, region: 'test-value', retain_stack: true, stack_set_instance_region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,15 +74,35 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSetInstance do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudformation_stack_set_instance', 'full')
+        expect(config).to have_key('account_id')
         expect(config).to have_key('call_as')
         expect(config).to have_key('deployment_targets')
         expect(config).to have_key('operation_preferences')
         expect(config).to have_key('parameter_overrides')
+        expect(config).to have_key('region')
         expect(config).to have_key('retain_stack')
+        expect(config).to have_key('stack_set_instance_region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set_instance('opt', required_attrs.merge(account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set_instance', 'opt')
+        expect(config).to have_key('account_id')
+      end
+
+      it 'omits account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set_instance', 'minimal')
+        expect(config).not_to have_key('account_id')
+      end
       it 'includes call_as when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -101,7 +123,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSetInstance do
       it 'includes deployment_targets when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudformation_stack_set_instance('opt', required_attrs.merge(deployment_targets: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudformation_stack_set_instance('opt', required_attrs.merge(deployment_targets: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudformation_stack_set_instance', 'opt')
         expect(config).to have_key('deployment_targets')
@@ -118,7 +140,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSetInstance do
       it 'includes operation_preferences when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudformation_stack_set_instance('opt', required_attrs.merge(operation_preferences: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudformation_stack_set_instance('opt', required_attrs.merge(operation_preferences: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudformation_stack_set_instance', 'opt')
         expect(config).to have_key('operation_preferences')
@@ -149,6 +171,23 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSetInstance do
         config = validate_resource_structure(result, 'aws_cloudformation_stack_set_instance', 'minimal')
         expect(config).not_to have_key('parameter_overrides')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set_instance('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set_instance', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set_instance', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes retain_stack when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -165,6 +204,23 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSetInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudformation_stack_set_instance', 'minimal')
         expect(config).not_to have_key('retain_stack')
+      end
+      it 'includes stack_set_instance_region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set_instance('opt', required_attrs.merge(stack_set_instance_region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set_instance', 'opt')
+        expect(config).to have_key('stack_set_instance_region')
+      end
+
+      it 'omits stack_set_instance_region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_stack_set_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_stack_set_instance', 'minimal')
+        expect(config).not_to have_key('stack_set_instance_region')
       end
     end
 
@@ -224,7 +280,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationStackSetInstance do
     resource_type: :aws_cloudformation_stack_set_instance,
     method: :aws_cloudformation_stack_set_instance,
     required_attrs: { stack_set_name: 'test-value' },
-    expected_outputs: [:id, :account_id, :organizational_unit_id, :region, :stack_id, :stack_instance_summaries],
+    expected_outputs: [:id, :account_id, :organizational_unit_id, :region, :stack_id, :stack_instance_summaries, :stack_set_instance_region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:retain_stack]

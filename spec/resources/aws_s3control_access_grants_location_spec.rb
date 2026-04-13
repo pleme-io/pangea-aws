@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSS3controlAccessGrantsLocation do
         expect(ref.access_grants_location_arn).to eq("${aws_s3control_access_grants_location.test.access_grants_location_arn}")
         expect(ref.access_grants_location_id).to eq("${aws_s3control_access_grants_location.test.access_grants_location_id}")
         expect(ref.account_id).to eq("${aws_s3control_access_grants_location.test.account_id}")
+        expect(ref.region).to eq("${aws_s3control_access_grants_location.test.region}")
         expect(ref.tags_all).to eq("${aws_s3control_access_grants_location.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSS3controlAccessGrantsLocation do
         expect(config).not_to have_key('access_grants_location_arn')
         expect(config).not_to have_key('access_grants_location_id')
         expect(config).not_to have_key('account_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ account_id: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,11 +72,47 @@ RSpec.describe Pangea::Resources::AWSS3controlAccessGrantsLocation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_s3control_access_grants_location', 'full')
+        expect(config).to have_key('account_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_access_grants_location('opt', required_attrs.merge(account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_access_grants_location', 'opt')
+        expect(config).to have_key('account_id')
+      end
+
+      it 'omits account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_access_grants_location('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_access_grants_location', 'minimal')
+        expect(config).not_to have_key('account_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_access_grants_location('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_access_grants_location', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_access_grants_location('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_access_grants_location', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -137,7 +175,7 @@ RSpec.describe Pangea::Resources::AWSS3controlAccessGrantsLocation do
     resource_type: :aws_s3control_access_grants_location,
     method: :aws_s3control_access_grants_location,
     required_attrs: { iam_role_arn: 'test-value', location_scope: 'test-value' },
-    expected_outputs: [:id, :access_grants_location_arn, :access_grants_location_id, :account_id, :tags_all],
+    expected_outputs: [:id, :access_grants_location_arn, :access_grants_location_id, :account_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

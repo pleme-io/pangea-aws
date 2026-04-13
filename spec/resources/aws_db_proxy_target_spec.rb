@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSDbProxyTarget do
         expect(ref.endpoint).to eq("${aws_db_proxy_target.test.endpoint}")
         expect(ref.port).to eq("${aws_db_proxy_target.test.port}")
         expect(ref.rds_resource_id).to eq("${aws_db_proxy_target.test.rds_resource_id}")
+        expect(ref.region).to eq("${aws_db_proxy_target.test.region}")
         expect(ref.target_arn).to eq("${aws_db_proxy_target.test.target_arn}")
         expect(ref.tracked_cluster_id).to eq("${aws_db_proxy_target.test.tracked_cluster_id}")
         expect(ref.type).to eq("${aws_db_proxy_target.test.type}")
@@ -58,6 +59,7 @@ RSpec.describe Pangea::Resources::AWSDbProxyTarget do
         expect(config).not_to have_key('endpoint')
         expect(config).not_to have_key('port')
         expect(config).not_to have_key('rds_resource_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('target_arn')
         expect(config).not_to have_key('tracked_cluster_id')
         expect(config).not_to have_key('type')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSDbProxyTarget do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ db_cluster_identifier: 'test-value', db_instance_identifier: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ db_cluster_identifier: 'test-value', db_instance_identifier: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,6 +78,7 @@ RSpec.describe Pangea::Resources::AWSDbProxyTarget do
         config = validate_resource_structure(result, 'aws_db_proxy_target', 'full')
         expect(config).to have_key('db_cluster_identifier')
         expect(config).to have_key('db_instance_identifier')
+        expect(config).to have_key('region')
       end
     end
 
@@ -113,6 +116,23 @@ RSpec.describe Pangea::Resources::AWSDbProxyTarget do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_proxy_target', 'minimal')
         expect(config).not_to have_key('db_instance_identifier')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy_target('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy_target', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy_target('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy_target', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -159,7 +179,7 @@ RSpec.describe Pangea::Resources::AWSDbProxyTarget do
     resource_type: :aws_db_proxy_target,
     method: :aws_db_proxy_target,
     required_attrs: { db_proxy_name: 'test-value', target_group_name: 'test-value' },
-    expected_outputs: [:id, :endpoint, :port, :rds_resource_id, :target_arn, :tracked_cluster_id, :type],
+    expected_outputs: [:id, :endpoint, :port, :rds_resource_id, :region, :target_arn, :tracked_cluster_id, :type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

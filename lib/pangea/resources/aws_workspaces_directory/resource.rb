@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_workspaces_directory,
       attributes_class: AWS::Types::WorkspacesDirectoryAttributes,
       outputs: { id: :id },
-      map_present: [:active_directory_config, :certificate_based_auth_properties, :directory_id, :ip_group_ids, :saml_properties, :self_service_permissions, :subnet_ids, :tags, :tags_all, :user_identity_type, :workspace_access_properties, :workspace_creation_properties, :workspace_directory_description, :workspace_directory_name, :workspace_type]
+      map_present: [:active_directory_config, :certificate_based_auth_properties, :directory_id, :ip_group_ids, :region, :saml_properties, :self_service_permissions, :subnet_ids, :tags, :tags_all, :tenancy, :user_identity_type, :workspace_access_properties, :workspace_creation_properties, :workspace_directory_description, :workspace_directory_name, :workspace_type]
   end
   module AWS
     include AWSWorkspacesDirectory

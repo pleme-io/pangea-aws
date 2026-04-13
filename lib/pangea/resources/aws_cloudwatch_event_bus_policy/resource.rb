@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchEventBusPolicyAttributes,
       outputs: { id: :id },
       map: [:policy],
-      map_present: [:event_bus_name]
+      map_present: [:event_bus_name, :region]
   end
   module AWS
     include AWSCloudwatchEventBusPolicy

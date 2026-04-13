@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSEc2LocalGatewayRoute do
         ref = synth.aws_ec2_local_gateway_route('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ec2_local_gateway_route.test.id}")
+        expect(ref.region).to eq("${aws_ec2_local_gateway_route.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_local_gateway_route('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ec2_local_gateway_route', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_local_gateway_route('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ec2_local_gateway_route', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_local_gateway_route('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_local_gateway_route', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_local_gateway_route('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_local_gateway_route', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -85,7 +132,7 @@ RSpec.describe Pangea::Resources::AWSEc2LocalGatewayRoute do
     resource_type: :aws_ec2_local_gateway_route,
     method: :aws_ec2_local_gateway_route,
     required_attrs: { destination_cidr_block: 'test-value', local_gateway_route_table_id: 'test-value', local_gateway_virtual_interface_group_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

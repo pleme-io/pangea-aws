@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ssm_default_patch_baseline,
       attributes_class: AWS::Types::SsmDefaultPatchBaselineAttributes,
       outputs: { id: :id },
-      map: [:baseline_id, :operating_system]
+      map: [:baseline_id, :operating_system],
+      map_present: [:region]
   end
   module AWS
     include AWSSsmDefaultPatchBaseline

@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSCodebuildFleet do
         expect(ref.created).to eq("${aws_codebuild_fleet.test.created}")
         expect(ref.last_modified).to eq("${aws_codebuild_fleet.test.last_modified}")
         expect(ref.overflow_behavior).to eq("${aws_codebuild_fleet.test.overflow_behavior}")
+        expect(ref.region).to eq("${aws_codebuild_fleet.test.region}")
         expect(ref.status).to eq("${aws_codebuild_fleet.test.status}")
         expect(ref.tags_all).to eq("${aws_codebuild_fleet.test.tags_all}")
       end
@@ -59,13 +60,14 @@ RSpec.describe Pangea::Resources::AWSCodebuildFleet do
         expect(config).not_to have_key('created')
         expect(config).not_to have_key('last_modified')
         expect(config).not_to have_key('overflow_behavior')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ compute_configuration: [{ 'key1' => 'val1' }], fleet_service_role: 'test-value', image_id: 'test-value', scaling_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, vpc_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ compute_configuration: { 'key1' => 'val1' }, fleet_service_role: 'test-value', image_id: 'test-value', overflow_behavior: 'test-value', region: 'test-value', scaling_configuration: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_config: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,8 +79,11 @@ RSpec.describe Pangea::Resources::AWSCodebuildFleet do
         expect(config).to have_key('compute_configuration')
         expect(config).to have_key('fleet_service_role')
         expect(config).to have_key('image_id')
+        expect(config).to have_key('overflow_behavior')
+        expect(config).to have_key('region')
         expect(config).to have_key('scaling_configuration')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc_config')
       end
     end
@@ -87,7 +92,7 @@ RSpec.describe Pangea::Resources::AWSCodebuildFleet do
       it 'includes compute_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codebuild_fleet('opt', required_attrs.merge(compute_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_codebuild_fleet('opt', required_attrs.merge(compute_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codebuild_fleet', 'opt')
         expect(config).to have_key('compute_configuration')
@@ -135,10 +140,44 @@ RSpec.describe Pangea::Resources::AWSCodebuildFleet do
         config = validate_resource_structure(result, 'aws_codebuild_fleet', 'minimal')
         expect(config).not_to have_key('image_id')
       end
+      it 'includes overflow_behavior when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_fleet('opt', required_attrs.merge(overflow_behavior: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_fleet', 'opt')
+        expect(config).to have_key('overflow_behavior')
+      end
+
+      it 'omits overflow_behavior when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_fleet', 'minimal')
+        expect(config).not_to have_key('overflow_behavior')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_fleet('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_fleet', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_fleet', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes scaling_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codebuild_fleet('opt', required_attrs.merge(scaling_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_codebuild_fleet('opt', required_attrs.merge(scaling_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codebuild_fleet', 'opt')
         expect(config).to have_key('scaling_configuration')
@@ -168,6 +207,23 @@ RSpec.describe Pangea::Resources::AWSCodebuildFleet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codebuild_fleet', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_fleet('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_fleet', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_fleet', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes vpc_config when provided' do
         synth = create_synthesizer
@@ -233,7 +289,7 @@ RSpec.describe Pangea::Resources::AWSCodebuildFleet do
     resource_type: :aws_codebuild_fleet,
     method: :aws_codebuild_fleet,
     required_attrs: { base_capacity: 3.14, compute_type: 'test-value', environment_type: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :created, :last_modified, :overflow_behavior, :status, :tags_all],
+    expected_outputs: [:id, :arn, :created, :last_modified, :overflow_behavior, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

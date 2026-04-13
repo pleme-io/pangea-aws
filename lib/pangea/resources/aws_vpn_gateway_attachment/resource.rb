@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpn_gateway_attachment,
       attributes_class: AWS::Types::VpnGatewayAttachmentAttributes,
       outputs: { id: :id },
-      map: [:vpc_id, :vpn_gateway_id]
+      map: [:vpc_id, :vpn_gateway_id],
+      map_present: [:region]
   end
   module AWS
     include AWSVpnGatewayAttachment

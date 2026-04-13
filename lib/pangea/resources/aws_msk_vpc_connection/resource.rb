@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MskVpcConnectionAttributes,
       outputs: { id: :id },
       map: [:authentication, :client_subnets, :security_groups, :target_cluster_arn, :vpc_id],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSMskVpcConnection

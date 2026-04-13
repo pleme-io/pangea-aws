@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Sesv2ConfigurationSetAttributes,
       outputs: { id: :id },
       map: [:configuration_set_name],
-      map_present: [:delivery_options, :reputation_options, :sending_options, :suppression_options, :tags, :tags_all, :tracking_options, :vdm_options]
+      map_present: [:delivery_options, :region, :reputation_options, :sending_options, :suppression_options, :tags, :tags_all, :tracking_options, :vdm_options]
   end
   module AWS
     include AWSSesv2ConfigurationSet

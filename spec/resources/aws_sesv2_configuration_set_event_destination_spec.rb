@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSetEventDestination do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { configuration_set_name: 'test-value', event_destination: [{ 'key1' => 'val1' }], event_destination_name: 'test-value' } }
+  let(:required_attrs) { { configuration_set_name: 'test-value', event_destination: { 'key1' => 'val1' }, event_destination_name: 'test-value' } }
 
   describe ':aws_sesv2_configuration_set_event_destination' do
     context 'with required attributes only' do
@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSetEventDestination do
         ref = synth.aws_sesv2_configuration_set_event_destination('test', required_attrs)
 
         expect(ref.id).to eq("${aws_sesv2_configuration_set_event_destination.test.id}")
+        expect(ref.region).to eq("${aws_sesv2_configuration_set_event_destination.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_configuration_set_event_destination('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_sesv2_configuration_set_event_destination', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_configuration_set_event_destination('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_sesv2_configuration_set_event_destination', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_configuration_set_event_destination('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_configuration_set_event_destination', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sesv2_configuration_set_event_destination('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sesv2_configuration_set_event_destination', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -50,7 +97,7 @@ RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSetEventDestination do
 
         config = validate_resource_structure(result, 'aws_sesv2_configuration_set_event_destination', 'typed')
         expect(config['configuration_set_name']).to be_a(String)
-        expect(config['event_destination']).to be_a(Array)
+        expect(config['event_destination']).to be_a(Hash)
         expect(config['event_destination_name']).to be_a(String)
       end
     end
@@ -84,8 +131,8 @@ RSpec.describe Pangea::Resources::AWSSesv2ConfigurationSetEventDestination do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_sesv2_configuration_set_event_destination,
     method: :aws_sesv2_configuration_set_event_destination,
-    required_attrs: { configuration_set_name: 'test-value', event_destination: [{ 'key1' => 'val1' }], event_destination_name: 'test-value' },
-    expected_outputs: [:id],
+    required_attrs: { configuration_set_name: 'test-value', event_destination: { 'key1' => 'val1' }, event_destination_name: 'test-value' },
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

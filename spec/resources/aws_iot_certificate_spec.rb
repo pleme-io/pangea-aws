@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSIotCertificate do
         expect(ref.certificate_pem).to eq("${aws_iot_certificate.test.certificate_pem}")
         expect(ref.private_key).to eq("${aws_iot_certificate.test.private_key}")
         expect(ref.public_key).to eq("${aws_iot_certificate.test.public_key}")
+        expect(ref.region).to eq("${aws_iot_certificate.test.region}")
       end
     end
 
@@ -59,11 +60,12 @@ RSpec.describe Pangea::Resources::AWSIotCertificate do
         expect(config).not_to have_key('certificate_pem')
         expect(config).not_to have_key('private_key')
         expect(config).not_to have_key('public_key')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ ca_pem: 'test-value', csr: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ ca_pem: 'test-value', certificate_pem: 'test-value', csr: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,9 @@ RSpec.describe Pangea::Resources::AWSIotCertificate do
 
         config = validate_resource_structure(result, 'aws_iot_certificate', 'full')
         expect(config).to have_key('ca_pem')
+        expect(config).to have_key('certificate_pem')
         expect(config).to have_key('csr')
+        expect(config).to have_key('region')
       end
     end
 
@@ -95,6 +99,23 @@ RSpec.describe Pangea::Resources::AWSIotCertificate do
         config = validate_resource_structure(result, 'aws_iot_certificate', 'minimal')
         expect(config).not_to have_key('ca_pem')
       end
+      it 'includes certificate_pem when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_certificate('opt', required_attrs.merge(certificate_pem: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_certificate', 'opt')
+        expect(config).to have_key('certificate_pem')
+      end
+
+      it 'omits certificate_pem when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_certificate', 'minimal')
+        expect(config).not_to have_key('certificate_pem')
+      end
       it 'includes csr when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -111,6 +132,23 @@ RSpec.describe Pangea::Resources::AWSIotCertificate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_certificate', 'minimal')
         expect(config).not_to have_key('csr')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_certificate('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_certificate', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_certificate', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -180,7 +218,7 @@ RSpec.describe Pangea::Resources::AWSIotCertificate do
     resource_type: :aws_iot_certificate,
     method: :aws_iot_certificate,
     required_attrs: { active: true },
-    expected_outputs: [:id, :arn, :ca_certificate_id, :certificate_pem, :private_key, :public_key],
+    expected_outputs: [:id, :arn, :ca_certificate_id, :certificate_pem, :private_key, :public_key, :region],
     sensitive_fields: [:ca_pem, :certificate_pem, :private_key, :public_key],
     immutable_fields: [],
     boolean_fields: [:active]

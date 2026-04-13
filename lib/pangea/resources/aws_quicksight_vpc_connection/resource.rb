@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightVpcConnectionAttributes,
       outputs: { id: :id },
       map: [:name, :role_arn, :security_group_ids, :subnet_ids, :vpc_connection_id],
-      map_present: [:aws_account_id, :dns_resolvers, :tags]
+      map_present: [:aws_account_id, :dns_resolvers, :region, :tags]
   end
   module AWS
     include AWSQuicksightVpcConnection

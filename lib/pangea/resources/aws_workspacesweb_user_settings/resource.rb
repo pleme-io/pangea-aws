@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WorkspaceswebUserSettingsAttributes,
       outputs: { id: :id },
       map: [:copy_allowed, :download_allowed, :paste_allowed, :print_allowed, :upload_allowed],
-      map_present: [:additional_encryption_context, :cookie_synchronization_configuration, :customer_managed_key, :deep_link_allowed, :disconnect_timeout_in_minutes, :idle_disconnect_timeout_in_minutes, :tags, :toolbar_configuration]
+      map_present: [:additional_encryption_context, :cookie_synchronization_configuration, :customer_managed_key, :deep_link_allowed, :disconnect_timeout_in_minutes, :idle_disconnect_timeout_in_minutes, :region, :tags, :toolbar_configuration]
   end
   module AWS
     include AWSWorkspaceswebUserSettings

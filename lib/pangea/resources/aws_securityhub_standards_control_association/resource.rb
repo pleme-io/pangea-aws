@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SecurityhubStandardsControlAssociationAttributes,
       outputs: { id: :id },
       map: [:association_status, :security_control_id, :standards_arn],
-      map_present: [:updated_reason]
+      map_present: [:region, :updated_reason]
   end
   module AWS
     include AWSSecurityhubStandardsControlAssociation

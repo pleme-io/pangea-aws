@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSLightsailLbCertificate do
         expect(ref.created_at).to eq("${aws_lightsail_lb_certificate.test.created_at}")
         expect(ref.domain_name).to eq("${aws_lightsail_lb_certificate.test.domain_name}")
         expect(ref.domain_validation_records).to eq("${aws_lightsail_lb_certificate.test.domain_validation_records}")
+        expect(ref.region).to eq("${aws_lightsail_lb_certificate.test.region}")
         expect(ref.subject_alternative_names).to eq("${aws_lightsail_lb_certificate.test.subject_alternative_names}")
         expect(ref.support_code).to eq("${aws_lightsail_lb_certificate.test.support_code}")
       end
@@ -59,8 +60,79 @@ RSpec.describe Pangea::Resources::AWSLightsailLbCertificate do
         expect(config).not_to have_key('created_at')
         expect(config).not_to have_key('domain_name')
         expect(config).not_to have_key('domain_validation_records')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('subject_alternative_names')
         expect(config).not_to have_key('support_code')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ domain_name: 'test-value', region: 'test-value', subject_alternative_names: ['test-value'] }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb_certificate('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_lightsail_lb_certificate', 'full')
+        expect(config).to have_key('domain_name')
+        expect(config).to have_key('region')
+        expect(config).to have_key('subject_alternative_names')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes domain_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb_certificate('opt', required_attrs.merge(domain_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_lb_certificate', 'opt')
+        expect(config).to have_key('domain_name')
+      end
+
+      it 'omits domain_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_lb_certificate', 'minimal')
+        expect(config).not_to have_key('domain_name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb_certificate('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_lb_certificate', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_lb_certificate', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes subject_alternative_names when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb_certificate('opt', required_attrs.merge(subject_alternative_names: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_lb_certificate', 'opt')
+        expect(config).to have_key('subject_alternative_names')
+      end
+
+      it 'omits subject_alternative_names when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_lb_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_lb_certificate', 'minimal')
+        expect(config).not_to have_key('subject_alternative_names')
       end
     end
 
@@ -107,7 +179,7 @@ RSpec.describe Pangea::Resources::AWSLightsailLbCertificate do
     resource_type: :aws_lightsail_lb_certificate,
     method: :aws_lightsail_lb_certificate,
     required_attrs: { lb_name: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :created_at, :domain_name, :domain_validation_records, :subject_alternative_names, :support_code],
+    expected_outputs: [:id, :arn, :created_at, :domain_name, :domain_validation_records, :region, :subject_alternative_names, :support_code],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

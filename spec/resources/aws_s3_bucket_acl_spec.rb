@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSS3BucketAcl do
         ref = synth.aws_s3_bucket_acl('test', required_attrs)
 
         expect(ref.id).to eq("${aws_s3_bucket_acl.test.id}")
+        expect(ref.region).to eq("${aws_s3_bucket_acl.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_acl('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_s3_bucket_acl', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_control_policy: [{ 'key1' => 'val1' }], acl: 'test-value', expected_bucket_owner: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ access_control_policy: { 'key1' => 'val1' }, acl: 'test-value', expected_bucket_owner: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -54,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketAcl do
         expect(config).to have_key('access_control_policy')
         expect(config).to have_key('acl')
         expect(config).to have_key('expected_bucket_owner')
+        expect(config).to have_key('region')
       end
     end
 
@@ -61,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketAcl do
       it 'includes access_control_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket_acl('opt', required_attrs.merge(access_control_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket_acl('opt', required_attrs.merge(access_control_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_acl', 'opt')
         expect(config).to have_key('access_control_policy')
@@ -109,6 +123,23 @@ RSpec.describe Pangea::Resources::AWSS3BucketAcl do
         config = validate_resource_structure(result, 'aws_s3_bucket_acl', 'minimal')
         expect(config).not_to have_key('expected_bucket_owner')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_acl('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_acl', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_acl('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_acl', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'attribute types' do
@@ -153,7 +184,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketAcl do
     resource_type: :aws_s3_bucket_acl,
     method: :aws_s3_bucket_acl,
     required_attrs: { bucket: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

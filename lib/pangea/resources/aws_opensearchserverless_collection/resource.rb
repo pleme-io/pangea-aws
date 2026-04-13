@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OpensearchserverlessCollectionAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:description, :standby_replicas, :tags, :type]
+      map_present: [:collection_group_name, :description, :encryption_config, :region, :standby_replicas, :tags, :type]
   end
   module AWS
     include AWSOpensearchserverlessCollection

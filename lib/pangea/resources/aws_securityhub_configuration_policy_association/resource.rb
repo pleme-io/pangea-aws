@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_securityhub_configuration_policy_association,
       attributes_class: AWS::Types::SecurityhubConfigurationPolicyAssociationAttributes,
       outputs: { id: :id },
-      map: [:policy_id, :target_id]
+      map: [:policy_id, :target_id],
+      map_present: [:region]
   end
   module AWS
     include AWSSecurityhubConfigurationPolicyAssociation

@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSPinpointGcmChannel do
         ref = synth.aws_pinpoint_gcm_channel('test', required_attrs)
 
         expect(ref.id).to eq("${aws_pinpoint_gcm_channel.test.id}")
+        expect(ref.region).to eq("${aws_pinpoint_gcm_channel.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpoint_gcm_channel('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_pinpoint_gcm_channel', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ api_key: 'test-value', default_authentication_method: 'test-value', enabled: true, service_json: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ api_key: 'test-value', default_authentication_method: 'test-value', enabled: true, region: 'test-value', service_json: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -54,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSPinpointGcmChannel do
         expect(config).to have_key('api_key')
         expect(config).to have_key('default_authentication_method')
         expect(config).to have_key('enabled')
+        expect(config).to have_key('region')
         expect(config).to have_key('service_json')
       end
     end
@@ -109,6 +123,23 @@ RSpec.describe Pangea::Resources::AWSPinpointGcmChannel do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_pinpoint_gcm_channel', 'minimal')
         expect(config).not_to have_key('enabled')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpoint_gcm_channel('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpoint_gcm_channel', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpoint_gcm_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpoint_gcm_channel', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes service_json when provided' do
         synth = create_synthesizer
@@ -193,7 +224,7 @@ RSpec.describe Pangea::Resources::AWSPinpointGcmChannel do
     resource_type: :aws_pinpoint_gcm_channel,
     method: :aws_pinpoint_gcm_channel,
     required_attrs: { application_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [:api_key, :service_json],
     immutable_fields: [],
     boolean_fields: [:enabled]

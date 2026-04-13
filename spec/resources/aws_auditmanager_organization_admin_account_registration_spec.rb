@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerOrganizationAdminAccountRegistr
 
         expect(ref.id).to eq("${aws_auditmanager_organization_admin_account_registration.test.id}")
         expect(ref.organization_id).to eq("${aws_auditmanager_organization_admin_account_registration.test.organization_id}")
+        expect(ref.region).to eq("${aws_auditmanager_organization_admin_account_registration.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerOrganizationAdminAccountRegistr
 
         config = validate_resource_structure(result, 'aws_auditmanager_organization_admin_account_registration', 'test')
         expect(config).not_to have_key('organization_id')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_organization_admin_account_registration('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_auditmanager_organization_admin_account_registration', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_organization_admin_account_registration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_organization_admin_account_registration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_auditmanager_organization_admin_account_registration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_auditmanager_organization_admin_account_registration', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -96,7 +132,7 @@ RSpec.describe Pangea::Resources::AWSAuditmanagerOrganizationAdminAccountRegistr
     resource_type: :aws_auditmanager_organization_admin_account_registration,
     method: :aws_auditmanager_organization_admin_account_registration,
     required_attrs: { admin_account_id: 'test-value' },
-    expected_outputs: [:id, :organization_id],
+    expected_outputs: [:id, :organization_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::EksFargateProfileAttributes,
       outputs: { id: :id },
       map: [:cluster_name, :fargate_profile_name, :pod_execution_role_arn, :selector],
-      map_present: [:subnet_ids, :tags, :tags_all]
+      map_present: [:region, :subnet_ids, :tags, :tags_all]
   end
   module AWS
     include AWSEksFargateProfile

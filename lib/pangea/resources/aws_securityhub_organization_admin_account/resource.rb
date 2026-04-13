@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_securityhub_organization_admin_account,
       attributes_class: AWS::Types::SecurityhubOrganizationAdminAccountAttributes,
       outputs: { id: :id },
-      map: [:admin_account_id]
+      map: [:admin_account_id],
+      map_present: [:region]
   end
   module AWS
     include AWSSecurityhubOrganizationAdminAccount

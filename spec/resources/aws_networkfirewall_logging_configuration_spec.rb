@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSNetworkfirewallLoggingConfiguration do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { firewall_arn: 'test-value', logging_configuration: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { firewall_arn: 'test-value', logging_configuration: { 'key1' => 'val1' } } }
 
   describe ':aws_networkfirewall_logging_configuration' do
     context 'with required attributes only' do
@@ -38,6 +38,87 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallLoggingConfiguration do
         ref = synth.aws_networkfirewall_logging_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_networkfirewall_logging_configuration.test.id}")
+        expect(ref.enable_monitoring_dashboard).to eq("${aws_networkfirewall_logging_configuration.test.enable_monitoring_dashboard}")
+        expect(ref.region).to eq("${aws_networkfirewall_logging_configuration.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_logging_configuration('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_networkfirewall_logging_configuration', 'test')
+        expect(config).not_to have_key('enable_monitoring_dashboard')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ enable_monitoring_dashboard: true, region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_logging_configuration('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_networkfirewall_logging_configuration', 'full')
+        expect(config).to have_key('enable_monitoring_dashboard')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes enable_monitoring_dashboard when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_logging_configuration('opt', required_attrs.merge(enable_monitoring_dashboard: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_logging_configuration', 'opt')
+        expect(config).to have_key('enable_monitoring_dashboard')
+      end
+
+      it 'omits enable_monitoring_dashboard when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_logging_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_logging_configuration', 'minimal')
+        expect(config).not_to have_key('enable_monitoring_dashboard')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_logging_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_logging_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkfirewall_logging_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkfirewall_logging_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts enable_monitoring_dashboard=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enable_monitoring_dashboard: val)
+          synth.aws_networkfirewall_logging_configuration("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_networkfirewall_logging_configuration', "bool_#{val}")
+          expect(config['enable_monitoring_dashboard']).to eq(val)
+        end
       end
     end
 
@@ -50,7 +131,7 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallLoggingConfiguration do
 
         config = validate_resource_structure(result, 'aws_networkfirewall_logging_configuration', 'typed')
         expect(config['firewall_arn']).to be_a(String)
-        expect(config['logging_configuration']).to be_a(Array)
+        expect(config['logging_configuration']).to be_a(Hash)
       end
     end
 
@@ -83,9 +164,9 @@ RSpec.describe Pangea::Resources::AWSNetworkfirewallLoggingConfiguration do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_networkfirewall_logging_configuration,
     method: :aws_networkfirewall_logging_configuration,
-    required_attrs: { firewall_arn: 'test-value', logging_configuration: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id],
+    required_attrs: { firewall_arn: 'test-value', logging_configuration: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :enable_monitoring_dashboard, :region],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:enable_monitoring_dashboard]
 end

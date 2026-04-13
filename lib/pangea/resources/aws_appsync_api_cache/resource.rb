@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppsyncApiCacheAttributes,
       outputs: { id: :id },
       map: [:api_caching_behavior, :api_id, :ttl, :type],
+      map_present: [:region],
       map_bool: [:at_rest_encryption_enabled, :transit_encryption_enabled]
   end
   module AWS

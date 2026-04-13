@@ -47,6 +47,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapFileSystem do
         expect(ref.kms_key_id).to eq("${aws_fsx_ontap_file_system.test.kms_key_id}")
         expect(ref.network_interface_ids).to eq("${aws_fsx_ontap_file_system.test.network_interface_ids}")
         expect(ref.owner_id).to eq("${aws_fsx_ontap_file_system.test.owner_id}")
+        expect(ref.region).to eq("${aws_fsx_ontap_file_system.test.region}")
         expect(ref.route_table_ids).to eq("${aws_fsx_ontap_file_system.test.route_table_ids}")
         expect(ref.tags_all).to eq("${aws_fsx_ontap_file_system.test.tags_all}")
         expect(ref.throughput_capacity).to eq("${aws_fsx_ontap_file_system.test.throughput_capacity}")
@@ -73,6 +74,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapFileSystem do
         expect(config).not_to have_key('kms_key_id')
         expect(config).not_to have_key('network_interface_ids')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('route_table_ids')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('throughput_capacity')
@@ -83,7 +85,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapFileSystem do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ automatic_backup_retention_days: 3.14, disk_iops_configuration: [{ 'key1' => 'val1' }], fsx_admin_password: 'test-value', security_group_ids: ['test-value'], storage_type: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ automatic_backup_retention_days: 3.14, daily_automatic_backup_start_time: 'test-value', disk_iops_configuration: { 'key1' => 'val1' }, endpoint_ip_address_range: 'test-value', fsx_admin_password: 'test-value', ha_pairs: 3.14, kms_key_id: 'test-value', region: 'test-value', route_table_ids: ['test-value'], security_group_ids: ['test-value'], storage_type: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, throughput_capacity: 3.14, throughput_capacity_per_ha_pair: 3.14, weekly_maintenance_start_time: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -93,11 +95,21 @@ RSpec.describe Pangea::Resources::AWSFsxOntapFileSystem do
 
         config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'full')
         expect(config).to have_key('automatic_backup_retention_days')
+        expect(config).to have_key('daily_automatic_backup_start_time')
         expect(config).to have_key('disk_iops_configuration')
+        expect(config).to have_key('endpoint_ip_address_range')
         expect(config).to have_key('fsx_admin_password')
+        expect(config).to have_key('ha_pairs')
+        expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('region')
+        expect(config).to have_key('route_table_ids')
         expect(config).to have_key('security_group_ids')
         expect(config).to have_key('storage_type')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('throughput_capacity')
+        expect(config).to have_key('throughput_capacity_per_ha_pair')
+        expect(config).to have_key('weekly_maintenance_start_time')
       end
     end
 
@@ -119,10 +131,27 @@ RSpec.describe Pangea::Resources::AWSFsxOntapFileSystem do
         config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
         expect(config).not_to have_key('automatic_backup_retention_days')
       end
+      it 'includes daily_automatic_backup_start_time when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('opt', required_attrs.merge(daily_automatic_backup_start_time: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'opt')
+        expect(config).to have_key('daily_automatic_backup_start_time')
+      end
+
+      it 'omits daily_automatic_backup_start_time when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
+        expect(config).not_to have_key('daily_automatic_backup_start_time')
+      end
       it 'includes disk_iops_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_ontap_file_system('opt', required_attrs.merge(disk_iops_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_ontap_file_system('opt', required_attrs.merge(disk_iops_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'opt')
         expect(config).to have_key('disk_iops_configuration')
@@ -135,6 +164,23 @@ RSpec.describe Pangea::Resources::AWSFsxOntapFileSystem do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
         expect(config).not_to have_key('disk_iops_configuration')
+      end
+      it 'includes endpoint_ip_address_range when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('opt', required_attrs.merge(endpoint_ip_address_range: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'opt')
+        expect(config).to have_key('endpoint_ip_address_range')
+      end
+
+      it 'omits endpoint_ip_address_range when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
+        expect(config).not_to have_key('endpoint_ip_address_range')
       end
       it 'includes fsx_admin_password when provided' do
         synth = create_synthesizer
@@ -152,6 +198,74 @@ RSpec.describe Pangea::Resources::AWSFsxOntapFileSystem do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
         expect(config).not_to have_key('fsx_admin_password')
+      end
+      it 'includes ha_pairs when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('opt', required_attrs.merge(ha_pairs: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'opt')
+        expect(config).to have_key('ha_pairs')
+      end
+
+      it 'omits ha_pairs when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
+        expect(config).not_to have_key('ha_pairs')
+      end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes route_table_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('opt', required_attrs.merge(route_table_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'opt')
+        expect(config).to have_key('route_table_ids')
+      end
+
+      it 'omits route_table_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
+        expect(config).not_to have_key('route_table_ids')
       end
       it 'includes security_group_ids when provided' do
         synth = create_synthesizer
@@ -203,6 +317,74 @@ RSpec.describe Pangea::Resources::AWSFsxOntapFileSystem do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes throughput_capacity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('opt', required_attrs.merge(throughput_capacity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'opt')
+        expect(config).to have_key('throughput_capacity')
+      end
+
+      it 'omits throughput_capacity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
+        expect(config).not_to have_key('throughput_capacity')
+      end
+      it 'includes throughput_capacity_per_ha_pair when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('opt', required_attrs.merge(throughput_capacity_per_ha_pair: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'opt')
+        expect(config).to have_key('throughput_capacity_per_ha_pair')
+      end
+
+      it 'omits throughput_capacity_per_ha_pair when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
+        expect(config).not_to have_key('throughput_capacity_per_ha_pair')
+      end
+      it 'includes weekly_maintenance_start_time when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('opt', required_attrs.merge(weekly_maintenance_start_time: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'opt')
+        expect(config).to have_key('weekly_maintenance_start_time')
+      end
+
+      it 'omits weekly_maintenance_start_time when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_ontap_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_ontap_file_system', 'minimal')
+        expect(config).not_to have_key('weekly_maintenance_start_time')
       end
     end
 
@@ -258,7 +440,7 @@ RSpec.describe Pangea::Resources::AWSFsxOntapFileSystem do
     resource_type: :aws_fsx_ontap_file_system,
     method: :aws_fsx_ontap_file_system,
     required_attrs: { deployment_type: 'test-value', preferred_subnet_id: 'test-value', storage_capacity: 3.14, subnet_ids: ['test-value'] },
-    expected_outputs: [:id, :arn, :daily_automatic_backup_start_time, :dns_name, :endpoint_ip_address_range, :endpoints, :ha_pairs, :kms_key_id, :network_interface_ids, :owner_id, :route_table_ids, :tags_all, :throughput_capacity, :throughput_capacity_per_ha_pair, :vpc_id, :weekly_maintenance_start_time],
+    expected_outputs: [:id, :arn, :daily_automatic_backup_start_time, :dns_name, :endpoint_ip_address_range, :endpoints, :ha_pairs, :kms_key_id, :network_interface_ids, :owner_id, :region, :route_table_ids, :tags_all, :throughput_capacity, :throughput_capacity_per_ha_pair, :vpc_id, :weekly_maintenance_start_time],
     sensitive_fields: [:fsx_admin_password],
     immutable_fields: [],
     boolean_fields: []

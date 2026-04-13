@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_servicecatalog_tag_option_resource_association,
       attributes_class: AWS::Types::ServicecatalogTagOptionResourceAssociationAttributes,
       outputs: { id: :id },
-      map: [:resource_id, :tag_option_id]
+      map: [:resource_id, :tag_option_id],
+      map_present: [:region]
   end
   module AWS
     include AWSServicecatalogTagOptionResourceAssociation

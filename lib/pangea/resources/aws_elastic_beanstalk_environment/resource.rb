@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElasticBeanstalkEnvironmentAttributes,
       outputs: { id: :id },
       map: [:application, :name],
-      map_present: [:cname_prefix, :description, :platform_arn, :poll_interval, :setting, :solution_stack_name, :tags, :tags_all, :template_name, :tier, :version_label, :wait_for_ready_timeout]
+      map_present: [:cname_prefix, :description, :platform_arn, :poll_interval, :region, :setting, :solution_stack_name, :tags, :tags_all, :template_name, :tier, :version_label, :wait_for_ready_timeout]
   end
   module AWS
     include AWSElasticBeanstalkEnvironment

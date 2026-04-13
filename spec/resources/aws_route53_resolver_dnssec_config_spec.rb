@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverDnssecConfig do
         expect(ref.id).to eq("${aws_route53_resolver_dnssec_config.test.id}")
         expect(ref.arn).to eq("${aws_route53_resolver_dnssec_config.test.arn}")
         expect(ref.owner_id).to eq("${aws_route53_resolver_dnssec_config.test.owner_id}")
+        expect(ref.region).to eq("${aws_route53_resolver_dnssec_config.test.region}")
         expect(ref.validation_status).to eq("${aws_route53_resolver_dnssec_config.test.validation_status}")
       end
     end
@@ -54,7 +55,42 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverDnssecConfig do
         config = validate_resource_structure(result, 'aws_route53_resolver_dnssec_config', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('validation_status')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_dnssec_config('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_route53_resolver_dnssec_config', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_dnssec_config('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_dnssec_config', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_dnssec_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_dnssec_config', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -100,7 +136,7 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverDnssecConfig do
     resource_type: :aws_route53_resolver_dnssec_config,
     method: :aws_route53_resolver_dnssec_config,
     required_attrs: { resource_id: 'test-value' },
-    expected_outputs: [:id, :arn, :owner_id, :validation_status],
+    expected_outputs: [:id, :arn, :owner_id, :region, :validation_status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

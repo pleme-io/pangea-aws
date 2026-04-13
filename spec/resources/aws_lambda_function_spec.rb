@@ -45,6 +45,8 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
         expect(ref.last_modified).to eq("${aws_lambda_function.test.last_modified}")
         expect(ref.qualified_arn).to eq("${aws_lambda_function.test.qualified_arn}")
         expect(ref.qualified_invoke_arn).to eq("${aws_lambda_function.test.qualified_invoke_arn}")
+        expect(ref.region).to eq("${aws_lambda_function.test.region}")
+        expect(ref.response_streaming_invoke_arn).to eq("${aws_lambda_function.test.response_streaming_invoke_arn}")
         expect(ref.signing_job_arn).to eq("${aws_lambda_function.test.signing_job_arn}")
         expect(ref.signing_profile_version_arn).to eq("${aws_lambda_function.test.signing_profile_version_arn}")
         expect(ref.source_code_hash).to eq("${aws_lambda_function.test.source_code_hash}")
@@ -69,6 +71,8 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
         expect(config).not_to have_key('last_modified')
         expect(config).not_to have_key('qualified_arn')
         expect(config).not_to have_key('qualified_invoke_arn')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('response_streaming_invoke_arn')
         expect(config).not_to have_key('signing_job_arn')
         expect(config).not_to have_key('signing_profile_version_arn')
         expect(config).not_to have_key('source_code_hash')
@@ -79,7 +83,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ code_signing_config_arn: 'test-value', dead_letter_config: [{ 'key1' => 'val1' }], description: 'test-value', environment: [{ 'key1' => 'val1' }], ephemeral_storage: [{ 'key1' => 'val1' }], file_system_config: [{ 'key1' => 'val1' }], filename: 'test-value', handler: 'test-value', image_config: [{ 'key1' => 'val1' }], image_uri: 'test-value', kms_key_arn: 'test-value', layers: ['test-value'], logging_config: [{ 'key1' => 'val1' }], memory_size: 3.14, package_type: 'test-value', publish: true, replace_security_groups_on_destroy: true, replacement_security_group_ids: ['test-value'], reserved_concurrent_executions: 3.14, runtime: 'test-value', s3_bucket: 'test-value', s3_key: 'test-value', s3_object_version: 'test-value', skip_destroy: true, snap_start: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, timeout: 3.14, tracing_config: [{ 'key1' => 'val1' }], vpc_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ architectures: ['test-value'], capacity_provider_config: { 'key1' => 'val1' }, code_sha256: 'test-value', code_signing_config_arn: 'test-value', dead_letter_config: { 'key1' => 'val1' }, description: 'test-value', durable_config: { 'key1' => 'val1' }, environment: { 'key1' => 'val1' }, ephemeral_storage: { 'key1' => 'val1' }, file_system_config: { 'key1' => 'val1' }, filename: 'test-value', handler: 'test-value', image_config: { 'key1' => 'val1' }, image_uri: 'test-value', kms_key_arn: 'test-value', layers: ['test-value'], logging_config: { 'key1' => 'val1' }, memory_size: 3.14, package_type: 'test-value', publish: true, publish_to: 'test-value', region: 'test-value', replace_security_groups_on_destroy: true, replacement_security_group_ids: ['test-value'], reserved_concurrent_executions: 3.14, runtime: 'test-value', s3_bucket: 'test-value', s3_key: 'test-value', s3_object_version: 'test-value', skip_destroy: true, snap_start: { 'key1' => 'val1' }, source_code_hash: 'test-value', source_kms_key_arn: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tenancy_config: { 'key1' => 'val1' }, timeout: 3.14, tracing_config: { 'key1' => 'val1' }, vpc_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -88,9 +92,13 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lambda_function', 'full')
+        expect(config).to have_key('architectures')
+        expect(config).to have_key('capacity_provider_config')
+        expect(config).to have_key('code_sha256')
         expect(config).to have_key('code_signing_config_arn')
         expect(config).to have_key('dead_letter_config')
         expect(config).to have_key('description')
+        expect(config).to have_key('durable_config')
         expect(config).to have_key('environment')
         expect(config).to have_key('ephemeral_storage')
         expect(config).to have_key('file_system_config')
@@ -104,6 +112,8 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
         expect(config).to have_key('memory_size')
         expect(config).to have_key('package_type')
         expect(config).to have_key('publish')
+        expect(config).to have_key('publish_to')
+        expect(config).to have_key('region')
         expect(config).to have_key('replace_security_groups_on_destroy')
         expect(config).to have_key('replacement_security_group_ids')
         expect(config).to have_key('reserved_concurrent_executions')
@@ -113,7 +123,11 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
         expect(config).to have_key('s3_object_version')
         expect(config).to have_key('skip_destroy')
         expect(config).to have_key('snap_start')
+        expect(config).to have_key('source_code_hash')
+        expect(config).to have_key('source_kms_key_arn')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('tenancy_config')
         expect(config).to have_key('timeout')
         expect(config).to have_key('tracing_config')
         expect(config).to have_key('vpc_config')
@@ -121,6 +135,57 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
     end
 
     context 'optional attributes' do
+      it 'includes architectures when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('opt', required_attrs.merge(architectures: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
+        expect(config).to have_key('architectures')
+      end
+
+      it 'omits architectures when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
+        expect(config).not_to have_key('architectures')
+      end
+      it 'includes capacity_provider_config when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('opt', required_attrs.merge(capacity_provider_config: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
+        expect(config).to have_key('capacity_provider_config')
+      end
+
+      it 'omits capacity_provider_config when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
+        expect(config).not_to have_key('capacity_provider_config')
+      end
+      it 'includes code_sha256 when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('opt', required_attrs.merge(code_sha256: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
+        expect(config).to have_key('code_sha256')
+      end
+
+      it 'omits code_sha256 when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
+        expect(config).not_to have_key('code_sha256')
+      end
       it 'includes code_signing_config_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -141,7 +206,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
       it 'includes dead_letter_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_function('opt', required_attrs.merge(dead_letter_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_function('opt', required_attrs.merge(dead_letter_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
         expect(config).to have_key('dead_letter_config')
@@ -172,10 +237,27 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
         config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes durable_config when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('opt', required_attrs.merge(durable_config: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
+        expect(config).to have_key('durable_config')
+      end
+
+      it 'omits durable_config when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
+        expect(config).not_to have_key('durable_config')
+      end
       it 'includes environment when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_function('opt', required_attrs.merge(environment: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_function('opt', required_attrs.merge(environment: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
         expect(config).to have_key('environment')
@@ -192,7 +274,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
       it 'includes ephemeral_storage when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_function('opt', required_attrs.merge(ephemeral_storage: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_function('opt', required_attrs.merge(ephemeral_storage: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
         expect(config).to have_key('ephemeral_storage')
@@ -209,7 +291,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
       it 'includes file_system_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_function('opt', required_attrs.merge(file_system_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_function('opt', required_attrs.merge(file_system_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
         expect(config).to have_key('file_system_config')
@@ -260,7 +342,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
       it 'includes image_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_function('opt', required_attrs.merge(image_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_function('opt', required_attrs.merge(image_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
         expect(config).to have_key('image_config')
@@ -328,7 +410,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
       it 'includes logging_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_function('opt', required_attrs.merge(logging_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_function('opt', required_attrs.merge(logging_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
         expect(config).to have_key('logging_config')
@@ -392,6 +474,40 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
         expect(config).not_to have_key('publish')
+      end
+      it 'includes publish_to when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('opt', required_attrs.merge(publish_to: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
+        expect(config).to have_key('publish_to')
+      end
+
+      it 'omits publish_to when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
+        expect(config).not_to have_key('publish_to')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes replace_security_groups_on_destroy when provided' do
         synth = create_synthesizer
@@ -532,7 +648,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
       it 'includes snap_start when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_function('opt', required_attrs.merge(snap_start: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_function('opt', required_attrs.merge(snap_start: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
         expect(config).to have_key('snap_start')
@@ -545,6 +661,40 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
         expect(config).not_to have_key('snap_start')
+      end
+      it 'includes source_code_hash when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('opt', required_attrs.merge(source_code_hash: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
+        expect(config).to have_key('source_code_hash')
+      end
+
+      it 'omits source_code_hash when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
+        expect(config).not_to have_key('source_code_hash')
+      end
+      it 'includes source_kms_key_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('opt', required_attrs.merge(source_kms_key_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
+        expect(config).to have_key('source_kms_key_arn')
+      end
+
+      it 'omits source_kms_key_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
+        expect(config).not_to have_key('source_kms_key_arn')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -562,6 +712,40 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes tenancy_config when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('opt', required_attrs.merge(tenancy_config: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
+        expect(config).to have_key('tenancy_config')
+      end
+
+      it 'omits tenancy_config when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_function('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_function', 'minimal')
+        expect(config).not_to have_key('tenancy_config')
       end
       it 'includes timeout when provided' do
         synth = create_synthesizer
@@ -583,7 +767,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
       it 'includes tracing_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_function('opt', required_attrs.merge(tracing_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_function('opt', required_attrs.merge(tracing_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
         expect(config).to have_key('tracing_config')
@@ -600,7 +784,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
       it 'includes vpc_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lambda_function('opt', required_attrs.merge(vpc_config: [{ 'key1' => 'val1' }]))
+        synth.aws_lambda_function('opt', required_attrs.merge(vpc_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_function', 'opt')
         expect(config).to have_key('vpc_config')
@@ -695,7 +879,7 @@ RSpec.describe Pangea::Resources::AWSLambdaFunction do
     resource_type: :aws_lambda_function,
     method: :aws_lambda_function,
     required_attrs: { function_name: 'test-value', role: 'test-value' },
-    expected_outputs: [:id, :architectures, :arn, :code_sha256, :invoke_arn, :last_modified, :qualified_arn, :qualified_invoke_arn, :signing_job_arn, :signing_profile_version_arn, :source_code_hash, :source_code_size, :tags_all, :version],
+    expected_outputs: [:id, :architectures, :arn, :code_sha256, :invoke_arn, :last_modified, :qualified_arn, :qualified_invoke_arn, :region, :response_streaming_invoke_arn, :signing_job_arn, :signing_profile_version_arn, :source_code_hash, :source_code_size, :tags_all, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:publish, :replace_security_groups_on_destroy, :skip_destroy]

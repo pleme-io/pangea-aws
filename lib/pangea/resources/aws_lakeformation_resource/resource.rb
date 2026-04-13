@@ -14,8 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::LakeformationResourceAttributes,
       outputs: { id: :id },
       map: [:arn],
-      map_present: [:role_arn],
-      map_bool: [:hybrid_access_enabled, :use_service_linked_role, :with_federation]
+      map_present: [:region, :role_arn],
+      map_bool: [:hybrid_access_enabled, :use_service_linked_role, :with_federation, :with_privileged_access]
   end
   module AWS
     include AWSLakeformationResource

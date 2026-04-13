@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LightsailBucketAttributes,
       outputs: { id: :id },
       map: [:bundle_id, :name],
-      map_present: [:tags, :tags_all],
+      map_present: [:region, :tags, :tags_all],
       map_bool: [:force_delete]
   end
   module AWS

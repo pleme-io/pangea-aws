@@ -1,0 +1,8 @@
+name: aws_m2_environment
+title: Manages a aws_m2_environment resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

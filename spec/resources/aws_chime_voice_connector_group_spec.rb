@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSChimeVoiceConnectorGroup do
         ref = synth.aws_chime_voice_connector_group('test', required_attrs)
 
         expect(ref.id).to eq("${aws_chime_voice_connector_group.test.id}")
+        expect(ref.region).to eq("${aws_chime_voice_connector_group.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chime_voice_connector_group('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_chime_voice_connector_group', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ connector: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ connector: [{ 'key1' => 'val1' }], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSChimeVoiceConnectorGroup do
 
         config = validate_resource_structure(result, 'aws_chime_voice_connector_group', 'full')
         expect(config).to have_key('connector')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSChimeVoiceConnectorGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_chime_voice_connector_group', 'minimal')
         expect(config).not_to have_key('connector')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chime_voice_connector_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chime_voice_connector_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_chime_voice_connector_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_chime_voice_connector_group', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -117,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSChimeVoiceConnectorGroup do
     resource_type: :aws_chime_voice_connector_group,
     method: :aws_chime_voice_connector_group,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

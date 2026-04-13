@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSGlueSecurityConfiguration do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { encryption_configuration: [{ 'key1' => 'val1' }], name: 'test-value' } }
+  let(:required_attrs) { { encryption_configuration: { 'key1' => 'val1' }, name: 'test-value' } }
 
   describe ':aws_glue_security_configuration' do
     context 'with required attributes only' do
@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSGlueSecurityConfiguration do
         ref = synth.aws_glue_security_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_glue_security_configuration.test.id}")
+        expect(ref.region).to eq("${aws_glue_security_configuration.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_security_configuration('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_glue_security_configuration', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_security_configuration('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_glue_security_configuration', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_security_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_security_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_security_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_security_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -49,7 +96,7 @@ RSpec.describe Pangea::Resources::AWSGlueSecurityConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_glue_security_configuration', 'typed')
-        expect(config['encryption_configuration']).to be_a(Array)
+        expect(config['encryption_configuration']).to be_a(Hash)
         expect(config['name']).to be_a(String)
       end
     end
@@ -83,8 +130,8 @@ RSpec.describe Pangea::Resources::AWSGlueSecurityConfiguration do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_glue_security_configuration,
     method: :aws_glue_security_configuration,
-    required_attrs: { encryption_configuration: [{ 'key1' => 'val1' }], name: 'test-value' },
-    expected_outputs: [:id],
+    required_attrs: { encryption_configuration: { 'key1' => 'val1' }, name: 'test-value' },
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

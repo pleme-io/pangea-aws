@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftEndpointAccess do
         expect(ref.id).to eq("${aws_redshift_endpoint_access.test.id}")
         expect(ref.address).to eq("${aws_redshift_endpoint_access.test.address}")
         expect(ref.port).to eq("${aws_redshift_endpoint_access.test.port}")
+        expect(ref.region).to eq("${aws_redshift_endpoint_access.test.region}")
         expect(ref.resource_owner).to eq("${aws_redshift_endpoint_access.test.resource_owner}")
         expect(ref.vpc_endpoint).to eq("${aws_redshift_endpoint_access.test.vpc_endpoint}")
         expect(ref.vpc_security_group_ids).to eq("${aws_redshift_endpoint_access.test.vpc_security_group_ids}")
@@ -56,8 +57,79 @@ RSpec.describe Pangea::Resources::AWSRedshiftEndpointAccess do
         config = validate_resource_structure(result, 'aws_redshift_endpoint_access', 'test')
         expect(config).not_to have_key('address')
         expect(config).not_to have_key('port')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_owner')
         expect(config).not_to have_key('vpc_endpoint')
+        expect(config).not_to have_key('vpc_security_group_ids')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', resource_owner: 'test-value', vpc_security_group_ids: ['test-value'] }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_endpoint_access('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_redshift_endpoint_access', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('resource_owner')
+        expect(config).to have_key('vpc_security_group_ids')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_endpoint_access('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_endpoint_access', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_endpoint_access('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_endpoint_access', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes resource_owner when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_endpoint_access('opt', required_attrs.merge(resource_owner: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_endpoint_access', 'opt')
+        expect(config).to have_key('resource_owner')
+      end
+
+      it 'omits resource_owner when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_endpoint_access('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_endpoint_access', 'minimal')
+        expect(config).not_to have_key('resource_owner')
+      end
+      it 'includes vpc_security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_endpoint_access('opt', required_attrs.merge(vpc_security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_endpoint_access', 'opt')
+        expect(config).to have_key('vpc_security_group_ids')
+      end
+
+      it 'omits vpc_security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_endpoint_access('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_endpoint_access', 'minimal')
         expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
@@ -106,7 +178,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftEndpointAccess do
     resource_type: :aws_redshift_endpoint_access,
     method: :aws_redshift_endpoint_access,
     required_attrs: { cluster_identifier: 'test-value', endpoint_name: 'test-value', subnet_group_name: 'test-value' },
-    expected_outputs: [:id, :address, :port, :resource_owner, :vpc_endpoint, :vpc_security_group_ids],
+    expected_outputs: [:id, :address, :port, :region, :resource_owner, :vpc_endpoint, :vpc_security_group_ids],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

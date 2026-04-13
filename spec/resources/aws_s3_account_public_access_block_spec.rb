@@ -55,7 +55,7 @@ RSpec.describe Pangea::Resources::AWSS3AccountPublicAccessBlock do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ block_public_acls: true, block_public_policy: true, ignore_public_acls: true, restrict_public_buckets: true }) }
+      let(:all_attrs) { required_attrs.merge({ account_id: 'test-value', block_public_acls: true, block_public_policy: true, ignore_public_acls: true, restrict_public_buckets: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,6 +64,7 @@ RSpec.describe Pangea::Resources::AWSS3AccountPublicAccessBlock do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_s3_account_public_access_block', 'full')
+        expect(config).to have_key('account_id')
         expect(config).to have_key('block_public_acls')
         expect(config).to have_key('block_public_policy')
         expect(config).to have_key('ignore_public_acls')
@@ -72,6 +73,23 @@ RSpec.describe Pangea::Resources::AWSS3AccountPublicAccessBlock do
     end
 
     context 'optional attributes' do
+      it 'includes account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_account_public_access_block('opt', required_attrs.merge(account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_account_public_access_block', 'opt')
+        expect(config).to have_key('account_id')
+      end
+
+      it 'omits account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_account_public_access_block('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_account_public_access_block', 'minimal')
+        expect(config).not_to have_key('account_id')
+      end
       it 'includes block_public_acls when provided' do
         synth = create_synthesizer
         synth.extend(described_class)

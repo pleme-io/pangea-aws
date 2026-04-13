@@ -1,0 +1,8 @@
+name: aws_dx_public_virtual_interface
+title: Manages a aws_dx_public_virtual_interface resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

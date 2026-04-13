@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCloudfrontOriginRequestPolicy do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { cookies_config: [{ 'key1' => 'val1' }], headers_config: [{ 'key1' => 'val1' }], name: 'test-value', query_strings_config: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { cookies_config: { 'key1' => 'val1' }, headers_config: { 'key1' => 'val1' }, name: 'test-value', query_strings_config: { 'key1' => 'val1' } } }
 
   describe ':aws_cloudfront_origin_request_policy' do
     context 'with required attributes only' do
@@ -98,10 +98,10 @@ RSpec.describe Pangea::Resources::AWSCloudfrontOriginRequestPolicy do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudfront_origin_request_policy', 'typed')
-        expect(config['cookies_config']).to be_a(Array)
-        expect(config['headers_config']).to be_a(Array)
+        expect(config['cookies_config']).to be_a(Hash)
+        expect(config['headers_config']).to be_a(Hash)
         expect(config['name']).to be_a(String)
-        expect(config['query_strings_config']).to be_a(Array)
+        expect(config['query_strings_config']).to be_a(Hash)
       end
     end
 
@@ -134,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontOriginRequestPolicy do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_cloudfront_origin_request_policy,
     method: :aws_cloudfront_origin_request_policy,
-    required_attrs: { cookies_config: [{ 'key1' => 'val1' }], headers_config: [{ 'key1' => 'val1' }], name: 'test-value', query_strings_config: [{ 'key1' => 'val1' }] },
+    required_attrs: { cookies_config: { 'key1' => 'val1' }, headers_config: { 'key1' => 'val1' }, name: 'test-value', query_strings_config: { 'key1' => 'val1' } },
     expected_outputs: [:id, :arn, :etag],
     sensitive_fields: [],
     immutable_fields: [],

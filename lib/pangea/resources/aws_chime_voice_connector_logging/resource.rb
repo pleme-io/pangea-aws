@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ChimeVoiceConnectorLoggingAttributes,
       outputs: { id: :id },
       map: [:voice_connector_id],
+      map_present: [:region],
       map_bool: [:enable_media_metric_logs, :enable_sip_logs]
   end
   module AWS

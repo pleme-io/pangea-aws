@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_sagemaker_device,
       attributes_class: AWS::Types::SagemakerDeviceAttributes,
       outputs: { id: :id },
-      map: [:device, :device_fleet_name]
+      map: [:device, :device_fleet_name],
+      map_present: [:region]
   end
   module AWS
     include AWSSagemakerDevice

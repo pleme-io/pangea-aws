@@ -52,6 +52,7 @@ RSpec.describe Pangea::Resources::AWSDefaultVpc do
         expect(ref.ipv6_cidr_block_network_border_group).to eq("${aws_default_vpc.test.ipv6_cidr_block_network_border_group}")
         expect(ref.main_route_table_id).to eq("${aws_default_vpc.test.main_route_table_id}")
         expect(ref.owner_id).to eq("${aws_default_vpc.test.owner_id}")
+        expect(ref.region).to eq("${aws_default_vpc.test.region}")
         expect(ref.tags_all).to eq("${aws_default_vpc.test.tags_all}")
       end
     end
@@ -78,12 +79,13 @@ RSpec.describe Pangea::Resources::AWSDefaultVpc do
         expect(config).not_to have_key('ipv6_cidr_block_network_border_group')
         expect(config).not_to have_key('main_route_table_id')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ assign_generated_ipv6_cidr_block: true, enable_dns_hostnames: true, enable_dns_support: true, force_destroy: true, ipv6_ipam_pool_id: 'test-value', ipv6_netmask_length: 3.14, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ assign_generated_ipv6_cidr_block: true, enable_dns_hostnames: true, enable_dns_support: true, enable_network_address_usage_metrics: true, force_destroy: true, ipv6_cidr_block: 'test-value', ipv6_cidr_block_network_border_group: 'test-value', ipv6_ipam_pool_id: 'test-value', ipv6_netmask_length: 3.14, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -95,10 +97,15 @@ RSpec.describe Pangea::Resources::AWSDefaultVpc do
         expect(config).to have_key('assign_generated_ipv6_cidr_block')
         expect(config).to have_key('enable_dns_hostnames')
         expect(config).to have_key('enable_dns_support')
+        expect(config).to have_key('enable_network_address_usage_metrics')
         expect(config).to have_key('force_destroy')
+        expect(config).to have_key('ipv6_cidr_block')
+        expect(config).to have_key('ipv6_cidr_block_network_border_group')
         expect(config).to have_key('ipv6_ipam_pool_id')
         expect(config).to have_key('ipv6_netmask_length')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -154,6 +161,23 @@ RSpec.describe Pangea::Resources::AWSDefaultVpc do
         config = validate_resource_structure(result, 'aws_default_vpc', 'minimal')
         expect(config).not_to have_key('enable_dns_support')
       end
+      it 'includes enable_network_address_usage_metrics when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc('opt', required_attrs.merge(enable_network_address_usage_metrics: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc', 'opt')
+        expect(config).to have_key('enable_network_address_usage_metrics')
+      end
+
+      it 'omits enable_network_address_usage_metrics when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc', 'minimal')
+        expect(config).not_to have_key('enable_network_address_usage_metrics')
+      end
       it 'includes force_destroy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -170,6 +194,40 @@ RSpec.describe Pangea::Resources::AWSDefaultVpc do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_default_vpc', 'minimal')
         expect(config).not_to have_key('force_destroy')
+      end
+      it 'includes ipv6_cidr_block when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc('opt', required_attrs.merge(ipv6_cidr_block: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc', 'opt')
+        expect(config).to have_key('ipv6_cidr_block')
+      end
+
+      it 'omits ipv6_cidr_block when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc', 'minimal')
+        expect(config).not_to have_key('ipv6_cidr_block')
+      end
+      it 'includes ipv6_cidr_block_network_border_group when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc('opt', required_attrs.merge(ipv6_cidr_block_network_border_group: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc', 'opt')
+        expect(config).to have_key('ipv6_cidr_block_network_border_group')
+      end
+
+      it 'omits ipv6_cidr_block_network_border_group when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc', 'minimal')
+        expect(config).not_to have_key('ipv6_cidr_block_network_border_group')
       end
       it 'includes ipv6_ipam_pool_id when provided' do
         synth = create_synthesizer
@@ -205,6 +263,23 @@ RSpec.describe Pangea::Resources::AWSDefaultVpc do
         config = validate_resource_structure(result, 'aws_default_vpc', 'minimal')
         expect(config).not_to have_key('ipv6_netmask_length')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -221,6 +296,23 @@ RSpec.describe Pangea::Resources::AWSDefaultVpc do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_default_vpc', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_vpc('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_vpc', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -256,6 +348,17 @@ RSpec.describe Pangea::Resources::AWSDefaultVpc do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_default_vpc', "bool_#{val}")
           expect(config['enable_dns_support']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts enable_network_address_usage_metrics=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enable_network_address_usage_metrics: val)
+          synth.aws_default_vpc("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_default_vpc', "bool_#{val}")
+          expect(config['enable_network_address_usage_metrics']).to eq(val)
         end
       end
       [true, false].each do |val|
@@ -312,8 +415,8 @@ RSpec.describe Pangea::Resources::AWSDefaultVpc do
     resource_type: :aws_default_vpc,
     method: :aws_default_vpc,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :cidr_block, :default_network_acl_id, :default_route_table_id, :default_security_group_id, :dhcp_options_id, :enable_network_address_usage_metrics, :existing_default_vpc, :instance_tenancy, :ipv6_association_id, :ipv6_cidr_block, :ipv6_cidr_block_network_border_group, :main_route_table_id, :owner_id, :tags_all],
+    expected_outputs: [:id, :arn, :cidr_block, :default_network_acl_id, :default_route_table_id, :default_security_group_id, :dhcp_options_id, :enable_network_address_usage_metrics, :existing_default_vpc, :instance_tenancy, :ipv6_association_id, :ipv6_cidr_block, :ipv6_cidr_block_network_border_group, :main_route_table_id, :owner_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:assign_generated_ipv6_cidr_block, :enable_dns_hostnames, :enable_dns_support, :force_destroy]
+    boolean_fields: [:assign_generated_ipv6_cidr_block, :enable_dns_hostnames, :enable_dns_support, :enable_network_address_usage_metrics, :force_destroy]
 end

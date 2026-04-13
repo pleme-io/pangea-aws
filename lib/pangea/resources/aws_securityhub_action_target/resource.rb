@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_securityhub_action_target,
       attributes_class: AWS::Types::SecurityhubActionTargetAttributes,
       outputs: { id: :id },
-      map: [:description, :identifier, :name]
+      map: [:description, :identifier, :name],
+      map_present: [:region]
   end
   module AWS
     include AWSSecurityhubActionTarget

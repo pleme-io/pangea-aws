@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSServerlessapplicationrepositoryCloudformati
         expect(ref.id).to eq("${aws_serverlessapplicationrepository_cloudformation_stack.test.id}")
         expect(ref.outputs).to eq("${aws_serverlessapplicationrepository_cloudformation_stack.test.outputs}")
         expect(ref.parameters).to eq("${aws_serverlessapplicationrepository_cloudformation_stack.test.parameters}")
+        expect(ref.region).to eq("${aws_serverlessapplicationrepository_cloudformation_stack.test.region}")
         expect(ref.semantic_version).to eq("${aws_serverlessapplicationrepository_cloudformation_stack.test.semantic_version}")
         expect(ref.tags_all).to eq("${aws_serverlessapplicationrepository_cloudformation_stack.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSServerlessapplicationrepositoryCloudformati
         config = validate_resource_structure(result, 'aws_serverlessapplicationrepository_cloudformation_stack', 'test')
         expect(config).not_to have_key('outputs')
         expect(config).not_to have_key('parameters')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('semantic_version')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ parameters: { 'key1' => 'val1' }, region: 'test-value', semantic_version: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,11 +72,66 @@ RSpec.describe Pangea::Resources::AWSServerlessapplicationrepositoryCloudformati
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_serverlessapplicationrepository_cloudformation_stack', 'full')
+        expect(config).to have_key('parameters')
+        expect(config).to have_key('region')
+        expect(config).to have_key('semantic_version')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes parameters when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_serverlessapplicationrepository_cloudformation_stack('opt', required_attrs.merge(parameters: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_serverlessapplicationrepository_cloudformation_stack', 'opt')
+        expect(config).to have_key('parameters')
+      end
+
+      it 'omits parameters when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_serverlessapplicationrepository_cloudformation_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_serverlessapplicationrepository_cloudformation_stack', 'minimal')
+        expect(config).not_to have_key('parameters')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_serverlessapplicationrepository_cloudformation_stack('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_serverlessapplicationrepository_cloudformation_stack', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_serverlessapplicationrepository_cloudformation_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_serverlessapplicationrepository_cloudformation_stack', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes semantic_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_serverlessapplicationrepository_cloudformation_stack('opt', required_attrs.merge(semantic_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_serverlessapplicationrepository_cloudformation_stack', 'opt')
+        expect(config).to have_key('semantic_version')
+      end
+
+      it 'omits semantic_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_serverlessapplicationrepository_cloudformation_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_serverlessapplicationrepository_cloudformation_stack', 'minimal')
+        expect(config).not_to have_key('semantic_version')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -91,6 +148,23 @@ RSpec.describe Pangea::Resources::AWSServerlessapplicationrepositoryCloudformati
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_serverlessapplicationrepository_cloudformation_stack', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_serverlessapplicationrepository_cloudformation_stack('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_serverlessapplicationrepository_cloudformation_stack', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_serverlessapplicationrepository_cloudformation_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_serverlessapplicationrepository_cloudformation_stack', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -138,7 +212,7 @@ RSpec.describe Pangea::Resources::AWSServerlessapplicationrepositoryCloudformati
     resource_type: :aws_serverlessapplicationrepository_cloudformation_stack,
     method: :aws_serverlessapplicationrepository_cloudformation_stack,
     required_attrs: { application_id: 'test-value', capabilities: ['test-value'], name: 'test-value' },
-    expected_outputs: [:id, :outputs, :parameters, :semantic_version, :tags_all],
+    expected_outputs: [:id, :outputs, :parameters, :region, :semantic_version, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

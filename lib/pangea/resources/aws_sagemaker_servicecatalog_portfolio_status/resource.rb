@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_sagemaker_servicecatalog_portfolio_status,
       attributes_class: AWS::Types::SagemakerServicecatalogPortfolioStatusAttributes,
       outputs: { id: :id },
-      map: [:status]
+      map: [:status],
+      map_present: [:region]
   end
   module AWS
     include AWSSagemakerServicecatalogPortfolioStatus

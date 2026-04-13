@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointPolicy do
 
         expect(ref.id).to eq("${aws_vpc_endpoint_policy.test.id}")
         expect(ref.policy).to eq("${aws_vpc_endpoint_policy.test.policy}")
+        expect(ref.region).to eq("${aws_vpc_endpoint_policy.test.region}")
       end
     end
 
@@ -51,6 +52,59 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointPolicy do
 
         config = validate_resource_structure(result, 'aws_vpc_endpoint_policy', 'test')
         expect(config).not_to have_key('policy')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ policy: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_policy('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_policy', 'full')
+        expect(config).to have_key('policy')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_policy('opt', required_attrs.merge(policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_policy', 'opt')
+        expect(config).to have_key('policy')
+      end
+
+      it 'omits policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_policy', 'minimal')
+        expect(config).not_to have_key('policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_endpoint_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_endpoint_policy', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -96,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSVpcEndpointPolicy do
     resource_type: :aws_vpc_endpoint_policy,
     method: :aws_vpc_endpoint_policy,
     required_attrs: { vpc_endpoint_id: 'test-value' },
-    expected_outputs: [:id, :policy],
+    expected_outputs: [:id, :policy, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

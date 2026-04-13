@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RdsCustomDbEngineVersionAttributes,
       outputs: { id: :id },
       map: [:engine, :engine_version],
-      map_present: [:database_installation_files_s3_bucket_name, :database_installation_files_s3_prefix, :description, :filename, :kms_key_id, :manifest, :manifest_hash, :source_image_id, :status, :tags, :tags_all]
+      map_present: [:database_installation_files_s3_bucket_name, :database_installation_files_s3_prefix, :description, :filename, :kms_key_id, :manifest, :manifest_hash, :region, :source_image_id, :status, :tags, :tags_all]
   end
   module AWS
     include AWSRdsCustomDbEngineVersion

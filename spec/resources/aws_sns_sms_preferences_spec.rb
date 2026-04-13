@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSnsSmsPreferences do
 
         expect(ref.id).to eq("${aws_sns_sms_preferences.test.id}")
         expect(ref.monthly_spend_limit).to eq("${aws_sns_sms_preferences.test.monthly_spend_limit}")
+        expect(ref.region).to eq("${aws_sns_sms_preferences.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSSnsSmsPreferences do
 
         config = validate_resource_structure(result, 'aws_sns_sms_preferences', 'test')
         expect(config).not_to have_key('monthly_spend_limit')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ default_sender_id: 'test-value', default_sms_type: 'test-value', delivery_status_iam_role_arn: 'test-value', delivery_status_success_sampling_rate: 'test-value', usage_report_s3_bucket: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ default_sender_id: 'test-value', default_sms_type: 'test-value', delivery_status_iam_role_arn: 'test-value', delivery_status_success_sampling_rate: 'test-value', monthly_spend_limit: 3.14, region: 'test-value', usage_report_s3_bucket: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,8 @@ RSpec.describe Pangea::Resources::AWSSnsSmsPreferences do
         expect(config).to have_key('default_sms_type')
         expect(config).to have_key('delivery_status_iam_role_arn')
         expect(config).to have_key('delivery_status_success_sampling_rate')
+        expect(config).to have_key('monthly_spend_limit')
+        expect(config).to have_key('region')
         expect(config).to have_key('usage_report_s3_bucket')
       end
     end
@@ -141,6 +145,40 @@ RSpec.describe Pangea::Resources::AWSSnsSmsPreferences do
         config = validate_resource_structure(result, 'aws_sns_sms_preferences', 'minimal')
         expect(config).not_to have_key('delivery_status_success_sampling_rate')
       end
+      it 'includes monthly_spend_limit when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_sms_preferences('opt', required_attrs.merge(monthly_spend_limit: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_sms_preferences', 'opt')
+        expect(config).to have_key('monthly_spend_limit')
+      end
+
+      it 'omits monthly_spend_limit when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_sms_preferences('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_sms_preferences', 'minimal')
+        expect(config).not_to have_key('monthly_spend_limit')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_sms_preferences('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_sms_preferences', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_sms_preferences('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_sms_preferences', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes usage_report_s3_bucket when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -201,7 +239,7 @@ RSpec.describe Pangea::Resources::AWSSnsSmsPreferences do
     resource_type: :aws_sns_sms_preferences,
     method: :aws_sns_sms_preferences,
     required_attrs: {},
-    expected_outputs: [:id, :monthly_spend_limit],
+    expected_outputs: [:id, :monthly_spend_limit, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

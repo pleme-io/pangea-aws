@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchAuthorizeVpcEndpointAccess do
 
         expect(ref.id).to eq("${aws_opensearch_authorize_vpc_endpoint_access.test.id}")
         expect(ref.authorized_principal).to eq("${aws_opensearch_authorize_vpc_endpoint_access.test.authorized_principal}")
+        expect(ref.region).to eq("${aws_opensearch_authorize_vpc_endpoint_access.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSOpensearchAuthorizeVpcEndpointAccess do
 
         config = validate_resource_structure(result, 'aws_opensearch_authorize_vpc_endpoint_access', 'test')
         expect(config).not_to have_key('authorized_principal')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_authorize_vpc_endpoint_access('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_opensearch_authorize_vpc_endpoint_access', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_authorize_vpc_endpoint_access('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_authorize_vpc_endpoint_access', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_authorize_vpc_endpoint_access('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_authorize_vpc_endpoint_access', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -97,7 +133,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchAuthorizeVpcEndpointAccess do
     resource_type: :aws_opensearch_authorize_vpc_endpoint_access,
     method: :aws_opensearch_authorize_vpc_endpoint_access,
     required_attrs: { account: 'test-value', domain_name: 'test-value' },
-    expected_outputs: [:id, :authorized_principal],
+    expected_outputs: [:id, :authorized_principal, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

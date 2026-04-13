@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSS3controlAccessGrantsInstanceResourcePolicy
 
         expect(ref.id).to eq("${aws_s3control_access_grants_instance_resource_policy.test.id}")
         expect(ref.account_id).to eq("${aws_s3control_access_grants_instance_resource_policy.test.account_id}")
+        expect(ref.region).to eq("${aws_s3control_access_grants_instance_resource_policy.test.region}")
       end
     end
 
@@ -51,6 +52,59 @@ RSpec.describe Pangea::Resources::AWSS3controlAccessGrantsInstanceResourcePolicy
 
         config = validate_resource_structure(result, 'aws_s3control_access_grants_instance_resource_policy', 'test')
         expect(config).not_to have_key('account_id')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ account_id: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_access_grants_instance_resource_policy('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_s3control_access_grants_instance_resource_policy', 'full')
+        expect(config).to have_key('account_id')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_access_grants_instance_resource_policy('opt', required_attrs.merge(account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_access_grants_instance_resource_policy', 'opt')
+        expect(config).to have_key('account_id')
+      end
+
+      it 'omits account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_access_grants_instance_resource_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_access_grants_instance_resource_policy', 'minimal')
+        expect(config).not_to have_key('account_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_access_grants_instance_resource_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_access_grants_instance_resource_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3control_access_grants_instance_resource_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3control_access_grants_instance_resource_policy', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -96,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSS3controlAccessGrantsInstanceResourcePolicy
     resource_type: :aws_s3control_access_grants_instance_resource_policy,
     method: :aws_s3control_access_grants_instance_resource_policy,
     required_attrs: { policy: 'test-value' },
-    expected_outputs: [:id, :account_id],
+    expected_outputs: [:id, :account_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -58,6 +58,40 @@ RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigRoutingControl 
       end
     end
 
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ control_panel_arn: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_routing_control('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_routing_control', 'full')
+        expect(config).to have_key('control_panel_arn')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes control_panel_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_routing_control('opt', required_attrs.merge(control_panel_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_routing_control', 'opt')
+        expect(config).to have_key('control_panel_arn')
+      end
+
+      it 'omits control_panel_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_routing_control('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_routing_control', 'minimal')
+        expect(config).not_to have_key('control_panel_arn')
+      end
+    end
+
     context 'attribute types' do
       it 'validates expected attribute types' do
         synth = create_synthesizer

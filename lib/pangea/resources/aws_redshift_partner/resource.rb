@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_redshift_partner,
       attributes_class: AWS::Types::RedshiftPartnerAttributes,
       outputs: { id: :id },
-      map: [:account_id, :cluster_identifier, :database_name, :partner_name]
+      map: [:account_id, :cluster_identifier, :database_name, :partner_name],
+      map_present: [:region]
   end
   module AWS
     include AWSRedshiftPartner

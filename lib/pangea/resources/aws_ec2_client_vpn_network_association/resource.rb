@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ec2_client_vpn_network_association,
       attributes_class: AWS::Types::Ec2ClientVpnNetworkAssociationAttributes,
       outputs: { id: :id },
-      map: [:client_vpn_endpoint_id, :subnet_id]
+      map: [:client_vpn_endpoint_id, :subnet_id],
+      map_present: [:region]
   end
   module AWS
     include AWSEc2ClientVpnNetworkAssociation

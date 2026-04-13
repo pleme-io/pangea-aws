@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_lightsail_instance_public_ports,
       attributes_class: AWS::Types::LightsailInstancePublicPortsAttributes,
       outputs: { id: :id },
-      map: [:instance_name, :port_info]
+      map: [:instance_name, :port_info],
+      map_present: [:region]
   end
   module AWS
     include AWSLightsailInstancePublicPorts

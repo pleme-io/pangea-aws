@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSEcrRepositoryCreationTemplate do
         ref = synth.aws_ecr_repository_creation_template('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ecr_repository_creation_template.test.id}")
+        expect(ref.region).to eq("${aws_ecr_repository_creation_template.test.region}")
         expect(ref.registry_id).to eq("${aws_ecr_repository_creation_template.test.registry_id}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSEcrRepositoryCreationTemplate do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ecr_repository_creation_template', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('registry_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ custom_role_arn: 'test-value', description: 'test-value', encryption_configuration: [{ 'key1' => 'val1' }], image_tag_mutability: 'test-value', lifecycle_policy: 'test-value', repository_policy: 'test-value', resource_tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ custom_role_arn: 'test-value', description: 'test-value', encryption_configuration: [{ 'key1' => 'val1' }], image_tag_mutability: 'test-value', image_tag_mutability_exclusion_filter: [{ 'key1' => 'val1' }], lifecycle_policy: 'test-value', region: 'test-value', repository_policy: 'test-value', resource_tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,7 +70,9 @@ RSpec.describe Pangea::Resources::AWSEcrRepositoryCreationTemplate do
         expect(config).to have_key('description')
         expect(config).to have_key('encryption_configuration')
         expect(config).to have_key('image_tag_mutability')
+        expect(config).to have_key('image_tag_mutability_exclusion_filter')
         expect(config).to have_key('lifecycle_policy')
+        expect(config).to have_key('region')
         expect(config).to have_key('repository_policy')
         expect(config).to have_key('resource_tags')
       end
@@ -143,6 +147,23 @@ RSpec.describe Pangea::Resources::AWSEcrRepositoryCreationTemplate do
         config = validate_resource_structure(result, 'aws_ecr_repository_creation_template', 'minimal')
         expect(config).not_to have_key('image_tag_mutability')
       end
+      it 'includes image_tag_mutability_exclusion_filter when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_repository_creation_template('opt', required_attrs.merge(image_tag_mutability_exclusion_filter: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_repository_creation_template', 'opt')
+        expect(config).to have_key('image_tag_mutability_exclusion_filter')
+      end
+
+      it 'omits image_tag_mutability_exclusion_filter when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_repository_creation_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_repository_creation_template', 'minimal')
+        expect(config).not_to have_key('image_tag_mutability_exclusion_filter')
+      end
       it 'includes lifecycle_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -159,6 +180,23 @@ RSpec.describe Pangea::Resources::AWSEcrRepositoryCreationTemplate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecr_repository_creation_template', 'minimal')
         expect(config).not_to have_key('lifecycle_policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_repository_creation_template('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_repository_creation_template', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_repository_creation_template('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_repository_creation_template', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes repository_policy when provided' do
         synth = create_synthesizer
@@ -239,7 +277,7 @@ RSpec.describe Pangea::Resources::AWSEcrRepositoryCreationTemplate do
     resource_type: :aws_ecr_repository_creation_template,
     method: :aws_ecr_repository_creation_template,
     required_attrs: { applied_for: ['test-value'], prefix: 'test-value' },
-    expected_outputs: [:id, :registry_id],
+    expected_outputs: [:id, :region, :registry_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

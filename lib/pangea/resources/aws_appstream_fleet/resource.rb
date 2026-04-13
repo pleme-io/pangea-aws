@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppstreamFleetAttributes,
       outputs: { id: :id },
       map: [:compute_capacity, :instance_type, :name],
-      map_present: [:description, :disconnect_timeout_in_seconds, :display_name, :domain_join_info, :fleet_type, :iam_role_arn, :idle_disconnect_timeout_in_seconds, :image_arn, :image_name, :max_sessions_per_instance, :max_user_duration_in_seconds, :stream_view, :tags, :tags_all, :vpc_config],
+      map_present: [:description, :disconnect_timeout_in_seconds, :display_name, :domain_join_info, :fleet_type, :iam_role_arn, :idle_disconnect_timeout_in_seconds, :image_arn, :image_name, :max_sessions_per_instance, :max_user_duration_in_seconds, :region, :stream_view, :tags, :tags_all, :vpc_config],
       map_bool: [:enable_default_internet_access]
   end
   module AWS

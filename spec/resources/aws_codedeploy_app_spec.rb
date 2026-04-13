@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployApp do
         expect(ref.arn).to eq("${aws_codedeploy_app.test.arn}")
         expect(ref.github_account_name).to eq("${aws_codedeploy_app.test.github_account_name}")
         expect(ref.linked_to_github).to eq("${aws_codedeploy_app.test.linked_to_github}")
+        expect(ref.region).to eq("${aws_codedeploy_app.test.region}")
         expect(ref.tags_all).to eq("${aws_codedeploy_app.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSCodedeployApp do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('github_account_name')
         expect(config).not_to have_key('linked_to_github')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ compute_platform: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ compute_platform: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,9 @@ RSpec.describe Pangea::Resources::AWSCodedeployApp do
 
         config = validate_resource_structure(result, 'aws_codedeploy_app', 'full')
         expect(config).to have_key('compute_platform')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -95,6 +99,23 @@ RSpec.describe Pangea::Resources::AWSCodedeployApp do
         config = validate_resource_structure(result, 'aws_codedeploy_app', 'minimal')
         expect(config).not_to have_key('compute_platform')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codedeploy_app('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codedeploy_app', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codedeploy_app('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codedeploy_app', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -111,6 +132,23 @@ RSpec.describe Pangea::Resources::AWSCodedeployApp do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codedeploy_app', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codedeploy_app('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codedeploy_app', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codedeploy_app('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codedeploy_app', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -156,7 +194,7 @@ RSpec.describe Pangea::Resources::AWSCodedeployApp do
     resource_type: :aws_codedeploy_app,
     method: :aws_codedeploy_app,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :application_id, :arn, :github_account_name, :linked_to_github, :tags_all],
+    expected_outputs: [:id, :application_id, :arn, :github_account_name, :linked_to_github, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

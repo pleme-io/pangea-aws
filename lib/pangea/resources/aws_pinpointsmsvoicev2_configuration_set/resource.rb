@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Pinpointsmsvoicev2ConfigurationSetAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:default_message_type, :default_sender_id, :tags]
+      map_present: [:default_message_type, :default_sender_id, :region, :tags]
   end
   module AWS
     include AWSPinpointsmsvoicev2ConfigurationSet

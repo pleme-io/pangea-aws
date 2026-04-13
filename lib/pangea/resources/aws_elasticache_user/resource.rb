@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElasticacheUserAttributes,
       outputs: { id: :id },
       map: [:access_string, :engine, :user_id, :user_name],
-      map_present: [:authentication_mode, :passwords, :tags, :tags_all],
+      map_present: [:authentication_mode, :passwords, :region, :tags, :tags_all],
       map_bool: [:no_password_required]
   end
   module AWS

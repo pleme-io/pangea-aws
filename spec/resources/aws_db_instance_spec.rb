@@ -76,6 +76,7 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         expect(ref.performance_insights_kms_key_id).to eq("${aws_db_instance.test.performance_insights_kms_key_id}")
         expect(ref.performance_insights_retention_period).to eq("${aws_db_instance.test.performance_insights_retention_period}")
         expect(ref.port).to eq("${aws_db_instance.test.port}")
+        expect(ref.region).to eq("${aws_db_instance.test.region}")
         expect(ref.replica_mode).to eq("${aws_db_instance.test.replica_mode}")
         expect(ref.replicas).to eq("${aws_db_instance.test.replicas}")
         expect(ref.resource_id).to eq("${aws_db_instance.test.resource_id}")
@@ -85,6 +86,7 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         expect(ref.storage_type).to eq("${aws_db_instance.test.storage_type}")
         expect(ref.tags_all).to eq("${aws_db_instance.test.tags_all}")
         expect(ref.timezone).to eq("${aws_db_instance.test.timezone}")
+        expect(ref.upgrade_rollout_order).to eq("${aws_db_instance.test.upgrade_rollout_order}")
         expect(ref.username).to eq("${aws_db_instance.test.username}")
         expect(ref.vpc_security_group_ids).to eq("${aws_db_instance.test.vpc_security_group_ids}")
       end
@@ -136,6 +138,7 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         expect(config).not_to have_key('performance_insights_kms_key_id')
         expect(config).not_to have_key('performance_insights_retention_period')
         expect(config).not_to have_key('port')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('replica_mode')
         expect(config).not_to have_key('replicas')
         expect(config).not_to have_key('resource_id')
@@ -145,13 +148,14 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         expect(config).not_to have_key('storage_type')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('timezone')
+        expect(config).not_to have_key('upgrade_rollout_order')
         expect(config).not_to have_key('username')
         expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allow_major_version_upgrade: true, apply_immediately: true, auto_minor_version_upgrade: true, blue_green_update: [{ 'key1' => 'val1' }], copy_tags_to_snapshot: true, custom_iam_instance_profile: 'test-value', customer_owned_ip_enabled: true, dedicated_log_volume: true, delete_automated_backups: true, deletion_protection: true, domain: 'test-value', domain_auth_secret_arn: 'test-value', domain_dns_ips: ['test-value'], domain_iam_role_name: 'test-value', domain_ou: 'test-value', enabled_cloudwatch_logs_exports: ['test-value'], final_snapshot_identifier: 'test-value', iam_database_authentication_enabled: true, manage_master_user_password: true, max_allocated_storage: 3.14, monitoring_interval: 3.14, password: 'test-value', password_wo: 'test-value', password_wo_version: 3.14, performance_insights_enabled: true, publicly_accessible: true, replicate_source_db: 'test-value', restore_to_point_in_time: [{ 'key1' => 'val1' }], s3_import: [{ 'key1' => 'val1' }], skip_final_snapshot: true, storage_encrypted: true, tags: { 'key1' => 'val1' }, upgrade_storage_config: true }) }
+      let(:all_attrs) { required_attrs.merge({ allocated_storage: 3.14, allow_major_version_upgrade: true, apply_immediately: true, auto_minor_version_upgrade: true, availability_zone: 'test-value', backup_retention_period: 3.14, backup_target: 'test-value', backup_window: 'test-value', blue_green_update: { 'key1' => 'val1' }, ca_cert_identifier: 'test-value', character_set_name: 'test-value', copy_tags_to_snapshot: true, custom_iam_instance_profile: 'test-value', customer_owned_ip_enabled: true, database_insights_mode: 'test-value', db_name: 'test-value', db_subnet_group_name: 'test-value', dedicated_log_volume: true, delete_automated_backups: true, deletion_protection: true, domain: 'test-value', domain_auth_secret_arn: 'test-value', domain_dns_ips: ['test-value'], domain_fqdn: 'test-value', domain_iam_role_name: 'test-value', domain_ou: 'test-value', enabled_cloudwatch_logs_exports: ['test-value'], engine: 'test-value', engine_lifecycle_support: 'test-value', engine_version: 'test-value', final_snapshot_identifier: 'test-value', iam_database_authentication_enabled: true, identifier: 'test-value', identifier_prefix: 'test-value', iops: 3.14, kms_key_id: 'test-value', license_model: 'test-value', maintenance_window: 'test-value', manage_master_user_password: true, master_user_secret_kms_key_id: 'test-value', max_allocated_storage: 3.14, monitoring_interval: 3.14, monitoring_role_arn: 'test-value', multi_az: true, nchar_character_set_name: 'test-value', network_type: 'test-value', option_group_name: 'test-value', parameter_group_name: 'test-value', password: 'test-value', password_wo: 'test-value', password_wo_version: 3.14, performance_insights_enabled: true, performance_insights_kms_key_id: 'test-value', performance_insights_retention_period: 3.14, port: 3.14, publicly_accessible: true, region: 'test-value', replica_mode: 'test-value', replicate_source_db: 'test-value', restore_to_point_in_time: { 'key1' => 'val1' }, s3_import: { 'key1' => 'val1' }, skip_final_snapshot: true, snapshot_identifier: 'test-value', storage_encrypted: true, storage_throughput: 3.14, storage_type: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, timezone: 'test-value', upgrade_storage_config: true, username: 'test-value', vpc_security_group_ids: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -160,43 +164,99 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_db_instance', 'full')
+        expect(config).to have_key('allocated_storage')
         expect(config).to have_key('allow_major_version_upgrade')
         expect(config).to have_key('apply_immediately')
         expect(config).to have_key('auto_minor_version_upgrade')
+        expect(config).to have_key('availability_zone')
+        expect(config).to have_key('backup_retention_period')
+        expect(config).to have_key('backup_target')
+        expect(config).to have_key('backup_window')
         expect(config).to have_key('blue_green_update')
+        expect(config).to have_key('ca_cert_identifier')
+        expect(config).to have_key('character_set_name')
         expect(config).to have_key('copy_tags_to_snapshot')
         expect(config).to have_key('custom_iam_instance_profile')
         expect(config).to have_key('customer_owned_ip_enabled')
+        expect(config).to have_key('database_insights_mode')
+        expect(config).to have_key('db_name')
+        expect(config).to have_key('db_subnet_group_name')
         expect(config).to have_key('dedicated_log_volume')
         expect(config).to have_key('delete_automated_backups')
         expect(config).to have_key('deletion_protection')
         expect(config).to have_key('domain')
         expect(config).to have_key('domain_auth_secret_arn')
         expect(config).to have_key('domain_dns_ips')
+        expect(config).to have_key('domain_fqdn')
         expect(config).to have_key('domain_iam_role_name')
         expect(config).to have_key('domain_ou')
         expect(config).to have_key('enabled_cloudwatch_logs_exports')
+        expect(config).to have_key('engine')
+        expect(config).to have_key('engine_lifecycle_support')
+        expect(config).to have_key('engine_version')
         expect(config).to have_key('final_snapshot_identifier')
         expect(config).to have_key('iam_database_authentication_enabled')
+        expect(config).to have_key('identifier')
+        expect(config).to have_key('identifier_prefix')
+        expect(config).to have_key('iops')
+        expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('license_model')
+        expect(config).to have_key('maintenance_window')
         expect(config).to have_key('manage_master_user_password')
+        expect(config).to have_key('master_user_secret_kms_key_id')
         expect(config).to have_key('max_allocated_storage')
         expect(config).to have_key('monitoring_interval')
+        expect(config).to have_key('monitoring_role_arn')
+        expect(config).to have_key('multi_az')
+        expect(config).to have_key('nchar_character_set_name')
+        expect(config).to have_key('network_type')
+        expect(config).to have_key('option_group_name')
+        expect(config).to have_key('parameter_group_name')
         expect(config).to have_key('password')
         expect(config).to have_key('password_wo')
         expect(config).to have_key('password_wo_version')
         expect(config).to have_key('performance_insights_enabled')
+        expect(config).to have_key('performance_insights_kms_key_id')
+        expect(config).to have_key('performance_insights_retention_period')
+        expect(config).to have_key('port')
         expect(config).to have_key('publicly_accessible')
+        expect(config).to have_key('region')
+        expect(config).to have_key('replica_mode')
         expect(config).to have_key('replicate_source_db')
         expect(config).to have_key('restore_to_point_in_time')
         expect(config).to have_key('s3_import')
         expect(config).to have_key('skip_final_snapshot')
+        expect(config).to have_key('snapshot_identifier')
         expect(config).to have_key('storage_encrypted')
+        expect(config).to have_key('storage_throughput')
+        expect(config).to have_key('storage_type')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('timezone')
         expect(config).to have_key('upgrade_storage_config')
+        expect(config).to have_key('username')
+        expect(config).to have_key('vpc_security_group_ids')
       end
     end
 
     context 'optional attributes' do
+      it 'includes allocated_storage when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(allocated_storage: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('allocated_storage')
+      end
+
+      it 'omits allocated_storage when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('allocated_storage')
+      end
       it 'includes allow_major_version_upgrade when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -248,10 +308,78 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('auto_minor_version_upgrade')
       end
+      it 'includes availability_zone when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(availability_zone: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('availability_zone')
+      end
+
+      it 'omits availability_zone when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('availability_zone')
+      end
+      it 'includes backup_retention_period when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(backup_retention_period: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('backup_retention_period')
+      end
+
+      it 'omits backup_retention_period when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('backup_retention_period')
+      end
+      it 'includes backup_target when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(backup_target: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('backup_target')
+      end
+
+      it 'omits backup_target when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('backup_target')
+      end
+      it 'includes backup_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(backup_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('backup_window')
+      end
+
+      it 'omits backup_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('backup_window')
+      end
       it 'includes blue_green_update when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_db_instance('opt', required_attrs.merge(blue_green_update: [{ 'key1' => 'val1' }]))
+        synth.aws_db_instance('opt', required_attrs.merge(blue_green_update: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_instance', 'opt')
         expect(config).to have_key('blue_green_update')
@@ -264,6 +392,40 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('blue_green_update')
+      end
+      it 'includes ca_cert_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(ca_cert_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('ca_cert_identifier')
+      end
+
+      it 'omits ca_cert_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('ca_cert_identifier')
+      end
+      it 'includes character_set_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(character_set_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('character_set_name')
+      end
+
+      it 'omits character_set_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('character_set_name')
       end
       it 'includes copy_tags_to_snapshot when provided' do
         synth = create_synthesizer
@@ -315,6 +477,57 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('customer_owned_ip_enabled')
+      end
+      it 'includes database_insights_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(database_insights_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('database_insights_mode')
+      end
+
+      it 'omits database_insights_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('database_insights_mode')
+      end
+      it 'includes db_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(db_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('db_name')
+      end
+
+      it 'omits db_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('db_name')
+      end
+      it 'includes db_subnet_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(db_subnet_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('db_subnet_group_name')
+      end
+
+      it 'omits db_subnet_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('db_subnet_group_name')
       end
       it 'includes dedicated_log_volume when provided' do
         synth = create_synthesizer
@@ -418,6 +631,23 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('domain_dns_ips')
       end
+      it 'includes domain_fqdn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(domain_fqdn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('domain_fqdn')
+      end
+
+      it 'omits domain_fqdn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('domain_fqdn')
+      end
       it 'includes domain_iam_role_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -469,6 +699,57 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('enabled_cloudwatch_logs_exports')
       end
+      it 'includes engine when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(engine: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('engine')
+      end
+
+      it 'omits engine when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('engine')
+      end
+      it 'includes engine_lifecycle_support when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(engine_lifecycle_support: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('engine_lifecycle_support')
+      end
+
+      it 'omits engine_lifecycle_support when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('engine_lifecycle_support')
+      end
+      it 'includes engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('engine_version')
+      end
+
+      it 'omits engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('engine_version')
+      end
       it 'includes final_snapshot_identifier when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -503,6 +784,108 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('iam_database_authentication_enabled')
       end
+      it 'includes identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('identifier')
+      end
+
+      it 'omits identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('identifier')
+      end
+      it 'includes identifier_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(identifier_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('identifier_prefix')
+      end
+
+      it 'omits identifier_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('identifier_prefix')
+      end
+      it 'includes iops when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(iops: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('iops')
+      end
+
+      it 'omits iops when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('iops')
+      end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes license_model when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(license_model: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('license_model')
+      end
+
+      it 'omits license_model when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('license_model')
+      end
+      it 'includes maintenance_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(maintenance_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('maintenance_window')
+      end
+
+      it 'omits maintenance_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('maintenance_window')
+      end
       it 'includes manage_master_user_password when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -519,6 +902,23 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('manage_master_user_password')
+      end
+      it 'includes master_user_secret_kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(master_user_secret_kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('master_user_secret_kms_key_id')
+      end
+
+      it 'omits master_user_secret_kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('master_user_secret_kms_key_id')
       end
       it 'includes max_allocated_storage when provided' do
         synth = create_synthesizer
@@ -553,6 +953,108 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('monitoring_interval')
+      end
+      it 'includes monitoring_role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(monitoring_role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('monitoring_role_arn')
+      end
+
+      it 'omits monitoring_role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('monitoring_role_arn')
+      end
+      it 'includes multi_az when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(multi_az: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('multi_az')
+      end
+
+      it 'omits multi_az when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('multi_az')
+      end
+      it 'includes nchar_character_set_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(nchar_character_set_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('nchar_character_set_name')
+      end
+
+      it 'omits nchar_character_set_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('nchar_character_set_name')
+      end
+      it 'includes network_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(network_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('network_type')
+      end
+
+      it 'omits network_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('network_type')
+      end
+      it 'includes option_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(option_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('option_group_name')
+      end
+
+      it 'omits option_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('option_group_name')
+      end
+      it 'includes parameter_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(parameter_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('parameter_group_name')
+      end
+
+      it 'omits parameter_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('parameter_group_name')
       end
       it 'includes password when provided' do
         synth = create_synthesizer
@@ -622,6 +1124,57 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('performance_insights_enabled')
       end
+      it 'includes performance_insights_kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(performance_insights_kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('performance_insights_kms_key_id')
+      end
+
+      it 'omits performance_insights_kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('performance_insights_kms_key_id')
+      end
+      it 'includes performance_insights_retention_period when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(performance_insights_retention_period: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('performance_insights_retention_period')
+      end
+
+      it 'omits performance_insights_retention_period when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('performance_insights_retention_period')
+      end
+      it 'includes port when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(port: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('port')
+      end
+
+      it 'omits port when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('port')
+      end
       it 'includes publicly_accessible when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -638,6 +1191,40 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('publicly_accessible')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes replica_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(replica_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('replica_mode')
+      end
+
+      it 'omits replica_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('replica_mode')
       end
       it 'includes replicate_source_db when provided' do
         synth = create_synthesizer
@@ -659,7 +1246,7 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
       it 'includes restore_to_point_in_time when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_db_instance('opt', required_attrs.merge(restore_to_point_in_time: [{ 'key1' => 'val1' }]))
+        synth.aws_db_instance('opt', required_attrs.merge(restore_to_point_in_time: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_instance', 'opt')
         expect(config).to have_key('restore_to_point_in_time')
@@ -676,7 +1263,7 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
       it 'includes s3_import when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_db_instance('opt', required_attrs.merge(s3_import: [{ 'key1' => 'val1' }]))
+        synth.aws_db_instance('opt', required_attrs.merge(s3_import: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_instance', 'opt')
         expect(config).to have_key('s3_import')
@@ -707,6 +1294,23 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('skip_final_snapshot')
       end
+      it 'includes snapshot_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(snapshot_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('snapshot_identifier')
+      end
+
+      it 'omits snapshot_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('snapshot_identifier')
+      end
       it 'includes storage_encrypted when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -723,6 +1327,40 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('storage_encrypted')
+      end
+      it 'includes storage_throughput when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(storage_throughput: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('storage_throughput')
+      end
+
+      it 'omits storage_throughput when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('storage_throughput')
+      end
+      it 'includes storage_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(storage_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('storage_type')
+      end
+
+      it 'omits storage_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('storage_type')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -741,6 +1379,40 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes timezone when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(timezone: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('timezone')
+      end
+
+      it 'omits timezone when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('timezone')
+      end
       it 'includes upgrade_storage_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -757,6 +1429,40 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
         expect(config).not_to have_key('upgrade_storage_config')
+      end
+      it 'includes username when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(username: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('username')
+      end
+
+      it 'omits username when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('username')
+      end
+      it 'includes vpc_security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('opt', required_attrs.merge(vpc_security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'opt')
+        expect(config).to have_key('vpc_security_group_ids')
+      end
+
+      it 'omits vpc_security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_instance('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_instance', 'minimal')
+        expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
@@ -880,6 +1586,17 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
         end
       end
       [true, false].each do |val|
+        it "accepts multi_az=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(multi_az: val)
+          synth.aws_db_instance("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_db_instance', "bool_#{val}")
+          expect(config['multi_az']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
         it "accepts performance_insights_enabled=#{val}" do
           synth = create_synthesizer
           synth.extend(described_class)
@@ -978,8 +1695,8 @@ RSpec.describe Pangea::Resources::AWSDbInstance do
     resource_type: :aws_db_instance,
     method: :aws_db_instance,
     required_attrs: { instance_class: 'test-value' },
-    expected_outputs: [:id, :address, :allocated_storage, :arn, :availability_zone, :backup_retention_period, :backup_target, :backup_window, :ca_cert_identifier, :character_set_name, :database_insights_mode, :db_name, :db_subnet_group_name, :domain_fqdn, :endpoint, :engine, :engine_lifecycle_support, :engine_version, :engine_version_actual, :hosted_zone_id, :identifier, :identifier_prefix, :iops, :kms_key_id, :latest_restorable_time, :license_model, :listener_endpoint, :maintenance_window, :master_user_secret, :master_user_secret_kms_key_id, :monitoring_role_arn, :multi_az, :nchar_character_set_name, :network_type, :option_group_name, :parameter_group_name, :performance_insights_kms_key_id, :performance_insights_retention_period, :port, :replica_mode, :replicas, :resource_id, :snapshot_identifier, :status, :storage_throughput, :storage_type, :tags_all, :timezone, :username, :vpc_security_group_ids],
+    expected_outputs: [:id, :address, :allocated_storage, :arn, :availability_zone, :backup_retention_period, :backup_target, :backup_window, :ca_cert_identifier, :character_set_name, :database_insights_mode, :db_name, :db_subnet_group_name, :domain_fqdn, :endpoint, :engine, :engine_lifecycle_support, :engine_version, :engine_version_actual, :hosted_zone_id, :identifier, :identifier_prefix, :iops, :kms_key_id, :latest_restorable_time, :license_model, :listener_endpoint, :maintenance_window, :master_user_secret, :master_user_secret_kms_key_id, :monitoring_role_arn, :multi_az, :nchar_character_set_name, :network_type, :option_group_name, :parameter_group_name, :performance_insights_kms_key_id, :performance_insights_retention_period, :port, :region, :replica_mode, :replicas, :resource_id, :snapshot_identifier, :status, :storage_throughput, :storage_type, :tags_all, :timezone, :upgrade_rollout_order, :username, :vpc_security_group_ids],
     sensitive_fields: [:password, :password_wo],
     immutable_fields: [],
-    boolean_fields: [:allow_major_version_upgrade, :apply_immediately, :auto_minor_version_upgrade, :copy_tags_to_snapshot, :customer_owned_ip_enabled, :dedicated_log_volume, :delete_automated_backups, :deletion_protection, :iam_database_authentication_enabled, :manage_master_user_password, :performance_insights_enabled, :publicly_accessible, :skip_final_snapshot, :storage_encrypted, :upgrade_storage_config]
+    boolean_fields: [:allow_major_version_upgrade, :apply_immediately, :auto_minor_version_upgrade, :copy_tags_to_snapshot, :customer_owned_ip_enabled, :dedicated_log_volume, :delete_automated_backups, :deletion_protection, :iam_database_authentication_enabled, :manage_master_user_password, :multi_az, :performance_insights_enabled, :publicly_accessible, :skip_final_snapshot, :storage_encrypted, :upgrade_storage_config]
 end

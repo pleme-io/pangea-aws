@@ -1,0 +1,8 @@
+name: aws_service_discovery_http_namespace
+title: Manages a aws_service_discovery_http_namespace resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

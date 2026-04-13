@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspaceApiKey do
 
         expect(ref.id).to eq("${aws_grafana_workspace_api_key.test.id}")
         expect(ref.key).to eq("${aws_grafana_workspace_api_key.test.key}")
+        expect(ref.region).to eq("${aws_grafana_workspace_api_key.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspaceApiKey do
 
         config = validate_resource_structure(result, 'aws_grafana_workspace_api_key', 'test')
         expect(config).not_to have_key('key')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_api_key('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_grafana_workspace_api_key', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_api_key('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_api_key', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_grafana_workspace_api_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_grafana_workspace_api_key', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -106,7 +142,7 @@ RSpec.describe Pangea::Resources::AWSGrafanaWorkspaceApiKey do
     resource_type: :aws_grafana_workspace_api_key,
     method: :aws_grafana_workspace_api_key,
     required_attrs: { key_name: 'test-value', key_role: 'test-value', seconds_to_live: 3.14, workspace_id: 'test-value' },
-    expected_outputs: [:id, :key],
+    expected_outputs: [:id, :key, :region],
     sensitive_fields: [:key],
     immutable_fields: [],
     boolean_fields: []

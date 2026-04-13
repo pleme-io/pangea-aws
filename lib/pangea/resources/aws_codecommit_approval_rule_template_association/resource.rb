@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_codecommit_approval_rule_template_association,
       attributes_class: AWS::Types::CodecommitApprovalRuleTemplateAssociationAttributes,
       outputs: { id: :id },
-      map: [:approval_rule_template_name, :repository_name]
+      map: [:approval_rule_template_name, :repository_name],
+      map_present: [:region]
   end
   module AWS
     include AWSCodecommitApprovalRuleTemplateAssociation

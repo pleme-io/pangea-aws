@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AmplifyBackendEnvironmentAttributes,
       outputs: { id: :id },
       map: [:app_id, :environment_name],
-      map_present: [:deployment_artifacts, :stack_name]
+      map_present: [:deployment_artifacts, :region, :stack_name]
   end
   module AWS
     include AWSAmplifyBackendEnvironment

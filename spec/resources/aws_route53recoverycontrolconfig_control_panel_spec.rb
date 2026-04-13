@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigControlPanel do
         expect(ref.default_control_panel).to eq("${aws_route53recoverycontrolconfig_control_panel.test.default_control_panel}")
         expect(ref.routing_control_count).to eq("${aws_route53recoverycontrolconfig_control_panel.test.routing_control_count}")
         expect(ref.status).to eq("${aws_route53recoverycontrolconfig_control_panel.test.status}")
+        expect(ref.tags_all).to eq("${aws_route53recoverycontrolconfig_control_panel.test.tags_all}")
       end
     end
 
@@ -57,6 +58,59 @@ RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigControlPanel do
         expect(config).not_to have_key('default_control_panel')
         expect(config).not_to have_key('routing_control_count')
         expect(config).not_to have_key('status')
+        expect(config).not_to have_key('tags_all')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_control_panel('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_control_panel', 'full')
+        expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes tags when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_control_panel('opt', required_attrs.merge(tags: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_control_panel', 'opt')
+        expect(config).to have_key('tags')
+      end
+
+      it 'omits tags when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_control_panel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_control_panel', 'minimal')
+        expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_control_panel('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_control_panel', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53recoverycontrolconfig_control_panel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53recoverycontrolconfig_control_panel', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -103,7 +157,7 @@ RSpec.describe Pangea::Resources::AWSRoute53recoverycontrolconfigControlPanel do
     resource_type: :aws_route53recoverycontrolconfig_control_panel,
     method: :aws_route53recoverycontrolconfig_control_panel,
     required_attrs: { cluster_arn: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :default_control_panel, :routing_control_count, :status],
+    expected_outputs: [:id, :arn, :default_control_panel, :routing_control_count, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

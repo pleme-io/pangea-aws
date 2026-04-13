@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServerEndpoint do
         expect(ref.arn).to eq("${aws_vpc_route_server_endpoint.test.arn}")
         expect(ref.eni_address).to eq("${aws_vpc_route_server_endpoint.test.eni_address}")
         expect(ref.eni_id).to eq("${aws_vpc_route_server_endpoint.test.eni_id}")
+        expect(ref.region).to eq("${aws_vpc_route_server_endpoint.test.region}")
         expect(ref.route_server_endpoint_id).to eq("${aws_vpc_route_server_endpoint.test.route_server_endpoint_id}")
         expect(ref.tags_all).to eq("${aws_vpc_route_server_endpoint.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_vpc_route_server_endpoint.test.vpc_id}")
@@ -58,6 +59,7 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServerEndpoint do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('eni_address')
         expect(config).not_to have_key('eni_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('route_server_endpoint_id')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServerEndpoint do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,11 +76,29 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServerEndpoint do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpc_route_server_endpoint', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_route_server_endpoint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_route_server_endpoint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_route_server_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_route_server_endpoint', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -141,7 +161,7 @@ RSpec.describe Pangea::Resources::AWSVpcRouteServerEndpoint do
     resource_type: :aws_vpc_route_server_endpoint,
     method: :aws_vpc_route_server_endpoint,
     required_attrs: { route_server_id: 'test-value', subnet_id: 'test-value' },
-    expected_outputs: [:id, :arn, :eni_address, :eni_id, :route_server_endpoint_id, :tags_all, :vpc_id],
+    expected_outputs: [:id, :arn, :eni_address, :eni_id, :region, :route_server_endpoint_id, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

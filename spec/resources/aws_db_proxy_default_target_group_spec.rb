@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSDbProxyDefaultTargetGroup do
         expect(ref.id).to eq("${aws_db_proxy_default_target_group.test.id}")
         expect(ref.arn).to eq("${aws_db_proxy_default_target_group.test.arn}")
         expect(ref.name).to eq("${aws_db_proxy_default_target_group.test.name}")
+        expect(ref.region).to eq("${aws_db_proxy_default_target_group.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSDbProxyDefaultTargetGroup do
         config = validate_resource_structure(result, 'aws_db_proxy_default_target_group', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('name')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ connection_pool_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ connection_pool_config: { 'key1' => 'val1' }, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSDbProxyDefaultTargetGroup do
 
         config = validate_resource_structure(result, 'aws_db_proxy_default_target_group', 'full')
         expect(config).to have_key('connection_pool_config')
+        expect(config).to have_key('region')
       end
     end
 
@@ -74,7 +77,7 @@ RSpec.describe Pangea::Resources::AWSDbProxyDefaultTargetGroup do
       it 'includes connection_pool_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_db_proxy_default_target_group('opt', required_attrs.merge(connection_pool_config: [{ 'key1' => 'val1' }]))
+        synth.aws_db_proxy_default_target_group('opt', required_attrs.merge(connection_pool_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_proxy_default_target_group', 'opt')
         expect(config).to have_key('connection_pool_config')
@@ -87,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSDbProxyDefaultTargetGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_proxy_default_target_group', 'minimal')
         expect(config).not_to have_key('connection_pool_config')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy_default_target_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy_default_target_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy_default_target_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy_default_target_group', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -132,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSDbProxyDefaultTargetGroup do
     resource_type: :aws_db_proxy_default_target_group,
     method: :aws_db_proxy_default_target_group,
     required_attrs: { db_proxy_name: 'test-value' },
-    expected_outputs: [:id, :arn, :name],
+    expected_outputs: [:id, :arn, :name, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

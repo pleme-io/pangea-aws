@@ -1,0 +1,8 @@
+name: aws_sqs_queue_redrive_allow_policy
+title: Manages a aws_sqs_queue_redrive_allow_policy resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

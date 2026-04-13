@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueDataQualityRulesetAttributes,
       outputs: { id: :id },
       map: [:name, :ruleset],
-      map_present: [:description, :tags, :tags_all, :target_table]
+      map_present: [:description, :region, :tags, :tags_all, :target_table]
   end
   module AWS
     include AWSGlueDataQualityRuleset

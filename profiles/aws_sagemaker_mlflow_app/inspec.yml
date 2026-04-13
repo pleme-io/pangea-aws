@@ -1,0 +1,8 @@
+name: aws_sagemaker_mlflow_app
+title: Manages a aws_sagemaker_mlflow_app resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

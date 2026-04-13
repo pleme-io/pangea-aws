@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncResolver do
 
         expect(ref.id).to eq("${aws_appsync_resolver.test.id}")
         expect(ref.arn).to eq("${aws_appsync_resolver.test.arn}")
+        expect(ref.region).to eq("${aws_appsync_resolver.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSAppsyncResolver do
 
         config = validate_resource_structure(result, 'aws_appsync_resolver', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ caching_config: [{ 'key1' => 'val1' }], code: 'test-value', data_source: 'test-value', kind: 'test-value', max_batch_size: 3.14, pipeline_config: [{ 'key1' => 'val1' }], request_template: 'test-value', response_template: 'test-value', runtime: [{ 'key1' => 'val1' }], sync_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ caching_config: { 'key1' => 'val1' }, code: 'test-value', data_source: 'test-value', kind: 'test-value', max_batch_size: 3.14, pipeline_config: { 'key1' => 'val1' }, region: 'test-value', request_template: 'test-value', response_template: 'test-value', runtime: { 'key1' => 'val1' }, sync_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,6 +72,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncResolver do
         expect(config).to have_key('kind')
         expect(config).to have_key('max_batch_size')
         expect(config).to have_key('pipeline_config')
+        expect(config).to have_key('region')
         expect(config).to have_key('request_template')
         expect(config).to have_key('response_template')
         expect(config).to have_key('runtime')
@@ -81,7 +84,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncResolver do
       it 'includes caching_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_resolver('opt', required_attrs.merge(caching_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_resolver('opt', required_attrs.merge(caching_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_resolver', 'opt')
         expect(config).to have_key('caching_config')
@@ -166,7 +169,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncResolver do
       it 'includes pipeline_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_resolver('opt', required_attrs.merge(pipeline_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_resolver('opt', required_attrs.merge(pipeline_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_resolver', 'opt')
         expect(config).to have_key('pipeline_config')
@@ -179,6 +182,23 @@ RSpec.describe Pangea::Resources::AWSAppsyncResolver do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_resolver', 'minimal')
         expect(config).not_to have_key('pipeline_config')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_resolver('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_resolver', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appsync_resolver('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appsync_resolver', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes request_template when provided' do
         synth = create_synthesizer
@@ -217,7 +237,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncResolver do
       it 'includes runtime when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_resolver('opt', required_attrs.merge(runtime: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_resolver('opt', required_attrs.merge(runtime: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_resolver', 'opt')
         expect(config).to have_key('runtime')
@@ -234,7 +254,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncResolver do
       it 'includes sync_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appsync_resolver('opt', required_attrs.merge(sync_config: [{ 'key1' => 'val1' }]))
+        synth.aws_appsync_resolver('opt', required_attrs.merge(sync_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appsync_resolver', 'opt')
         expect(config).to have_key('sync_config')
@@ -294,7 +314,7 @@ RSpec.describe Pangea::Resources::AWSAppsyncResolver do
     resource_type: :aws_appsync_resolver,
     method: :aws_appsync_resolver,
     required_attrs: { api_id: 'test-value', field: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

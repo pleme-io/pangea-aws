@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftEndpointAuthorization do
         expect(ref.endpoint_count).to eq("${aws_redshift_endpoint_authorization.test.endpoint_count}")
         expect(ref.grantee).to eq("${aws_redshift_endpoint_authorization.test.grantee}")
         expect(ref.grantor).to eq("${aws_redshift_endpoint_authorization.test.grantor}")
+        expect(ref.region).to eq("${aws_redshift_endpoint_authorization.test.region}")
       end
     end
 
@@ -57,11 +58,12 @@ RSpec.describe Pangea::Resources::AWSRedshiftEndpointAuthorization do
         expect(config).not_to have_key('endpoint_count')
         expect(config).not_to have_key('grantee')
         expect(config).not_to have_key('grantor')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ force_delete: true, vpc_ids: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ force_delete: true, region: 'test-value', vpc_ids: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +73,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftEndpointAuthorization do
 
         config = validate_resource_structure(result, 'aws_redshift_endpoint_authorization', 'full')
         expect(config).to have_key('force_delete')
+        expect(config).to have_key('region')
         expect(config).to have_key('vpc_ids')
       end
     end
@@ -92,6 +95,23 @@ RSpec.describe Pangea::Resources::AWSRedshiftEndpointAuthorization do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshift_endpoint_authorization', 'minimal')
         expect(config).not_to have_key('force_delete')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_endpoint_authorization('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_endpoint_authorization', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_endpoint_authorization('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_endpoint_authorization', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes vpc_ids when provided' do
         synth = create_synthesizer
@@ -169,7 +189,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftEndpointAuthorization do
     resource_type: :aws_redshift_endpoint_authorization,
     method: :aws_redshift_endpoint_authorization,
     required_attrs: { account: 'test-value', cluster_identifier: 'test-value' },
-    expected_outputs: [:id, :allowed_all_vpcs, :endpoint_count, :grantee, :grantor],
+    expected_outputs: [:id, :allowed_all_vpcs, :endpoint_count, :grantee, :grantor, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:force_delete]

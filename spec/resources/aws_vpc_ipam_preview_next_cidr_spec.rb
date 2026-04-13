@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPreviewNextCidr do
 
         expect(ref.id).to eq("${aws_vpc_ipam_preview_next_cidr.test.id}")
         expect(ref.cidr).to eq("${aws_vpc_ipam_preview_next_cidr.test.cidr}")
+        expect(ref.region).to eq("${aws_vpc_ipam_preview_next_cidr.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPreviewNextCidr do
 
         config = validate_resource_structure(result, 'aws_vpc_ipam_preview_next_cidr', 'test')
         expect(config).not_to have_key('cidr')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ disallowed_cidrs: ['test-value'], netmask_length: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ disallowed_cidrs: ['test-value'], netmask_length: 3.14, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,6 +68,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPreviewNextCidr do
         config = validate_resource_structure(result, 'aws_vpc_ipam_preview_next_cidr', 'full')
         expect(config).to have_key('disallowed_cidrs')
         expect(config).to have_key('netmask_length')
+        expect(config).to have_key('region')
       end
     end
 
@@ -103,6 +106,23 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPreviewNextCidr do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_ipam_preview_next_cidr', 'minimal')
         expect(config).not_to have_key('netmask_length')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_preview_next_cidr('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_preview_next_cidr', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_preview_next_cidr('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_preview_next_cidr', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -148,7 +168,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPreviewNextCidr do
     resource_type: :aws_vpc_ipam_preview_next_cidr,
     method: :aws_vpc_ipam_preview_next_cidr,
     required_attrs: { ipam_pool_id: 'test-value' },
-    expected_outputs: [:id, :cidr],
+    expected_outputs: [:id, :cidr, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

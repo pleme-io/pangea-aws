@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LambdaRuntimeManagementConfigAttributes,
       outputs: { id: :id },
       map: [:function_name],
-      map_present: [:qualifier, :runtime_version_arn, :update_runtime_on]
+      map_present: [:qualifier, :region, :runtime_version_arn, :update_runtime_on]
   end
   module AWS
     include AWSLambdaRuntimeManagementConfig

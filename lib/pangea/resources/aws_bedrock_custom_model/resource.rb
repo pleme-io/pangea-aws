@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BedrockCustomModelAttributes,
       outputs: { id: :id },
       map: [:base_model_identifier, :custom_model_name, :hyperparameters, :job_name, :role_arn],
-      map_present: [:custom_model_kms_key_id, :customization_type, :output_data_config, :tags, :training_data_config, :validation_data_config, :vpc_config]
+      map_present: [:custom_model_kms_key_id, :customization_type, :output_data_config, :region, :tags, :training_data_config, :validation_data_config, :vpc_config]
   end
   module AWS
     include AWSBedrockCustomModel

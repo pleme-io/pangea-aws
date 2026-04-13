@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerVpcConnector do
 
         expect(ref.id).to eq("${aws_apprunner_vpc_connector.test.id}")
         expect(ref.arn).to eq("${aws_apprunner_vpc_connector.test.arn}")
+        expect(ref.region).to eq("${aws_apprunner_vpc_connector.test.region}")
         expect(ref.status).to eq("${aws_apprunner_vpc_connector.test.status}")
         expect(ref.tags_all).to eq("${aws_apprunner_vpc_connector.test.tags_all}")
         expect(ref.vpc_connector_revision).to eq("${aws_apprunner_vpc_connector.test.vpc_connector_revision}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerVpcConnector do
 
         config = validate_resource_structure(result, 'aws_apprunner_vpc_connector', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_connector_revision')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerVpcConnector do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,11 +72,30 @@ RSpec.describe Pangea::Resources::AWSApprunnerVpcConnector do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_apprunner_vpc_connector', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_vpc_connector('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_vpc_connector', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_vpc_connector('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_vpc_connector', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -91,6 +112,23 @@ RSpec.describe Pangea::Resources::AWSApprunnerVpcConnector do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apprunner_vpc_connector', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_vpc_connector('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_vpc_connector', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_vpc_connector('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_vpc_connector', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -138,7 +176,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerVpcConnector do
     resource_type: :aws_apprunner_vpc_connector,
     method: :aws_apprunner_vpc_connector,
     required_attrs: { security_groups: ['test-value'], subnets: ['test-value'], vpc_connector_name: 'test-value' },
-    expected_outputs: [:id, :arn, :status, :tags_all, :vpc_connector_revision],
+    expected_outputs: [:id, :arn, :region, :status, :tags_all, :vpc_connector_revision],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

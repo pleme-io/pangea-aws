@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSEmrBlockPublicAccessConfiguration do
         ref = synth.aws_emr_block_public_access_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_emr_block_public_access_configuration.test.id}")
+        expect(ref.region).to eq("${aws_emr_block_public_access_configuration.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_block_public_access_configuration('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_emr_block_public_access_configuration', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ permitted_public_security_group_rule_range: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ permitted_public_security_group_rule_range: [{ 'key1' => 'val1' }], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSEmrBlockPublicAccessConfiguration do
 
         config = validate_resource_structure(result, 'aws_emr_block_public_access_configuration', 'full')
         expect(config).to have_key('permitted_public_security_group_rule_range')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSEmrBlockPublicAccessConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_block_public_access_configuration', 'minimal')
         expect(config).not_to have_key('permitted_public_security_group_rule_range')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_block_public_access_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_block_public_access_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_block_public_access_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_block_public_access_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -131,7 +162,7 @@ RSpec.describe Pangea::Resources::AWSEmrBlockPublicAccessConfiguration do
     resource_type: :aws_emr_block_public_access_configuration,
     method: :aws_emr_block_public_access_configuration,
     required_attrs: { block_public_security_group_rules: true },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:block_public_security_group_rules]

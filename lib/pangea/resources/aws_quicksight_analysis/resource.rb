@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::QuicksightAnalysisAttributes,
       outputs: { id: :id },
       map: [:analysis_id, :name],
-      map_present: [:aws_account_id, :definition, :parameters, :permissions, :recovery_window_in_days, :source_entity, :tags, :tags_all, :theme_arn]
+      map_present: [:aws_account_id, :definition, :parameters, :permissions, :recovery_window_in_days, :region, :source_entity, :tags, :tags_all, :theme_arn]
   end
   module AWS
     include AWSQuicksightAnalysis

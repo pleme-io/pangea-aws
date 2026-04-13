@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_fsx_backup,
       attributes_class: AWS::Types::FsxBackupAttributes,
       outputs: { id: :id },
-      map_present: [:file_system_id, :tags, :tags_all, :volume_id]
+      map_present: [:file_system_id, :region, :tags, :tags_all, :volume_id]
   end
   module AWS
     include AWSFsxBackup

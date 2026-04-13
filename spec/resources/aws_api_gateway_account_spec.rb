@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayAccount do
         expect(ref.api_key_version).to eq("${aws_api_gateway_account.test.api_key_version}")
         expect(ref.cloudwatch_role_arn).to eq("${aws_api_gateway_account.test.cloudwatch_role_arn}")
         expect(ref.features).to eq("${aws_api_gateway_account.test.features}")
+        expect(ref.region).to eq("${aws_api_gateway_account.test.region}")
         expect(ref.throttle_settings).to eq("${aws_api_gateway_account.test.throttle_settings}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSApiGatewayAccount do
         expect(config).not_to have_key('api_key_version')
         expect(config).not_to have_key('cloudwatch_role_arn')
         expect(config).not_to have_key('features')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('throttle_settings')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ reset_on_delete: true }) }
+      let(:all_attrs) { required_attrs.merge({ cloudwatch_role_arn: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,41 +72,45 @@ RSpec.describe Pangea::Resources::AWSApiGatewayAccount do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_api_gateway_account', 'full')
-        expect(config).to have_key('reset_on_delete')
+        expect(config).to have_key('cloudwatch_role_arn')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
-      it 'includes reset_on_delete when provided' do
+      it 'includes cloudwatch_role_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_api_gateway_account('opt', required_attrs.merge(reset_on_delete: true))
+        synth.aws_api_gateway_account('opt', required_attrs.merge(cloudwatch_role_arn: 'test-value'))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_account', 'opt')
-        expect(config).to have_key('reset_on_delete')
+        expect(config).to have_key('cloudwatch_role_arn')
       end
 
-      it 'omits reset_on_delete when not provided' do
+      it 'omits cloudwatch_role_arn when not provided' do
         synth = create_synthesizer
         synth.extend(described_class)
         synth.aws_api_gateway_account('minimal', required_attrs)
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_account', 'minimal')
-        expect(config).not_to have_key('reset_on_delete')
+        expect(config).not_to have_key('cloudwatch_role_arn')
       end
-    end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_account('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_account', 'opt')
+        expect(config).to have_key('region')
+      end
 
-    context 'boolean fields' do
-      [true, false].each do |val|
-        it "accepts reset_on_delete=#{val}" do
-          synth = create_synthesizer
-          synth.extend(described_class)
-          attrs = required_attrs.merge(reset_on_delete: val)
-          synth.aws_api_gateway_account("bool_#{val}", attrs)
-          result = normalize_synthesis(synth.synthesis)
-          config = validate_resource_structure(result, 'aws_api_gateway_account', "bool_#{val}")
-          expect(config['reset_on_delete']).to eq(val)
-        end
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_account('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_account', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -149,8 +155,8 @@ RSpec.describe Pangea::Resources::AWSApiGatewayAccount do
     resource_type: :aws_api_gateway_account,
     method: :aws_api_gateway_account,
     required_attrs: {},
-    expected_outputs: [:id, :api_key_version, :cloudwatch_role_arn, :features, :throttle_settings],
+    expected_outputs: [:id, :api_key_version, :cloudwatch_role_arn, :features, :region, :throttle_settings],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:reset_on_delete]
+    boolean_fields: []
 end

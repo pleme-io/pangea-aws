@@ -59,7 +59,7 @@ RSpec.describe Pangea::Resources::AWSRolesanywhereProfile do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enabled: true, managed_policy_arns: ['test-value'], require_instance_properties: true, role_arns: ['test-value'], session_policy: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ accept_role_session_name: true, duration_seconds: 3.14, enabled: true, managed_policy_arns: ['test-value'], require_instance_properties: true, role_arns: ['test-value'], session_policy: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,16 +68,53 @@ RSpec.describe Pangea::Resources::AWSRolesanywhereProfile do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_rolesanywhere_profile', 'full')
+        expect(config).to have_key('accept_role_session_name')
+        expect(config).to have_key('duration_seconds')
         expect(config).to have_key('enabled')
         expect(config).to have_key('managed_policy_arns')
         expect(config).to have_key('require_instance_properties')
         expect(config).to have_key('role_arns')
         expect(config).to have_key('session_policy')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes accept_role_session_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rolesanywhere_profile('opt', required_attrs.merge(accept_role_session_name: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rolesanywhere_profile', 'opt')
+        expect(config).to have_key('accept_role_session_name')
+      end
+
+      it 'omits accept_role_session_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rolesanywhere_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rolesanywhere_profile', 'minimal')
+        expect(config).not_to have_key('accept_role_session_name')
+      end
+      it 'includes duration_seconds when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rolesanywhere_profile('opt', required_attrs.merge(duration_seconds: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rolesanywhere_profile', 'opt')
+        expect(config).to have_key('duration_seconds')
+      end
+
+      it 'omits duration_seconds when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rolesanywhere_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rolesanywhere_profile', 'minimal')
+        expect(config).not_to have_key('duration_seconds')
+      end
       it 'includes enabled when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -180,9 +217,37 @@ RSpec.describe Pangea::Resources::AWSRolesanywhereProfile do
         config = validate_resource_structure(result, 'aws_rolesanywhere_profile', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rolesanywhere_profile('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rolesanywhere_profile', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rolesanywhere_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rolesanywhere_profile', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts accept_role_session_name=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(accept_role_session_name: val)
+          synth.aws_rolesanywhere_profile("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_rolesanywhere_profile', "bool_#{val}")
+          expect(config['accept_role_session_name']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts enabled=#{val}" do
           synth = create_synthesizer
@@ -252,5 +317,5 @@ RSpec.describe Pangea::Resources::AWSRolesanywhereProfile do
     expected_outputs: [:id, :arn, :duration_seconds, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:enabled, :require_instance_properties]
+    boolean_fields: [:accept_role_session_name, :enabled, :require_instance_properties]
 end

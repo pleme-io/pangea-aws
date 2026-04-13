@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_appsync_domain_name_api_association,
       attributes_class: AWS::Types::AppsyncDomainNameApiAssociationAttributes,
       outputs: { id: :id },
-      map: [:api_id, :domain_name]
+      map: [:api_id, :domain_name],
+      map_present: [:region]
   end
   module AWS
     include AWSAppsyncDomainNameApiAssociation

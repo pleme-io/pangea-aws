@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSLexBot do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { abort_statement: [{ 'key1' => 'val1' }], child_directed: true, intent: [{ 'key1' => 'val1' }], name: 'test-value' } }
+  let(:required_attrs) { { abort_statement: { 'key1' => 'val1' }, child_directed: true, intent: [{ 'key1' => 'val1' }], name: 'test-value' } }
 
   describe ':aws_lex_bot' do
     context 'with required attributes only' do
@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSLexBot do
         expect(ref.created_date).to eq("${aws_lex_bot.test.created_date}")
         expect(ref.failure_reason).to eq("${aws_lex_bot.test.failure_reason}")
         expect(ref.last_updated_date).to eq("${aws_lex_bot.test.last_updated_date}")
+        expect(ref.region).to eq("${aws_lex_bot.test.region}")
         expect(ref.status).to eq("${aws_lex_bot.test.status}")
         expect(ref.version).to eq("${aws_lex_bot.test.version}")
         expect(ref.voice_id).to eq("${aws_lex_bot.test.voice_id}")
@@ -62,6 +63,7 @@ RSpec.describe Pangea::Resources::AWSLexBot do
         expect(config).not_to have_key('created_date')
         expect(config).not_to have_key('failure_reason')
         expect(config).not_to have_key('last_updated_date')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('version')
         expect(config).not_to have_key('voice_id')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSLexBot do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ clarification_prompt: [{ 'key1' => 'val1' }], create_version: true, description: 'test-value', detect_sentiment: true, enable_model_improvements: true, idle_session_ttl_in_seconds: 3.14, locale: 'test-value', nlu_intent_confidence_threshold: 3.14, process_behavior: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ clarification_prompt: { 'key1' => 'val1' }, create_version: true, description: 'test-value', detect_sentiment: true, enable_model_improvements: true, idle_session_ttl_in_seconds: 3.14, locale: 'test-value', nlu_intent_confidence_threshold: 3.14, process_behavior: 'test-value', region: 'test-value', voice_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -87,6 +89,8 @@ RSpec.describe Pangea::Resources::AWSLexBot do
         expect(config).to have_key('locale')
         expect(config).to have_key('nlu_intent_confidence_threshold')
         expect(config).to have_key('process_behavior')
+        expect(config).to have_key('region')
+        expect(config).to have_key('voice_id')
       end
     end
 
@@ -94,7 +98,7 @@ RSpec.describe Pangea::Resources::AWSLexBot do
       it 'includes clarification_prompt when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lex_bot('opt', required_attrs.merge(clarification_prompt: [{ 'key1' => 'val1' }]))
+        synth.aws_lex_bot('opt', required_attrs.merge(clarification_prompt: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lex_bot', 'opt')
         expect(config).to have_key('clarification_prompt')
@@ -244,6 +248,40 @@ RSpec.describe Pangea::Resources::AWSLexBot do
         config = validate_resource_structure(result, 'aws_lex_bot', 'minimal')
         expect(config).not_to have_key('process_behavior')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lex_bot('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lex_bot', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lex_bot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lex_bot', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes voice_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lex_bot('opt', required_attrs.merge(voice_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lex_bot', 'opt')
+        expect(config).to have_key('voice_id')
+      end
+
+      it 'omits voice_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lex_bot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lex_bot', 'minimal')
+        expect(config).not_to have_key('voice_id')
+      end
     end
 
     context 'boolean fields' do
@@ -301,7 +339,7 @@ RSpec.describe Pangea::Resources::AWSLexBot do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lex_bot', 'typed')
-        expect(config['abort_statement']).to be_a(Array)
+        expect(config['abort_statement']).to be_a(Hash)
         expect([true, false]).to include(config['child_directed'])
         expect(config['intent']).to be_a(Array)
         expect(config['name']).to be_a(String)
@@ -337,8 +375,8 @@ RSpec.describe Pangea::Resources::AWSLexBot do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_lex_bot,
     method: :aws_lex_bot,
-    required_attrs: { abort_statement: [{ 'key1' => 'val1' }], child_directed: true, intent: [{ 'key1' => 'val1' }], name: 'test-value' },
-    expected_outputs: [:id, :arn, :checksum, :created_date, :failure_reason, :last_updated_date, :status, :version, :voice_id],
+    required_attrs: { abort_statement: { 'key1' => 'val1' }, child_directed: true, intent: [{ 'key1' => 'val1' }], name: 'test-value' },
+    expected_outputs: [:id, :arn, :checksum, :created_date, :failure_reason, :last_updated_date, :region, :status, :version, :voice_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:child_directed, :create_version, :detect_sentiment, :enable_model_improvements]

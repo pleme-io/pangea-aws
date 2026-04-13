@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftHsmClientCertificateAttributes,
       outputs: { id: :id },
       map: [:hsm_client_certificate_identifier],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSRedshiftHsmClientCertificate

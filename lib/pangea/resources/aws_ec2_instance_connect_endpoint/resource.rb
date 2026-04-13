@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2InstanceConnectEndpointAttributes,
       outputs: { id: :id },
       map: [:subnet_id],
-      map_present: [:security_group_ids, :tags],
+      map_present: [:ip_address_type, :region, :security_group_ids, :tags],
       map_bool: [:preserve_client_ip]
   end
   module AWS

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSecurityhubConfigurationPolicy do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { configuration_policy: [{ 'key1' => 'val1' }], name: 'test-value' } }
+  let(:required_attrs) { { configuration_policy: { 'key1' => 'val1' }, name: 'test-value' } }
 
   describe ':aws_securityhub_configuration_policy' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubConfigurationPolicy do
 
         expect(ref.id).to eq("${aws_securityhub_configuration_policy.test.id}")
         expect(ref.arn).to eq("${aws_securityhub_configuration_policy.test.arn}")
+        expect(ref.region).to eq("${aws_securityhub_configuration_policy.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSSecurityhubConfigurationPolicy do
 
         config = validate_resource_structure(result, 'aws_securityhub_configuration_policy', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubConfigurationPolicy do
 
         config = validate_resource_structure(result, 'aws_securityhub_configuration_policy', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
       end
     end
 
@@ -86,6 +89,23 @@ RSpec.describe Pangea::Resources::AWSSecurityhubConfigurationPolicy do
         config = validate_resource_structure(result, 'aws_securityhub_configuration_policy', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_configuration_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_configuration_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_configuration_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_configuration_policy', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'attribute types' do
@@ -96,7 +116,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubConfigurationPolicy do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_securityhub_configuration_policy', 'typed')
-        expect(config['configuration_policy']).to be_a(Array)
+        expect(config['configuration_policy']).to be_a(Hash)
         expect(config['name']).to be_a(String)
       end
     end
@@ -130,8 +150,8 @@ RSpec.describe Pangea::Resources::AWSSecurityhubConfigurationPolicy do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_securityhub_configuration_policy,
     method: :aws_securityhub_configuration_policy,
-    required_attrs: { configuration_policy: [{ 'key1' => 'val1' }], name: 'test-value' },
-    expected_outputs: [:id, :arn],
+    required_attrs: { configuration_policy: { 'key1' => 'val1' }, name: 'test-value' },
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

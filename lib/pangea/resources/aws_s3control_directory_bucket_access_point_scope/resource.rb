@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3controlDirectoryBucketAccessPointScopeAttributes,
       outputs: { id: :id },
       map: [:account_id, :name],
-      map_present: [:scope]
+      map_present: [:region, :scope]
   end
   module AWS
     include AWSS3controlDirectoryBucketAccessPointScope

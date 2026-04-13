@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSAcmCertificate do
         expect(ref.not_after).to eq("${aws_acm_certificate.test.not_after}")
         expect(ref.not_before).to eq("${aws_acm_certificate.test.not_before}")
         expect(ref.pending_renewal).to eq("${aws_acm_certificate.test.pending_renewal}")
+        expect(ref.region).to eq("${aws_acm_certificate.test.region}")
         expect(ref.renewal_eligibility).to eq("${aws_acm_certificate.test.renewal_eligibility}")
         expect(ref.renewal_summary).to eq("${aws_acm_certificate.test.renewal_summary}")
         expect(ref.status).to eq("${aws_acm_certificate.test.status}")
@@ -71,6 +72,7 @@ RSpec.describe Pangea::Resources::AWSAcmCertificate do
         expect(config).not_to have_key('not_after')
         expect(config).not_to have_key('not_before')
         expect(config).not_to have_key('pending_renewal')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('renewal_eligibility')
         expect(config).not_to have_key('renewal_summary')
         expect(config).not_to have_key('status')
@@ -83,7 +85,7 @@ RSpec.describe Pangea::Resources::AWSAcmCertificate do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ certificate_authority_arn: 'test-value', certificate_body: 'test-value', certificate_chain: 'test-value', early_renewal_duration: 'test-value', options: [{ 'key1' => 'val1' }], private_key: 'test-value', tags: { 'key1' => 'val1' }, validation_option: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ certificate_authority_arn: 'test-value', certificate_body: 'test-value', certificate_chain: 'test-value', domain_name: 'test-value', early_renewal_duration: 'test-value', key_algorithm: 'test-value', options: { 'key1' => 'val1' }, private_key: 'test-value', region: 'test-value', subject_alternative_names: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, validation_method: 'test-value', validation_option: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -95,10 +97,16 @@ RSpec.describe Pangea::Resources::AWSAcmCertificate do
         expect(config).to have_key('certificate_authority_arn')
         expect(config).to have_key('certificate_body')
         expect(config).to have_key('certificate_chain')
+        expect(config).to have_key('domain_name')
         expect(config).to have_key('early_renewal_duration')
+        expect(config).to have_key('key_algorithm')
         expect(config).to have_key('options')
         expect(config).to have_key('private_key')
+        expect(config).to have_key('region')
+        expect(config).to have_key('subject_alternative_names')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('validation_method')
         expect(config).to have_key('validation_option')
       end
     end
@@ -155,6 +163,23 @@ RSpec.describe Pangea::Resources::AWSAcmCertificate do
         config = validate_resource_structure(result, 'aws_acm_certificate', 'minimal')
         expect(config).not_to have_key('certificate_chain')
       end
+      it 'includes domain_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acm_certificate('opt', required_attrs.merge(domain_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acm_certificate', 'opt')
+        expect(config).to have_key('domain_name')
+      end
+
+      it 'omits domain_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acm_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acm_certificate', 'minimal')
+        expect(config).not_to have_key('domain_name')
+      end
       it 'includes early_renewal_duration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -172,10 +197,27 @@ RSpec.describe Pangea::Resources::AWSAcmCertificate do
         config = validate_resource_structure(result, 'aws_acm_certificate', 'minimal')
         expect(config).not_to have_key('early_renewal_duration')
       end
+      it 'includes key_algorithm when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acm_certificate('opt', required_attrs.merge(key_algorithm: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acm_certificate', 'opt')
+        expect(config).to have_key('key_algorithm')
+      end
+
+      it 'omits key_algorithm when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acm_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acm_certificate', 'minimal')
+        expect(config).not_to have_key('key_algorithm')
+      end
       it 'includes options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_acm_certificate('opt', required_attrs.merge(options: [{ 'key1' => 'val1' }]))
+        synth.aws_acm_certificate('opt', required_attrs.merge(options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_acm_certificate', 'opt')
         expect(config).to have_key('options')
@@ -206,6 +248,40 @@ RSpec.describe Pangea::Resources::AWSAcmCertificate do
         config = validate_resource_structure(result, 'aws_acm_certificate', 'minimal')
         expect(config).not_to have_key('private_key')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acm_certificate('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acm_certificate', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acm_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acm_certificate', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes subject_alternative_names when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acm_certificate('opt', required_attrs.merge(subject_alternative_names: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acm_certificate', 'opt')
+        expect(config).to have_key('subject_alternative_names')
+      end
+
+      it 'omits subject_alternative_names when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acm_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acm_certificate', 'minimal')
+        expect(config).not_to have_key('subject_alternative_names')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -222,6 +298,40 @@ RSpec.describe Pangea::Resources::AWSAcmCertificate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_acm_certificate', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acm_certificate('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acm_certificate', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acm_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acm_certificate', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes validation_method when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acm_certificate('opt', required_attrs.merge(validation_method: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acm_certificate', 'opt')
+        expect(config).to have_key('validation_method')
+      end
+
+      it 'omits validation_method when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acm_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acm_certificate', 'minimal')
+        expect(config).not_to have_key('validation_method')
       end
       it 'includes validation_option when provided' do
         synth = create_synthesizer
@@ -290,7 +400,7 @@ RSpec.describe Pangea::Resources::AWSAcmCertificate do
     resource_type: :aws_acm_certificate,
     method: :aws_acm_certificate,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :domain_name, :domain_validation_options, :key_algorithm, :not_after, :not_before, :pending_renewal, :renewal_eligibility, :renewal_summary, :status, :subject_alternative_names, :tags_all, :type, :validation_emails, :validation_method],
+    expected_outputs: [:id, :arn, :domain_name, :domain_validation_options, :key_algorithm, :not_after, :not_before, :pending_renewal, :region, :renewal_eligibility, :renewal_summary, :status, :subject_alternative_names, :tags_all, :type, :validation_emails, :validation_method],
     sensitive_fields: [:private_key],
     immutable_fields: [],
     boolean_fields: []

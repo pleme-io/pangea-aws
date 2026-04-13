@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSKinesisVideoStream do
         expect(ref.arn).to eq("${aws_kinesis_video_stream.test.arn}")
         expect(ref.creation_time).to eq("${aws_kinesis_video_stream.test.creation_time}")
         expect(ref.kms_key_id).to eq("${aws_kinesis_video_stream.test.kms_key_id}")
+        expect(ref.region).to eq("${aws_kinesis_video_stream.test.region}")
         expect(ref.tags_all).to eq("${aws_kinesis_video_stream.test.tags_all}")
         expect(ref.version).to eq("${aws_kinesis_video_stream.test.version}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSKinesisVideoStream do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('creation_time')
         expect(config).not_to have_key('kms_key_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('version')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ data_retention_in_hours: 3.14, device_name: 'test-value', media_type: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ data_retention_in_hours: 3.14, device_name: 'test-value', kms_key_id: 'test-value', media_type: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,8 +76,11 @@ RSpec.describe Pangea::Resources::AWSKinesisVideoStream do
         config = validate_resource_structure(result, 'aws_kinesis_video_stream', 'full')
         expect(config).to have_key('data_retention_in_hours')
         expect(config).to have_key('device_name')
+        expect(config).to have_key('kms_key_id')
         expect(config).to have_key('media_type')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -114,6 +119,23 @@ RSpec.describe Pangea::Resources::AWSKinesisVideoStream do
         config = validate_resource_structure(result, 'aws_kinesis_video_stream', 'minimal')
         expect(config).not_to have_key('device_name')
       end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_video_stream('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_video_stream', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_video_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_video_stream', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
       it 'includes media_type when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -131,6 +153,23 @@ RSpec.describe Pangea::Resources::AWSKinesisVideoStream do
         config = validate_resource_structure(result, 'aws_kinesis_video_stream', 'minimal')
         expect(config).not_to have_key('media_type')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_video_stream('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_video_stream', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_video_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_video_stream', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -147,6 +186,23 @@ RSpec.describe Pangea::Resources::AWSKinesisVideoStream do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kinesis_video_stream', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_video_stream('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_video_stream', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_video_stream('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_video_stream', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -192,7 +248,7 @@ RSpec.describe Pangea::Resources::AWSKinesisVideoStream do
     resource_type: :aws_kinesis_video_stream,
     method: :aws_kinesis_video_stream,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :creation_time, :kms_key_id, :tags_all, :version],
+    expected_outputs: [:id, :arn, :creation_time, :kms_key_id, :region, :tags_all, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSAppstreamUser do
         expect(ref.id).to eq("${aws_appstream_user.test.id}")
         expect(ref.arn).to eq("${aws_appstream_user.test.arn}")
         expect(ref.created_time).to eq("${aws_appstream_user.test.created_time}")
+        expect(ref.region).to eq("${aws_appstream_user.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSAppstreamUser do
         config = validate_resource_structure(result, 'aws_appstream_user', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created_time')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enabled: true, first_name: 'test-value', last_name: 'test-value', send_email_notification: true }) }
+      let(:all_attrs) { required_attrs.merge({ enabled: true, first_name: 'test-value', last_name: 'test-value', region: 'test-value', send_email_notification: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSAppstreamUser do
         expect(config).to have_key('enabled')
         expect(config).to have_key('first_name')
         expect(config).to have_key('last_name')
+        expect(config).to have_key('region')
         expect(config).to have_key('send_email_notification')
       end
     end
@@ -124,6 +127,23 @@ RSpec.describe Pangea::Resources::AWSAppstreamUser do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appstream_user', 'minimal')
         expect(config).not_to have_key('last_name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_user('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_user', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_user('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_user', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes send_email_notification when provided' do
         synth = create_synthesizer
@@ -212,7 +232,7 @@ RSpec.describe Pangea::Resources::AWSAppstreamUser do
     resource_type: :aws_appstream_user,
     method: :aws_appstream_user,
     required_attrs: { authentication_type: 'test-value', user_name: 'test-value' },
-    expected_outputs: [:id, :arn, :created_time],
+    expected_outputs: [:id, :arn, :created_time, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled, :send_email_notification]

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerDeployment do
 
         expect(ref.id).to eq("${aws_apprunner_deployment.test.id}")
         expect(ref.operation_id).to eq("${aws_apprunner_deployment.test.operation_id}")
+        expect(ref.region).to eq("${aws_apprunner_deployment.test.region}")
         expect(ref.status).to eq("${aws_apprunner_deployment.test.status}")
       end
     end
@@ -52,7 +53,42 @@ RSpec.describe Pangea::Resources::AWSApprunnerDeployment do
 
         config = validate_resource_structure(result, 'aws_apprunner_deployment', 'test')
         expect(config).not_to have_key('operation_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_deployment('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_apprunner_deployment', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_deployment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_deployment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_deployment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_deployment', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -98,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerDeployment do
     resource_type: :aws_apprunner_deployment,
     method: :aws_apprunner_deployment,
     required_attrs: { service_arn: 'test-value' },
-    expected_outputs: [:id, :operation_id, :status],
+    expected_outputs: [:id, :operation_id, :region, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

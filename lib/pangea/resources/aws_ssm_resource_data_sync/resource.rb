@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ssm_resource_data_sync,
       attributes_class: AWS::Types::SsmResourceDataSyncAttributes,
       outputs: { id: :id },
-      map: [:name, :s3_destination]
+      map: [:name, :s3_destination],
+      map_present: [:region]
   end
   module AWS
     include AWSSsmResourceDataSync

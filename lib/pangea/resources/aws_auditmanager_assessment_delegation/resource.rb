@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AuditmanagerAssessmentDelegationAttributes,
       outputs: { id: :id },
       map: [:assessment_id, :control_set_id, :role_arn, :role_type],
-      map_present: [:comment]
+      map_present: [:comment, :region]
   end
   module AWS
     include AWSAuditmanagerAssessmentDelegation

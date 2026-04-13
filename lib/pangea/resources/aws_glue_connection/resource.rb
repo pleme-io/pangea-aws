@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueConnectionAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:athena_properties, :catalog_id, :connection_properties, :connection_type, :description, :match_criteria, :physical_connection_requirements, :tags, :tags_all]
+      map_present: [:athena_properties, :catalog_id, :connection_properties, :connection_type, :description, :match_criteria, :physical_connection_requirements, :region, :tags, :tags_all]
   end
   module AWS
     include AWSGlueConnection

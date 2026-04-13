@@ -56,6 +56,7 @@ RSpec.describe Pangea::Resources::AWSNetworkInterface do
         expect(ref.private_ip_list).to eq("${aws_network_interface.test.private_ip_list}")
         expect(ref.private_ips).to eq("${aws_network_interface.test.private_ips}")
         expect(ref.private_ips_count).to eq("${aws_network_interface.test.private_ips_count}")
+        expect(ref.region).to eq("${aws_network_interface.test.region}")
         expect(ref.security_groups).to eq("${aws_network_interface.test.security_groups}")
         expect(ref.tags_all).to eq("${aws_network_interface.test.tags_all}")
       end
@@ -87,13 +88,14 @@ RSpec.describe Pangea::Resources::AWSNetworkInterface do
         expect(config).not_to have_key('private_ip_list')
         expect(config).not_to have_key('private_ips')
         expect(config).not_to have_key('private_ips_count')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_groups')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ attachment: [{ 'key1' => 'val1' }], description: 'test-value', ipv6_address_list_enabled: true, private_ip_list_enabled: true, source_dest_check: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ attachment: [{ 'key1' => 'val1' }], description: 'test-value', enable_primary_ipv6: true, interface_type: 'test-value', ipv4_prefix_count: 3.14, ipv4_prefixes: ['test-value'], ipv6_address_count: 3.14, ipv6_address_list: ['test-value'], ipv6_address_list_enabled: true, ipv6_addresses: ['test-value'], ipv6_prefix_count: 3.14, ipv6_prefixes: ['test-value'], private_ip: 'test-value', private_ip_list: ['test-value'], private_ip_list_enabled: true, private_ips: ['test-value'], private_ips_count: 3.14, region: 'test-value', security_groups: ['test-value'], source_dest_check: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -104,10 +106,26 @@ RSpec.describe Pangea::Resources::AWSNetworkInterface do
         config = validate_resource_structure(result, 'aws_network_interface', 'full')
         expect(config).to have_key('attachment')
         expect(config).to have_key('description')
+        expect(config).to have_key('enable_primary_ipv6')
+        expect(config).to have_key('interface_type')
+        expect(config).to have_key('ipv4_prefix_count')
+        expect(config).to have_key('ipv4_prefixes')
+        expect(config).to have_key('ipv6_address_count')
+        expect(config).to have_key('ipv6_address_list')
         expect(config).to have_key('ipv6_address_list_enabled')
+        expect(config).to have_key('ipv6_addresses')
+        expect(config).to have_key('ipv6_prefix_count')
+        expect(config).to have_key('ipv6_prefixes')
+        expect(config).to have_key('private_ip')
+        expect(config).to have_key('private_ip_list')
         expect(config).to have_key('private_ip_list_enabled')
+        expect(config).to have_key('private_ips')
+        expect(config).to have_key('private_ips_count')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_groups')
         expect(config).to have_key('source_dest_check')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -146,6 +164,108 @@ RSpec.describe Pangea::Resources::AWSNetworkInterface do
         config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes enable_primary_ipv6 when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(enable_primary_ipv6: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('enable_primary_ipv6')
+      end
+
+      it 'omits enable_primary_ipv6 when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('enable_primary_ipv6')
+      end
+      it 'includes interface_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(interface_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('interface_type')
+      end
+
+      it 'omits interface_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('interface_type')
+      end
+      it 'includes ipv4_prefix_count when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(ipv4_prefix_count: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('ipv4_prefix_count')
+      end
+
+      it 'omits ipv4_prefix_count when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('ipv4_prefix_count')
+      end
+      it 'includes ipv4_prefixes when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(ipv4_prefixes: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('ipv4_prefixes')
+      end
+
+      it 'omits ipv4_prefixes when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('ipv4_prefixes')
+      end
+      it 'includes ipv6_address_count when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(ipv6_address_count: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('ipv6_address_count')
+      end
+
+      it 'omits ipv6_address_count when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('ipv6_address_count')
+      end
+      it 'includes ipv6_address_list when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(ipv6_address_list: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('ipv6_address_list')
+      end
+
+      it 'omits ipv6_address_list when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('ipv6_address_list')
+      end
       it 'includes ipv6_address_list_enabled when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -163,6 +283,91 @@ RSpec.describe Pangea::Resources::AWSNetworkInterface do
         config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
         expect(config).not_to have_key('ipv6_address_list_enabled')
       end
+      it 'includes ipv6_addresses when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(ipv6_addresses: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('ipv6_addresses')
+      end
+
+      it 'omits ipv6_addresses when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('ipv6_addresses')
+      end
+      it 'includes ipv6_prefix_count when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(ipv6_prefix_count: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('ipv6_prefix_count')
+      end
+
+      it 'omits ipv6_prefix_count when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('ipv6_prefix_count')
+      end
+      it 'includes ipv6_prefixes when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(ipv6_prefixes: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('ipv6_prefixes')
+      end
+
+      it 'omits ipv6_prefixes when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('ipv6_prefixes')
+      end
+      it 'includes private_ip when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(private_ip: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('private_ip')
+      end
+
+      it 'omits private_ip when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('private_ip')
+      end
+      it 'includes private_ip_list when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(private_ip_list: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('private_ip_list')
+      end
+
+      it 'omits private_ip_list when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('private_ip_list')
+      end
       it 'includes private_ip_list_enabled when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -179,6 +384,74 @@ RSpec.describe Pangea::Resources::AWSNetworkInterface do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
         expect(config).not_to have_key('private_ip_list_enabled')
+      end
+      it 'includes private_ips when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(private_ips: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('private_ips')
+      end
+
+      it 'omits private_ips when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('private_ips')
+      end
+      it 'includes private_ips_count when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(private_ips_count: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('private_ips_count')
+      end
+
+      it 'omits private_ips_count when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('private_ips_count')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_groups when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(security_groups: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('security_groups')
+      end
+
+      it 'omits security_groups when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('security_groups')
       end
       it 'includes source_dest_check when provided' do
         synth = create_synthesizer
@@ -214,9 +487,37 @@ RSpec.describe Pangea::Resources::AWSNetworkInterface do
         config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts enable_primary_ipv6=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enable_primary_ipv6: val)
+          synth.aws_network_interface("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_network_interface', "bool_#{val}")
+          expect(config['enable_primary_ipv6']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts ipv6_address_list_enabled=#{val}" do
           synth = create_synthesizer
@@ -294,8 +595,8 @@ RSpec.describe Pangea::Resources::AWSNetworkInterface do
     resource_type: :aws_network_interface,
     method: :aws_network_interface,
     required_attrs: { subnet_id: 'test-value' },
-    expected_outputs: [:id, :arn, :enable_primary_ipv6, :interface_type, :ipv4_prefix_count, :ipv4_prefixes, :ipv6_address_count, :ipv6_address_list, :ipv6_addresses, :ipv6_prefix_count, :ipv6_prefixes, :mac_address, :outpost_arn, :owner_id, :private_dns_name, :private_ip, :private_ip_list, :private_ips, :private_ips_count, :security_groups, :tags_all],
+    expected_outputs: [:id, :arn, :enable_primary_ipv6, :interface_type, :ipv4_prefix_count, :ipv4_prefixes, :ipv6_address_count, :ipv6_address_list, :ipv6_addresses, :ipv6_prefix_count, :ipv6_prefixes, :mac_address, :outpost_arn, :owner_id, :private_dns_name, :private_ip, :private_ip_list, :private_ips, :private_ips_count, :region, :security_groups, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:ipv6_address_list_enabled, :private_ip_list_enabled, :source_dest_check]
+    boolean_fields: [:enable_primary_ipv6, :ipv6_address_list_enabled, :private_ip_list_enabled, :source_dest_check]
 end

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSMedialiveChannel do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { channel_class: 'test-value', destinations: [{ 'key1' => 'val1' }], encoder_settings: [{ 'key1' => 'val1' }], input_attachments: [{ 'key1' => 'val1' }], input_specification: [{ 'key1' => 'val1' }], name: 'test-value' } }
+  let(:required_attrs) { { channel_class: 'test-value', destinations: [{ 'key1' => 'val1' }], encoder_settings: { 'key1' => 'val1' }, input_attachments: [{ 'key1' => 'val1' }], input_specification: { 'key1' => 'val1' }, name: 'test-value' } }
 
   describe ':aws_medialive_channel' do
     context 'with required attributes only' do
@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSMedialiveChannel do
         expect(ref.arn).to eq("${aws_medialive_channel.test.arn}")
         expect(ref.channel_id).to eq("${aws_medialive_channel.test.channel_id}")
         expect(ref.log_level).to eq("${aws_medialive_channel.test.log_level}")
+        expect(ref.region).to eq("${aws_medialive_channel.test.region}")
         expect(ref.tags_all).to eq("${aws_medialive_channel.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSMedialiveChannel do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('channel_id')
         expect(config).not_to have_key('log_level')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cdi_input_specification: [{ 'key1' => 'val1' }], maintenance: [{ 'key1' => 'val1' }], role_arn: 'test-value', start_channel: true, tags: { 'key1' => 'val1' }, vpc: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ cdi_input_specification: { 'key1' => 'val1' }, log_level: 'test-value', maintenance: { 'key1' => 'val1' }, region: 'test-value', role_arn: 'test-value', start_channel: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,10 +73,13 @@ RSpec.describe Pangea::Resources::AWSMedialiveChannel do
 
         config = validate_resource_structure(result, 'aws_medialive_channel', 'full')
         expect(config).to have_key('cdi_input_specification')
+        expect(config).to have_key('log_level')
         expect(config).to have_key('maintenance')
+        expect(config).to have_key('region')
         expect(config).to have_key('role_arn')
         expect(config).to have_key('start_channel')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc')
       end
     end
@@ -83,7 +88,7 @@ RSpec.describe Pangea::Resources::AWSMedialiveChannel do
       it 'includes cdi_input_specification when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_medialive_channel('opt', required_attrs.merge(cdi_input_specification: [{ 'key1' => 'val1' }]))
+        synth.aws_medialive_channel('opt', required_attrs.merge(cdi_input_specification: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_medialive_channel', 'opt')
         expect(config).to have_key('cdi_input_specification')
@@ -97,10 +102,27 @@ RSpec.describe Pangea::Resources::AWSMedialiveChannel do
         config = validate_resource_structure(result, 'aws_medialive_channel', 'minimal')
         expect(config).not_to have_key('cdi_input_specification')
       end
+      it 'includes log_level when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_medialive_channel('opt', required_attrs.merge(log_level: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_medialive_channel', 'opt')
+        expect(config).to have_key('log_level')
+      end
+
+      it 'omits log_level when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_medialive_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_medialive_channel', 'minimal')
+        expect(config).not_to have_key('log_level')
+      end
       it 'includes maintenance when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_medialive_channel('opt', required_attrs.merge(maintenance: [{ 'key1' => 'val1' }]))
+        synth.aws_medialive_channel('opt', required_attrs.merge(maintenance: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_medialive_channel', 'opt')
         expect(config).to have_key('maintenance')
@@ -113,6 +135,23 @@ RSpec.describe Pangea::Resources::AWSMedialiveChannel do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_medialive_channel', 'minimal')
         expect(config).not_to have_key('maintenance')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_medialive_channel('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_medialive_channel', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_medialive_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_medialive_channel', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes role_arn when provided' do
         synth = create_synthesizer
@@ -165,10 +204,27 @@ RSpec.describe Pangea::Resources::AWSMedialiveChannel do
         config = validate_resource_structure(result, 'aws_medialive_channel', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_medialive_channel('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_medialive_channel', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_medialive_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_medialive_channel', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes vpc when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_medialive_channel('opt', required_attrs.merge(vpc: [{ 'key1' => 'val1' }]))
+        synth.aws_medialive_channel('opt', required_attrs.merge(vpc: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_medialive_channel', 'opt')
         expect(config).to have_key('vpc')
@@ -208,9 +264,9 @@ RSpec.describe Pangea::Resources::AWSMedialiveChannel do
         config = validate_resource_structure(result, 'aws_medialive_channel', 'typed')
         expect(config['channel_class']).to be_a(String)
         expect(config['destinations']).to be_a(Array)
-        expect(config['encoder_settings']).to be_a(Array)
+        expect(config['encoder_settings']).to be_a(Hash)
         expect(config['input_attachments']).to be_a(Array)
-        expect(config['input_specification']).to be_a(Array)
+        expect(config['input_specification']).to be_a(Hash)
         expect(config['name']).to be_a(String)
       end
     end
@@ -244,8 +300,8 @@ RSpec.describe Pangea::Resources::AWSMedialiveChannel do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_medialive_channel,
     method: :aws_medialive_channel,
-    required_attrs: { channel_class: 'test-value', destinations: [{ 'key1' => 'val1' }], encoder_settings: [{ 'key1' => 'val1' }], input_attachments: [{ 'key1' => 'val1' }], input_specification: [{ 'key1' => 'val1' }], name: 'test-value' },
-    expected_outputs: [:id, :arn, :channel_id, :log_level, :tags_all],
+    required_attrs: { channel_class: 'test-value', destinations: [{ 'key1' => 'val1' }], encoder_settings: { 'key1' => 'val1' }, input_attachments: [{ 'key1' => 'val1' }], input_specification: { 'key1' => 'val1' }, name: 'test-value' },
+    expected_outputs: [:id, :arn, :channel_id, :log_level, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:start_channel]

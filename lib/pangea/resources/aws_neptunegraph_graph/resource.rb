@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NeptunegraphGraphAttributes,
       outputs: { id: :id },
       map: [:provisioned_memory],
-      map_present: [:graph_name, :graph_name_prefix, :kms_key_identifier, :replica_count, :tags, :vector_search_configuration],
+      map_present: [:graph_name, :graph_name_prefix, :kms_key_identifier, :region, :replica_count, :tags, :vector_search_configuration],
       map_bool: [:deletion_protection, :public_connectivity]
   end
   module AWS

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerServiceDeploymentVersion 
 
         expect(ref.id).to eq("${aws_lightsail_container_service_deployment_version.test.id}")
         expect(ref.created_at).to eq("${aws_lightsail_container_service_deployment_version.test.created_at}")
+        expect(ref.region).to eq("${aws_lightsail_container_service_deployment_version.test.region}")
         expect(ref.state).to eq("${aws_lightsail_container_service_deployment_version.test.state}")
         expect(ref.version).to eq("${aws_lightsail_container_service_deployment_version.test.version}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerServiceDeploymentVersion 
 
         config = validate_resource_structure(result, 'aws_lightsail_container_service_deployment_version', 'test')
         expect(config).not_to have_key('created_at')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('version')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ public_endpoint: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ public_endpoint: { 'key1' => 'val1' }, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerServiceDeploymentVersion 
 
         config = validate_resource_structure(result, 'aws_lightsail_container_service_deployment_version', 'full')
         expect(config).to have_key('public_endpoint')
+        expect(config).to have_key('region')
       end
     end
 
@@ -76,7 +79,7 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerServiceDeploymentVersion 
       it 'includes public_endpoint when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lightsail_container_service_deployment_version('opt', required_attrs.merge(public_endpoint: [{ 'key1' => 'val1' }]))
+        synth.aws_lightsail_container_service_deployment_version('opt', required_attrs.merge(public_endpoint: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_container_service_deployment_version', 'opt')
         expect(config).to have_key('public_endpoint')
@@ -89,6 +92,23 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerServiceDeploymentVersion 
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_container_service_deployment_version', 'minimal')
         expect(config).not_to have_key('public_endpoint')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_container_service_deployment_version('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_container_service_deployment_version', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_container_service_deployment_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_container_service_deployment_version', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -135,7 +155,7 @@ RSpec.describe Pangea::Resources::AWSLightsailContainerServiceDeploymentVersion 
     resource_type: :aws_lightsail_container_service_deployment_version,
     method: :aws_lightsail_container_service_deployment_version,
     required_attrs: { container: [{ 'key1' => 'val1' }], service_name: 'test-value' },
-    expected_outputs: [:id, :created_at, :state, :version],
+    expected_outputs: [:id, :created_at, :region, :state, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

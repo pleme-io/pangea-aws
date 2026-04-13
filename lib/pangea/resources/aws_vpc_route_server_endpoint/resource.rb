@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcRouteServerEndpointAttributes,
       outputs: { id: :id },
       map: [:route_server_id, :subnet_id],
-      map_present: [:tags]
+      map_present: [:region, :tags]
   end
   module AWS
     include AWSVpcRouteServerEndpoint

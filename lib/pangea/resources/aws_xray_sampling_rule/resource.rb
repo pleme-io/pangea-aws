@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::XraySamplingRuleAttributes,
       outputs: { id: :id },
       map: [:fixed_rate, :host, :http_method, :priority, :reservoir_size, :resource_arn, :service_name, :service_type, :url_path, :version],
-      map_present: [:attributes, :rule_name, :tags, :tags_all]
+      map_present: [:attributes, :region, :rule_name, :tags, :tags_all]
   end
   module AWS
     include AWSXraySamplingRule

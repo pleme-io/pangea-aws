@@ -1,0 +1,8 @@
+name: aws_customer_gateway
+title: Manages a aws_customer_gateway resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

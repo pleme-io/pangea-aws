@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_lambda_function_recursion_config,
       attributes_class: AWS::Types::LambdaFunctionRecursionConfigAttributes,
       outputs: { id: :id },
-      map: [:function_name, :recursive_loop]
+      map: [:function_name, :recursive_loop],
+      map_present: [:region]
   end
   module AWS
     include AWSLambdaFunctionRecursionConfig

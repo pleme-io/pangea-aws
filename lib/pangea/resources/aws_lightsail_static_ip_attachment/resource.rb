@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_lightsail_static_ip_attachment,
       attributes_class: AWS::Types::LightsailStaticIpAttachmentAttributes,
       outputs: { id: :id },
-      map: [:instance_name, :static_ip_name]
+      map: [:instance_name, :static_ip_name],
+      map_present: [:region]
   end
   module AWS
     include AWSLightsailStaticIpAttachment

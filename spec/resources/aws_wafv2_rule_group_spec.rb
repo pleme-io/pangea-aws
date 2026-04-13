@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSWafv2RuleGroup do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { capacity: 3.14, scope: 'test-value', visibility_config: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { capacity: 3.14, scope: 'test-value', visibility_config: { 'key1' => 'val1' } } }
 
   describe ':aws_wafv2_rule_group' do
     context 'with required attributes only' do
@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSWafv2RuleGroup do
         expect(ref.lock_token).to eq("${aws_wafv2_rule_group.test.lock_token}")
         expect(ref.name).to eq("${aws_wafv2_rule_group.test.name}")
         expect(ref.name_prefix).to eq("${aws_wafv2_rule_group.test.name_prefix}")
+        expect(ref.region).to eq("${aws_wafv2_rule_group.test.region}")
         expect(ref.tags_all).to eq("${aws_wafv2_rule_group.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSWafv2RuleGroup do
         expect(config).not_to have_key('lock_token')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ custom_response_body: [{ 'key1' => 'val1' }], description: 'test-value', rule: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ custom_response_body: [{ 'key1' => 'val1' }], description: 'test-value', name: 'test-value', name_prefix: 'test-value', region: 'test-value', rule: [{ 'key1' => 'val1' }], rules_json: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,8 +76,13 @@ RSpec.describe Pangea::Resources::AWSWafv2RuleGroup do
         config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'full')
         expect(config).to have_key('custom_response_body')
         expect(config).to have_key('description')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
         expect(config).to have_key('rule')
+        expect(config).to have_key('rules_json')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -114,6 +121,57 @@ RSpec.describe Pangea::Resources::AWSWafv2RuleGroup do
         config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_rule_group('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_rule_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_rule_group('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_rule_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_rule_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_rule_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes rule when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -130,6 +188,23 @@ RSpec.describe Pangea::Resources::AWSWafv2RuleGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'minimal')
         expect(config).not_to have_key('rule')
+      end
+      it 'includes rules_json when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_rule_group('opt', required_attrs.merge(rules_json: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'opt')
+        expect(config).to have_key('rules_json')
+      end
+
+      it 'omits rules_json when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_rule_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'minimal')
+        expect(config).not_to have_key('rules_json')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -148,6 +223,23 @@ RSpec.describe Pangea::Resources::AWSWafv2RuleGroup do
         config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_rule_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_rule_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -160,7 +252,7 @@ RSpec.describe Pangea::Resources::AWSWafv2RuleGroup do
         config = validate_resource_structure(result, 'aws_wafv2_rule_group', 'typed')
         expect(config['capacity']).to be_a(Float)
         expect(config['scope']).to be_a(String)
-        expect(config['visibility_config']).to be_a(Array)
+        expect(config['visibility_config']).to be_a(Hash)
       end
     end
 
@@ -193,8 +285,8 @@ RSpec.describe Pangea::Resources::AWSWafv2RuleGroup do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_wafv2_rule_group,
     method: :aws_wafv2_rule_group,
-    required_attrs: { capacity: 3.14, scope: 'test-value', visibility_config: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :lock_token, :name, :name_prefix, :tags_all],
+    required_attrs: { capacity: 3.14, scope: 'test-value', visibility_config: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :lock_token, :name, :name_prefix, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSM2Application do
         expect(ref.application_id).to eq("${aws_m2_application.test.application_id}")
         expect(ref.arn).to eq("${aws_m2_application.test.arn}")
         expect(ref.current_version).to eq("${aws_m2_application.test.current_version}")
+        expect(ref.region).to eq("${aws_m2_application.test.region}")
         expect(ref.tags_all).to eq("${aws_m2_application.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSM2Application do
         expect(config).not_to have_key('application_id')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('current_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ definition: [{ 'key1' => 'val1' }], description: 'test-value', kms_key_id: 'test-value', role_arn: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ definition: [{ 'key1' => 'val1' }], description: 'test-value', kms_key_id: 'test-value', region: 'test-value', role_arn: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,6 +75,7 @@ RSpec.describe Pangea::Resources::AWSM2Application do
         expect(config).to have_key('definition')
         expect(config).to have_key('description')
         expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('role_arn')
         expect(config).to have_key('tags')
       end
@@ -129,6 +132,23 @@ RSpec.describe Pangea::Resources::AWSM2Application do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_m2_application', 'minimal')
         expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_application('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_application', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_m2_application('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_m2_application', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes role_arn when provided' do
         synth = create_synthesizer
@@ -209,7 +229,7 @@ RSpec.describe Pangea::Resources::AWSM2Application do
     resource_type: :aws_m2_application,
     method: :aws_m2_application,
     required_attrs: { engine_type: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :application_id, :arn, :current_version, :tags_all],
+    expected_outputs: [:id, :application_id, :arn, :current_version, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

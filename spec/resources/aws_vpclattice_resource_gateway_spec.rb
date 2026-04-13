@@ -40,6 +40,8 @@ RSpec.describe Pangea::Resources::AWSVpclatticeResourceGateway do
         expect(ref.id).to eq("${aws_vpclattice_resource_gateway.test.id}")
         expect(ref.arn).to eq("${aws_vpclattice_resource_gateway.test.arn}")
         expect(ref.ip_address_type).to eq("${aws_vpclattice_resource_gateway.test.ip_address_type}")
+        expect(ref.ipv4_addresses_per_eni).to eq("${aws_vpclattice_resource_gateway.test.ipv4_addresses_per_eni}")
+        expect(ref.region).to eq("${aws_vpclattice_resource_gateway.test.region}")
         expect(ref.security_group_ids).to eq("${aws_vpclattice_resource_gateway.test.security_group_ids}")
         expect(ref.status).to eq("${aws_vpclattice_resource_gateway.test.status}")
         expect(ref.tags_all).to eq("${aws_vpclattice_resource_gateway.test.tags_all}")
@@ -56,6 +58,8 @@ RSpec.describe Pangea::Resources::AWSVpclatticeResourceGateway do
         config = validate_resource_structure(result, 'aws_vpclattice_resource_gateway', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('ip_address_type')
+        expect(config).not_to have_key('ipv4_addresses_per_eni')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_group_ids')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
@@ -63,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeResourceGateway do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ ip_address_type: 'test-value', ipv4_addresses_per_eni: 3.14, region: 'test-value', security_group_ids: ['test-value'], tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,11 +76,83 @@ RSpec.describe Pangea::Resources::AWSVpclatticeResourceGateway do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpclattice_resource_gateway', 'full')
+        expect(config).to have_key('ip_address_type')
+        expect(config).to have_key('ipv4_addresses_per_eni')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_group_ids')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes ip_address_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_gateway('opt', required_attrs.merge(ip_address_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_gateway', 'opt')
+        expect(config).to have_key('ip_address_type')
+      end
+
+      it 'omits ip_address_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_gateway', 'minimal')
+        expect(config).not_to have_key('ip_address_type')
+      end
+      it 'includes ipv4_addresses_per_eni when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_gateway('opt', required_attrs.merge(ipv4_addresses_per_eni: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_gateway', 'opt')
+        expect(config).to have_key('ipv4_addresses_per_eni')
+      end
+
+      it 'omits ipv4_addresses_per_eni when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_gateway', 'minimal')
+        expect(config).not_to have_key('ipv4_addresses_per_eni')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_gateway('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_gateway', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_gateway', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_gateway('opt', required_attrs.merge(security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_gateway', 'opt')
+        expect(config).to have_key('security_group_ids')
+      end
+
+      it 'omits security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_resource_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_resource_gateway', 'minimal')
+        expect(config).not_to have_key('security_group_ids')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -140,7 +216,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeResourceGateway do
     resource_type: :aws_vpclattice_resource_gateway,
     method: :aws_vpclattice_resource_gateway,
     required_attrs: { name: 'test-value', subnet_ids: ['test-value'], vpc_id: 'test-value' },
-    expected_outputs: [:id, :arn, :ip_address_type, :security_group_ids, :status, :tags_all],
+    expected_outputs: [:id, :arn, :ip_address_type, :ipv4_addresses_per_eni, :region, :security_group_ids, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchQueryDefinition do
 
         expect(ref.id).to eq("${aws_cloudwatch_query_definition.test.id}")
         expect(ref.query_definition_id).to eq("${aws_cloudwatch_query_definition.test.query_definition_id}")
+        expect(ref.region).to eq("${aws_cloudwatch_query_definition.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSCloudwatchQueryDefinition do
 
         config = validate_resource_structure(result, 'aws_cloudwatch_query_definition', 'test')
         expect(config).not_to have_key('query_definition_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ log_group_names: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ log_group_names: ['test-value'], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchQueryDefinition do
 
         config = validate_resource_structure(result, 'aws_cloudwatch_query_definition', 'full')
         expect(config).to have_key('log_group_names')
+        expect(config).to have_key('region')
       end
     end
 
@@ -85,6 +88,23 @@ RSpec.describe Pangea::Resources::AWSCloudwatchQueryDefinition do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_query_definition', 'minimal')
         expect(config).not_to have_key('log_group_names')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_query_definition('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_query_definition', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_query_definition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_query_definition', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -131,7 +151,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchQueryDefinition do
     resource_type: :aws_cloudwatch_query_definition,
     method: :aws_cloudwatch_query_definition,
     required_attrs: { name: 'test-value', query_string: 'test-value' },
-    expected_outputs: [:id, :query_definition_id],
+    expected_outputs: [:id, :query_definition_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpclatticeAuthPolicyAttributes,
       outputs: { id: :id },
       map: [:policy, :resource_identifier],
-      map_present: [:state]
+      map_present: [:region, :state]
   end
   module AWS
     include AWSVpclatticeAuthPolicy

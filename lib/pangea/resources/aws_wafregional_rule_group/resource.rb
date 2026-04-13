@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WafregionalRuleGroupAttributes,
       outputs: { id: :id },
       map: [:metric_name, :name],
-      map_present: [:activated_rule, :tags, :tags_all]
+      map_present: [:activated_rule, :region, :tags, :tags_all]
   end
   module AWS
     include AWSWafregionalRuleGroup

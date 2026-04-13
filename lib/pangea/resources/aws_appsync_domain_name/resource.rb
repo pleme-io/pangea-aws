@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppsyncDomainNameAttributes,
       outputs: { id: :id },
       map: [:certificate_arn, :domain_name],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSAppsyncDomainName

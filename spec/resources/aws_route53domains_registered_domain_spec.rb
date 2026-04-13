@@ -75,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSRoute53domainsRegisteredDomain do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ admin_contact: [{ 'key1' => 'val1' }], admin_privacy: true, auto_renew: true, billing_contact: [{ 'key1' => 'val1' }], billing_privacy: true, name_server: [{ 'key1' => 'val1' }], registrant_contact: [{ 'key1' => 'val1' }], registrant_privacy: true, tags: { 'key1' => 'val1' }, tech_contact: [{ 'key1' => 'val1' }], tech_privacy: true, transfer_lock: true }) }
+      let(:all_attrs) { required_attrs.merge({ admin_contact: { 'key1' => 'val1' }, admin_privacy: true, auto_renew: true, billing_contact: { 'key1' => 'val1' }, billing_privacy: true, name_server: [{ 'key1' => 'val1' }], registrant_contact: { 'key1' => 'val1' }, registrant_privacy: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, tech_contact: { 'key1' => 'val1' }, tech_privacy: true, transfer_lock: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -93,6 +93,7 @@ RSpec.describe Pangea::Resources::AWSRoute53domainsRegisteredDomain do
         expect(config).to have_key('registrant_contact')
         expect(config).to have_key('registrant_privacy')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('tech_contact')
         expect(config).to have_key('tech_privacy')
         expect(config).to have_key('transfer_lock')
@@ -103,7 +104,7 @@ RSpec.describe Pangea::Resources::AWSRoute53domainsRegisteredDomain do
       it 'includes admin_contact when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_route53domains_registered_domain('opt', required_attrs.merge(admin_contact: [{ 'key1' => 'val1' }]))
+        synth.aws_route53domains_registered_domain('opt', required_attrs.merge(admin_contact: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53domains_registered_domain', 'opt')
         expect(config).to have_key('admin_contact')
@@ -154,7 +155,7 @@ RSpec.describe Pangea::Resources::AWSRoute53domainsRegisteredDomain do
       it 'includes billing_contact when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_route53domains_registered_domain('opt', required_attrs.merge(billing_contact: [{ 'key1' => 'val1' }]))
+        synth.aws_route53domains_registered_domain('opt', required_attrs.merge(billing_contact: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53domains_registered_domain', 'opt')
         expect(config).to have_key('billing_contact')
@@ -205,7 +206,7 @@ RSpec.describe Pangea::Resources::AWSRoute53domainsRegisteredDomain do
       it 'includes registrant_contact when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_route53domains_registered_domain('opt', required_attrs.merge(registrant_contact: [{ 'key1' => 'val1' }]))
+        synth.aws_route53domains_registered_domain('opt', required_attrs.merge(registrant_contact: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53domains_registered_domain', 'opt')
         expect(config).to have_key('registrant_contact')
@@ -253,10 +254,27 @@ RSpec.describe Pangea::Resources::AWSRoute53domainsRegisteredDomain do
         config = validate_resource_structure(result, 'aws_route53domains_registered_domain', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_registered_domain('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_registered_domain', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53domains_registered_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53domains_registered_domain', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes tech_contact when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_route53domains_registered_domain('opt', required_attrs.merge(tech_contact: [{ 'key1' => 'val1' }]))
+        synth.aws_route53domains_registered_domain('opt', required_attrs.merge(tech_contact: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_route53domains_registered_domain', 'opt')
         expect(config).to have_key('tech_contact')

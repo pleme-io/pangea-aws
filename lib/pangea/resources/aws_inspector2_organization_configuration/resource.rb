@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_inspector2_organization_configuration,
       attributes_class: AWS::Types::Inspector2OrganizationConfigurationAttributes,
       outputs: { id: :id },
-      map: [:auto_enable]
+      map: [:auto_enable],
+      map_present: [:region]
   end
   module AWS
     include AWSInspector2OrganizationConfiguration

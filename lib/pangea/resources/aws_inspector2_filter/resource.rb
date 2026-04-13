@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Inspector2FilterAttributes,
       outputs: { id: :id },
       map: [:action, :name],
-      map_present: [:description, :filter_criteria, :reason, :tags]
+      map_present: [:description, :filter_criteria, :reason, :region, :tags]
   end
   module AWS
     include AWSInspector2Filter

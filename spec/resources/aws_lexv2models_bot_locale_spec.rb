@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBotLocale do
 
         expect(ref.id).to eq("${aws_lexv2models_bot_locale.test.id}")
         expect(ref.name).to eq("${aws_lexv2models_bot_locale.test.name}")
+        expect(ref.region).to eq("${aws_lexv2models_bot_locale.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBotLocale do
 
         config = validate_resource_structure(result, 'aws_lexv2models_bot_locale', 'test')
         expect(config).not_to have_key('name')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', voice_settings: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', name: 'test-value', region: 'test-value', voice_settings: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,8 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBotLocale do
 
         config = validate_resource_structure(result, 'aws_lexv2models_bot_locale', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('name')
+        expect(config).to have_key('region')
         expect(config).to have_key('voice_settings')
       end
     end
@@ -86,6 +90,40 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBotLocale do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lexv2models_bot_locale', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_bot_locale('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_bot_locale', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_bot_locale('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_bot_locale', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_bot_locale('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_bot_locale', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lexv2models_bot_locale('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lexv2models_bot_locale', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes voice_settings when provided' do
         synth = create_synthesizer
@@ -151,7 +189,7 @@ RSpec.describe Pangea::Resources::AWSLexv2modelsBotLocale do
     resource_type: :aws_lexv2models_bot_locale,
     method: :aws_lexv2models_bot_locale,
     required_attrs: { bot_id: 'test-value', bot_version: 'test-value', locale_id: 'test-value', n_lu_intent_confidence_threshold: 3.14 },
-    expected_outputs: [:id, :name],
+    expected_outputs: [:id, :name, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

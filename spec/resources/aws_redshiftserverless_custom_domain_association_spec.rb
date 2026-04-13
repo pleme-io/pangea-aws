@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessCustomDomainAssociation d
 
         expect(ref.id).to eq("${aws_redshiftserverless_custom_domain_association.test.id}")
         expect(ref.custom_domain_certificate_expiry_time).to eq("${aws_redshiftserverless_custom_domain_association.test.custom_domain_certificate_expiry_time}")
+        expect(ref.region).to eq("${aws_redshiftserverless_custom_domain_association.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessCustomDomainAssociation d
 
         config = validate_resource_structure(result, 'aws_redshiftserverless_custom_domain_association', 'test')
         expect(config).not_to have_key('custom_domain_certificate_expiry_time')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_custom_domain_association('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_redshiftserverless_custom_domain_association', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_custom_domain_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_custom_domain_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_custom_domain_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_custom_domain_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -98,7 +134,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessCustomDomainAssociation d
     resource_type: :aws_redshiftserverless_custom_domain_association,
     method: :aws_redshiftserverless_custom_domain_association,
     required_attrs: { custom_domain_certificate_arn: 'test-value', custom_domain_name: 'test-value', workgroup_name: 'test-value' },
-    expected_outputs: [:id, :custom_domain_certificate_expiry_time],
+    expected_outputs: [:id, :custom_domain_certificate_expiry_time, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

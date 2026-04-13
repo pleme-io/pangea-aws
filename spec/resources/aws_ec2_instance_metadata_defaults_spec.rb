@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSEc2InstanceMetadataDefaults do
         expect(ref.http_put_response_hop_limit).to eq("${aws_ec2_instance_metadata_defaults.test.http_put_response_hop_limit}")
         expect(ref.http_tokens).to eq("${aws_ec2_instance_metadata_defaults.test.http_tokens}")
         expect(ref.instance_metadata_tags).to eq("${aws_ec2_instance_metadata_defaults.test.instance_metadata_tags}")
+        expect(ref.region).to eq("${aws_ec2_instance_metadata_defaults.test.region}")
       end
     end
 
@@ -57,6 +58,124 @@ RSpec.describe Pangea::Resources::AWSEc2InstanceMetadataDefaults do
         expect(config).not_to have_key('http_put_response_hop_limit')
         expect(config).not_to have_key('http_tokens')
         expect(config).not_to have_key('instance_metadata_tags')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ http_endpoint: 'test-value', http_put_response_hop_limit: 3.14, http_tokens: 'test-value', instance_metadata_tags: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_metadata_defaults('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ec2_instance_metadata_defaults', 'full')
+        expect(config).to have_key('http_endpoint')
+        expect(config).to have_key('http_put_response_hop_limit')
+        expect(config).to have_key('http_tokens')
+        expect(config).to have_key('instance_metadata_tags')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes http_endpoint when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_metadata_defaults('opt', required_attrs.merge(http_endpoint: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_metadata_defaults', 'opt')
+        expect(config).to have_key('http_endpoint')
+      end
+
+      it 'omits http_endpoint when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_metadata_defaults('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_metadata_defaults', 'minimal')
+        expect(config).not_to have_key('http_endpoint')
+      end
+      it 'includes http_put_response_hop_limit when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_metadata_defaults('opt', required_attrs.merge(http_put_response_hop_limit: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_metadata_defaults', 'opt')
+        expect(config).to have_key('http_put_response_hop_limit')
+      end
+
+      it 'omits http_put_response_hop_limit when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_metadata_defaults('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_metadata_defaults', 'minimal')
+        expect(config).not_to have_key('http_put_response_hop_limit')
+      end
+      it 'includes http_tokens when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_metadata_defaults('opt', required_attrs.merge(http_tokens: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_metadata_defaults', 'opt')
+        expect(config).to have_key('http_tokens')
+      end
+
+      it 'omits http_tokens when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_metadata_defaults('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_metadata_defaults', 'minimal')
+        expect(config).not_to have_key('http_tokens')
+      end
+      it 'includes instance_metadata_tags when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_metadata_defaults('opt', required_attrs.merge(instance_metadata_tags: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_metadata_defaults', 'opt')
+        expect(config).to have_key('instance_metadata_tags')
+      end
+
+      it 'omits instance_metadata_tags when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_metadata_defaults('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_metadata_defaults', 'minimal')
+        expect(config).not_to have_key('instance_metadata_tags')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_metadata_defaults('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_metadata_defaults', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_metadata_defaults('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_instance_metadata_defaults', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'attribute types' do
+      it 'validates expected attribute types' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_instance_metadata_defaults('typed', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ec2_instance_metadata_defaults', 'typed')
       end
     end
 
@@ -90,7 +209,7 @@ RSpec.describe Pangea::Resources::AWSEc2InstanceMetadataDefaults do
     resource_type: :aws_ec2_instance_metadata_defaults,
     method: :aws_ec2_instance_metadata_defaults,
     required_attrs: {},
-    expected_outputs: [:id, :http_endpoint, :http_put_response_hop_limit, :http_tokens, :instance_metadata_tags],
+    expected_outputs: [:id, :http_endpoint, :http_put_response_hop_limit, :http_tokens, :instance_metadata_tags, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

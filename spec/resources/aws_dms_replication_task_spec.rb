@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationTask do
 
         expect(ref.id).to eq("${aws_dms_replication_task.test.id}")
         expect(ref.cdc_start_position).to eq("${aws_dms_replication_task.test.cdc_start_position}")
+        expect(ref.region).to eq("${aws_dms_replication_task.test.region}")
         expect(ref.replication_task_arn).to eq("${aws_dms_replication_task.test.replication_task_arn}")
         expect(ref.replication_task_settings).to eq("${aws_dms_replication_task.test.replication_task_settings}")
         expect(ref.status).to eq("${aws_dms_replication_task.test.status}")
@@ -55,6 +56,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationTask do
 
         config = validate_resource_structure(result, 'aws_dms_replication_task', 'test')
         expect(config).not_to have_key('cdc_start_position')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('replication_task_arn')
         expect(config).not_to have_key('replication_task_settings')
         expect(config).not_to have_key('status')
@@ -63,7 +65,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationTask do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cdc_start_time: 'test-value', resource_identifier: 'test-value', start_replication_task: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ cdc_start_position: 'test-value', cdc_start_time: 'test-value', region: 'test-value', replication_task_settings: 'test-value', resource_identifier: 'test-value', start_replication_task: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,14 +74,35 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationTask do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_dms_replication_task', 'full')
+        expect(config).to have_key('cdc_start_position')
         expect(config).to have_key('cdc_start_time')
+        expect(config).to have_key('region')
+        expect(config).to have_key('replication_task_settings')
         expect(config).to have_key('resource_identifier')
         expect(config).to have_key('start_replication_task')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes cdc_start_position when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_task('opt', required_attrs.merge(cdc_start_position: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_task', 'opt')
+        expect(config).to have_key('cdc_start_position')
+      end
+
+      it 'omits cdc_start_position when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_task('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_task', 'minimal')
+        expect(config).not_to have_key('cdc_start_position')
+      end
       it 'includes cdc_start_time when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -96,6 +119,40 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationTask do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_replication_task', 'minimal')
         expect(config).not_to have_key('cdc_start_time')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_task('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_task', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_task('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_task', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes replication_task_settings when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_task('opt', required_attrs.merge(replication_task_settings: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_task', 'opt')
+        expect(config).to have_key('replication_task_settings')
+      end
+
+      it 'omits replication_task_settings when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_task('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_task', 'minimal')
+        expect(config).not_to have_key('replication_task_settings')
       end
       it 'includes resource_identifier when provided' do
         synth = create_synthesizer
@@ -147,6 +204,23 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationTask do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_dms_replication_task', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_task('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_task', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_dms_replication_task('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_dms_replication_task', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -211,7 +285,7 @@ RSpec.describe Pangea::Resources::AWSDmsReplicationTask do
     resource_type: :aws_dms_replication_task,
     method: :aws_dms_replication_task,
     required_attrs: { migration_type: 'test-value', replication_instance_arn: 'test-value', replication_task_id: 'test-value', source_endpoint_arn: 'test-value', table_mappings: 'test-value', target_endpoint_arn: 'test-value' },
-    expected_outputs: [:id, :cdc_start_position, :replication_task_arn, :replication_task_settings, :status, :tags_all],
+    expected_outputs: [:id, :cdc_start_position, :region, :replication_task_arn, :replication_task_settings, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:start_replication_task]

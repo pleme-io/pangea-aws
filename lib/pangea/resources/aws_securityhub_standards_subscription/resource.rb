@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_securityhub_standards_subscription,
       attributes_class: AWS::Types::SecurityhubStandardsSubscriptionAttributes,
       outputs: { id: :id },
-      map: [:standards_arn]
+      map: [:standards_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSSecurityhubStandardsSubscription

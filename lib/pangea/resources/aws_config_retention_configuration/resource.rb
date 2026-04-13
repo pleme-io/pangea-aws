@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_config_retention_configuration,
       attributes_class: AWS::Types::ConfigRetentionConfigurationAttributes,
       outputs: { id: :id },
-      map: [:retention_period_in_days]
+      map: [:retention_period_in_days],
+      map_present: [:region]
   end
   module AWS
     include AWSConfigRetentionConfiguration

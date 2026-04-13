@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSLambdaPermission do
         ref = synth.aws_lambda_permission('test', required_attrs)
 
         expect(ref.id).to eq("${aws_lambda_permission.test.id}")
+        expect(ref.region).to eq("${aws_lambda_permission.test.region}")
         expect(ref.statement_id).to eq("${aws_lambda_permission.test.statement_id}")
         expect(ref.statement_id_prefix).to eq("${aws_lambda_permission.test.statement_id_prefix}")
       end
@@ -51,13 +52,14 @@ RSpec.describe Pangea::Resources::AWSLambdaPermission do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lambda_permission', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('statement_id')
         expect(config).not_to have_key('statement_id_prefix')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ event_source_token: 'test-value', function_url_auth_type: 'test-value', principal_org_id: 'test-value', qualifier: 'test-value', source_account: 'test-value', source_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ event_source_token: 'test-value', function_url_auth_type: 'test-value', invoked_via_function_url: true, principal_org_id: 'test-value', qualifier: 'test-value', region: 'test-value', source_account: 'test-value', source_arn: 'test-value', statement_id: 'test-value', statement_id_prefix: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,10 +70,14 @@ RSpec.describe Pangea::Resources::AWSLambdaPermission do
         config = validate_resource_structure(result, 'aws_lambda_permission', 'full')
         expect(config).to have_key('event_source_token')
         expect(config).to have_key('function_url_auth_type')
+        expect(config).to have_key('invoked_via_function_url')
         expect(config).to have_key('principal_org_id')
         expect(config).to have_key('qualifier')
+        expect(config).to have_key('region')
         expect(config).to have_key('source_account')
         expect(config).to have_key('source_arn')
+        expect(config).to have_key('statement_id')
+        expect(config).to have_key('statement_id_prefix')
       end
     end
 
@@ -110,6 +116,23 @@ RSpec.describe Pangea::Resources::AWSLambdaPermission do
         config = validate_resource_structure(result, 'aws_lambda_permission', 'minimal')
         expect(config).not_to have_key('function_url_auth_type')
       end
+      it 'includes invoked_via_function_url when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_permission('opt', required_attrs.merge(invoked_via_function_url: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_permission', 'opt')
+        expect(config).to have_key('invoked_via_function_url')
+      end
+
+      it 'omits invoked_via_function_url when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_permission('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_permission', 'minimal')
+        expect(config).not_to have_key('invoked_via_function_url')
+      end
       it 'includes principal_org_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -144,6 +167,23 @@ RSpec.describe Pangea::Resources::AWSLambdaPermission do
         config = validate_resource_structure(result, 'aws_lambda_permission', 'minimal')
         expect(config).not_to have_key('qualifier')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_permission('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_permission', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_permission('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_permission', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes source_account when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -177,6 +217,54 @@ RSpec.describe Pangea::Resources::AWSLambdaPermission do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lambda_permission', 'minimal')
         expect(config).not_to have_key('source_arn')
+      end
+      it 'includes statement_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_permission('opt', required_attrs.merge(statement_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_permission', 'opt')
+        expect(config).to have_key('statement_id')
+      end
+
+      it 'omits statement_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_permission('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_permission', 'minimal')
+        expect(config).not_to have_key('statement_id')
+      end
+      it 'includes statement_id_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_permission('opt', required_attrs.merge(statement_id_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_permission', 'opt')
+        expect(config).to have_key('statement_id_prefix')
+      end
+
+      it 'omits statement_id_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lambda_permission('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lambda_permission', 'minimal')
+        expect(config).not_to have_key('statement_id_prefix')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts invoked_via_function_url=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(invoked_via_function_url: val)
+          synth.aws_lambda_permission("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_lambda_permission', "bool_#{val}")
+          expect(config['invoked_via_function_url']).to eq(val)
+        end
       end
     end
 
@@ -224,8 +312,8 @@ RSpec.describe Pangea::Resources::AWSLambdaPermission do
     resource_type: :aws_lambda_permission,
     method: :aws_lambda_permission,
     required_attrs: { action: 'test-value', function_name: 'test-value', principal: 'test-value' },
-    expected_outputs: [:id, :statement_id, :statement_id_prefix],
+    expected_outputs: [:id, :region, :statement_id, :statement_id_prefix],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:invoked_via_function_url]
 end

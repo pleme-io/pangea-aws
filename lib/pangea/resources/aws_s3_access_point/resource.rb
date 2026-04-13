@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3AccessPointAttributes,
       outputs: { id: :id },
       map: [:bucket, :name],
-      map_present: [:account_id, :bucket_account_id, :policy, :public_access_block_configuration, :vpc_configuration]
+      map_present: [:account_id, :bucket_account_id, :policy, :public_access_block_configuration, :region, :tags, :tags_all, :vpc_configuration]
   end
   module AWS
     include AWSS3AccessPoint

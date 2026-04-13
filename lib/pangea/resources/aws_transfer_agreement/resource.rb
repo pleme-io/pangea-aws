@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::TransferAgreementAttributes,
       outputs: { id: :id },
       map: [:access_role, :base_directory, :local_profile_id, :partner_profile_id, :server_id],
-      map_present: [:description, :tags, :tags_all]
+      map_present: [:description, :region, :tags, :tags_all]
   end
   module AWS
     include AWSTransferAgreement

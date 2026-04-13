@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DxHostedPrivateVirtualInterfaceAccepterAttributes,
       outputs: { id: :id },
       map: [:virtual_interface_id],
-      map_present: [:dx_gateway_id, :tags, :tags_all, :vpn_gateway_id]
+      map_present: [:dx_gateway_id, :region, :tags, :tags_all, :vpn_gateway_id]
   end
   module AWS
     include AWSDxHostedPrivateVirtualInterfaceAccepter

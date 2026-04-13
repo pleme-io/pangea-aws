@@ -57,7 +57,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontResponseHeadersPolicy do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ comment: 'test-value', cors_config: [{ 'key1' => 'val1' }], custom_headers_config: [{ 'key1' => 'val1' }], remove_headers_config: [{ 'key1' => 'val1' }], security_headers_config: [{ 'key1' => 'val1' }], server_timing_headers_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ comment: 'test-value', cors_config: { 'key1' => 'val1' }, custom_headers_config: { 'key1' => 'val1' }, remove_headers_config: { 'key1' => 'val1' }, security_headers_config: { 'key1' => 'val1' }, server_timing_headers_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -96,7 +96,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontResponseHeadersPolicy do
       it 'includes cors_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudfront_response_headers_policy('opt', required_attrs.merge(cors_config: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudfront_response_headers_policy('opt', required_attrs.merge(cors_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudfront_response_headers_policy', 'opt')
         expect(config).to have_key('cors_config')
@@ -113,7 +113,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontResponseHeadersPolicy do
       it 'includes custom_headers_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudfront_response_headers_policy('opt', required_attrs.merge(custom_headers_config: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudfront_response_headers_policy('opt', required_attrs.merge(custom_headers_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudfront_response_headers_policy', 'opt')
         expect(config).to have_key('custom_headers_config')
@@ -130,7 +130,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontResponseHeadersPolicy do
       it 'includes remove_headers_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudfront_response_headers_policy('opt', required_attrs.merge(remove_headers_config: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudfront_response_headers_policy('opt', required_attrs.merge(remove_headers_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudfront_response_headers_policy', 'opt')
         expect(config).to have_key('remove_headers_config')
@@ -147,7 +147,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontResponseHeadersPolicy do
       it 'includes security_headers_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudfront_response_headers_policy('opt', required_attrs.merge(security_headers_config: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudfront_response_headers_policy('opt', required_attrs.merge(security_headers_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudfront_response_headers_policy', 'opt')
         expect(config).to have_key('security_headers_config')
@@ -164,7 +164,7 @@ RSpec.describe Pangea::Resources::AWSCloudfrontResponseHeadersPolicy do
       it 'includes server_timing_headers_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudfront_response_headers_policy('opt', required_attrs.merge(server_timing_headers_config: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudfront_response_headers_policy('opt', required_attrs.merge(server_timing_headers_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudfront_response_headers_policy', 'opt')
         expect(config).to have_key('server_timing_headers_config')

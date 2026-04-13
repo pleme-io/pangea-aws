@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpclatticeAccessLogSubscriptionAttributes,
       outputs: { id: :id },
       map: [:destination_arn, :resource_identifier],
-      map_present: [:service_network_log_type, :tags, :tags_all]
+      map_present: [:region, :service_network_log_type, :tags, :tags_all]
   end
   module AWS
     include AWSVpclatticeAccessLogSubscription

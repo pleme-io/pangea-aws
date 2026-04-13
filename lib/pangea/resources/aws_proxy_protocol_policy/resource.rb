@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_proxy_protocol_policy,
       attributes_class: AWS::Types::ProxyProtocolPolicyAttributes,
       outputs: { id: :id },
-      map: [:instance_ports, :load_balancer]
+      map: [:instance_ports, :load_balancer],
+      map_present: [:region]
   end
   module AWS
     include AWSProxyProtocolPolicy

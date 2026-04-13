@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_ec2_instance_metadata_defaults,
       attributes_class: AWS::Types::Ec2InstanceMetadataDefaultsAttributes,
       outputs: { id: :id },
-      map_present: [:http_endpoint, :http_put_response_hop_limit, :http_tokens, :instance_metadata_tags]
+      map_present: [:http_endpoint, :http_put_response_hop_limit, :http_tokens, :instance_metadata_tags, :region]
   end
   module AWS
     include AWSEc2InstanceMetadataDefaults

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::WafregionalIpsetAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:ip_set_descriptor]
+      map_present: [:ip_set_descriptor, :region]
   end
   module AWS
     include AWSWafregionalIpset

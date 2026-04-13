@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCodegurureviewerRepositoryAssociation do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { repository: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { repository: { 'key1' => 'val1' } } }
 
   describe ':aws_codegurureviewer_repository_association' do
     context 'with required attributes only' do
@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSCodegurureviewerRepositoryAssociation do
         expect(ref.name).to eq("${aws_codegurureviewer_repository_association.test.name}")
         expect(ref.owner).to eq("${aws_codegurureviewer_repository_association.test.owner}")
         expect(ref.provider_type).to eq("${aws_codegurureviewer_repository_association.test.provider_type}")
+        expect(ref.region).to eq("${aws_codegurureviewer_repository_association.test.region}")
         expect(ref.s3_repository_details).to eq("${aws_codegurureviewer_repository_association.test.s3_repository_details}")
         expect(ref.state).to eq("${aws_codegurureviewer_repository_association.test.state}")
         expect(ref.state_reason).to eq("${aws_codegurureviewer_repository_association.test.state_reason}")
@@ -65,6 +66,7 @@ RSpec.describe Pangea::Resources::AWSCodegurureviewerRepositoryAssociation do
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('owner')
         expect(config).not_to have_key('provider_type')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('s3_repository_details')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('state_reason')
@@ -73,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSCodegurureviewerRepositoryAssociation do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ kms_key_details: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ kms_key_details: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -83,7 +85,9 @@ RSpec.describe Pangea::Resources::AWSCodegurureviewerRepositoryAssociation do
 
         config = validate_resource_structure(result, 'aws_codegurureviewer_repository_association', 'full')
         expect(config).to have_key('kms_key_details')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -91,7 +95,7 @@ RSpec.describe Pangea::Resources::AWSCodegurureviewerRepositoryAssociation do
       it 'includes kms_key_details when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codegurureviewer_repository_association('opt', required_attrs.merge(kms_key_details: [{ 'key1' => 'val1' }]))
+        synth.aws_codegurureviewer_repository_association('opt', required_attrs.merge(kms_key_details: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codegurureviewer_repository_association', 'opt')
         expect(config).to have_key('kms_key_details')
@@ -104,6 +108,23 @@ RSpec.describe Pangea::Resources::AWSCodegurureviewerRepositoryAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codegurureviewer_repository_association', 'minimal')
         expect(config).not_to have_key('kms_key_details')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codegurureviewer_repository_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codegurureviewer_repository_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codegurureviewer_repository_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codegurureviewer_repository_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -122,6 +143,23 @@ RSpec.describe Pangea::Resources::AWSCodegurureviewerRepositoryAssociation do
         config = validate_resource_structure(result, 'aws_codegurureviewer_repository_association', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codegurureviewer_repository_association('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codegurureviewer_repository_association', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codegurureviewer_repository_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codegurureviewer_repository_association', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -132,7 +170,7 @@ RSpec.describe Pangea::Resources::AWSCodegurureviewerRepositoryAssociation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_codegurureviewer_repository_association', 'typed')
-        expect(config['repository']).to be_a(Array)
+        expect(config['repository']).to be_a(Hash)
       end
     end
 
@@ -165,8 +203,8 @@ RSpec.describe Pangea::Resources::AWSCodegurureviewerRepositoryAssociation do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_codegurureviewer_repository_association,
     method: :aws_codegurureviewer_repository_association,
-    required_attrs: { repository: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :association_id, :connection_arn, :name, :owner, :provider_type, :s3_repository_details, :state, :state_reason, :tags_all],
+    required_attrs: { repository: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :association_id, :connection_arn, :name, :owner, :provider_type, :region, :s3_repository_details, :state, :state_reason, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

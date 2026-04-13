@@ -1,0 +1,8 @@
+name: aws_cleanrooms_collaboration
+title: Manages a aws_cleanrooms_collaboration resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

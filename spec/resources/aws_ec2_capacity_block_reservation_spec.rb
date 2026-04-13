@@ -48,6 +48,7 @@ RSpec.describe Pangea::Resources::AWSEc2CapacityBlockReservation do
         expect(ref.instance_type).to eq("${aws_ec2_capacity_block_reservation.test.instance_type}")
         expect(ref.outpost_arn).to eq("${aws_ec2_capacity_block_reservation.test.outpost_arn}")
         expect(ref.placement_group_arn).to eq("${aws_ec2_capacity_block_reservation.test.placement_group_arn}")
+        expect(ref.region).to eq("${aws_ec2_capacity_block_reservation.test.region}")
         expect(ref.reservation_type).to eq("${aws_ec2_capacity_block_reservation.test.reservation_type}")
         expect(ref.start_date).to eq("${aws_ec2_capacity_block_reservation.test.start_date}")
         expect(ref.tags_all).to eq("${aws_ec2_capacity_block_reservation.test.tags_all}")
@@ -73,6 +74,7 @@ RSpec.describe Pangea::Resources::AWSEc2CapacityBlockReservation do
         expect(config).not_to have_key('instance_type')
         expect(config).not_to have_key('outpost_arn')
         expect(config).not_to have_key('placement_group_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('reservation_type')
         expect(config).not_to have_key('start_date')
         expect(config).not_to have_key('tags_all')
@@ -81,7 +83,7 @@ RSpec.describe Pangea::Resources::AWSEc2CapacityBlockReservation do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -90,11 +92,29 @@ RSpec.describe Pangea::Resources::AWSEc2CapacityBlockReservation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ec2_capacity_block_reservation', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_capacity_block_reservation('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_capacity_block_reservation', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_capacity_block_reservation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_capacity_block_reservation', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -157,7 +177,7 @@ RSpec.describe Pangea::Resources::AWSEc2CapacityBlockReservation do
     resource_type: :aws_ec2_capacity_block_reservation,
     method: :aws_ec2_capacity_block_reservation,
     required_attrs: { capacity_block_offering_id: 'test-value', instance_platform: 'test-value' },
-    expected_outputs: [:id, :arn, :availability_zone, :created_date, :ebs_optimized, :end_date, :end_date_type, :instance_count, :instance_type, :outpost_arn, :placement_group_arn, :reservation_type, :start_date, :tags_all, :tenancy],
+    expected_outputs: [:id, :arn, :availability_zone, :created_date, :ebs_optimized, :end_date, :end_date_type, :instance_count, :instance_type, :outpost_arn, :placement_group_arn, :region, :reservation_type, :start_date, :tags_all, :tenancy],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

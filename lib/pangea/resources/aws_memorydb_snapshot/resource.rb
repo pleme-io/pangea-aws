@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MemorydbSnapshotAttributes,
       outputs: { id: :id },
       map: [:cluster_name],
-      map_present: [:kms_key_arn, :name, :name_prefix, :tags, :tags_all]
+      map_present: [:kms_key_arn, :name, :name_prefix, :region, :tags, :tags_all]
   end
   module AWS
     include AWSMemorydbSnapshot

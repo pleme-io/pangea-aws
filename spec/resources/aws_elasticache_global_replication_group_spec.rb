@@ -50,6 +50,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheGlobalReplicationGroup do
         expect(ref.global_node_groups).to eq("${aws_elasticache_global_replication_group.test.global_node_groups}")
         expect(ref.global_replication_group_id).to eq("${aws_elasticache_global_replication_group.test.global_replication_group_id}")
         expect(ref.num_node_groups).to eq("${aws_elasticache_global_replication_group.test.num_node_groups}")
+        expect(ref.region).to eq("${aws_elasticache_global_replication_group.test.region}")
         expect(ref.transit_encryption_enabled).to eq("${aws_elasticache_global_replication_group.test.transit_encryption_enabled}")
       end
     end
@@ -74,12 +75,13 @@ RSpec.describe Pangea::Resources::AWSElasticacheGlobalReplicationGroup do
         expect(config).not_to have_key('global_node_groups')
         expect(config).not_to have_key('global_replication_group_id')
         expect(config).not_to have_key('num_node_groups')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('transit_encryption_enabled')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ global_replication_group_description: 'test-value', parameter_group_name: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ automatic_failover_enabled: true, cache_node_type: 'test-value', engine: 'test-value', engine_version: 'test-value', global_replication_group_description: 'test-value', num_node_groups: 3.14, parameter_group_name: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -88,12 +90,86 @@ RSpec.describe Pangea::Resources::AWSElasticacheGlobalReplicationGroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'full')
+        expect(config).to have_key('automatic_failover_enabled')
+        expect(config).to have_key('cache_node_type')
+        expect(config).to have_key('engine')
+        expect(config).to have_key('engine_version')
         expect(config).to have_key('global_replication_group_description')
+        expect(config).to have_key('num_node_groups')
         expect(config).to have_key('parameter_group_name')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes automatic_failover_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_global_replication_group('opt', required_attrs.merge(automatic_failover_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'opt')
+        expect(config).to have_key('automatic_failover_enabled')
+      end
+
+      it 'omits automatic_failover_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_global_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'minimal')
+        expect(config).not_to have_key('automatic_failover_enabled')
+      end
+      it 'includes cache_node_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_global_replication_group('opt', required_attrs.merge(cache_node_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'opt')
+        expect(config).to have_key('cache_node_type')
+      end
+
+      it 'omits cache_node_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_global_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'minimal')
+        expect(config).not_to have_key('cache_node_type')
+      end
+      it 'includes engine when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_global_replication_group('opt', required_attrs.merge(engine: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'opt')
+        expect(config).to have_key('engine')
+      end
+
+      it 'omits engine when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_global_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'minimal')
+        expect(config).not_to have_key('engine')
+      end
+      it 'includes engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_global_replication_group('opt', required_attrs.merge(engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'opt')
+        expect(config).to have_key('engine_version')
+      end
+
+      it 'omits engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_global_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'minimal')
+        expect(config).not_to have_key('engine_version')
+      end
       it 'includes global_replication_group_description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -111,6 +187,23 @@ RSpec.describe Pangea::Resources::AWSElasticacheGlobalReplicationGroup do
         config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'minimal')
         expect(config).not_to have_key('global_replication_group_description')
       end
+      it 'includes num_node_groups when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_global_replication_group('opt', required_attrs.merge(num_node_groups: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'opt')
+        expect(config).to have_key('num_node_groups')
+      end
+
+      it 'omits num_node_groups when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_global_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'minimal')
+        expect(config).not_to have_key('num_node_groups')
+      end
       it 'includes parameter_group_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -127,6 +220,37 @@ RSpec.describe Pangea::Resources::AWSElasticacheGlobalReplicationGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'minimal')
         expect(config).not_to have_key('parameter_group_name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_global_replication_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_global_replication_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts automatic_failover_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(automatic_failover_enabled: val)
+          synth.aws_elasticache_global_replication_group("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_elasticache_global_replication_group', "bool_#{val}")
+          expect(config['automatic_failover_enabled']).to eq(val)
+        end
       end
     end
 
@@ -173,8 +297,8 @@ RSpec.describe Pangea::Resources::AWSElasticacheGlobalReplicationGroup do
     resource_type: :aws_elasticache_global_replication_group,
     method: :aws_elasticache_global_replication_group,
     required_attrs: { global_replication_group_id_suffix: 'test-value', primary_replication_group_id: 'test-value' },
-    expected_outputs: [:id, :arn, :at_rest_encryption_enabled, :auth_token_enabled, :automatic_failover_enabled, :cache_node_type, :cluster_enabled, :engine, :engine_version, :engine_version_actual, :global_node_groups, :global_replication_group_id, :num_node_groups, :transit_encryption_enabled],
+    expected_outputs: [:id, :arn, :at_rest_encryption_enabled, :auth_token_enabled, :automatic_failover_enabled, :cache_node_type, :cluster_enabled, :engine, :engine_version, :engine_version_actual, :global_node_groups, :global_replication_group_id, :num_node_groups, :region, :transit_encryption_enabled],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:automatic_failover_enabled]
 end

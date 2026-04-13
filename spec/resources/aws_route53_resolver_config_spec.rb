@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverConfig do
 
         expect(ref.id).to eq("${aws_route53_resolver_config.test.id}")
         expect(ref.owner_id).to eq("${aws_route53_resolver_config.test.owner_id}")
+        expect(ref.region).to eq("${aws_route53_resolver_config.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverConfig do
 
         config = validate_resource_structure(result, 'aws_route53_resolver_config', 'test')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_config('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_route53_resolver_config', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_config('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_config', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_route53_resolver_config('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_route53_resolver_config', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -97,7 +133,7 @@ RSpec.describe Pangea::Resources::AWSRoute53ResolverConfig do
     resource_type: :aws_route53_resolver_config,
     method: :aws_route53_resolver_config,
     required_attrs: { autodefined_reverse_flag: 'test-value', resource_id: 'test-value' },
-    expected_outputs: [:id, :owner_id],
+    expected_outputs: [:id, :owner_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

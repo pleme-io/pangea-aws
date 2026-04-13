@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DmsReplicationTaskAttributes,
       outputs: { id: :id },
       map: [:migration_type, :replication_instance_arn, :replication_task_id, :source_endpoint_arn, :table_mappings, :target_endpoint_arn],
-      map_present: [:cdc_start_position, :cdc_start_time, :replication_task_settings, :resource_identifier, :tags, :tags_all],
+      map_present: [:cdc_start_position, :cdc_start_time, :region, :replication_task_settings, :resource_identifier, :tags, :tags_all],
       map_bool: [:start_replication_task]
   end
   module AWS

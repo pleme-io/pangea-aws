@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_kinesis_stream_consumer,
       attributes_class: AWS::Types::KinesisStreamConsumerAttributes,
       outputs: { id: :id },
-      map: [:name, :stream_arn]
+      map: [:name, :stream_arn],
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSKinesisStreamConsumer

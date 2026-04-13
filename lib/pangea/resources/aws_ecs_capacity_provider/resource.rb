@@ -13,8 +13,8 @@ module Pangea::Resources
     define_resource :aws_ecs_capacity_provider,
       attributes_class: AWS::Types::EcsCapacityProviderAttributes,
       outputs: { id: :id },
-      map: [:auto_scaling_group_provider, :name],
-      map_present: [:tags, :tags_all]
+      map: [:name],
+      map_present: [:auto_scaling_group_provider, :cluster, :managed_instances_provider, :region, :tags, :tags_all]
   end
   module AWS
     include AWSEcsCapacityProvider

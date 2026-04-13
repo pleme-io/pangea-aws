@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotCopy do
 
         expect(ref.id).to eq("${aws_redshift_snapshot_copy.test.id}")
         expect(ref.manual_snapshot_retention_period).to eq("${aws_redshift_snapshot_copy.test.manual_snapshot_retention_period}")
+        expect(ref.region).to eq("${aws_redshift_snapshot_copy.test.region}")
         expect(ref.retention_period).to eq("${aws_redshift_snapshot_copy.test.retention_period}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotCopy do
 
         config = validate_resource_structure(result, 'aws_redshift_snapshot_copy', 'test')
         expect(config).not_to have_key('manual_snapshot_retention_period')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('retention_period')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ snapshot_copy_grant_name: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ manual_snapshot_retention_period: 3.14, region: 'test-value', retention_period: 3.14, snapshot_copy_grant_name: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,11 +68,65 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotCopy do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_redshift_snapshot_copy', 'full')
+        expect(config).to have_key('manual_snapshot_retention_period')
+        expect(config).to have_key('region')
+        expect(config).to have_key('retention_period')
         expect(config).to have_key('snapshot_copy_grant_name')
       end
     end
 
     context 'optional attributes' do
+      it 'includes manual_snapshot_retention_period when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_copy('opt', required_attrs.merge(manual_snapshot_retention_period: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_copy', 'opt')
+        expect(config).to have_key('manual_snapshot_retention_period')
+      end
+
+      it 'omits manual_snapshot_retention_period when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_copy', 'minimal')
+        expect(config).not_to have_key('manual_snapshot_retention_period')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_copy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_copy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_copy', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes retention_period when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_copy('opt', required_attrs.merge(retention_period: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_copy', 'opt')
+        expect(config).to have_key('retention_period')
+      end
+
+      it 'omits retention_period when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_snapshot_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_snapshot_copy', 'minimal')
+        expect(config).not_to have_key('retention_period')
+      end
       it 'includes snapshot_copy_grant_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -133,7 +189,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftSnapshotCopy do
     resource_type: :aws_redshift_snapshot_copy,
     method: :aws_redshift_snapshot_copy,
     required_attrs: { cluster_identifier: 'test-value', destination_region: 'test-value' },
-    expected_outputs: [:id, :manual_snapshot_retention_period, :retention_period],
+    expected_outputs: [:id, :manual_snapshot_retention_period, :region, :retention_period],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

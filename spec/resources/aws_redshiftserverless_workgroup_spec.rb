@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessWorkgroup do
         expect(ref.base_capacity).to eq("${aws_redshiftserverless_workgroup.test.base_capacity}")
         expect(ref.endpoint).to eq("${aws_redshiftserverless_workgroup.test.endpoint}")
         expect(ref.port).to eq("${aws_redshiftserverless_workgroup.test.port}")
+        expect(ref.region).to eq("${aws_redshiftserverless_workgroup.test.region}")
         expect(ref.security_group_ids).to eq("${aws_redshiftserverless_workgroup.test.security_group_ids}")
         expect(ref.subnet_ids).to eq("${aws_redshiftserverless_workgroup.test.subnet_ids}")
         expect(ref.tags_all).to eq("${aws_redshiftserverless_workgroup.test.tags_all}")
@@ -62,6 +63,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessWorkgroup do
         expect(config).not_to have_key('base_capacity')
         expect(config).not_to have_key('endpoint')
         expect(config).not_to have_key('port')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_group_ids')
         expect(config).not_to have_key('subnet_ids')
         expect(config).not_to have_key('tags_all')
@@ -71,7 +73,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessWorkgroup do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ config_parameter: [{ 'key1' => 'val1' }], enhanced_vpc_routing: true, max_capacity: 3.14, price_performance_target: [{ 'key1' => 'val1' }], publicly_accessible: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ base_capacity: 3.14, config_parameter: [{ 'key1' => 'val1' }], enhanced_vpc_routing: true, max_capacity: 3.14, port: 3.14, price_performance_target: { 'key1' => 'val1' }, publicly_accessible: true, region: 'test-value', security_group_ids: ['test-value'], subnet_ids: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, track_name: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,16 +82,40 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessWorkgroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'full')
+        expect(config).to have_key('base_capacity')
         expect(config).to have_key('config_parameter')
         expect(config).to have_key('enhanced_vpc_routing')
         expect(config).to have_key('max_capacity')
+        expect(config).to have_key('port')
         expect(config).to have_key('price_performance_target')
         expect(config).to have_key('publicly_accessible')
+        expect(config).to have_key('region')
+        expect(config).to have_key('security_group_ids')
+        expect(config).to have_key('subnet_ids')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('track_name')
       end
     end
 
     context 'optional attributes' do
+      it 'includes base_capacity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('opt', required_attrs.merge(base_capacity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'opt')
+        expect(config).to have_key('base_capacity')
+      end
+
+      it 'omits base_capacity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'minimal')
+        expect(config).not_to have_key('base_capacity')
+      end
       it 'includes config_parameter when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -141,10 +167,27 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessWorkgroup do
         config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'minimal')
         expect(config).not_to have_key('max_capacity')
       end
+      it 'includes port when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('opt', required_attrs.merge(port: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'opt')
+        expect(config).to have_key('port')
+      end
+
+      it 'omits port when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'minimal')
+        expect(config).not_to have_key('port')
+      end
       it 'includes price_performance_target when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_redshiftserverless_workgroup('opt', required_attrs.merge(price_performance_target: [{ 'key1' => 'val1' }]))
+        synth.aws_redshiftserverless_workgroup('opt', required_attrs.merge(price_performance_target: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'opt')
         expect(config).to have_key('price_performance_target')
@@ -175,6 +218,57 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessWorkgroup do
         config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'minimal')
         expect(config).not_to have_key('publicly_accessible')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('opt', required_attrs.merge(security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'opt')
+        expect(config).to have_key('security_group_ids')
+      end
+
+      it 'omits security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'minimal')
+        expect(config).not_to have_key('security_group_ids')
+      end
+      it 'includes subnet_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('opt', required_attrs.merge(subnet_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'opt')
+        expect(config).to have_key('subnet_ids')
+      end
+
+      it 'omits subnet_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'minimal')
+        expect(config).not_to have_key('subnet_ids')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -191,6 +285,40 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessWorkgroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes track_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('opt', required_attrs.merge(track_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'opt')
+        expect(config).to have_key('track_name')
+      end
+
+      it 'omits track_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_workgroup('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_workgroup', 'minimal')
+        expect(config).not_to have_key('track_name')
       end
     end
 
@@ -262,7 +390,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessWorkgroup do
     resource_type: :aws_redshiftserverless_workgroup,
     method: :aws_redshiftserverless_workgroup,
     required_attrs: { namespace_name: 'test-value', workgroup_name: 'test-value' },
-    expected_outputs: [:id, :arn, :base_capacity, :endpoint, :port, :security_group_ids, :subnet_ids, :tags_all, :track_name, :workgroup_id],
+    expected_outputs: [:id, :arn, :base_capacity, :endpoint, :port, :region, :security_group_ids, :subnet_ids, :tags_all, :track_name, :workgroup_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enhanced_vpc_routing, :publicly_accessible]

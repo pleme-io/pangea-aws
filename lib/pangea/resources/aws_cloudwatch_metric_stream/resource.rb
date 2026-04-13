@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchMetricStreamAttributes,
       outputs: { id: :id },
       map: [:firehose_arn, :output_format, :role_arn],
-      map_present: [:exclude_filter, :include_filter, :name, :name_prefix, :statistics_configuration, :tags, :tags_all],
+      map_present: [:exclude_filter, :include_filter, :name, :name_prefix, :region, :statistics_configuration, :tags, :tags_all],
       map_bool: [:include_linked_accounts_metrics]
   end
   module AWS

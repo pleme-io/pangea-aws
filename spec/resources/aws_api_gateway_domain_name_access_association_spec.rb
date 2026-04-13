@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainNameAccessAssociation do
 
         expect(ref.id).to eq("${aws_api_gateway_domain_name_access_association.test.id}")
         expect(ref.arn).to eq("${aws_api_gateway_domain_name_access_association.test.arn}")
+        expect(ref.region).to eq("${aws_api_gateway_domain_name_access_association.test.region}")
         expect(ref.tags_all).to eq("${aws_api_gateway_domain_name_access_association.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainNameAccessAssociation do
 
         config = validate_resource_structure(result, 'aws_api_gateway_domain_name_access_association', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,11 +68,29 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainNameAccessAssociation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_api_gateway_domain_name_access_association', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name_access_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name_access_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_domain_name_access_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_domain_name_access_association', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -134,7 +154,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayDomainNameAccessAssociation do
     resource_type: :aws_api_gateway_domain_name_access_association,
     method: :aws_api_gateway_domain_name_access_association,
     required_attrs: { access_association_source: 'test-value', access_association_source_type: 'test-value', domain_name_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

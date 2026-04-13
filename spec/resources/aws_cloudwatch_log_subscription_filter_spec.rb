@@ -38,6 +38,8 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogSubscriptionFilter do
         ref = synth.aws_cloudwatch_log_subscription_filter('test', required_attrs)
 
         expect(ref.id).to eq("${aws_cloudwatch_log_subscription_filter.test.id}")
+        expect(ref.apply_on_transformed_logs).to eq("${aws_cloudwatch_log_subscription_filter.test.apply_on_transformed_logs}")
+        expect(ref.region).to eq("${aws_cloudwatch_log_subscription_filter.test.region}")
         expect(ref.role_arn).to eq("${aws_cloudwatch_log_subscription_filter.test.role_arn}")
       end
     end
@@ -50,12 +52,14 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogSubscriptionFilter do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudwatch_log_subscription_filter', 'test')
+        expect(config).not_to have_key('apply_on_transformed_logs')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('role_arn')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ distribution: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ apply_on_transformed_logs: true, distribution: 'test-value', emit_system_fields: ['test-value'], region: 'test-value', role_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,11 +68,32 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogSubscriptionFilter do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudwatch_log_subscription_filter', 'full')
+        expect(config).to have_key('apply_on_transformed_logs')
         expect(config).to have_key('distribution')
+        expect(config).to have_key('emit_system_fields')
+        expect(config).to have_key('region')
+        expect(config).to have_key('role_arn')
       end
     end
 
     context 'optional attributes' do
+      it 'includes apply_on_transformed_logs when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_subscription_filter('opt', required_attrs.merge(apply_on_transformed_logs: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_subscription_filter', 'opt')
+        expect(config).to have_key('apply_on_transformed_logs')
+      end
+
+      it 'omits apply_on_transformed_logs when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_subscription_filter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_subscription_filter', 'minimal')
+        expect(config).not_to have_key('apply_on_transformed_logs')
+      end
       it 'includes distribution when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -85,6 +110,71 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogSubscriptionFilter do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_log_subscription_filter', 'minimal')
         expect(config).not_to have_key('distribution')
+      end
+      it 'includes emit_system_fields when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_subscription_filter('opt', required_attrs.merge(emit_system_fields: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_subscription_filter', 'opt')
+        expect(config).to have_key('emit_system_fields')
+      end
+
+      it 'omits emit_system_fields when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_subscription_filter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_subscription_filter', 'minimal')
+        expect(config).not_to have_key('emit_system_fields')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_subscription_filter('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_subscription_filter', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_subscription_filter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_subscription_filter', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_subscription_filter('opt', required_attrs.merge(role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_subscription_filter', 'opt')
+        expect(config).to have_key('role_arn')
+      end
+
+      it 'omits role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_log_subscription_filter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_log_subscription_filter', 'minimal')
+        expect(config).not_to have_key('role_arn')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts apply_on_transformed_logs=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(apply_on_transformed_logs: val)
+          synth.aws_cloudwatch_log_subscription_filter("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_cloudwatch_log_subscription_filter', "bool_#{val}")
+          expect(config['apply_on_transformed_logs']).to eq(val)
+        end
       end
     end
 
@@ -133,8 +223,8 @@ RSpec.describe Pangea::Resources::AWSCloudwatchLogSubscriptionFilter do
     resource_type: :aws_cloudwatch_log_subscription_filter,
     method: :aws_cloudwatch_log_subscription_filter,
     required_attrs: { destination_arn: 'test-value', filter_pattern: 'test-value', log_group_name: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :role_arn],
+    expected_outputs: [:id, :apply_on_transformed_logs, :region, :role_arn],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:apply_on_transformed_logs]
 end

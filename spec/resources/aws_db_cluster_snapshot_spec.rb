@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSDbClusterSnapshot do
         expect(ref.kms_key_id).to eq("${aws_db_cluster_snapshot.test.kms_key_id}")
         expect(ref.license_model).to eq("${aws_db_cluster_snapshot.test.license_model}")
         expect(ref.port).to eq("${aws_db_cluster_snapshot.test.port}")
+        expect(ref.region).to eq("${aws_db_cluster_snapshot.test.region}")
         expect(ref.snapshot_type).to eq("${aws_db_cluster_snapshot.test.snapshot_type}")
         expect(ref.source_db_cluster_snapshot_arn).to eq("${aws_db_cluster_snapshot.test.source_db_cluster_snapshot_arn}")
         expect(ref.status).to eq("${aws_db_cluster_snapshot.test.status}")
@@ -71,6 +72,7 @@ RSpec.describe Pangea::Resources::AWSDbClusterSnapshot do
         expect(config).not_to have_key('kms_key_id')
         expect(config).not_to have_key('license_model')
         expect(config).not_to have_key('port')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('snapshot_type')
         expect(config).not_to have_key('source_db_cluster_snapshot_arn')
         expect(config).not_to have_key('status')
@@ -81,7 +83,7 @@ RSpec.describe Pangea::Resources::AWSDbClusterSnapshot do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ shared_accounts: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', shared_accounts: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -90,12 +92,31 @@ RSpec.describe Pangea::Resources::AWSDbClusterSnapshot do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_db_cluster_snapshot', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('shared_accounts')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_cluster_snapshot('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_cluster_snapshot', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_cluster_snapshot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_cluster_snapshot', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes shared_accounts when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -129,6 +150,23 @@ RSpec.describe Pangea::Resources::AWSDbClusterSnapshot do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_cluster_snapshot', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_cluster_snapshot('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_cluster_snapshot', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_cluster_snapshot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_cluster_snapshot', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -175,7 +213,7 @@ RSpec.describe Pangea::Resources::AWSDbClusterSnapshot do
     resource_type: :aws_db_cluster_snapshot,
     method: :aws_db_cluster_snapshot,
     required_attrs: { db_cluster_identifier: 'test-value', db_cluster_snapshot_identifier: 'test-value' },
-    expected_outputs: [:id, :allocated_storage, :availability_zones, :db_cluster_snapshot_arn, :engine, :engine_version, :kms_key_id, :license_model, :port, :snapshot_type, :source_db_cluster_snapshot_arn, :status, :storage_encrypted, :tags_all, :vpc_id],
+    expected_outputs: [:id, :allocated_storage, :availability_zones, :db_cluster_snapshot_arn, :engine, :engine_version, :kms_key_id, :license_model, :port, :region, :snapshot_type, :source_db_cluster_snapshot_arn, :status, :storage_encrypted, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

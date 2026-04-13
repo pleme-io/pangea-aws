@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CognitoManagedUserPoolClientAttributes,
       outputs: { id: :id },
       map: [:user_pool_id],
-      map_present: [:access_token_validity, :allowed_oauth_flows, :allowed_oauth_scopes, :analytics_configuration, :auth_session_validity, :callback_urls, :default_redirect_uri, :explicit_auth_flows, :id_token_validity, :logout_urls, :name_pattern, :name_prefix, :prevent_user_existence_errors, :read_attributes, :refresh_token_rotation, :refresh_token_validity, :supported_identity_providers, :token_validity_units, :write_attributes],
+      map_present: [:access_token_validity, :allowed_oauth_flows, :allowed_oauth_scopes, :analytics_configuration, :auth_session_validity, :callback_urls, :default_redirect_uri, :explicit_auth_flows, :id_token_validity, :logout_urls, :name_pattern, :name_prefix, :prevent_user_existence_errors, :read_attributes, :refresh_token_rotation, :refresh_token_validity, :region, :supported_identity_providers, :token_validity_units, :write_attributes],
       map_bool: [:allowed_oauth_flows_user_pool_client, :enable_propagate_additional_user_context_data, :enable_token_revocation]
   end
   module AWS

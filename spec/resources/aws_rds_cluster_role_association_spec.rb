@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSRdsClusterRoleAssociation do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { db_cluster_identifier: 'test-value', feature_name: 'test-value', role_arn: 'test-value' } }
+  let(:required_attrs) { { db_cluster_identifier: 'test-value', role_arn: 'test-value' } }
 
   describe ':aws_rds_cluster_role_association' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSRdsClusterRoleAssociation do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_rds_cluster_role_association', 'test')
-        validate_required_attributes(config, [:db_cluster_identifier, :feature_name, :role_arn])
+        validate_required_attributes(config, [:db_cluster_identifier, :role_arn])
       end
 
       it 'returns a ResourceReference' do
@@ -38,6 +38,71 @@ RSpec.describe Pangea::Resources::AWSRdsClusterRoleAssociation do
         ref = synth.aws_rds_cluster_role_association('test', required_attrs)
 
         expect(ref.id).to eq("${aws_rds_cluster_role_association.test.id}")
+        expect(ref.region).to eq("${aws_rds_cluster_role_association.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster_role_association('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_rds_cluster_role_association', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ feature_name: 'test-value', region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster_role_association('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_rds_cluster_role_association', 'full')
+        expect(config).to have_key('feature_name')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes feature_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster_role_association('opt', required_attrs.merge(feature_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster_role_association', 'opt')
+        expect(config).to have_key('feature_name')
+      end
+
+      it 'omits feature_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster_role_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster_role_association', 'minimal')
+        expect(config).not_to have_key('feature_name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster_role_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster_role_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster_role_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster_role_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -50,7 +115,6 @@ RSpec.describe Pangea::Resources::AWSRdsClusterRoleAssociation do
 
         config = validate_resource_structure(result, 'aws_rds_cluster_role_association', 'typed')
         expect(config['db_cluster_identifier']).to be_a(String)
-        expect(config['feature_name']).to be_a(String)
         expect(config['role_arn']).to be_a(String)
       end
     end
@@ -84,8 +148,8 @@ RSpec.describe Pangea::Resources::AWSRdsClusterRoleAssociation do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_rds_cluster_role_association,
     method: :aws_rds_cluster_role_association,
-    required_attrs: { db_cluster_identifier: 'test-value', feature_name: 'test-value', role_arn: 'test-value' },
-    expected_outputs: [:id],
+    required_attrs: { db_cluster_identifier: 'test-value', role_arn: 'test-value' },
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

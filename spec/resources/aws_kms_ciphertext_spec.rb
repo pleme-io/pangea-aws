@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSKmsCiphertext do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { key_id: 'test-value', plaintext: 'test-value' } }
+  let(:required_attrs) { { key_id: 'test-value' } }
 
   describe ':aws_kms_ciphertext' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSKmsCiphertext do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_kms_ciphertext', 'test')
-        validate_required_attributes(config, [:key_id, :plaintext])
+        validate_required_attributes(config, [:key_id])
       end
 
       it 'returns a ResourceReference' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSKmsCiphertext do
 
         expect(ref.id).to eq("${aws_kms_ciphertext.test.id}")
         expect(ref.ciphertext_blob).to eq("${aws_kms_ciphertext.test.ciphertext_blob}")
+        expect(ref.region).to eq("${aws_kms_ciphertext.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSKmsCiphertext do
 
         config = validate_resource_structure(result, 'aws_kms_ciphertext', 'test')
         expect(config).not_to have_key('ciphertext_blob')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ context: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ context: { 'key1' => 'val1' }, plaintext: 'test-value', plaintext_wo: 'test-value', plaintext_wo_version: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,10 @@ RSpec.describe Pangea::Resources::AWSKmsCiphertext do
 
         config = validate_resource_structure(result, 'aws_kms_ciphertext', 'full')
         expect(config).to have_key('context')
+        expect(config).to have_key('plaintext')
+        expect(config).to have_key('plaintext_wo')
+        expect(config).to have_key('plaintext_wo_version')
+        expect(config).to have_key('region')
       end
     end
 
@@ -86,12 +92,81 @@ RSpec.describe Pangea::Resources::AWSKmsCiphertext do
         config = validate_resource_structure(result, 'aws_kms_ciphertext', 'minimal')
         expect(config).not_to have_key('context')
       end
+      it 'includes plaintext when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_ciphertext('opt', required_attrs.merge(plaintext: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_ciphertext', 'opt')
+        expect(config).to have_key('plaintext')
+      end
+
+      it 'omits plaintext when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_ciphertext('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_ciphertext', 'minimal')
+        expect(config).not_to have_key('plaintext')
+      end
+      it 'includes plaintext_wo when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_ciphertext('opt', required_attrs.merge(plaintext_wo: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_ciphertext', 'opt')
+        expect(config).to have_key('plaintext_wo')
+      end
+
+      it 'omits plaintext_wo when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_ciphertext('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_ciphertext', 'minimal')
+        expect(config).not_to have_key('plaintext_wo')
+      end
+      it 'includes plaintext_wo_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_ciphertext('opt', required_attrs.merge(plaintext_wo_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_ciphertext', 'opt')
+        expect(config).to have_key('plaintext_wo_version')
+      end
+
+      it 'omits plaintext_wo_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_ciphertext('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_ciphertext', 'minimal')
+        expect(config).not_to have_key('plaintext_wo_version')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_ciphertext('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_ciphertext', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_ciphertext('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_ciphertext', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'sensitive fields' do
       it 'documents sensitive attributes' do
-        sensitive_fields = [:plaintext]
+        sensitive_fields = [:plaintext, :plaintext_wo]
         expect(sensitive_fields).to include(:plaintext)
+        expect(sensitive_fields).to include(:plaintext_wo)
       end
     end
 
@@ -104,7 +179,6 @@ RSpec.describe Pangea::Resources::AWSKmsCiphertext do
 
         config = validate_resource_structure(result, 'aws_kms_ciphertext', 'typed')
         expect(config['key_id']).to be_a(String)
-        expect(config['plaintext']).to be_a(String)
       end
     end
 
@@ -137,9 +211,9 @@ RSpec.describe Pangea::Resources::AWSKmsCiphertext do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_kms_ciphertext,
     method: :aws_kms_ciphertext,
-    required_attrs: { key_id: 'test-value', plaintext: 'test-value' },
-    expected_outputs: [:id, :ciphertext_blob],
-    sensitive_fields: [:plaintext],
+    required_attrs: { key_id: 'test-value' },
+    expected_outputs: [:id, :ciphertext_blob, :region],
+    sensitive_fields: [:plaintext, :plaintext_wo],
     immutable_fields: [],
     boolean_fields: []
 end

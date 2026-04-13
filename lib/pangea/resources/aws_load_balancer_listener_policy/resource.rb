@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LoadBalancerListenerPolicyAttributes,
       outputs: { id: :id },
       map: [:load_balancer_name, :load_balancer_port],
-      map_present: [:policy_names, :triggers]
+      map_present: [:policy_names, :region, :triggers]
   end
   module AWS
     include AWSLoadBalancerListenerPolicy

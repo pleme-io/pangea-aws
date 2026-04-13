@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MskconnectWorkerConfigurationAttributes,
       outputs: { id: :id },
       map: [:name, :properties_file_content],
-      map_present: [:description, :tags, :tags_all]
+      map_present: [:description, :region, :tags, :tags_all]
   end
   module AWS
     include AWSMskconnectWorkerConfiguration

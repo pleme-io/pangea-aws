@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ChimeVoiceConnectorGroupAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:connector]
+      map_present: [:connector, :region]
   end
   module AWS
     include AWSChimeVoiceConnectorGroup

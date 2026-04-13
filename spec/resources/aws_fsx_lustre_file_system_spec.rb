@@ -51,6 +51,7 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
         expect(ref.mount_name).to eq("${aws_fsx_lustre_file_system.test.mount_name}")
         expect(ref.network_interface_ids).to eq("${aws_fsx_lustre_file_system.test.network_interface_ids}")
         expect(ref.owner_id).to eq("${aws_fsx_lustre_file_system.test.owner_id}")
+        expect(ref.region).to eq("${aws_fsx_lustre_file_system.test.region}")
         expect(ref.tags_all).to eq("${aws_fsx_lustre_file_system.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_fsx_lustre_file_system.test.vpc_id}")
         expect(ref.weekly_maintenance_start_time).to eq("${aws_fsx_lustre_file_system.test.weekly_maintenance_start_time}")
@@ -78,6 +79,7 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
         expect(config).not_to have_key('mount_name')
         expect(config).not_to have_key('network_interface_ids')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
         expect(config).not_to have_key('weekly_maintenance_start_time')
@@ -85,7 +87,7 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ backup_id: 'test-value', copy_tags_to_backups: true, data_compression_type: 'test-value', data_read_cache_configuration: [{ 'key1' => 'val1' }], deployment_type: 'test-value', drive_cache_type: 'test-value', final_backup_tags: { 'key1' => 'val1' }, import_path: 'test-value', log_configuration: [{ 'key1' => 'val1' }], metadata_configuration: [{ 'key1' => 'val1' }], per_unit_storage_throughput: 3.14, root_squash_configuration: [{ 'key1' => 'val1' }], security_group_ids: ['test-value'], skip_final_backup: true, storage_capacity: 3.14, storage_type: 'test-value', tags: { 'key1' => 'val1' }, throughput_capacity: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ auto_import_policy: 'test-value', automatic_backup_retention_days: 3.14, backup_id: 'test-value', copy_tags_to_backups: true, daily_automatic_backup_start_time: 'test-value', data_compression_type: 'test-value', data_read_cache_configuration: { 'key1' => 'val1' }, deployment_type: 'test-value', drive_cache_type: 'test-value', efa_enabled: true, export_path: 'test-value', file_system_type_version: 'test-value', final_backup_tags: { 'key1' => 'val1' }, import_path: 'test-value', imported_file_chunk_size: 3.14, kms_key_id: 'test-value', log_configuration: { 'key1' => 'val1' }, metadata_configuration: { 'key1' => 'val1' }, per_unit_storage_throughput: 3.14, region: 'test-value', root_squash_configuration: { 'key1' => 'val1' }, security_group_ids: ['test-value'], skip_final_backup: true, storage_capacity: 3.14, storage_type: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, throughput_capacity: 3.14, weekly_maintenance_start_time: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -94,28 +96,73 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'full')
+        expect(config).to have_key('auto_import_policy')
+        expect(config).to have_key('automatic_backup_retention_days')
         expect(config).to have_key('backup_id')
         expect(config).to have_key('copy_tags_to_backups')
+        expect(config).to have_key('daily_automatic_backup_start_time')
         expect(config).to have_key('data_compression_type')
         expect(config).to have_key('data_read_cache_configuration')
         expect(config).to have_key('deployment_type')
         expect(config).to have_key('drive_cache_type')
+        expect(config).to have_key('efa_enabled')
+        expect(config).to have_key('export_path')
+        expect(config).to have_key('file_system_type_version')
         expect(config).to have_key('final_backup_tags')
         expect(config).to have_key('import_path')
+        expect(config).to have_key('imported_file_chunk_size')
+        expect(config).to have_key('kms_key_id')
         expect(config).to have_key('log_configuration')
         expect(config).to have_key('metadata_configuration')
         expect(config).to have_key('per_unit_storage_throughput')
+        expect(config).to have_key('region')
         expect(config).to have_key('root_squash_configuration')
         expect(config).to have_key('security_group_ids')
         expect(config).to have_key('skip_final_backup')
         expect(config).to have_key('storage_capacity')
         expect(config).to have_key('storage_type')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('throughput_capacity')
+        expect(config).to have_key('weekly_maintenance_start_time')
       end
     end
 
     context 'optional attributes' do
+      it 'includes auto_import_policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(auto_import_policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
+        expect(config).to have_key('auto_import_policy')
+      end
+
+      it 'omits auto_import_policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
+        expect(config).not_to have_key('auto_import_policy')
+      end
+      it 'includes automatic_backup_retention_days when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(automatic_backup_retention_days: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
+        expect(config).to have_key('automatic_backup_retention_days')
+      end
+
+      it 'omits automatic_backup_retention_days when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
+        expect(config).not_to have_key('automatic_backup_retention_days')
+      end
       it 'includes backup_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -150,6 +197,23 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
         config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
         expect(config).not_to have_key('copy_tags_to_backups')
       end
+      it 'includes daily_automatic_backup_start_time when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(daily_automatic_backup_start_time: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
+        expect(config).to have_key('daily_automatic_backup_start_time')
+      end
+
+      it 'omits daily_automatic_backup_start_time when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
+        expect(config).not_to have_key('daily_automatic_backup_start_time')
+      end
       it 'includes data_compression_type when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -170,7 +234,7 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
       it 'includes data_read_cache_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(data_read_cache_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(data_read_cache_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
         expect(config).to have_key('data_read_cache_configuration')
@@ -218,6 +282,57 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
         config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
         expect(config).not_to have_key('drive_cache_type')
       end
+      it 'includes efa_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(efa_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
+        expect(config).to have_key('efa_enabled')
+      end
+
+      it 'omits efa_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
+        expect(config).not_to have_key('efa_enabled')
+      end
+      it 'includes export_path when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(export_path: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
+        expect(config).to have_key('export_path')
+      end
+
+      it 'omits export_path when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
+        expect(config).not_to have_key('export_path')
+      end
+      it 'includes file_system_type_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(file_system_type_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
+        expect(config).to have_key('file_system_type_version')
+      end
+
+      it 'omits file_system_type_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
+        expect(config).not_to have_key('file_system_type_version')
+      end
       it 'includes final_backup_tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -252,10 +367,44 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
         config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
         expect(config).not_to have_key('import_path')
       end
+      it 'includes imported_file_chunk_size when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(imported_file_chunk_size: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
+        expect(config).to have_key('imported_file_chunk_size')
+      end
+
+      it 'omits imported_file_chunk_size when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
+        expect(config).not_to have_key('imported_file_chunk_size')
+      end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
       it 'includes log_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(log_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(log_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
         expect(config).to have_key('log_configuration')
@@ -272,7 +421,7 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
       it 'includes metadata_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(metadata_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(metadata_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
         expect(config).to have_key('metadata_configuration')
@@ -303,10 +452,27 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
         config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
         expect(config).not_to have_key('per_unit_storage_throughput')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes root_squash_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(root_squash_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(root_squash_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
         expect(config).to have_key('root_squash_configuration')
@@ -405,6 +571,23 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
         config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes throughput_capacity when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -422,6 +605,23 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
         config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
         expect(config).not_to have_key('throughput_capacity')
       end
+      it 'includes weekly_maintenance_start_time when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('opt', required_attrs.merge(weekly_maintenance_start_time: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'opt')
+        expect(config).to have_key('weekly_maintenance_start_time')
+      end
+
+      it 'omits weekly_maintenance_start_time when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_fsx_lustre_file_system('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', 'minimal')
+        expect(config).not_to have_key('weekly_maintenance_start_time')
+      end
     end
 
     context 'boolean fields' do
@@ -434,6 +634,17 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', "bool_#{val}")
           expect(config['copy_tags_to_backups']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts efa_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(efa_enabled: val)
+          synth.aws_fsx_lustre_file_system("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_fsx_lustre_file_system', "bool_#{val}")
+          expect(config['efa_enabled']).to eq(val)
         end
       end
       [true, false].each do |val|
@@ -491,8 +702,8 @@ RSpec.describe Pangea::Resources::AWSFsxLustreFileSystem do
     resource_type: :aws_fsx_lustre_file_system,
     method: :aws_fsx_lustre_file_system,
     required_attrs: { subnet_ids: ['test-value'] },
-    expected_outputs: [:id, :arn, :auto_import_policy, :automatic_backup_retention_days, :daily_automatic_backup_start_time, :dns_name, :efa_enabled, :export_path, :file_system_type_version, :imported_file_chunk_size, :kms_key_id, :mount_name, :network_interface_ids, :owner_id, :tags_all, :vpc_id, :weekly_maintenance_start_time],
+    expected_outputs: [:id, :arn, :auto_import_policy, :automatic_backup_retention_days, :daily_automatic_backup_start_time, :dns_name, :efa_enabled, :export_path, :file_system_type_version, :imported_file_chunk_size, :kms_key_id, :mount_name, :network_interface_ids, :owner_id, :region, :tags_all, :vpc_id, :weekly_maintenance_start_time],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:copy_tags_to_backups, :skip_final_backup]
+    boolean_fields: [:copy_tags_to_backups, :efa_enabled, :skip_final_backup]
 end

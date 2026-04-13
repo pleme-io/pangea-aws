@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2ApiMapping do
         ref = synth.aws_apigatewayv2_api_mapping('test', required_attrs)
 
         expect(ref.id).to eq("${aws_apigatewayv2_api_mapping.test.id}")
+        expect(ref.region).to eq("${aws_apigatewayv2_api_mapping.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_api_mapping('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_apigatewayv2_api_mapping', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ api_mapping_key: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ api_mapping_key: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2ApiMapping do
 
         config = validate_resource_structure(result, 'aws_apigatewayv2_api_mapping', 'full')
         expect(config).to have_key('api_mapping_key')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2ApiMapping do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apigatewayv2_api_mapping', 'minimal')
         expect(config).not_to have_key('api_mapping_key')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_api_mapping('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_api_mapping', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_api_mapping('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_api_mapping', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -119,7 +150,7 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2ApiMapping do
     resource_type: :aws_apigatewayv2_api_mapping,
     method: :aws_apigatewayv2_api_mapping,
     required_attrs: { api_id: 'test-value', domain_name: 'test-value', stage: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_eks_access_policy_association,
       attributes_class: AWS::Types::EksAccessPolicyAssociationAttributes,
       outputs: { id: :id },
-      map: [:access_scope, :cluster_name, :policy_arn, :principal_arn]
+      map: [:access_scope, :cluster_name, :policy_arn, :principal_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSEksAccessPolicyAssociation

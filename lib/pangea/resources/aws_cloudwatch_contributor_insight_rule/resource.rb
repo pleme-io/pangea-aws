@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchContributorInsightRuleAttributes,
       outputs: { id: :id },
       map: [:rule_definition, :rule_name],
-      map_present: [:rule_state, :tags]
+      map_present: [:region, :rule_state, :tags]
   end
   module AWS
     include AWSCloudwatchContributorInsightRule

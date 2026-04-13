@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3BucketIntelligentTieringConfigurationAttributes,
       outputs: { id: :id },
       map: [:bucket, :name, :tiering],
-      map_present: [:filter, :status]
+      map_present: [:filter, :region, :status]
   end
   module AWS
     include AWSS3BucketIntelligentTieringConfiguration

@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSResiliencehubResiliencyPolicy do
         expect(ref.arn).to eq("${aws_resiliencehub_resiliency_policy.test.arn}")
         expect(ref.data_location_constraint).to eq("${aws_resiliencehub_resiliency_policy.test.data_location_constraint}")
         expect(ref.estimated_cost_tier).to eq("${aws_resiliencehub_resiliency_policy.test.estimated_cost_tier}")
+        expect(ref.region).to eq("${aws_resiliencehub_resiliency_policy.test.region}")
         expect(ref.tags_all).to eq("${aws_resiliencehub_resiliency_policy.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSResiliencehubResiliencyPolicy do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('data_location_constraint')
         expect(config).not_to have_key('estimated_cost_tier')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', policy: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ data_location_constraint: 'test-value', description: 'test-value', policy: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,13 +72,32 @@ RSpec.describe Pangea::Resources::AWSResiliencehubResiliencyPolicy do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_resiliencehub_resiliency_policy', 'full')
+        expect(config).to have_key('data_location_constraint')
         expect(config).to have_key('description')
         expect(config).to have_key('policy')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes data_location_constraint when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_resiliencehub_resiliency_policy('opt', required_attrs.merge(data_location_constraint: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_resiliencehub_resiliency_policy', 'opt')
+        expect(config).to have_key('data_location_constraint')
+      end
+
+      it 'omits data_location_constraint when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_resiliencehub_resiliency_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_resiliencehub_resiliency_policy', 'minimal')
+        expect(config).not_to have_key('data_location_constraint')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -97,7 +118,7 @@ RSpec.describe Pangea::Resources::AWSResiliencehubResiliencyPolicy do
       it 'includes policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_resiliencehub_resiliency_policy('opt', required_attrs.merge(policy: { 'key1' => 'val1' }))
+        synth.aws_resiliencehub_resiliency_policy('opt', required_attrs.merge(policy: [{ 'key1' => 'val1' }]))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_resiliencehub_resiliency_policy', 'opt')
         expect(config).to have_key('policy')
@@ -110,6 +131,23 @@ RSpec.describe Pangea::Resources::AWSResiliencehubResiliencyPolicy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_resiliencehub_resiliency_policy', 'minimal')
         expect(config).not_to have_key('policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_resiliencehub_resiliency_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_resiliencehub_resiliency_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_resiliencehub_resiliency_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_resiliencehub_resiliency_policy', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -173,7 +211,7 @@ RSpec.describe Pangea::Resources::AWSResiliencehubResiliencyPolicy do
     resource_type: :aws_resiliencehub_resiliency_policy,
     method: :aws_resiliencehub_resiliency_policy,
     required_attrs: { name: 'test-value', tier: 'test-value' },
-    expected_outputs: [:id, :arn, :data_location_constraint, :estimated_cost_tier, :tags_all],
+    expected_outputs: [:id, :arn, :data_location_constraint, :estimated_cost_tier, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

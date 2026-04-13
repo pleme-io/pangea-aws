@@ -40,6 +40,8 @@ RSpec.describe Pangea::Resources::AWSApiGatewayIntegration do
         expect(ref.id).to eq("${aws_api_gateway_integration.test.id}")
         expect(ref.cache_namespace).to eq("${aws_api_gateway_integration.test.cache_namespace}")
         expect(ref.passthrough_behavior).to eq("${aws_api_gateway_integration.test.passthrough_behavior}")
+        expect(ref.region).to eq("${aws_api_gateway_integration.test.region}")
+        expect(ref.response_transfer_mode).to eq("${aws_api_gateway_integration.test.response_transfer_mode}")
       end
     end
 
@@ -53,11 +55,13 @@ RSpec.describe Pangea::Resources::AWSApiGatewayIntegration do
         config = validate_resource_structure(result, 'aws_api_gateway_integration', 'test')
         expect(config).not_to have_key('cache_namespace')
         expect(config).not_to have_key('passthrough_behavior')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('response_transfer_mode')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cache_key_parameters: ['test-value'], connection_id: 'test-value', connection_type: 'test-value', content_handling: 'test-value', credentials: 'test-value', integration_http_method: 'test-value', request_parameters: { 'key1' => 'val1' }, request_templates: { 'key1' => 'val1' }, timeout_milliseconds: 3.14, tls_config: [{ 'key1' => 'val1' }], uri: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ cache_key_parameters: ['test-value'], cache_namespace: 'test-value', connection_id: 'test-value', connection_type: 'test-value', content_handling: 'test-value', credentials: 'test-value', integration_http_method: 'test-value', integration_target: 'test-value', passthrough_behavior: 'test-value', region: 'test-value', request_parameters: { 'key1' => 'val1' }, request_templates: { 'key1' => 'val1' }, response_transfer_mode: 'test-value', timeout_milliseconds: 3.14, tls_config: { 'key1' => 'val1' }, uri: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,13 +71,18 @@ RSpec.describe Pangea::Resources::AWSApiGatewayIntegration do
 
         config = validate_resource_structure(result, 'aws_api_gateway_integration', 'full')
         expect(config).to have_key('cache_key_parameters')
+        expect(config).to have_key('cache_namespace')
         expect(config).to have_key('connection_id')
         expect(config).to have_key('connection_type')
         expect(config).to have_key('content_handling')
         expect(config).to have_key('credentials')
         expect(config).to have_key('integration_http_method')
+        expect(config).to have_key('integration_target')
+        expect(config).to have_key('passthrough_behavior')
+        expect(config).to have_key('region')
         expect(config).to have_key('request_parameters')
         expect(config).to have_key('request_templates')
+        expect(config).to have_key('response_transfer_mode')
         expect(config).to have_key('timeout_milliseconds')
         expect(config).to have_key('tls_config')
         expect(config).to have_key('uri')
@@ -97,6 +106,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayIntegration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_integration', 'minimal')
         expect(config).not_to have_key('cache_key_parameters')
+      end
+      it 'includes cache_namespace when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_integration('opt', required_attrs.merge(cache_namespace: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_integration', 'opt')
+        expect(config).to have_key('cache_namespace')
+      end
+
+      it 'omits cache_namespace when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_integration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_integration', 'minimal')
+        expect(config).not_to have_key('cache_namespace')
       end
       it 'includes connection_id when provided' do
         synth = create_synthesizer
@@ -183,6 +209,57 @@ RSpec.describe Pangea::Resources::AWSApiGatewayIntegration do
         config = validate_resource_structure(result, 'aws_api_gateway_integration', 'minimal')
         expect(config).not_to have_key('integration_http_method')
       end
+      it 'includes integration_target when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_integration('opt', required_attrs.merge(integration_target: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_integration', 'opt')
+        expect(config).to have_key('integration_target')
+      end
+
+      it 'omits integration_target when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_integration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_integration', 'minimal')
+        expect(config).not_to have_key('integration_target')
+      end
+      it 'includes passthrough_behavior when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_integration('opt', required_attrs.merge(passthrough_behavior: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_integration', 'opt')
+        expect(config).to have_key('passthrough_behavior')
+      end
+
+      it 'omits passthrough_behavior when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_integration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_integration', 'minimal')
+        expect(config).not_to have_key('passthrough_behavior')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_integration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_integration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_integration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_integration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes request_parameters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -217,6 +294,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayIntegration do
         config = validate_resource_structure(result, 'aws_api_gateway_integration', 'minimal')
         expect(config).not_to have_key('request_templates')
       end
+      it 'includes response_transfer_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_integration('opt', required_attrs.merge(response_transfer_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_integration', 'opt')
+        expect(config).to have_key('response_transfer_mode')
+      end
+
+      it 'omits response_transfer_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_integration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_integration', 'minimal')
+        expect(config).not_to have_key('response_transfer_mode')
+      end
       it 'includes timeout_milliseconds when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -237,7 +331,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayIntegration do
       it 'includes tls_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_api_gateway_integration('opt', required_attrs.merge(tls_config: [{ 'key1' => 'val1' }]))
+        synth.aws_api_gateway_integration('opt', required_attrs.merge(tls_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_integration', 'opt')
         expect(config).to have_key('tls_config')
@@ -315,7 +409,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayIntegration do
     resource_type: :aws_api_gateway_integration,
     method: :aws_api_gateway_integration,
     required_attrs: { http_method: 'test-value', resource_id: 'test-value', rest_api_id: 'test-value', type: 'test-value' },
-    expected_outputs: [:id, :cache_namespace, :passthrough_behavior],
+    expected_outputs: [:id, :cache_namespace, :passthrough_behavior, :region, :response_transfer_mode],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

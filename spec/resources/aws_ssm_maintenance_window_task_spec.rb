@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindowTask do
         expect(ref.arn).to eq("${aws_ssm_maintenance_window_task.test.arn}")
         expect(ref.max_concurrency).to eq("${aws_ssm_maintenance_window_task.test.max_concurrency}")
         expect(ref.max_errors).to eq("${aws_ssm_maintenance_window_task.test.max_errors}")
+        expect(ref.region).to eq("${aws_ssm_maintenance_window_task.test.region}")
         expect(ref.service_role_arn).to eq("${aws_ssm_maintenance_window_task.test.service_role_arn}")
         expect(ref.window_task_id).to eq("${aws_ssm_maintenance_window_task.test.window_task_id}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindowTask do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('max_concurrency')
         expect(config).not_to have_key('max_errors')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('service_role_arn')
         expect(config).not_to have_key('window_task_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cutoff_behavior: 'test-value', description: 'test-value', name: 'test-value', priority: 3.14, targets: [{ 'key1' => 'val1' }], task_invocation_parameters: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ cutoff_behavior: 'test-value', description: 'test-value', max_concurrency: 'test-value', max_errors: 'test-value', name: 'test-value', priority: 3.14, region: 'test-value', service_role_arn: 'test-value', targets: [{ 'key1' => 'val1' }], task_invocation_parameters: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,8 +76,12 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindowTask do
         config = validate_resource_structure(result, 'aws_ssm_maintenance_window_task', 'full')
         expect(config).to have_key('cutoff_behavior')
         expect(config).to have_key('description')
+        expect(config).to have_key('max_concurrency')
+        expect(config).to have_key('max_errors')
         expect(config).to have_key('name')
         expect(config).to have_key('priority')
+        expect(config).to have_key('region')
+        expect(config).to have_key('service_role_arn')
         expect(config).to have_key('targets')
         expect(config).to have_key('task_invocation_parameters')
       end
@@ -116,6 +122,40 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindowTask do
         config = validate_resource_structure(result, 'aws_ssm_maintenance_window_task', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes max_concurrency when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window_task('opt', required_attrs.merge(max_concurrency: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window_task', 'opt')
+        expect(config).to have_key('max_concurrency')
+      end
+
+      it 'omits max_concurrency when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window_task('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window_task', 'minimal')
+        expect(config).not_to have_key('max_concurrency')
+      end
+      it 'includes max_errors when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window_task('opt', required_attrs.merge(max_errors: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window_task', 'opt')
+        expect(config).to have_key('max_errors')
+      end
+
+      it 'omits max_errors when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window_task('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window_task', 'minimal')
+        expect(config).not_to have_key('max_errors')
+      end
       it 'includes name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -150,6 +190,40 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindowTask do
         config = validate_resource_structure(result, 'aws_ssm_maintenance_window_task', 'minimal')
         expect(config).not_to have_key('priority')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window_task('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window_task', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window_task('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window_task', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes service_role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window_task('opt', required_attrs.merge(service_role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window_task', 'opt')
+        expect(config).to have_key('service_role_arn')
+      end
+
+      it 'omits service_role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_maintenance_window_task('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_maintenance_window_task', 'minimal')
+        expect(config).not_to have_key('service_role_arn')
+      end
       it 'includes targets when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -170,7 +244,7 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindowTask do
       it 'includes task_invocation_parameters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ssm_maintenance_window_task('opt', required_attrs.merge(task_invocation_parameters: [{ 'key1' => 'val1' }]))
+        synth.aws_ssm_maintenance_window_task('opt', required_attrs.merge(task_invocation_parameters: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_maintenance_window_task', 'opt')
         expect(config).to have_key('task_invocation_parameters')
@@ -230,7 +304,7 @@ RSpec.describe Pangea::Resources::AWSSsmMaintenanceWindowTask do
     resource_type: :aws_ssm_maintenance_window_task,
     method: :aws_ssm_maintenance_window_task,
     required_attrs: { task_arn: 'test-value', task_type: 'test-value', window_id: 'test-value' },
-    expected_outputs: [:id, :arn, :max_concurrency, :max_errors, :service_role_arn, :window_task_id],
+    expected_outputs: [:id, :arn, :max_concurrency, :max_errors, :region, :service_role_arn, :window_task_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

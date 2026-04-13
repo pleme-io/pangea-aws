@@ -55,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSCognitoManagedUserPoolClient do
         expect(ref.prevent_user_existence_errors).to eq("${aws_cognito_managed_user_pool_client.test.prevent_user_existence_errors}")
         expect(ref.read_attributes).to eq("${aws_cognito_managed_user_pool_client.test.read_attributes}")
         expect(ref.refresh_token_validity).to eq("${aws_cognito_managed_user_pool_client.test.refresh_token_validity}")
+        expect(ref.region).to eq("${aws_cognito_managed_user_pool_client.test.region}")
         expect(ref.supported_identity_providers).to eq("${aws_cognito_managed_user_pool_client.test.supported_identity_providers}")
         expect(ref.write_attributes).to eq("${aws_cognito_managed_user_pool_client.test.write_attributes}")
       end
@@ -85,13 +86,14 @@ RSpec.describe Pangea::Resources::AWSCognitoManagedUserPoolClient do
         expect(config).not_to have_key('prevent_user_existence_errors')
         expect(config).not_to have_key('read_attributes')
         expect(config).not_to have_key('refresh_token_validity')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('supported_identity_providers')
         expect(config).not_to have_key('write_attributes')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ analytics_configuration: [{ 'key1' => 'val1' }], name_pattern: 'test-value', name_prefix: 'test-value', refresh_token_rotation: [{ 'key1' => 'val1' }], token_validity_units: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ access_token_validity: 3.14, allowed_oauth_flows: ['test-value'], allowed_oauth_flows_user_pool_client: true, allowed_oauth_scopes: ['test-value'], analytics_configuration: [{ 'key1' => 'val1' }], auth_session_validity: 3.14, callback_urls: ['test-value'], default_redirect_uri: 'test-value', enable_propagate_additional_user_context_data: true, enable_token_revocation: true, explicit_auth_flows: ['test-value'], id_token_validity: 3.14, logout_urls: ['test-value'], name_pattern: 'test-value', name_prefix: 'test-value', prevent_user_existence_errors: 'test-value', read_attributes: ['test-value'], refresh_token_rotation: [{ 'key1' => 'val1' }], refresh_token_validity: 3.14, region: 'test-value', supported_identity_providers: ['test-value'], token_validity_units: [{ 'key1' => 'val1' }], write_attributes: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -100,15 +102,101 @@ RSpec.describe Pangea::Resources::AWSCognitoManagedUserPoolClient do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'full')
+        expect(config).to have_key('access_token_validity')
+        expect(config).to have_key('allowed_oauth_flows')
+        expect(config).to have_key('allowed_oauth_flows_user_pool_client')
+        expect(config).to have_key('allowed_oauth_scopes')
         expect(config).to have_key('analytics_configuration')
+        expect(config).to have_key('auth_session_validity')
+        expect(config).to have_key('callback_urls')
+        expect(config).to have_key('default_redirect_uri')
+        expect(config).to have_key('enable_propagate_additional_user_context_data')
+        expect(config).to have_key('enable_token_revocation')
+        expect(config).to have_key('explicit_auth_flows')
+        expect(config).to have_key('id_token_validity')
+        expect(config).to have_key('logout_urls')
         expect(config).to have_key('name_pattern')
         expect(config).to have_key('name_prefix')
+        expect(config).to have_key('prevent_user_existence_errors')
+        expect(config).to have_key('read_attributes')
         expect(config).to have_key('refresh_token_rotation')
+        expect(config).to have_key('refresh_token_validity')
+        expect(config).to have_key('region')
+        expect(config).to have_key('supported_identity_providers')
         expect(config).to have_key('token_validity_units')
+        expect(config).to have_key('write_attributes')
       end
     end
 
     context 'optional attributes' do
+      it 'includes access_token_validity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(access_token_validity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('access_token_validity')
+      end
+
+      it 'omits access_token_validity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('access_token_validity')
+      end
+      it 'includes allowed_oauth_flows when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(allowed_oauth_flows: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('allowed_oauth_flows')
+      end
+
+      it 'omits allowed_oauth_flows when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('allowed_oauth_flows')
+      end
+      it 'includes allowed_oauth_flows_user_pool_client when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(allowed_oauth_flows_user_pool_client: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('allowed_oauth_flows_user_pool_client')
+      end
+
+      it 'omits allowed_oauth_flows_user_pool_client when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('allowed_oauth_flows_user_pool_client')
+      end
+      it 'includes allowed_oauth_scopes when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(allowed_oauth_scopes: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('allowed_oauth_scopes')
+      end
+
+      it 'omits allowed_oauth_scopes when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('allowed_oauth_scopes')
+      end
       it 'includes analytics_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -125,6 +213,142 @@ RSpec.describe Pangea::Resources::AWSCognitoManagedUserPoolClient do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
         expect(config).not_to have_key('analytics_configuration')
+      end
+      it 'includes auth_session_validity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(auth_session_validity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('auth_session_validity')
+      end
+
+      it 'omits auth_session_validity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('auth_session_validity')
+      end
+      it 'includes callback_urls when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(callback_urls: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('callback_urls')
+      end
+
+      it 'omits callback_urls when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('callback_urls')
+      end
+      it 'includes default_redirect_uri when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(default_redirect_uri: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('default_redirect_uri')
+      end
+
+      it 'omits default_redirect_uri when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('default_redirect_uri')
+      end
+      it 'includes enable_propagate_additional_user_context_data when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(enable_propagate_additional_user_context_data: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('enable_propagate_additional_user_context_data')
+      end
+
+      it 'omits enable_propagate_additional_user_context_data when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('enable_propagate_additional_user_context_data')
+      end
+      it 'includes enable_token_revocation when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(enable_token_revocation: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('enable_token_revocation')
+      end
+
+      it 'omits enable_token_revocation when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('enable_token_revocation')
+      end
+      it 'includes explicit_auth_flows when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(explicit_auth_flows: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('explicit_auth_flows')
+      end
+
+      it 'omits explicit_auth_flows when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('explicit_auth_flows')
+      end
+      it 'includes id_token_validity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(id_token_validity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('id_token_validity')
+      end
+
+      it 'omits id_token_validity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('id_token_validity')
+      end
+      it 'includes logout_urls when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(logout_urls: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('logout_urls')
+      end
+
+      it 'omits logout_urls when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('logout_urls')
       end
       it 'includes name_pattern when provided' do
         synth = create_synthesizer
@@ -160,6 +384,40 @@ RSpec.describe Pangea::Resources::AWSCognitoManagedUserPoolClient do
         config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
         expect(config).not_to have_key('name_prefix')
       end
+      it 'includes prevent_user_existence_errors when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(prevent_user_existence_errors: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('prevent_user_existence_errors')
+      end
+
+      it 'omits prevent_user_existence_errors when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('prevent_user_existence_errors')
+      end
+      it 'includes read_attributes when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(read_attributes: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('read_attributes')
+      end
+
+      it 'omits read_attributes when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('read_attributes')
+      end
       it 'includes refresh_token_rotation when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -176,6 +434,57 @@ RSpec.describe Pangea::Resources::AWSCognitoManagedUserPoolClient do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
         expect(config).not_to have_key('refresh_token_rotation')
+      end
+      it 'includes refresh_token_validity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(refresh_token_validity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('refresh_token_validity')
+      end
+
+      it 'omits refresh_token_validity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('refresh_token_validity')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes supported_identity_providers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(supported_identity_providers: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('supported_identity_providers')
+      end
+
+      it 'omits supported_identity_providers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('supported_identity_providers')
       end
       it 'includes token_validity_units when provided' do
         synth = create_synthesizer
@@ -194,12 +503,65 @@ RSpec.describe Pangea::Resources::AWSCognitoManagedUserPoolClient do
         config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
         expect(config).not_to have_key('token_validity_units')
       end
+      it 'includes write_attributes when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('opt', required_attrs.merge(write_attributes: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'opt')
+        expect(config).to have_key('write_attributes')
+      end
+
+      it 'omits write_attributes when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_managed_user_pool_client('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', 'minimal')
+        expect(config).not_to have_key('write_attributes')
+      end
     end
 
     context 'sensitive fields' do
       it 'documents sensitive attributes' do
         sensitive_fields = [:client_secret]
         expect(sensitive_fields).to include(:client_secret)
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts allowed_oauth_flows_user_pool_client=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(allowed_oauth_flows_user_pool_client: val)
+          synth.aws_cognito_managed_user_pool_client("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', "bool_#{val}")
+          expect(config['allowed_oauth_flows_user_pool_client']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts enable_propagate_additional_user_context_data=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enable_propagate_additional_user_context_data: val)
+          synth.aws_cognito_managed_user_pool_client("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', "bool_#{val}")
+          expect(config['enable_propagate_additional_user_context_data']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts enable_token_revocation=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enable_token_revocation: val)
+          synth.aws_cognito_managed_user_pool_client("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_cognito_managed_user_pool_client', "bool_#{val}")
+          expect(config['enable_token_revocation']).to eq(val)
+        end
       end
     end
 
@@ -245,8 +607,8 @@ RSpec.describe Pangea::Resources::AWSCognitoManagedUserPoolClient do
     resource_type: :aws_cognito_managed_user_pool_client,
     method: :aws_cognito_managed_user_pool_client,
     required_attrs: { user_pool_id: 'test-value' },
-    expected_outputs: [:id, :access_token_validity, :allowed_oauth_flows, :allowed_oauth_flows_user_pool_client, :allowed_oauth_scopes, :auth_session_validity, :callback_urls, :client_secret, :default_redirect_uri, :enable_propagate_additional_user_context_data, :enable_token_revocation, :explicit_auth_flows, :id_token_validity, :logout_urls, :name, :prevent_user_existence_errors, :read_attributes, :refresh_token_validity, :supported_identity_providers, :write_attributes],
+    expected_outputs: [:id, :access_token_validity, :allowed_oauth_flows, :allowed_oauth_flows_user_pool_client, :allowed_oauth_scopes, :auth_session_validity, :callback_urls, :client_secret, :default_redirect_uri, :enable_propagate_additional_user_context_data, :enable_token_revocation, :explicit_auth_flows, :id_token_validity, :logout_urls, :name, :prevent_user_existence_errors, :read_attributes, :refresh_token_validity, :region, :supported_identity_providers, :write_attributes],
     sensitive_fields: [:client_secret],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:allowed_oauth_flows_user_pool_client, :enable_propagate_additional_user_context_data, :enable_token_revocation]
 end

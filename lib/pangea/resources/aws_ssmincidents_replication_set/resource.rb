@@ -13,8 +13,7 @@ module Pangea::Resources
     define_resource :aws_ssmincidents_replication_set,
       attributes_class: AWS::Types::SsmincidentsReplicationSetAttributes,
       outputs: { id: :id },
-      map: [:region],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :regions, :tags, :tags_all]
   end
   module AWS
     include AWSSsmincidentsReplicationSet

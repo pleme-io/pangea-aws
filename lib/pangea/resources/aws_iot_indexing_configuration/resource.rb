@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_iot_indexing_configuration,
       attributes_class: AWS::Types::IotIndexingConfigurationAttributes,
       outputs: { id: :id },
-      map_present: [:thing_group_indexing_configuration, :thing_indexing_configuration]
+      map_present: [:region, :thing_group_indexing_configuration, :thing_indexing_configuration]
   end
   module AWS
     include AWSIotIndexingConfiguration

@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSLbTrustStoreRevocation do
         ref = synth.aws_lb_trust_store_revocation('test', required_attrs)
 
         expect(ref.id).to eq("${aws_lb_trust_store_revocation.test.id}")
+        expect(ref.region).to eq("${aws_lb_trust_store_revocation.test.region}")
         expect(ref.revocation_id).to eq("${aws_lb_trust_store_revocation.test.revocation_id}")
       end
     end
@@ -50,12 +51,13 @@ RSpec.describe Pangea::Resources::AWSLbTrustStoreRevocation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lb_trust_store_revocation', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('revocation_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ revocations_s3_object_version: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', revocations_s3_object_version: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,11 +66,29 @@ RSpec.describe Pangea::Resources::AWSLbTrustStoreRevocation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lb_trust_store_revocation', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('revocations_s3_object_version')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_trust_store_revocation('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_trust_store_revocation', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lb_trust_store_revocation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lb_trust_store_revocation', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes revocations_s3_object_version when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -132,7 +152,7 @@ RSpec.describe Pangea::Resources::AWSLbTrustStoreRevocation do
     resource_type: :aws_lb_trust_store_revocation,
     method: :aws_lb_trust_store_revocation,
     required_attrs: { revocations_s3_bucket: 'test-value', revocations_s3_key: 'test-value', trust_store_arn: 'test-value' },
-    expected_outputs: [:id, :revocation_id],
+    expected_outputs: [:id, :region, :revocation_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

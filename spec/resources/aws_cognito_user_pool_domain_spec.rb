@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPoolDomain do
         expect(ref.cloudfront_distribution_arn).to eq("${aws_cognito_user_pool_domain.test.cloudfront_distribution_arn}")
         expect(ref.cloudfront_distribution_zone_id).to eq("${aws_cognito_user_pool_domain.test.cloudfront_distribution_zone_id}")
         expect(ref.managed_login_version).to eq("${aws_cognito_user_pool_domain.test.managed_login_version}")
+        expect(ref.region).to eq("${aws_cognito_user_pool_domain.test.region}")
         expect(ref.s3_bucket).to eq("${aws_cognito_user_pool_domain.test.s3_bucket}")
         expect(ref.version).to eq("${aws_cognito_user_pool_domain.test.version}")
       end
@@ -61,13 +62,14 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPoolDomain do
         expect(config).not_to have_key('cloudfront_distribution_arn')
         expect(config).not_to have_key('cloudfront_distribution_zone_id')
         expect(config).not_to have_key('managed_login_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('s3_bucket')
         expect(config).not_to have_key('version')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ certificate_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ certificate_arn: 'test-value', managed_login_version: 3.14, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,6 +79,8 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPoolDomain do
 
         config = validate_resource_structure(result, 'aws_cognito_user_pool_domain', 'full')
         expect(config).to have_key('certificate_arn')
+        expect(config).to have_key('managed_login_version')
+        expect(config).to have_key('region')
       end
     end
 
@@ -97,6 +101,40 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPoolDomain do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cognito_user_pool_domain', 'minimal')
         expect(config).not_to have_key('certificate_arn')
+      end
+      it 'includes managed_login_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool_domain('opt', required_attrs.merge(managed_login_version: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool_domain', 'opt')
+        expect(config).to have_key('managed_login_version')
+      end
+
+      it 'omits managed_login_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool_domain', 'minimal')
+        expect(config).not_to have_key('managed_login_version')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool_domain('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool_domain', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cognito_user_pool_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cognito_user_pool_domain', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -143,7 +181,7 @@ RSpec.describe Pangea::Resources::AWSCognitoUserPoolDomain do
     resource_type: :aws_cognito_user_pool_domain,
     method: :aws_cognito_user_pool_domain,
     required_attrs: { domain: 'test-value', user_pool_id: 'test-value' },
-    expected_outputs: [:id, :aws_account_id, :cloudfront_distribution, :cloudfront_distribution_arn, :cloudfront_distribution_zone_id, :managed_login_version, :s3_bucket, :version],
+    expected_outputs: [:id, :aws_account_id, :cloudfront_distribution, :cloudfront_distribution_arn, :cloudfront_distribution_zone_id, :managed_login_version, :region, :s3_bucket, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

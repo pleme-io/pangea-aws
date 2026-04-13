@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RdsClusterActivityStreamAttributes,
       outputs: { id: :id },
       map: [:kms_key_id, :mode, :resource_arn],
+      map_present: [:region],
       map_bool: [:engine_native_audit_fields_included]
   end
   module AWS

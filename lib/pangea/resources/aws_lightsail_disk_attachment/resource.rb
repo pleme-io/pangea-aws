@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_lightsail_disk_attachment,
       attributes_class: AWS::Types::LightsailDiskAttachmentAttributes,
       outputs: { id: :id },
-      map: [:disk_name, :disk_path, :instance_name]
+      map: [:disk_name, :disk_path, :instance_name],
+      map_present: [:region]
   end
   module AWS
     include AWSLightsailDiskAttachment

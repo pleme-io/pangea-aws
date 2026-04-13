@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkmanagerVpcAttachmentAttributes,
       outputs: { id: :id },
       map: [:core_network_id, :subnet_arns, :vpc_arn],
-      map_present: [:options, :tags, :tags_all]
+      map_present: [:options, :routing_policy_label, :tags, :tags_all]
   end
   module AWS
     include AWSNetworkmanagerVpcAttachment

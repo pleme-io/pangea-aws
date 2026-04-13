@@ -74,9 +74,11 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         expect(ref.preferred_backup_window).to eq("${aws_rds_cluster.test.preferred_backup_window}")
         expect(ref.preferred_maintenance_window).to eq("${aws_rds_cluster.test.preferred_maintenance_window}")
         expect(ref.reader_endpoint).to eq("${aws_rds_cluster.test.reader_endpoint}")
+        expect(ref.region).to eq("${aws_rds_cluster.test.region}")
         expect(ref.storage_encrypted).to eq("${aws_rds_cluster.test.storage_encrypted}")
         expect(ref.storage_type).to eq("${aws_rds_cluster.test.storage_type}")
         expect(ref.tags_all).to eq("${aws_rds_cluster.test.tags_all}")
+        expect(ref.upgrade_rollout_order).to eq("${aws_rds_cluster.test.upgrade_rollout_order}")
         expect(ref.vpc_security_group_ids).to eq("${aws_rds_cluster.test.vpc_security_group_ids}")
       end
     end
@@ -125,15 +127,17 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         expect(config).not_to have_key('preferred_backup_window')
         expect(config).not_to have_key('preferred_maintenance_window')
         expect(config).not_to have_key('reader_endpoint')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('storage_encrypted')
         expect(config).not_to have_key('storage_type')
         expect(config).not_to have_key('tags_all')
+        expect(config).not_to have_key('upgrade_rollout_order')
         expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allow_major_version_upgrade: true, backtrack_window: 3.14, copy_tags_to_snapshot: true, db_cluster_instance_class: 'test-value', db_instance_parameter_group_name: 'test-value', delete_automated_backups: true, deletion_protection: true, domain: 'test-value', domain_iam_role_name: 'test-value', enable_global_write_forwarding: true, enable_http_endpoint: true, enable_local_write_forwarding: true, enabled_cloudwatch_logs_exports: ['test-value'], engine_mode: 'test-value', final_snapshot_identifier: 'test-value', global_cluster_identifier: 'test-value', iam_database_authentication_enabled: true, iops: 3.14, manage_master_user_password: true, master_password: 'test-value', master_password_wo: 'test-value', master_password_wo_version: 3.14, performance_insights_enabled: true, replication_source_identifier: 'test-value', restore_to_point_in_time: [{ 'key1' => 'val1' }], s3_import: [{ 'key1' => 'val1' }], scaling_configuration: [{ 'key1' => 'val1' }], serverlessv2_scaling_configuration: [{ 'key1' => 'val1' }], skip_final_snapshot: true, snapshot_identifier: 'test-value', source_region: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ allocated_storage: 3.14, allow_major_version_upgrade: true, apply_immediately: true, availability_zones: ['test-value'], backtrack_window: 3.14, backup_retention_period: 3.14, ca_certificate_identifier: 'test-value', cluster_identifier: 'test-value', cluster_identifier_prefix: 'test-value', cluster_members: ['test-value'], cluster_scalability_type: 'test-value', copy_tags_to_snapshot: true, database_insights_mode: 'test-value', database_name: 'test-value', db_cluster_instance_class: 'test-value', db_cluster_parameter_group_name: 'test-value', db_instance_parameter_group_name: 'test-value', db_subnet_group_name: 'test-value', db_system_id: 'test-value', delete_automated_backups: true, deletion_protection: true, domain: 'test-value', domain_iam_role_name: 'test-value', enable_global_write_forwarding: true, enable_http_endpoint: true, enable_local_write_forwarding: true, enabled_cloudwatch_logs_exports: ['test-value'], engine_lifecycle_support: 'test-value', engine_mode: 'test-value', engine_version: 'test-value', final_snapshot_identifier: 'test-value', global_cluster_identifier: 'test-value', iam_database_authentication_enabled: true, iam_roles: ['test-value'], iops: 3.14, kms_key_id: 'test-value', manage_master_user_password: true, master_password: 'test-value', master_password_wo: 'test-value', master_password_wo_version: 3.14, master_user_secret_kms_key_id: 'test-value', master_username: 'test-value', monitoring_interval: 3.14, monitoring_role_arn: 'test-value', network_type: 'test-value', performance_insights_enabled: true, performance_insights_kms_key_id: 'test-value', performance_insights_retention_period: 3.14, port: 3.14, preferred_backup_window: 'test-value', preferred_maintenance_window: 'test-value', region: 'test-value', replication_source_identifier: 'test-value', restore_to_point_in_time: { 'key1' => 'val1' }, s3_import: { 'key1' => 'val1' }, scaling_configuration: { 'key1' => 'val1' }, serverlessv2_scaling_configuration: { 'key1' => 'val1' }, skip_final_snapshot: true, snapshot_identifier: 'test-value', source_region: 'test-value', storage_encrypted: true, storage_type: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_security_group_ids: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -142,11 +146,25 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_rds_cluster', 'full')
+        expect(config).to have_key('allocated_storage')
         expect(config).to have_key('allow_major_version_upgrade')
+        expect(config).to have_key('apply_immediately')
+        expect(config).to have_key('availability_zones')
         expect(config).to have_key('backtrack_window')
+        expect(config).to have_key('backup_retention_period')
+        expect(config).to have_key('ca_certificate_identifier')
+        expect(config).to have_key('cluster_identifier')
+        expect(config).to have_key('cluster_identifier_prefix')
+        expect(config).to have_key('cluster_members')
+        expect(config).to have_key('cluster_scalability_type')
         expect(config).to have_key('copy_tags_to_snapshot')
+        expect(config).to have_key('database_insights_mode')
+        expect(config).to have_key('database_name')
         expect(config).to have_key('db_cluster_instance_class')
+        expect(config).to have_key('db_cluster_parameter_group_name')
         expect(config).to have_key('db_instance_parameter_group_name')
+        expect(config).to have_key('db_subnet_group_name')
+        expect(config).to have_key('db_system_id')
         expect(config).to have_key('delete_automated_backups')
         expect(config).to have_key('deletion_protection')
         expect(config).to have_key('domain')
@@ -155,16 +173,31 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         expect(config).to have_key('enable_http_endpoint')
         expect(config).to have_key('enable_local_write_forwarding')
         expect(config).to have_key('enabled_cloudwatch_logs_exports')
+        expect(config).to have_key('engine_lifecycle_support')
         expect(config).to have_key('engine_mode')
+        expect(config).to have_key('engine_version')
         expect(config).to have_key('final_snapshot_identifier')
         expect(config).to have_key('global_cluster_identifier')
         expect(config).to have_key('iam_database_authentication_enabled')
+        expect(config).to have_key('iam_roles')
         expect(config).to have_key('iops')
+        expect(config).to have_key('kms_key_id')
         expect(config).to have_key('manage_master_user_password')
         expect(config).to have_key('master_password')
         expect(config).to have_key('master_password_wo')
         expect(config).to have_key('master_password_wo_version')
+        expect(config).to have_key('master_user_secret_kms_key_id')
+        expect(config).to have_key('master_username')
+        expect(config).to have_key('monitoring_interval')
+        expect(config).to have_key('monitoring_role_arn')
+        expect(config).to have_key('network_type')
         expect(config).to have_key('performance_insights_enabled')
+        expect(config).to have_key('performance_insights_kms_key_id')
+        expect(config).to have_key('performance_insights_retention_period')
+        expect(config).to have_key('port')
+        expect(config).to have_key('preferred_backup_window')
+        expect(config).to have_key('preferred_maintenance_window')
+        expect(config).to have_key('region')
         expect(config).to have_key('replication_source_identifier')
         expect(config).to have_key('restore_to_point_in_time')
         expect(config).to have_key('s3_import')
@@ -173,11 +206,32 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         expect(config).to have_key('skip_final_snapshot')
         expect(config).to have_key('snapshot_identifier')
         expect(config).to have_key('source_region')
+        expect(config).to have_key('storage_encrypted')
+        expect(config).to have_key('storage_type')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('vpc_security_group_ids')
       end
     end
 
     context 'optional attributes' do
+      it 'includes allocated_storage when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(allocated_storage: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('allocated_storage')
+      end
+
+      it 'omits allocated_storage when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('allocated_storage')
+      end
       it 'includes allow_major_version_upgrade when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -194,6 +248,40 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
         expect(config).not_to have_key('allow_major_version_upgrade')
+      end
+      it 'includes apply_immediately when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(apply_immediately: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('apply_immediately')
+      end
+
+      it 'omits apply_immediately when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('apply_immediately')
+      end
+      it 'includes availability_zones when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(availability_zones: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('availability_zones')
+      end
+
+      it 'omits availability_zones when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('availability_zones')
       end
       it 'includes backtrack_window when provided' do
         synth = create_synthesizer
@@ -212,6 +300,108 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
         expect(config).not_to have_key('backtrack_window')
       end
+      it 'includes backup_retention_period when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(backup_retention_period: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('backup_retention_period')
+      end
+
+      it 'omits backup_retention_period when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('backup_retention_period')
+      end
+      it 'includes ca_certificate_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(ca_certificate_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('ca_certificate_identifier')
+      end
+
+      it 'omits ca_certificate_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('ca_certificate_identifier')
+      end
+      it 'includes cluster_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(cluster_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('cluster_identifier')
+      end
+
+      it 'omits cluster_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('cluster_identifier')
+      end
+      it 'includes cluster_identifier_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(cluster_identifier_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('cluster_identifier_prefix')
+      end
+
+      it 'omits cluster_identifier_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('cluster_identifier_prefix')
+      end
+      it 'includes cluster_members when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(cluster_members: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('cluster_members')
+      end
+
+      it 'omits cluster_members when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('cluster_members')
+      end
+      it 'includes cluster_scalability_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(cluster_scalability_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('cluster_scalability_type')
+      end
+
+      it 'omits cluster_scalability_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('cluster_scalability_type')
+      end
       it 'includes copy_tags_to_snapshot when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -228,6 +418,40 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
         expect(config).not_to have_key('copy_tags_to_snapshot')
+      end
+      it 'includes database_insights_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(database_insights_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('database_insights_mode')
+      end
+
+      it 'omits database_insights_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('database_insights_mode')
+      end
+      it 'includes database_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(database_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('database_name')
+      end
+
+      it 'omits database_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('database_name')
       end
       it 'includes db_cluster_instance_class when provided' do
         synth = create_synthesizer
@@ -246,6 +470,23 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
         expect(config).not_to have_key('db_cluster_instance_class')
       end
+      it 'includes db_cluster_parameter_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(db_cluster_parameter_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('db_cluster_parameter_group_name')
+      end
+
+      it 'omits db_cluster_parameter_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('db_cluster_parameter_group_name')
+      end
       it 'includes db_instance_parameter_group_name when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -262,6 +503,40 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
         expect(config).not_to have_key('db_instance_parameter_group_name')
+      end
+      it 'includes db_subnet_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(db_subnet_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('db_subnet_group_name')
+      end
+
+      it 'omits db_subnet_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('db_subnet_group_name')
+      end
+      it 'includes db_system_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(db_system_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('db_system_id')
+      end
+
+      it 'omits db_system_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('db_system_id')
       end
       it 'includes delete_automated_backups when provided' do
         synth = create_synthesizer
@@ -399,6 +674,23 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
         expect(config).not_to have_key('enabled_cloudwatch_logs_exports')
       end
+      it 'includes engine_lifecycle_support when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(engine_lifecycle_support: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('engine_lifecycle_support')
+      end
+
+      it 'omits engine_lifecycle_support when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('engine_lifecycle_support')
+      end
       it 'includes engine_mode when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -415,6 +707,23 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
         expect(config).not_to have_key('engine_mode')
+      end
+      it 'includes engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('engine_version')
+      end
+
+      it 'omits engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('engine_version')
       end
       it 'includes final_snapshot_identifier when provided' do
         synth = create_synthesizer
@@ -467,6 +776,23 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
         expect(config).not_to have_key('iam_database_authentication_enabled')
       end
+      it 'includes iam_roles when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(iam_roles: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('iam_roles')
+      end
+
+      it 'omits iam_roles when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('iam_roles')
+      end
       it 'includes iops when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -483,6 +809,23 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
         expect(config).not_to have_key('iops')
+      end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
       end
       it 'includes manage_master_user_password when provided' do
         synth = create_synthesizer
@@ -552,6 +895,91 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
         expect(config).not_to have_key('master_password_wo_version')
       end
+      it 'includes master_user_secret_kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(master_user_secret_kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('master_user_secret_kms_key_id')
+      end
+
+      it 'omits master_user_secret_kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('master_user_secret_kms_key_id')
+      end
+      it 'includes master_username when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(master_username: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('master_username')
+      end
+
+      it 'omits master_username when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('master_username')
+      end
+      it 'includes monitoring_interval when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(monitoring_interval: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('monitoring_interval')
+      end
+
+      it 'omits monitoring_interval when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('monitoring_interval')
+      end
+      it 'includes monitoring_role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(monitoring_role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('monitoring_role_arn')
+      end
+
+      it 'omits monitoring_role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('monitoring_role_arn')
+      end
+      it 'includes network_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(network_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('network_type')
+      end
+
+      it 'omits network_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('network_type')
+      end
       it 'includes performance_insights_enabled when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -568,6 +996,108 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
         expect(config).not_to have_key('performance_insights_enabled')
+      end
+      it 'includes performance_insights_kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(performance_insights_kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('performance_insights_kms_key_id')
+      end
+
+      it 'omits performance_insights_kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('performance_insights_kms_key_id')
+      end
+      it 'includes performance_insights_retention_period when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(performance_insights_retention_period: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('performance_insights_retention_period')
+      end
+
+      it 'omits performance_insights_retention_period when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('performance_insights_retention_period')
+      end
+      it 'includes port when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(port: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('port')
+      end
+
+      it 'omits port when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('port')
+      end
+      it 'includes preferred_backup_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(preferred_backup_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('preferred_backup_window')
+      end
+
+      it 'omits preferred_backup_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('preferred_backup_window')
+      end
+      it 'includes preferred_maintenance_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(preferred_maintenance_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('preferred_maintenance_window')
+      end
+
+      it 'omits preferred_maintenance_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('preferred_maintenance_window')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes replication_source_identifier when provided' do
         synth = create_synthesizer
@@ -589,7 +1119,7 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
       it 'includes restore_to_point_in_time when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_rds_cluster('opt', required_attrs.merge(restore_to_point_in_time: [{ 'key1' => 'val1' }]))
+        synth.aws_rds_cluster('opt', required_attrs.merge(restore_to_point_in_time: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
         expect(config).to have_key('restore_to_point_in_time')
@@ -606,7 +1136,7 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
       it 'includes s3_import when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_rds_cluster('opt', required_attrs.merge(s3_import: [{ 'key1' => 'val1' }]))
+        synth.aws_rds_cluster('opt', required_attrs.merge(s3_import: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
         expect(config).to have_key('s3_import')
@@ -623,7 +1153,7 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
       it 'includes scaling_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_rds_cluster('opt', required_attrs.merge(scaling_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_rds_cluster('opt', required_attrs.merge(scaling_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
         expect(config).to have_key('scaling_configuration')
@@ -640,7 +1170,7 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
       it 'includes serverlessv2_scaling_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_rds_cluster('opt', required_attrs.merge(serverlessv2_scaling_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_rds_cluster('opt', required_attrs.merge(serverlessv2_scaling_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
         expect(config).to have_key('serverlessv2_scaling_configuration')
@@ -705,6 +1235,40 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
         expect(config).not_to have_key('source_region')
       end
+      it 'includes storage_encrypted when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(storage_encrypted: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('storage_encrypted')
+      end
+
+      it 'omits storage_encrypted when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('storage_encrypted')
+      end
+      it 'includes storage_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(storage_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('storage_type')
+      end
+
+      it 'omits storage_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('storage_type')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -721,6 +1285,40 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes vpc_security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('opt', required_attrs.merge(vpc_security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'opt')
+        expect(config).to have_key('vpc_security_group_ids')
+      end
+
+      it 'omits vpc_security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_rds_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_rds_cluster', 'minimal')
+        expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
@@ -742,6 +1340,17 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_rds_cluster', "bool_#{val}")
           expect(config['allow_major_version_upgrade']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts apply_immediately=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(apply_immediately: val)
+          synth.aws_rds_cluster("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_rds_cluster', "bool_#{val}")
+          expect(config['apply_immediately']).to eq(val)
         end
       end
       [true, false].each do |val|
@@ -854,6 +1463,17 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
           expect(config['skip_final_snapshot']).to eq(val)
         end
       end
+      [true, false].each do |val|
+        it "accepts storage_encrypted=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(storage_encrypted: val)
+          synth.aws_rds_cluster("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_rds_cluster', "bool_#{val}")
+          expect(config['storage_encrypted']).to eq(val)
+        end
+      end
     end
 
     context 'attribute types' do
@@ -898,8 +1518,8 @@ RSpec.describe Pangea::Resources::AWSRdsCluster do
     resource_type: :aws_rds_cluster,
     method: :aws_rds_cluster,
     required_attrs: { engine: 'test-value' },
-    expected_outputs: [:id, :allocated_storage, :apply_immediately, :arn, :availability_zones, :backup_retention_period, :ca_certificate_identifier, :ca_certificate_valid_till, :cluster_identifier, :cluster_identifier_prefix, :cluster_members, :cluster_resource_id, :cluster_scalability_type, :database_insights_mode, :database_name, :db_cluster_parameter_group_name, :db_subnet_group_name, :db_system_id, :endpoint, :engine_lifecycle_support, :engine_version, :engine_version_actual, :hosted_zone_id, :iam_roles, :kms_key_id, :master_user_secret, :master_user_secret_kms_key_id, :master_username, :monitoring_interval, :monitoring_role_arn, :network_type, :performance_insights_kms_key_id, :performance_insights_retention_period, :port, :preferred_backup_window, :preferred_maintenance_window, :reader_endpoint, :storage_encrypted, :storage_type, :tags_all, :vpc_security_group_ids],
+    expected_outputs: [:id, :allocated_storage, :apply_immediately, :arn, :availability_zones, :backup_retention_period, :ca_certificate_identifier, :ca_certificate_valid_till, :cluster_identifier, :cluster_identifier_prefix, :cluster_members, :cluster_resource_id, :cluster_scalability_type, :database_insights_mode, :database_name, :db_cluster_parameter_group_name, :db_subnet_group_name, :db_system_id, :endpoint, :engine_lifecycle_support, :engine_version, :engine_version_actual, :hosted_zone_id, :iam_roles, :kms_key_id, :master_user_secret, :master_user_secret_kms_key_id, :master_username, :monitoring_interval, :monitoring_role_arn, :network_type, :performance_insights_kms_key_id, :performance_insights_retention_period, :port, :preferred_backup_window, :preferred_maintenance_window, :reader_endpoint, :region, :storage_encrypted, :storage_type, :tags_all, :upgrade_rollout_order, :vpc_security_group_ids],
     sensitive_fields: [:master_password, :master_password_wo],
     immutable_fields: [],
-    boolean_fields: [:allow_major_version_upgrade, :copy_tags_to_snapshot, :delete_automated_backups, :deletion_protection, :enable_global_write_forwarding, :enable_http_endpoint, :enable_local_write_forwarding, :iam_database_authentication_enabled, :manage_master_user_password, :performance_insights_enabled, :skip_final_snapshot]
+    boolean_fields: [:allow_major_version_upgrade, :apply_immediately, :copy_tags_to_snapshot, :delete_automated_backups, :deletion_protection, :enable_global_write_forwarding, :enable_http_endpoint, :enable_local_write_forwarding, :iam_database_authentication_enabled, :manage_master_user_password, :performance_insights_enabled, :skip_final_snapshot, :storage_encrypted]
 end

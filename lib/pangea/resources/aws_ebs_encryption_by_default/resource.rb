@@ -13,6 +13,7 @@ module Pangea::Resources
     define_resource :aws_ebs_encryption_by_default,
       attributes_class: AWS::Types::EbsEncryptionByDefaultAttributes,
       outputs: { id: :id },
+      map_present: [:region],
       map_bool: [:enabled]
   end
   module AWS

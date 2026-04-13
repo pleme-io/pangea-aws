@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderLifecyclePolicy do
 
         expect(ref.id).to eq("${aws_imagebuilder_lifecycle_policy.test.id}")
         expect(ref.arn).to eq("${aws_imagebuilder_lifecycle_policy.test.arn}")
+        expect(ref.region).to eq("${aws_imagebuilder_lifecycle_policy.test.region}")
         expect(ref.status).to eq("${aws_imagebuilder_lifecycle_policy.test.status}")
         expect(ref.tags_all).to eq("${aws_imagebuilder_lifecycle_policy.test.tags_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSImagebuilderLifecyclePolicy do
 
         config = validate_resource_structure(result, 'aws_imagebuilder_lifecycle_policy', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', policy_detail: [{ 'key1' => 'val1' }], resource_selection: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', policy_detail: [{ 'key1' => 'val1' }], region: 'test-value', resource_selection: [{ 'key1' => 'val1' }], status: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,7 +72,9 @@ RSpec.describe Pangea::Resources::AWSImagebuilderLifecyclePolicy do
         config = validate_resource_structure(result, 'aws_imagebuilder_lifecycle_policy', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('policy_detail')
+        expect(config).to have_key('region')
         expect(config).to have_key('resource_selection')
+        expect(config).to have_key('status')
         expect(config).to have_key('tags')
       end
     end
@@ -110,6 +114,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderLifecyclePolicy do
         config = validate_resource_structure(result, 'aws_imagebuilder_lifecycle_policy', 'minimal')
         expect(config).not_to have_key('policy_detail')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_lifecycle_policy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_lifecycle_policy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_lifecycle_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_lifecycle_policy', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes resource_selection when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -126,6 +147,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderLifecyclePolicy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_lifecycle_policy', 'minimal')
         expect(config).not_to have_key('resource_selection')
+      end
+      it 'includes status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_lifecycle_policy('opt', required_attrs.merge(status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_lifecycle_policy', 'opt')
+        expect(config).to have_key('status')
+      end
+
+      it 'omits status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_lifecycle_policy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_lifecycle_policy', 'minimal')
+        expect(config).not_to have_key('status')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -190,7 +228,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderLifecyclePolicy do
     resource_type: :aws_imagebuilder_lifecycle_policy,
     method: :aws_imagebuilder_lifecycle_policy,
     required_attrs: { execution_role: 'test-value', name: 'test-value', resource_type: 'test-value' },
-    expected_outputs: [:id, :arn, :status, :tags_all],
+    expected_outputs: [:id, :arn, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

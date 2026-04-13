@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSGluePartition do
         expect(ref.creation_time).to eq("${aws_glue_partition.test.creation_time}")
         expect(ref.last_accessed_time).to eq("${aws_glue_partition.test.last_accessed_time}")
         expect(ref.last_analyzed_time).to eq("${aws_glue_partition.test.last_analyzed_time}")
+        expect(ref.region).to eq("${aws_glue_partition.test.region}")
       end
     end
 
@@ -57,11 +58,12 @@ RSpec.describe Pangea::Resources::AWSGluePartition do
         expect(config).not_to have_key('creation_time')
         expect(config).not_to have_key('last_accessed_time')
         expect(config).not_to have_key('last_analyzed_time')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ parameters: { 'key1' => 'val1' }, storage_descriptor: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ catalog_id: 'test-value', parameters: { 'key1' => 'val1' }, region: 'test-value', storage_descriptor: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,12 +72,31 @@ RSpec.describe Pangea::Resources::AWSGluePartition do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_glue_partition', 'full')
+        expect(config).to have_key('catalog_id')
         expect(config).to have_key('parameters')
+        expect(config).to have_key('region')
         expect(config).to have_key('storage_descriptor')
       end
     end
 
     context 'optional attributes' do
+      it 'includes catalog_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_partition('opt', required_attrs.merge(catalog_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_partition', 'opt')
+        expect(config).to have_key('catalog_id')
+      end
+
+      it 'omits catalog_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_partition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_partition', 'minimal')
+        expect(config).not_to have_key('catalog_id')
+      end
       it 'includes parameters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -93,10 +114,27 @@ RSpec.describe Pangea::Resources::AWSGluePartition do
         config = validate_resource_structure(result, 'aws_glue_partition', 'minimal')
         expect(config).not_to have_key('parameters')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_partition('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_partition', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_partition('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_partition', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes storage_descriptor when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_partition('opt', required_attrs.merge(storage_descriptor: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_partition('opt', required_attrs.merge(storage_descriptor: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_partition', 'opt')
         expect(config).to have_key('storage_descriptor')
@@ -156,7 +194,7 @@ RSpec.describe Pangea::Resources::AWSGluePartition do
     resource_type: :aws_glue_partition,
     method: :aws_glue_partition,
     required_attrs: { database_name: 'test-value', partition_values: ['test-value'], table_name: 'test-value' },
-    expected_outputs: [:id, :catalog_id, :creation_time, :last_accessed_time, :last_analyzed_time],
+    expected_outputs: [:id, :catalog_id, :creation_time, :last_accessed_time, :last_analyzed_time, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

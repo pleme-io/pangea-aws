@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_cloud9_environment_membership,
       attributes_class: AWS::Types::Cloud9EnvironmentMembershipAttributes,
       outputs: { id: :id },
-      map: [:environment_id, :permissions, :user_arn]
+      map: [:environment_id, :permissions, :user_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSCloud9EnvironmentMembership

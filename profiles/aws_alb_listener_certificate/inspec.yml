@@ -1,0 +1,8 @@
+name: aws_alb_listener_certificate
+title: Manages a aws_alb_listener_certificate resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

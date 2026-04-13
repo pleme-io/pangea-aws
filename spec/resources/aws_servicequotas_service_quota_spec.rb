@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSServicequotasServiceQuota do
         expect(ref.arn).to eq("${aws_servicequotas_service_quota.test.arn}")
         expect(ref.default_value).to eq("${aws_servicequotas_service_quota.test.default_value}")
         expect(ref.quota_name).to eq("${aws_servicequotas_service_quota.test.quota_name}")
+        expect(ref.region).to eq("${aws_servicequotas_service_quota.test.region}")
         expect(ref.request_id).to eq("${aws_servicequotas_service_quota.test.request_id}")
         expect(ref.request_status).to eq("${aws_servicequotas_service_quota.test.request_status}")
         expect(ref.service_name).to eq("${aws_servicequotas_service_quota.test.service_name}")
@@ -61,10 +62,45 @@ RSpec.describe Pangea::Resources::AWSServicequotasServiceQuota do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('default_value')
         expect(config).not_to have_key('quota_name')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('request_id')
         expect(config).not_to have_key('request_status')
         expect(config).not_to have_key('service_name')
         expect(config).not_to have_key('usage_metric')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicequotas_service_quota('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_servicequotas_service_quota', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicequotas_service_quota('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicequotas_service_quota', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicequotas_service_quota('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicequotas_service_quota', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -112,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSServicequotasServiceQuota do
     resource_type: :aws_servicequotas_service_quota,
     method: :aws_servicequotas_service_quota,
     required_attrs: { quota_code: 'test-value', service_code: 'test-value', value: 3.14 },
-    expected_outputs: [:id, :adjustable, :arn, :default_value, :quota_name, :request_id, :request_status, :service_name, :usage_metric],
+    expected_outputs: [:id, :adjustable, :arn, :default_value, :quota_name, :region, :request_id, :request_status, :service_name, :usage_metric],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

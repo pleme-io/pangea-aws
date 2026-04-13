@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_ec2_traffic_mirror_target,
       attributes_class: AWS::Types::Ec2TrafficMirrorTargetAttributes,
       outputs: { id: :id },
-      map_present: [:description, :gateway_load_balancer_endpoint_id, :network_interface_id, :network_load_balancer_arn, :tags, :tags_all]
+      map_present: [:description, :gateway_load_balancer_endpoint_id, :network_interface_id, :network_load_balancer_arn, :region, :tags, :tags_all]
   end
   module AWS
     include AWSEc2TrafficMirrorTarget

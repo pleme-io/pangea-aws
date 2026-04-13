@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IotTopicRuleDestinationAttributes,
       outputs: { id: :id },
       map: [:vpc_configuration],
+      map_present: [:region],
       map_bool: [:enabled]
   end
   module AWS

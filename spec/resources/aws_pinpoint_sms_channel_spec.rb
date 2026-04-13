@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSPinpointSmsChannel do
 
         expect(ref.id).to eq("${aws_pinpoint_sms_channel.test.id}")
         expect(ref.promotional_messages_per_second).to eq("${aws_pinpoint_sms_channel.test.promotional_messages_per_second}")
+        expect(ref.region).to eq("${aws_pinpoint_sms_channel.test.region}")
         expect(ref.transactional_messages_per_second).to eq("${aws_pinpoint_sms_channel.test.transactional_messages_per_second}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSPinpointSmsChannel do
 
         config = validate_resource_structure(result, 'aws_pinpoint_sms_channel', 'test')
         expect(config).not_to have_key('promotional_messages_per_second')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('transactional_messages_per_second')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enabled: true, sender_id: 'test-value', short_code: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ enabled: true, region: 'test-value', sender_id: 'test-value', short_code: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSPinpointSmsChannel do
 
         config = validate_resource_structure(result, 'aws_pinpoint_sms_channel', 'full')
         expect(config).to have_key('enabled')
+        expect(config).to have_key('region')
         expect(config).to have_key('sender_id')
         expect(config).to have_key('short_code')
       end
@@ -89,6 +92,23 @@ RSpec.describe Pangea::Resources::AWSPinpointSmsChannel do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_pinpoint_sms_channel', 'minimal')
         expect(config).not_to have_key('enabled')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpoint_sms_channel('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpoint_sms_channel', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpoint_sms_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpoint_sms_channel', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes sender_id when provided' do
         synth = create_synthesizer
@@ -182,7 +202,7 @@ RSpec.describe Pangea::Resources::AWSPinpointSmsChannel do
     resource_type: :aws_pinpoint_sms_channel,
     method: :aws_pinpoint_sms_channel,
     required_attrs: { application_id: 'test-value' },
-    expected_outputs: [:id, :promotional_messages_per_second, :transactional_messages_per_second],
+    expected_outputs: [:id, :promotional_messages_per_second, :region, :transactional_messages_per_second],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled]

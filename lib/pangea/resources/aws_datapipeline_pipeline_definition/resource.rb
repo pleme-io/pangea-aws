@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DatapipelinePipelineDefinitionAttributes,
       outputs: { id: :id },
       map: [:pipeline_id, :pipeline_object],
-      map_present: [:parameter_object, :parameter_value]
+      map_present: [:parameter_object, :parameter_value, :region]
   end
   module AWS
     include AWSDatapipelinePipelineDefinition

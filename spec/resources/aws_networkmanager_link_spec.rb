@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSNetworkmanagerLink do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { bandwidth: [{ 'key1' => 'val1' }], global_network_id: 'test-value', site_id: 'test-value' } }
+  let(:required_attrs) { { bandwidth: { 'key1' => 'val1' }, global_network_id: 'test-value', site_id: 'test-value' } }
 
   describe ':aws_networkmanager_link' do
     context 'with required attributes only' do
@@ -57,7 +57,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerLink do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', provider_name: 'test-value', tags: { 'key1' => 'val1' }, type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', provider_name: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerLink do
         expect(config).to have_key('description')
         expect(config).to have_key('provider_name')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('type')
       end
     end
@@ -125,6 +126,23 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerLink do
         config = validate_resource_structure(result, 'aws_networkmanager_link', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_link('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_link', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmanager_link('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmanager_link', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes type when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -152,7 +170,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerLink do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_networkmanager_link', 'typed')
-        expect(config['bandwidth']).to be_a(Array)
+        expect(config['bandwidth']).to be_a(Hash)
         expect(config['global_network_id']).to be_a(String)
         expect(config['site_id']).to be_a(String)
       end
@@ -187,7 +205,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmanagerLink do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_networkmanager_link,
     method: :aws_networkmanager_link,
-    required_attrs: { bandwidth: [{ 'key1' => 'val1' }], global_network_id: 'test-value', site_id: 'test-value' },
+    required_attrs: { bandwidth: { 'key1' => 'val1' }, global_network_id: 'test-value', site_id: 'test-value' },
     expected_outputs: [:id, :arn, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],

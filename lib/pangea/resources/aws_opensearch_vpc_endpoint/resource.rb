@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_opensearch_vpc_endpoint,
       attributes_class: AWS::Types::OpensearchVpcEndpointAttributes,
       outputs: { id: :id },
-      map: [:domain_arn, :vpc_options]
+      map: [:domain_arn, :vpc_options],
+      map_present: [:region]
   end
   module AWS
     include AWSOpensearchVpcEndpoint

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Authorizer do
 
         expect(ref.id).to eq("${aws_apigatewayv2_authorizer.test.id}")
         expect(ref.authorizer_result_ttl_in_seconds).to eq("${aws_apigatewayv2_authorizer.test.authorizer_result_ttl_in_seconds}")
+        expect(ref.region).to eq("${aws_apigatewayv2_authorizer.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Authorizer do
 
         config = validate_resource_structure(result, 'aws_apigatewayv2_authorizer', 'test')
         expect(config).not_to have_key('authorizer_result_ttl_in_seconds')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ authorizer_credentials_arn: 'test-value', authorizer_payload_format_version: 'test-value', authorizer_uri: 'test-value', enable_simple_responses: true, identity_sources: ['test-value'], jwt_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ authorizer_credentials_arn: 'test-value', authorizer_payload_format_version: 'test-value', authorizer_result_ttl_in_seconds: 3.14, authorizer_uri: 'test-value', enable_simple_responses: true, identity_sources: ['test-value'], jwt_configuration: { 'key1' => 'val1' }, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,10 +68,12 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Authorizer do
         config = validate_resource_structure(result, 'aws_apigatewayv2_authorizer', 'full')
         expect(config).to have_key('authorizer_credentials_arn')
         expect(config).to have_key('authorizer_payload_format_version')
+        expect(config).to have_key('authorizer_result_ttl_in_seconds')
         expect(config).to have_key('authorizer_uri')
         expect(config).to have_key('enable_simple_responses')
         expect(config).to have_key('identity_sources')
         expect(config).to have_key('jwt_configuration')
+        expect(config).to have_key('region')
       end
     end
 
@@ -107,6 +111,23 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Authorizer do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apigatewayv2_authorizer', 'minimal')
         expect(config).not_to have_key('authorizer_payload_format_version')
+      end
+      it 'includes authorizer_result_ttl_in_seconds when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_authorizer('opt', required_attrs.merge(authorizer_result_ttl_in_seconds: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_authorizer', 'opt')
+        expect(config).to have_key('authorizer_result_ttl_in_seconds')
+      end
+
+      it 'omits authorizer_result_ttl_in_seconds when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_authorizer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_authorizer', 'minimal')
+        expect(config).not_to have_key('authorizer_result_ttl_in_seconds')
       end
       it 'includes authorizer_uri when provided' do
         synth = create_synthesizer
@@ -162,7 +183,7 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Authorizer do
       it 'includes jwt_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_apigatewayv2_authorizer('opt', required_attrs.merge(jwt_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_apigatewayv2_authorizer('opt', required_attrs.merge(jwt_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apigatewayv2_authorizer', 'opt')
         expect(config).to have_key('jwt_configuration')
@@ -175,6 +196,23 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Authorizer do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apigatewayv2_authorizer', 'minimal')
         expect(config).not_to have_key('jwt_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_authorizer('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_authorizer', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apigatewayv2_authorizer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apigatewayv2_authorizer', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -236,7 +274,7 @@ RSpec.describe Pangea::Resources::AWSApigatewayv2Authorizer do
     resource_type: :aws_apigatewayv2_authorizer,
     method: :aws_apigatewayv2_authorizer,
     required_attrs: { api_id: 'test-value', authorizer_type: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :authorizer_result_ttl_in_seconds],
+    expected_outputs: [:id, :authorizer_result_ttl_in_seconds, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enable_simple_responses]

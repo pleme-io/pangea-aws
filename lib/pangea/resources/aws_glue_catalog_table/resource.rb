@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueCatalogTableAttributes,
       outputs: { id: :id },
       map: [:database_name, :name],
-      map_present: [:catalog_id, :description, :open_table_format_input, :owner, :parameters, :partition_index, :partition_keys, :retention, :storage_descriptor, :table_type, :target_table, :view_expanded_text, :view_original_text]
+      map_present: [:catalog_id, :description, :open_table_format_input, :owner, :parameters, :partition_index, :partition_keys, :region, :retention, :storage_descriptor, :table_type, :target_table, :view_definition, :view_expanded_text, :view_original_text]
   end
   module AWS
     include AWSGlueCatalogTable

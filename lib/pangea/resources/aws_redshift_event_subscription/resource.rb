@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftEventSubscriptionAttributes,
       outputs: { id: :id },
       map: [:name, :sns_topic_arn],
-      map_present: [:event_categories, :severity, :source_ids, :source_type, :tags, :tags_all],
+      map_present: [:event_categories, :region, :severity, :source_ids, :source_type, :tags, :tags_all],
       map_bool: [:enabled]
   end
   module AWS

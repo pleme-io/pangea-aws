@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAccessanalyzerAnalyzer do
 
         expect(ref.id).to eq("${aws_accessanalyzer_analyzer.test.id}")
         expect(ref.arn).to eq("${aws_accessanalyzer_analyzer.test.arn}")
+        expect(ref.region).to eq("${aws_accessanalyzer_analyzer.test.region}")
         expect(ref.tags_all).to eq("${aws_accessanalyzer_analyzer.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSAccessanalyzerAnalyzer do
 
         config = validate_resource_structure(result, 'aws_accessanalyzer_analyzer', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ configuration: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,7 +69,9 @@ RSpec.describe Pangea::Resources::AWSAccessanalyzerAnalyzer do
 
         config = validate_resource_structure(result, 'aws_accessanalyzer_analyzer', 'full')
         expect(config).to have_key('configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('type')
       end
     end
@@ -76,7 +80,7 @@ RSpec.describe Pangea::Resources::AWSAccessanalyzerAnalyzer do
       it 'includes configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_accessanalyzer_analyzer('opt', required_attrs.merge(configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_accessanalyzer_analyzer('opt', required_attrs.merge(configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_accessanalyzer_analyzer', 'opt')
         expect(config).to have_key('configuration')
@@ -89,6 +93,23 @@ RSpec.describe Pangea::Resources::AWSAccessanalyzerAnalyzer do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_accessanalyzer_analyzer', 'minimal')
         expect(config).not_to have_key('configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_accessanalyzer_analyzer('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_accessanalyzer_analyzer', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_accessanalyzer_analyzer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_accessanalyzer_analyzer', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -106,6 +127,23 @@ RSpec.describe Pangea::Resources::AWSAccessanalyzerAnalyzer do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_accessanalyzer_analyzer', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_accessanalyzer_analyzer('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_accessanalyzer_analyzer', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_accessanalyzer_analyzer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_accessanalyzer_analyzer', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes type when provided' do
         synth = create_synthesizer
@@ -168,7 +206,7 @@ RSpec.describe Pangea::Resources::AWSAccessanalyzerAnalyzer do
     resource_type: :aws_accessanalyzer_analyzer,
     method: :aws_accessanalyzer_analyzer,
     required_attrs: { analyzer_name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

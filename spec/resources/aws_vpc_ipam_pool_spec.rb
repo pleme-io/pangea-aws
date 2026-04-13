@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPool do
         expect(ref.arn).to eq("${aws_vpc_ipam_pool.test.arn}")
         expect(ref.ipam_scope_type).to eq("${aws_vpc_ipam_pool.test.ipam_scope_type}")
         expect(ref.pool_depth).to eq("${aws_vpc_ipam_pool.test.pool_depth}")
+        expect(ref.region).to eq("${aws_vpc_ipam_pool.test.region}")
         expect(ref.state).to eq("${aws_vpc_ipam_pool.test.state}")
         expect(ref.tags_all).to eq("${aws_vpc_ipam_pool.test.tags_all}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPool do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('ipam_scope_type')
         expect(config).not_to have_key('pool_depth')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allocation_default_netmask_length: 3.14, allocation_max_netmask_length: 3.14, allocation_min_netmask_length: 3.14, allocation_resource_tags: { 'key1' => 'val1' }, auto_import: true, aws_service: 'test-value', cascade: true, description: 'test-value', locale: 'test-value', public_ip_source: 'test-value', publicly_advertisable: true, source_ipam_pool_id: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ allocation_default_netmask_length: 3.14, allocation_max_netmask_length: 3.14, allocation_min_netmask_length: 3.14, allocation_resource_tags: { 'key1' => 'val1' }, auto_import: true, aws_service: 'test-value', cascade: true, description: 'test-value', locale: 'test-value', public_ip_source: 'test-value', publicly_advertisable: true, region: 'test-value', source_ipam_pool_id: 'test-value', source_resource: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -83,8 +85,11 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPool do
         expect(config).to have_key('locale')
         expect(config).to have_key('public_ip_source')
         expect(config).to have_key('publicly_advertisable')
+        expect(config).to have_key('region')
         expect(config).to have_key('source_ipam_pool_id')
+        expect(config).to have_key('source_resource')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -276,6 +281,23 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPool do
         config = validate_resource_structure(result, 'aws_vpc_ipam_pool', 'minimal')
         expect(config).not_to have_key('publicly_advertisable')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes source_ipam_pool_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -293,6 +315,23 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPool do
         config = validate_resource_structure(result, 'aws_vpc_ipam_pool', 'minimal')
         expect(config).not_to have_key('source_ipam_pool_id')
       end
+      it 'includes source_resource when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool('opt', required_attrs.merge(source_resource: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool', 'opt')
+        expect(config).to have_key('source_resource')
+      end
+
+      it 'omits source_resource when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool', 'minimal')
+        expect(config).not_to have_key('source_resource')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -309,6 +348,23 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPool do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_ipam_pool', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -391,7 +447,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPool do
     resource_type: :aws_vpc_ipam_pool,
     method: :aws_vpc_ipam_pool,
     required_attrs: { address_family: 'test-value', ipam_scope_id: 'test-value' },
-    expected_outputs: [:id, :arn, :ipam_scope_type, :pool_depth, :state, :tags_all],
+    expected_outputs: [:id, :arn, :ipam_scope_type, :pool_depth, :region, :state, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:auto_import, :cascade, :publicly_advertisable]

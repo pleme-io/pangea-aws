@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessEndpoint do
         expect(ref.id).to eq("${aws_verifiedaccess_endpoint.test.id}")
         expect(ref.device_validation_domain).to eq("${aws_verifiedaccess_endpoint.test.device_validation_domain}")
         expect(ref.endpoint_domain).to eq("${aws_verifiedaccess_endpoint.test.endpoint_domain}")
+        expect(ref.region).to eq("${aws_verifiedaccess_endpoint.test.region}")
         expect(ref.tags_all).to eq("${aws_verifiedaccess_endpoint.test.tags_all}")
         expect(ref.verified_access_instance_id).to eq("${aws_verifiedaccess_endpoint.test.verified_access_instance_id}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessEndpoint do
         config = validate_resource_structure(result, 'aws_verifiedaccess_endpoint', 'test')
         expect(config).not_to have_key('device_validation_domain')
         expect(config).not_to have_key('endpoint_domain')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('verified_access_instance_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ application_domain: 'test-value', cidr_options: [{ 'key1' => 'val1' }], description: 'test-value', domain_certificate_arn: 'test-value', endpoint_domain_prefix: 'test-value', load_balancer_options: [{ 'key1' => 'val1' }], network_interface_options: [{ 'key1' => 'val1' }], policy_document: 'test-value', rds_options: [{ 'key1' => 'val1' }], security_group_ids: ['test-value'], sse_specification: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ application_domain: 'test-value', cidr_options: { 'key1' => 'val1' }, description: 'test-value', domain_certificate_arn: 'test-value', endpoint_domain_prefix: 'test-value', load_balancer_options: { 'key1' => 'val1' }, network_interface_options: { 'key1' => 'val1' }, policy_document: 'test-value', rds_options: { 'key1' => 'val1' }, region: 'test-value', security_group_ids: ['test-value'], sse_specification: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,9 +81,11 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessEndpoint do
         expect(config).to have_key('network_interface_options')
         expect(config).to have_key('policy_document')
         expect(config).to have_key('rds_options')
+        expect(config).to have_key('region')
         expect(config).to have_key('security_group_ids')
         expect(config).to have_key('sse_specification')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -106,7 +110,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessEndpoint do
       it 'includes cidr_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_verifiedaccess_endpoint('opt', required_attrs.merge(cidr_options: [{ 'key1' => 'val1' }]))
+        synth.aws_verifiedaccess_endpoint('opt', required_attrs.merge(cidr_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_endpoint', 'opt')
         expect(config).to have_key('cidr_options')
@@ -174,7 +178,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessEndpoint do
       it 'includes load_balancer_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_verifiedaccess_endpoint('opt', required_attrs.merge(load_balancer_options: [{ 'key1' => 'val1' }]))
+        synth.aws_verifiedaccess_endpoint('opt', required_attrs.merge(load_balancer_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_endpoint', 'opt')
         expect(config).to have_key('load_balancer_options')
@@ -191,7 +195,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessEndpoint do
       it 'includes network_interface_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_verifiedaccess_endpoint('opt', required_attrs.merge(network_interface_options: [{ 'key1' => 'val1' }]))
+        synth.aws_verifiedaccess_endpoint('opt', required_attrs.merge(network_interface_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_endpoint', 'opt')
         expect(config).to have_key('network_interface_options')
@@ -225,7 +229,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessEndpoint do
       it 'includes rds_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_verifiedaccess_endpoint('opt', required_attrs.merge(rds_options: [{ 'key1' => 'val1' }]))
+        synth.aws_verifiedaccess_endpoint('opt', required_attrs.merge(rds_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_endpoint', 'opt')
         expect(config).to have_key('rds_options')
@@ -238,6 +242,23 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessEndpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_endpoint', 'minimal')
         expect(config).not_to have_key('rds_options')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_endpoint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_endpoint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_endpoint', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes security_group_ids when provided' do
         synth = create_synthesizer
@@ -259,7 +280,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessEndpoint do
       it 'includes sse_specification when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_verifiedaccess_endpoint('opt', required_attrs.merge(sse_specification: [{ 'key1' => 'val1' }]))
+        synth.aws_verifiedaccess_endpoint('opt', required_attrs.merge(sse_specification: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_endpoint', 'opt')
         expect(config).to have_key('sse_specification')
@@ -289,6 +310,23 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessEndpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_verifiedaccess_endpoint', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_endpoint('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_endpoint', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_verifiedaccess_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_verifiedaccess_endpoint', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -336,7 +374,7 @@ RSpec.describe Pangea::Resources::AWSVerifiedaccessEndpoint do
     resource_type: :aws_verifiedaccess_endpoint,
     method: :aws_verifiedaccess_endpoint,
     required_attrs: { attachment_type: 'test-value', endpoint_type: 'test-value', verified_access_group_id: 'test-value' },
-    expected_outputs: [:id, :device_validation_domain, :endpoint_domain, :tags_all, :verified_access_instance_id],
+    expected_outputs: [:id, :device_validation_domain, :endpoint_domain, :region, :tags_all, :verified_access_instance_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

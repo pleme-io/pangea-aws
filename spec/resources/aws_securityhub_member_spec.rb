@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubMember do
         expect(ref.id).to eq("${aws_securityhub_member.test.id}")
         expect(ref.master_id).to eq("${aws_securityhub_member.test.master_id}")
         expect(ref.member_status).to eq("${aws_securityhub_member.test.member_status}")
+        expect(ref.region).to eq("${aws_securityhub_member.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSSecurityhubMember do
         config = validate_resource_structure(result, 'aws_securityhub_member', 'test')
         expect(config).not_to have_key('master_id')
         expect(config).not_to have_key('member_status')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ email: 'test-value', invite: true }) }
+      let(:all_attrs) { required_attrs.merge({ email: 'test-value', invite: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubMember do
         config = validate_resource_structure(result, 'aws_securityhub_member', 'full')
         expect(config).to have_key('email')
         expect(config).to have_key('invite')
+        expect(config).to have_key('region')
       end
     end
 
@@ -105,6 +108,23 @@ RSpec.describe Pangea::Resources::AWSSecurityhubMember do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_securityhub_member', 'minimal')
         expect(config).not_to have_key('invite')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_member('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_member', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_member('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_member', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -164,7 +184,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubMember do
     resource_type: :aws_securityhub_member,
     method: :aws_securityhub_member,
     required_attrs: { account_id: 'test-value' },
-    expected_outputs: [:id, :master_id, :member_status],
+    expected_outputs: [:id, :master_id, :member_status, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:invite]

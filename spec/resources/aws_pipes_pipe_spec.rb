@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSPipesPipe do
         expect(ref.arn).to eq("${aws_pipes_pipe.test.arn}")
         expect(ref.name).to eq("${aws_pipes_pipe.test.name}")
         expect(ref.name_prefix).to eq("${aws_pipes_pipe.test.name_prefix}")
+        expect(ref.region).to eq("${aws_pipes_pipe.test.region}")
         expect(ref.tags_all).to eq("${aws_pipes_pipe.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSPipesPipe do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', desired_state: 'test-value', enrichment: 'test-value', enrichment_parameters: [{ 'key1' => 'val1' }], kms_key_identifier: 'test-value', log_configuration: [{ 'key1' => 'val1' }], source_parameters: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, target_parameters: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', desired_state: 'test-value', enrichment: 'test-value', enrichment_parameters: { 'key1' => 'val1' }, kms_key_identifier: 'test-value', log_configuration: { 'key1' => 'val1' }, name: 'test-value', name_prefix: 'test-value', region: 'test-value', source_parameters: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target_parameters: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,8 +78,12 @@ RSpec.describe Pangea::Resources::AWSPipesPipe do
         expect(config).to have_key('enrichment_parameters')
         expect(config).to have_key('kms_key_identifier')
         expect(config).to have_key('log_configuration')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
         expect(config).to have_key('source_parameters')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('target_parameters')
       end
     end
@@ -137,7 +143,7 @@ RSpec.describe Pangea::Resources::AWSPipesPipe do
       it 'includes enrichment_parameters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_pipes_pipe('opt', required_attrs.merge(enrichment_parameters: [{ 'key1' => 'val1' }]))
+        synth.aws_pipes_pipe('opt', required_attrs.merge(enrichment_parameters: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_pipes_pipe', 'opt')
         expect(config).to have_key('enrichment_parameters')
@@ -171,7 +177,7 @@ RSpec.describe Pangea::Resources::AWSPipesPipe do
       it 'includes log_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_pipes_pipe('opt', required_attrs.merge(log_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_pipes_pipe('opt', required_attrs.merge(log_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_pipes_pipe', 'opt')
         expect(config).to have_key('log_configuration')
@@ -185,10 +191,61 @@ RSpec.describe Pangea::Resources::AWSPipesPipe do
         config = validate_resource_structure(result, 'aws_pipes_pipe', 'minimal')
         expect(config).not_to have_key('log_configuration')
       end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pipes_pipe('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pipes_pipe', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pipes_pipe('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pipes_pipe', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pipes_pipe('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pipes_pipe', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pipes_pipe('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pipes_pipe', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pipes_pipe('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pipes_pipe', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pipes_pipe('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pipes_pipe', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes source_parameters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_pipes_pipe('opt', required_attrs.merge(source_parameters: [{ 'key1' => 'val1' }]))
+        synth.aws_pipes_pipe('opt', required_attrs.merge(source_parameters: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_pipes_pipe', 'opt')
         expect(config).to have_key('source_parameters')
@@ -219,10 +276,27 @@ RSpec.describe Pangea::Resources::AWSPipesPipe do
         config = validate_resource_structure(result, 'aws_pipes_pipe', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pipes_pipe('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pipes_pipe', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pipes_pipe('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pipes_pipe', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes target_parameters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_pipes_pipe('opt', required_attrs.merge(target_parameters: [{ 'key1' => 'val1' }]))
+        synth.aws_pipes_pipe('opt', required_attrs.merge(target_parameters: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_pipes_pipe', 'opt')
         expect(config).to have_key('target_parameters')
@@ -282,7 +356,7 @@ RSpec.describe Pangea::Resources::AWSPipesPipe do
     resource_type: :aws_pipes_pipe,
     method: :aws_pipes_pipe,
     required_attrs: { role_arn: 'test-value', source: 'test-value', target: 'test-value' },
-    expected_outputs: [:id, :arn, :name, :name_prefix, :tags_all],
+    expected_outputs: [:id, :arn, :name, :name_prefix, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

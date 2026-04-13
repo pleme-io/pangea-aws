@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NeptuneClusterInstanceAttributes,
       outputs: { id: :id },
       map: [:cluster_identifier, :instance_class],
-      map_present: [:availability_zone, :engine, :engine_version, :identifier, :identifier_prefix, :neptune_parameter_group_name, :neptune_subnet_group_name, :port, :preferred_backup_window, :preferred_maintenance_window, :promotion_tier, :tags, :tags_all],
+      map_present: [:availability_zone, :engine, :engine_version, :identifier, :identifier_prefix, :neptune_parameter_group_name, :neptune_subnet_group_name, :port, :preferred_backup_window, :preferred_maintenance_window, :promotion_tier, :region, :tags, :tags_all],
       map_bool: [:apply_immediately, :auto_minor_version_upgrade, :publicly_accessible, :skip_final_snapshot]
   end
   module AWS

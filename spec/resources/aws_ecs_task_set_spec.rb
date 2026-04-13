@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSEcsTaskSet do
         expect(ref.external_id).to eq("${aws_ecs_task_set.test.external_id}")
         expect(ref.launch_type).to eq("${aws_ecs_task_set.test.launch_type}")
         expect(ref.platform_version).to eq("${aws_ecs_task_set.test.platform_version}")
+        expect(ref.region).to eq("${aws_ecs_task_set.test.region}")
         expect(ref.stability_status).to eq("${aws_ecs_task_set.test.stability_status}")
         expect(ref.status).to eq("${aws_ecs_task_set.test.status}")
         expect(ref.tags_all).to eq("${aws_ecs_task_set.test.tags_all}")
@@ -61,6 +62,7 @@ RSpec.describe Pangea::Resources::AWSEcsTaskSet do
         expect(config).not_to have_key('external_id')
         expect(config).not_to have_key('launch_type')
         expect(config).not_to have_key('platform_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('stability_status')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSEcsTaskSet do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ capacity_provider_strategy: [{ 'key1' => 'val1' }], force_delete: true, load_balancer: [{ 'key1' => 'val1' }], network_configuration: [{ 'key1' => 'val1' }], scale: [{ 'key1' => 'val1' }], service_registries: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, wait_until_stable: true, wait_until_stable_timeout: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ capacity_provider_strategy: [{ 'key1' => 'val1' }], external_id: 'test-value', force_delete: true, launch_type: 'test-value', load_balancer: [{ 'key1' => 'val1' }], network_configuration: { 'key1' => 'val1' }, platform_version: 'test-value', region: 'test-value', scale: { 'key1' => 'val1' }, service_registries: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, wait_until_stable: true, wait_until_stable_timeout: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,12 +81,17 @@ RSpec.describe Pangea::Resources::AWSEcsTaskSet do
 
         config = validate_resource_structure(result, 'aws_ecs_task_set', 'full')
         expect(config).to have_key('capacity_provider_strategy')
+        expect(config).to have_key('external_id')
         expect(config).to have_key('force_delete')
+        expect(config).to have_key('launch_type')
         expect(config).to have_key('load_balancer')
         expect(config).to have_key('network_configuration')
+        expect(config).to have_key('platform_version')
+        expect(config).to have_key('region')
         expect(config).to have_key('scale')
         expect(config).to have_key('service_registries')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('wait_until_stable')
         expect(config).to have_key('wait_until_stable_timeout')
       end
@@ -108,6 +115,23 @@ RSpec.describe Pangea::Resources::AWSEcsTaskSet do
         config = validate_resource_structure(result, 'aws_ecs_task_set', 'minimal')
         expect(config).not_to have_key('capacity_provider_strategy')
       end
+      it 'includes external_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_set('opt', required_attrs.merge(external_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_set', 'opt')
+        expect(config).to have_key('external_id')
+      end
+
+      it 'omits external_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_set', 'minimal')
+        expect(config).not_to have_key('external_id')
+      end
       it 'includes force_delete when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -124,6 +148,23 @@ RSpec.describe Pangea::Resources::AWSEcsTaskSet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_task_set', 'minimal')
         expect(config).not_to have_key('force_delete')
+      end
+      it 'includes launch_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_set('opt', required_attrs.merge(launch_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_set', 'opt')
+        expect(config).to have_key('launch_type')
+      end
+
+      it 'omits launch_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_set', 'minimal')
+        expect(config).not_to have_key('launch_type')
       end
       it 'includes load_balancer when provided' do
         synth = create_synthesizer
@@ -145,7 +186,7 @@ RSpec.describe Pangea::Resources::AWSEcsTaskSet do
       it 'includes network_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_task_set('opt', required_attrs.merge(network_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_task_set('opt', required_attrs.merge(network_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_task_set', 'opt')
         expect(config).to have_key('network_configuration')
@@ -159,10 +200,44 @@ RSpec.describe Pangea::Resources::AWSEcsTaskSet do
         config = validate_resource_structure(result, 'aws_ecs_task_set', 'minimal')
         expect(config).not_to have_key('network_configuration')
       end
+      it 'includes platform_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_set('opt', required_attrs.merge(platform_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_set', 'opt')
+        expect(config).to have_key('platform_version')
+      end
+
+      it 'omits platform_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_set', 'minimal')
+        expect(config).not_to have_key('platform_version')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_set('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_set', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_set', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes scale when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_task_set('opt', required_attrs.merge(scale: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_task_set('opt', required_attrs.merge(scale: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_task_set', 'opt')
         expect(config).to have_key('scale')
@@ -179,7 +254,7 @@ RSpec.describe Pangea::Resources::AWSEcsTaskSet do
       it 'includes service_registries when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_task_set('opt', required_attrs.merge(service_registries: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_task_set('opt', required_attrs.merge(service_registries: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_task_set', 'opt')
         expect(config).to have_key('service_registries')
@@ -209,6 +284,23 @@ RSpec.describe Pangea::Resources::AWSEcsTaskSet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_task_set', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_set('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_set', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_task_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_task_set', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes wait_until_stable when provided' do
         synth = create_synthesizer
@@ -315,7 +407,7 @@ RSpec.describe Pangea::Resources::AWSEcsTaskSet do
     resource_type: :aws_ecs_task_set,
     method: :aws_ecs_task_set,
     required_attrs: { cluster: 'test-value', service: 'test-value', task_definition: 'test-value' },
-    expected_outputs: [:id, :arn, :external_id, :launch_type, :platform_version, :stability_status, :status, :tags_all, :task_set_id],
+    expected_outputs: [:id, :arn, :external_id, :launch_type, :platform_version, :region, :stability_status, :status, :tags_all, :task_set_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:force_delete, :wait_until_stable]

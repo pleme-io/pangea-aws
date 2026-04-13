@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventArchive do
 
         expect(ref.id).to eq("${aws_cloudwatch_event_archive.test.id}")
         expect(ref.arn).to eq("${aws_cloudwatch_event_archive.test.arn}")
+        expect(ref.region).to eq("${aws_cloudwatch_event_archive.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventArchive do
 
         config = validate_resource_structure(result, 'aws_cloudwatch_event_archive', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', event_pattern: 'test-value', retention_days: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', event_pattern: 'test-value', kms_key_identifier: 'test-value', region: 'test-value', retention_days: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,6 +68,8 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventArchive do
         config = validate_resource_structure(result, 'aws_cloudwatch_event_archive', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('event_pattern')
+        expect(config).to have_key('kms_key_identifier')
+        expect(config).to have_key('region')
         expect(config).to have_key('retention_days')
       end
     end
@@ -104,6 +108,40 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventArchive do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudwatch_event_archive', 'minimal')
         expect(config).not_to have_key('event_pattern')
+      end
+      it 'includes kms_key_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_archive('opt', required_attrs.merge(kms_key_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_archive', 'opt')
+        expect(config).to have_key('kms_key_identifier')
+      end
+
+      it 'omits kms_key_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_archive('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_archive', 'minimal')
+        expect(config).not_to have_key('kms_key_identifier')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_archive('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_archive', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudwatch_event_archive('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudwatch_event_archive', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes retention_days when provided' do
         synth = create_synthesizer
@@ -167,7 +205,7 @@ RSpec.describe Pangea::Resources::AWSCloudwatchEventArchive do
     resource_type: :aws_cloudwatch_event_archive,
     method: :aws_cloudwatch_event_archive,
     required_attrs: { event_source_arn: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn],
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAclLoggingConfiguration do
         ref = synth.aws_wafv2_web_acl_logging_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_wafv2_web_acl_logging_configuration.test.id}")
+        expect(ref.region).to eq("${aws_wafv2_web_acl_logging_configuration.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_web_acl_logging_configuration('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_wafv2_web_acl_logging_configuration', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ logging_filter: [{ 'key1' => 'val1' }], redacted_fields: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ logging_filter: { 'key1' => 'val1' }, redacted_fields: [{ 'key1' => 'val1' }], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -53,6 +66,7 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAclLoggingConfiguration do
         config = validate_resource_structure(result, 'aws_wafv2_web_acl_logging_configuration', 'full')
         expect(config).to have_key('logging_filter')
         expect(config).to have_key('redacted_fields')
+        expect(config).to have_key('region')
       end
     end
 
@@ -60,7 +74,7 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAclLoggingConfiguration do
       it 'includes logging_filter when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_wafv2_web_acl_logging_configuration('opt', required_attrs.merge(logging_filter: [{ 'key1' => 'val1' }]))
+        synth.aws_wafv2_web_acl_logging_configuration('opt', required_attrs.merge(logging_filter: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_wafv2_web_acl_logging_configuration', 'opt')
         expect(config).to have_key('logging_filter')
@@ -90,6 +104,23 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAclLoggingConfiguration do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_wafv2_web_acl_logging_configuration', 'minimal')
         expect(config).not_to have_key('redacted_fields')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_web_acl_logging_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_web_acl_logging_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_wafv2_web_acl_logging_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_wafv2_web_acl_logging_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -136,7 +167,7 @@ RSpec.describe Pangea::Resources::AWSWafv2WebAclLoggingConfiguration do
     resource_type: :aws_wafv2_web_acl_logging_configuration,
     method: :aws_wafv2_web_acl_logging_configuration,
     required_attrs: { log_destination_configs: ['test-value'], resource_arn: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

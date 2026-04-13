@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_dx_connection_confirmation,
       attributes_class: AWS::Types::DxConnectionConfirmationAttributes,
       outputs: { id: :id },
-      map: [:connection_id]
+      map: [:connection_id],
+      map_present: [:region]
   end
   module AWS
     include AWSDxConnectionConfirmation

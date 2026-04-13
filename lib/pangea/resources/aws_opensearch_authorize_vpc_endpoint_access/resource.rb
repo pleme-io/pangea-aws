@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_opensearch_authorize_vpc_endpoint_access,
       attributes_class: AWS::Types::OpensearchAuthorizeVpcEndpointAccessAttributes,
       outputs: { id: :id },
-      map: [:account, :domain_name]
+      map: [:account, :domain_name],
+      map_present: [:region]
   end
   module AWS
     include AWSOpensearchAuthorizeVpcEndpointAccess

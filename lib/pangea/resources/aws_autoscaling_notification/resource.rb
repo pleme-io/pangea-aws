@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_autoscaling_notification,
       attributes_class: AWS::Types::AutoscalingNotificationAttributes,
       outputs: { id: :id },
-      map: [:group_names, :notifications, :topic_arn]
+      map: [:group_names, :notifications, :topic_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSAutoscalingNotification

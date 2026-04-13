@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchLogDeliveryAttributes,
       outputs: { id: :id },
       map: [:delivery_destination_arn, :delivery_source_name],
-      map_present: [:field_delimiter, :record_fields, :s3_delivery_configuration, :tags]
+      map_present: [:field_delimiter, :record_fields, :region, :s3_delivery_configuration, :tags]
   end
   module AWS
     include AWSCloudwatchLogDelivery

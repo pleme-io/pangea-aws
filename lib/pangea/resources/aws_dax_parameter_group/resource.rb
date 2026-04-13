@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DaxParameterGroupAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:description, :parameters]
+      map_present: [:description, :parameters, :region]
   end
   module AWS
     include AWSDaxParameterGroup

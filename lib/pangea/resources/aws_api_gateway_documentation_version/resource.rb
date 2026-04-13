@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayDocumentationVersionAttributes,
       outputs: { id: :id },
       map: [:rest_api_id, :version],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSApiGatewayDocumentationVersion

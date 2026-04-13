@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ElastictranscoderPresetAttributes,
       outputs: { id: :id },
       map: [:container],
-      map_present: [:audio, :audio_codec_options, :description, :name, :thumbnails, :type, :video, :video_codec_options, :video_watermarks]
+      map_present: [:audio, :audio_codec_options, :description, :name, :region, :thumbnails, :type, :video, :video_codec_options, :video_watermarks]
   end
   module AWS
     include AWSElastictranscoderPreset

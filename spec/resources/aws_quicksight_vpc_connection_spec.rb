@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightVpcConnection do
         expect(ref.arn).to eq("${aws_quicksight_vpc_connection.test.arn}")
         expect(ref.availability_status).to eq("${aws_quicksight_vpc_connection.test.availability_status}")
         expect(ref.aws_account_id).to eq("${aws_quicksight_vpc_connection.test.aws_account_id}")
+        expect(ref.region).to eq("${aws_quicksight_vpc_connection.test.region}")
         expect(ref.tags_all).to eq("${aws_quicksight_vpc_connection.test.tags_all}")
       end
     end
@@ -56,12 +57,13 @@ RSpec.describe Pangea::Resources::AWSQuicksightVpcConnection do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('availability_status')
         expect(config).not_to have_key('aws_account_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ dns_resolvers: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ aws_account_id: 'test-value', dns_resolvers: ['test-value'], region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,12 +72,31 @@ RSpec.describe Pangea::Resources::AWSQuicksightVpcConnection do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_quicksight_vpc_connection', 'full')
+        expect(config).to have_key('aws_account_id')
         expect(config).to have_key('dns_resolvers')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes aws_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_vpc_connection('opt', required_attrs.merge(aws_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_vpc_connection', 'opt')
+        expect(config).to have_key('aws_account_id')
+      end
+
+      it 'omits aws_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_vpc_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_vpc_connection', 'minimal')
+        expect(config).not_to have_key('aws_account_id')
+      end
       it 'includes dns_resolvers when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -92,6 +113,23 @@ RSpec.describe Pangea::Resources::AWSQuicksightVpcConnection do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_vpc_connection', 'minimal')
         expect(config).not_to have_key('dns_resolvers')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_vpc_connection('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_vpc_connection', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_vpc_connection('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_vpc_connection', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -158,7 +196,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightVpcConnection do
     resource_type: :aws_quicksight_vpc_connection,
     method: :aws_quicksight_vpc_connection,
     required_attrs: { name: 'test-value', role_arn: 'test-value', security_group_ids: ['test-value'], subnet_ids: ['test-value'], vpc_connection_id: 'test-value' },
-    expected_outputs: [:id, :arn, :availability_status, :aws_account_id, :tags_all],
+    expected_outputs: [:id, :arn, :availability_status, :aws_account_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

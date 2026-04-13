@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImagePipeline do
         expect(ref.date_next_run).to eq("${aws_imagebuilder_image_pipeline.test.date_next_run}")
         expect(ref.date_updated).to eq("${aws_imagebuilder_image_pipeline.test.date_updated}")
         expect(ref.platform).to eq("${aws_imagebuilder_image_pipeline.test.platform}")
+        expect(ref.region).to eq("${aws_imagebuilder_image_pipeline.test.region}")
         expect(ref.tags_all).to eq("${aws_imagebuilder_image_pipeline.test.tags_all}")
       end
     end
@@ -62,12 +63,13 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImagePipeline do
         expect(config).not_to have_key('date_next_run')
         expect(config).not_to have_key('date_updated')
         expect(config).not_to have_key('platform')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ container_recipe_arn: 'test-value', description: 'test-value', distribution_configuration_arn: 'test-value', enhanced_image_metadata_enabled: true, execution_role: 'test-value', image_recipe_arn: 'test-value', image_scanning_configuration: [{ 'key1' => 'val1' }], image_tests_configuration: [{ 'key1' => 'val1' }], schedule: [{ 'key1' => 'val1' }], status: 'test-value', tags: { 'key1' => 'val1' }, workflow: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ container_recipe_arn: 'test-value', description: 'test-value', distribution_configuration_arn: 'test-value', enhanced_image_metadata_enabled: true, execution_role: 'test-value', image_recipe_arn: 'test-value', image_scanning_configuration: { 'key1' => 'val1' }, image_tests_configuration: { 'key1' => 'val1' }, logging_configuration: { 'key1' => 'val1' }, region: 'test-value', schedule: { 'key1' => 'val1' }, status: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, workflow: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -84,9 +86,12 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImagePipeline do
         expect(config).to have_key('image_recipe_arn')
         expect(config).to have_key('image_scanning_configuration')
         expect(config).to have_key('image_tests_configuration')
+        expect(config).to have_key('logging_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('schedule')
         expect(config).to have_key('status')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('workflow')
       end
     end
@@ -197,7 +202,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImagePipeline do
       it 'includes image_scanning_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_imagebuilder_image_pipeline('opt', required_attrs.merge(image_scanning_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_imagebuilder_image_pipeline('opt', required_attrs.merge(image_scanning_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_image_pipeline', 'opt')
         expect(config).to have_key('image_scanning_configuration')
@@ -214,7 +219,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImagePipeline do
       it 'includes image_tests_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_imagebuilder_image_pipeline('opt', required_attrs.merge(image_tests_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_imagebuilder_image_pipeline('opt', required_attrs.merge(image_tests_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_image_pipeline', 'opt')
         expect(config).to have_key('image_tests_configuration')
@@ -228,10 +233,44 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImagePipeline do
         config = validate_resource_structure(result, 'aws_imagebuilder_image_pipeline', 'minimal')
         expect(config).not_to have_key('image_tests_configuration')
       end
+      it 'includes logging_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_pipeline('opt', required_attrs.merge(logging_configuration: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_pipeline', 'opt')
+        expect(config).to have_key('logging_configuration')
+      end
+
+      it 'omits logging_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_pipeline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_pipeline', 'minimal')
+        expect(config).not_to have_key('logging_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_pipeline('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_pipeline', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_pipeline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_pipeline', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes schedule when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_imagebuilder_image_pipeline('opt', required_attrs.merge(schedule: [{ 'key1' => 'val1' }]))
+        synth.aws_imagebuilder_image_pipeline('opt', required_attrs.merge(schedule: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_image_pipeline', 'opt')
         expect(config).to have_key('schedule')
@@ -278,6 +317,23 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImagePipeline do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_imagebuilder_image_pipeline', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_pipeline('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_pipeline', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_imagebuilder_image_pipeline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_imagebuilder_image_pipeline', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes workflow when provided' do
         synth = create_synthesizer
@@ -355,7 +411,7 @@ RSpec.describe Pangea::Resources::AWSImagebuilderImagePipeline do
     resource_type: :aws_imagebuilder_image_pipeline,
     method: :aws_imagebuilder_image_pipeline,
     required_attrs: { infrastructure_configuration_arn: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :date_created, :date_last_run, :date_next_run, :date_updated, :platform, :tags_all],
+    expected_outputs: [:id, :arn, :date_created, :date_last_run, :date_next_run, :date_updated, :platform, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enhanced_image_metadata_enabled]

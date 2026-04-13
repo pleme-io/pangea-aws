@@ -54,8 +54,8 @@ RSpec.describe Pangea::Resources::AWSEip do
         expect(ref.public_dns).to eq("${aws_eip.test.public_dns}")
         expect(ref.public_ip).to eq("${aws_eip.test.public_ip}")
         expect(ref.public_ipv4_pool).to eq("${aws_eip.test.public_ipv4_pool}")
+        expect(ref.region).to eq("${aws_eip.test.region}")
         expect(ref.tags_all).to eq("${aws_eip.test.tags_all}")
-        expect(ref.vpc).to eq("${aws_eip.test.vpc}")
       end
     end
 
@@ -83,13 +83,13 @@ RSpec.describe Pangea::Resources::AWSEip do
         expect(config).not_to have_key('public_dns')
         expect(config).not_to have_key('public_ip')
         expect(config).not_to have_key('public_ipv4_pool')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
-        expect(config).not_to have_key('vpc')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ address: 'test-value', associate_with_private_ip: 'test-value', customer_owned_ipv4_pool: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ address: 'test-value', associate_with_private_ip: 'test-value', customer_owned_ipv4_pool: 'test-value', domain: 'test-value', instance: 'test-value', ipam_pool_id: 'test-value', network_border_group: 'test-value', network_interface: 'test-value', public_ipv4_pool: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -101,7 +101,15 @@ RSpec.describe Pangea::Resources::AWSEip do
         expect(config).to have_key('address')
         expect(config).to have_key('associate_with_private_ip')
         expect(config).to have_key('customer_owned_ipv4_pool')
+        expect(config).to have_key('domain')
+        expect(config).to have_key('instance')
+        expect(config).to have_key('ipam_pool_id')
+        expect(config).to have_key('network_border_group')
+        expect(config).to have_key('network_interface')
+        expect(config).to have_key('public_ipv4_pool')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -157,6 +165,125 @@ RSpec.describe Pangea::Resources::AWSEip do
         config = validate_resource_structure(result, 'aws_eip', 'minimal')
         expect(config).not_to have_key('customer_owned_ipv4_pool')
       end
+      it 'includes domain when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('opt', required_attrs.merge(domain: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'opt')
+        expect(config).to have_key('domain')
+      end
+
+      it 'omits domain when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'minimal')
+        expect(config).not_to have_key('domain')
+      end
+      it 'includes instance when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('opt', required_attrs.merge(instance: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'opt')
+        expect(config).to have_key('instance')
+      end
+
+      it 'omits instance when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'minimal')
+        expect(config).not_to have_key('instance')
+      end
+      it 'includes ipam_pool_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('opt', required_attrs.merge(ipam_pool_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'opt')
+        expect(config).to have_key('ipam_pool_id')
+      end
+
+      it 'omits ipam_pool_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'minimal')
+        expect(config).not_to have_key('ipam_pool_id')
+      end
+      it 'includes network_border_group when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('opt', required_attrs.merge(network_border_group: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'opt')
+        expect(config).to have_key('network_border_group')
+      end
+
+      it 'omits network_border_group when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'minimal')
+        expect(config).not_to have_key('network_border_group')
+      end
+      it 'includes network_interface when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('opt', required_attrs.merge(network_interface: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'opt')
+        expect(config).to have_key('network_interface')
+      end
+
+      it 'omits network_interface when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'minimal')
+        expect(config).not_to have_key('network_interface')
+      end
+      it 'includes public_ipv4_pool when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('opt', required_attrs.merge(public_ipv4_pool: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'opt')
+        expect(config).to have_key('public_ipv4_pool')
+      end
+
+      it 'omits public_ipv4_pool when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'minimal')
+        expect(config).not_to have_key('public_ipv4_pool')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -173,6 +300,23 @@ RSpec.describe Pangea::Resources::AWSEip do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eip', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eip('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eip', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -217,7 +361,7 @@ RSpec.describe Pangea::Resources::AWSEip do
     resource_type: :aws_eip,
     method: :aws_eip,
     required_attrs: {},
-    expected_outputs: [:id, :allocation_id, :arn, :association_id, :carrier_ip, :customer_owned_ip, :domain, :instance, :ipam_pool_id, :network_border_group, :network_interface, :private_dns, :private_ip, :ptr_record, :public_dns, :public_ip, :public_ipv4_pool, :tags_all, :vpc],
+    expected_outputs: [:id, :allocation_id, :arn, :association_id, :carrier_ip, :customer_owned_ip, :domain, :instance, :ipam_pool_id, :network_border_group, :network_interface, :private_dns, :private_ip, :ptr_record, :public_dns, :public_ip, :public_ipv4_pool, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

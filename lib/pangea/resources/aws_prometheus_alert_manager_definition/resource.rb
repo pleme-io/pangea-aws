@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_prometheus_alert_manager_definition,
       attributes_class: AWS::Types::PrometheusAlertManagerDefinitionAttributes,
       outputs: { id: :id },
-      map: [:definition, :workspace_id]
+      map: [:definition, :workspace_id],
+      map_present: [:region]
   end
   module AWS
     include AWSPrometheusAlertManagerDefinition

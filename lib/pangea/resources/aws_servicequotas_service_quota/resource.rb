@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_servicequotas_service_quota,
       attributes_class: AWS::Types::ServicequotasServiceQuotaAttributes,
       outputs: { id: :id },
-      map: [:quota_code, :service_code, :value]
+      map: [:quota_code, :service_code, :value],
+      map_present: [:region]
   end
   module AWS
     include AWSServicequotasServiceQuota

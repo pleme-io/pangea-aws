@@ -38,6 +38,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogTagOptionResourceAssociation 
         ref = synth.aws_servicecatalog_tag_option_resource_association('test', required_attrs)
 
         expect(ref.id).to eq("${aws_servicecatalog_tag_option_resource_association.test.id}")
+        expect(ref.region).to eq("${aws_servicecatalog_tag_option_resource_association.test.region}")
         expect(ref.resource_arn).to eq("${aws_servicecatalog_tag_option_resource_association.test.resource_arn}")
         expect(ref.resource_created_time).to eq("${aws_servicecatalog_tag_option_resource_association.test.resource_created_time}")
         expect(ref.resource_description).to eq("${aws_servicecatalog_tag_option_resource_association.test.resource_description}")
@@ -53,10 +54,45 @@ RSpec.describe Pangea::Resources::AWSServicecatalogTagOptionResourceAssociation 
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_servicecatalog_tag_option_resource_association', 'test')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_arn')
         expect(config).not_to have_key('resource_created_time')
         expect(config).not_to have_key('resource_description')
         expect(config).not_to have_key('resource_name')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_tag_option_resource_association('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_servicecatalog_tag_option_resource_association', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_tag_option_resource_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_tag_option_resource_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_servicecatalog_tag_option_resource_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_servicecatalog_tag_option_resource_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -103,7 +139,7 @@ RSpec.describe Pangea::Resources::AWSServicecatalogTagOptionResourceAssociation 
     resource_type: :aws_servicecatalog_tag_option_resource_association,
     method: :aws_servicecatalog_tag_option_resource_association,
     required_attrs: { resource_id: 'test-value', tag_option_id: 'test-value' },
-    expected_outputs: [:id, :resource_arn, :resource_created_time, :resource_description, :resource_name],
+    expected_outputs: [:id, :region, :resource_arn, :resource_created_time, :resource_description, :resource_name],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

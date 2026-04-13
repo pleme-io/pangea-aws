@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApiPut do
 
         expect(ref.id).to eq("${aws_api_gateway_rest_api_put.test.id}")
         expect(ref.fail_on_warnings).to eq("${aws_api_gateway_rest_api_put.test.fail_on_warnings}")
+        expect(ref.region).to eq("${aws_api_gateway_rest_api_put.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApiPut do
 
         config = validate_resource_structure(result, 'aws_api_gateway_rest_api_put', 'test')
         expect(config).not_to have_key('fail_on_warnings')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ parameters: { 'key1' => 'val1' }, triggers: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ fail_on_warnings: true, parameters: { 'key1' => 'val1' }, region: 'test-value', triggers: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,12 +66,31 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApiPut do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_api_gateway_rest_api_put', 'full')
+        expect(config).to have_key('fail_on_warnings')
         expect(config).to have_key('parameters')
+        expect(config).to have_key('region')
         expect(config).to have_key('triggers')
       end
     end
 
     context 'optional attributes' do
+      it 'includes fail_on_warnings when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api_put('opt', required_attrs.merge(fail_on_warnings: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api_put', 'opt')
+        expect(config).to have_key('fail_on_warnings')
+      end
+
+      it 'omits fail_on_warnings when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api_put('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api_put', 'minimal')
+        expect(config).not_to have_key('fail_on_warnings')
+      end
       it 'includes parameters when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -87,6 +108,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApiPut do
         config = validate_resource_structure(result, 'aws_api_gateway_rest_api_put', 'minimal')
         expect(config).not_to have_key('parameters')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api_put('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api_put', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_rest_api_put('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_rest_api_put', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes triggers when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -103,6 +141,20 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApiPut do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_rest_api_put', 'minimal')
         expect(config).not_to have_key('triggers')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts fail_on_warnings=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(fail_on_warnings: val)
+          synth.aws_api_gateway_rest_api_put("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_api_gateway_rest_api_put', "bool_#{val}")
+          expect(config['fail_on_warnings']).to eq(val)
+        end
       end
     end
 
@@ -149,8 +201,8 @@ RSpec.describe Pangea::Resources::AWSApiGatewayRestApiPut do
     resource_type: :aws_api_gateway_rest_api_put,
     method: :aws_api_gateway_rest_api_put,
     required_attrs: { body: 'test-value', rest_api_id: 'test-value' },
-    expected_outputs: [:id, :fail_on_warnings],
+    expected_outputs: [:id, :fail_on_warnings, :region],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:fail_on_warnings]
 end

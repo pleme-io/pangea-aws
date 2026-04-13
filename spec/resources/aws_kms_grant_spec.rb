@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSKmsGrant do
         expect(ref.id).to eq("${aws_kms_grant.test.id}")
         expect(ref.grant_id).to eq("${aws_kms_grant.test.grant_id}")
         expect(ref.grant_token).to eq("${aws_kms_grant.test.grant_token}")
+        expect(ref.region).to eq("${aws_kms_grant.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSKmsGrant do
         config = validate_resource_structure(result, 'aws_kms_grant', 'test')
         expect(config).not_to have_key('grant_id')
         expect(config).not_to have_key('grant_token')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ constraints: [{ 'key1' => 'val1' }], grant_creation_tokens: ['test-value'], name: 'test-value', retire_on_delete: true, retiring_principal: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ constraints: [{ 'key1' => 'val1' }], grant_creation_tokens: ['test-value'], name: 'test-value', region: 'test-value', retire_on_delete: true, retiring_principal: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSKmsGrant do
         expect(config).to have_key('constraints')
         expect(config).to have_key('grant_creation_tokens')
         expect(config).to have_key('name')
+        expect(config).to have_key('region')
         expect(config).to have_key('retire_on_delete')
         expect(config).to have_key('retiring_principal')
       end
@@ -125,6 +128,23 @@ RSpec.describe Pangea::Resources::AWSKmsGrant do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kms_grant', 'minimal')
         expect(config).not_to have_key('name')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_grant('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_grant', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_grant('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_grant', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes retire_on_delete when provided' do
         synth = create_synthesizer
@@ -227,7 +247,7 @@ RSpec.describe Pangea::Resources::AWSKmsGrant do
     resource_type: :aws_kms_grant,
     method: :aws_kms_grant,
     required_attrs: { grantee_principal: 'test-value', key_id: 'test-value', operations: ['test-value'] },
-    expected_outputs: [:id, :grant_id, :grant_token],
+    expected_outputs: [:id, :grant_id, :grant_token, :region],
     sensitive_fields: [:grant_token],
     immutable_fields: [],
     boolean_fields: [:retire_on_delete]

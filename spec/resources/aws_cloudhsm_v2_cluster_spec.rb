@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSCloudhsmV2Cluster do
         expect(ref.cluster_id).to eq("${aws_cloudhsm_v2_cluster.test.cluster_id}")
         expect(ref.cluster_state).to eq("${aws_cloudhsm_v2_cluster.test.cluster_state}")
         expect(ref.mode).to eq("${aws_cloudhsm_v2_cluster.test.mode}")
+        expect(ref.region).to eq("${aws_cloudhsm_v2_cluster.test.region}")
         expect(ref.security_group_id).to eq("${aws_cloudhsm_v2_cluster.test.security_group_id}")
         expect(ref.tags_all).to eq("${aws_cloudhsm_v2_cluster.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_cloudhsm_v2_cluster.test.vpc_id}")
@@ -60,6 +61,7 @@ RSpec.describe Pangea::Resources::AWSCloudhsmV2Cluster do
         expect(config).not_to have_key('cluster_id')
         expect(config).not_to have_key('cluster_state')
         expect(config).not_to have_key('mode')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('security_group_id')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
@@ -67,7 +69,7 @@ RSpec.describe Pangea::Resources::AWSCloudhsmV2Cluster do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ source_backup_identifier: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ mode: 'test-value', region: 'test-value', source_backup_identifier: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,12 +78,49 @@ RSpec.describe Pangea::Resources::AWSCloudhsmV2Cluster do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_cloudhsm_v2_cluster', 'full')
+        expect(config).to have_key('mode')
+        expect(config).to have_key('region')
         expect(config).to have_key('source_backup_identifier')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_cluster('opt', required_attrs.merge(mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_cluster', 'opt')
+        expect(config).to have_key('mode')
+      end
+
+      it 'omits mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_cluster', 'minimal')
+        expect(config).not_to have_key('mode')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_cluster', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes source_backup_identifier when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -115,6 +154,23 @@ RSpec.describe Pangea::Resources::AWSCloudhsmV2Cluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudhsm_v2_cluster', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudhsm_v2_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudhsm_v2_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -161,7 +217,7 @@ RSpec.describe Pangea::Resources::AWSCloudhsmV2Cluster do
     resource_type: :aws_cloudhsm_v2_cluster,
     method: :aws_cloudhsm_v2_cluster,
     required_attrs: { hsm_type: 'test-value', subnet_ids: ['test-value'] },
-    expected_outputs: [:id, :cluster_certificates, :cluster_id, :cluster_state, :mode, :security_group_id, :tags_all, :vpc_id],
+    expected_outputs: [:id, :cluster_certificates, :cluster_id, :cluster_state, :mode, :region, :security_group_id, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

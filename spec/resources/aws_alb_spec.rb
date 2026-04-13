@@ -46,6 +46,8 @@ RSpec.describe Pangea::Resources::AWSAlb do
         expect(ref.ip_address_type).to eq("${aws_alb.test.ip_address_type}")
         expect(ref.name).to eq("${aws_alb.test.name}")
         expect(ref.name_prefix).to eq("${aws_alb.test.name_prefix}")
+        expect(ref.region).to eq("${aws_alb.test.region}")
+        expect(ref.secondary_ips_auto_assigned_per_subnet).to eq("${aws_alb.test.secondary_ips_auto_assigned_per_subnet}")
         expect(ref.security_groups).to eq("${aws_alb.test.security_groups}")
         expect(ref.subnets).to eq("${aws_alb.test.subnets}")
         expect(ref.tags_all).to eq("${aws_alb.test.tags_all}")
@@ -70,6 +72,8 @@ RSpec.describe Pangea::Resources::AWSAlb do
         expect(config).not_to have_key('ip_address_type')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('secondary_ips_auto_assigned_per_subnet')
         expect(config).not_to have_key('security_groups')
         expect(config).not_to have_key('subnets')
         expect(config).not_to have_key('tags_all')
@@ -79,7 +83,7 @@ RSpec.describe Pangea::Resources::AWSAlb do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_logs: [{ 'key1' => 'val1' }], client_keep_alive: 3.14, connection_logs: [{ 'key1' => 'val1' }], customer_owned_ipv4_pool: 'test-value', desync_mitigation_mode: 'test-value', dns_record_client_routing_policy: 'test-value', drop_invalid_header_fields: true, enable_cross_zone_load_balancing: true, enable_deletion_protection: true, enable_http2: true, enable_tls_version_and_cipher_suite_headers: true, enable_waf_fail_open: true, enable_xff_client_port: true, enable_zonal_shift: true, idle_timeout: 3.14, ipam_pools: [{ 'key1' => 'val1' }], load_balancer_type: 'test-value', minimum_load_balancer_capacity: [{ 'key1' => 'val1' }], preserve_host_header: true, subnet_mapping: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, xff_header_processing_mode: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ access_logs: { 'key1' => 'val1' }, client_keep_alive: 3.14, connection_logs: { 'key1' => 'val1' }, customer_owned_ipv4_pool: 'test-value', desync_mitigation_mode: 'test-value', dns_record_client_routing_policy: 'test-value', drop_invalid_header_fields: true, enable_cross_zone_load_balancing: true, enable_deletion_protection: true, enable_http2: true, enable_tls_version_and_cipher_suite_headers: true, enable_waf_fail_open: true, enable_xff_client_port: true, enable_zonal_shift: true, enforce_security_group_inbound_rules_on_private_link_traffic: 'test-value', health_check_logs: { 'key1' => 'val1' }, idle_timeout: 3.14, internal: true, ip_address_type: 'test-value', ipam_pools: { 'key1' => 'val1' }, load_balancer_type: 'test-value', minimum_load_balancer_capacity: { 'key1' => 'val1' }, name: 'test-value', name_prefix: 'test-value', preserve_host_header: true, region: 'test-value', secondary_ips_auto_assigned_per_subnet: 3.14, security_groups: ['test-value'], subnet_mapping: [{ 'key1' => 'val1' }], subnets: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, xff_header_processing_mode: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -102,13 +106,24 @@ RSpec.describe Pangea::Resources::AWSAlb do
         expect(config).to have_key('enable_waf_fail_open')
         expect(config).to have_key('enable_xff_client_port')
         expect(config).to have_key('enable_zonal_shift')
+        expect(config).to have_key('enforce_security_group_inbound_rules_on_private_link_traffic')
+        expect(config).to have_key('health_check_logs')
         expect(config).to have_key('idle_timeout')
+        expect(config).to have_key('internal')
+        expect(config).to have_key('ip_address_type')
         expect(config).to have_key('ipam_pools')
         expect(config).to have_key('load_balancer_type')
         expect(config).to have_key('minimum_load_balancer_capacity')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
         expect(config).to have_key('preserve_host_header')
+        expect(config).to have_key('region')
+        expect(config).to have_key('secondary_ips_auto_assigned_per_subnet')
+        expect(config).to have_key('security_groups')
         expect(config).to have_key('subnet_mapping')
+        expect(config).to have_key('subnets')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('xff_header_processing_mode')
       end
     end
@@ -117,7 +132,7 @@ RSpec.describe Pangea::Resources::AWSAlb do
       it 'includes access_logs when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_alb('opt', required_attrs.merge(access_logs: [{ 'key1' => 'val1' }]))
+        synth.aws_alb('opt', required_attrs.merge(access_logs: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_alb', 'opt')
         expect(config).to have_key('access_logs')
@@ -151,7 +166,7 @@ RSpec.describe Pangea::Resources::AWSAlb do
       it 'includes connection_logs when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_alb('opt', required_attrs.merge(connection_logs: [{ 'key1' => 'val1' }]))
+        synth.aws_alb('opt', required_attrs.merge(connection_logs: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_alb', 'opt')
         expect(config).to have_key('connection_logs')
@@ -352,6 +367,40 @@ RSpec.describe Pangea::Resources::AWSAlb do
         config = validate_resource_structure(result, 'aws_alb', 'minimal')
         expect(config).not_to have_key('enable_zonal_shift')
       end
+      it 'includes enforce_security_group_inbound_rules_on_private_link_traffic when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('opt', required_attrs.merge(enforce_security_group_inbound_rules_on_private_link_traffic: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'opt')
+        expect(config).to have_key('enforce_security_group_inbound_rules_on_private_link_traffic')
+      end
+
+      it 'omits enforce_security_group_inbound_rules_on_private_link_traffic when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'minimal')
+        expect(config).not_to have_key('enforce_security_group_inbound_rules_on_private_link_traffic')
+      end
+      it 'includes health_check_logs when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('opt', required_attrs.merge(health_check_logs: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'opt')
+        expect(config).to have_key('health_check_logs')
+      end
+
+      it 'omits health_check_logs when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'minimal')
+        expect(config).not_to have_key('health_check_logs')
+      end
       it 'includes idle_timeout when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -369,10 +418,44 @@ RSpec.describe Pangea::Resources::AWSAlb do
         config = validate_resource_structure(result, 'aws_alb', 'minimal')
         expect(config).not_to have_key('idle_timeout')
       end
+      it 'includes internal when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('opt', required_attrs.merge(internal: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'opt')
+        expect(config).to have_key('internal')
+      end
+
+      it 'omits internal when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'minimal')
+        expect(config).not_to have_key('internal')
+      end
+      it 'includes ip_address_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('opt', required_attrs.merge(ip_address_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'opt')
+        expect(config).to have_key('ip_address_type')
+      end
+
+      it 'omits ip_address_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'minimal')
+        expect(config).not_to have_key('ip_address_type')
+      end
       it 'includes ipam_pools when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_alb('opt', required_attrs.merge(ipam_pools: [{ 'key1' => 'val1' }]))
+        synth.aws_alb('opt', required_attrs.merge(ipam_pools: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_alb', 'opt')
         expect(config).to have_key('ipam_pools')
@@ -406,7 +489,7 @@ RSpec.describe Pangea::Resources::AWSAlb do
       it 'includes minimum_load_balancer_capacity when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_alb('opt', required_attrs.merge(minimum_load_balancer_capacity: [{ 'key1' => 'val1' }]))
+        synth.aws_alb('opt', required_attrs.merge(minimum_load_balancer_capacity: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_alb', 'opt')
         expect(config).to have_key('minimum_load_balancer_capacity')
@@ -419,6 +502,40 @@ RSpec.describe Pangea::Resources::AWSAlb do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_alb', 'minimal')
         expect(config).not_to have_key('minimum_load_balancer_capacity')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'minimal')
+        expect(config).not_to have_key('name_prefix')
       end
       it 'includes preserve_host_header when provided' do
         synth = create_synthesizer
@@ -437,6 +554,57 @@ RSpec.describe Pangea::Resources::AWSAlb do
         config = validate_resource_structure(result, 'aws_alb', 'minimal')
         expect(config).not_to have_key('preserve_host_header')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes secondary_ips_auto_assigned_per_subnet when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('opt', required_attrs.merge(secondary_ips_auto_assigned_per_subnet: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'opt')
+        expect(config).to have_key('secondary_ips_auto_assigned_per_subnet')
+      end
+
+      it 'omits secondary_ips_auto_assigned_per_subnet when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'minimal')
+        expect(config).not_to have_key('secondary_ips_auto_assigned_per_subnet')
+      end
+      it 'includes security_groups when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('opt', required_attrs.merge(security_groups: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'opt')
+        expect(config).to have_key('security_groups')
+      end
+
+      it 'omits security_groups when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'minimal')
+        expect(config).not_to have_key('security_groups')
+      end
       it 'includes subnet_mapping when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -454,6 +622,23 @@ RSpec.describe Pangea::Resources::AWSAlb do
         config = validate_resource_structure(result, 'aws_alb', 'minimal')
         expect(config).not_to have_key('subnet_mapping')
       end
+      it 'includes subnets when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('opt', required_attrs.merge(subnets: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'opt')
+        expect(config).to have_key('subnets')
+      end
+
+      it 'omits subnets when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'minimal')
+        expect(config).not_to have_key('subnets')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -470,6 +655,23 @@ RSpec.describe Pangea::Resources::AWSAlb do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_alb', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_alb('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_alb', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes xff_header_processing_mode when provided' do
         synth = create_synthesizer
@@ -580,6 +782,17 @@ RSpec.describe Pangea::Resources::AWSAlb do
         end
       end
       [true, false].each do |val|
+        it "accepts internal=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(internal: val)
+          synth.aws_alb("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_alb', "bool_#{val}")
+          expect(config['internal']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
         it "accepts preserve_host_header=#{val}" do
           synth = create_synthesizer
           synth.extend(described_class)
@@ -633,8 +846,8 @@ RSpec.describe Pangea::Resources::AWSAlb do
     resource_type: :aws_alb,
     method: :aws_alb,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :arn_suffix, :dns_name, :enforce_security_group_inbound_rules_on_private_link_traffic, :internal, :ip_address_type, :name, :name_prefix, :security_groups, :subnets, :tags_all, :vpc_id, :zone_id],
+    expected_outputs: [:id, :arn, :arn_suffix, :dns_name, :enforce_security_group_inbound_rules_on_private_link_traffic, :internal, :ip_address_type, :name, :name_prefix, :region, :secondary_ips_auto_assigned_per_subnet, :security_groups, :subnets, :tags_all, :vpc_id, :zone_id],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:drop_invalid_header_fields, :enable_cross_zone_load_balancing, :enable_deletion_protection, :enable_http2, :enable_tls_version_and_cipher_suite_headers, :enable_waf_fail_open, :enable_xff_client_port, :enable_zonal_shift, :preserve_host_header]
+    boolean_fields: [:drop_invalid_header_fields, :enable_cross_zone_load_balancing, :enable_deletion_protection, :enable_http2, :enable_tls_version_and_cipher_suite_headers, :enable_waf_fail_open, :enable_xff_client_port, :enable_zonal_shift, :internal, :preserve_host_header]
 end

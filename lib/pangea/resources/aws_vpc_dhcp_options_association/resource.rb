@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpc_dhcp_options_association,
       attributes_class: AWS::Types::VpcDhcpOptionsAssociationAttributes,
       outputs: { id: :id },
-      map: [:dhcp_options_id, :vpc_id]
+      map: [:dhcp_options_id, :vpc_id],
+      map_present: [:region]
   end
   module AWS
     include AWSVpcDhcpOptionsAssociation

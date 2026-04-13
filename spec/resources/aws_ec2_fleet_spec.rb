@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSEc2Fleet do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { launch_template_config: [{ 'key1' => 'val1' }], target_capacity_specification: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { launch_template_config: [{ 'key1' => 'val1' }], target_capacity_specification: { 'key1' => 'val1' } } }
 
   describe ':aws_ec2_fleet' do
     context 'with required attributes only' do
@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSEc2Fleet do
         expect(ref.fleet_state).to eq("${aws_ec2_fleet.test.fleet_state}")
         expect(ref.fulfilled_capacity).to eq("${aws_ec2_fleet.test.fulfilled_capacity}")
         expect(ref.fulfilled_on_demand_capacity).to eq("${aws_ec2_fleet.test.fulfilled_on_demand_capacity}")
+        expect(ref.region).to eq("${aws_ec2_fleet.test.region}")
         expect(ref.tags_all).to eq("${aws_ec2_fleet.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSEc2Fleet do
         expect(config).not_to have_key('fleet_state')
         expect(config).not_to have_key('fulfilled_capacity')
         expect(config).not_to have_key('fulfilled_on_demand_capacity')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ context: 'test-value', excess_capacity_termination_policy: 'test-value', fleet_instance_set: [{ 'key1' => 'val1' }], on_demand_options: [{ 'key1' => 'val1' }], replace_unhealthy_instances: true, spot_options: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, terminate_instances: true, terminate_instances_with_expiration: true, type: 'test-value', valid_from: 'test-value', valid_until: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ context: 'test-value', excess_capacity_termination_policy: 'test-value', fleet_instance_set: [{ 'key1' => 'val1' }], fleet_state: 'test-value', fulfilled_capacity: 3.14, fulfilled_on_demand_capacity: 3.14, on_demand_options: { 'key1' => 'val1' }, region: 'test-value', replace_unhealthy_instances: true, spot_options: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, terminate_instances: true, terminate_instances_with_expiration: true, type: 'test-value', valid_from: 'test-value', valid_until: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -75,10 +77,15 @@ RSpec.describe Pangea::Resources::AWSEc2Fleet do
         expect(config).to have_key('context')
         expect(config).to have_key('excess_capacity_termination_policy')
         expect(config).to have_key('fleet_instance_set')
+        expect(config).to have_key('fleet_state')
+        expect(config).to have_key('fulfilled_capacity')
+        expect(config).to have_key('fulfilled_on_demand_capacity')
         expect(config).to have_key('on_demand_options')
+        expect(config).to have_key('region')
         expect(config).to have_key('replace_unhealthy_instances')
         expect(config).to have_key('spot_options')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('terminate_instances')
         expect(config).to have_key('terminate_instances_with_expiration')
         expect(config).to have_key('type')
@@ -139,10 +146,61 @@ RSpec.describe Pangea::Resources::AWSEc2Fleet do
         config = validate_resource_structure(result, 'aws_ec2_fleet', 'minimal')
         expect(config).not_to have_key('fleet_instance_set')
       end
+      it 'includes fleet_state when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_fleet('opt', required_attrs.merge(fleet_state: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_fleet', 'opt')
+        expect(config).to have_key('fleet_state')
+      end
+
+      it 'omits fleet_state when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_fleet', 'minimal')
+        expect(config).not_to have_key('fleet_state')
+      end
+      it 'includes fulfilled_capacity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_fleet('opt', required_attrs.merge(fulfilled_capacity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_fleet', 'opt')
+        expect(config).to have_key('fulfilled_capacity')
+      end
+
+      it 'omits fulfilled_capacity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_fleet', 'minimal')
+        expect(config).not_to have_key('fulfilled_capacity')
+      end
+      it 'includes fulfilled_on_demand_capacity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_fleet('opt', required_attrs.merge(fulfilled_on_demand_capacity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_fleet', 'opt')
+        expect(config).to have_key('fulfilled_on_demand_capacity')
+      end
+
+      it 'omits fulfilled_on_demand_capacity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_fleet', 'minimal')
+        expect(config).not_to have_key('fulfilled_on_demand_capacity')
+      end
       it 'includes on_demand_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ec2_fleet('opt', required_attrs.merge(on_demand_options: [{ 'key1' => 'val1' }]))
+        synth.aws_ec2_fleet('opt', required_attrs.merge(on_demand_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_fleet', 'opt')
         expect(config).to have_key('on_demand_options')
@@ -155,6 +213,23 @@ RSpec.describe Pangea::Resources::AWSEc2Fleet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_fleet', 'minimal')
         expect(config).not_to have_key('on_demand_options')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_fleet('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_fleet', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_fleet', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes replace_unhealthy_instances when provided' do
         synth = create_synthesizer
@@ -176,7 +251,7 @@ RSpec.describe Pangea::Resources::AWSEc2Fleet do
       it 'includes spot_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ec2_fleet('opt', required_attrs.merge(spot_options: [{ 'key1' => 'val1' }]))
+        synth.aws_ec2_fleet('opt', required_attrs.merge(spot_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_fleet', 'opt')
         expect(config).to have_key('spot_options')
@@ -206,6 +281,23 @@ RSpec.describe Pangea::Resources::AWSEc2Fleet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ec2_fleet', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_fleet('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_fleet', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ec2_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ec2_fleet', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes terminate_instances when provided' do
         synth = create_synthesizer
@@ -339,7 +431,7 @@ RSpec.describe Pangea::Resources::AWSEc2Fleet do
 
         config = validate_resource_structure(result, 'aws_ec2_fleet', 'typed')
         expect(config['launch_template_config']).to be_a(Array)
-        expect(config['target_capacity_specification']).to be_a(Array)
+        expect(config['target_capacity_specification']).to be_a(Hash)
       end
     end
 
@@ -372,8 +464,8 @@ RSpec.describe Pangea::Resources::AWSEc2Fleet do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_ec2_fleet,
     method: :aws_ec2_fleet,
-    required_attrs: { launch_template_config: [{ 'key1' => 'val1' }], target_capacity_specification: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :fleet_state, :fulfilled_capacity, :fulfilled_on_demand_capacity, :tags_all],
+    required_attrs: { launch_template_config: [{ 'key1' => 'val1' }], target_capacity_specification: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :fleet_state, :fulfilled_capacity, :fulfilled_on_demand_capacity, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:replace_unhealthy_instances, :terminate_instances, :terminate_instances_with_expiration]

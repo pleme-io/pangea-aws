@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomainSamlOptions do
         ref = synth.aws_opensearch_domain_saml_options('test', required_attrs)
 
         expect(ref.id).to eq("${aws_opensearch_domain_saml_options.test.id}")
+        expect(ref.region).to eq("${aws_opensearch_domain_saml_options.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain_saml_options('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_opensearch_domain_saml_options', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ saml_options: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', saml_options: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -51,15 +64,33 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomainSamlOptions do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_opensearch_domain_saml_options', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('saml_options')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain_saml_options('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain_saml_options', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain_saml_options('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain_saml_options', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes saml_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_domain_saml_options('opt', required_attrs.merge(saml_options: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_domain_saml_options('opt', required_attrs.merge(saml_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain_saml_options', 'opt')
         expect(config).to have_key('saml_options')
@@ -117,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomainSamlOptions do
     resource_type: :aws_opensearch_domain_saml_options,
     method: :aws_opensearch_domain_saml_options,
     required_attrs: { domain_name: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

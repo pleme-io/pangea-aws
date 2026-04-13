@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VerifiedpermissionsPolicyTemplateAttributes,
       outputs: { id: :id },
       map: [:policy_store_id, :statement],
-      map_present: [:description]
+      map_present: [:description, :region]
   end
   module AWS
     include AWSVerifiedpermissionsPolicyTemplate

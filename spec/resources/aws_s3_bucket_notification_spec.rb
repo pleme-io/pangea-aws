@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSS3BucketNotification do
         ref = synth.aws_s3_bucket_notification('test', required_attrs)
 
         expect(ref.id).to eq("${aws_s3_bucket_notification.test.id}")
+        expect(ref.region).to eq("${aws_s3_bucket_notification.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_notification('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_s3_bucket_notification', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ eventbridge: true, lambda_function: [{ 'key1' => 'val1' }], queue: [{ 'key1' => 'val1' }], topic: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ eventbridge: true, lambda_function: [{ 'key1' => 'val1' }], queue: [{ 'key1' => 'val1' }], region: 'test-value', topic: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -54,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketNotification do
         expect(config).to have_key('eventbridge')
         expect(config).to have_key('lambda_function')
         expect(config).to have_key('queue')
+        expect(config).to have_key('region')
         expect(config).to have_key('topic')
       end
     end
@@ -109,6 +123,23 @@ RSpec.describe Pangea::Resources::AWSS3BucketNotification do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_notification', 'minimal')
         expect(config).not_to have_key('queue')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_notification('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_notification', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_notification('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_notification', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes topic when provided' do
         synth = create_synthesizer
@@ -185,7 +216,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketNotification do
     resource_type: :aws_s3_bucket_notification,
     method: :aws_s3_bucket_notification,
     required_attrs: { bucket: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:eventbridge]

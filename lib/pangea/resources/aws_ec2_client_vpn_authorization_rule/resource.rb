@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2ClientVpnAuthorizationRuleAttributes,
       outputs: { id: :id },
       map: [:client_vpn_endpoint_id, :target_network_cidr],
-      map_present: [:access_group_id, :description],
+      map_present: [:access_group_id, :description, :region],
       map_bool: [:authorize_all_groups]
   end
   module AWS

@@ -62,6 +62,7 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
         expect(ref.object_lock_legal_hold_status).to eq("${aws_s3_object_copy.test.object_lock_legal_hold_status}")
         expect(ref.object_lock_mode).to eq("${aws_s3_object_copy.test.object_lock_mode}")
         expect(ref.object_lock_retain_until_date).to eq("${aws_s3_object_copy.test.object_lock_retain_until_date}")
+        expect(ref.region).to eq("${aws_s3_object_copy.test.region}")
         expect(ref.request_charged).to eq("${aws_s3_object_copy.test.request_charged}")
         expect(ref.server_side_encryption).to eq("${aws_s3_object_copy.test.server_side_encryption}")
         expect(ref.source_version_id).to eq("${aws_s3_object_copy.test.source_version_id}")
@@ -104,6 +105,7 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
         expect(config).not_to have_key('object_lock_legal_hold_status')
         expect(config).not_to have_key('object_lock_mode')
         expect(config).not_to have_key('object_lock_retain_until_date')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('request_charged')
         expect(config).not_to have_key('server_side_encryption')
         expect(config).not_to have_key('source_version_id')
@@ -115,7 +117,7 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ checksum_algorithm: 'test-value', copy_if_match: 'test-value', copy_if_modified_since: 'test-value', copy_if_none_match: 'test-value', copy_if_unmodified_since: 'test-value', customer_key: 'test-value', expected_bucket_owner: 'test-value', expected_source_bucket_owner: 'test-value', expires: 'test-value', force_destroy: true, grant: [{ 'key1' => 'val1' }], metadata_directive: 'test-value', override_provider: [{ 'key1' => 'val1' }], request_payer: 'test-value', source_customer_algorithm: 'test-value', source_customer_key: 'test-value', source_customer_key_md5: 'test-value', tagging_directive: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ acl: 'test-value', bucket_key_enabled: true, cache_control: 'test-value', checksum_algorithm: 'test-value', content_disposition: 'test-value', content_encoding: 'test-value', content_language: 'test-value', content_type: 'test-value', copy_if_match: 'test-value', copy_if_modified_since: 'test-value', copy_if_none_match: 'test-value', copy_if_unmodified_since: 'test-value', customer_algorithm: 'test-value', customer_key: 'test-value', customer_key_md5: 'test-value', expected_bucket_owner: 'test-value', expected_source_bucket_owner: 'test-value', expires: 'test-value', force_destroy: true, grant: [{ 'key1' => 'val1' }], kms_encryption_context: 'test-value', kms_key_id: 'test-value', metadata: { 'key1' => 'val1' }, metadata_directive: 'test-value', object_lock_legal_hold_status: 'test-value', object_lock_mode: 'test-value', object_lock_retain_until_date: 'test-value', override_provider: { 'key1' => 'val1' }, region: 'test-value', request_payer: 'test-value', server_side_encryption: 'test-value', source_customer_algorithm: 'test-value', source_customer_key: 'test-value', source_customer_key_md5: 'test-value', storage_class: 'test-value', tagging_directive: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, website_redirect: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -124,29 +126,100 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_s3_object_copy', 'full')
+        expect(config).to have_key('acl')
+        expect(config).to have_key('bucket_key_enabled')
+        expect(config).to have_key('cache_control')
         expect(config).to have_key('checksum_algorithm')
+        expect(config).to have_key('content_disposition')
+        expect(config).to have_key('content_encoding')
+        expect(config).to have_key('content_language')
+        expect(config).to have_key('content_type')
         expect(config).to have_key('copy_if_match')
         expect(config).to have_key('copy_if_modified_since')
         expect(config).to have_key('copy_if_none_match')
         expect(config).to have_key('copy_if_unmodified_since')
+        expect(config).to have_key('customer_algorithm')
         expect(config).to have_key('customer_key')
+        expect(config).to have_key('customer_key_md5')
         expect(config).to have_key('expected_bucket_owner')
         expect(config).to have_key('expected_source_bucket_owner')
         expect(config).to have_key('expires')
         expect(config).to have_key('force_destroy')
         expect(config).to have_key('grant')
+        expect(config).to have_key('kms_encryption_context')
+        expect(config).to have_key('kms_key_id')
+        expect(config).to have_key('metadata')
         expect(config).to have_key('metadata_directive')
+        expect(config).to have_key('object_lock_legal_hold_status')
+        expect(config).to have_key('object_lock_mode')
+        expect(config).to have_key('object_lock_retain_until_date')
         expect(config).to have_key('override_provider')
+        expect(config).to have_key('region')
         expect(config).to have_key('request_payer')
+        expect(config).to have_key('server_side_encryption')
         expect(config).to have_key('source_customer_algorithm')
         expect(config).to have_key('source_customer_key')
         expect(config).to have_key('source_customer_key_md5')
+        expect(config).to have_key('storage_class')
         expect(config).to have_key('tagging_directive')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('website_redirect')
       end
     end
 
     context 'optional attributes' do
+      it 'includes acl when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(acl: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('acl')
+      end
+
+      it 'omits acl when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('acl')
+      end
+      it 'includes bucket_key_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(bucket_key_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('bucket_key_enabled')
+      end
+
+      it 'omits bucket_key_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('bucket_key_enabled')
+      end
+      it 'includes cache_control when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(cache_control: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('cache_control')
+      end
+
+      it 'omits cache_control when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('cache_control')
+      end
       it 'includes checksum_algorithm when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -163,6 +236,74 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
         expect(config).not_to have_key('checksum_algorithm')
+      end
+      it 'includes content_disposition when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(content_disposition: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('content_disposition')
+      end
+
+      it 'omits content_disposition when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('content_disposition')
+      end
+      it 'includes content_encoding when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(content_encoding: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('content_encoding')
+      end
+
+      it 'omits content_encoding when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('content_encoding')
+      end
+      it 'includes content_language when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(content_language: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('content_language')
+      end
+
+      it 'omits content_language when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('content_language')
+      end
+      it 'includes content_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(content_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('content_type')
+      end
+
+      it 'omits content_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('content_type')
       end
       it 'includes copy_if_match when provided' do
         synth = create_synthesizer
@@ -232,6 +373,23 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
         config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
         expect(config).not_to have_key('copy_if_unmodified_since')
       end
+      it 'includes customer_algorithm when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(customer_algorithm: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('customer_algorithm')
+      end
+
+      it 'omits customer_algorithm when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('customer_algorithm')
+      end
       it 'includes customer_key when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -248,6 +406,23 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
         expect(config).not_to have_key('customer_key')
+      end
+      it 'includes customer_key_md5 when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(customer_key_md5: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('customer_key_md5')
+      end
+
+      it 'omits customer_key_md5 when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('customer_key_md5')
       end
       it 'includes expected_bucket_owner when provided' do
         synth = create_synthesizer
@@ -334,6 +509,57 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
         config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
         expect(config).not_to have_key('grant')
       end
+      it 'includes kms_encryption_context when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(kms_encryption_context: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('kms_encryption_context')
+      end
+
+      it 'omits kms_encryption_context when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('kms_encryption_context')
+      end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
+      end
+      it 'includes metadata when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(metadata: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('metadata')
+      end
+
+      it 'omits metadata when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('metadata')
+      end
       it 'includes metadata_directive when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -351,10 +577,61 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
         config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
         expect(config).not_to have_key('metadata_directive')
       end
+      it 'includes object_lock_legal_hold_status when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(object_lock_legal_hold_status: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('object_lock_legal_hold_status')
+      end
+
+      it 'omits object_lock_legal_hold_status when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('object_lock_legal_hold_status')
+      end
+      it 'includes object_lock_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(object_lock_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('object_lock_mode')
+      end
+
+      it 'omits object_lock_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('object_lock_mode')
+      end
+      it 'includes object_lock_retain_until_date when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(object_lock_retain_until_date: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('object_lock_retain_until_date')
+      end
+
+      it 'omits object_lock_retain_until_date when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('object_lock_retain_until_date')
+      end
       it 'includes override_provider when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_object_copy('opt', required_attrs.merge(override_provider: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_object_copy('opt', required_attrs.merge(override_provider: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
         expect(config).to have_key('override_provider')
@@ -367,6 +644,23 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
         expect(config).not_to have_key('override_provider')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes request_payer when provided' do
         synth = create_synthesizer
@@ -384,6 +678,23 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
         expect(config).not_to have_key('request_payer')
+      end
+      it 'includes server_side_encryption when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(server_side_encryption: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('server_side_encryption')
+      end
+
+      it 'omits server_side_encryption when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('server_side_encryption')
       end
       it 'includes source_customer_algorithm when provided' do
         synth = create_synthesizer
@@ -436,6 +747,23 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
         config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
         expect(config).not_to have_key('source_customer_key_md5')
       end
+      it 'includes storage_class when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(storage_class: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('storage_class')
+      end
+
+      it 'omits storage_class when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('storage_class')
+      end
       it 'includes tagging_directive when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -470,6 +798,40 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
         config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes website_redirect when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('opt', required_attrs.merge(website_redirect: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'opt')
+        expect(config).to have_key('website_redirect')
+      end
+
+      it 'omits website_redirect when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object_copy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object_copy', 'minimal')
+        expect(config).not_to have_key('website_redirect')
+      end
     end
 
     context 'sensitive fields' do
@@ -483,6 +845,17 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts bucket_key_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(bucket_key_enabled: val)
+          synth.aws_s3_object_copy("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_s3_object_copy', "bool_#{val}")
+          expect(config['bucket_key_enabled']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts force_destroy=#{val}" do
           synth = create_synthesizer
@@ -540,8 +913,8 @@ RSpec.describe Pangea::Resources::AWSS3ObjectCopy do
     resource_type: :aws_s3_object_copy,
     method: :aws_s3_object_copy,
     required_attrs: { bucket: 'test-value', key: 'test-value', source: 'test-value' },
-    expected_outputs: [:id, :acl, :arn, :bucket_key_enabled, :cache_control, :checksum_crc32, :checksum_crc32c, :checksum_crc64nvme, :checksum_sha1, :checksum_sha256, :content_disposition, :content_encoding, :content_language, :content_type, :customer_algorithm, :customer_key_md5, :etag, :expiration, :kms_encryption_context, :kms_key_id, :last_modified, :metadata, :object_lock_legal_hold_status, :object_lock_mode, :object_lock_retain_until_date, :request_charged, :server_side_encryption, :source_version_id, :storage_class, :tags_all, :version_id, :website_redirect],
+    expected_outputs: [:id, :acl, :arn, :bucket_key_enabled, :cache_control, :checksum_crc32, :checksum_crc32c, :checksum_crc64nvme, :checksum_sha1, :checksum_sha256, :content_disposition, :content_encoding, :content_language, :content_type, :customer_algorithm, :customer_key_md5, :etag, :expiration, :kms_encryption_context, :kms_key_id, :last_modified, :metadata, :object_lock_legal_hold_status, :object_lock_mode, :object_lock_retain_until_date, :region, :request_charged, :server_side_encryption, :source_version_id, :storage_class, :tags_all, :version_id, :website_redirect],
     sensitive_fields: [:customer_key, :kms_encryption_context, :kms_key_id, :source_customer_key],
     immutable_fields: [],
-    boolean_fields: [:force_destroy]
+    boolean_fields: [:bucket_key_enabled, :force_destroy]
 end

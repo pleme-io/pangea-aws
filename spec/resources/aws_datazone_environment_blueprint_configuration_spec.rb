@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSDatazoneEnvironmentBlueprintConfiguration d
         ref = synth.aws_datazone_environment_blueprint_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_datazone_environment_blueprint_configuration.test.id}")
+        expect(ref.region).to eq("${aws_datazone_environment_blueprint_configuration.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment_blueprint_configuration('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_datazone_environment_blueprint_configuration', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ manage_access_role_arn: 'test-value', provisioning_role_arn: 'test-value', regional_parameters: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ manage_access_role_arn: 'test-value', provisioning_role_arn: 'test-value', region: 'test-value', regional_parameters: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -53,6 +66,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneEnvironmentBlueprintConfiguration d
         config = validate_resource_structure(result, 'aws_datazone_environment_blueprint_configuration', 'full')
         expect(config).to have_key('manage_access_role_arn')
         expect(config).to have_key('provisioning_role_arn')
+        expect(config).to have_key('region')
         expect(config).to have_key('regional_parameters')
       end
     end
@@ -91,6 +105,23 @@ RSpec.describe Pangea::Resources::AWSDatazoneEnvironmentBlueprintConfiguration d
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datazone_environment_blueprint_configuration', 'minimal')
         expect(config).not_to have_key('provisioning_role_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment_blueprint_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment_blueprint_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datazone_environment_blueprint_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datazone_environment_blueprint_configuration', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes regional_parameters when provided' do
         synth = create_synthesizer
@@ -155,7 +186,7 @@ RSpec.describe Pangea::Resources::AWSDatazoneEnvironmentBlueprintConfiguration d
     resource_type: :aws_datazone_environment_blueprint_configuration,
     method: :aws_datazone_environment_blueprint_configuration,
     required_attrs: { domain_id: 'test-value', enabled_regions: ['test-value'], environment_blueprint_id: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftSnapshotCopyGrantAttributes,
       outputs: { id: :id },
       map: [:snapshot_copy_grant_name],
-      map_present: [:kms_key_id, :tags, :tags_all]
+      map_present: [:kms_key_id, :region, :tags, :tags_all]
   end
   module AWS
     include AWSRedshiftSnapshotCopyGrant

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerPipelineAttributes,
       outputs: { id: :id },
       map: [:pipeline_display_name, :pipeline_name],
-      map_present: [:parallelism_configuration, :pipeline_definition, :pipeline_definition_s3_location, :pipeline_description, :role_arn, :tags, :tags_all]
+      map_present: [:parallelism_configuration, :pipeline_definition, :pipeline_definition_s3_location, :pipeline_description, :region, :role_arn, :tags, :tags_all]
   end
   module AWS
     include AWSSagemakerPipeline

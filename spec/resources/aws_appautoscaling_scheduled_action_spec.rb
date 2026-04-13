@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSAppautoscalingScheduledAction do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { name: 'test-value', resource_id: 'test-value', scalable_dimension: 'test-value', scalable_target_action: [{ 'key1' => 'val1' }], schedule: 'test-value', service_namespace: 'test-value' } }
+  let(:required_attrs) { { name: 'test-value', resource_id: 'test-value', scalable_dimension: 'test-value', scalable_target_action: { 'key1' => 'val1' }, schedule: 'test-value', service_namespace: 'test-value' } }
 
   describe ':aws_appautoscaling_scheduled_action' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingScheduledAction do
 
         expect(ref.id).to eq("${aws_appautoscaling_scheduled_action.test.id}")
         expect(ref.arn).to eq("${aws_appautoscaling_scheduled_action.test.arn}")
+        expect(ref.region).to eq("${aws_appautoscaling_scheduled_action.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingScheduledAction do
 
         config = validate_resource_structure(result, 'aws_appautoscaling_scheduled_action', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ end_time: 'test-value', start_time: 'test-value', timezone: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ end_time: 'test-value', region: 'test-value', start_time: 'test-value', timezone: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -65,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingScheduledAction do
 
         config = validate_resource_structure(result, 'aws_appautoscaling_scheduled_action', 'full')
         expect(config).to have_key('end_time')
+        expect(config).to have_key('region')
         expect(config).to have_key('start_time')
         expect(config).to have_key('timezone')
       end
@@ -87,6 +90,23 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingScheduledAction do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appautoscaling_scheduled_action', 'minimal')
         expect(config).not_to have_key('end_time')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appautoscaling_scheduled_action('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appautoscaling_scheduled_action', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appautoscaling_scheduled_action('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appautoscaling_scheduled_action', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes start_time when provided' do
         synth = create_synthesizer
@@ -135,7 +155,7 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingScheduledAction do
         expect(config['name']).to be_a(String)
         expect(config['resource_id']).to be_a(String)
         expect(config['scalable_dimension']).to be_a(String)
-        expect(config['scalable_target_action']).to be_a(Array)
+        expect(config['scalable_target_action']).to be_a(Hash)
         expect(config['schedule']).to be_a(String)
         expect(config['service_namespace']).to be_a(String)
       end
@@ -170,8 +190,8 @@ RSpec.describe Pangea::Resources::AWSAppautoscalingScheduledAction do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_appautoscaling_scheduled_action,
     method: :aws_appautoscaling_scheduled_action,
-    required_attrs: { name: 'test-value', resource_id: 'test-value', scalable_dimension: 'test-value', scalable_target_action: [{ 'key1' => 'val1' }], schedule: 'test-value', service_namespace: 'test-value' },
-    expected_outputs: [:id, :arn],
+    required_attrs: { name: 'test-value', resource_id: 'test-value', scalable_dimension: 'test-value', scalable_target_action: { 'key1' => 'val1' }, schedule: 'test-value', service_namespace: 'test-value' },
+    expected_outputs: [:id, :arn, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

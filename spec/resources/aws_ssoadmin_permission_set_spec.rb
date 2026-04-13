@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSsoadminPermissionSet do
         expect(ref.id).to eq("${aws_ssoadmin_permission_set.test.id}")
         expect(ref.arn).to eq("${aws_ssoadmin_permission_set.test.arn}")
         expect(ref.created_date).to eq("${aws_ssoadmin_permission_set.test.created_date}")
+        expect(ref.region).to eq("${aws_ssoadmin_permission_set.test.region}")
         expect(ref.tags_all).to eq("${aws_ssoadmin_permission_set.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSSsoadminPermissionSet do
         config = validate_resource_structure(result, 'aws_ssoadmin_permission_set', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('created_date')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', relay_state: 'test-value', session_duration: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', relay_state: 'test-value', session_duration: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,9 +71,11 @@ RSpec.describe Pangea::Resources::AWSSsoadminPermissionSet do
 
         config = validate_resource_structure(result, 'aws_ssoadmin_permission_set', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('relay_state')
         expect(config).to have_key('session_duration')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -92,6 +96,23 @@ RSpec.describe Pangea::Resources::AWSSsoadminPermissionSet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssoadmin_permission_set', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_permission_set('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_permission_set', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_permission_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_permission_set', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes relay_state when provided' do
         synth = create_synthesizer
@@ -144,6 +165,23 @@ RSpec.describe Pangea::Resources::AWSSsoadminPermissionSet do
         config = validate_resource_structure(result, 'aws_ssoadmin_permission_set', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_permission_set('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_permission_set', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_permission_set('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_permission_set', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -189,7 +227,7 @@ RSpec.describe Pangea::Resources::AWSSsoadminPermissionSet do
     resource_type: :aws_ssoadmin_permission_set,
     method: :aws_ssoadmin_permission_set,
     required_attrs: { instance_arn: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :created_date, :tags_all],
+    expected_outputs: [:id, :arn, :created_date, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

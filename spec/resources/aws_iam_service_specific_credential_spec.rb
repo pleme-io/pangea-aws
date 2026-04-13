@@ -38,6 +38,10 @@ RSpec.describe Pangea::Resources::AWSIamServiceSpecificCredential do
         ref = synth.aws_iam_service_specific_credential('test', required_attrs)
 
         expect(ref.id).to eq("${aws_iam_service_specific_credential.test.id}")
+        expect(ref.create_date).to eq("${aws_iam_service_specific_credential.test.create_date}")
+        expect(ref.expiration_date).to eq("${aws_iam_service_specific_credential.test.expiration_date}")
+        expect(ref.service_credential_alias).to eq("${aws_iam_service_specific_credential.test.service_credential_alias}")
+        expect(ref.service_credential_secret).to eq("${aws_iam_service_specific_credential.test.service_credential_secret}")
         expect(ref.service_password).to eq("${aws_iam_service_specific_credential.test.service_password}")
         expect(ref.service_specific_credential_id).to eq("${aws_iam_service_specific_credential.test.service_specific_credential_id}")
         expect(ref.service_user_name).to eq("${aws_iam_service_specific_credential.test.service_user_name}")
@@ -52,6 +56,10 @@ RSpec.describe Pangea::Resources::AWSIamServiceSpecificCredential do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_iam_service_specific_credential', 'test')
+        expect(config).not_to have_key('create_date')
+        expect(config).not_to have_key('expiration_date')
+        expect(config).not_to have_key('service_credential_alias')
+        expect(config).not_to have_key('service_credential_secret')
         expect(config).not_to have_key('service_password')
         expect(config).not_to have_key('service_specific_credential_id')
         expect(config).not_to have_key('service_user_name')
@@ -59,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSIamServiceSpecificCredential do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ status: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ credential_age_days: 3.14, status: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,11 +76,29 @@ RSpec.describe Pangea::Resources::AWSIamServiceSpecificCredential do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_iam_service_specific_credential', 'full')
+        expect(config).to have_key('credential_age_days')
         expect(config).to have_key('status')
       end
     end
 
     context 'optional attributes' do
+      it 'includes credential_age_days when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_service_specific_credential('opt', required_attrs.merge(credential_age_days: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_service_specific_credential', 'opt')
+        expect(config).to have_key('credential_age_days')
+      end
+
+      it 'omits credential_age_days when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_service_specific_credential('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_service_specific_credential', 'minimal')
+        expect(config).not_to have_key('credential_age_days')
+      end
       it 'includes status when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -94,7 +120,8 @@ RSpec.describe Pangea::Resources::AWSIamServiceSpecificCredential do
 
     context 'sensitive fields' do
       it 'documents sensitive attributes' do
-        sensitive_fields = [:service_password]
+        sensitive_fields = [:service_credential_secret, :service_password]
+        expect(sensitive_fields).to include(:service_credential_secret)
         expect(sensitive_fields).to include(:service_password)
       end
     end
@@ -142,8 +169,8 @@ RSpec.describe Pangea::Resources::AWSIamServiceSpecificCredential do
     resource_type: :aws_iam_service_specific_credential,
     method: :aws_iam_service_specific_credential,
     required_attrs: { service_name: 'test-value', user_name: 'test-value' },
-    expected_outputs: [:id, :service_password, :service_specific_credential_id, :service_user_name],
-    sensitive_fields: [:service_password],
+    expected_outputs: [:id, :create_date, :expiration_date, :service_credential_alias, :service_credential_secret, :service_password, :service_specific_credential_id, :service_user_name],
+    sensitive_fields: [:service_credential_secret, :service_password],
     immutable_fields: [],
     boolean_fields: []
 end

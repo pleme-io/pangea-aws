@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftClusterIamRoles do
         expect(ref.id).to eq("${aws_redshift_cluster_iam_roles.test.id}")
         expect(ref.default_iam_role_arn).to eq("${aws_redshift_cluster_iam_roles.test.default_iam_role_arn}")
         expect(ref.iam_role_arns).to eq("${aws_redshift_cluster_iam_roles.test.iam_role_arns}")
+        expect(ref.region).to eq("${aws_redshift_cluster_iam_roles.test.region}")
       end
     end
 
@@ -53,6 +54,77 @@ RSpec.describe Pangea::Resources::AWSRedshiftClusterIamRoles do
         config = validate_resource_structure(result, 'aws_redshift_cluster_iam_roles', 'test')
         expect(config).not_to have_key('default_iam_role_arn')
         expect(config).not_to have_key('iam_role_arns')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ default_iam_role_arn: 'test-value', iam_role_arns: ['test-value'], region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster_iam_roles('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_redshift_cluster_iam_roles', 'full')
+        expect(config).to have_key('default_iam_role_arn')
+        expect(config).to have_key('iam_role_arns')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes default_iam_role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster_iam_roles('opt', required_attrs.merge(default_iam_role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster_iam_roles', 'opt')
+        expect(config).to have_key('default_iam_role_arn')
+      end
+
+      it 'omits default_iam_role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster_iam_roles('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster_iam_roles', 'minimal')
+        expect(config).not_to have_key('default_iam_role_arn')
+      end
+      it 'includes iam_role_arns when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster_iam_roles('opt', required_attrs.merge(iam_role_arns: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster_iam_roles', 'opt')
+        expect(config).to have_key('iam_role_arns')
+      end
+
+      it 'omits iam_role_arns when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster_iam_roles('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster_iam_roles', 'minimal')
+        expect(config).not_to have_key('iam_role_arns')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster_iam_roles('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster_iam_roles', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshift_cluster_iam_roles('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshift_cluster_iam_roles', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -98,7 +170,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftClusterIamRoles do
     resource_type: :aws_redshift_cluster_iam_roles,
     method: :aws_redshift_cluster_iam_roles,
     required_attrs: { cluster_identifier: 'test-value' },
-    expected_outputs: [:id, :default_iam_role_arn, :iam_role_arns],
+    expected_outputs: [:id, :default_iam_role_arn, :iam_role_arns, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

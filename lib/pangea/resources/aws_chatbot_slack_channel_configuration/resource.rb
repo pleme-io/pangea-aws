@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ChatbotSlackChannelConfigurationAttributes,
       outputs: { id: :id },
       map: [:configuration_name, :iam_role_arn, :slack_channel_id, :slack_team_id],
-      map_present: [:guardrail_policy_arns, :logging_level, :sns_topic_arns, :tags],
+      map_present: [:guardrail_policy_arns, :logging_level, :region, :sns_topic_arns, :tags],
       map_bool: [:user_authorization_required]
   end
   module AWS

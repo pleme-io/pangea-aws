@@ -56,6 +56,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheCluster do
         expect(ref.parameter_group_name).to eq("${aws_elasticache_cluster.test.parameter_group_name}")
         expect(ref.port).to eq("${aws_elasticache_cluster.test.port}")
         expect(ref.preferred_outpost_arn).to eq("${aws_elasticache_cluster.test.preferred_outpost_arn}")
+        expect(ref.region).to eq("${aws_elasticache_cluster.test.region}")
         expect(ref.replication_group_id).to eq("${aws_elasticache_cluster.test.replication_group_id}")
         expect(ref.security_group_ids).to eq("${aws_elasticache_cluster.test.security_group_ids}")
         expect(ref.snapshot_window).to eq("${aws_elasticache_cluster.test.snapshot_window}")
@@ -91,6 +92,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheCluster do
         expect(config).not_to have_key('parameter_group_name')
         expect(config).not_to have_key('port')
         expect(config).not_to have_key('preferred_outpost_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('replication_group_id')
         expect(config).not_to have_key('security_group_ids')
         expect(config).not_to have_key('snapshot_window')
@@ -101,7 +103,7 @@ RSpec.describe Pangea::Resources::AWSElasticacheCluster do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ auto_minor_version_upgrade: 'test-value', final_snapshot_identifier: 'test-value', log_delivery_configuration: [{ 'key1' => 'val1' }], notification_topic_arn: 'test-value', outpost_mode: 'test-value', preferred_availability_zones: ['test-value'], snapshot_arns: ['test-value'], snapshot_name: 'test-value', snapshot_retention_limit: 3.14, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ apply_immediately: true, auto_minor_version_upgrade: 'test-value', availability_zone: 'test-value', az_mode: 'test-value', engine: 'test-value', engine_version: 'test-value', final_snapshot_identifier: 'test-value', ip_discovery: 'test-value', log_delivery_configuration: [{ 'key1' => 'val1' }], maintenance_window: 'test-value', network_type: 'test-value', node_type: 'test-value', notification_topic_arn: 'test-value', num_cache_nodes: 3.14, outpost_mode: 'test-value', parameter_group_name: 'test-value', port: 3.14, preferred_availability_zones: ['test-value'], preferred_outpost_arn: 'test-value', region: 'test-value', replication_group_id: 'test-value', security_group_ids: ['test-value'], snapshot_arns: ['test-value'], snapshot_name: 'test-value', snapshot_retention_limit: 3.14, snapshot_window: 'test-value', subnet_group_name: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, transit_encryption_enabled: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -110,20 +112,57 @@ RSpec.describe Pangea::Resources::AWSElasticacheCluster do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_elasticache_cluster', 'full')
+        expect(config).to have_key('apply_immediately')
         expect(config).to have_key('auto_minor_version_upgrade')
+        expect(config).to have_key('availability_zone')
+        expect(config).to have_key('az_mode')
+        expect(config).to have_key('engine')
+        expect(config).to have_key('engine_version')
         expect(config).to have_key('final_snapshot_identifier')
+        expect(config).to have_key('ip_discovery')
         expect(config).to have_key('log_delivery_configuration')
+        expect(config).to have_key('maintenance_window')
+        expect(config).to have_key('network_type')
+        expect(config).to have_key('node_type')
         expect(config).to have_key('notification_topic_arn')
+        expect(config).to have_key('num_cache_nodes')
         expect(config).to have_key('outpost_mode')
+        expect(config).to have_key('parameter_group_name')
+        expect(config).to have_key('port')
         expect(config).to have_key('preferred_availability_zones')
+        expect(config).to have_key('preferred_outpost_arn')
+        expect(config).to have_key('region')
+        expect(config).to have_key('replication_group_id')
+        expect(config).to have_key('security_group_ids')
         expect(config).to have_key('snapshot_arns')
         expect(config).to have_key('snapshot_name')
         expect(config).to have_key('snapshot_retention_limit')
+        expect(config).to have_key('snapshot_window')
+        expect(config).to have_key('subnet_group_name')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('transit_encryption_enabled')
       end
     end
 
     context 'optional attributes' do
+      it 'includes apply_immediately when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(apply_immediately: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('apply_immediately')
+      end
+
+      it 'omits apply_immediately when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('apply_immediately')
+      end
       it 'includes auto_minor_version_upgrade when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -140,6 +179,74 @@ RSpec.describe Pangea::Resources::AWSElasticacheCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
         expect(config).not_to have_key('auto_minor_version_upgrade')
+      end
+      it 'includes availability_zone when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(availability_zone: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('availability_zone')
+      end
+
+      it 'omits availability_zone when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('availability_zone')
+      end
+      it 'includes az_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(az_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('az_mode')
+      end
+
+      it 'omits az_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('az_mode')
+      end
+      it 'includes engine when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(engine: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('engine')
+      end
+
+      it 'omits engine when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('engine')
+      end
+      it 'includes engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('engine_version')
+      end
+
+      it 'omits engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('engine_version')
       end
       it 'includes final_snapshot_identifier when provided' do
         synth = create_synthesizer
@@ -158,6 +265,23 @@ RSpec.describe Pangea::Resources::AWSElasticacheCluster do
         config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
         expect(config).not_to have_key('final_snapshot_identifier')
       end
+      it 'includes ip_discovery when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(ip_discovery: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('ip_discovery')
+      end
+
+      it 'omits ip_discovery when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('ip_discovery')
+      end
       it 'includes log_delivery_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -174,6 +298,57 @@ RSpec.describe Pangea::Resources::AWSElasticacheCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
         expect(config).not_to have_key('log_delivery_configuration')
+      end
+      it 'includes maintenance_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(maintenance_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('maintenance_window')
+      end
+
+      it 'omits maintenance_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('maintenance_window')
+      end
+      it 'includes network_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(network_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('network_type')
+      end
+
+      it 'omits network_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('network_type')
+      end
+      it 'includes node_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(node_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('node_type')
+      end
+
+      it 'omits node_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('node_type')
       end
       it 'includes notification_topic_arn when provided' do
         synth = create_synthesizer
@@ -192,6 +367,23 @@ RSpec.describe Pangea::Resources::AWSElasticacheCluster do
         config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
         expect(config).not_to have_key('notification_topic_arn')
       end
+      it 'includes num_cache_nodes when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(num_cache_nodes: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('num_cache_nodes')
+      end
+
+      it 'omits num_cache_nodes when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('num_cache_nodes')
+      end
       it 'includes outpost_mode when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -209,6 +401,40 @@ RSpec.describe Pangea::Resources::AWSElasticacheCluster do
         config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
         expect(config).not_to have_key('outpost_mode')
       end
+      it 'includes parameter_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(parameter_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('parameter_group_name')
+      end
+
+      it 'omits parameter_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('parameter_group_name')
+      end
+      it 'includes port when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(port: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('port')
+      end
+
+      it 'omits port when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('port')
+      end
       it 'includes preferred_availability_zones when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -225,6 +451,74 @@ RSpec.describe Pangea::Resources::AWSElasticacheCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
         expect(config).not_to have_key('preferred_availability_zones')
+      end
+      it 'includes preferred_outpost_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(preferred_outpost_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('preferred_outpost_arn')
+      end
+
+      it 'omits preferred_outpost_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('preferred_outpost_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes replication_group_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(replication_group_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('replication_group_id')
+      end
+
+      it 'omits replication_group_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('replication_group_id')
+      end
+      it 'includes security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('security_group_ids')
+      end
+
+      it 'omits security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('security_group_ids')
       end
       it 'includes snapshot_arns when provided' do
         synth = create_synthesizer
@@ -277,6 +571,40 @@ RSpec.describe Pangea::Resources::AWSElasticacheCluster do
         config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
         expect(config).not_to have_key('snapshot_retention_limit')
       end
+      it 'includes snapshot_window when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(snapshot_window: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('snapshot_window')
+      end
+
+      it 'omits snapshot_window when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('snapshot_window')
+      end
+      it 'includes subnet_group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(subnet_group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('subnet_group_name')
+      end
+
+      it 'omits subnet_group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('subnet_group_name')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -293,6 +621,65 @@ RSpec.describe Pangea::Resources::AWSElasticacheCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes transit_encryption_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('opt', required_attrs.merge(transit_encryption_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'opt')
+        expect(config).to have_key('transit_encryption_enabled')
+      end
+
+      it 'omits transit_encryption_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_elasticache_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_elasticache_cluster', 'minimal')
+        expect(config).not_to have_key('transit_encryption_enabled')
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts apply_immediately=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(apply_immediately: val)
+          synth.aws_elasticache_cluster("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_elasticache_cluster', "bool_#{val}")
+          expect(config['apply_immediately']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts transit_encryption_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(transit_encryption_enabled: val)
+          synth.aws_elasticache_cluster("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_elasticache_cluster', "bool_#{val}")
+          expect(config['transit_encryption_enabled']).to eq(val)
+        end
       end
     end
 
@@ -338,8 +725,8 @@ RSpec.describe Pangea::Resources::AWSElasticacheCluster do
     resource_type: :aws_elasticache_cluster,
     method: :aws_elasticache_cluster,
     required_attrs: { cluster_id: 'test-value' },
-    expected_outputs: [:id, :apply_immediately, :arn, :availability_zone, :az_mode, :cache_nodes, :cluster_address, :configuration_endpoint, :engine, :engine_version, :engine_version_actual, :ip_discovery, :maintenance_window, :network_type, :node_type, :num_cache_nodes, :parameter_group_name, :port, :preferred_outpost_arn, :replication_group_id, :security_group_ids, :snapshot_window, :subnet_group_name, :tags_all, :transit_encryption_enabled],
+    expected_outputs: [:id, :apply_immediately, :arn, :availability_zone, :az_mode, :cache_nodes, :cluster_address, :configuration_endpoint, :engine, :engine_version, :engine_version_actual, :ip_discovery, :maintenance_window, :network_type, :node_type, :num_cache_nodes, :parameter_group_name, :port, :preferred_outpost_arn, :region, :replication_group_id, :security_group_ids, :snapshot_window, :subnet_group_name, :tags_all, :transit_encryption_enabled],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:apply_immediately, :transit_encryption_enabled]
 end

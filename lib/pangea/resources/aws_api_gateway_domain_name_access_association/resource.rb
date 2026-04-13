@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayDomainNameAccessAssociationAttributes,
       outputs: { id: :id },
       map: [:access_association_source, :access_association_source_type, :domain_name_arn],
-      map_present: [:tags]
+      map_present: [:region, :tags]
   end
   module AWS
     include AWSApiGatewayDomainNameAccessAssociation

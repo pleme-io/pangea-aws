@@ -40,6 +40,8 @@ RSpec.describe Pangea::Resources::AWSOsisPipeline do
         expect(ref.id).to eq("${aws_osis_pipeline.test.id}")
         expect(ref.ingest_endpoint_urls).to eq("${aws_osis_pipeline.test.ingest_endpoint_urls}")
         expect(ref.pipeline_arn).to eq("${aws_osis_pipeline.test.pipeline_arn}")
+        expect(ref.pipeline_role_arn).to eq("${aws_osis_pipeline.test.pipeline_role_arn}")
+        expect(ref.region).to eq("${aws_osis_pipeline.test.region}")
         expect(ref.tags_all).to eq("${aws_osis_pipeline.test.tags_all}")
       end
     end
@@ -54,12 +56,14 @@ RSpec.describe Pangea::Resources::AWSOsisPipeline do
         config = validate_resource_structure(result, 'aws_osis_pipeline', 'test')
         expect(config).not_to have_key('ingest_endpoint_urls')
         expect(config).not_to have_key('pipeline_arn')
+        expect(config).not_to have_key('pipeline_role_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ buffer_options: [{ 'key1' => 'val1' }], encryption_at_rest_options: [{ 'key1' => 'val1' }], log_publishing_options: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, vpc_options: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ buffer_options: [{ 'key1' => 'val1' }], encryption_at_rest_options: [{ 'key1' => 'val1' }], log_publishing_options: [{ 'key1' => 'val1' }], pipeline_role_arn: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, vpc_options: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +75,8 @@ RSpec.describe Pangea::Resources::AWSOsisPipeline do
         expect(config).to have_key('buffer_options')
         expect(config).to have_key('encryption_at_rest_options')
         expect(config).to have_key('log_publishing_options')
+        expect(config).to have_key('pipeline_role_arn')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
         expect(config).to have_key('vpc_options')
       end
@@ -127,6 +133,40 @@ RSpec.describe Pangea::Resources::AWSOsisPipeline do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_osis_pipeline', 'minimal')
         expect(config).not_to have_key('log_publishing_options')
+      end
+      it 'includes pipeline_role_arn when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_osis_pipeline('opt', required_attrs.merge(pipeline_role_arn: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_osis_pipeline', 'opt')
+        expect(config).to have_key('pipeline_role_arn')
+      end
+
+      it 'omits pipeline_role_arn when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_osis_pipeline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_osis_pipeline', 'minimal')
+        expect(config).not_to have_key('pipeline_role_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_osis_pipeline('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_osis_pipeline', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_osis_pipeline('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_osis_pipeline', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -209,7 +249,7 @@ RSpec.describe Pangea::Resources::AWSOsisPipeline do
     resource_type: :aws_osis_pipeline,
     method: :aws_osis_pipeline,
     required_attrs: { max_units: 3.14, min_units: 3.14, pipeline_configuration_body: 'test-value', pipeline_name: 'test-value' },
-    expected_outputs: [:id, :ingest_endpoint_urls, :pipeline_arn, :tags_all],
+    expected_outputs: [:id, :ingest_endpoint_urls, :pipeline_arn, :pipeline_role_arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

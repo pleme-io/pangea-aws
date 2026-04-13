@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerAutoScalingConfigurationVersion do
         expect(ref.has_associated_service).to eq("${aws_apprunner_auto_scaling_configuration_version.test.has_associated_service}")
         expect(ref.is_default).to eq("${aws_apprunner_auto_scaling_configuration_version.test.is_default}")
         expect(ref.latest).to eq("${aws_apprunner_auto_scaling_configuration_version.test.latest}")
+        expect(ref.region).to eq("${aws_apprunner_auto_scaling_configuration_version.test.region}")
         expect(ref.status).to eq("${aws_apprunner_auto_scaling_configuration_version.test.status}")
         expect(ref.tags_all).to eq("${aws_apprunner_auto_scaling_configuration_version.test.tags_all}")
       end
@@ -61,13 +62,14 @@ RSpec.describe Pangea::Resources::AWSApprunnerAutoScalingConfigurationVersion do
         expect(config).not_to have_key('has_associated_service')
         expect(config).not_to have_key('is_default')
         expect(config).not_to have_key('latest')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ max_concurrency: 3.14, max_size: 3.14, min_size: 3.14, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ max_concurrency: 3.14, max_size: 3.14, min_size: 3.14, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,7 +81,9 @@ RSpec.describe Pangea::Resources::AWSApprunnerAutoScalingConfigurationVersion do
         expect(config).to have_key('max_concurrency')
         expect(config).to have_key('max_size')
         expect(config).to have_key('min_size')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -135,6 +139,23 @@ RSpec.describe Pangea::Resources::AWSApprunnerAutoScalingConfigurationVersion do
         config = validate_resource_structure(result, 'aws_apprunner_auto_scaling_configuration_version', 'minimal')
         expect(config).not_to have_key('min_size')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_auto_scaling_configuration_version('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_auto_scaling_configuration_version', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_auto_scaling_configuration_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_auto_scaling_configuration_version', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -151,6 +172,23 @@ RSpec.describe Pangea::Resources::AWSApprunnerAutoScalingConfigurationVersion do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_apprunner_auto_scaling_configuration_version', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_auto_scaling_configuration_version('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_auto_scaling_configuration_version', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_apprunner_auto_scaling_configuration_version('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_apprunner_auto_scaling_configuration_version', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -196,7 +234,7 @@ RSpec.describe Pangea::Resources::AWSApprunnerAutoScalingConfigurationVersion do
     resource_type: :aws_apprunner_auto_scaling_configuration_version,
     method: :aws_apprunner_auto_scaling_configuration_version,
     required_attrs: { auto_scaling_configuration_name: 'test-value' },
-    expected_outputs: [:id, :arn, :auto_scaling_configuration_revision, :has_associated_service, :is_default, :latest, :status, :tags_all],
+    expected_outputs: [:id, :arn, :auto_scaling_configuration_revision, :has_associated_service, :is_default, :latest, :region, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

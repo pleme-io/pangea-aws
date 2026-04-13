@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSagemakerDeviceFleet do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { device_fleet_name: 'test-value', output_config: [{ 'key1' => 'val1' }], role_arn: 'test-value' } }
+  let(:required_attrs) { { device_fleet_name: 'test-value', output_config: { 'key1' => 'val1' }, role_arn: 'test-value' } }
 
   describe ':aws_sagemaker_device_fleet' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerDeviceFleet do
         expect(ref.id).to eq("${aws_sagemaker_device_fleet.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_device_fleet.test.arn}")
         expect(ref.iot_role_alias).to eq("${aws_sagemaker_device_fleet.test.iot_role_alias}")
+        expect(ref.region).to eq("${aws_sagemaker_device_fleet.test.region}")
         expect(ref.tags_all).to eq("${aws_sagemaker_device_fleet.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSSagemakerDeviceFleet do
         config = validate_resource_structure(result, 'aws_sagemaker_device_fleet', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('iot_role_alias')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', enable_iot_role_alias: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', enable_iot_role_alias: true, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,7 +72,9 @@ RSpec.describe Pangea::Resources::AWSSagemakerDeviceFleet do
         config = validate_resource_structure(result, 'aws_sagemaker_device_fleet', 'full')
         expect(config).to have_key('description')
         expect(config).to have_key('enable_iot_role_alias')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -109,6 +113,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerDeviceFleet do
         config = validate_resource_structure(result, 'aws_sagemaker_device_fleet', 'minimal')
         expect(config).not_to have_key('enable_iot_role_alias')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_device_fleet('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_device_fleet', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_device_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_device_fleet', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -125,6 +146,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerDeviceFleet do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_device_fleet', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_device_fleet('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_device_fleet', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_device_fleet('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_device_fleet', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -151,7 +189,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerDeviceFleet do
 
         config = validate_resource_structure(result, 'aws_sagemaker_device_fleet', 'typed')
         expect(config['device_fleet_name']).to be_a(String)
-        expect(config['output_config']).to be_a(Array)
+        expect(config['output_config']).to be_a(Hash)
         expect(config['role_arn']).to be_a(String)
       end
     end
@@ -185,8 +223,8 @@ RSpec.describe Pangea::Resources::AWSSagemakerDeviceFleet do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_sagemaker_device_fleet,
     method: :aws_sagemaker_device_fleet,
-    required_attrs: { device_fleet_name: 'test-value', output_config: [{ 'key1' => 'val1' }], role_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :iot_role_alias, :tags_all],
+    required_attrs: { device_fleet_name: 'test-value', output_config: { 'key1' => 'val1' }, role_arn: 'test-value' },
+    expected_outputs: [:id, :arn, :iot_role_alias, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enable_iot_role_alias]

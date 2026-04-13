@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSIvsRecordingConfiguration do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { destination_configuration: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { destination_configuration: { 'key1' => 'val1' } } }
 
   describe ':aws_ivs_recording_configuration' do
     context 'with required attributes only' do
@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSIvsRecordingConfiguration do
         expect(ref.arn).to eq("${aws_ivs_recording_configuration.test.arn}")
         expect(ref.name).to eq("${aws_ivs_recording_configuration.test.name}")
         expect(ref.recording_reconnect_window_seconds).to eq("${aws_ivs_recording_configuration.test.recording_reconnect_window_seconds}")
+        expect(ref.region).to eq("${aws_ivs_recording_configuration.test.region}")
         expect(ref.state).to eq("${aws_ivs_recording_configuration.test.state}")
         expect(ref.tags_all).to eq("${aws_ivs_recording_configuration.test.tags_all}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSIvsRecordingConfiguration do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('recording_reconnect_window_seconds')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('state')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' }, thumbnail_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ name: 'test-value', recording_reconnect_window_seconds: 3.14, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, thumbnail_configuration: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,12 +74,67 @@ RSpec.describe Pangea::Resources::AWSIvsRecordingConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ivs_recording_configuration', 'full')
+        expect(config).to have_key('name')
+        expect(config).to have_key('recording_reconnect_window_seconds')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('thumbnail_configuration')
       end
     end
 
     context 'optional attributes' do
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_recording_configuration('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_recording_configuration', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_recording_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_recording_configuration', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes recording_reconnect_window_seconds when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_recording_configuration('opt', required_attrs.merge(recording_reconnect_window_seconds: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_recording_configuration', 'opt')
+        expect(config).to have_key('recording_reconnect_window_seconds')
+      end
+
+      it 'omits recording_reconnect_window_seconds when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_recording_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_recording_configuration', 'minimal')
+        expect(config).not_to have_key('recording_reconnect_window_seconds')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_recording_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_recording_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_recording_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_recording_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -95,10 +152,27 @@ RSpec.describe Pangea::Resources::AWSIvsRecordingConfiguration do
         config = validate_resource_structure(result, 'aws_ivs_recording_configuration', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_recording_configuration('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_recording_configuration', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ivs_recording_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ivs_recording_configuration', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes thumbnail_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ivs_recording_configuration('opt', required_attrs.merge(thumbnail_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_ivs_recording_configuration('opt', required_attrs.merge(thumbnail_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ivs_recording_configuration', 'opt')
         expect(config).to have_key('thumbnail_configuration')
@@ -122,7 +196,7 @@ RSpec.describe Pangea::Resources::AWSIvsRecordingConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ivs_recording_configuration', 'typed')
-        expect(config['destination_configuration']).to be_a(Array)
+        expect(config['destination_configuration']).to be_a(Hash)
       end
     end
 
@@ -155,8 +229,8 @@ RSpec.describe Pangea::Resources::AWSIvsRecordingConfiguration do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_ivs_recording_configuration,
     method: :aws_ivs_recording_configuration,
-    required_attrs: { destination_configuration: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :name, :recording_reconnect_window_seconds, :state, :tags_all],
+    required_attrs: { destination_configuration: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :name, :recording_reconnect_window_seconds, :region, :state, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ImagebuilderDistributionConfigurationAttributes,
       outputs: { id: :id },
       map: [:distribution, :name],
-      map_present: [:description, :tags, :tags_all]
+      map_present: [:description, :region, :tags, :tags_all]
   end
   module AWS
     include AWSImagebuilderDistributionConfiguration

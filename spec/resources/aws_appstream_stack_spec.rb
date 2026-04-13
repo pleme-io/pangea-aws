@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSAppstreamStack do
         expect(ref.embed_host_domains).to eq("${aws_appstream_stack.test.embed_host_domains}")
         expect(ref.feedback_url).to eq("${aws_appstream_stack.test.feedback_url}")
         expect(ref.redirect_url).to eq("${aws_appstream_stack.test.redirect_url}")
+        expect(ref.region).to eq("${aws_appstream_stack.test.region}")
         expect(ref.tags_all).to eq("${aws_appstream_stack.test.tags_all}")
       end
     end
@@ -60,12 +61,13 @@ RSpec.describe Pangea::Resources::AWSAppstreamStack do
         expect(config).not_to have_key('embed_host_domains')
         expect(config).not_to have_key('feedback_url')
         expect(config).not_to have_key('redirect_url')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_endpoints: [{ 'key1' => 'val1' }], application_settings: [{ 'key1' => 'val1' }], description: 'test-value', display_name: 'test-value', storage_connectors: [{ 'key1' => 'val1' }], streaming_experience_settings: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, user_settings: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ access_endpoints: [{ 'key1' => 'val1' }], application_settings: { 'key1' => 'val1' }, description: 'test-value', display_name: 'test-value', embed_host_domains: ['test-value'], feedback_url: 'test-value', redirect_url: 'test-value', region: 'test-value', storage_connectors: [{ 'key1' => 'val1' }], streaming_experience_settings: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, user_settings: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -78,9 +80,14 @@ RSpec.describe Pangea::Resources::AWSAppstreamStack do
         expect(config).to have_key('application_settings')
         expect(config).to have_key('description')
         expect(config).to have_key('display_name')
+        expect(config).to have_key('embed_host_domains')
+        expect(config).to have_key('feedback_url')
+        expect(config).to have_key('redirect_url')
+        expect(config).to have_key('region')
         expect(config).to have_key('storage_connectors')
         expect(config).to have_key('streaming_experience_settings')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('user_settings')
       end
     end
@@ -106,7 +113,7 @@ RSpec.describe Pangea::Resources::AWSAppstreamStack do
       it 'includes application_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appstream_stack('opt', required_attrs.merge(application_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_appstream_stack('opt', required_attrs.merge(application_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appstream_stack', 'opt')
         expect(config).to have_key('application_settings')
@@ -154,6 +161,74 @@ RSpec.describe Pangea::Resources::AWSAppstreamStack do
         config = validate_resource_structure(result, 'aws_appstream_stack', 'minimal')
         expect(config).not_to have_key('display_name')
       end
+      it 'includes embed_host_domains when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_stack('opt', required_attrs.merge(embed_host_domains: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_stack', 'opt')
+        expect(config).to have_key('embed_host_domains')
+      end
+
+      it 'omits embed_host_domains when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_stack', 'minimal')
+        expect(config).not_to have_key('embed_host_domains')
+      end
+      it 'includes feedback_url when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_stack('opt', required_attrs.merge(feedback_url: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_stack', 'opt')
+        expect(config).to have_key('feedback_url')
+      end
+
+      it 'omits feedback_url when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_stack', 'minimal')
+        expect(config).not_to have_key('feedback_url')
+      end
+      it 'includes redirect_url when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_stack('opt', required_attrs.merge(redirect_url: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_stack', 'opt')
+        expect(config).to have_key('redirect_url')
+      end
+
+      it 'omits redirect_url when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_stack', 'minimal')
+        expect(config).not_to have_key('redirect_url')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_stack('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_stack', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_stack', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes storage_connectors when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -174,7 +249,7 @@ RSpec.describe Pangea::Resources::AWSAppstreamStack do
       it 'includes streaming_experience_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_appstream_stack('opt', required_attrs.merge(streaming_experience_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_appstream_stack('opt', required_attrs.merge(streaming_experience_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appstream_stack', 'opt')
         expect(config).to have_key('streaming_experience_settings')
@@ -204,6 +279,23 @@ RSpec.describe Pangea::Resources::AWSAppstreamStack do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appstream_stack', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_stack('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_stack', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appstream_stack('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appstream_stack', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes user_settings when provided' do
         synth = create_synthesizer
@@ -266,7 +358,7 @@ RSpec.describe Pangea::Resources::AWSAppstreamStack do
     resource_type: :aws_appstream_stack,
     method: :aws_appstream_stack,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :created_time, :embed_host_domains, :feedback_url, :redirect_url, :tags_all],
+    expected_outputs: [:id, :arn, :created_time, :embed_host_domains, :feedback_url, :redirect_url, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

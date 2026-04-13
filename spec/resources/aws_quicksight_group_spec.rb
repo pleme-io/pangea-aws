@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightGroup do
         expect(ref.id).to eq("${aws_quicksight_group.test.id}")
         expect(ref.arn).to eq("${aws_quicksight_group.test.arn}")
         expect(ref.aws_account_id).to eq("${aws_quicksight_group.test.aws_account_id}")
+        expect(ref.region).to eq("${aws_quicksight_group.test.region}")
       end
     end
 
@@ -53,11 +54,12 @@ RSpec.describe Pangea::Resources::AWSQuicksightGroup do
         config = validate_resource_structure(result, 'aws_quicksight_group', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('aws_account_id')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', namespace: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ aws_account_id: 'test-value', description: 'test-value', namespace: 'test-value', region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -66,12 +68,31 @@ RSpec.describe Pangea::Resources::AWSQuicksightGroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_quicksight_group', 'full')
+        expect(config).to have_key('aws_account_id')
         expect(config).to have_key('description')
         expect(config).to have_key('namespace')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes aws_account_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_group('opt', required_attrs.merge(aws_account_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_group', 'opt')
+        expect(config).to have_key('aws_account_id')
+      end
+
+      it 'omits aws_account_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_group', 'minimal')
+        expect(config).not_to have_key('aws_account_id')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -105,6 +126,23 @@ RSpec.describe Pangea::Resources::AWSQuicksightGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_quicksight_group', 'minimal')
         expect(config).not_to have_key('namespace')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_quicksight_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_quicksight_group', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -150,7 +188,7 @@ RSpec.describe Pangea::Resources::AWSQuicksightGroup do
     resource_type: :aws_quicksight_group,
     method: :aws_quicksight_group,
     required_attrs: { group_name: 'test-value' },
-    expected_outputs: [:id, :arn, :aws_account_id],
+    expected_outputs: [:id, :arn, :aws_account_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IotProvisioningTemplateAttributes,
       outputs: { id: :id },
       map: [:name, :provisioning_role_arn, :template_body],
-      map_present: [:description, :pre_provisioning_hook, :tags, :tags_all, :type],
+      map_present: [:description, :pre_provisioning_hook, :region, :tags, :tags_all, :type],
       map_bool: [:enabled]
   end
   module AWS

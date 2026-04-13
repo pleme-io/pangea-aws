@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApprunnerVpcConnectorAttributes,
       outputs: { id: :id },
       map: [:security_groups, :subnets, :vpc_connector_name],
-      map_present: [:tags, :tags_all]
+      map_present: [:region, :tags, :tags_all]
   end
   module AWS
     include AWSApprunnerVpcConnector

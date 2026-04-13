@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Kinesisanalyticsv2ApplicationAttributes,
       outputs: { id: :id },
       map: [:name, :runtime_environment, :service_execution_role],
-      map_present: [:application_configuration, :application_mode, :cloudwatch_logging_options, :description, :tags, :tags_all],
+      map_present: [:application_configuration, :application_mode, :cloudwatch_logging_options, :description, :region, :tags, :tags_all],
       map_bool: [:force_stop, :start_application]
   end
   module AWS

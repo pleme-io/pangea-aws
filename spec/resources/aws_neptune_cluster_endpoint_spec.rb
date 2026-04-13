@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSNeptuneClusterEndpoint do
         expect(ref.id).to eq("${aws_neptune_cluster_endpoint.test.id}")
         expect(ref.arn).to eq("${aws_neptune_cluster_endpoint.test.arn}")
         expect(ref.endpoint).to eq("${aws_neptune_cluster_endpoint.test.endpoint}")
+        expect(ref.region).to eq("${aws_neptune_cluster_endpoint.test.region}")
         expect(ref.tags_all).to eq("${aws_neptune_cluster_endpoint.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSNeptuneClusterEndpoint do
         config = validate_resource_structure(result, 'aws_neptune_cluster_endpoint', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('endpoint')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ excluded_members: ['test-value'], static_members: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ excluded_members: ['test-value'], region: 'test-value', static_members: ['test-value'], tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,8 +71,10 @@ RSpec.describe Pangea::Resources::AWSNeptuneClusterEndpoint do
 
         config = validate_resource_structure(result, 'aws_neptune_cluster_endpoint', 'full')
         expect(config).to have_key('excluded_members')
+        expect(config).to have_key('region')
         expect(config).to have_key('static_members')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -91,6 +95,23 @@ RSpec.describe Pangea::Resources::AWSNeptuneClusterEndpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_neptune_cluster_endpoint', 'minimal')
         expect(config).not_to have_key('excluded_members')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster_endpoint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster_endpoint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster_endpoint', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes static_members when provided' do
         synth = create_synthesizer
@@ -125,6 +146,23 @@ RSpec.describe Pangea::Resources::AWSNeptuneClusterEndpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_neptune_cluster_endpoint', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster_endpoint('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster_endpoint', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_cluster_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_cluster_endpoint', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -172,7 +210,7 @@ RSpec.describe Pangea::Resources::AWSNeptuneClusterEndpoint do
     resource_type: :aws_neptune_cluster_endpoint,
     method: :aws_neptune_cluster_endpoint,
     required_attrs: { cluster_endpoint_identifier: 'test-value', cluster_identifier: 'test-value', endpoint_type: 'test-value' },
-    expected_outputs: [:id, :arn, :endpoint, :tags_all],
+    expected_outputs: [:id, :arn, :endpoint, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

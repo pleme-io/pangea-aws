@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSDefaultSecurityGroup do
         expect(ref.name).to eq("${aws_default_security_group.test.name}")
         expect(ref.name_prefix).to eq("${aws_default_security_group.test.name_prefix}")
         expect(ref.owner_id).to eq("${aws_default_security_group.test.owner_id}")
+        expect(ref.region).to eq("${aws_default_security_group.test.region}")
         expect(ref.tags_all).to eq("${aws_default_security_group.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_default_security_group.test.vpc_id}")
       end
@@ -65,13 +66,14 @@ RSpec.describe Pangea::Resources::AWSDefaultSecurityGroup do
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
         expect(config).not_to have_key('owner_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ revoke_rules_on_delete: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ egress: [{ 'key1' => 'val1' }], ingress: [{ 'key1' => 'val1' }], region: 'test-value', revoke_rules_on_delete: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,12 +82,68 @@ RSpec.describe Pangea::Resources::AWSDefaultSecurityGroup do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_default_security_group', 'full')
+        expect(config).to have_key('egress')
+        expect(config).to have_key('ingress')
+        expect(config).to have_key('region')
         expect(config).to have_key('revoke_rules_on_delete')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('vpc_id')
       end
     end
 
     context 'optional attributes' do
+      it 'includes egress when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_security_group('opt', required_attrs.merge(egress: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_security_group', 'opt')
+        expect(config).to have_key('egress')
+      end
+
+      it 'omits egress when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_security_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_security_group', 'minimal')
+        expect(config).not_to have_key('egress')
+      end
+      it 'includes ingress when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_security_group('opt', required_attrs.merge(ingress: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_security_group', 'opt')
+        expect(config).to have_key('ingress')
+      end
+
+      it 'omits ingress when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_security_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_security_group', 'minimal')
+        expect(config).not_to have_key('ingress')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_security_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_security_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_security_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_security_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes revoke_rules_on_delete when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -119,6 +177,40 @@ RSpec.describe Pangea::Resources::AWSDefaultSecurityGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_default_security_group', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_security_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_security_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_security_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_security_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes vpc_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_security_group('opt', required_attrs.merge(vpc_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_security_group', 'opt')
+        expect(config).to have_key('vpc_id')
+      end
+
+      it 'omits vpc_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_default_security_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_default_security_group', 'minimal')
+        expect(config).not_to have_key('vpc_id')
       end
     end
 
@@ -177,7 +269,7 @@ RSpec.describe Pangea::Resources::AWSDefaultSecurityGroup do
     resource_type: :aws_default_security_group,
     method: :aws_default_security_group,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :description, :egress, :ingress, :name, :name_prefix, :owner_id, :tags_all, :vpc_id],
+    expected_outputs: [:id, :arn, :description, :egress, :ingress, :name, :name_prefix, :owner_id, :region, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:revoke_rules_on_delete]

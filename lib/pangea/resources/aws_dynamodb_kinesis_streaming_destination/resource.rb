@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DynamodbKinesisStreamingDestinationAttributes,
       outputs: { id: :id },
       map: [:stream_arn, :table_name],
-      map_present: [:approximate_creation_date_time_precision]
+      map_present: [:approximate_creation_date_time_precision, :region]
   end
   module AWS
     include AWSDynamodbKinesisStreamingDestination

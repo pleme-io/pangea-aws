@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::VpcEndpointPrivateDnsAttributes,
       outputs: { id: :id },
       map: [:vpc_endpoint_id],
+      map_present: [:region],
       map_bool: [:private_dns_enabled]
   end
   module AWS

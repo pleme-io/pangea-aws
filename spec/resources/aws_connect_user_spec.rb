@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSConnectUser do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { instance_id: 'test-value', name: 'test-value', phone_config: [{ 'key1' => 'val1' }], routing_profile_id: 'test-value', security_profile_ids: ['test-value'] } }
+  let(:required_attrs) { { instance_id: 'test-value', name: 'test-value', phone_config: { 'key1' => 'val1' }, routing_profile_id: 'test-value', security_profile_ids: ['test-value'] } }
 
   describe ':aws_connect_user' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSConnectUser do
         expect(ref.id).to eq("${aws_connect_user.test.id}")
         expect(ref.arn).to eq("${aws_connect_user.test.arn}")
         expect(ref.directory_user_id).to eq("${aws_connect_user.test.directory_user_id}")
+        expect(ref.region).to eq("${aws_connect_user.test.region}")
         expect(ref.tags_all).to eq("${aws_connect_user.test.tags_all}")
         expect(ref.user_id).to eq("${aws_connect_user.test.user_id}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSConnectUser do
         config = validate_resource_structure(result, 'aws_connect_user', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('directory_user_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('user_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ hierarchy_group_id: 'test-value', identity_info: [{ 'key1' => 'val1' }], password: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ directory_user_id: 'test-value', hierarchy_group_id: 'test-value', identity_info: { 'key1' => 'val1' }, password: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,14 +72,34 @@ RSpec.describe Pangea::Resources::AWSConnectUser do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_connect_user', 'full')
+        expect(config).to have_key('directory_user_id')
         expect(config).to have_key('hierarchy_group_id')
         expect(config).to have_key('identity_info')
         expect(config).to have_key('password')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes directory_user_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_user('opt', required_attrs.merge(directory_user_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_user', 'opt')
+        expect(config).to have_key('directory_user_id')
+      end
+
+      it 'omits directory_user_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_user('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_user', 'minimal')
+        expect(config).not_to have_key('directory_user_id')
+      end
       it 'includes hierarchy_group_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -98,7 +120,7 @@ RSpec.describe Pangea::Resources::AWSConnectUser do
       it 'includes identity_info when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_connect_user('opt', required_attrs.merge(identity_info: [{ 'key1' => 'val1' }]))
+        synth.aws_connect_user('opt', required_attrs.merge(identity_info: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_connect_user', 'opt')
         expect(config).to have_key('identity_info')
@@ -129,6 +151,23 @@ RSpec.describe Pangea::Resources::AWSConnectUser do
         config = validate_resource_structure(result, 'aws_connect_user', 'minimal')
         expect(config).not_to have_key('password')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_user('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_user', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_user('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_user', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -145,6 +184,23 @@ RSpec.describe Pangea::Resources::AWSConnectUser do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_connect_user', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_user('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_user', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_user('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_user', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -165,7 +221,7 @@ RSpec.describe Pangea::Resources::AWSConnectUser do
         config = validate_resource_structure(result, 'aws_connect_user', 'typed')
         expect(config['instance_id']).to be_a(String)
         expect(config['name']).to be_a(String)
-        expect(config['phone_config']).to be_a(Array)
+        expect(config['phone_config']).to be_a(Hash)
         expect(config['routing_profile_id']).to be_a(String)
         expect(config['security_profile_ids']).to be_a(Array)
       end
@@ -200,8 +256,8 @@ RSpec.describe Pangea::Resources::AWSConnectUser do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_connect_user,
     method: :aws_connect_user,
-    required_attrs: { instance_id: 'test-value', name: 'test-value', phone_config: [{ 'key1' => 'val1' }], routing_profile_id: 'test-value', security_profile_ids: ['test-value'] },
-    expected_outputs: [:id, :arn, :directory_user_id, :tags_all, :user_id],
+    required_attrs: { instance_id: 'test-value', name: 'test-value', phone_config: { 'key1' => 'val1' }, routing_profile_id: 'test-value', security_profile_ids: ['test-value'] },
+    expected_outputs: [:id, :arn, :directory_user_id, :region, :tags_all, :user_id],
     sensitive_fields: [:password],
     immutable_fields: [],
     boolean_fields: []

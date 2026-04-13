@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ApiGatewayGatewayResponseAttributes,
       outputs: { id: :id },
       map: [:response_type, :rest_api_id],
-      map_present: [:response_parameters, :response_templates, :status_code]
+      map_present: [:region, :response_parameters, :response_templates, :status_code]
   end
   module AWS
     include AWSApiGatewayGatewayResponse

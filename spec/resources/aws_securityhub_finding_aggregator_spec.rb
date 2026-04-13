@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSSecurityhubFindingAggregator do
         ref = synth.aws_securityhub_finding_aggregator('test', required_attrs)
 
         expect(ref.id).to eq("${aws_securityhub_finding_aggregator.test.id}")
+        expect(ref.region).to eq("${aws_securityhub_finding_aggregator.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_finding_aggregator('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_securityhub_finding_aggregator', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ specified_regions: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', specified_regions: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -51,11 +64,29 @@ RSpec.describe Pangea::Resources::AWSSecurityhubFindingAggregator do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_securityhub_finding_aggregator', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('specified_regions')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_finding_aggregator('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_finding_aggregator', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_securityhub_finding_aggregator('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_securityhub_finding_aggregator', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes specified_regions when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -117,7 +148,7 @@ RSpec.describe Pangea::Resources::AWSSecurityhubFindingAggregator do
     resource_type: :aws_securityhub_finding_aggregator,
     method: :aws_securityhub_finding_aggregator,
     required_attrs: { linking_mode: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

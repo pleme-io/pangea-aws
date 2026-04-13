@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSCodebuildProject do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { artifacts: [{ 'key1' => 'val1' }], environment: [{ 'key1' => 'val1' }], name: 'test-value', service_role: 'test-value', source: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { artifacts: { 'key1' => 'val1' }, environment: { 'key1' => 'val1' }, name: 'test-value', service_role: 'test-value', source: { 'key1' => 'val1' } } }
 
   describe ':aws_codebuild_project' do
     context 'with required attributes only' do
@@ -39,10 +39,12 @@ RSpec.describe Pangea::Resources::AWSCodebuildProject do
 
         expect(ref.id).to eq("${aws_codebuild_project.test.id}")
         expect(ref.arn).to eq("${aws_codebuild_project.test.arn}")
+        expect(ref.auto_retry_limit).to eq("${aws_codebuild_project.test.auto_retry_limit}")
         expect(ref.badge_url).to eq("${aws_codebuild_project.test.badge_url}")
         expect(ref.description).to eq("${aws_codebuild_project.test.description}")
         expect(ref.encryption_key).to eq("${aws_codebuild_project.test.encryption_key}")
         expect(ref.public_project_alias).to eq("${aws_codebuild_project.test.public_project_alias}")
+        expect(ref.region).to eq("${aws_codebuild_project.test.region}")
         expect(ref.tags_all).to eq("${aws_codebuild_project.test.tags_all}")
       end
     end
@@ -56,16 +58,18 @@ RSpec.describe Pangea::Resources::AWSCodebuildProject do
 
         config = validate_resource_structure(result, 'aws_codebuild_project', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('auto_retry_limit')
         expect(config).not_to have_key('badge_url')
         expect(config).not_to have_key('description')
         expect(config).not_to have_key('encryption_key')
         expect(config).not_to have_key('public_project_alias')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ badge_enabled: true, build_batch_config: [{ 'key1' => 'val1' }], build_timeout: 3.14, cache: [{ 'key1' => 'val1' }], concurrent_build_limit: 3.14, file_system_locations: [{ 'key1' => 'val1' }], logs_config: [{ 'key1' => 'val1' }], project_visibility: 'test-value', queued_timeout: 3.14, resource_access_role: 'test-value', secondary_artifacts: [{ 'key1' => 'val1' }], secondary_source_version: [{ 'key1' => 'val1' }], secondary_sources: [{ 'key1' => 'val1' }], source_version: 'test-value', tags: { 'key1' => 'val1' }, vpc_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ auto_retry_limit: 3.14, badge_enabled: true, build_batch_config: { 'key1' => 'val1' }, build_timeout: 3.14, cache: { 'key1' => 'val1' }, concurrent_build_limit: 3.14, description: 'test-value', encryption_key: 'test-value', file_system_locations: [{ 'key1' => 'val1' }], logs_config: { 'key1' => 'val1' }, project_visibility: 'test-value', queued_timeout: 3.14, region: 'test-value', resource_access_role: 'test-value', secondary_artifacts: [{ 'key1' => 'val1' }], secondary_source_version: [{ 'key1' => 'val1' }], secondary_sources: [{ 'key1' => 'val1' }], source_version: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,26 +78,48 @@ RSpec.describe Pangea::Resources::AWSCodebuildProject do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_codebuild_project', 'full')
+        expect(config).to have_key('auto_retry_limit')
         expect(config).to have_key('badge_enabled')
         expect(config).to have_key('build_batch_config')
         expect(config).to have_key('build_timeout')
         expect(config).to have_key('cache')
         expect(config).to have_key('concurrent_build_limit')
+        expect(config).to have_key('description')
+        expect(config).to have_key('encryption_key')
         expect(config).to have_key('file_system_locations')
         expect(config).to have_key('logs_config')
         expect(config).to have_key('project_visibility')
         expect(config).to have_key('queued_timeout')
+        expect(config).to have_key('region')
         expect(config).to have_key('resource_access_role')
         expect(config).to have_key('secondary_artifacts')
         expect(config).to have_key('secondary_source_version')
         expect(config).to have_key('secondary_sources')
         expect(config).to have_key('source_version')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc_config')
       end
     end
 
     context 'optional attributes' do
+      it 'includes auto_retry_limit when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_project('opt', required_attrs.merge(auto_retry_limit: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_project', 'opt')
+        expect(config).to have_key('auto_retry_limit')
+      end
+
+      it 'omits auto_retry_limit when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_project('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_project', 'minimal')
+        expect(config).not_to have_key('auto_retry_limit')
+      end
       it 'includes badge_enabled when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -114,7 +140,7 @@ RSpec.describe Pangea::Resources::AWSCodebuildProject do
       it 'includes build_batch_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codebuild_project('opt', required_attrs.merge(build_batch_config: [{ 'key1' => 'val1' }]))
+        synth.aws_codebuild_project('opt', required_attrs.merge(build_batch_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codebuild_project', 'opt')
         expect(config).to have_key('build_batch_config')
@@ -148,7 +174,7 @@ RSpec.describe Pangea::Resources::AWSCodebuildProject do
       it 'includes cache when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codebuild_project('opt', required_attrs.merge(cache: [{ 'key1' => 'val1' }]))
+        synth.aws_codebuild_project('opt', required_attrs.merge(cache: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codebuild_project', 'opt')
         expect(config).to have_key('cache')
@@ -179,6 +205,40 @@ RSpec.describe Pangea::Resources::AWSCodebuildProject do
         config = validate_resource_structure(result, 'aws_codebuild_project', 'minimal')
         expect(config).not_to have_key('concurrent_build_limit')
       end
+      it 'includes description when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_project('opt', required_attrs.merge(description: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_project', 'opt')
+        expect(config).to have_key('description')
+      end
+
+      it 'omits description when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_project('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_project', 'minimal')
+        expect(config).not_to have_key('description')
+      end
+      it 'includes encryption_key when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_project('opt', required_attrs.merge(encryption_key: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_project', 'opt')
+        expect(config).to have_key('encryption_key')
+      end
+
+      it 'omits encryption_key when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_project('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_project', 'minimal')
+        expect(config).not_to have_key('encryption_key')
+      end
       it 'includes file_system_locations when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -199,7 +259,7 @@ RSpec.describe Pangea::Resources::AWSCodebuildProject do
       it 'includes logs_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codebuild_project('opt', required_attrs.merge(logs_config: [{ 'key1' => 'val1' }]))
+        synth.aws_codebuild_project('opt', required_attrs.merge(logs_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codebuild_project', 'opt')
         expect(config).to have_key('logs_config')
@@ -246,6 +306,23 @@ RSpec.describe Pangea::Resources::AWSCodebuildProject do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codebuild_project', 'minimal')
         expect(config).not_to have_key('queued_timeout')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_project('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_project', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_project('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_project', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes resource_access_role when provided' do
         synth = create_synthesizer
@@ -349,10 +426,27 @@ RSpec.describe Pangea::Resources::AWSCodebuildProject do
         config = validate_resource_structure(result, 'aws_codebuild_project', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_project('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_project', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codebuild_project('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codebuild_project', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes vpc_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_codebuild_project('opt', required_attrs.merge(vpc_config: [{ 'key1' => 'val1' }]))
+        synth.aws_codebuild_project('opt', required_attrs.merge(vpc_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_codebuild_project', 'opt')
         expect(config).to have_key('vpc_config')
@@ -390,11 +484,11 @@ RSpec.describe Pangea::Resources::AWSCodebuildProject do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_codebuild_project', 'typed')
-        expect(config['artifacts']).to be_a(Array)
-        expect(config['environment']).to be_a(Array)
+        expect(config['artifacts']).to be_a(Hash)
+        expect(config['environment']).to be_a(Hash)
         expect(config['name']).to be_a(String)
         expect(config['service_role']).to be_a(String)
-        expect(config['source']).to be_a(Array)
+        expect(config['source']).to be_a(Hash)
       end
     end
 
@@ -427,8 +521,8 @@ RSpec.describe Pangea::Resources::AWSCodebuildProject do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_codebuild_project,
     method: :aws_codebuild_project,
-    required_attrs: { artifacts: [{ 'key1' => 'val1' }], environment: [{ 'key1' => 'val1' }], name: 'test-value', service_role: 'test-value', source: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :badge_url, :description, :encryption_key, :public_project_alias, :tags_all],
+    required_attrs: { artifacts: { 'key1' => 'val1' }, environment: { 'key1' => 'val1' }, name: 'test-value', service_role: 'test-value', source: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :auto_retry_limit, :badge_url, :description, :encryption_key, :public_project_alias, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:badge_enabled]

@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSApiGatewayBasePathMapping do
         ref = synth.aws_api_gateway_base_path_mapping('test', required_attrs)
 
         expect(ref.id).to eq("${aws_api_gateway_base_path_mapping.test.id}")
+        expect(ref.region).to eq("${aws_api_gateway_base_path_mapping.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_base_path_mapping('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_api_gateway_base_path_mapping', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ base_path: 'test-value', domain_name_id: 'test-value', stage_name: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ base_path: 'test-value', domain_name_id: 'test-value', region: 'test-value', stage_name: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -53,6 +66,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayBasePathMapping do
         config = validate_resource_structure(result, 'aws_api_gateway_base_path_mapping', 'full')
         expect(config).to have_key('base_path')
         expect(config).to have_key('domain_name_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('stage_name')
       end
     end
@@ -91,6 +105,23 @@ RSpec.describe Pangea::Resources::AWSApiGatewayBasePathMapping do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_api_gateway_base_path_mapping', 'minimal')
         expect(config).not_to have_key('domain_name_id')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_base_path_mapping('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_base_path_mapping', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_api_gateway_base_path_mapping('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_api_gateway_base_path_mapping', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes stage_name when provided' do
         synth = create_synthesizer
@@ -154,7 +185,7 @@ RSpec.describe Pangea::Resources::AWSApiGatewayBasePathMapping do
     resource_type: :aws_api_gateway_base_path_mapping,
     method: :aws_api_gateway_base_path_mapping,
     required_attrs: { api_id: 'test-value', domain_name: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

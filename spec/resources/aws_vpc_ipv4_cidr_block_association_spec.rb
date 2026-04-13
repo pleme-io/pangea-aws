@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpv4CidrBlockAssociation do
 
         expect(ref.id).to eq("${aws_vpc_ipv4_cidr_block_association.test.id}")
         expect(ref.cidr_block).to eq("${aws_vpc_ipv4_cidr_block_association.test.cidr_block}")
+        expect(ref.region).to eq("${aws_vpc_ipv4_cidr_block_association.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSVpcIpv4CidrBlockAssociation do
 
         config = validate_resource_structure(result, 'aws_vpc_ipv4_cidr_block_association', 'test')
         expect(config).not_to have_key('cidr_block')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ ipv4_ipam_pool_id: 'test-value', ipv4_netmask_length: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ cidr_block: 'test-value', ipv4_ipam_pool_id: 'test-value', ipv4_netmask_length: 3.14, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -64,12 +66,31 @@ RSpec.describe Pangea::Resources::AWSVpcIpv4CidrBlockAssociation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpc_ipv4_cidr_block_association', 'full')
+        expect(config).to have_key('cidr_block')
         expect(config).to have_key('ipv4_ipam_pool_id')
         expect(config).to have_key('ipv4_netmask_length')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes cidr_block when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipv4_cidr_block_association('opt', required_attrs.merge(cidr_block: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipv4_cidr_block_association', 'opt')
+        expect(config).to have_key('cidr_block')
+      end
+
+      it 'omits cidr_block when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipv4_cidr_block_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipv4_cidr_block_association', 'minimal')
+        expect(config).not_to have_key('cidr_block')
+      end
       it 'includes ipv4_ipam_pool_id when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -103,6 +124,23 @@ RSpec.describe Pangea::Resources::AWSVpcIpv4CidrBlockAssociation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_ipv4_cidr_block_association', 'minimal')
         expect(config).not_to have_key('ipv4_netmask_length')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipv4_cidr_block_association('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipv4_cidr_block_association', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipv4_cidr_block_association('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipv4_cidr_block_association', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -148,7 +186,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpv4CidrBlockAssociation do
     resource_type: :aws_vpc_ipv4_cidr_block_association,
     method: :aws_vpc_ipv4_cidr_block_association,
     required_attrs: { vpc_id: 'test-value' },
-    expected_outputs: [:id, :cidr_block],
+    expected_outputs: [:id, :cidr_block, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

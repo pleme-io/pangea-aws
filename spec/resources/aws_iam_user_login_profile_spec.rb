@@ -61,7 +61,7 @@ RSpec.describe Pangea::Resources::AWSIamUserLoginProfile do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ password_length: 3.14, pgp_key: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ password_length: 3.14, password_reset_required: true, pgp_key: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSIamUserLoginProfile do
 
         config = validate_resource_structure(result, 'aws_iam_user_login_profile', 'full')
         expect(config).to have_key('password_length')
+        expect(config).to have_key('password_reset_required')
         expect(config).to have_key('pgp_key')
       end
     end
@@ -92,6 +93,23 @@ RSpec.describe Pangea::Resources::AWSIamUserLoginProfile do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iam_user_login_profile', 'minimal')
         expect(config).not_to have_key('password_length')
+      end
+      it 'includes password_reset_required when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_user_login_profile('opt', required_attrs.merge(password_reset_required: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_user_login_profile', 'opt')
+        expect(config).to have_key('password_reset_required')
+      end
+
+      it 'omits password_reset_required when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iam_user_login_profile('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iam_user_login_profile', 'minimal')
+        expect(config).not_to have_key('password_reset_required')
       end
       it 'includes pgp_key when provided' do
         synth = create_synthesizer
@@ -116,6 +134,20 @@ RSpec.describe Pangea::Resources::AWSIamUserLoginProfile do
       it 'documents sensitive attributes' do
         sensitive_fields = [:password]
         expect(sensitive_fields).to include(:password)
+      end
+    end
+
+    context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts password_reset_required=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(password_reset_required: val)
+          synth.aws_iam_user_login_profile("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_iam_user_login_profile', "bool_#{val}")
+          expect(config['password_reset_required']).to eq(val)
+        end
       end
     end
 
@@ -164,5 +196,5 @@ RSpec.describe Pangea::Resources::AWSIamUserLoginProfile do
     expected_outputs: [:id, :encrypted_password, :key_fingerprint, :password, :password_reset_required],
     sensitive_fields: [:password],
     immutable_fields: [],
-    boolean_fields: []
+    boolean_fields: [:password_reset_required]
 end

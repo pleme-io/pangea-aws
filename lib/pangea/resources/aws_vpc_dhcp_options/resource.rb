@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_vpc_dhcp_options,
       attributes_class: AWS::Types::VpcDhcpOptionsAttributes,
       outputs: { id: :id },
-      map_present: [:domain_name, :domain_name_servers, :ipv6_address_preferred_lease_time, :netbios_name_servers, :netbios_node_type, :ntp_servers, :tags, :tags_all]
+      map_present: [:domain_name, :domain_name_servers, :ipv6_address_preferred_lease_time, :netbios_name_servers, :netbios_node_type, :ntp_servers, :region, :tags, :tags_all]
   end
   module AWS
     include AWSVpcDhcpOptions

@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSDevopsguruNotificationChannel do
         ref = synth.aws_devopsguru_notification_channel('test', required_attrs)
 
         expect(ref.id).to eq("${aws_devopsguru_notification_channel.test.id}")
+        expect(ref.region).to eq("${aws_devopsguru_notification_channel.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devopsguru_notification_channel('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_devopsguru_notification_channel', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ filters: [{ 'key1' => 'val1' }], sns: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ filters: [{ 'key1' => 'val1' }], region: 'test-value', sns: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSDevopsguruNotificationChannel do
 
         config = validate_resource_structure(result, 'aws_devopsguru_notification_channel', 'full')
         expect(config).to have_key('filters')
+        expect(config).to have_key('region')
         expect(config).to have_key('sns')
       end
     end
@@ -73,6 +87,23 @@ RSpec.describe Pangea::Resources::AWSDevopsguruNotificationChannel do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_devopsguru_notification_channel', 'minimal')
         expect(config).not_to have_key('filters')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devopsguru_notification_channel('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_devopsguru_notification_channel', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devopsguru_notification_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_devopsguru_notification_channel', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes sns when provided' do
         synth = create_synthesizer
@@ -134,7 +165,7 @@ RSpec.describe Pangea::Resources::AWSDevopsguruNotificationChannel do
     resource_type: :aws_devopsguru_notification_channel,
     method: :aws_devopsguru_notification_channel,
     required_attrs: {},
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

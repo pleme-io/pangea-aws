@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SagemakerNotebookInstanceAttributes,
       outputs: { id: :id },
       map: [:instance_type, :name, :role_arn],
-      map_present: [:accelerator_types, :additional_code_repositories, :default_code_repository, :direct_internet_access, :instance_metadata_service_configuration, :kms_key_id, :lifecycle_config_name, :platform_identifier, :root_access, :security_groups, :subnet_id, :tags, :tags_all, :volume_size]
+      map_present: [:additional_code_repositories, :default_code_repository, :direct_internet_access, :instance_metadata_service_configuration, :kms_key_id, :lifecycle_config_name, :platform_identifier, :region, :root_access, :security_groups, :subnet_id, :tags, :tags_all, :volume_size]
   end
   module AWS
     include AWSSagemakerNotebookInstance

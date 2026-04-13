@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEmrStudio do
 
         expect(ref.id).to eq("${aws_emr_studio.test.id}")
         expect(ref.arn).to eq("${aws_emr_studio.test.arn}")
+        expect(ref.region).to eq("${aws_emr_studio.test.region}")
         expect(ref.tags_all).to eq("${aws_emr_studio.test.tags_all}")
         expect(ref.url).to eq("${aws_emr_studio.test.url}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSEmrStudio do
 
         config = validate_resource_structure(result, 'aws_emr_studio', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('url')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', encryption_key_arn: 'test-value', idp_auth_url: 'test-value', idp_relay_state_parameter_name: 'test-value', tags: { 'key1' => 'val1' }, user_role: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', encryption_key_arn: 'test-value', idp_auth_url: 'test-value', idp_relay_state_parameter_name: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, user_role: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,7 +74,9 @@ RSpec.describe Pangea::Resources::AWSEmrStudio do
         expect(config).to have_key('encryption_key_arn')
         expect(config).to have_key('idp_auth_url')
         expect(config).to have_key('idp_relay_state_parameter_name')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('user_role')
       end
     end
@@ -146,6 +150,23 @@ RSpec.describe Pangea::Resources::AWSEmrStudio do
         config = validate_resource_structure(result, 'aws_emr_studio', 'minimal')
         expect(config).not_to have_key('idp_relay_state_parameter_name')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_studio('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_studio', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_studio('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_studio', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -162,6 +183,23 @@ RSpec.describe Pangea::Resources::AWSEmrStudio do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_emr_studio', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_studio('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_studio', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_emr_studio('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_emr_studio', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes user_role when provided' do
         synth = create_synthesizer
@@ -231,7 +269,7 @@ RSpec.describe Pangea::Resources::AWSEmrStudio do
     resource_type: :aws_emr_studio,
     method: :aws_emr_studio,
     required_attrs: { auth_mode: 'test-value', default_s3_location: 'test-value', engine_security_group_id: 'test-value', name: 'test-value', service_role: 'test-value', subnet_ids: ['test-value'], vpc_id: 'test-value', workspace_security_group_id: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all, :url],
+    expected_outputs: [:id, :arn, :region, :tags_all, :url],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

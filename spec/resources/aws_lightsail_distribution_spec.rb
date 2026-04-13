@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSLightsailDistribution do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { bundle_id: 'test-value', default_cache_behavior: [{ 'key1' => 'val1' }], name: 'test-value', origin: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { bundle_id: 'test-value', default_cache_behavior: { 'key1' => 'val1' }, name: 'test-value', origin: { 'key1' => 'val1' } } }
 
   describe ':aws_lightsail_distribution' do
     context 'with required attributes only' do
@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSLightsailDistribution do
         expect(ref.domain_name).to eq("${aws_lightsail_distribution.test.domain_name}")
         expect(ref.location).to eq("${aws_lightsail_distribution.test.location}")
         expect(ref.origin_public_dns).to eq("${aws_lightsail_distribution.test.origin_public_dns}")
+        expect(ref.region).to eq("${aws_lightsail_distribution.test.region}")
         expect(ref.resource_type).to eq("${aws_lightsail_distribution.test.resource_type}")
         expect(ref.status).to eq("${aws_lightsail_distribution.test.status}")
         expect(ref.support_code).to eq("${aws_lightsail_distribution.test.support_code}")
@@ -65,6 +66,7 @@ RSpec.describe Pangea::Resources::AWSLightsailDistribution do
         expect(config).not_to have_key('domain_name')
         expect(config).not_to have_key('location')
         expect(config).not_to have_key('origin_public_dns')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_type')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('support_code')
@@ -73,7 +75,7 @@ RSpec.describe Pangea::Resources::AWSLightsailDistribution do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cache_behavior: [{ 'key1' => 'val1' }], cache_behavior_settings: [{ 'key1' => 'val1' }], certificate_name: 'test-value', ip_address_type: 'test-value', is_enabled: true, tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ cache_behavior: [{ 'key1' => 'val1' }], cache_behavior_settings: { 'key1' => 'val1' }, certificate_name: 'test-value', ip_address_type: 'test-value', is_enabled: true, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -87,7 +89,9 @@ RSpec.describe Pangea::Resources::AWSLightsailDistribution do
         expect(config).to have_key('certificate_name')
         expect(config).to have_key('ip_address_type')
         expect(config).to have_key('is_enabled')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -112,7 +116,7 @@ RSpec.describe Pangea::Resources::AWSLightsailDistribution do
       it 'includes cache_behavior_settings when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_lightsail_distribution('opt', required_attrs.merge(cache_behavior_settings: [{ 'key1' => 'val1' }]))
+        synth.aws_lightsail_distribution('opt', required_attrs.merge(cache_behavior_settings: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_distribution', 'opt')
         expect(config).to have_key('cache_behavior_settings')
@@ -177,6 +181,23 @@ RSpec.describe Pangea::Resources::AWSLightsailDistribution do
         config = validate_resource_structure(result, 'aws_lightsail_distribution', 'minimal')
         expect(config).not_to have_key('is_enabled')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_distribution('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_distribution', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_distribution('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_distribution', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -193,6 +214,23 @@ RSpec.describe Pangea::Resources::AWSLightsailDistribution do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_distribution', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_distribution('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_distribution', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_distribution('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_distribution', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -219,9 +257,9 @@ RSpec.describe Pangea::Resources::AWSLightsailDistribution do
 
         config = validate_resource_structure(result, 'aws_lightsail_distribution', 'typed')
         expect(config['bundle_id']).to be_a(String)
-        expect(config['default_cache_behavior']).to be_a(Array)
+        expect(config['default_cache_behavior']).to be_a(Hash)
         expect(config['name']).to be_a(String)
-        expect(config['origin']).to be_a(Array)
+        expect(config['origin']).to be_a(Hash)
       end
     end
 
@@ -254,8 +292,8 @@ RSpec.describe Pangea::Resources::AWSLightsailDistribution do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_lightsail_distribution,
     method: :aws_lightsail_distribution,
-    required_attrs: { bundle_id: 'test-value', default_cache_behavior: [{ 'key1' => 'val1' }], name: 'test-value', origin: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :alternative_domain_names, :arn, :created_at, :domain_name, :location, :origin_public_dns, :resource_type, :status, :support_code, :tags_all],
+    required_attrs: { bundle_id: 'test-value', default_cache_behavior: { 'key1' => 'val1' }, name: 'test-value', origin: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :alternative_domain_names, :arn, :created_at, :domain_name, :location, :origin_public_dns, :region, :resource_type, :status, :support_code, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:is_enabled]

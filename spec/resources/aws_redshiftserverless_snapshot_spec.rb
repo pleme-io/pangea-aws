@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessSnapshot do
         expect(ref.kms_key_id).to eq("${aws_redshiftserverless_snapshot.test.kms_key_id}")
         expect(ref.namespace_arn).to eq("${aws_redshiftserverless_snapshot.test.namespace_arn}")
         expect(ref.owner_account).to eq("${aws_redshiftserverless_snapshot.test.owner_account}")
+        expect(ref.region).to eq("${aws_redshiftserverless_snapshot.test.region}")
       end
     end
 
@@ -63,11 +64,12 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessSnapshot do
         expect(config).not_to have_key('kms_key_id')
         expect(config).not_to have_key('namespace_arn')
         expect(config).not_to have_key('owner_account')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ retention_period: 3.14 }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', retention_period: 3.14 }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,11 +78,29 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessSnapshot do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_redshiftserverless_snapshot', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('retention_period')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_snapshot('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_snapshot', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_snapshot('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_snapshot', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes retention_period when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -143,7 +163,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessSnapshot do
     resource_type: :aws_redshiftserverless_snapshot,
     method: :aws_redshiftserverless_snapshot,
     required_attrs: { namespace_name: 'test-value', snapshot_name: 'test-value' },
-    expected_outputs: [:id, :accounts_with_provisioned_restore_access, :accounts_with_restore_access, :admin_username, :arn, :kms_key_id, :namespace_arn, :owner_account],
+    expected_outputs: [:id, :accounts_with_provisioned_restore_access, :accounts_with_restore_access, :admin_username, :arn, :kms_key_id, :namespace_arn, :owner_account, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

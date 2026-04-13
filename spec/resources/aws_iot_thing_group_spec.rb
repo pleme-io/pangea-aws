@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSIotThingGroup do
         expect(ref.id).to eq("${aws_iot_thing_group.test.id}")
         expect(ref.arn).to eq("${aws_iot_thing_group.test.arn}")
         expect(ref.metadata).to eq("${aws_iot_thing_group.test.metadata}")
+        expect(ref.region).to eq("${aws_iot_thing_group.test.region}")
         expect(ref.tags_all).to eq("${aws_iot_thing_group.test.tags_all}")
         expect(ref.version).to eq("${aws_iot_thing_group.test.version}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSIotThingGroup do
         config = validate_resource_structure(result, 'aws_iot_thing_group', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('metadata')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('version')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ parent_group_name: 'test-value', properties: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ parent_group_name: 'test-value', properties: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,7 +74,9 @@ RSpec.describe Pangea::Resources::AWSIotThingGroup do
         config = validate_resource_structure(result, 'aws_iot_thing_group', 'full')
         expect(config).to have_key('parent_group_name')
         expect(config).to have_key('properties')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -97,7 +101,7 @@ RSpec.describe Pangea::Resources::AWSIotThingGroup do
       it 'includes properties when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_iot_thing_group('opt', required_attrs.merge(properties: [{ 'key1' => 'val1' }]))
+        synth.aws_iot_thing_group('opt', required_attrs.merge(properties: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_thing_group', 'opt')
         expect(config).to have_key('properties')
@@ -110,6 +114,23 @@ RSpec.describe Pangea::Resources::AWSIotThingGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_thing_group', 'minimal')
         expect(config).not_to have_key('properties')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_thing_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_thing_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_thing_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_thing_group', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -127,6 +148,23 @@ RSpec.describe Pangea::Resources::AWSIotThingGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_thing_group', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_thing_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_thing_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_thing_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_thing_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -172,7 +210,7 @@ RSpec.describe Pangea::Resources::AWSIotThingGroup do
     resource_type: :aws_iot_thing_group,
     method: :aws_iot_thing_group,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :metadata, :tags_all, :version],
+    expected_outputs: [:id, :arn, :metadata, :region, :tags_all, :version],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

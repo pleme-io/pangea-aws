@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DevicefarmUploadAttributes,
       outputs: { id: :id },
       map: [:name, :project_arn, :type],
-      map_present: [:content_type]
+      map_present: [:content_type, :region]
   end
   module AWS
     include AWSDevicefarmUpload

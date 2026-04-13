@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSVpclatticeTargetGroupAttachment do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { target: [{ 'key1' => 'val1' }], target_group_identifier: 'test-value' } }
+  let(:required_attrs) { { target: { 'key1' => 'val1' }, target_group_identifier: 'test-value' } }
 
   describe ':aws_vpclattice_target_group_attachment' do
     context 'with required attributes only' do
@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSVpclatticeTargetGroupAttachment do
         ref = synth.aws_vpclattice_target_group_attachment('test', required_attrs)
 
         expect(ref.id).to eq("${aws_vpclattice_target_group_attachment.test.id}")
+        expect(ref.region).to eq("${aws_vpclattice_target_group_attachment.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_target_group_attachment('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_vpclattice_target_group_attachment', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_target_group_attachment('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_vpclattice_target_group_attachment', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_target_group_attachment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_target_group_attachment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpclattice_target_group_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpclattice_target_group_attachment', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -49,7 +96,7 @@ RSpec.describe Pangea::Resources::AWSVpclatticeTargetGroupAttachment do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpclattice_target_group_attachment', 'typed')
-        expect(config['target']).to be_a(Array)
+        expect(config['target']).to be_a(Hash)
         expect(config['target_group_identifier']).to be_a(String)
       end
     end
@@ -83,8 +130,8 @@ RSpec.describe Pangea::Resources::AWSVpclatticeTargetGroupAttachment do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_vpclattice_target_group_attachment,
     method: :aws_vpclattice_target_group_attachment,
-    required_attrs: { target: [{ 'key1' => 'val1' }], target_group_identifier: 'test-value' },
-    expected_outputs: [:id],
+    required_attrs: { target: { 'key1' => 'val1' }, target_group_identifier: 'test-value' },
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

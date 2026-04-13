@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSsoadminAccountAssignment do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { instance_arn: 'test-value', permission_set_arn: 'test-value', principal_id: 'test-value', principal_type: 'test-value', target_id: 'test-value' } }
+  let(:required_attrs) { { instance_arn: 'test-value', permission_set_arn: 'test-value', principal_id: 'test-value', principal_type: 'test-value', target_id: 'test-value', target_type: 'test-value' } }
 
   describe ':aws_ssoadmin_account_assignment' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSSsoadminAccountAssignment do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_ssoadmin_account_assignment', 'test')
-        validate_required_attributes(config, [:instance_arn, :permission_set_arn, :principal_id, :principal_type, :target_id])
+        validate_required_attributes(config, [:instance_arn, :permission_set_arn, :principal_id, :principal_type, :target_id, :target_type])
       end
 
       it 'returns a ResourceReference' do
@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSSsoadminAccountAssignment do
         ref = synth.aws_ssoadmin_account_assignment('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ssoadmin_account_assignment.test.id}")
+        expect(ref.region).to eq("${aws_ssoadmin_account_assignment.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_account_assignment('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ssoadmin_account_assignment', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ target_type: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -51,27 +64,27 @@ RSpec.describe Pangea::Resources::AWSSsoadminAccountAssignment do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ssoadmin_account_assignment', 'full')
-        expect(config).to have_key('target_type')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
-      it 'includes target_type when provided' do
+      it 'includes region when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ssoadmin_account_assignment('opt', required_attrs.merge(target_type: 'test-value'))
+        synth.aws_ssoadmin_account_assignment('opt', required_attrs.merge(region: 'test-value'))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssoadmin_account_assignment', 'opt')
-        expect(config).to have_key('target_type')
+        expect(config).to have_key('region')
       end
 
-      it 'omits target_type when not provided' do
+      it 'omits region when not provided' do
         synth = create_synthesizer
         synth.extend(described_class)
         synth.aws_ssoadmin_account_assignment('minimal', required_attrs)
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssoadmin_account_assignment', 'minimal')
-        expect(config).not_to have_key('target_type')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -88,6 +101,7 @@ RSpec.describe Pangea::Resources::AWSSsoadminAccountAssignment do
         expect(config['principal_id']).to be_a(String)
         expect(config['principal_type']).to be_a(String)
         expect(config['target_id']).to be_a(String)
+        expect(config['target_type']).to be_a(String)
       end
     end
 
@@ -120,8 +134,8 @@ RSpec.describe Pangea::Resources::AWSSsoadminAccountAssignment do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_ssoadmin_account_assignment,
     method: :aws_ssoadmin_account_assignment,
-    required_attrs: { instance_arn: 'test-value', permission_set_arn: 'test-value', principal_id: 'test-value', principal_type: 'test-value', target_id: 'test-value' },
-    expected_outputs: [:id],
+    required_attrs: { instance_arn: 'test-value', permission_set_arn: 'test-value', principal_id: 'test-value', principal_type: 'test-value', target_id: 'test-value', target_type: 'test-value' },
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

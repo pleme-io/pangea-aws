@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentAlias do
         expect(ref.id).to eq("${aws_bedrockagent_agent_alias.test.id}")
         expect(ref.agent_alias_arn).to eq("${aws_bedrockagent_agent_alias.test.agent_alias_arn}")
         expect(ref.agent_alias_id).to eq("${aws_bedrockagent_agent_alias.test.agent_alias_id}")
+        expect(ref.region).to eq("${aws_bedrockagent_agent_alias.test.region}")
         expect(ref.routing_configuration).to eq("${aws_bedrockagent_agent_alias.test.routing_configuration}")
         expect(ref.tags_all).to eq("${aws_bedrockagent_agent_alias.test.tags_all}")
       end
@@ -55,13 +56,14 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentAlias do
         config = validate_resource_structure(result, 'aws_bedrockagent_agent_alias', 'test')
         expect(config).not_to have_key('agent_alias_arn')
         expect(config).not_to have_key('agent_alias_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('routing_configuration')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', routing_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -71,6 +73,8 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentAlias do
 
         config = validate_resource_structure(result, 'aws_bedrockagent_agent_alias', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
+        expect(config).to have_key('routing_configuration')
         expect(config).to have_key('tags')
       end
     end
@@ -92,6 +96,40 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentAlias do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_bedrockagent_agent_alias', 'minimal')
         expect(config).not_to have_key('description')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_alias('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_alias', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_alias('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_alias', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes routing_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_alias('opt', required_attrs.merge(routing_configuration: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_alias', 'opt')
+        expect(config).to have_key('routing_configuration')
+      end
+
+      it 'omits routing_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_bedrockagent_agent_alias('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_bedrockagent_agent_alias', 'minimal')
+        expect(config).not_to have_key('routing_configuration')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -155,7 +193,7 @@ RSpec.describe Pangea::Resources::AWSBedrockagentAgentAlias do
     resource_type: :aws_bedrockagent_agent_alias,
     method: :aws_bedrockagent_agent_alias,
     required_attrs: { agent_alias_name: 'test-value', agent_id: 'test-value' },
-    expected_outputs: [:id, :agent_alias_arn, :agent_alias_id, :routing_configuration, :tags_all],
+    expected_outputs: [:id, :agent_alias_arn, :agent_alias_id, :region, :routing_configuration, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

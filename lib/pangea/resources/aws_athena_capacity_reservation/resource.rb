@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AthenaCapacityReservationAttributes,
       outputs: { id: :id },
       map: [:name, :target_dpus],
-      map_present: [:tags]
+      map_present: [:region, :tags]
   end
   module AWS
     include AWSAthenaCapacityReservation

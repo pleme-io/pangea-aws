@@ -40,6 +40,8 @@ RSpec.describe Pangea::Resources::AWSKinesisStreamConsumer do
         expect(ref.id).to eq("${aws_kinesis_stream_consumer.test.id}")
         expect(ref.arn).to eq("${aws_kinesis_stream_consumer.test.arn}")
         expect(ref.creation_timestamp).to eq("${aws_kinesis_stream_consumer.test.creation_timestamp}")
+        expect(ref.region).to eq("${aws_kinesis_stream_consumer.test.region}")
+        expect(ref.tags_all).to eq("${aws_kinesis_stream_consumer.test.tags_all}")
       end
     end
 
@@ -53,6 +55,78 @@ RSpec.describe Pangea::Resources::AWSKinesisStreamConsumer do
         config = validate_resource_structure(result, 'aws_kinesis_stream_consumer', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('creation_timestamp')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('tags_all')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream_consumer('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_kinesis_stream_consumer', 'full')
+        expect(config).to have_key('region')
+        expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream_consumer('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream_consumer', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream_consumer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream_consumer', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes tags when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream_consumer('opt', required_attrs.merge(tags: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream_consumer', 'opt')
+        expect(config).to have_key('tags')
+      end
+
+      it 'omits tags when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream_consumer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream_consumer', 'minimal')
+        expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream_consumer('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream_consumer', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kinesis_stream_consumer('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kinesis_stream_consumer', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -99,7 +173,7 @@ RSpec.describe Pangea::Resources::AWSKinesisStreamConsumer do
     resource_type: :aws_kinesis_stream_consumer,
     method: :aws_kinesis_stream_consumer,
     required_attrs: { name: 'test-value', stream_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :creation_timestamp],
+    expected_outputs: [:id, :arn, :creation_timestamp, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

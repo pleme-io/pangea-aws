@@ -1,0 +1,8 @@
+name: aws_workspacesweb_user_access_logging_settings
+title: Manages a aws_workspacesweb_user_access_logging_settings resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

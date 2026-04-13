@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSBatchJobQueue do
 
         expect(ref.id).to eq("${aws_batch_job_queue.test.id}")
         expect(ref.arn).to eq("${aws_batch_job_queue.test.arn}")
+        expect(ref.region).to eq("${aws_batch_job_queue.test.region}")
         expect(ref.tags_all).to eq("${aws_batch_job_queue.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSBatchJobQueue do
 
         config = validate_resource_structure(result, 'aws_batch_job_queue', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ compute_environment_order: [{ 'key1' => 'val1' }], compute_environments: ['test-value'], job_state_time_limit_action: [{ 'key1' => 'val1' }], scheduling_policy_arn: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ compute_environment_order: [{ 'key1' => 'val1' }], job_state_time_limit_action: [{ 'key1' => 'val1' }], region: 'test-value', scheduling_policy_arn: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,8 +69,8 @@ RSpec.describe Pangea::Resources::AWSBatchJobQueue do
 
         config = validate_resource_structure(result, 'aws_batch_job_queue', 'full')
         expect(config).to have_key('compute_environment_order')
-        expect(config).to have_key('compute_environments')
         expect(config).to have_key('job_state_time_limit_action')
+        expect(config).to have_key('region')
         expect(config).to have_key('scheduling_policy_arn')
         expect(config).to have_key('tags')
       end
@@ -92,23 +94,6 @@ RSpec.describe Pangea::Resources::AWSBatchJobQueue do
         config = validate_resource_structure(result, 'aws_batch_job_queue', 'minimal')
         expect(config).not_to have_key('compute_environment_order')
       end
-      it 'includes compute_environments when provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_batch_job_queue('opt', required_attrs.merge(compute_environments: ['test-value']))
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_batch_job_queue', 'opt')
-        expect(config).to have_key('compute_environments')
-      end
-
-      it 'omits compute_environments when not provided' do
-        synth = create_synthesizer
-        synth.extend(described_class)
-        synth.aws_batch_job_queue('minimal', required_attrs)
-        result = normalize_synthesis(synth.synthesis)
-        config = validate_resource_structure(result, 'aws_batch_job_queue', 'minimal')
-        expect(config).not_to have_key('compute_environments')
-      end
       it 'includes job_state_time_limit_action when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -125,6 +110,23 @@ RSpec.describe Pangea::Resources::AWSBatchJobQueue do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_batch_job_queue', 'minimal')
         expect(config).not_to have_key('job_state_time_limit_action')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_job_queue('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_job_queue', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_batch_job_queue('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_batch_job_queue', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes scheduling_policy_arn when provided' do
         synth = create_synthesizer
@@ -206,7 +208,7 @@ RSpec.describe Pangea::Resources::AWSBatchJobQueue do
     resource_type: :aws_batch_job_queue,
     method: :aws_batch_job_queue,
     required_attrs: { name: 'test-value', priority: 3.14, state: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

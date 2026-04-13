@@ -14,7 +14,8 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3tablesTableBucketAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:encryption_configuration, :maintenance_configuration]
+      map_present: [:encryption_configuration, :maintenance_configuration, :region, :tags],
+      map_bool: [:force_destroy]
   end
   module AWS
     include AWSS3tablesTableBucket

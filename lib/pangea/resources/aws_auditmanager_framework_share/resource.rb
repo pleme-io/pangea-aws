@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AuditmanagerFrameworkShareAttributes,
       outputs: { id: :id },
       map: [:destination_account, :destination_region, :framework_id],
-      map_present: [:comment]
+      map_present: [:comment, :region]
   end
   module AWS
     include AWSAuditmanagerFrameworkShare

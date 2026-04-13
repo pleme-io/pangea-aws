@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsoadminApplicationAssignmentConfigurationAttributes,
       outputs: { id: :id },
       map: [:application_arn],
+      map_present: [:region],
       map_bool: [:assignment_required]
   end
   module AWS

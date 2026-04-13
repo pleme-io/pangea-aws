@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSDevopsguruServiceIntegration do
         ref = synth.aws_devopsguru_service_integration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_devopsguru_service_integration.test.id}")
+        expect(ref.region).to eq("${aws_devopsguru_service_integration.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devopsguru_service_integration('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_devopsguru_service_integration', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ kms_server_side_encryption: [{ 'key1' => 'val1' }], logs_anomaly_detection: [{ 'key1' => 'val1' }], ops_center: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ kms_server_side_encryption: [{ 'key1' => 'val1' }], logs_anomaly_detection: [{ 'key1' => 'val1' }], ops_center: [{ 'key1' => 'val1' }], region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -54,6 +67,7 @@ RSpec.describe Pangea::Resources::AWSDevopsguruServiceIntegration do
         expect(config).to have_key('kms_server_side_encryption')
         expect(config).to have_key('logs_anomaly_detection')
         expect(config).to have_key('ops_center')
+        expect(config).to have_key('region')
       end
     end
 
@@ -109,6 +123,23 @@ RSpec.describe Pangea::Resources::AWSDevopsguruServiceIntegration do
         config = validate_resource_structure(result, 'aws_devopsguru_service_integration', 'minimal')
         expect(config).not_to have_key('ops_center')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devopsguru_service_integration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_devopsguru_service_integration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_devopsguru_service_integration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_devopsguru_service_integration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
     end
 
     context 'attribute types' do
@@ -152,7 +183,7 @@ RSpec.describe Pangea::Resources::AWSDevopsguruServiceIntegration do
     resource_type: :aws_devopsguru_service_integration,
     method: :aws_devopsguru_service_integration,
     required_attrs: {},
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

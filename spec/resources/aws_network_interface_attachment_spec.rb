@@ -39,6 +39,8 @@ RSpec.describe Pangea::Resources::AWSNetworkInterfaceAttachment do
 
         expect(ref.id).to eq("${aws_network_interface_attachment.test.id}")
         expect(ref.attachment_id).to eq("${aws_network_interface_attachment.test.attachment_id}")
+        expect(ref.network_card_index).to eq("${aws_network_interface_attachment.test.network_card_index}")
+        expect(ref.region).to eq("${aws_network_interface_attachment.test.region}")
         expect(ref.status).to eq("${aws_network_interface_attachment.test.status}")
       end
     end
@@ -52,7 +54,61 @@ RSpec.describe Pangea::Resources::AWSNetworkInterfaceAttachment do
 
         config = validate_resource_structure(result, 'aws_network_interface_attachment', 'test')
         expect(config).not_to have_key('attachment_id')
+        expect(config).not_to have_key('network_card_index')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ network_card_index: 3.14, region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface_attachment('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_network_interface_attachment', 'full')
+        expect(config).to have_key('network_card_index')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes network_card_index when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface_attachment('opt', required_attrs.merge(network_card_index: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface_attachment', 'opt')
+        expect(config).to have_key('network_card_index')
+      end
+
+      it 'omits network_card_index when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface_attachment', 'minimal')
+        expect(config).not_to have_key('network_card_index')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface_attachment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface_attachment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_network_interface_attachment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_network_interface_attachment', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -100,7 +156,7 @@ RSpec.describe Pangea::Resources::AWSNetworkInterfaceAttachment do
     resource_type: :aws_network_interface_attachment,
     method: :aws_network_interface_attachment,
     required_attrs: { device_index: 3.14, instance_id: 'test-value', network_interface_id: 'test-value' },
-    expected_outputs: [:id, :attachment_id, :status],
+    expected_outputs: [:id, :attachment_id, :network_card_index, :region, :status],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

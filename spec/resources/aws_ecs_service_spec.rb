@@ -38,10 +38,13 @@ RSpec.describe Pangea::Resources::AWSEcsService do
         ref = synth.aws_ecs_service('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ecs_service.test.id}")
+        expect(ref.arn).to eq("${aws_ecs_service.test.arn}")
+        expect(ref.availability_zone_rebalancing).to eq("${aws_ecs_service.test.availability_zone_rebalancing}")
         expect(ref.cluster).to eq("${aws_ecs_service.test.cluster}")
         expect(ref.iam_role).to eq("${aws_ecs_service.test.iam_role}")
         expect(ref.launch_type).to eq("${aws_ecs_service.test.launch_type}")
         expect(ref.platform_version).to eq("${aws_ecs_service.test.platform_version}")
+        expect(ref.region).to eq("${aws_ecs_service.test.region}")
         expect(ref.tags_all).to eq("${aws_ecs_service.test.tags_all}")
         expect(ref.triggers).to eq("${aws_ecs_service.test.triggers}")
       end
@@ -55,17 +58,20 @@ RSpec.describe Pangea::Resources::AWSEcsService do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_ecs_service', 'test')
+        expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('availability_zone_rebalancing')
         expect(config).not_to have_key('cluster')
         expect(config).not_to have_key('iam_role')
         expect(config).not_to have_key('launch_type')
         expect(config).not_to have_key('platform_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('triggers')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ alarms: [{ 'key1' => 'val1' }], availability_zone_rebalancing: 'test-value', capacity_provider_strategy: [{ 'key1' => 'val1' }], deployment_circuit_breaker: [{ 'key1' => 'val1' }], deployment_controller: [{ 'key1' => 'val1' }], deployment_maximum_percent: 3.14, deployment_minimum_healthy_percent: 3.14, desired_count: 3.14, enable_ecs_managed_tags: true, enable_execute_command: true, force_delete: true, force_new_deployment: true, health_check_grace_period_seconds: 3.14, load_balancer: [{ 'key1' => 'val1' }], network_configuration: [{ 'key1' => 'val1' }], ordered_placement_strategy: [{ 'key1' => 'val1' }], placement_constraints: [{ 'key1' => 'val1' }], propagate_tags: 'test-value', scheduling_strategy: 'test-value', service_connect_configuration: [{ 'key1' => 'val1' }], service_registries: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, task_definition: 'test-value', volume_configuration: [{ 'key1' => 'val1' }], vpc_lattice_configurations: [{ 'key1' => 'val1' }], wait_for_steady_state: true }) }
+      let(:all_attrs) { required_attrs.merge({ alarms: { 'key1' => 'val1' }, availability_zone_rebalancing: 'test-value', capacity_provider_strategy: [{ 'key1' => 'val1' }], cluster: 'test-value', deployment_circuit_breaker: { 'key1' => 'val1' }, deployment_configuration: { 'key1' => 'val1' }, deployment_controller: { 'key1' => 'val1' }, deployment_maximum_percent: 3.14, deployment_minimum_healthy_percent: 3.14, desired_count: 3.14, enable_ecs_managed_tags: true, enable_execute_command: true, force_delete: true, force_new_deployment: true, health_check_grace_period_seconds: 3.14, iam_role: 'test-value', launch_type: 'test-value', load_balancer: [{ 'key1' => 'val1' }], network_configuration: { 'key1' => 'val1' }, ordered_placement_strategy: [{ 'key1' => 'val1' }], placement_constraints: [{ 'key1' => 'val1' }], platform_version: 'test-value', propagate_tags: 'test-value', region: 'test-value', scheduling_strategy: 'test-value', service_connect_configuration: { 'key1' => 'val1' }, service_registries: { 'key1' => 'val1' }, sigint_rollback: true, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, task_definition: 'test-value', triggers: { 'key1' => 'val1' }, volume_configuration: { 'key1' => 'val1' }, vpc_lattice_configurations: [{ 'key1' => 'val1' }], wait_for_steady_state: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,7 +83,9 @@ RSpec.describe Pangea::Resources::AWSEcsService do
         expect(config).to have_key('alarms')
         expect(config).to have_key('availability_zone_rebalancing')
         expect(config).to have_key('capacity_provider_strategy')
+        expect(config).to have_key('cluster')
         expect(config).to have_key('deployment_circuit_breaker')
+        expect(config).to have_key('deployment_configuration')
         expect(config).to have_key('deployment_controller')
         expect(config).to have_key('deployment_maximum_percent')
         expect(config).to have_key('deployment_minimum_healthy_percent')
@@ -87,16 +95,23 @@ RSpec.describe Pangea::Resources::AWSEcsService do
         expect(config).to have_key('force_delete')
         expect(config).to have_key('force_new_deployment')
         expect(config).to have_key('health_check_grace_period_seconds')
+        expect(config).to have_key('iam_role')
+        expect(config).to have_key('launch_type')
         expect(config).to have_key('load_balancer')
         expect(config).to have_key('network_configuration')
         expect(config).to have_key('ordered_placement_strategy')
         expect(config).to have_key('placement_constraints')
+        expect(config).to have_key('platform_version')
         expect(config).to have_key('propagate_tags')
+        expect(config).to have_key('region')
         expect(config).to have_key('scheduling_strategy')
         expect(config).to have_key('service_connect_configuration')
         expect(config).to have_key('service_registries')
+        expect(config).to have_key('sigint_rollback')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('task_definition')
+        expect(config).to have_key('triggers')
         expect(config).to have_key('volume_configuration')
         expect(config).to have_key('vpc_lattice_configurations')
         expect(config).to have_key('wait_for_steady_state')
@@ -107,7 +122,7 @@ RSpec.describe Pangea::Resources::AWSEcsService do
       it 'includes alarms when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_service('opt', required_attrs.merge(alarms: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_service('opt', required_attrs.merge(alarms: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
         expect(config).to have_key('alarms')
@@ -155,10 +170,27 @@ RSpec.describe Pangea::Resources::AWSEcsService do
         config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
         expect(config).not_to have_key('capacity_provider_strategy')
       end
+      it 'includes cluster when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('opt', required_attrs.merge(cluster: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
+        expect(config).to have_key('cluster')
+      end
+
+      it 'omits cluster when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
+        expect(config).not_to have_key('cluster')
+      end
       it 'includes deployment_circuit_breaker when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_service('opt', required_attrs.merge(deployment_circuit_breaker: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_service('opt', required_attrs.merge(deployment_circuit_breaker: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
         expect(config).to have_key('deployment_circuit_breaker')
@@ -172,10 +204,27 @@ RSpec.describe Pangea::Resources::AWSEcsService do
         config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
         expect(config).not_to have_key('deployment_circuit_breaker')
       end
+      it 'includes deployment_configuration when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('opt', required_attrs.merge(deployment_configuration: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
+        expect(config).to have_key('deployment_configuration')
+      end
+
+      it 'omits deployment_configuration when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
+        expect(config).not_to have_key('deployment_configuration')
+      end
       it 'includes deployment_controller when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_service('opt', required_attrs.merge(deployment_controller: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_service('opt', required_attrs.merge(deployment_controller: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
         expect(config).to have_key('deployment_controller')
@@ -325,6 +374,40 @@ RSpec.describe Pangea::Resources::AWSEcsService do
         config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
         expect(config).not_to have_key('health_check_grace_period_seconds')
       end
+      it 'includes iam_role when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('opt', required_attrs.merge(iam_role: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
+        expect(config).to have_key('iam_role')
+      end
+
+      it 'omits iam_role when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
+        expect(config).not_to have_key('iam_role')
+      end
+      it 'includes launch_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('opt', required_attrs.merge(launch_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
+        expect(config).to have_key('launch_type')
+      end
+
+      it 'omits launch_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
+        expect(config).not_to have_key('launch_type')
+      end
       it 'includes load_balancer when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -345,7 +428,7 @@ RSpec.describe Pangea::Resources::AWSEcsService do
       it 'includes network_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_service('opt', required_attrs.merge(network_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_service('opt', required_attrs.merge(network_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
         expect(config).to have_key('network_configuration')
@@ -393,6 +476,23 @@ RSpec.describe Pangea::Resources::AWSEcsService do
         config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
         expect(config).not_to have_key('placement_constraints')
       end
+      it 'includes platform_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('opt', required_attrs.merge(platform_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
+        expect(config).to have_key('platform_version')
+      end
+
+      it 'omits platform_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
+        expect(config).not_to have_key('platform_version')
+      end
       it 'includes propagate_tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -409,6 +509,23 @@ RSpec.describe Pangea::Resources::AWSEcsService do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
         expect(config).not_to have_key('propagate_tags')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes scheduling_strategy when provided' do
         synth = create_synthesizer
@@ -430,7 +547,7 @@ RSpec.describe Pangea::Resources::AWSEcsService do
       it 'includes service_connect_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_service('opt', required_attrs.merge(service_connect_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_service('opt', required_attrs.merge(service_connect_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
         expect(config).to have_key('service_connect_configuration')
@@ -447,7 +564,7 @@ RSpec.describe Pangea::Resources::AWSEcsService do
       it 'includes service_registries when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_service('opt', required_attrs.merge(service_registries: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_service('opt', required_attrs.merge(service_registries: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
         expect(config).to have_key('service_registries')
@@ -460,6 +577,23 @@ RSpec.describe Pangea::Resources::AWSEcsService do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
         expect(config).not_to have_key('service_registries')
+      end
+      it 'includes sigint_rollback when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('opt', required_attrs.merge(sigint_rollback: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
+        expect(config).to have_key('sigint_rollback')
+      end
+
+      it 'omits sigint_rollback when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
+        expect(config).not_to have_key('sigint_rollback')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -478,6 +612,23 @@ RSpec.describe Pangea::Resources::AWSEcsService do
         config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes task_definition when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -495,10 +646,27 @@ RSpec.describe Pangea::Resources::AWSEcsService do
         config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
         expect(config).not_to have_key('task_definition')
       end
+      it 'includes triggers when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('opt', required_attrs.merge(triggers: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
+        expect(config).to have_key('triggers')
+      end
+
+      it 'omits triggers when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecs_service('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecs_service', 'minimal')
+        expect(config).not_to have_key('triggers')
+      end
       it 'includes volume_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecs_service('opt', required_attrs.merge(volume_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_ecs_service('opt', required_attrs.merge(volume_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecs_service', 'opt')
         expect(config).to have_key('volume_configuration')
@@ -594,6 +762,17 @@ RSpec.describe Pangea::Resources::AWSEcsService do
         end
       end
       [true, false].each do |val|
+        it "accepts sigint_rollback=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(sigint_rollback: val)
+          synth.aws_ecs_service("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_ecs_service', "bool_#{val}")
+          expect(config['sigint_rollback']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
         it "accepts wait_for_steady_state=#{val}" do
           synth = create_synthesizer
           synth.extend(described_class)
@@ -648,8 +827,8 @@ RSpec.describe Pangea::Resources::AWSEcsService do
     resource_type: :aws_ecs_service,
     method: :aws_ecs_service,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :cluster, :iam_role, :launch_type, :platform_version, :tags_all, :triggers],
+    expected_outputs: [:id, :arn, :availability_zone_rebalancing, :cluster, :iam_role, :launch_type, :platform_version, :region, :tags_all, :triggers],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:enable_ecs_managed_tags, :enable_execute_command, :force_delete, :force_new_deployment, :wait_for_steady_state]
+    boolean_fields: [:enable_ecs_managed_tags, :enable_execute_command, :force_delete, :force_new_deployment, :sigint_rollback, :wait_for_steady_state]
 end

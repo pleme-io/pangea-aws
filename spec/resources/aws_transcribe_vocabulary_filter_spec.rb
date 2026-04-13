@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSTranscribeVocabularyFilter do
         expect(ref.id).to eq("${aws_transcribe_vocabulary_filter.test.id}")
         expect(ref.arn).to eq("${aws_transcribe_vocabulary_filter.test.arn}")
         expect(ref.download_uri).to eq("${aws_transcribe_vocabulary_filter.test.download_uri}")
+        expect(ref.region).to eq("${aws_transcribe_vocabulary_filter.test.region}")
         expect(ref.tags_all).to eq("${aws_transcribe_vocabulary_filter.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSTranscribeVocabularyFilter do
         config = validate_resource_structure(result, 'aws_transcribe_vocabulary_filter', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('download_uri')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' }, vocabulary_filter_file_uri: 'test-value', words: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vocabulary_filter_file_uri: 'test-value', words: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,13 +70,32 @@ RSpec.describe Pangea::Resources::AWSTranscribeVocabularyFilter do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_transcribe_vocabulary_filter', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vocabulary_filter_file_uri')
         expect(config).to have_key('words')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transcribe_vocabulary_filter('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transcribe_vocabulary_filter', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transcribe_vocabulary_filter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transcribe_vocabulary_filter', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -91,6 +112,23 @@ RSpec.describe Pangea::Resources::AWSTranscribeVocabularyFilter do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_transcribe_vocabulary_filter', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transcribe_vocabulary_filter('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transcribe_vocabulary_filter', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_transcribe_vocabulary_filter('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_transcribe_vocabulary_filter', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes vocabulary_filter_file_uri when provided' do
         synth = create_synthesizer
@@ -171,7 +209,7 @@ RSpec.describe Pangea::Resources::AWSTranscribeVocabularyFilter do
     resource_type: :aws_transcribe_vocabulary_filter,
     method: :aws_transcribe_vocabulary_filter,
     required_attrs: { language_code: 'test-value', vocabulary_filter_name: 'test-value' },
-    expected_outputs: [:id, :arn, :download_uri, :tags_all],
+    expected_outputs: [:id, :arn, :download_uri, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

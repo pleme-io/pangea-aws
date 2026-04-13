@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkteam do
 
         expect(ref.id).to eq("${aws_sagemaker_workteam.test.id}")
         expect(ref.arn).to eq("${aws_sagemaker_workteam.test.arn}")
+        expect(ref.region).to eq("${aws_sagemaker_workteam.test.region}")
         expect(ref.subdomain).to eq("${aws_sagemaker_workteam.test.subdomain}")
         expect(ref.tags_all).to eq("${aws_sagemaker_workteam.test.tags_all}")
       end
@@ -53,13 +54,14 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkteam do
 
         config = validate_resource_structure(result, 'aws_sagemaker_workteam', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('subdomain')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ notification_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, worker_access_configuration: [{ 'key1' => 'val1' }], workforce_name: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ notification_configuration: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, worker_access_configuration: { 'key1' => 'val1' }, workforce_name: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +71,9 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkteam do
 
         config = validate_resource_structure(result, 'aws_sagemaker_workteam', 'full')
         expect(config).to have_key('notification_configuration')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('worker_access_configuration')
         expect(config).to have_key('workforce_name')
       end
@@ -79,7 +83,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkteam do
       it 'includes notification_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_workteam('opt', required_attrs.merge(notification_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_workteam('opt', required_attrs.merge(notification_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_workteam', 'opt')
         expect(config).to have_key('notification_configuration')
@@ -92,6 +96,23 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkteam do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_workteam', 'minimal')
         expect(config).not_to have_key('notification_configuration')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_workteam('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_workteam', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_workteam('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_workteam', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -110,10 +131,27 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkteam do
         config = validate_resource_structure(result, 'aws_sagemaker_workteam', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_workteam('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_workteam', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sagemaker_workteam('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sagemaker_workteam', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes worker_access_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_sagemaker_workteam('opt', required_attrs.merge(worker_access_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_sagemaker_workteam('opt', required_attrs.merge(worker_access_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sagemaker_workteam', 'opt')
         expect(config).to have_key('worker_access_configuration')
@@ -190,7 +228,7 @@ RSpec.describe Pangea::Resources::AWSSagemakerWorkteam do
     resource_type: :aws_sagemaker_workteam,
     method: :aws_sagemaker_workteam,
     required_attrs: { description: 'test-value', member_definition: [{ 'key1' => 'val1' }], workteam_name: 'test-value' },
-    expected_outputs: [:id, :arn, :subdomain, :tags_all],
+    expected_outputs: [:id, :arn, :region, :subdomain, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

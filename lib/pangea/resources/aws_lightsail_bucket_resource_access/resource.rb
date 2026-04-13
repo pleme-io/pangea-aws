@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_lightsail_bucket_resource_access,
       attributes_class: AWS::Types::LightsailBucketResourceAccessAttributes,
       outputs: { id: :id },
-      map: [:bucket_name, :resource_name]
+      map: [:bucket_name, :resource_name],
+      map_present: [:region]
   end
   module AWS
     include AWSLightsailBucketResourceAccess

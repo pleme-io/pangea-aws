@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConfigDeliveryChannelAttributes,
       outputs: { id: :id },
       map: [:s3_bucket_name],
-      map_present: [:name, :s3_key_prefix, :s3_kms_key_arn, :snapshot_delivery_properties, :sns_topic_arn]
+      map_present: [:name, :region, :s3_key_prefix, :s3_kms_key_arn, :snapshot_delivery_properties, :sns_topic_arn]
   end
   module AWS
     include AWSConfigDeliveryChannel

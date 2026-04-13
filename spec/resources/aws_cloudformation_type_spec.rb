@@ -45,6 +45,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationType do
         expect(ref.documentation_url).to eq("${aws_cloudformation_type.test.documentation_url}")
         expect(ref.is_default_version).to eq("${aws_cloudformation_type.test.is_default_version}")
         expect(ref.provisioning_type).to eq("${aws_cloudformation_type.test.provisioning_type}")
+        expect(ref.region).to eq("${aws_cloudformation_type.test.region}")
         expect(ref.schema).to eq("${aws_cloudformation_type.test.schema}")
         expect(ref.source_url).to eq("${aws_cloudformation_type.test.source_url}")
         expect(ref.type).to eq("${aws_cloudformation_type.test.type}")
@@ -69,6 +70,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationType do
         expect(config).not_to have_key('documentation_url')
         expect(config).not_to have_key('is_default_version')
         expect(config).not_to have_key('provisioning_type')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('schema')
         expect(config).not_to have_key('source_url')
         expect(config).not_to have_key('type')
@@ -79,7 +81,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationType do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ execution_role_arn: 'test-value', logging_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ execution_role_arn: 'test-value', logging_config: { 'key1' => 'val1' }, region: 'test-value', type: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -90,6 +92,8 @@ RSpec.describe Pangea::Resources::AWSCloudformationType do
         config = validate_resource_structure(result, 'aws_cloudformation_type', 'full')
         expect(config).to have_key('execution_role_arn')
         expect(config).to have_key('logging_config')
+        expect(config).to have_key('region')
+        expect(config).to have_key('type')
       end
     end
 
@@ -114,7 +118,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationType do
       it 'includes logging_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_cloudformation_type('opt', required_attrs.merge(logging_config: [{ 'key1' => 'val1' }]))
+        synth.aws_cloudformation_type('opt', required_attrs.merge(logging_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudformation_type', 'opt')
         expect(config).to have_key('logging_config')
@@ -127,6 +131,40 @@ RSpec.describe Pangea::Resources::AWSCloudformationType do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_cloudformation_type', 'minimal')
         expect(config).not_to have_key('logging_config')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_type('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_type', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_type('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_type', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_type('opt', required_attrs.merge(type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_type', 'opt')
+        expect(config).to have_key('type')
+      end
+
+      it 'omits type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_cloudformation_type('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_cloudformation_type', 'minimal')
+        expect(config).not_to have_key('type')
       end
     end
 
@@ -173,7 +211,7 @@ RSpec.describe Pangea::Resources::AWSCloudformationType do
     resource_type: :aws_cloudformation_type,
     method: :aws_cloudformation_type,
     required_attrs: { schema_handler_package: 'test-value', type_name: 'test-value' },
-    expected_outputs: [:id, :arn, :default_version_id, :deprecated_status, :description, :documentation_url, :is_default_version, :provisioning_type, :schema, :source_url, :type, :type_arn, :version_id, :visibility],
+    expected_outputs: [:id, :arn, :default_version_id, :deprecated_status, :description, :documentation_url, :is_default_version, :provisioning_type, :region, :schema, :source_url, :type, :type_arn, :version_id, :visibility],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

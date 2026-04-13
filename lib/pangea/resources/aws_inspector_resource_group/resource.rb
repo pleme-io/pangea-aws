@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_inspector_resource_group,
       attributes_class: AWS::Types::InspectorResourceGroupAttributes,
       outputs: { id: :id },
-      map: [:tags]
+      map: [:tags],
+      map_present: [:region]
   end
   module AWS
     include AWSInspectorResourceGroup

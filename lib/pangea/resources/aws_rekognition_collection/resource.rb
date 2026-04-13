@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RekognitionCollectionAttributes,
       outputs: { id: :id },
       map: [:collection_id],
-      map_present: [:tags]
+      map_present: [:region, :tags]
   end
   module AWS
     include AWSRekognitionCollection

@@ -1,0 +1,8 @@
+name: aws_bedrockagentcore_agent_runtime
+title: Manages a aws_bedrockagentcore_agent_runtime resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

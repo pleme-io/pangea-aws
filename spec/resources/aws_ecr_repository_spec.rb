@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSEcrRepository do
 
         expect(ref.id).to eq("${aws_ecr_repository.test.id}")
         expect(ref.arn).to eq("${aws_ecr_repository.test.arn}")
+        expect(ref.region).to eq("${aws_ecr_repository.test.region}")
         expect(ref.registry_id).to eq("${aws_ecr_repository.test.registry_id}")
         expect(ref.repository_url).to eq("${aws_ecr_repository.test.repository_url}")
         expect(ref.tags_all).to eq("${aws_ecr_repository.test.tags_all}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSEcrRepository do
 
         config = validate_resource_structure(result, 'aws_ecr_repository', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('registry_id')
         expect(config).not_to have_key('repository_url')
         expect(config).not_to have_key('tags_all')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSEcrRepository do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ encryption_configuration: [{ 'key1' => 'val1' }], force_delete: true, image_scanning_configuration: [{ 'key1' => 'val1' }], image_tag_mutability: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ encryption_configuration: [{ 'key1' => 'val1' }], force_delete: true, image_scanning_configuration: { 'key1' => 'val1' }, image_tag_mutability: 'test-value', image_tag_mutability_exclusion_filter: [{ 'key1' => 'val1' }], region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,7 +76,10 @@ RSpec.describe Pangea::Resources::AWSEcrRepository do
         expect(config).to have_key('force_delete')
         expect(config).to have_key('image_scanning_configuration')
         expect(config).to have_key('image_tag_mutability')
+        expect(config).to have_key('image_tag_mutability_exclusion_filter')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -116,7 +121,7 @@ RSpec.describe Pangea::Resources::AWSEcrRepository do
       it 'includes image_scanning_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_ecr_repository('opt', required_attrs.merge(image_scanning_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_ecr_repository('opt', required_attrs.merge(image_scanning_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecr_repository', 'opt')
         expect(config).to have_key('image_scanning_configuration')
@@ -147,6 +152,40 @@ RSpec.describe Pangea::Resources::AWSEcrRepository do
         config = validate_resource_structure(result, 'aws_ecr_repository', 'minimal')
         expect(config).not_to have_key('image_tag_mutability')
       end
+      it 'includes image_tag_mutability_exclusion_filter when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_repository('opt', required_attrs.merge(image_tag_mutability_exclusion_filter: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_repository', 'opt')
+        expect(config).to have_key('image_tag_mutability_exclusion_filter')
+      end
+
+      it 'omits image_tag_mutability_exclusion_filter when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_repository('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_repository', 'minimal')
+        expect(config).not_to have_key('image_tag_mutability_exclusion_filter')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_repository('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_repository', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_repository('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_repository', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -163,6 +202,23 @@ RSpec.describe Pangea::Resources::AWSEcrRepository do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ecr_repository', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_repository('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_repository', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ecr_repository('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ecr_repository', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -222,7 +278,7 @@ RSpec.describe Pangea::Resources::AWSEcrRepository do
     resource_type: :aws_ecr_repository,
     method: :aws_ecr_repository,
     required_attrs: { name: 'test-value' },
-    expected_outputs: [:id, :arn, :registry_id, :repository_url, :tags_all],
+    expected_outputs: [:id, :arn, :region, :registry_id, :repository_url, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:force_delete]

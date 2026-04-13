@@ -49,6 +49,7 @@ RSpec.describe Pangea::Resources::AWSSsmDocument do
         expect(ref.owner).to eq("${aws_ssm_document.test.owner}")
         expect(ref.parameter).to eq("${aws_ssm_document.test.parameter}")
         expect(ref.platform_types).to eq("${aws_ssm_document.test.platform_types}")
+        expect(ref.region).to eq("${aws_ssm_document.test.region}")
         expect(ref.schema_version).to eq("${aws_ssm_document.test.schema_version}")
         expect(ref.status).to eq("${aws_ssm_document.test.status}")
         expect(ref.tags_all).to eq("${aws_ssm_document.test.tags_all}")
@@ -74,6 +75,7 @@ RSpec.describe Pangea::Resources::AWSSsmDocument do
         expect(config).not_to have_key('owner')
         expect(config).not_to have_key('parameter')
         expect(config).not_to have_key('platform_types')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('schema_version')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
@@ -81,7 +83,7 @@ RSpec.describe Pangea::Resources::AWSSsmDocument do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ attachments_source: [{ 'key1' => 'val1' }], document_format: 'test-value', permissions: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, target_type: 'test-value', version_name: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ attachments_source: [{ 'key1' => 'val1' }], document_format: 'test-value', permissions: { 'key1' => 'val1' }, region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target_type: 'test-value', version_name: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -93,7 +95,9 @@ RSpec.describe Pangea::Resources::AWSSsmDocument do
         expect(config).to have_key('attachments_source')
         expect(config).to have_key('document_format')
         expect(config).to have_key('permissions')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('target_type')
         expect(config).to have_key('version_name')
       end
@@ -151,6 +155,23 @@ RSpec.describe Pangea::Resources::AWSSsmDocument do
         config = validate_resource_structure(result, 'aws_ssm_document', 'minimal')
         expect(config).not_to have_key('permissions')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_document('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_document', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_document('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_document', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -167,6 +188,23 @@ RSpec.describe Pangea::Resources::AWSSsmDocument do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ssm_document', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_document('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_document', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssm_document('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssm_document', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes target_type when provided' do
         synth = create_synthesizer
@@ -248,7 +286,7 @@ RSpec.describe Pangea::Resources::AWSSsmDocument do
     resource_type: :aws_ssm_document,
     method: :aws_ssm_document,
     required_attrs: { content: 'test-value', document_type: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :created_date, :default_version, :description, :document_version, :hash, :hash_type, :latest_version, :owner, :parameter, :platform_types, :schema_version, :status, :tags_all],
+    expected_outputs: [:id, :arn, :created_date, :default_version, :description, :document_version, :hash, :hash_type, :latest_version, :owner, :parameter, :platform_types, :region, :schema_version, :status, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

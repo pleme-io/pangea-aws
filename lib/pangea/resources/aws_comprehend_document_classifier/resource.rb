@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ComprehendDocumentClassifierAttributes,
       outputs: { id: :id },
       map: [:data_access_role_arn, :input_data_config, :language_code, :name],
-      map_present: [:mode, :model_kms_key_id, :output_data_config, :tags, :tags_all, :version_name, :version_name_prefix, :volume_kms_key_id, :vpc_config]
+      map_present: [:mode, :model_kms_key_id, :output_data_config, :region, :tags, :tags_all, :version_name, :version_name_prefix, :volume_kms_key_id, :vpc_config]
   end
   module AWS
     include AWSComprehendDocumentClassifier

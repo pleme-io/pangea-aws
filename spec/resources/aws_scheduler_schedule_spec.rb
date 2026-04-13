@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSchedulerSchedule do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { flexible_time_window: [{ 'key1' => 'val1' }], schedule_expression: 'test-value', target: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { flexible_time_window: { 'key1' => 'val1' }, schedule_expression: 'test-value', target: { 'key1' => 'val1' } } }
 
   describe ':aws_scheduler_schedule' do
     context 'with required attributes only' do
@@ -38,10 +38,12 @@ RSpec.describe Pangea::Resources::AWSSchedulerSchedule do
         ref = synth.aws_scheduler_schedule('test', required_attrs)
 
         expect(ref.id).to eq("${aws_scheduler_schedule.test.id}")
+        expect(ref.action_after_completion).to eq("${aws_scheduler_schedule.test.action_after_completion}")
         expect(ref.arn).to eq("${aws_scheduler_schedule.test.arn}")
         expect(ref.group_name).to eq("${aws_scheduler_schedule.test.group_name}")
         expect(ref.name).to eq("${aws_scheduler_schedule.test.name}")
         expect(ref.name_prefix).to eq("${aws_scheduler_schedule.test.name_prefix}")
+        expect(ref.region).to eq("${aws_scheduler_schedule.test.region}")
       end
     end
 
@@ -53,15 +55,17 @@ RSpec.describe Pangea::Resources::AWSSchedulerSchedule do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_scheduler_schedule', 'test')
+        expect(config).not_to have_key('action_after_completion')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('group_name')
         expect(config).not_to have_key('name')
         expect(config).not_to have_key('name_prefix')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', end_date: 'test-value', kms_key_arn: 'test-value', schedule_expression_timezone: 'test-value', start_date: 'test-value', state: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ action_after_completion: 'test-value', description: 'test-value', end_date: 'test-value', group_name: 'test-value', kms_key_arn: 'test-value', name: 'test-value', name_prefix: 'test-value', region: 'test-value', schedule_expression_timezone: 'test-value', start_date: 'test-value', state: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -70,9 +74,14 @@ RSpec.describe Pangea::Resources::AWSSchedulerSchedule do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_scheduler_schedule', 'full')
+        expect(config).to have_key('action_after_completion')
         expect(config).to have_key('description')
         expect(config).to have_key('end_date')
+        expect(config).to have_key('group_name')
         expect(config).to have_key('kms_key_arn')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
+        expect(config).to have_key('region')
         expect(config).to have_key('schedule_expression_timezone')
         expect(config).to have_key('start_date')
         expect(config).to have_key('state')
@@ -80,6 +89,23 @@ RSpec.describe Pangea::Resources::AWSSchedulerSchedule do
     end
 
     context 'optional attributes' do
+      it 'includes action_after_completion when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_scheduler_schedule('opt', required_attrs.merge(action_after_completion: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_scheduler_schedule', 'opt')
+        expect(config).to have_key('action_after_completion')
+      end
+
+      it 'omits action_after_completion when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_scheduler_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_scheduler_schedule', 'minimal')
+        expect(config).not_to have_key('action_after_completion')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -114,6 +140,23 @@ RSpec.describe Pangea::Resources::AWSSchedulerSchedule do
         config = validate_resource_structure(result, 'aws_scheduler_schedule', 'minimal')
         expect(config).not_to have_key('end_date')
       end
+      it 'includes group_name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_scheduler_schedule('opt', required_attrs.merge(group_name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_scheduler_schedule', 'opt')
+        expect(config).to have_key('group_name')
+      end
+
+      it 'omits group_name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_scheduler_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_scheduler_schedule', 'minimal')
+        expect(config).not_to have_key('group_name')
+      end
       it 'includes kms_key_arn when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -130,6 +173,57 @@ RSpec.describe Pangea::Resources::AWSSchedulerSchedule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_scheduler_schedule', 'minimal')
         expect(config).not_to have_key('kms_key_arn')
+      end
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_scheduler_schedule('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_scheduler_schedule', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_scheduler_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_scheduler_schedule', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_scheduler_schedule('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_scheduler_schedule', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_scheduler_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_scheduler_schedule', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_scheduler_schedule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_scheduler_schedule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_scheduler_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_scheduler_schedule', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes schedule_expression_timezone when provided' do
         synth = create_synthesizer
@@ -192,9 +286,9 @@ RSpec.describe Pangea::Resources::AWSSchedulerSchedule do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_scheduler_schedule', 'typed')
-        expect(config['flexible_time_window']).to be_a(Array)
+        expect(config['flexible_time_window']).to be_a(Hash)
         expect(config['schedule_expression']).to be_a(String)
-        expect(config['target']).to be_a(Array)
+        expect(config['target']).to be_a(Hash)
       end
     end
 
@@ -227,8 +321,8 @@ RSpec.describe Pangea::Resources::AWSSchedulerSchedule do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_scheduler_schedule,
     method: :aws_scheduler_schedule,
-    required_attrs: { flexible_time_window: [{ 'key1' => 'val1' }], schedule_expression: 'test-value', target: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :group_name, :name, :name_prefix],
+    required_attrs: { flexible_time_window: { 'key1' => 'val1' }, schedule_expression: 'test-value', target: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :action_after_completion, :arn, :group_name, :name, :name_prefix, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

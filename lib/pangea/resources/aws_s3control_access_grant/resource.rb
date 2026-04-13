@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::S3controlAccessGrantAttributes,
       outputs: { id: :id },
       map: [:access_grants_location_id, :permission],
-      map_present: [:access_grants_location_configuration, :account_id, :grantee, :s3_prefix_type, :tags]
+      map_present: [:access_grants_location_configuration, :account_id, :grantee, :region, :s3_prefix_type, :tags]
   end
   module AWS
     include AWSS3controlAccessGrant

@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_apprunner_default_auto_scaling_configuration_version,
       attributes_class: AWS::Types::ApprunnerDefaultAutoScalingConfigurationVersionAttributes,
       outputs: { id: :id },
-      map: [:auto_scaling_configuration_arn]
+      map: [:auto_scaling_configuration_arn],
+      map_present: [:region]
   end
   module AWS
     include AWSApprunnerDefaultAutoScalingConfigurationVersion

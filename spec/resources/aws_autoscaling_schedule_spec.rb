@@ -44,6 +44,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingSchedule do
         expect(ref.max_size).to eq("${aws_autoscaling_schedule.test.max_size}")
         expect(ref.min_size).to eq("${aws_autoscaling_schedule.test.min_size}")
         expect(ref.recurrence).to eq("${aws_autoscaling_schedule.test.recurrence}")
+        expect(ref.region).to eq("${aws_autoscaling_schedule.test.region}")
         expect(ref.start_time).to eq("${aws_autoscaling_schedule.test.start_time}")
         expect(ref.time_zone).to eq("${aws_autoscaling_schedule.test.time_zone}")
       end
@@ -63,7 +64,168 @@ RSpec.describe Pangea::Resources::AWSAutoscalingSchedule do
         expect(config).not_to have_key('max_size')
         expect(config).not_to have_key('min_size')
         expect(config).not_to have_key('recurrence')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('start_time')
+        expect(config).not_to have_key('time_zone')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ desired_capacity: 3.14, end_time: 'test-value', max_size: 3.14, min_size: 3.14, recurrence: 'test-value', region: 'test-value', start_time: 'test-value', time_zone: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'full')
+        expect(config).to have_key('desired_capacity')
+        expect(config).to have_key('end_time')
+        expect(config).to have_key('max_size')
+        expect(config).to have_key('min_size')
+        expect(config).to have_key('recurrence')
+        expect(config).to have_key('region')
+        expect(config).to have_key('start_time')
+        expect(config).to have_key('time_zone')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes desired_capacity when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('opt', required_attrs.merge(desired_capacity: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'opt')
+        expect(config).to have_key('desired_capacity')
+      end
+
+      it 'omits desired_capacity when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'minimal')
+        expect(config).not_to have_key('desired_capacity')
+      end
+      it 'includes end_time when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('opt', required_attrs.merge(end_time: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'opt')
+        expect(config).to have_key('end_time')
+      end
+
+      it 'omits end_time when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'minimal')
+        expect(config).not_to have_key('end_time')
+      end
+      it 'includes max_size when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('opt', required_attrs.merge(max_size: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'opt')
+        expect(config).to have_key('max_size')
+      end
+
+      it 'omits max_size when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'minimal')
+        expect(config).not_to have_key('max_size')
+      end
+      it 'includes min_size when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('opt', required_attrs.merge(min_size: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'opt')
+        expect(config).to have_key('min_size')
+      end
+
+      it 'omits min_size when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'minimal')
+        expect(config).not_to have_key('min_size')
+      end
+      it 'includes recurrence when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('opt', required_attrs.merge(recurrence: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'opt')
+        expect(config).to have_key('recurrence')
+      end
+
+      it 'omits recurrence when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'minimal')
+        expect(config).not_to have_key('recurrence')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes start_time when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('opt', required_attrs.merge(start_time: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'opt')
+        expect(config).to have_key('start_time')
+      end
+
+      it 'omits start_time when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'minimal')
+        expect(config).not_to have_key('start_time')
+      end
+      it 'includes time_zone when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('opt', required_attrs.merge(time_zone: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'opt')
+        expect(config).to have_key('time_zone')
+      end
+
+      it 'omits time_zone when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_autoscaling_schedule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_autoscaling_schedule', 'minimal')
         expect(config).not_to have_key('time_zone')
       end
     end
@@ -111,7 +273,7 @@ RSpec.describe Pangea::Resources::AWSAutoscalingSchedule do
     resource_type: :aws_autoscaling_schedule,
     method: :aws_autoscaling_schedule,
     required_attrs: { autoscaling_group_name: 'test-value', scheduled_action_name: 'test-value' },
-    expected_outputs: [:id, :arn, :desired_capacity, :end_time, :max_size, :min_size, :recurrence, :start_time, :time_zone],
+    expected_outputs: [:id, :arn, :desired_capacity, :end_time, :max_size, :min_size, :recurrence, :region, :start_time, :time_zone],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

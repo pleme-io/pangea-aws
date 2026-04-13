@@ -49,7 +49,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
         expect(ref.endpoint_v2).to eq("${aws_opensearch_domain.test.endpoint_v2}")
         expect(ref.engine_version).to eq("${aws_opensearch_domain.test.engine_version}")
         expect(ref.ip_address_type).to eq("${aws_opensearch_domain.test.ip_address_type}")
-        expect(ref.kibana_endpoint).to eq("${aws_opensearch_domain.test.kibana_endpoint}")
+        expect(ref.region).to eq("${aws_opensearch_domain.test.region}")
         expect(ref.tags_all).to eq("${aws_opensearch_domain.test.tags_all}")
       end
     end
@@ -73,13 +73,13 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
         expect(config).not_to have_key('endpoint_v2')
         expect(config).not_to have_key('engine_version')
         expect(config).not_to have_key('ip_address_type')
-        expect(config).not_to have_key('kibana_endpoint')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ advanced_security_options: [{ 'key1' => 'val1' }], auto_tune_options: [{ 'key1' => 'val1' }], cluster_config: [{ 'key1' => 'val1' }], cognito_options: [{ 'key1' => 'val1' }], domain_endpoint_options: [{ 'key1' => 'val1' }], ebs_options: [{ 'key1' => 'val1' }], encrypt_at_rest: [{ 'key1' => 'val1' }], log_publishing_options: [{ 'key1' => 'val1' }], node_to_node_encryption: [{ 'key1' => 'val1' }], off_peak_window_options: [{ 'key1' => 'val1' }], snapshot_options: [{ 'key1' => 'val1' }], software_update_options: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, vpc_options: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ access_policies: 'test-value', advanced_options: { 'key1' => 'val1' }, advanced_security_options: { 'key1' => 'val1' }, aiml_options: { 'key1' => 'val1' }, auto_tune_options: { 'key1' => 'val1' }, cluster_config: { 'key1' => 'val1' }, cognito_options: { 'key1' => 'val1' }, domain_endpoint_options: { 'key1' => 'val1' }, ebs_options: { 'key1' => 'val1' }, encrypt_at_rest: { 'key1' => 'val1' }, engine_version: 'test-value', identity_center_options: { 'key1' => 'val1' }, ip_address_type: 'test-value', log_publishing_options: [{ 'key1' => 'val1' }], node_to_node_encryption: { 'key1' => 'val1' }, off_peak_window_options: { 'key1' => 'val1' }, region: 'test-value', snapshot_options: { 'key1' => 'val1' }, software_update_options: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_options: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -88,28 +88,70 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'full')
+        expect(config).to have_key('access_policies')
+        expect(config).to have_key('advanced_options')
         expect(config).to have_key('advanced_security_options')
+        expect(config).to have_key('aiml_options')
         expect(config).to have_key('auto_tune_options')
         expect(config).to have_key('cluster_config')
         expect(config).to have_key('cognito_options')
         expect(config).to have_key('domain_endpoint_options')
         expect(config).to have_key('ebs_options')
         expect(config).to have_key('encrypt_at_rest')
+        expect(config).to have_key('engine_version')
+        expect(config).to have_key('identity_center_options')
+        expect(config).to have_key('ip_address_type')
         expect(config).to have_key('log_publishing_options')
         expect(config).to have_key('node_to_node_encryption')
         expect(config).to have_key('off_peak_window_options')
+        expect(config).to have_key('region')
         expect(config).to have_key('snapshot_options')
         expect(config).to have_key('software_update_options')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc_options')
       end
     end
 
     context 'optional attributes' do
+      it 'includes access_policies when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('opt', required_attrs.merge(access_policies: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
+        expect(config).to have_key('access_policies')
+      end
+
+      it 'omits access_policies when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'minimal')
+        expect(config).not_to have_key('access_policies')
+      end
+      it 'includes advanced_options when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('opt', required_attrs.merge(advanced_options: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
+        expect(config).to have_key('advanced_options')
+      end
+
+      it 'omits advanced_options when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'minimal')
+        expect(config).not_to have_key('advanced_options')
+      end
       it 'includes advanced_security_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_domain('opt', required_attrs.merge(advanced_security_options: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_domain('opt', required_attrs.merge(advanced_security_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
         expect(config).to have_key('advanced_security_options')
@@ -123,10 +165,27 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'minimal')
         expect(config).not_to have_key('advanced_security_options')
       end
+      it 'includes aiml_options when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('opt', required_attrs.merge(aiml_options: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
+        expect(config).to have_key('aiml_options')
+      end
+
+      it 'omits aiml_options when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'minimal')
+        expect(config).not_to have_key('aiml_options')
+      end
       it 'includes auto_tune_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_domain('opt', required_attrs.merge(auto_tune_options: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_domain('opt', required_attrs.merge(auto_tune_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
         expect(config).to have_key('auto_tune_options')
@@ -143,7 +202,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
       it 'includes cluster_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_domain('opt', required_attrs.merge(cluster_config: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_domain('opt', required_attrs.merge(cluster_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
         expect(config).to have_key('cluster_config')
@@ -160,7 +219,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
       it 'includes cognito_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_domain('opt', required_attrs.merge(cognito_options: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_domain('opt', required_attrs.merge(cognito_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
         expect(config).to have_key('cognito_options')
@@ -177,7 +236,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
       it 'includes domain_endpoint_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_domain('opt', required_attrs.merge(domain_endpoint_options: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_domain('opt', required_attrs.merge(domain_endpoint_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
         expect(config).to have_key('domain_endpoint_options')
@@ -194,7 +253,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
       it 'includes ebs_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_domain('opt', required_attrs.merge(ebs_options: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_domain('opt', required_attrs.merge(ebs_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
         expect(config).to have_key('ebs_options')
@@ -211,7 +270,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
       it 'includes encrypt_at_rest when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_domain('opt', required_attrs.merge(encrypt_at_rest: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_domain('opt', required_attrs.merge(encrypt_at_rest: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
         expect(config).to have_key('encrypt_at_rest')
@@ -224,6 +283,57 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'minimal')
         expect(config).not_to have_key('encrypt_at_rest')
+      end
+      it 'includes engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('opt', required_attrs.merge(engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
+        expect(config).to have_key('engine_version')
+      end
+
+      it 'omits engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'minimal')
+        expect(config).not_to have_key('engine_version')
+      end
+      it 'includes identity_center_options when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('opt', required_attrs.merge(identity_center_options: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
+        expect(config).to have_key('identity_center_options')
+      end
+
+      it 'omits identity_center_options when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'minimal')
+        expect(config).not_to have_key('identity_center_options')
+      end
+      it 'includes ip_address_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('opt', required_attrs.merge(ip_address_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
+        expect(config).to have_key('ip_address_type')
+      end
+
+      it 'omits ip_address_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'minimal')
+        expect(config).not_to have_key('ip_address_type')
       end
       it 'includes log_publishing_options when provided' do
         synth = create_synthesizer
@@ -245,7 +355,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
       it 'includes node_to_node_encryption when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_domain('opt', required_attrs.merge(node_to_node_encryption: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_domain('opt', required_attrs.merge(node_to_node_encryption: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
         expect(config).to have_key('node_to_node_encryption')
@@ -262,7 +372,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
       it 'includes off_peak_window_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_domain('opt', required_attrs.merge(off_peak_window_options: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_domain('opt', required_attrs.merge(off_peak_window_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
         expect(config).to have_key('off_peak_window_options')
@@ -276,10 +386,27 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'minimal')
         expect(config).not_to have_key('off_peak_window_options')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes snapshot_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_domain('opt', required_attrs.merge(snapshot_options: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_domain('opt', required_attrs.merge(snapshot_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
         expect(config).to have_key('snapshot_options')
@@ -296,7 +423,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
       it 'includes software_update_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_domain('opt', required_attrs.merge(software_update_options: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_domain('opt', required_attrs.merge(software_update_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
         expect(config).to have_key('software_update_options')
@@ -327,10 +454,27 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_opensearch_domain('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_opensearch_domain', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes vpc_options when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_opensearch_domain('opt', required_attrs.merge(vpc_options: [{ 'key1' => 'val1' }]))
+        synth.aws_opensearch_domain('opt', required_attrs.merge(vpc_options: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_opensearch_domain', 'opt')
         expect(config).to have_key('vpc_options')
@@ -388,7 +532,7 @@ RSpec.describe Pangea::Resources::AWSOpensearchDomain do
     resource_type: :aws_opensearch_domain,
     method: :aws_opensearch_domain,
     required_attrs: { domain_name: 'test-value' },
-    expected_outputs: [:id, :access_policies, :advanced_options, :arn, :dashboard_endpoint, :dashboard_endpoint_v2, :domain_endpoint_v2_hosted_zone_id, :domain_id, :endpoint, :endpoint_v2, :engine_version, :ip_address_type, :kibana_endpoint, :tags_all],
+    expected_outputs: [:id, :access_policies, :advanced_options, :arn, :dashboard_endpoint, :dashboard_endpoint_v2, :domain_endpoint_v2_hosted_zone_id, :domain_id, :endpoint, :endpoint_v2, :engine_version, :ip_address_type, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

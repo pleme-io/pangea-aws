@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LightsailCertificateAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:domain_name, :subject_alternative_names, :tags, :tags_all]
+      map_present: [:domain_name, :region, :subject_alternative_names, :tags, :tags_all]
   end
   module AWS
     include AWSLightsailCertificate

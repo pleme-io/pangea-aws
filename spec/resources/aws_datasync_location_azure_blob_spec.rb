@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationAzureBlob do
 
         expect(ref.id).to eq("${aws_datasync_location_azure_blob.test.id}")
         expect(ref.arn).to eq("${aws_datasync_location_azure_blob.test.arn}")
+        expect(ref.region).to eq("${aws_datasync_location_azure_blob.test.region}")
         expect(ref.subdirectory).to eq("${aws_datasync_location_azure_blob.test.subdirectory}")
         expect(ref.tags_all).to eq("${aws_datasync_location_azure_blob.test.tags_all}")
         expect(ref.uri).to eq("${aws_datasync_location_azure_blob.test.uri}")
@@ -54,6 +55,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationAzureBlob do
 
         config = validate_resource_structure(result, 'aws_datasync_location_azure_blob', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('subdirectory')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('uri')
@@ -61,7 +63,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationAzureBlob do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_tier: 'test-value', blob_type: 'test-value', sas_configuration: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ access_tier: 'test-value', blob_type: 'test-value', region: 'test-value', sas_configuration: { 'key1' => 'val1' }, subdirectory: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,8 +74,11 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationAzureBlob do
         config = validate_resource_structure(result, 'aws_datasync_location_azure_blob', 'full')
         expect(config).to have_key('access_tier')
         expect(config).to have_key('blob_type')
+        expect(config).to have_key('region')
         expect(config).to have_key('sas_configuration')
+        expect(config).to have_key('subdirectory')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -112,10 +117,27 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationAzureBlob do
         config = validate_resource_structure(result, 'aws_datasync_location_azure_blob', 'minimal')
         expect(config).not_to have_key('blob_type')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_azure_blob('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_azure_blob', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_azure_blob('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_azure_blob', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes sas_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_datasync_location_azure_blob('opt', required_attrs.merge(sas_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_datasync_location_azure_blob('opt', required_attrs.merge(sas_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_location_azure_blob', 'opt')
         expect(config).to have_key('sas_configuration')
@@ -128,6 +150,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationAzureBlob do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_location_azure_blob', 'minimal')
         expect(config).not_to have_key('sas_configuration')
+      end
+      it 'includes subdirectory when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_azure_blob('opt', required_attrs.merge(subdirectory: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_azure_blob', 'opt')
+        expect(config).to have_key('subdirectory')
+      end
+
+      it 'omits subdirectory when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_azure_blob('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_azure_blob', 'minimal')
+        expect(config).not_to have_key('subdirectory')
       end
       it 'includes tags when provided' do
         synth = create_synthesizer
@@ -145,6 +184,23 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationAzureBlob do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_datasync_location_azure_blob', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_azure_blob('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_azure_blob', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_datasync_location_azure_blob('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_datasync_location_azure_blob', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -192,7 +248,7 @@ RSpec.describe Pangea::Resources::AWSDatasyncLocationAzureBlob do
     resource_type: :aws_datasync_location_azure_blob,
     method: :aws_datasync_location_azure_blob,
     required_attrs: { agent_arns: ['test-value'], authentication_type: 'test-value', container_url: 'test-value' },
-    expected_outputs: [:id, :arn, :subdirectory, :tags_all, :uri],
+    expected_outputs: [:id, :arn, :region, :subdirectory, :tags_all, :uri],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

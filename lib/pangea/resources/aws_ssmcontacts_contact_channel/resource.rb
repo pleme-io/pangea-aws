@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_ssmcontacts_contact_channel,
       attributes_class: AWS::Types::SsmcontactsContactChannelAttributes,
       outputs: { id: :id },
-      map: [:contact_id, :delivery_address, :name, :type]
+      map: [:contact_id, :delivery_address, :name, :type],
+      map_present: [:region]
   end
   module AWS
     include AWSSsmcontactsContactChannel

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::GlueResourcePolicyAttributes,
       outputs: { id: :id },
       map: [:policy],
-      map_present: [:enable_hybrid]
+      map_present: [:enable_hybrid, :region]
   end
   module AWS
     include AWSGlueResourcePolicy

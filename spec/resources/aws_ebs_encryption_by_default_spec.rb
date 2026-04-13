@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSEbsEncryptionByDefault do
         ref = synth.aws_ebs_encryption_by_default('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ebs_encryption_by_default.test.id}")
+        expect(ref.region).to eq("${aws_ebs_encryption_by_default.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_encryption_by_default('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ebs_encryption_by_default', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ enabled: true }) }
+      let(:all_attrs) { required_attrs.merge({ enabled: true, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSEbsEncryptionByDefault do
 
         config = validate_resource_structure(result, 'aws_ebs_encryption_by_default', 'full')
         expect(config).to have_key('enabled')
+        expect(config).to have_key('region')
       end
     end
 
@@ -72,6 +86,23 @@ RSpec.describe Pangea::Resources::AWSEbsEncryptionByDefault do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ebs_encryption_by_default', 'minimal')
         expect(config).not_to have_key('enabled')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_encryption_by_default('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_encryption_by_default', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ebs_encryption_by_default('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ebs_encryption_by_default', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -130,7 +161,7 @@ RSpec.describe Pangea::Resources::AWSEbsEncryptionByDefault do
     resource_type: :aws_ebs_encryption_by_default,
     method: :aws_ebs_encryption_by_default,
     required_attrs: {},
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled]

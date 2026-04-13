@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::LambdaFunctionUrlAttributes,
       outputs: { id: :id },
       map: [:authorization_type, :function_name],
-      map_present: [:cors, :invoke_mode, :qualifier]
+      map_present: [:cors, :invoke_mode, :qualifier, :region]
   end
   module AWS
     include AWSLambdaFunctionUrl

@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationDataLakeSettings do
         expect(ref.external_data_filtering_allow_list).to eq("${aws_lakeformation_data_lake_settings.test.external_data_filtering_allow_list}")
         expect(ref.parameters).to eq("${aws_lakeformation_data_lake_settings.test.parameters}")
         expect(ref.read_only_admins).to eq("${aws_lakeformation_data_lake_settings.test.read_only_admins}")
+        expect(ref.region).to eq("${aws_lakeformation_data_lake_settings.test.region}")
         expect(ref.trusted_resource_owners).to eq("${aws_lakeformation_data_lake_settings.test.trusted_resource_owners}")
       end
     end
@@ -60,12 +61,13 @@ RSpec.describe Pangea::Resources::AWSLakeformationDataLakeSettings do
         expect(config).not_to have_key('external_data_filtering_allow_list')
         expect(config).not_to have_key('parameters')
         expect(config).not_to have_key('read_only_admins')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('trusted_resource_owners')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allow_external_data_filtering: true, allow_full_table_external_data_access: true, catalog_id: 'test-value', create_database_default_permissions: [{ 'key1' => 'val1' }], create_table_default_permissions: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ admins: ['test-value'], allow_external_data_filtering: true, allow_full_table_external_data_access: true, authorized_session_tag_value_list: ['test-value'], catalog_id: 'test-value', create_database_default_permissions: [{ 'key1' => 'val1' }], create_table_default_permissions: [{ 'key1' => 'val1' }], external_data_filtering_allow_list: ['test-value'], parameters: { 'key1' => 'val1' }, read_only_admins: ['test-value'], region: 'test-value', trusted_resource_owners: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,15 +76,39 @@ RSpec.describe Pangea::Resources::AWSLakeformationDataLakeSettings do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'full')
+        expect(config).to have_key('admins')
         expect(config).to have_key('allow_external_data_filtering')
         expect(config).to have_key('allow_full_table_external_data_access')
+        expect(config).to have_key('authorized_session_tag_value_list')
         expect(config).to have_key('catalog_id')
         expect(config).to have_key('create_database_default_permissions')
         expect(config).to have_key('create_table_default_permissions')
+        expect(config).to have_key('external_data_filtering_allow_list')
+        expect(config).to have_key('parameters')
+        expect(config).to have_key('read_only_admins')
+        expect(config).to have_key('region')
+        expect(config).to have_key('trusted_resource_owners')
       end
     end
 
     context 'optional attributes' do
+      it 'includes admins when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('opt', required_attrs.merge(admins: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'opt')
+        expect(config).to have_key('admins')
+      end
+
+      it 'omits admins when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'minimal')
+        expect(config).not_to have_key('admins')
+      end
       it 'includes allow_external_data_filtering when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -116,6 +142,23 @@ RSpec.describe Pangea::Resources::AWSLakeformationDataLakeSettings do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'minimal')
         expect(config).not_to have_key('allow_full_table_external_data_access')
+      end
+      it 'includes authorized_session_tag_value_list when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('opt', required_attrs.merge(authorized_session_tag_value_list: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'opt')
+        expect(config).to have_key('authorized_session_tag_value_list')
+      end
+
+      it 'omits authorized_session_tag_value_list when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'minimal')
+        expect(config).not_to have_key('authorized_session_tag_value_list')
       end
       it 'includes catalog_id when provided' do
         synth = create_synthesizer
@@ -167,6 +210,91 @@ RSpec.describe Pangea::Resources::AWSLakeformationDataLakeSettings do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'minimal')
         expect(config).not_to have_key('create_table_default_permissions')
+      end
+      it 'includes external_data_filtering_allow_list when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('opt', required_attrs.merge(external_data_filtering_allow_list: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'opt')
+        expect(config).to have_key('external_data_filtering_allow_list')
+      end
+
+      it 'omits external_data_filtering_allow_list when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'minimal')
+        expect(config).not_to have_key('external_data_filtering_allow_list')
+      end
+      it 'includes parameters when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('opt', required_attrs.merge(parameters: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'opt')
+        expect(config).to have_key('parameters')
+      end
+
+      it 'omits parameters when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'minimal')
+        expect(config).not_to have_key('parameters')
+      end
+      it 'includes read_only_admins when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('opt', required_attrs.merge(read_only_admins: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'opt')
+        expect(config).to have_key('read_only_admins')
+      end
+
+      it 'omits read_only_admins when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'minimal')
+        expect(config).not_to have_key('read_only_admins')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes trusted_resource_owners when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('opt', required_attrs.merge(trusted_resource_owners: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'opt')
+        expect(config).to have_key('trusted_resource_owners')
+      end
+
+      it 'omits trusted_resource_owners when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lakeformation_data_lake_settings('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lakeformation_data_lake_settings', 'minimal')
+        expect(config).not_to have_key('trusted_resource_owners')
       end
     end
 
@@ -236,7 +364,7 @@ RSpec.describe Pangea::Resources::AWSLakeformationDataLakeSettings do
     resource_type: :aws_lakeformation_data_lake_settings,
     method: :aws_lakeformation_data_lake_settings,
     required_attrs: {},
-    expected_outputs: [:id, :admins, :authorized_session_tag_value_list, :external_data_filtering_allow_list, :parameters, :read_only_admins, :trusted_resource_owners],
+    expected_outputs: [:id, :admins, :authorized_session_tag_value_list, :external_data_filtering_allow_list, :parameters, :read_only_admins, :region, :trusted_resource_owners],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:allow_external_data_filtering, :allow_full_table_external_data_access]

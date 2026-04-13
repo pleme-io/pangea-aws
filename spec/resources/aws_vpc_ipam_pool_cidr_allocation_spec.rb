@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPoolCidrAllocation do
         expect(ref.cidr).to eq("${aws_vpc_ipam_pool_cidr_allocation.test.cidr}")
         expect(ref.ipam_pool_allocation_id).to eq("${aws_vpc_ipam_pool_cidr_allocation.test.ipam_pool_allocation_id}")
         expect(ref.netmask_length).to eq("${aws_vpc_ipam_pool_cidr_allocation.test.netmask_length}")
+        expect(ref.region).to eq("${aws_vpc_ipam_pool_cidr_allocation.test.region}")
         expect(ref.resource_id).to eq("${aws_vpc_ipam_pool_cidr_allocation.test.resource_id}")
         expect(ref.resource_owner).to eq("${aws_vpc_ipam_pool_cidr_allocation.test.resource_owner}")
         expect(ref.resource_type).to eq("${aws_vpc_ipam_pool_cidr_allocation.test.resource_type}")
@@ -58,6 +59,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPoolCidrAllocation do
         expect(config).not_to have_key('cidr')
         expect(config).not_to have_key('ipam_pool_allocation_id')
         expect(config).not_to have_key('netmask_length')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('resource_id')
         expect(config).not_to have_key('resource_owner')
         expect(config).not_to have_key('resource_type')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPoolCidrAllocation do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', disallowed_cidrs: ['test-value'] }) }
+      let(:all_attrs) { required_attrs.merge({ cidr: 'test-value', description: 'test-value', disallowed_cidrs: ['test-value'], netmask_length: 3.14, region: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,12 +76,32 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPoolCidrAllocation do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr_allocation', 'full')
+        expect(config).to have_key('cidr')
         expect(config).to have_key('description')
         expect(config).to have_key('disallowed_cidrs')
+        expect(config).to have_key('netmask_length')
+        expect(config).to have_key('region')
       end
     end
 
     context 'optional attributes' do
+      it 'includes cidr when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool_cidr_allocation('opt', required_attrs.merge(cidr: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr_allocation', 'opt')
+        expect(config).to have_key('cidr')
+      end
+
+      it 'omits cidr when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool_cidr_allocation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr_allocation', 'minimal')
+        expect(config).not_to have_key('cidr')
+      end
       it 'includes description when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -113,6 +135,40 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPoolCidrAllocation do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr_allocation', 'minimal')
         expect(config).not_to have_key('disallowed_cidrs')
+      end
+      it 'includes netmask_length when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool_cidr_allocation('opt', required_attrs.merge(netmask_length: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr_allocation', 'opt')
+        expect(config).to have_key('netmask_length')
+      end
+
+      it 'omits netmask_length when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool_cidr_allocation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr_allocation', 'minimal')
+        expect(config).not_to have_key('netmask_length')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool_cidr_allocation('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr_allocation', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_vpc_ipam_pool_cidr_allocation('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_vpc_ipam_pool_cidr_allocation', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -158,7 +214,7 @@ RSpec.describe Pangea::Resources::AWSVpcIpamPoolCidrAllocation do
     resource_type: :aws_vpc_ipam_pool_cidr_allocation,
     method: :aws_vpc_ipam_pool_cidr_allocation,
     required_attrs: { ipam_pool_id: 'test-value' },
-    expected_outputs: [:id, :cidr, :ipam_pool_allocation_id, :netmask_length, :resource_id, :resource_owner, :resource_type],
+    expected_outputs: [:id, :cidr, :ipam_pool_allocation_id, :netmask_length, :region, :resource_id, :resource_owner, :resource_type],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

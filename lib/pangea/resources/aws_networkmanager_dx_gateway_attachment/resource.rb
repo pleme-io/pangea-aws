@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::NetworkmanagerDxGatewayAttachmentAttributes,
       outputs: { id: :id },
       map: [:core_network_id, :direct_connect_gateway_arn, :edge_locations],
-      map_present: [:tags]
+      map_present: [:routing_policy_label, :tags]
   end
   module AWS
     include AWSNetworkmanagerDxGatewayAttachment

@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmonitorMonitor do
         expect(ref.id).to eq("${aws_networkmonitor_monitor.test.id}")
         expect(ref.aggregation_period).to eq("${aws_networkmonitor_monitor.test.aggregation_period}")
         expect(ref.arn).to eq("${aws_networkmonitor_monitor.test.arn}")
+        expect(ref.region).to eq("${aws_networkmonitor_monitor.test.region}")
         expect(ref.tags_all).to eq("${aws_networkmonitor_monitor.test.tags_all}")
       end
     end
@@ -54,12 +55,13 @@ RSpec.describe Pangea::Resources::AWSNetworkmonitorMonitor do
         config = validate_resource_structure(result, 'aws_networkmonitor_monitor', 'test')
         expect(config).not_to have_key('aggregation_period')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ aggregation_period: 3.14, region: 'test-value', tags: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -68,11 +70,47 @@ RSpec.describe Pangea::Resources::AWSNetworkmonitorMonitor do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_networkmonitor_monitor', 'full')
+        expect(config).to have_key('aggregation_period')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
       end
     end
 
     context 'optional attributes' do
+      it 'includes aggregation_period when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmonitor_monitor('opt', required_attrs.merge(aggregation_period: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmonitor_monitor', 'opt')
+        expect(config).to have_key('aggregation_period')
+      end
+
+      it 'omits aggregation_period when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmonitor_monitor('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmonitor_monitor', 'minimal')
+        expect(config).not_to have_key('aggregation_period')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmonitor_monitor('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmonitor_monitor', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_networkmonitor_monitor('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_networkmonitor_monitor', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -134,7 +172,7 @@ RSpec.describe Pangea::Resources::AWSNetworkmonitorMonitor do
     resource_type: :aws_networkmonitor_monitor,
     method: :aws_networkmonitor_monitor,
     required_attrs: { monitor_name: 'test-value' },
-    expected_outputs: [:id, :aggregation_period, :arn, :tags_all],
+    expected_outputs: [:id, :aggregation_period, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

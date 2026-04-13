@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::MedialiveMultiplexAttributes,
       outputs: { id: :id },
       map: [:availability_zones, :name],
-      map_present: [:multiplex_settings, :tags, :tags_all],
+      map_present: [:multiplex_settings, :region, :tags, :tags_all],
       map_bool: [:start_multiplex]
   end
   module AWS

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSNatGateway do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { subnet_id: 'test-value' } }
+  let(:required_attrs) { {} }
 
   describe ':aws_nat_gateway' do
     context 'with required attributes only' do
@@ -20,7 +20,7 @@ RSpec.describe Pangea::Resources::AWSNatGateway do
 
         validate_terraform_structure(result, :resource)
         config = validate_resource_structure(result, 'aws_nat_gateway', 'test')
-        validate_required_attributes(config, [:subnet_id])
+        validate_required_attributes(config, [])
       end
 
       it 'returns a ResourceReference' do
@@ -39,12 +39,21 @@ RSpec.describe Pangea::Resources::AWSNatGateway do
 
         expect(ref.id).to eq("${aws_nat_gateway.test.id}")
         expect(ref.association_id).to eq("${aws_nat_gateway.test.association_id}")
+        expect(ref.auto_provision_zones).to eq("${aws_nat_gateway.test.auto_provision_zones}")
+        expect(ref.auto_scaling_ips).to eq("${aws_nat_gateway.test.auto_scaling_ips}")
+        expect(ref.availability_mode).to eq("${aws_nat_gateway.test.availability_mode}")
         expect(ref.network_interface_id).to eq("${aws_nat_gateway.test.network_interface_id}")
         expect(ref.private_ip).to eq("${aws_nat_gateway.test.private_ip}")
         expect(ref.public_ip).to eq("${aws_nat_gateway.test.public_ip}")
+        expect(ref.region).to eq("${aws_nat_gateway.test.region}")
+        expect(ref.regional_nat_gateway_address).to eq("${aws_nat_gateway.test.regional_nat_gateway_address}")
+        expect(ref.regional_nat_gateway_auto_mode).to eq("${aws_nat_gateway.test.regional_nat_gateway_auto_mode}")
+        expect(ref.route_table_id).to eq("${aws_nat_gateway.test.route_table_id}")
+        expect(ref.secondary_allocation_ids).to eq("${aws_nat_gateway.test.secondary_allocation_ids}")
         expect(ref.secondary_private_ip_address_count).to eq("${aws_nat_gateway.test.secondary_private_ip_address_count}")
         expect(ref.secondary_private_ip_addresses).to eq("${aws_nat_gateway.test.secondary_private_ip_addresses}")
         expect(ref.tags_all).to eq("${aws_nat_gateway.test.tags_all}")
+        expect(ref.vpc_id).to eq("${aws_nat_gateway.test.vpc_id}")
       end
     end
 
@@ -57,17 +66,26 @@ RSpec.describe Pangea::Resources::AWSNatGateway do
 
         config = validate_resource_structure(result, 'aws_nat_gateway', 'test')
         expect(config).not_to have_key('association_id')
+        expect(config).not_to have_key('auto_provision_zones')
+        expect(config).not_to have_key('auto_scaling_ips')
+        expect(config).not_to have_key('availability_mode')
         expect(config).not_to have_key('network_interface_id')
         expect(config).not_to have_key('private_ip')
         expect(config).not_to have_key('public_ip')
+        expect(config).not_to have_key('region')
+        expect(config).not_to have_key('regional_nat_gateway_address')
+        expect(config).not_to have_key('regional_nat_gateway_auto_mode')
+        expect(config).not_to have_key('route_table_id')
+        expect(config).not_to have_key('secondary_allocation_ids')
         expect(config).not_to have_key('secondary_private_ip_address_count')
         expect(config).not_to have_key('secondary_private_ip_addresses')
         expect(config).not_to have_key('tags_all')
+        expect(config).not_to have_key('vpc_id')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ allocation_id: 'test-value', connectivity_type: 'test-value', secondary_allocation_ids: ['test-value'], tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ allocation_id: 'test-value', availability_mode: 'test-value', availability_zone_address: [{ 'key1' => 'val1' }], connectivity_type: 'test-value', private_ip: 'test-value', region: 'test-value', secondary_allocation_ids: ['test-value'], secondary_private_ip_address_count: 3.14, secondary_private_ip_addresses: ['test-value'], subnet_id: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_id: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,9 +95,18 @@ RSpec.describe Pangea::Resources::AWSNatGateway do
 
         config = validate_resource_structure(result, 'aws_nat_gateway', 'full')
         expect(config).to have_key('allocation_id')
+        expect(config).to have_key('availability_mode')
+        expect(config).to have_key('availability_zone_address')
         expect(config).to have_key('connectivity_type')
+        expect(config).to have_key('private_ip')
+        expect(config).to have_key('region')
         expect(config).to have_key('secondary_allocation_ids')
+        expect(config).to have_key('secondary_private_ip_address_count')
+        expect(config).to have_key('secondary_private_ip_addresses')
+        expect(config).to have_key('subnet_id')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
+        expect(config).to have_key('vpc_id')
       end
     end
 
@@ -101,6 +128,40 @@ RSpec.describe Pangea::Resources::AWSNatGateway do
         config = validate_resource_structure(result, 'aws_nat_gateway', 'minimal')
         expect(config).not_to have_key('allocation_id')
       end
+      it 'includes availability_mode when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('opt', required_attrs.merge(availability_mode: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'opt')
+        expect(config).to have_key('availability_mode')
+      end
+
+      it 'omits availability_mode when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'minimal')
+        expect(config).not_to have_key('availability_mode')
+      end
+      it 'includes availability_zone_address when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('opt', required_attrs.merge(availability_zone_address: [{ 'key1' => 'val1' }]))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'opt')
+        expect(config).to have_key('availability_zone_address')
+      end
+
+      it 'omits availability_zone_address when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'minimal')
+        expect(config).not_to have_key('availability_zone_address')
+      end
       it 'includes connectivity_type when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -117,6 +178,40 @@ RSpec.describe Pangea::Resources::AWSNatGateway do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_nat_gateway', 'minimal')
         expect(config).not_to have_key('connectivity_type')
+      end
+      it 'includes private_ip when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('opt', required_attrs.merge(private_ip: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'opt')
+        expect(config).to have_key('private_ip')
+      end
+
+      it 'omits private_ip when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'minimal')
+        expect(config).not_to have_key('private_ip')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes secondary_allocation_ids when provided' do
         synth = create_synthesizer
@@ -135,6 +230,57 @@ RSpec.describe Pangea::Resources::AWSNatGateway do
         config = validate_resource_structure(result, 'aws_nat_gateway', 'minimal')
         expect(config).not_to have_key('secondary_allocation_ids')
       end
+      it 'includes secondary_private_ip_address_count when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('opt', required_attrs.merge(secondary_private_ip_address_count: 3.14))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'opt')
+        expect(config).to have_key('secondary_private_ip_address_count')
+      end
+
+      it 'omits secondary_private_ip_address_count when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'minimal')
+        expect(config).not_to have_key('secondary_private_ip_address_count')
+      end
+      it 'includes secondary_private_ip_addresses when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('opt', required_attrs.merge(secondary_private_ip_addresses: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'opt')
+        expect(config).to have_key('secondary_private_ip_addresses')
+      end
+
+      it 'omits secondary_private_ip_addresses when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'minimal')
+        expect(config).not_to have_key('secondary_private_ip_addresses')
+      end
+      it 'includes subnet_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('opt', required_attrs.merge(subnet_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'opt')
+        expect(config).to have_key('subnet_id')
+      end
+
+      it 'omits subnet_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'minimal')
+        expect(config).not_to have_key('subnet_id')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -152,6 +298,40 @@ RSpec.describe Pangea::Resources::AWSNatGateway do
         config = validate_resource_structure(result, 'aws_nat_gateway', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
+      it 'includes vpc_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('opt', required_attrs.merge(vpc_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'opt')
+        expect(config).to have_key('vpc_id')
+      end
+
+      it 'omits vpc_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_nat_gateway('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_nat_gateway', 'minimal')
+        expect(config).not_to have_key('vpc_id')
+      end
     end
 
     context 'attribute types' do
@@ -162,7 +342,6 @@ RSpec.describe Pangea::Resources::AWSNatGateway do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_nat_gateway', 'typed')
-        expect(config['subnet_id']).to be_a(String)
       end
     end
 
@@ -195,8 +374,8 @@ RSpec.describe Pangea::Resources::AWSNatGateway do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_nat_gateway,
     method: :aws_nat_gateway,
-    required_attrs: { subnet_id: 'test-value' },
-    expected_outputs: [:id, :association_id, :network_interface_id, :private_ip, :public_ip, :secondary_private_ip_address_count, :secondary_private_ip_addresses, :tags_all],
+    required_attrs: {},
+    expected_outputs: [:id, :association_id, :auto_provision_zones, :auto_scaling_ips, :availability_mode, :network_interface_id, :private_ip, :public_ip, :region, :regional_nat_gateway_address, :regional_nat_gateway_auto_mode, :route_table_id, :secondary_allocation_ids, :secondary_private_ip_address_count, :secondary_private_ip_addresses, :tags_all, :vpc_id],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

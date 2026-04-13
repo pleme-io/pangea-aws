@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSSyntheticsCanary do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { artifact_s3_location: 'test-value', execution_role_arn: 'test-value', handler: 'test-value', name: 'test-value', runtime_version: 'test-value', schedule: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { artifact_s3_location: 'test-value', execution_role_arn: 'test-value', handler: 'test-value', name: 'test-value', runtime_version: 'test-value', schedule: { 'key1' => 'val1' } } }
 
   describe ':aws_synthetics_canary' do
     context 'with required attributes only' do
@@ -40,6 +40,7 @@ RSpec.describe Pangea::Resources::AWSSyntheticsCanary do
         expect(ref.id).to eq("${aws_synthetics_canary.test.id}")
         expect(ref.arn).to eq("${aws_synthetics_canary.test.arn}")
         expect(ref.engine_arn).to eq("${aws_synthetics_canary.test.engine_arn}")
+        expect(ref.region).to eq("${aws_synthetics_canary.test.region}")
         expect(ref.source_location_arn).to eq("${aws_synthetics_canary.test.source_location_arn}")
         expect(ref.status).to eq("${aws_synthetics_canary.test.status}")
         expect(ref.tags_all).to eq("${aws_synthetics_canary.test.tags_all}")
@@ -57,6 +58,7 @@ RSpec.describe Pangea::Resources::AWSSyntheticsCanary do
         config = validate_resource_structure(result, 'aws_synthetics_canary', 'test')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('engine_arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('source_location_arn')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSSyntheticsCanary do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ artifact_config: [{ 'key1' => 'val1' }], delete_lambda: true, failure_retention_period: 3.14, run_config: [{ 'key1' => 'val1' }], s3_bucket: 'test-value', s3_key: 'test-value', s3_version: 'test-value', start_canary: true, success_retention_period: 3.14, tags: { 'key1' => 'val1' }, vpc_config: [{ 'key1' => 'val1' }], zip_file: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ artifact_config: { 'key1' => 'val1' }, delete_lambda: true, failure_retention_period: 3.14, region: 'test-value', run_config: { 'key1' => 'val1' }, s3_bucket: 'test-value', s3_key: 'test-value', s3_version: 'test-value', start_canary: true, success_retention_period: 3.14, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, vpc_config: { 'key1' => 'val1' }, zip_file: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -77,6 +79,7 @@ RSpec.describe Pangea::Resources::AWSSyntheticsCanary do
         expect(config).to have_key('artifact_config')
         expect(config).to have_key('delete_lambda')
         expect(config).to have_key('failure_retention_period')
+        expect(config).to have_key('region')
         expect(config).to have_key('run_config')
         expect(config).to have_key('s3_bucket')
         expect(config).to have_key('s3_key')
@@ -84,6 +87,7 @@ RSpec.describe Pangea::Resources::AWSSyntheticsCanary do
         expect(config).to have_key('start_canary')
         expect(config).to have_key('success_retention_period')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('vpc_config')
         expect(config).to have_key('zip_file')
       end
@@ -93,7 +97,7 @@ RSpec.describe Pangea::Resources::AWSSyntheticsCanary do
       it 'includes artifact_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_synthetics_canary('opt', required_attrs.merge(artifact_config: [{ 'key1' => 'val1' }]))
+        synth.aws_synthetics_canary('opt', required_attrs.merge(artifact_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_synthetics_canary', 'opt')
         expect(config).to have_key('artifact_config')
@@ -141,10 +145,27 @@ RSpec.describe Pangea::Resources::AWSSyntheticsCanary do
         config = validate_resource_structure(result, 'aws_synthetics_canary', 'minimal')
         expect(config).not_to have_key('failure_retention_period')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_synthetics_canary('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_synthetics_canary', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_synthetics_canary('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_synthetics_canary', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes run_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_synthetics_canary('opt', required_attrs.merge(run_config: [{ 'key1' => 'val1' }]))
+        synth.aws_synthetics_canary('opt', required_attrs.merge(run_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_synthetics_canary', 'opt')
         expect(config).to have_key('run_config')
@@ -260,10 +281,27 @@ RSpec.describe Pangea::Resources::AWSSyntheticsCanary do
         config = validate_resource_structure(result, 'aws_synthetics_canary', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_synthetics_canary('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_synthetics_canary', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_synthetics_canary('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_synthetics_canary', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes vpc_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_synthetics_canary('opt', required_attrs.merge(vpc_config: [{ 'key1' => 'val1' }]))
+        synth.aws_synthetics_canary('opt', required_attrs.merge(vpc_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_synthetics_canary', 'opt')
         expect(config).to have_key('vpc_config')
@@ -334,7 +372,7 @@ RSpec.describe Pangea::Resources::AWSSyntheticsCanary do
         expect(config['handler']).to be_a(String)
         expect(config['name']).to be_a(String)
         expect(config['runtime_version']).to be_a(String)
-        expect(config['schedule']).to be_a(Array)
+        expect(config['schedule']).to be_a(Hash)
       end
     end
 
@@ -367,8 +405,8 @@ RSpec.describe Pangea::Resources::AWSSyntheticsCanary do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_synthetics_canary,
     method: :aws_synthetics_canary,
-    required_attrs: { artifact_s3_location: 'test-value', execution_role_arn: 'test-value', handler: 'test-value', name: 'test-value', runtime_version: 'test-value', schedule: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :engine_arn, :source_location_arn, :status, :tags_all, :timeline],
+    required_attrs: { artifact_s3_location: 'test-value', execution_role_arn: 'test-value', handler: 'test-value', name: 'test-value', runtime_version: 'test-value', schedule: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :engine_arn, :region, :source_location_arn, :status, :tags_all, :timeline],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:delete_lambda, :start_canary]

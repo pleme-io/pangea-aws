@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::PinpointApnsChannelAttributes,
       outputs: { id: :id },
       map: [:application_id],
-      map_present: [:bundle_id, :certificate, :default_authentication_method, :private_key, :team_id, :token_key, :token_key_id],
+      map_present: [:bundle_id, :certificate, :default_authentication_method, :private_key, :region, :team_id, :token_key, :token_key_id],
       map_bool: [:enabled]
   end
   module AWS

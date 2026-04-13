@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Apigatewayv2ApiMappingAttributes,
       outputs: { id: :id },
       map: [:api_id, :domain_name, :stage],
-      map_present: [:api_mapping_key]
+      map_present: [:api_mapping_key, :region]
   end
   module AWS
     include AWSApigatewayv2ApiMapping

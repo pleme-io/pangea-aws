@@ -38,6 +38,53 @@ RSpec.describe Pangea::Resources::AWSSsoadminApplicationAssignment do
         ref = synth.aws_ssoadmin_application_assignment('test', required_attrs)
 
         expect(ref.id).to eq("${aws_ssoadmin_application_assignment.test.id}")
+        expect(ref.region).to eq("${aws_ssoadmin_application_assignment.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_application_assignment('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ssoadmin_application_assignment', 'test')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_application_assignment('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_ssoadmin_application_assignment', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_application_assignment('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_application_assignment', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ssoadmin_application_assignment('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ssoadmin_application_assignment', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -85,7 +132,7 @@ RSpec.describe Pangea::Resources::AWSSsoadminApplicationAssignment do
     resource_type: :aws_ssoadmin_application_assignment,
     method: :aws_ssoadmin_application_assignment,
     required_attrs: { application_arn: 'test-value', principal_id: 'test-value', principal_type: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

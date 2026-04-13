@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftDataShareConsumerAssociationAttributes,
       outputs: { id: :id },
       map: [:data_share_arn],
-      map_present: [:consumer_arn, :consumer_region],
+      map_present: [:consumer_arn, :consumer_region, :region],
       map_bool: [:allow_writes, :associate_entire_account]
   end
   module AWS

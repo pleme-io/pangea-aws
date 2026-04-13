@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_internet_gateway_attachment,
       attributes_class: AWS::Types::InternetGatewayAttachmentAttributes,
       outputs: { id: :id },
-      map: [:internet_gateway_id, :vpc_id]
+      map: [:internet_gateway_id, :vpc_id],
+      map_present: [:region]
   end
   module AWS
     include AWSInternetGatewayAttachment

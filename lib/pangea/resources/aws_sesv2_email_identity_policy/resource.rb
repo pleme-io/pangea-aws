@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_sesv2_email_identity_policy,
       attributes_class: AWS::Types::Sesv2EmailIdentityPolicyAttributes,
       outputs: { id: :id },
-      map: [:email_identity, :policy, :policy_name]
+      map: [:email_identity, :policy, :policy_name],
+      map_present: [:region]
   end
   module AWS
     include AWSSesv2EmailIdentityPolicy

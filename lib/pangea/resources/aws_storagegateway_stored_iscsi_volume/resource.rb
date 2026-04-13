@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::StoragegatewayStoredIscsiVolumeAttributes,
       outputs: { id: :id },
       map: [:disk_id, :gateway_arn, :network_interface_id, :target_name],
-      map_present: [:kms_key, :snapshot_id, :tags, :tags_all],
+      map_present: [:kms_key, :region, :snapshot_id, :tags, :tags_all],
       map_bool: [:preserve_existing_data, :kms_encrypted]
   end
   module AWS

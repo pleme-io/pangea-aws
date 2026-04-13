@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::BedrockagentAgentCollaboratorAttributes,
       outputs: { id: :id },
       map: [:agent_id, :collaboration_instruction, :collaborator_name],
-      map_present: [:agent_descriptor, :agent_version, :relay_conversation_history],
+      map_present: [:agent_descriptor, :agent_version, :region, :relay_conversation_history],
       map_bool: [:prepare_agent]
   end
   module AWS

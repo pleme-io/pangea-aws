@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::Ec2TransitGatewayVpcAttachmentAttributes,
       outputs: { id: :id },
       map: [:subnet_ids, :transit_gateway_id, :vpc_id],
-      map_present: [:appliance_mode_support, :dns_support, :ipv6_support, :security_group_referencing_support, :tags, :tags_all],
+      map_present: [:appliance_mode_support, :dns_support, :ipv6_support, :region, :security_group_referencing_support, :tags, :tags_all],
       map_bool: [:transit_gateway_default_route_table_association, :transit_gateway_default_route_table_propagation]
   end
   module AWS

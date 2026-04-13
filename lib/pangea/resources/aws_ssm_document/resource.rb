@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SsmDocumentAttributes,
       outputs: { id: :id },
       map: [:content, :document_type, :name],
-      map_present: [:attachments_source, :document_format, :permissions, :tags, :tags_all, :target_type, :version_name]
+      map_present: [:attachments_source, :document_format, :permissions, :region, :tags, :tags_all, :target_type, :version_name]
   end
   module AWS
     include AWSSsmDocument

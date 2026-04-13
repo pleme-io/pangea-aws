@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AppmeshGatewayRouteAttributes,
       outputs: { id: :id },
       map: [:mesh_name, :name, :spec, :virtual_gateway_name],
-      map_present: [:mesh_owner, :tags, :tags_all]
+      map_present: [:mesh_owner, :region, :tags, :tags_all]
   end
   module AWS
     include AWSAppmeshGatewayRoute

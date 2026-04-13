@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessEndpointAccess do
         expect(ref.address).to eq("${aws_redshiftserverless_endpoint_access.test.address}")
         expect(ref.arn).to eq("${aws_redshiftserverless_endpoint_access.test.arn}")
         expect(ref.port).to eq("${aws_redshiftserverless_endpoint_access.test.port}")
+        expect(ref.region).to eq("${aws_redshiftserverless_endpoint_access.test.region}")
         expect(ref.vpc_endpoint).to eq("${aws_redshiftserverless_endpoint_access.test.vpc_endpoint}")
         expect(ref.vpc_security_group_ids).to eq("${aws_redshiftserverless_endpoint_access.test.vpc_security_group_ids}")
       end
@@ -57,13 +58,14 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessEndpointAccess do
         expect(config).not_to have_key('address')
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('port')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('vpc_endpoint')
         expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ owner_account: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ owner_account: 'test-value', region: 'test-value', vpc_security_group_ids: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,6 +75,8 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessEndpointAccess do
 
         config = validate_resource_structure(result, 'aws_redshiftserverless_endpoint_access', 'full')
         expect(config).to have_key('owner_account')
+        expect(config).to have_key('region')
+        expect(config).to have_key('vpc_security_group_ids')
       end
     end
 
@@ -93,6 +97,40 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessEndpointAccess do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_redshiftserverless_endpoint_access', 'minimal')
         expect(config).not_to have_key('owner_account')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_endpoint_access('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_endpoint_access', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_endpoint_access('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_endpoint_access', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes vpc_security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_endpoint_access('opt', required_attrs.merge(vpc_security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_endpoint_access', 'opt')
+        expect(config).to have_key('vpc_security_group_ids')
+      end
+
+      it 'omits vpc_security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_redshiftserverless_endpoint_access('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_redshiftserverless_endpoint_access', 'minimal')
+        expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
@@ -140,7 +178,7 @@ RSpec.describe Pangea::Resources::AWSRedshiftserverlessEndpointAccess do
     resource_type: :aws_redshiftserverless_endpoint_access,
     method: :aws_redshiftserverless_endpoint_access,
     required_attrs: { endpoint_name: 'test-value', subnet_ids: ['test-value'], workgroup_name: 'test-value' },
-    expected_outputs: [:id, :address, :arn, :port, :vpc_endpoint, :vpc_security_group_ids],
+    expected_outputs: [:id, :address, :arn, :port, :region, :vpc_endpoint, :vpc_security_group_ids],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

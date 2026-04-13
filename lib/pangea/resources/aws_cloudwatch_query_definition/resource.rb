@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::CloudwatchQueryDefinitionAttributes,
       outputs: { id: :id },
       map: [:name, :query_string],
-      map_present: [:log_group_names]
+      map_present: [:log_group_names, :region]
   end
   module AWS
     include AWSCloudwatchQueryDefinition

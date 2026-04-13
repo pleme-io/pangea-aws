@@ -1,0 +1,8 @@
+name: aws_dataexchange_revision
+title: Manages a aws_dataexchange_revision resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

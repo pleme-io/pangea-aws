@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ConfigRemediationConfigurationAttributes,
       outputs: { id: :id },
       map: [:config_rule_name, :target_id, :target_type],
-      map_present: [:execution_controls, :maximum_automatic_attempts, :parameter, :resource_type, :retry_attempt_seconds, :target_version],
+      map_present: [:execution_controls, :maximum_automatic_attempts, :parameter, :region, :resource_type, :retry_attempt_seconds, :target_version],
       map_bool: [:automatic]
   end
   module AWS

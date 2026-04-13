@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DataexchangeRevisionAssetsAttributes,
       outputs: { id: :id },
       map: [:data_set_id],
-      map_present: [:asset, :comment, :tags],
+      map_present: [:asset, :comment, :region, :tags],
       map_bool: [:finalized, :force_destroy]
   end
   module AWS

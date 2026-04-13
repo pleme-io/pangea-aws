@@ -46,6 +46,7 @@ RSpec.describe Pangea::Resources::AWSLightsailKeyPair do
         expect(ref.name_prefix).to eq("${aws_lightsail_key_pair.test.name_prefix}")
         expect(ref.private_key).to eq("${aws_lightsail_key_pair.test.private_key}")
         expect(ref.public_key).to eq("${aws_lightsail_key_pair.test.public_key}")
+        expect(ref.region).to eq("${aws_lightsail_key_pair.test.region}")
         expect(ref.tags_all).to eq("${aws_lightsail_key_pair.test.tags_all}")
       end
     end
@@ -66,12 +67,13 @@ RSpec.describe Pangea::Resources::AWSLightsailKeyPair do
         expect(config).not_to have_key('name_prefix')
         expect(config).not_to have_key('private_key')
         expect(config).not_to have_key('public_key')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ pgp_key: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ name: 'test-value', name_prefix: 'test-value', pgp_key: 'test-value', public_key: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -80,12 +82,51 @@ RSpec.describe Pangea::Resources::AWSLightsailKeyPair do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_lightsail_key_pair', 'full')
+        expect(config).to have_key('name')
+        expect(config).to have_key('name_prefix')
         expect(config).to have_key('pgp_key')
+        expect(config).to have_key('public_key')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
     context 'optional attributes' do
+      it 'includes name when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_key_pair('opt', required_attrs.merge(name: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_key_pair', 'opt')
+        expect(config).to have_key('name')
+      end
+
+      it 'omits name when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_key_pair('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_key_pair', 'minimal')
+        expect(config).not_to have_key('name')
+      end
+      it 'includes name_prefix when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_key_pair('opt', required_attrs.merge(name_prefix: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_key_pair', 'opt')
+        expect(config).to have_key('name_prefix')
+      end
+
+      it 'omits name_prefix when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_key_pair('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_key_pair', 'minimal')
+        expect(config).not_to have_key('name_prefix')
+      end
       it 'includes pgp_key when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -103,6 +144,40 @@ RSpec.describe Pangea::Resources::AWSLightsailKeyPair do
         config = validate_resource_structure(result, 'aws_lightsail_key_pair', 'minimal')
         expect(config).not_to have_key('pgp_key')
       end
+      it 'includes public_key when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_key_pair('opt', required_attrs.merge(public_key: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_key_pair', 'opt')
+        expect(config).to have_key('public_key')
+      end
+
+      it 'omits public_key when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_key_pair('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_key_pair', 'minimal')
+        expect(config).not_to have_key('public_key')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_key_pair('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_key_pair', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_key_pair('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_key_pair', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -119,6 +194,23 @@ RSpec.describe Pangea::Resources::AWSLightsailKeyPair do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_lightsail_key_pair', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_key_pair('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_key_pair', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_lightsail_key_pair('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_lightsail_key_pair', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -163,7 +255,7 @@ RSpec.describe Pangea::Resources::AWSLightsailKeyPair do
     resource_type: :aws_lightsail_key_pair,
     method: :aws_lightsail_key_pair,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :encrypted_fingerprint, :encrypted_private_key, :fingerprint, :name, :name_prefix, :private_key, :public_key, :tags_all],
+    expected_outputs: [:id, :arn, :encrypted_fingerprint, :encrypted_private_key, :fingerprint, :name, :name_prefix, :private_key, :public_key, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

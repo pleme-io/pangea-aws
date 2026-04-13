@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSPinpointEmailChannel do
 
         expect(ref.id).to eq("${aws_pinpoint_email_channel.test.id}")
         expect(ref.messages_per_second).to eq("${aws_pinpoint_email_channel.test.messages_per_second}")
+        expect(ref.region).to eq("${aws_pinpoint_email_channel.test.region}")
       end
     end
 
@@ -51,11 +52,12 @@ RSpec.describe Pangea::Resources::AWSPinpointEmailChannel do
 
         config = validate_resource_structure(result, 'aws_pinpoint_email_channel', 'test')
         expect(config).not_to have_key('messages_per_second')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ configuration_set: 'test-value', enabled: true, orchestration_sending_role_arn: 'test-value', role_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ configuration_set: 'test-value', enabled: true, orchestration_sending_role_arn: 'test-value', region: 'test-value', role_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,6 +69,7 @@ RSpec.describe Pangea::Resources::AWSPinpointEmailChannel do
         expect(config).to have_key('configuration_set')
         expect(config).to have_key('enabled')
         expect(config).to have_key('orchestration_sending_role_arn')
+        expect(config).to have_key('region')
         expect(config).to have_key('role_arn')
       end
     end
@@ -122,6 +125,23 @@ RSpec.describe Pangea::Resources::AWSPinpointEmailChannel do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_pinpoint_email_channel', 'minimal')
         expect(config).not_to have_key('orchestration_sending_role_arn')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpoint_email_channel('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpoint_email_channel', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_pinpoint_email_channel('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_pinpoint_email_channel', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes role_arn when provided' do
         synth = create_synthesizer
@@ -200,7 +220,7 @@ RSpec.describe Pangea::Resources::AWSPinpointEmailChannel do
     resource_type: :aws_pinpoint_email_channel,
     method: :aws_pinpoint_email_channel,
     required_attrs: { application_id: 'test-value', from_address: 'test-value', identity: 'test-value' },
-    expected_outputs: [:id, :messages_per_second],
+    expected_outputs: [:id, :messages_per_second, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled]

@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSSnsTopicSubscription do
         expect(ref.filter_policy_scope).to eq("${aws_sns_topic_subscription.test.filter_policy_scope}")
         expect(ref.owner_id).to eq("${aws_sns_topic_subscription.test.owner_id}")
         expect(ref.pending_confirmation).to eq("${aws_sns_topic_subscription.test.pending_confirmation}")
+        expect(ref.region).to eq("${aws_sns_topic_subscription.test.region}")
       end
     end
 
@@ -59,11 +60,12 @@ RSpec.describe Pangea::Resources::AWSSnsTopicSubscription do
         expect(config).not_to have_key('filter_policy_scope')
         expect(config).not_to have_key('owner_id')
         expect(config).not_to have_key('pending_confirmation')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ confirmation_timeout_in_minutes: 3.14, delivery_policy: 'test-value', endpoint_auto_confirms: true, filter_policy: 'test-value', raw_message_delivery: true, redrive_policy: 'test-value', replay_policy: 'test-value', subscription_role_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ confirmation_timeout_in_minutes: 3.14, delivery_policy: 'test-value', endpoint_auto_confirms: true, filter_policy: 'test-value', filter_policy_scope: 'test-value', raw_message_delivery: true, redrive_policy: 'test-value', region: 'test-value', replay_policy: 'test-value', subscription_role_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -76,8 +78,10 @@ RSpec.describe Pangea::Resources::AWSSnsTopicSubscription do
         expect(config).to have_key('delivery_policy')
         expect(config).to have_key('endpoint_auto_confirms')
         expect(config).to have_key('filter_policy')
+        expect(config).to have_key('filter_policy_scope')
         expect(config).to have_key('raw_message_delivery')
         expect(config).to have_key('redrive_policy')
+        expect(config).to have_key('region')
         expect(config).to have_key('replay_policy')
         expect(config).to have_key('subscription_role_arn')
       end
@@ -152,6 +156,23 @@ RSpec.describe Pangea::Resources::AWSSnsTopicSubscription do
         config = validate_resource_structure(result, 'aws_sns_topic_subscription', 'minimal')
         expect(config).not_to have_key('filter_policy')
       end
+      it 'includes filter_policy_scope when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic_subscription('opt', required_attrs.merge(filter_policy_scope: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic_subscription', 'opt')
+        expect(config).to have_key('filter_policy_scope')
+      end
+
+      it 'omits filter_policy_scope when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic_subscription', 'minimal')
+        expect(config).not_to have_key('filter_policy_scope')
+      end
       it 'includes raw_message_delivery when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -185,6 +206,23 @@ RSpec.describe Pangea::Resources::AWSSnsTopicSubscription do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_sns_topic_subscription', 'minimal')
         expect(config).not_to have_key('redrive_policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic_subscription('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic_subscription', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_sns_topic_subscription('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_sns_topic_subscription', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes replay_policy when provided' do
         synth = create_synthesizer
@@ -291,7 +329,7 @@ RSpec.describe Pangea::Resources::AWSSnsTopicSubscription do
     resource_type: :aws_sns_topic_subscription,
     method: :aws_sns_topic_subscription,
     required_attrs: { endpoint: 'test-value', protocol: 'test-value', topic_arn: 'test-value' },
-    expected_outputs: [:id, :arn, :confirmation_was_authenticated, :filter_policy_scope, :owner_id, :pending_confirmation],
+    expected_outputs: [:id, :arn, :confirmation_was_authenticated, :filter_policy_scope, :owner_id, :pending_confirmation, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:endpoint_auto_confirms, :raw_message_delivery]

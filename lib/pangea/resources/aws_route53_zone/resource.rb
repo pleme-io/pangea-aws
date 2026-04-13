@@ -15,7 +15,7 @@ module Pangea::Resources
       outputs: { id: :id },
       map: [:name],
       map_present: [:comment, :delegation_set_id, :tags, :tags_all, :vpc],
-      map_bool: [:force_destroy]
+      map_bool: [:enable_accelerated_recovery, :force_destroy]
   end
   module AWS
     include AWSRoute53Zone

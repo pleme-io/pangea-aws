@@ -42,6 +42,7 @@ RSpec.describe Pangea::Resources::AWSConnectUserHierarchyGroup do
         expect(ref.hierarchy_group_id).to eq("${aws_connect_user_hierarchy_group.test.hierarchy_group_id}")
         expect(ref.hierarchy_path).to eq("${aws_connect_user_hierarchy_group.test.hierarchy_path}")
         expect(ref.level_id).to eq("${aws_connect_user_hierarchy_group.test.level_id}")
+        expect(ref.region).to eq("${aws_connect_user_hierarchy_group.test.region}")
         expect(ref.tags_all).to eq("${aws_connect_user_hierarchy_group.test.tags_all}")
       end
     end
@@ -58,12 +59,13 @@ RSpec.describe Pangea::Resources::AWSConnectUserHierarchyGroup do
         expect(config).not_to have_key('hierarchy_group_id')
         expect(config).not_to have_key('hierarchy_path')
         expect(config).not_to have_key('level_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ parent_group_id: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ parent_group_id: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -73,7 +75,9 @@ RSpec.describe Pangea::Resources::AWSConnectUserHierarchyGroup do
 
         config = validate_resource_structure(result, 'aws_connect_user_hierarchy_group', 'full')
         expect(config).to have_key('parent_group_id')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -95,6 +99,23 @@ RSpec.describe Pangea::Resources::AWSConnectUserHierarchyGroup do
         config = validate_resource_structure(result, 'aws_connect_user_hierarchy_group', 'minimal')
         expect(config).not_to have_key('parent_group_id')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_user_hierarchy_group('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_user_hierarchy_group', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_user_hierarchy_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_user_hierarchy_group', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -111,6 +132,23 @@ RSpec.describe Pangea::Resources::AWSConnectUserHierarchyGroup do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_connect_user_hierarchy_group', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_user_hierarchy_group('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_user_hierarchy_group', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_connect_user_hierarchy_group('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_connect_user_hierarchy_group', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -157,7 +195,7 @@ RSpec.describe Pangea::Resources::AWSConnectUserHierarchyGroup do
     resource_type: :aws_connect_user_hierarchy_group,
     method: :aws_connect_user_hierarchy_group,
     required_attrs: { instance_id: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :hierarchy_group_id, :hierarchy_path, :level_id, :tags_all],
+    expected_outputs: [:id, :arn, :hierarchy_group_id, :hierarchy_path, :level_id, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

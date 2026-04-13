@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAppconfigDeploymentStrategy do
 
         expect(ref.id).to eq("${aws_appconfig_deployment_strategy.test.id}")
         expect(ref.arn).to eq("${aws_appconfig_deployment_strategy.test.arn}")
+        expect(ref.region).to eq("${aws_appconfig_deployment_strategy.test.region}")
         expect(ref.tags_all).to eq("${aws_appconfig_deployment_strategy.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSAppconfigDeploymentStrategy do
 
         config = validate_resource_structure(result, 'aws_appconfig_deployment_strategy', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', final_bake_time_in_minutes: 3.14, growth_type: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', final_bake_time_in_minutes: 3.14, growth_type: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,7 +71,9 @@ RSpec.describe Pangea::Resources::AWSAppconfigDeploymentStrategy do
         expect(config).to have_key('description')
         expect(config).to have_key('final_bake_time_in_minutes')
         expect(config).to have_key('growth_type')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -125,6 +129,23 @@ RSpec.describe Pangea::Resources::AWSAppconfigDeploymentStrategy do
         config = validate_resource_structure(result, 'aws_appconfig_deployment_strategy', 'minimal')
         expect(config).not_to have_key('growth_type')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_deployment_strategy('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_deployment_strategy', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_deployment_strategy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_deployment_strategy', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -141,6 +162,23 @@ RSpec.describe Pangea::Resources::AWSAppconfigDeploymentStrategy do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_appconfig_deployment_strategy', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_deployment_strategy('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_deployment_strategy', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appconfig_deployment_strategy('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appconfig_deployment_strategy', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
     end
 
@@ -189,7 +227,7 @@ RSpec.describe Pangea::Resources::AWSAppconfigDeploymentStrategy do
     resource_type: :aws_appconfig_deployment_strategy,
     method: :aws_appconfig_deployment_strategy,
     required_attrs: { deployment_duration_in_minutes: 3.14, growth_factor: 3.14, name: 'test-value', replicate_to: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

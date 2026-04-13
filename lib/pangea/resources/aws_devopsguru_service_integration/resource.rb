@@ -13,7 +13,7 @@ module Pangea::Resources
     define_resource :aws_devopsguru_service_integration,
       attributes_class: AWS::Types::DevopsguruServiceIntegrationAttributes,
       outputs: { id: :id },
-      map_present: [:kms_server_side_encryption, :logs_anomaly_detection, :ops_center]
+      map_present: [:kms_server_side_encryption, :logs_anomaly_detection, :ops_center, :region]
   end
   module AWS
     include AWSDevopsguruServiceIntegration

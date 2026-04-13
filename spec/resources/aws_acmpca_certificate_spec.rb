@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSAcmpcaCertificate do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { certificate_authority_arn: 'test-value', certificate_signing_request: 'test-value', signing_algorithm: 'test-value', validity: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { certificate_authority_arn: 'test-value', certificate_signing_request: 'test-value', signing_algorithm: 'test-value', validity: { 'key1' => 'val1' } } }
 
   describe ':aws_acmpca_certificate' do
     context 'with required attributes only' do
@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificate do
         expect(ref.arn).to eq("${aws_acmpca_certificate.test.arn}")
         expect(ref.certificate).to eq("${aws_acmpca_certificate.test.certificate}")
         expect(ref.certificate_chain).to eq("${aws_acmpca_certificate.test.certificate_chain}")
+        expect(ref.region).to eq("${aws_acmpca_certificate.test.region}")
       end
     end
 
@@ -55,11 +56,12 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificate do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('certificate')
         expect(config).not_to have_key('certificate_chain')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ api_passthrough: 'test-value', template_arn: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ api_passthrough: 'test-value', region: 'test-value', template_arn: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -69,6 +71,7 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificate do
 
         config = validate_resource_structure(result, 'aws_acmpca_certificate', 'full')
         expect(config).to have_key('api_passthrough')
+        expect(config).to have_key('region')
         expect(config).to have_key('template_arn')
       end
     end
@@ -90,6 +93,23 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificate do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_acmpca_certificate', 'minimal')
         expect(config).not_to have_key('api_passthrough')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_certificate('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_certificate', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_acmpca_certificate('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_acmpca_certificate', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes template_arn when provided' do
         synth = create_synthesizer
@@ -121,7 +141,7 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificate do
         expect(config['certificate_authority_arn']).to be_a(String)
         expect(config['certificate_signing_request']).to be_a(String)
         expect(config['signing_algorithm']).to be_a(String)
-        expect(config['validity']).to be_a(Array)
+        expect(config['validity']).to be_a(Hash)
       end
     end
 
@@ -154,8 +174,8 @@ RSpec.describe Pangea::Resources::AWSAcmpcaCertificate do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_acmpca_certificate,
     method: :aws_acmpca_certificate,
-    required_attrs: { certificate_authority_arn: 'test-value', certificate_signing_request: 'test-value', signing_algorithm: 'test-value', validity: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :certificate, :certificate_chain],
+    required_attrs: { certificate_authority_arn: 'test-value', certificate_signing_request: 'test-value', signing_algorithm: 'test-value', validity: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :certificate, :certificate_chain, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

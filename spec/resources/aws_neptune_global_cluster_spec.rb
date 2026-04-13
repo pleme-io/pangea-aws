@@ -43,6 +43,7 @@ RSpec.describe Pangea::Resources::AWSNeptuneGlobalCluster do
         expect(ref.engine_version).to eq("${aws_neptune_global_cluster.test.engine_version}")
         expect(ref.global_cluster_members).to eq("${aws_neptune_global_cluster.test.global_cluster_members}")
         expect(ref.global_cluster_resource_id).to eq("${aws_neptune_global_cluster.test.global_cluster_resource_id}")
+        expect(ref.region).to eq("${aws_neptune_global_cluster.test.region}")
         expect(ref.source_db_cluster_identifier).to eq("${aws_neptune_global_cluster.test.source_db_cluster_identifier}")
         expect(ref.status).to eq("${aws_neptune_global_cluster.test.status}")
         expect(ref.storage_encrypted).to eq("${aws_neptune_global_cluster.test.storage_encrypted}")
@@ -62,6 +63,7 @@ RSpec.describe Pangea::Resources::AWSNeptuneGlobalCluster do
         expect(config).not_to have_key('engine_version')
         expect(config).not_to have_key('global_cluster_members')
         expect(config).not_to have_key('global_cluster_resource_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('source_db_cluster_identifier')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('storage_encrypted')
@@ -69,7 +71,7 @@ RSpec.describe Pangea::Resources::AWSNeptuneGlobalCluster do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ deletion_protection: true }) }
+      let(:all_attrs) { required_attrs.merge({ deletion_protection: true, engine: 'test-value', engine_version: 'test-value', region: 'test-value', source_db_cluster_identifier: 'test-value', storage_encrypted: true }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,6 +81,11 @@ RSpec.describe Pangea::Resources::AWSNeptuneGlobalCluster do
 
         config = validate_resource_structure(result, 'aws_neptune_global_cluster', 'full')
         expect(config).to have_key('deletion_protection')
+        expect(config).to have_key('engine')
+        expect(config).to have_key('engine_version')
+        expect(config).to have_key('region')
+        expect(config).to have_key('source_db_cluster_identifier')
+        expect(config).to have_key('storage_encrypted')
       end
     end
 
@@ -100,6 +107,91 @@ RSpec.describe Pangea::Resources::AWSNeptuneGlobalCluster do
         config = validate_resource_structure(result, 'aws_neptune_global_cluster', 'minimal')
         expect(config).not_to have_key('deletion_protection')
       end
+      it 'includes engine when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_global_cluster('opt', required_attrs.merge(engine: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_global_cluster', 'opt')
+        expect(config).to have_key('engine')
+      end
+
+      it 'omits engine when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_global_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_global_cluster', 'minimal')
+        expect(config).not_to have_key('engine')
+      end
+      it 'includes engine_version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_global_cluster('opt', required_attrs.merge(engine_version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_global_cluster', 'opt')
+        expect(config).to have_key('engine_version')
+      end
+
+      it 'omits engine_version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_global_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_global_cluster', 'minimal')
+        expect(config).not_to have_key('engine_version')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_global_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_global_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_global_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_global_cluster', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes source_db_cluster_identifier when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_global_cluster('opt', required_attrs.merge(source_db_cluster_identifier: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_global_cluster', 'opt')
+        expect(config).to have_key('source_db_cluster_identifier')
+      end
+
+      it 'omits source_db_cluster_identifier when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_global_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_global_cluster', 'minimal')
+        expect(config).not_to have_key('source_db_cluster_identifier')
+      end
+      it 'includes storage_encrypted when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_global_cluster('opt', required_attrs.merge(storage_encrypted: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_global_cluster', 'opt')
+        expect(config).to have_key('storage_encrypted')
+      end
+
+      it 'omits storage_encrypted when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_neptune_global_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_neptune_global_cluster', 'minimal')
+        expect(config).not_to have_key('storage_encrypted')
+      end
     end
 
     context 'boolean fields' do
@@ -112,6 +204,17 @@ RSpec.describe Pangea::Resources::AWSNeptuneGlobalCluster do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_neptune_global_cluster', "bool_#{val}")
           expect(config['deletion_protection']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts storage_encrypted=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(storage_encrypted: val)
+          synth.aws_neptune_global_cluster("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_neptune_global_cluster', "bool_#{val}")
+          expect(config['storage_encrypted']).to eq(val)
         end
       end
     end
@@ -158,8 +261,8 @@ RSpec.describe Pangea::Resources::AWSNeptuneGlobalCluster do
     resource_type: :aws_neptune_global_cluster,
     method: :aws_neptune_global_cluster,
     required_attrs: { global_cluster_identifier: 'test-value' },
-    expected_outputs: [:id, :arn, :engine, :engine_version, :global_cluster_members, :global_cluster_resource_id, :source_db_cluster_identifier, :status, :storage_encrypted],
+    expected_outputs: [:id, :arn, :engine, :engine_version, :global_cluster_members, :global_cluster_resource_id, :region, :source_db_cluster_identifier, :status, :storage_encrypted],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:deletion_protection]
+    boolean_fields: [:deletion_protection, :storage_encrypted]
 end

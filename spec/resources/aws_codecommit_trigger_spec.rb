@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSCodecommitTrigger do
 
         expect(ref.id).to eq("${aws_codecommit_trigger.test.id}")
         expect(ref.configuration_id).to eq("${aws_codecommit_trigger.test.configuration_id}")
+        expect(ref.region).to eq("${aws_codecommit_trigger.test.region}")
       end
     end
 
@@ -51,6 +52,41 @@ RSpec.describe Pangea::Resources::AWSCodecommitTrigger do
 
         config = validate_resource_structure(result, 'aws_codecommit_trigger', 'test')
         expect(config).not_to have_key('configuration_id')
+        expect(config).not_to have_key('region')
+      end
+    end
+
+    context 'with all attributes' do
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value' }) }
+
+      it 'synthesizes with optional attributes' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecommit_trigger('full', all_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_codecommit_trigger', 'full')
+        expect(config).to have_key('region')
+      end
+    end
+
+    context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecommit_trigger('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecommit_trigger', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_codecommit_trigger('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_codecommit_trigger', 'minimal')
+        expect(config).not_to have_key('region')
       end
     end
 
@@ -97,7 +133,7 @@ RSpec.describe Pangea::Resources::AWSCodecommitTrigger do
     resource_type: :aws_codecommit_trigger,
     method: :aws_codecommit_trigger,
     required_attrs: { repository_name: 'test-value', trigger: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :configuration_id],
+    expected_outputs: [:id, :configuration_id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

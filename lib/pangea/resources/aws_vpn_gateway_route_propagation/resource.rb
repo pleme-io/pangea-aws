@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_vpn_gateway_route_propagation,
       attributes_class: AWS::Types::VpnGatewayRoutePropagationAttributes,
       outputs: { id: :id },
-      map: [:route_table_id, :vpn_gateway_id]
+      map: [:route_table_id, :vpn_gateway_id],
+      map_present: [:region]
   end
   module AWS
     include AWSVpnGatewayRoutePropagation

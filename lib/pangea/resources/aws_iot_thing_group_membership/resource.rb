@@ -14,6 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::IotThingGroupMembershipAttributes,
       outputs: { id: :id },
       map: [:thing_group_name, :thing_name],
+      map_present: [:region],
       map_bool: [:override_dynamic_group]
   end
   module AWS

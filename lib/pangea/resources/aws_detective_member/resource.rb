@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DetectiveMemberAttributes,
       outputs: { id: :id },
       map: [:account_id, :email_address, :graph_arn],
-      map_present: [:message],
+      map_present: [:message, :region],
       map_bool: [:disable_email_notification]
   end
   module AWS

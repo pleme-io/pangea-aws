@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::KendraFaqAttributes,
       outputs: { id: :id },
       map: [:index_id, :name, :role_arn, :s3_path],
-      map_present: [:description, :file_format, :language_code, :tags, :tags_all]
+      map_present: [:description, :file_format, :language_code, :region, :tags, :tags_all]
   end
   module AWS
     include AWSKendraFaq

@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSEksCluster do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { name: 'test-value', role_arn: 'test-value', vpc_config: [{ 'key1' => 'val1' }] } }
+  let(:required_attrs) { { name: 'test-value', role_arn: 'test-value', vpc_config: { 'key1' => 'val1' } } }
 
   describe ':aws_eks_cluster' do
     context 'with required attributes only' do
@@ -42,9 +42,11 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
         expect(ref.certificate_authority).to eq("${aws_eks_cluster.test.certificate_authority}")
         expect(ref.cluster_id).to eq("${aws_eks_cluster.test.cluster_id}")
         expect(ref.created_at).to eq("${aws_eks_cluster.test.created_at}")
+        expect(ref.deletion_protection).to eq("${aws_eks_cluster.test.deletion_protection}")
         expect(ref.endpoint).to eq("${aws_eks_cluster.test.endpoint}")
         expect(ref.identity).to eq("${aws_eks_cluster.test.identity}")
         expect(ref.platform_version).to eq("${aws_eks_cluster.test.platform_version}")
+        expect(ref.region).to eq("${aws_eks_cluster.test.region}")
         expect(ref.status).to eq("${aws_eks_cluster.test.status}")
         expect(ref.tags_all).to eq("${aws_eks_cluster.test.tags_all}")
         expect(ref.version).to eq("${aws_eks_cluster.test.version}")
@@ -63,9 +65,11 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
         expect(config).not_to have_key('certificate_authority')
         expect(config).not_to have_key('cluster_id')
         expect(config).not_to have_key('created_at')
+        expect(config).not_to have_key('deletion_protection')
         expect(config).not_to have_key('endpoint')
         expect(config).not_to have_key('identity')
         expect(config).not_to have_key('platform_version')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('status')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('version')
@@ -73,7 +77,7 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ access_config: [{ 'key1' => 'val1' }], bootstrap_self_managed_addons: true, compute_config: [{ 'key1' => 'val1' }], enabled_cluster_log_types: ['test-value'], encryption_config: [{ 'key1' => 'val1' }], force_update_version: true, kubernetes_network_config: [{ 'key1' => 'val1' }], outpost_config: [{ 'key1' => 'val1' }], remote_network_config: [{ 'key1' => 'val1' }], storage_config: [{ 'key1' => 'val1' }], tags: { 'key1' => 'val1' }, upgrade_policy: [{ 'key1' => 'val1' }], zonal_shift_config: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ access_config: { 'key1' => 'val1' }, bootstrap_self_managed_addons: true, compute_config: { 'key1' => 'val1' }, control_plane_scaling_config: { 'key1' => 'val1' }, deletion_protection: true, enabled_cluster_log_types: ['test-value'], encryption_config: { 'key1' => 'val1' }, force_update_version: true, kubernetes_network_config: { 'key1' => 'val1' }, outpost_config: { 'key1' => 'val1' }, region: 'test-value', remote_network_config: { 'key1' => 'val1' }, storage_config: { 'key1' => 'val1' }, tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, upgrade_policy: { 'key1' => 'val1' }, version: 'test-value', zonal_shift_config: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -85,15 +89,20 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
         expect(config).to have_key('access_config')
         expect(config).to have_key('bootstrap_self_managed_addons')
         expect(config).to have_key('compute_config')
+        expect(config).to have_key('control_plane_scaling_config')
+        expect(config).to have_key('deletion_protection')
         expect(config).to have_key('enabled_cluster_log_types')
         expect(config).to have_key('encryption_config')
         expect(config).to have_key('force_update_version')
         expect(config).to have_key('kubernetes_network_config')
         expect(config).to have_key('outpost_config')
+        expect(config).to have_key('region')
         expect(config).to have_key('remote_network_config')
         expect(config).to have_key('storage_config')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('upgrade_policy')
+        expect(config).to have_key('version')
         expect(config).to have_key('zonal_shift_config')
       end
     end
@@ -102,7 +111,7 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
       it 'includes access_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_cluster('opt', required_attrs.merge(access_config: [{ 'key1' => 'val1' }]))
+        synth.aws_eks_cluster('opt', required_attrs.merge(access_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
         expect(config).to have_key('access_config')
@@ -136,7 +145,7 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
       it 'includes compute_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_cluster('opt', required_attrs.merge(compute_config: [{ 'key1' => 'val1' }]))
+        synth.aws_eks_cluster('opt', required_attrs.merge(compute_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
         expect(config).to have_key('compute_config')
@@ -149,6 +158,40 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_cluster', 'minimal')
         expect(config).not_to have_key('compute_config')
+      end
+      it 'includes control_plane_scaling_config when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_cluster('opt', required_attrs.merge(control_plane_scaling_config: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
+        expect(config).to have_key('control_plane_scaling_config')
+      end
+
+      it 'omits control_plane_scaling_config when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_cluster', 'minimal')
+        expect(config).not_to have_key('control_plane_scaling_config')
+      end
+      it 'includes deletion_protection when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_cluster('opt', required_attrs.merge(deletion_protection: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
+        expect(config).to have_key('deletion_protection')
+      end
+
+      it 'omits deletion_protection when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_cluster', 'minimal')
+        expect(config).not_to have_key('deletion_protection')
       end
       it 'includes enabled_cluster_log_types when provided' do
         synth = create_synthesizer
@@ -170,7 +213,7 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
       it 'includes encryption_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_cluster('opt', required_attrs.merge(encryption_config: [{ 'key1' => 'val1' }]))
+        synth.aws_eks_cluster('opt', required_attrs.merge(encryption_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
         expect(config).to have_key('encryption_config')
@@ -204,7 +247,7 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
       it 'includes kubernetes_network_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_cluster('opt', required_attrs.merge(kubernetes_network_config: [{ 'key1' => 'val1' }]))
+        synth.aws_eks_cluster('opt', required_attrs.merge(kubernetes_network_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
         expect(config).to have_key('kubernetes_network_config')
@@ -221,7 +264,7 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
       it 'includes outpost_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_cluster('opt', required_attrs.merge(outpost_config: [{ 'key1' => 'val1' }]))
+        synth.aws_eks_cluster('opt', required_attrs.merge(outpost_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
         expect(config).to have_key('outpost_config')
@@ -235,10 +278,27 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
         config = validate_resource_structure(result, 'aws_eks_cluster', 'minimal')
         expect(config).not_to have_key('outpost_config')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_cluster('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_cluster', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes remote_network_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_cluster('opt', required_attrs.merge(remote_network_config: [{ 'key1' => 'val1' }]))
+        synth.aws_eks_cluster('opt', required_attrs.merge(remote_network_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
         expect(config).to have_key('remote_network_config')
@@ -255,7 +315,7 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
       it 'includes storage_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_cluster('opt', required_attrs.merge(storage_config: [{ 'key1' => 'val1' }]))
+        synth.aws_eks_cluster('opt', required_attrs.merge(storage_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
         expect(config).to have_key('storage_config')
@@ -286,10 +346,27 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
         config = validate_resource_structure(result, 'aws_eks_cluster', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_cluster('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_cluster', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes upgrade_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_cluster('opt', required_attrs.merge(upgrade_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_eks_cluster('opt', required_attrs.merge(upgrade_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
         expect(config).to have_key('upgrade_policy')
@@ -303,10 +380,27 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
         config = validate_resource_structure(result, 'aws_eks_cluster', 'minimal')
         expect(config).not_to have_key('upgrade_policy')
       end
+      it 'includes version when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_cluster('opt', required_attrs.merge(version: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
+        expect(config).to have_key('version')
+      end
+
+      it 'omits version when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_eks_cluster('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_eks_cluster', 'minimal')
+        expect(config).not_to have_key('version')
+      end
       it 'includes zonal_shift_config when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_eks_cluster('opt', required_attrs.merge(zonal_shift_config: [{ 'key1' => 'val1' }]))
+        synth.aws_eks_cluster('opt', required_attrs.merge(zonal_shift_config: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_eks_cluster', 'opt')
         expect(config).to have_key('zonal_shift_config')
@@ -335,6 +429,17 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
         end
       end
       [true, false].each do |val|
+        it "accepts deletion_protection=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(deletion_protection: val)
+          synth.aws_eks_cluster("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_eks_cluster', "bool_#{val}")
+          expect(config['deletion_protection']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
         it "accepts force_update_version=#{val}" do
           synth = create_synthesizer
           synth.extend(described_class)
@@ -357,7 +462,7 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
         config = validate_resource_structure(result, 'aws_eks_cluster', 'typed')
         expect(config['name']).to be_a(String)
         expect(config['role_arn']).to be_a(String)
-        expect(config['vpc_config']).to be_a(Array)
+        expect(config['vpc_config']).to be_a(Hash)
       end
     end
 
@@ -390,9 +495,9 @@ RSpec.describe Pangea::Resources::AWSEksCluster do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_eks_cluster,
     method: :aws_eks_cluster,
-    required_attrs: { name: 'test-value', role_arn: 'test-value', vpc_config: [{ 'key1' => 'val1' }] },
-    expected_outputs: [:id, :arn, :certificate_authority, :cluster_id, :created_at, :endpoint, :identity, :platform_version, :status, :tags_all, :version],
+    required_attrs: { name: 'test-value', role_arn: 'test-value', vpc_config: { 'key1' => 'val1' } },
+    expected_outputs: [:id, :arn, :certificate_authority, :cluster_id, :created_at, :deletion_protection, :endpoint, :identity, :platform_version, :region, :status, :tags_all, :version],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:bootstrap_self_managed_addons, :force_update_version]
+    boolean_fields: [:bootstrap_self_managed_addons, :deletion_protection, :force_update_version]
 end

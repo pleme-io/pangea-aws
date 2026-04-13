@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::OpensearchserverlessSecurityConfigAttributes,
       outputs: { id: :id },
       map: [:name, :type],
-      map_present: [:description, :saml_options]
+      map_present: [:description, :region, :saml_options]
   end
   module AWS
     include AWSOpensearchserverlessSecurityConfig

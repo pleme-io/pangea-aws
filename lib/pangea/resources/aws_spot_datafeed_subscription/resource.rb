@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SpotDatafeedSubscriptionAttributes,
       outputs: { id: :id },
       map: [:bucket],
-      map_present: [:prefix]
+      map_present: [:prefix, :region]
   end
   module AWS
     include AWSSpotDatafeedSubscription

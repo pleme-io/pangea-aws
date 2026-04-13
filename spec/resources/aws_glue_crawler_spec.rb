@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSGlueCrawler do
 
         expect(ref.id).to eq("${aws_glue_crawler.test.id}")
         expect(ref.arn).to eq("${aws_glue_crawler.test.arn}")
+        expect(ref.region).to eq("${aws_glue_crawler.test.region}")
         expect(ref.tags_all).to eq("${aws_glue_crawler.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSGlueCrawler do
 
         config = validate_resource_structure(result, 'aws_glue_crawler', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ catalog_target: [{ 'key1' => 'val1' }], classifiers: ['test-value'], configuration: 'test-value', delta_target: [{ 'key1' => 'val1' }], description: 'test-value', dynamodb_target: [{ 'key1' => 'val1' }], hudi_target: [{ 'key1' => 'val1' }], iceberg_target: [{ 'key1' => 'val1' }], jdbc_target: [{ 'key1' => 'val1' }], lake_formation_configuration: [{ 'key1' => 'val1' }], lineage_configuration: [{ 'key1' => 'val1' }], mongodb_target: [{ 'key1' => 'val1' }], recrawl_policy: [{ 'key1' => 'val1' }], s3_target: [{ 'key1' => 'val1' }], schedule: 'test-value', schema_change_policy: [{ 'key1' => 'val1' }], security_configuration: 'test-value', table_prefix: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ catalog_target: [{ 'key1' => 'val1' }], classifiers: ['test-value'], configuration: 'test-value', delta_target: [{ 'key1' => 'val1' }], description: 'test-value', dynamodb_target: [{ 'key1' => 'val1' }], hudi_target: [{ 'key1' => 'val1' }], iceberg_target: [{ 'key1' => 'val1' }], jdbc_target: [{ 'key1' => 'val1' }], lake_formation_configuration: { 'key1' => 'val1' }, lineage_configuration: { 'key1' => 'val1' }, mongodb_target: [{ 'key1' => 'val1' }], recrawl_policy: { 'key1' => 'val1' }, region: 'test-value', s3_target: [{ 'key1' => 'val1' }], schedule: 'test-value', schema_change_policy: { 'key1' => 'val1' }, security_configuration: 'test-value', table_prefix: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -79,12 +81,14 @@ RSpec.describe Pangea::Resources::AWSGlueCrawler do
         expect(config).to have_key('lineage_configuration')
         expect(config).to have_key('mongodb_target')
         expect(config).to have_key('recrawl_policy')
+        expect(config).to have_key('region')
         expect(config).to have_key('s3_target')
         expect(config).to have_key('schedule')
         expect(config).to have_key('schema_change_policy')
         expect(config).to have_key('security_configuration')
         expect(config).to have_key('table_prefix')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -245,7 +249,7 @@ RSpec.describe Pangea::Resources::AWSGlueCrawler do
       it 'includes lake_formation_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_crawler('opt', required_attrs.merge(lake_formation_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_crawler('opt', required_attrs.merge(lake_formation_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_crawler', 'opt')
         expect(config).to have_key('lake_formation_configuration')
@@ -262,7 +266,7 @@ RSpec.describe Pangea::Resources::AWSGlueCrawler do
       it 'includes lineage_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_crawler('opt', required_attrs.merge(lineage_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_crawler('opt', required_attrs.merge(lineage_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_crawler', 'opt')
         expect(config).to have_key('lineage_configuration')
@@ -296,7 +300,7 @@ RSpec.describe Pangea::Resources::AWSGlueCrawler do
       it 'includes recrawl_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_crawler('opt', required_attrs.merge(recrawl_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_crawler('opt', required_attrs.merge(recrawl_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_crawler', 'opt')
         expect(config).to have_key('recrawl_policy')
@@ -309,6 +313,23 @@ RSpec.describe Pangea::Resources::AWSGlueCrawler do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_crawler', 'minimal')
         expect(config).not_to have_key('recrawl_policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_crawler('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_crawler', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_crawler('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_crawler', 'minimal')
+        expect(config).not_to have_key('region')
       end
       it 'includes s3_target when provided' do
         synth = create_synthesizer
@@ -347,7 +368,7 @@ RSpec.describe Pangea::Resources::AWSGlueCrawler do
       it 'includes schema_change_policy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_glue_crawler('opt', required_attrs.merge(schema_change_policy: [{ 'key1' => 'val1' }]))
+        synth.aws_glue_crawler('opt', required_attrs.merge(schema_change_policy: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_glue_crawler', 'opt')
         expect(config).to have_key('schema_change_policy')
@@ -412,6 +433,23 @@ RSpec.describe Pangea::Resources::AWSGlueCrawler do
         config = validate_resource_structure(result, 'aws_glue_crawler', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_crawler('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_crawler', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_glue_crawler('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_glue_crawler', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -458,7 +496,7 @@ RSpec.describe Pangea::Resources::AWSGlueCrawler do
     resource_type: :aws_glue_crawler,
     method: :aws_glue_crawler,
     required_attrs: { database_name: 'test-value', name: 'test-value', role: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

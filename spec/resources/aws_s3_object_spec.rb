@@ -49,6 +49,7 @@ RSpec.describe Pangea::Resources::AWSS3Object do
         expect(ref.content_type).to eq("${aws_s3_object.test.content_type}")
         expect(ref.etag).to eq("${aws_s3_object.test.etag}")
         expect(ref.kms_key_id).to eq("${aws_s3_object.test.kms_key_id}")
+        expect(ref.region).to eq("${aws_s3_object.test.region}")
         expect(ref.server_side_encryption).to eq("${aws_s3_object.test.server_side_encryption}")
         expect(ref.storage_class).to eq("${aws_s3_object.test.storage_class}")
         expect(ref.tags_all).to eq("${aws_s3_object.test.tags_all}")
@@ -75,6 +76,7 @@ RSpec.describe Pangea::Resources::AWSS3Object do
         expect(config).not_to have_key('content_type')
         expect(config).not_to have_key('etag')
         expect(config).not_to have_key('kms_key_id')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('server_side_encryption')
         expect(config).not_to have_key('storage_class')
         expect(config).not_to have_key('tags_all')
@@ -83,7 +85,7 @@ RSpec.describe Pangea::Resources::AWSS3Object do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ cache_control: 'test-value', checksum_algorithm: 'test-value', content: 'test-value', content_base64: 'test-value', content_disposition: 'test-value', content_encoding: 'test-value', content_language: 'test-value', force_destroy: true, metadata: { 'key1' => 'val1' }, object_lock_legal_hold_status: 'test-value', object_lock_mode: 'test-value', object_lock_retain_until_date: 'test-value', override_provider: [{ 'key1' => 'val1' }], source: 'test-value', source_hash: 'test-value', tags: { 'key1' => 'val1' }, website_redirect: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ acl: 'test-value', bucket_key_enabled: true, cache_control: 'test-value', checksum_algorithm: 'test-value', content: 'test-value', content_base64: 'test-value', content_disposition: 'test-value', content_encoding: 'test-value', content_language: 'test-value', content_type: 'test-value', etag: 'test-value', force_destroy: true, kms_key_id: 'test-value', metadata: { 'key1' => 'val1' }, object_lock_legal_hold_status: 'test-value', object_lock_mode: 'test-value', object_lock_retain_until_date: 'test-value', override_provider: { 'key1' => 'val1' }, region: 'test-value', server_side_encryption: 'test-value', source: 'test-value', source_hash: 'test-value', storage_class: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, website_redirect: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -92,6 +94,8 @@ RSpec.describe Pangea::Resources::AWSS3Object do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_s3_object', 'full')
+        expect(config).to have_key('acl')
+        expect(config).to have_key('bucket_key_enabled')
         expect(config).to have_key('cache_control')
         expect(config).to have_key('checksum_algorithm')
         expect(config).to have_key('content')
@@ -99,20 +103,61 @@ RSpec.describe Pangea::Resources::AWSS3Object do
         expect(config).to have_key('content_disposition')
         expect(config).to have_key('content_encoding')
         expect(config).to have_key('content_language')
+        expect(config).to have_key('content_type')
+        expect(config).to have_key('etag')
         expect(config).to have_key('force_destroy')
+        expect(config).to have_key('kms_key_id')
         expect(config).to have_key('metadata')
         expect(config).to have_key('object_lock_legal_hold_status')
         expect(config).to have_key('object_lock_mode')
         expect(config).to have_key('object_lock_retain_until_date')
         expect(config).to have_key('override_provider')
+        expect(config).to have_key('region')
+        expect(config).to have_key('server_side_encryption')
         expect(config).to have_key('source')
         expect(config).to have_key('source_hash')
+        expect(config).to have_key('storage_class')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('website_redirect')
       end
     end
 
     context 'optional attributes' do
+      it 'includes acl when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('opt', required_attrs.merge(acl: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'opt')
+        expect(config).to have_key('acl')
+      end
+
+      it 'omits acl when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
+        expect(config).not_to have_key('acl')
+      end
+      it 'includes bucket_key_enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('opt', required_attrs.merge(bucket_key_enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'opt')
+        expect(config).to have_key('bucket_key_enabled')
+      end
+
+      it 'omits bucket_key_enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
+        expect(config).not_to have_key('bucket_key_enabled')
+      end
       it 'includes cache_control when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -232,6 +277,40 @@ RSpec.describe Pangea::Resources::AWSS3Object do
         config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
         expect(config).not_to have_key('content_language')
       end
+      it 'includes content_type when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('opt', required_attrs.merge(content_type: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'opt')
+        expect(config).to have_key('content_type')
+      end
+
+      it 'omits content_type when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
+        expect(config).not_to have_key('content_type')
+      end
+      it 'includes etag when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('opt', required_attrs.merge(etag: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'opt')
+        expect(config).to have_key('etag')
+      end
+
+      it 'omits etag when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
+        expect(config).not_to have_key('etag')
+      end
       it 'includes force_destroy when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -248,6 +327,23 @@ RSpec.describe Pangea::Resources::AWSS3Object do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
         expect(config).not_to have_key('force_destroy')
+      end
+      it 'includes kms_key_id when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('opt', required_attrs.merge(kms_key_id: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'opt')
+        expect(config).to have_key('kms_key_id')
+      end
+
+      it 'omits kms_key_id when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
+        expect(config).not_to have_key('kms_key_id')
       end
       it 'includes metadata when provided' do
         synth = create_synthesizer
@@ -320,7 +416,7 @@ RSpec.describe Pangea::Resources::AWSS3Object do
       it 'includes override_provider when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_object('opt', required_attrs.merge(override_provider: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_object('opt', required_attrs.merge(override_provider: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_object', 'opt')
         expect(config).to have_key('override_provider')
@@ -333,6 +429,40 @@ RSpec.describe Pangea::Resources::AWSS3Object do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
         expect(config).not_to have_key('override_provider')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
+        expect(config).not_to have_key('region')
+      end
+      it 'includes server_side_encryption when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('opt', required_attrs.merge(server_side_encryption: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'opt')
+        expect(config).to have_key('server_side_encryption')
+      end
+
+      it 'omits server_side_encryption when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
+        expect(config).not_to have_key('server_side_encryption')
       end
       it 'includes source when provided' do
         synth = create_synthesizer
@@ -368,6 +498,23 @@ RSpec.describe Pangea::Resources::AWSS3Object do
         config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
         expect(config).not_to have_key('source_hash')
       end
+      it 'includes storage_class when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('opt', required_attrs.merge(storage_class: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'opt')
+        expect(config).to have_key('storage_class')
+      end
+
+      it 'omits storage_class when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
+        expect(config).not_to have_key('storage_class')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -384,6 +531,23 @@ RSpec.describe Pangea::Resources::AWSS3Object do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_object('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_object', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes website_redirect when provided' do
         synth = create_synthesizer
@@ -405,6 +569,17 @@ RSpec.describe Pangea::Resources::AWSS3Object do
     end
 
     context 'boolean fields' do
+      [true, false].each do |val|
+        it "accepts bucket_key_enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(bucket_key_enabled: val)
+          synth.aws_s3_object("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_s3_object', "bool_#{val}")
+          expect(config['bucket_key_enabled']).to eq(val)
+        end
+      end
       [true, false].each do |val|
         it "accepts force_destroy=#{val}" do
           synth = create_synthesizer
@@ -461,8 +636,8 @@ RSpec.describe Pangea::Resources::AWSS3Object do
     resource_type: :aws_s3_object,
     method: :aws_s3_object,
     required_attrs: { bucket: 'test-value', key: 'test-value' },
-    expected_outputs: [:id, :acl, :arn, :bucket_key_enabled, :checksum_crc32, :checksum_crc32c, :checksum_crc64nvme, :checksum_sha1, :checksum_sha256, :content_type, :etag, :kms_key_id, :server_side_encryption, :storage_class, :tags_all, :version_id],
+    expected_outputs: [:id, :acl, :arn, :bucket_key_enabled, :checksum_crc32, :checksum_crc32c, :checksum_crc64nvme, :checksum_sha1, :checksum_sha256, :content_type, :etag, :kms_key_id, :region, :server_side_encryption, :storage_class, :tags_all, :version_id],
     sensitive_fields: [],
     immutable_fields: [],
-    boolean_fields: [:force_destroy]
+    boolean_fields: [:bucket_key_enabled, :force_destroy]
 end

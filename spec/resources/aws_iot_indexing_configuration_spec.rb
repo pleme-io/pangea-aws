@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSIotIndexingConfiguration do
         ref = synth.aws_iot_indexing_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_iot_indexing_configuration.test.id}")
+        expect(ref.region).to eq("${aws_iot_indexing_configuration.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_indexing_configuration('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_iot_indexing_configuration', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ thing_group_indexing_configuration: [{ 'key1' => 'val1' }], thing_indexing_configuration: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', thing_group_indexing_configuration: { 'key1' => 'val1' }, thing_indexing_configuration: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -51,16 +64,34 @@ RSpec.describe Pangea::Resources::AWSIotIndexingConfiguration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_iot_indexing_configuration', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('thing_group_indexing_configuration')
         expect(config).to have_key('thing_indexing_configuration')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_indexing_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_indexing_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_iot_indexing_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_iot_indexing_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes thing_group_indexing_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_iot_indexing_configuration('opt', required_attrs.merge(thing_group_indexing_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_iot_indexing_configuration('opt', required_attrs.merge(thing_group_indexing_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_indexing_configuration', 'opt')
         expect(config).to have_key('thing_group_indexing_configuration')
@@ -77,7 +108,7 @@ RSpec.describe Pangea::Resources::AWSIotIndexingConfiguration do
       it 'includes thing_indexing_configuration when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_iot_indexing_configuration('opt', required_attrs.merge(thing_indexing_configuration: [{ 'key1' => 'val1' }]))
+        synth.aws_iot_indexing_configuration('opt', required_attrs.merge(thing_indexing_configuration: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_iot_indexing_configuration', 'opt')
         expect(config).to have_key('thing_indexing_configuration')
@@ -134,7 +165,7 @@ RSpec.describe Pangea::Resources::AWSIotIndexingConfiguration do
     resource_type: :aws_iot_indexing_configuration,
     method: :aws_iot_indexing_configuration,
     required_attrs: {},
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

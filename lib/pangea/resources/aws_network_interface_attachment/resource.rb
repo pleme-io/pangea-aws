@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_network_interface_attachment,
       attributes_class: AWS::Types::NetworkInterfaceAttachmentAttributes,
       outputs: { id: :id },
-      map: [:device_index, :instance_id, :network_interface_id]
+      map: [:device_index, :instance_id, :network_interface_id],
+      map_present: [:network_card_index, :region]
   end
   module AWS
     include AWSNetworkInterfaceAttachment

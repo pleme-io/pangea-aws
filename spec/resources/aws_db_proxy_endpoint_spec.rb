@@ -41,6 +41,7 @@ RSpec.describe Pangea::Resources::AWSDbProxyEndpoint do
         expect(ref.arn).to eq("${aws_db_proxy_endpoint.test.arn}")
         expect(ref.endpoint).to eq("${aws_db_proxy_endpoint.test.endpoint}")
         expect(ref.is_default).to eq("${aws_db_proxy_endpoint.test.is_default}")
+        expect(ref.region).to eq("${aws_db_proxy_endpoint.test.region}")
         expect(ref.tags_all).to eq("${aws_db_proxy_endpoint.test.tags_all}")
         expect(ref.vpc_id).to eq("${aws_db_proxy_endpoint.test.vpc_id}")
         expect(ref.vpc_security_group_ids).to eq("${aws_db_proxy_endpoint.test.vpc_security_group_ids}")
@@ -58,6 +59,7 @@ RSpec.describe Pangea::Resources::AWSDbProxyEndpoint do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('endpoint')
         expect(config).not_to have_key('is_default')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
         expect(config).not_to have_key('vpc_id')
         expect(config).not_to have_key('vpc_security_group_ids')
@@ -65,7 +67,7 @@ RSpec.describe Pangea::Resources::AWSDbProxyEndpoint do
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ tags: { 'key1' => 'val1' }, target_role: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, target_role: 'test-value', vpc_security_group_ids: ['test-value'] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -74,12 +76,32 @@ RSpec.describe Pangea::Resources::AWSDbProxyEndpoint do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_db_proxy_endpoint', 'full')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('target_role')
+        expect(config).to have_key('vpc_security_group_ids')
       end
     end
 
     context 'optional attributes' do
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy_endpoint('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy_endpoint', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy_endpoint', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -97,6 +119,23 @@ RSpec.describe Pangea::Resources::AWSDbProxyEndpoint do
         config = validate_resource_structure(result, 'aws_db_proxy_endpoint', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy_endpoint('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy_endpoint', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy_endpoint', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
       it 'includes target_role when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -113,6 +152,23 @@ RSpec.describe Pangea::Resources::AWSDbProxyEndpoint do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_db_proxy_endpoint', 'minimal')
         expect(config).not_to have_key('target_role')
+      end
+      it 'includes vpc_security_group_ids when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy_endpoint('opt', required_attrs.merge(vpc_security_group_ids: ['test-value']))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy_endpoint', 'opt')
+        expect(config).to have_key('vpc_security_group_ids')
+      end
+
+      it 'omits vpc_security_group_ids when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_db_proxy_endpoint('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_db_proxy_endpoint', 'minimal')
+        expect(config).not_to have_key('vpc_security_group_ids')
       end
     end
 
@@ -160,7 +216,7 @@ RSpec.describe Pangea::Resources::AWSDbProxyEndpoint do
     resource_type: :aws_db_proxy_endpoint,
     method: :aws_db_proxy_endpoint,
     required_attrs: { db_proxy_endpoint_name: 'test-value', db_proxy_name: 'test-value', vpc_subnet_ids: ['test-value'] },
-    expected_outputs: [:id, :arn, :endpoint, :is_default, :tags_all, :vpc_id, :vpc_security_group_ids],
+    expected_outputs: [:id, :arn, :endpoint, :is_default, :region, :tags_all, :vpc_id, :vpc_security_group_ids],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

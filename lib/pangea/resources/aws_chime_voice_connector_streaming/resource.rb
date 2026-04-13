@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::ChimeVoiceConnectorStreamingAttributes,
       outputs: { id: :id },
       map: [:data_retention, :voice_connector_id],
-      map_present: [:media_insights_configuration, :streaming_notification_targets],
+      map_present: [:media_insights_configuration, :region, :streaming_notification_targets],
       map_bool: [:disabled]
   end
   module AWS

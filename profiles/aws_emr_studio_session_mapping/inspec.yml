@@ -1,0 +1,8 @@
+name: aws_emr_studio_session_mapping
+title: Manages a aws_emr_studio_session_mapping resource
+version: 0.1.0
+supports:
+  - platform: aws
+depends:
+  - name: inspec-aws
+    url: https://github.com/pleme-io/inspec-aws

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::DefaultSubnetAttributes,
       outputs: { id: :id },
       map: [:availability_zone],
-      map_present: [:customer_owned_ipv4_pool, :ipv6_cidr_block, :private_dns_hostname_type_on_launch, :tags, :tags_all],
+      map_present: [:customer_owned_ipv4_pool, :ipv6_cidr_block, :private_dns_hostname_type_on_launch, :region, :tags, :tags_all],
       map_bool: [:assign_ipv6_address_on_creation, :enable_dns64, :enable_resource_name_dns_a_record_on_launch, :enable_resource_name_dns_aaaa_record_on_launch, :force_destroy, :ipv6_native, :map_customer_owned_ip_on_launch, :map_public_ip_on_launch]
   end
   module AWS

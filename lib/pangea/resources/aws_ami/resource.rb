@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AmiAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:architecture, :boot_mode, :deprecation_time, :description, :ebs_block_device, :ephemeral_block_device, :image_location, :imds_support, :kernel_id, :ramdisk_id, :root_device_name, :sriov_net_support, :tags, :tags_all, :tpm_support, :uefi_data, :virtualization_type],
+      map_present: [:architecture, :boot_mode, :deprecation_time, :description, :ebs_block_device, :ephemeral_block_device, :image_location, :imds_support, :kernel_id, :ramdisk_id, :region, :root_device_name, :sriov_net_support, :tags, :tags_all, :tpm_support, :uefi_data, :virtualization_type],
       map_bool: [:ena_support]
   end
   module AWS

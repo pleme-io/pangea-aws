@@ -8,7 +8,7 @@ require 'spec_helper'
 RSpec.describe Pangea::Resources::AWSAppintegrationsEventIntegration do
   include Pangea::Testing::SynthesisTestHelpers
 
-  let(:required_attrs) { { event_filter: [{ 'key1' => 'val1' }], eventbridge_bus: 'test-value', name: 'test-value' } }
+  let(:required_attrs) { { event_filter: { 'key1' => 'val1' }, eventbridge_bus: 'test-value', name: 'test-value' } }
 
   describe ':aws_appintegrations_event_integration' do
     context 'with required attributes only' do
@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSAppintegrationsEventIntegration do
 
         expect(ref.id).to eq("${aws_appintegrations_event_integration.test.id}")
         expect(ref.arn).to eq("${aws_appintegrations_event_integration.test.arn}")
+        expect(ref.region).to eq("${aws_appintegrations_event_integration.test.region}")
         expect(ref.tags_all).to eq("${aws_appintegrations_event_integration.test.tags_all}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSAppintegrationsEventIntegration do
 
         config = validate_resource_structure(result, 'aws_appintegrations_event_integration', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ description: 'test-value', tags: { 'key1' => 'val1' } }) }
+      let(:all_attrs) { required_attrs.merge({ description: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -67,7 +69,9 @@ RSpec.describe Pangea::Resources::AWSAppintegrationsEventIntegration do
 
         config = validate_resource_structure(result, 'aws_appintegrations_event_integration', 'full')
         expect(config).to have_key('description')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
       end
     end
 
@@ -89,6 +93,23 @@ RSpec.describe Pangea::Resources::AWSAppintegrationsEventIntegration do
         config = validate_resource_structure(result, 'aws_appintegrations_event_integration', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appintegrations_event_integration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appintegrations_event_integration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appintegrations_event_integration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appintegrations_event_integration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -106,6 +127,23 @@ RSpec.describe Pangea::Resources::AWSAppintegrationsEventIntegration do
         config = validate_resource_structure(result, 'aws_appintegrations_event_integration', 'minimal')
         expect(config).not_to have_key('tags')
       end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appintegrations_event_integration('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appintegrations_event_integration', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_appintegrations_event_integration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_appintegrations_event_integration', 'minimal')
+        expect(config).not_to have_key('tags_all')
+      end
     end
 
     context 'attribute types' do
@@ -116,7 +154,7 @@ RSpec.describe Pangea::Resources::AWSAppintegrationsEventIntegration do
         result = normalize_synthesis(synth.synthesis)
 
         config = validate_resource_structure(result, 'aws_appintegrations_event_integration', 'typed')
-        expect(config['event_filter']).to be_a(Array)
+        expect(config['event_filter']).to be_a(Hash)
         expect(config['eventbridge_bus']).to be_a(String)
         expect(config['name']).to be_a(String)
       end
@@ -151,8 +189,8 @@ RSpec.describe Pangea::Resources::AWSAppintegrationsEventIntegration do
   it_behaves_like 'a generated pangea resource',
     resource_type: :aws_appintegrations_event_integration,
     method: :aws_appintegrations_event_integration,
-    required_attrs: { event_filter: [{ 'key1' => 'val1' }], eventbridge_bus: 'test-value', name: 'test-value' },
-    expected_outputs: [:id, :arn, :tags_all],
+    required_attrs: { event_filter: { 'key1' => 'val1' }, eventbridge_bus: 'test-value', name: 'test-value' },
+    expected_outputs: [:id, :arn, :region, :tags_all],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -41,10 +41,12 @@ RSpec.describe Pangea::Resources::AWSKmsExternalKey do
         expect(ref.arn).to eq("${aws_kms_external_key.test.arn}")
         expect(ref.enabled).to eq("${aws_kms_external_key.test.enabled}")
         expect(ref.expiration_model).to eq("${aws_kms_external_key.test.expiration_model}")
+        expect(ref.key_spec).to eq("${aws_kms_external_key.test.key_spec}")
         expect(ref.key_state).to eq("${aws_kms_external_key.test.key_state}")
         expect(ref.key_usage).to eq("${aws_kms_external_key.test.key_usage}")
         expect(ref.multi_region).to eq("${aws_kms_external_key.test.multi_region}")
         expect(ref.policy).to eq("${aws_kms_external_key.test.policy}")
+        expect(ref.region).to eq("${aws_kms_external_key.test.region}")
         expect(ref.tags_all).to eq("${aws_kms_external_key.test.tags_all}")
       end
     end
@@ -60,16 +62,18 @@ RSpec.describe Pangea::Resources::AWSKmsExternalKey do
         expect(config).not_to have_key('arn')
         expect(config).not_to have_key('enabled')
         expect(config).not_to have_key('expiration_model')
+        expect(config).not_to have_key('key_spec')
         expect(config).not_to have_key('key_state')
         expect(config).not_to have_key('key_usage')
         expect(config).not_to have_key('multi_region')
         expect(config).not_to have_key('policy')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tags_all')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ bypass_policy_lockout_safety_check: true, deletion_window_in_days: 3.14, description: 'test-value', key_material_base64: 'test-value', tags: { 'key1' => 'val1' }, valid_to: 'test-value' }) }
+      let(:all_attrs) { required_attrs.merge({ bypass_policy_lockout_safety_check: true, deletion_window_in_days: 3.14, description: 'test-value', enabled: true, key_material_base64: 'test-value', key_spec: 'test-value', key_usage: 'test-value', multi_region: true, policy: 'test-value', region: 'test-value', tags: { 'key1' => 'val1' }, tags_all: { 'key1' => 'val1' }, valid_to: 'test-value' }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -81,8 +85,15 @@ RSpec.describe Pangea::Resources::AWSKmsExternalKey do
         expect(config).to have_key('bypass_policy_lockout_safety_check')
         expect(config).to have_key('deletion_window_in_days')
         expect(config).to have_key('description')
+        expect(config).to have_key('enabled')
         expect(config).to have_key('key_material_base64')
+        expect(config).to have_key('key_spec')
+        expect(config).to have_key('key_usage')
+        expect(config).to have_key('multi_region')
+        expect(config).to have_key('policy')
+        expect(config).to have_key('region')
         expect(config).to have_key('tags')
+        expect(config).to have_key('tags_all')
         expect(config).to have_key('valid_to')
       end
     end
@@ -139,6 +150,23 @@ RSpec.describe Pangea::Resources::AWSKmsExternalKey do
         config = validate_resource_structure(result, 'aws_kms_external_key', 'minimal')
         expect(config).not_to have_key('description')
       end
+      it 'includes enabled when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('opt', required_attrs.merge(enabled: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'opt')
+        expect(config).to have_key('enabled')
+      end
+
+      it 'omits enabled when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'minimal')
+        expect(config).not_to have_key('enabled')
+      end
       it 'includes key_material_base64 when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -156,6 +184,91 @@ RSpec.describe Pangea::Resources::AWSKmsExternalKey do
         config = validate_resource_structure(result, 'aws_kms_external_key', 'minimal')
         expect(config).not_to have_key('key_material_base64')
       end
+      it 'includes key_spec when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('opt', required_attrs.merge(key_spec: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'opt')
+        expect(config).to have_key('key_spec')
+      end
+
+      it 'omits key_spec when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'minimal')
+        expect(config).not_to have_key('key_spec')
+      end
+      it 'includes key_usage when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('opt', required_attrs.merge(key_usage: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'opt')
+        expect(config).to have_key('key_usage')
+      end
+
+      it 'omits key_usage when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'minimal')
+        expect(config).not_to have_key('key_usage')
+      end
+      it 'includes multi_region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('opt', required_attrs.merge(multi_region: true))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'opt')
+        expect(config).to have_key('multi_region')
+      end
+
+      it 'omits multi_region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'minimal')
+        expect(config).not_to have_key('multi_region')
+      end
+      it 'includes policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('opt', required_attrs.merge(policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'opt')
+        expect(config).to have_key('policy')
+      end
+
+      it 'omits policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'minimal')
+        expect(config).not_to have_key('policy')
+      end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes tags when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -172,6 +285,23 @@ RSpec.describe Pangea::Resources::AWSKmsExternalKey do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_kms_external_key', 'minimal')
         expect(config).not_to have_key('tags')
+      end
+      it 'includes tags_all when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('opt', required_attrs.merge(tags_all: { 'key1' => 'val1' }))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'opt')
+        expect(config).to have_key('tags_all')
+      end
+
+      it 'omits tags_all when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_kms_external_key('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_kms_external_key', 'minimal')
+        expect(config).not_to have_key('tags_all')
       end
       it 'includes valid_to when provided' do
         synth = create_synthesizer
@@ -209,6 +339,28 @@ RSpec.describe Pangea::Resources::AWSKmsExternalKey do
           result = normalize_synthesis(synth.synthesis)
           config = validate_resource_structure(result, 'aws_kms_external_key', "bool_#{val}")
           expect(config['bypass_policy_lockout_safety_check']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts enabled=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(enabled: val)
+          synth.aws_kms_external_key("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_kms_external_key', "bool_#{val}")
+          expect(config['enabled']).to eq(val)
+        end
+      end
+      [true, false].each do |val|
+        it "accepts multi_region=#{val}" do
+          synth = create_synthesizer
+          synth.extend(described_class)
+          attrs = required_attrs.merge(multi_region: val)
+          synth.aws_kms_external_key("bool_#{val}", attrs)
+          result = normalize_synthesis(synth.synthesis)
+          config = validate_resource_structure(result, 'aws_kms_external_key', "bool_#{val}")
+          expect(config['multi_region']).to eq(val)
         end
       end
     end
@@ -254,8 +406,8 @@ RSpec.describe Pangea::Resources::AWSKmsExternalKey do
     resource_type: :aws_kms_external_key,
     method: :aws_kms_external_key,
     required_attrs: {},
-    expected_outputs: [:id, :arn, :enabled, :expiration_model, :key_state, :key_usage, :multi_region, :policy, :tags_all],
+    expected_outputs: [:id, :arn, :enabled, :expiration_model, :key_spec, :key_state, :key_usage, :multi_region, :policy, :region, :tags_all],
     sensitive_fields: [:key_material_base64],
     immutable_fields: [],
-    boolean_fields: [:bypass_policy_lockout_safety_check]
+    boolean_fields: [:bypass_policy_lockout_safety_check, :enabled, :multi_region]
 end

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::SnsPlatformApplicationAttributes,
       outputs: { id: :id },
       map: [:name, :platform, :platform_credential],
-      map_present: [:apple_platform_bundle_id, :apple_platform_team_id, :event_delivery_failure_topic_arn, :event_endpoint_created_topic_arn, :event_endpoint_deleted_topic_arn, :event_endpoint_updated_topic_arn, :failure_feedback_role_arn, :platform_principal, :success_feedback_role_arn, :success_feedback_sample_rate]
+      map_present: [:apple_platform_bundle_id, :apple_platform_team_id, :event_delivery_failure_topic_arn, :event_endpoint_created_topic_arn, :event_endpoint_deleted_topic_arn, :event_endpoint_updated_topic_arn, :failure_feedback_role_arn, :platform_principal, :region, :success_feedback_role_arn, :success_feedback_sample_rate]
   end
   module AWS
     include AWSSnsPlatformApplication

@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::RedshiftSnapshotCopyAttributes,
       outputs: { id: :id },
       map: [:cluster_identifier, :destination_region],
-      map_present: [:manual_snapshot_retention_period, :retention_period, :snapshot_copy_grant_name]
+      map_present: [:manual_snapshot_retention_period, :region, :retention_period, :snapshot_copy_grant_name]
   end
   module AWS
     include AWSRedshiftSnapshotCopy

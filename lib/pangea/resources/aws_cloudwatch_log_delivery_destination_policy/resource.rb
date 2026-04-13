@@ -13,7 +13,8 @@ module Pangea::Resources
     define_resource :aws_cloudwatch_log_delivery_destination_policy,
       attributes_class: AWS::Types::CloudwatchLogDeliveryDestinationPolicyAttributes,
       outputs: { id: :id },
-      map: [:delivery_destination_name, :delivery_destination_policy]
+      map: [:delivery_destination_name, :delivery_destination_policy],
+      map_present: [:region]
   end
   module AWS
     include AWSCloudwatchLogDeliveryDestinationPolicy

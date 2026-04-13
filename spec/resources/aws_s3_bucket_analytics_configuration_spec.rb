@@ -38,11 +38,24 @@ RSpec.describe Pangea::Resources::AWSS3BucketAnalyticsConfiguration do
         ref = synth.aws_s3_bucket_analytics_configuration('test', required_attrs)
 
         expect(ref.id).to eq("${aws_s3_bucket_analytics_configuration.test.id}")
+        expect(ref.region).to eq("${aws_s3_bucket_analytics_configuration.test.region}")
+      end
+    end
+
+    context 'computed-only attributes' do
+      it 'excludes computed-only attributes from the resource block' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_analytics_configuration('test', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+
+        config = validate_resource_structure(result, 'aws_s3_bucket_analytics_configuration', 'test')
+        expect(config).not_to have_key('region')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ filter: [{ 'key1' => 'val1' }], storage_class_analysis: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ filter: { 'key1' => 'val1' }, region: 'test-value', storage_class_analysis: { 'key1' => 'val1' } }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -52,6 +65,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketAnalyticsConfiguration do
 
         config = validate_resource_structure(result, 'aws_s3_bucket_analytics_configuration', 'full')
         expect(config).to have_key('filter')
+        expect(config).to have_key('region')
         expect(config).to have_key('storage_class_analysis')
       end
     end
@@ -60,7 +74,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketAnalyticsConfiguration do
       it 'includes filter when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket_analytics_configuration('opt', required_attrs.merge(filter: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket_analytics_configuration('opt', required_attrs.merge(filter: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_analytics_configuration', 'opt')
         expect(config).to have_key('filter')
@@ -74,10 +88,27 @@ RSpec.describe Pangea::Resources::AWSS3BucketAnalyticsConfiguration do
         config = validate_resource_structure(result, 'aws_s3_bucket_analytics_configuration', 'minimal')
         expect(config).not_to have_key('filter')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_analytics_configuration('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_analytics_configuration', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_s3_bucket_analytics_configuration('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_s3_bucket_analytics_configuration', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes storage_class_analysis when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
-        synth.aws_s3_bucket_analytics_configuration('opt', required_attrs.merge(storage_class_analysis: [{ 'key1' => 'val1' }]))
+        synth.aws_s3_bucket_analytics_configuration('opt', required_attrs.merge(storage_class_analysis: { 'key1' => 'val1' }))
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_s3_bucket_analytics_configuration', 'opt')
         expect(config).to have_key('storage_class_analysis')
@@ -136,7 +167,7 @@ RSpec.describe Pangea::Resources::AWSS3BucketAnalyticsConfiguration do
     resource_type: :aws_s3_bucket_analytics_configuration,
     method: :aws_s3_bucket_analytics_configuration,
     required_attrs: { bucket: 'test-value', name: 'test-value' },
-    expected_outputs: [:id],
+    expected_outputs: [:id, :region],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: []

@@ -39,6 +39,7 @@ RSpec.describe Pangea::Resources::AWSSesReceiptRule do
 
         expect(ref.id).to eq("${aws_ses_receipt_rule.test.id}")
         expect(ref.arn).to eq("${aws_ses_receipt_rule.test.arn}")
+        expect(ref.region).to eq("${aws_ses_receipt_rule.test.region}")
         expect(ref.tls_policy).to eq("${aws_ses_receipt_rule.test.tls_policy}")
       end
     end
@@ -52,12 +53,13 @@ RSpec.describe Pangea::Resources::AWSSesReceiptRule do
 
         config = validate_resource_structure(result, 'aws_ses_receipt_rule', 'test')
         expect(config).not_to have_key('arn')
+        expect(config).not_to have_key('region')
         expect(config).not_to have_key('tls_policy')
       end
     end
 
     context 'with all attributes' do
-      let(:all_attrs) { required_attrs.merge({ add_header_action: [{ 'key1' => 'val1' }], after: 'test-value', bounce_action: [{ 'key1' => 'val1' }], enabled: true, lambda_action: [{ 'key1' => 'val1' }], recipients: ['test-value'], s3_action: [{ 'key1' => 'val1' }], scan_enabled: true, sns_action: [{ 'key1' => 'val1' }], stop_action: [{ 'key1' => 'val1' }], workmail_action: [{ 'key1' => 'val1' }] }) }
+      let(:all_attrs) { required_attrs.merge({ add_header_action: [{ 'key1' => 'val1' }], after: 'test-value', bounce_action: [{ 'key1' => 'val1' }], enabled: true, lambda_action: [{ 'key1' => 'val1' }], recipients: ['test-value'], region: 'test-value', s3_action: [{ 'key1' => 'val1' }], scan_enabled: true, sns_action: [{ 'key1' => 'val1' }], stop_action: [{ 'key1' => 'val1' }], tls_policy: 'test-value', workmail_action: [{ 'key1' => 'val1' }] }) }
 
       it 'synthesizes with optional attributes' do
         synth = create_synthesizer
@@ -72,10 +74,12 @@ RSpec.describe Pangea::Resources::AWSSesReceiptRule do
         expect(config).to have_key('enabled')
         expect(config).to have_key('lambda_action')
         expect(config).to have_key('recipients')
+        expect(config).to have_key('region')
         expect(config).to have_key('s3_action')
         expect(config).to have_key('scan_enabled')
         expect(config).to have_key('sns_action')
         expect(config).to have_key('stop_action')
+        expect(config).to have_key('tls_policy')
         expect(config).to have_key('workmail_action')
       end
     end
@@ -183,6 +187,23 @@ RSpec.describe Pangea::Resources::AWSSesReceiptRule do
         config = validate_resource_structure(result, 'aws_ses_receipt_rule', 'minimal')
         expect(config).not_to have_key('recipients')
       end
+      it 'includes region when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_receipt_rule('opt', required_attrs.merge(region: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_receipt_rule', 'opt')
+        expect(config).to have_key('region')
+      end
+
+      it 'omits region when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_receipt_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_receipt_rule', 'minimal')
+        expect(config).not_to have_key('region')
+      end
       it 'includes s3_action when provided' do
         synth = create_synthesizer
         synth.extend(described_class)
@@ -250,6 +271,23 @@ RSpec.describe Pangea::Resources::AWSSesReceiptRule do
         result = normalize_synthesis(synth.synthesis)
         config = validate_resource_structure(result, 'aws_ses_receipt_rule', 'minimal')
         expect(config).not_to have_key('stop_action')
+      end
+      it 'includes tls_policy when provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_receipt_rule('opt', required_attrs.merge(tls_policy: 'test-value'))
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_receipt_rule', 'opt')
+        expect(config).to have_key('tls_policy')
+      end
+
+      it 'omits tls_policy when not provided' do
+        synth = create_synthesizer
+        synth.extend(described_class)
+        synth.aws_ses_receipt_rule('minimal', required_attrs)
+        result = normalize_synthesis(synth.synthesis)
+        config = validate_resource_structure(result, 'aws_ses_receipt_rule', 'minimal')
+        expect(config).not_to have_key('tls_policy')
       end
       it 'includes workmail_action when provided' do
         synth = create_synthesizer
@@ -338,7 +376,7 @@ RSpec.describe Pangea::Resources::AWSSesReceiptRule do
     resource_type: :aws_ses_receipt_rule,
     method: :aws_ses_receipt_rule,
     required_attrs: { name: 'test-value', rule_set_name: 'test-value' },
-    expected_outputs: [:id, :arn, :tls_policy],
+    expected_outputs: [:id, :arn, :region, :tls_policy],
     sensitive_fields: [],
     immutable_fields: [],
     boolean_fields: [:enabled, :scan_enabled]

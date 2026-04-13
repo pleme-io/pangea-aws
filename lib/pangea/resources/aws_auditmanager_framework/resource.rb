@@ -14,7 +14,7 @@ module Pangea::Resources
       attributes_class: AWS::Types::AuditmanagerFrameworkAttributes,
       outputs: { id: :id },
       map: [:name],
-      map_present: [:compliance_type, :control_sets, :description, :tags]
+      map_present: [:compliance_type, :control_sets, :description, :region, :tags]
   end
   module AWS
     include AWSAuditmanagerFramework
